@@ -1,0 +1,39 @@
+<div class="form-date">
+
+  <div class="form-group form-group-day">
+    <label class="form-label" [for]="dayId()">Day</label>
+    <input class="form-control"
+           [id]="dayId()"
+           [name]="dayId()"
+           type="number"
+           [value]="displayDay"
+           (change)="dayChange($event)"
+           (keyup)="dayChange($event)"
+           (blur)="inputBlur()">
+  </div>
+
+  <div class="form-group form-group-month">
+    <label class="form-label" [for]="monthId()">Month</label>
+    <input class="form-control"
+           [id]="monthId()"
+           [name]="monthId()"
+           type="number"
+           [value]="displayMonth"
+           (change)="monthChange($event)"
+           (keyup)="monthChange($event)"
+           (blur)="inputBlur()">
+  </div>
+
+  <div class="form-group form-group-year">
+    <label class="form-label" [for]="yearId()">Year</label>
+    <input class="form-control"
+           [id]="yearId()"
+           [name]="yearId()"
+           type="number"
+           [value]="displayYear"
+           (change)="yearChange($event)"
+           (keyup)="yearChange($event)"
+           (blur)="inputBlur()">
+  </div>
+
+</div>

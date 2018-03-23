@@ -1,0 +1,40 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+$black: #000000;
+$white: #FFFFFF;
+$blue: #0074B4;
+$menu-active-nav: $white;
+
+a {
+  color: $white;
+  text-decoration: none;
+  @include core-14pt;
+
+  @include media(desktop) {
+    @include core-14pt;
+  }
+
+  &.active {
+    color: $menu-active-nav;
+  }
+  &:focus {
+    background-color: $blue;
+    outline: none;
+  }
+
+  input {
+    float: right;
+    background-color: $black;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.item-bold {
+  @include bold-14pt;
+}

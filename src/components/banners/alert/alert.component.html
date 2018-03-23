@@ -1,0 +1,8 @@
+<div class="alert alert-{{type}}" role="alert">
+  <div class="alert-container">
+    <i class="icon {{type | cutAlertIconClass}}" role="presentation" [attr.aria-hidden]="!showIcon" *ngIf="showIcon"></i>
+    <div class="alert-message" data-ng-transclude>
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

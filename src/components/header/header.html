@@ -1,0 +1,13 @@
+<div id="header-wrapper">
+  <header role="banner" class="global-header">
+      <div class="header-title">
+            <span class="header-title-span">{{title}}</span>
+      </div>
+      <div class="dropdown">
+        <button #usr class="dropbtn">{{username}} &#9660;</button>
+        <div class="dropdown-content" [style.min-width]="(usr.offsetWidth - 12) + 'px'">
+          <a (click)="signOut()" href="javascript:void(0)">Sign Out</a>
+        </div>
+      </div>
+  </header>
+</div>

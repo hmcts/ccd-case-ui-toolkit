@@ -1,0 +1,26 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+$darkgray: #231F20;
+$gray: #ECEDEE;
+
+.global-footer {
+  color: $darkgray;
+  background-color: $gray;
+  padding-top: 1.2em;
+  padding-left: 2em;
+  padding-bottom: 1.5em;
+  font-size: 1.1em;
+
+  .email, .phone, .work-hours {
+    padding-top: 0.1em;
+  }
+
+  a {
+    color: $darkgray;
+    text-decoration: none;
+  }
+
+}

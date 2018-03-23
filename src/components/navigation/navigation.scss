@@ -1,0 +1,14 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+$blue: #0074B4;
+
+.cut-nav-bar {
+  background-color: $blue;
+  width: 100%;
+  height: 55px;
+  @extend %contain-floats;
+
+}
