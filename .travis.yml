@@ -1,0 +1,9 @@
+language: node_js
+cache: yarn
+script:
+  - yarn --version
+  - yarn lint
+  - yarn test
+after_success:
+  - yarn test:codacy-upload
+  - yarn test:codecov-upload
