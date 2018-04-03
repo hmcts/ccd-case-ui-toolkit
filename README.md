@@ -1,4 +1,4 @@
-# case-ui-toolkit
+# case-ui-toolkit [![Build Status](https://travis-ci.org/hmcts/ccd-case-ui-toolkit.svg?branch=master)](https://travis-ci.org/hmcts/ccd-case-ui-toolkit)
 case-ui-toolkit
 
 # Quick Start (for local development and testing)
