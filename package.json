@@ -1,6 +1,6 @@
 {
-  "name": "@ccd/case-ui-toolkit",
-  "version": "0.0.29",
+  "name": "@hmcts/ccd-case-ui-toolkit",
+  "version": "1.0.0",
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.js",
@@ -96,5 +96,8 @@
     "webpack-angular-externals": "^1.0.2",
     "webpack-rxjs-externals": "^1.1.0",
     "zone.js": "^0.8.18"
+  },
+   "publishConfig": {
+    "access": "public"
   }
 }
