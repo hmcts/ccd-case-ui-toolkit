@@ -5,7 +5,7 @@ properties(
      pipelineTriggers([[$class: 'GitHubPushTrigger']])]
 )
 
-@Library('Reform') _
+@Library('Infrastructure') _
 
 milestone()
 lock(resource: "case-ui-toolkit-${env.BRANCH_NAME}", inversePrecedence: true) {
