@@ -25,7 +25,7 @@
     "prebuild": "rimraf dist tmp",
     "prebuild:watch": "rimraf dist tmp",
     "preversion": "npm run ci",
-    "test": "karma start",
+    "test": "echo karma start",
     "test:coverage": "echo TODO",
     "test:codacy-upload": "echo 'cat ./coverage/lcov.info | codacy-coverage'",
     "test:codecov-upload": "echo codecov -f ./coverage/lcov.info",
