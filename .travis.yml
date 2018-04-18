@@ -4,6 +4,7 @@ script:
 - yarn --version
 - yarn lint
 - yarn test
+- yarn build
 after_success:
 - yarn test:codacy-upload
 - yarn test:codecov-upload
