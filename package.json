@@ -29,6 +29,7 @@
     "test:codacy-upload": "cat ./coverage/lcov.info | codacy-coverage",
     "test:codecov-upload": "codecov -f ./coverage/lcov.info",
     "test:watch": "karma start --auto-watch --no-single-run",
+    "test:coverage": "echo TODO",
     "tslint": "tslint"
   },
   "dependencies": {
