@@ -4,6 +4,7 @@ script:
 - yarn --version
 - yarn lint
 - yarn test
+- yarn build
 after_success:
 - yarn test:codacy-upload
 - yarn test:codecov-upload
@@ -15,3 +16,4 @@ deploy:
   on:
     tags: true
     repo: hmcts/ccd-case-ui-toolkit
+  skip_cleanup: true
