@@ -74,7 +74,6 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnDe
   }
 
   public ngOnDestroy() {
-    console.log('id:', this.id, ' ngOnDestroy called', ' viewValue:', this.viewValue());
     this.validate = (control: AbstractControl): ValidationErrors => {
       return undefined;
     };
