@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import {Component, forwardRef, Input, OnDestroy} from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms';
 
@@ -18,7 +18,7 @@ import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } fro
     }
   ],
 })
-export class DateInputComponent implements ControlValueAccessor, Validator {
+export class DateInputComponent implements ControlValueAccessor, Validator, OnDestroy {
   @Input()
   public id: string;
 
@@ -71,6 +71,12 @@ export class DateInputComponent implements ControlValueAccessor, Validator {
 
   public registerOnTouched(fn: any): void {
     // Do nothing.
+  }
+
+  public ngOnDestroy() {
+    this.validate = (control: AbstractControl): ValidationErrors => {
+      return undefined;
+    };
   }
 
   public dayChange(event: any) {
