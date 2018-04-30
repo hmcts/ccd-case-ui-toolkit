@@ -21,7 +21,7 @@ In you project folder that should consume the library:
 cd case-management-web
 
 # Link you library to the project
-yarn link "@ccd/case-ui-toolkit"
+yarn link "@hmcts/ccd-case-ui-toolkit"
 
 yarn start
 
