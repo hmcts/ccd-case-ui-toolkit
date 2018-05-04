@@ -4,8 +4,10 @@
 
 @mixin phase-banner() {
   padding-top: 10px;
-  padding-left: 22px;
+  padding-left: 15px;
   border-bottom: 1px solid $border-colour;
+  max-width: 1005px;
+  margin: 0 auto;
 
   @include media(tablet) {
     padding-bottom: 10px;

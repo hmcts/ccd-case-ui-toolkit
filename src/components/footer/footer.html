@@ -1,16 +1,38 @@
-<div id="footer-wrapper">
-  <footer role="banner" class="global-footer">
+<footer class="group js-footer" id="footer" role="banner">
+  <div class="footer-wrapper">
+
+    <!-- Condition: Solicitor -->
+    <div *ngIf="isSolicitor" class="footer-meta">
+      <div class="footer-meta-inner">
+        <div class="footer-menu">
+          <a href="/#">Clear data</a>
+        </div>
+        <div class="open-government-licence">
+          <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
+          <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+        </div>
+      </div>
+
+      <div class="copyright">
+        <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">© Crown copyright</a>
+      </div>
+    </div>
+
+    <!-- Condition: Case Worker -->
+    <div *ngIf="!isSolicitor" class="footer-meta">
       <div class="title">
-            <span>Help</span>
+        <span class="footer-text">Help</span>
       </div>
       <div class="email">
-            Email: <a href="mailto:{{email}}">{{email}}</a>
+        <span class="footer-text">Email: <a href="mailto:{{email}}">{{email}}</a></span>
       </div>
       <div class="phone">
-            Phone: <span>{{phone}}</span>
+        <span class="footer-text">Phone: {{phone}}</span>
       </div>
       <div class="work-hours">
-            <span>{{workhours}}</span>
+        <span class="footer-text">{{workhours}}</span>
       </div>
-  </footer>
-</div>
+    </div>
+
+  </div>
+</footer>

@@ -12,6 +12,9 @@ export class HeaderComponent {
   public title: string;
 
   @Input()
+  public isSolicitor: boolean;
+
+  @Input()
   public username: string;
 
   @Output()
