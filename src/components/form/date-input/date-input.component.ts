@@ -45,7 +45,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnDe
     if (obj) {
       this.rawValue = obj.replace(/T.*/, '');
 
-      // needs to handle also partial dates, e.g. -05-2016 (missing year)
+      // needs to handle also partial dates, e.g. -05-2016 (missing day)
       const values = this.rawValue.split('-');
       this.year = this.displayYear = values[0] || '';
       this.month = this.displayMonth = values[1] || '';
