@@ -12,5 +12,7 @@ $blue: #0062a0;
   height: 55px;
   padding: 0 15px 0 15px;
   @extend %contain-floats;
-
+}
+.full-screen {
+  max-width: 100%;
 }

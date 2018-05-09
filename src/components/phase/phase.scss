@@ -47,3 +47,6 @@
 .phase-banner {
    @include phase-banner();
 }
+.full-screen {
+  max-width: 100%;
+}

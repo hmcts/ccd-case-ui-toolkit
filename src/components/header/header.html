@@ -1,5 +1,5 @@
 <header role="banner" id="global-header" class="with-proposition">
-  <div class="header-wrapper">
+  <div [class.full-screen]="!isSolicitor" class="header-wrapper">
 
     <div class="header-global">
       <div *ngIf="isSolicitor" class="header-logo">
