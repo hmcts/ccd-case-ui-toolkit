@@ -1,5 +1,5 @@
 <footer class="group js-footer" id="footer" role="banner">
-  <div class="footer-wrapper">
+  <div [class.full-screen]="!isSolicitor" class="footer-wrapper">
 
     <!-- Condition: Solicitor -->
     <div *ngIf="isSolicitor" class="footer-meta">
