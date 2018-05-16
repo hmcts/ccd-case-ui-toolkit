@@ -36,4 +36,40 @@
            (blur)="inputBlur()">
   </div>
 
+  <div class="form-group form-group-hour" *ngIf="dateTime">
+    <label class="form-label" [for]="hourId()">Hour</label>
+    <input class="form-control"
+           [id]="hourId()"
+           [name]="hourId()"
+           type="number"
+           [value]="displayHour"
+           (change)="hourChange($event)"
+           (keyup)="hourChange($event)"
+           (blur)="inputBlur()">
+  </div>
+
+  <div class="form-group form-group-minute" *ngIf="dateTime">
+    <label class="form-label" [for]="minuteId()">Minute</label>
+    <input class="form-control"
+           [id]="minuteId()"
+           [name]="minuteId()"
+           type="number"
+           [value]="displayMinute"
+           (change)="minuteChange($event)"
+           (keyup)="minuteChange($event)"
+           (blur)="inputBlur()">
+  </div>
+
+  <div class="form-group form-group-second" *ngIf="dateTime">
+    <label class="form-label" [for]="secondId()">Second</label>
+    <input class="form-control"
+           [id]="secondId()"
+           [name]="secondId()"
+           type="number"
+           [value]="displaySecond"
+           (change)="secondChange($event)"
+           (keyup)="secondChange($event)"
+           (blur)="inputBlur()">
+  </div>
+
 </div>
