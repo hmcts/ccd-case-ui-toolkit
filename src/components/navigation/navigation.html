@@ -1,5 +1,5 @@
 <div>
-  <nav class="cut-nav-bar">
+  <nav [class.full-screen]="!isSolicitor" class="cut-nav-bar">
       <ng-content select="[leftNavLinks]"></ng-content>
       <ng-content select="[rightNavLinks]"></ng-content>
   </nav>

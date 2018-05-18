@@ -11,6 +11,9 @@ export class FooterComponent {
   public email: string;
 
   @Input()
+  public isSolicitor: boolean;
+
+  @Input()
   public phone: string;
 
   @Input()
