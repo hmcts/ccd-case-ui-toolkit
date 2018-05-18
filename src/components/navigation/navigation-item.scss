@@ -5,12 +5,14 @@
 
 $black: #000000;
 $white: #FFFFFF;
-$blue: #0074B4;
+$blue: #005ea5;
+$green: #00823b;
 $menu-active-nav: $white;
 
 a {
   color: $white;
   text-decoration: none;
+  padding-right: 10px;
   @include core-14pt;
 
   @include media(desktop) {
@@ -27,7 +29,7 @@ a {
 
   input {
     float: right;
-    background-color: $black;
+    background-color: $green;
 
     &:focus {
       outline: none;

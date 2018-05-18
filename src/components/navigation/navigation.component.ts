@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'cut-nav-bar',
@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
     styleUrls: ['./navigation.scss']
 })
 export class NavigationComponent {
+
+  @Input()
+  public isSolicitor: boolean;
 
 }
