@@ -25,7 +25,7 @@
         </div>
 
         <div class="dropdown">
-          <button #usr class="dropbtn">Joe Andrew Blogs &#9660;</button><!--Replace with: {{username}} &#9660; -->
+          <button #usr class="dropbtn">{{username}} &#9660;</button>
           <div class="dropdown-content" [style.min-width]="(usr.offsetWidth - 3) + 'px'">
             <a (click)="signOut()" href="javascript:void(0)">Sign Out</a>  <!-- style="text-align: left;" -->
           </div>
