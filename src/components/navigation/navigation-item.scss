@@ -24,6 +24,7 @@ a {
   }
   &:focus {
     background-color: $blue;
+    color: $white;
     outline: none;
   }
 
