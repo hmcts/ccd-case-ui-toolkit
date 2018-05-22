@@ -1,5 +1,12 @@
 ## RELEASE NOTES
 
+### Version 1.1.5 - May 22 2018
+**RDM-1149** Fixes added: 
+- Issue 'error on single digit hour'
+- Incorrect Hour/Minute/Second initialization when field is mandatory
+- Changed to a simpler Regex validation
+- Bumped the version to 1.1.5
+
 ### Version 1.1.4 - May 22 2018
 Bumped up the version
 
