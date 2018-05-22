@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 1.1.4 - May 22 2018
+Bumped up the version
+
 ### Version 1.1.3 - May 22 2018
 **RDM-1149** Added _DateTime_ support to the existing _Date_ component
 
