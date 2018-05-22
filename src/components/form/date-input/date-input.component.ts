@@ -1,4 +1,4 @@
-import {Component, forwardRef, Input, OnDestroy} from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms';
 
@@ -18,7 +18,7 @@ import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } fro
     }
   ],
 })
-export class DateInputComponent implements ControlValueAccessor, Validator, OnDestroy {
+export class DateInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input()
   public id: string;
 
@@ -35,12 +35,14 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnDe
   public displayMonth: string = null;
   public displayYear: string = null;
 
-  public displayHour: string = this.mandatory ? '00' : null;
-  public displayMinute: string = this.mandatory ? '00' : null;
-  public displaySecond: string = this.mandatory ? '00' : null;
+  public displayHour: string = null;
+  public displayMinute: string = null;
+  public displaySecond: string = null;
   // tslint:disable-next-line
-  private readonly DATE_FORMAT = /^(\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
-
+  // private readonly DATE_FORMAT = /^(\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+  private readonly DATE_FORMAT =
+    /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d?\d)(?::?(\d?\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?|Z)?$/;
+//    1        2       3         4          5          6          7          8  9     10      11
   private propagateChange: (_: any) => {};
   private rawValue: string = '';
   private day: string;
@@ -49,6 +51,17 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnDe
   private hour: string;
   private minute: string;
   private second: string;
+
+  public ngOnInit() {
+    if (this.mandatory) {
+      this.displayHour = '00';
+      this.displayMinute = '00';
+      this.displaySecond = '00';
+      this.hour = '00';
+      this.minute = '00';
+      this.second = '00';
+    }
+  }
 
   public writeValue(obj: string): void { // 2018-04-09T08:02:27.542
     if (obj) {
@@ -196,7 +209,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnDe
       ].join('-');
       if (this.dateTime) {
         const time = [
-          this.hour ? this.hour : '',
+          this.hour ? this.pad(this.hour) : '',
           this.minute ? this.pad(this.minute) : '',
           this.second ? this.pad(this.second) : ''
         ].join(':');
