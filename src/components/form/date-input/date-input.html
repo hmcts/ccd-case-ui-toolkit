@@ -2,73 +2,79 @@
 
   <div class="form-group form-group-day">
     <label class="form-label" [for]="dayId()">Day</label>
-    <input class="form-control"
+    <input #dayInput
+           class="form-control"
            [id]="dayId()"
            [name]="dayId()"
            type="number"
            [value]="displayDay"
-           (change)="dayChange($event)"
-           (keyup)="dayChange($event)"
+           (change)="dayChange(dayInput.value)"
+           (keyup)="dayChange(dayInput.value)"
            (blur)="inputBlur()">
   </div>
 
   <div class="form-group form-group-month">
     <label class="form-label" [for]="monthId()">Month</label>
-    <input class="form-control"
+    <input #monthInput
+           class="form-control"
            [id]="monthId()"
            [name]="monthId()"
            type="number"
            [value]="displayMonth"
-           (change)="monthChange($event)"
-           (keyup)="monthChange($event)"
+           (change)="monthChange(monthInput.value)"
+           (keyup)="monthChange(monthInput.value)"
            (blur)="inputBlur()">
   </div>
 
   <div class="form-group form-group-year">
     <label class="form-label" [for]="yearId()">Year</label>
-    <input class="form-control"
+    <input #yearInput
+           class="form-control"
            [id]="yearId()"
            [name]="yearId()"
            type="number"
            [value]="displayYear"
-           (change)="yearChange($event)"
-           (keyup)="yearChange($event)"
+           (change)="yearChange(yearInput.value)"
+           (keyup)="yearChange(yearInput.value)"
            (blur)="inputBlur()">
   </div>
 
-  <div class="form-group form-group-hour" *ngIf="dateTime">
+  <div class="form-group form-group-hour" *ngIf="isDateTime">
     <label class="form-label" [for]="hourId()">Hour</label>
-    <input class="form-control"
+    <input #hourInput
+           class="form-control"
            [id]="hourId()"
            [name]="hourId()"
            type="number"
            [value]="displayHour"
-           (change)="hourChange($event)"
-           (keyup)="hourChange($event)"
+           (change)="hourChange(hourInput.value)"
+           (keyup)="hourChange(hourInput.value)"
            (blur)="inputBlur()">
   </div>
 
-  <div class="form-group form-group-minute" *ngIf="dateTime">
+  <div class="form-group form-group-minute" *ngIf="isDateTime">
     <label class="form-label" [for]="minuteId()">Minute</label>
-    <input class="form-control"
+    <input #minuteInput
+           class="form-control"
            [id]="minuteId()"
            [name]="minuteId()"
            type="number"
            [value]="displayMinute"
-           (change)="minuteChange($event)"
-           (keyup)="minuteChange($event)"
+           (change)="minuteChange(minuteInput.value)"
+           (keyup)="minuteChange(minuteInput.value)"
            (blur)="inputBlur()">
   </div>
 
-  <div class="form-group form-group-second" *ngIf="dateTime">
+  <div class="form-group form-group-second" *ngIf="isDateTime">
     <label class="form-label" [for]="secondId()">Second</label>
-    <input class="form-control"
+    <input #secondInput
+           class="form-control"
            [id]="secondId()"
            [name]="secondId()"
            type="number"
            [value]="displaySecond"
-           (change)="secondChange($event)"
-           (keyup)="secondChange($event)"
+           (change)="secondChange(secondInput.value)"
+           (keyup)="secondChange(secondInput.value)"
            (blur)="inputBlur()">
   </div>
 
