@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 1.1.6 - May 24 2018
+**RDM-1149** Fixes added: 
+- Mandatory field skipping issue found in tests fixed
+- Several PR comments addressed
+
 ### Version 1.1.5 - May 22 2018
 **RDM-1149** Fixes added: 
 - Issue 'error on single digit hour'
