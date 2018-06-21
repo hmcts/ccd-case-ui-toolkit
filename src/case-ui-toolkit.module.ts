@@ -16,6 +16,8 @@ import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
+import { CasePaymentHistoryListComponent } from './components/payment/case-payment-history-list.component';
+import { CasePaymentHistoryViewModule } from './components/payment/case-payment-history-view.module';
 
 @NgModule({
     imports: [
@@ -25,6 +27,7 @@ import { BannersModule } from './components/banners/banners.module';
       BodyModule,
       FormModule,
       TabsModule,
+      CasePaymentHistoryViewModule,
     ],
     exports: [
       AlertComponent,
@@ -37,6 +40,7 @@ import { BannersModule } from './components/banners/banners.module';
       DateInputComponent,
       TabsComponent,
       TabComponent,
+      CasePaymentHistoryListComponent,
     ]
 })
 export class CaseUIToolkitModule {}

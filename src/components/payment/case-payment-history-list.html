@@ -1,0 +1,16 @@
+<div class="form-group">
+
+    <div>
+
+        <table>
+            <thead>
+                <tr><th>Reference</th><th>Date</th><th>Amount</th><th>Payer</th></tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let payment of payments"><th>{{payment.reference}}</th><th>{{payment.date}}</th><th>{{payment.amount}}</th><th>{{payment.payer}}</th></tr>
+            </tbody>
+        </table>
+    
+    </div>
+
+</div>
