@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Payment } from './payment.model';
 import { CasePaymentHistoryService } from './case-payment-history.service';
-import { ContextMap } from './context-map.model';
 
 @Component({
   selector: 'cut-case-payment-history-list',
