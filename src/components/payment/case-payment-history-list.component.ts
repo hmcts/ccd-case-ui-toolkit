@@ -11,20 +11,20 @@ import { ContextMap } from './context-map.model';
 export class CasePaymentHistoryListComponent implements OnInit {
 
   @Input()
-  public caseViewContext: ContextMap;
+  public baseURL: string;
+  @Input()
+  public caseReference: string;
 
   public payments: Payment[];
 
   constructor(private casePaymentHistoryService: CasePaymentHistoryService) {}
 
   public ngOnInit(): void {
-    let baseUrl = this.caseViewContext.get(ContextMap.PAYMENTS_BASE_URL_KEY);
-    let caseReference = this.caseViewContext.get(ContextMap.CASE_REFERENCE_KEY);
-    this.casePaymentHistoryService.getPayments(baseUrl, caseReference).subscribe(
+    this.casePaymentHistoryService.getPayments(this.baseURL, this.caseReference).subscribe(
       result => {
         this.payments = result;
       }, () => {
-        console.log(`An error occurred retrieving payments for caseReference ${caseReference}.`);
+        console.log(`An error occurred retrieving payments for caseReference ${this.caseReference}.`);
       });
   }
 }
