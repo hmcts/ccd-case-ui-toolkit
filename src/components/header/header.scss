@@ -77,9 +77,6 @@ $header-background-color: $black;
     margin: 0;
   }
 }
-/*#global-header.with-proposition .header-wrapper .header-proposition .content {
-  margin: 0;
-}*/
 #user-name, #sign-out {
   font-size: 16px;
   font-weight: bold;
@@ -97,12 +94,3 @@ $header-background-color: $black;
 #sign-out:hover {
   text-decoration: underline;
 }
-/*a {
-  &:focus {
-    color: $white;
-    outline: none;
-  }
-  &:hover {
-    text-decoration: underline;
-  }
-}*/

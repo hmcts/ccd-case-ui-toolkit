@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 1.1.7 - July 2 2018
+**RDM-1886** Enhancement: 
+- Sign Out link redesign
+
 ### Version 1.1.6 - May 24 2018
 **RDM-1149** Fixes added: 
 - Mandatory field skipping issue found in tests fixed
