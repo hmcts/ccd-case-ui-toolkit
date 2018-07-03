@@ -63,51 +63,34 @@ $header-background-color: $black;
 .title-solicitor {
   float: left;
 }
-
-/* The dropdown container */
-.dropdown {
+.proposition-right {
   float: right;
-  text-align: right;
-  overflow: hidden;
-  margin: 3px -15px 0px 0px;
+  padding-top: 5px;
 }
-
-/* Dropdown button */
-.dropdown .dropbtn {
+#global-header.with-proposition .header-wrapper .header-logo {
+  width: 27%;
+}
+#global-header.with-proposition .header-wrapper .header-proposition {
+  width: 100%;
+  float: none;
+  .content {
+    margin: 0;
+  }
+}
+#user-name, #sign-out {
   font-size: 16px;
+  font-weight: bold;
   border: none;
   outline: none;
   color: white;
-  padding: 0 0 0 13px;
-  background-color: $header-background-color;
-}
-
-/* Dropdown content (hidden by default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #0a0a0a;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  float: none;
-  color: white;
-  padding: 12px 13px;
+  padding: 0 0 0 9px;
   text-decoration: none;
-  display: block;
-  text-align: left;
-  outline : none;
+  background-color: $header-background-color;
+  &:focus {
+    color: $white;
+    outline: none;
+  }
 }
-
-/* Add a grey background color to dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: black;
-}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
+#sign-out:hover {
+  text-decoration: underline;
 }
