@@ -1,4 +1,8 @@
-# case-ui-toolkit [![Build Status](https://travis-ci.org/hmcts/ccd-case-ui-toolkit.svg?branch=master)](https://travis-ci.org/hmcts/ccd-case-ui-toolkit)
+# case-ui-toolkit
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/hmcts/ccd-case-ui-toolkit.svg?branch=master)](https://travis-ci.org/hmcts/ccd-case-ui-toolkit)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/93a438c61ff54973bc09a4387497e282)](https://www.codacy.com/app/adr1ancho/ccd-case-ui-toolkit?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hmcts/ccd-case-ui-toolkit&amp;utm_campaign=Badge_Grade)
+
 case-ui-toolkit
 
 # Quick Start (for local development and testing)
@@ -21,7 +25,7 @@ In you project folder that should consume the library:
 cd case-management-web
 
 # Link you library to the project
-yarn link "@ccd/case-ui-toolkit"
+yarn link "@hmcts/ccd-case-ui-toolkit"
 
 yarn start
 

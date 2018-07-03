@@ -13,4 +13,7 @@ export class PhaseComponent {
   @Input()
   public phaseLink: string;
 
+  @Input()
+  public isSolicitor: boolean;
+
 }
