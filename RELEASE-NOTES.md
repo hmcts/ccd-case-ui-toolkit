@@ -1,6 +1,9 @@
 ## RELEASE NOTES
 
-### Version 1.1.8 - July 2 2018
+### Version 1.1.8 - July 3 2018
+- Bumped the version to 1.1.8 
+
+### Version 1.1.7 - July 2 2018
 **RDM-1886** Enhancement: 
 - Sign Out link redesign
 
