@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 1.2.0 - July 3 2018
+- Upgraded to Angular version 5.2.0
+
 ### Version 1.1.8 - July 3 2018
 - Bumped the version to 1.1.8 
 
