@@ -42,7 +42,8 @@ case-ui-toolkit
   |  ├─ components                * Example of library components with tests
   |  ├─ services                  * Example of library services with tests
   |  ├─ index.ts                  * Library entry point that is used by builders
-  |  └─ headers-footers.module.ts * Example of library module
+  |  └─ footers.module.ts         * Example of library module
+  |  └─ headers-module.ts         * Example of library module
   |
   ├─ .editorconfig                * Common IDE configuration
   ├─ .gitignore	                  * List of files that are ignored while publishing to git repo
