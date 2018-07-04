@@ -28,6 +28,7 @@
     "test": "echo karma start",
     "test:codacy-upload": "echo `cat ./coverage/lcov.info | codacy-coverage`",
     "test:codecov-upload": "echo `codecov -f ./coverage/lcov.info`",
+    "test:coverage": "NODE_ENV=test NODE_PATH=. istanbul cover _mocha -- --recursive test/spec",
     "test:watch": "karma start --auto-watch --no-single-run",
     "tslint": "tslint"
   },

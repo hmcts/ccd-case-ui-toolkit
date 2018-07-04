@@ -1,13 +1,14 @@
 language: node_js
 cache: yarn
+install:
+  - npm install -g codecov
 script:
 - yarn --version
 - yarn lint
 - yarn test
 - yarn build
 after_success:
-- yarn test:codacy-upload
-- yarn test:codecov-upload
+  - codecov
 deploy:
   provider: npm
   email: jenkins-reform@hmcts.net
