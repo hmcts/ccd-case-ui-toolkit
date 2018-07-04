@@ -3,11 +3,10 @@ cache: yarn
 install:
   - npm install -g codecov
 script:
-  - yarn --version
-  - yarn lint
-  - yarn test
-  - yarn build
-  - yarn test:coverage
+- yarn --version
+- yarn lint
+- yarn test
+- yarn build
 after_success:
   - codecov
 deploy:
