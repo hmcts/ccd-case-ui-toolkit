@@ -1,5 +1,18 @@
 ## RELEASE NOTES
 
+### Version 1.2.1 - July 3 2018
+- New publishing key
+
+### Version 1.2.0 - July 3 2018
+- Upgraded to Angular version 5.2.0
+
+### Version 1.1.8 - July 3 2018
+- Bumped the version to 1.1.8 
+
+### Version 1.1.7 - July 2 2018
+**RDM-1886** Enhancement: 
+- Sign Out link redesign
+
 ### Version 1.1.6 - May 24 2018
 **RDM-1149** Fixes added: 
 - Mandatory field skipping issue found in tests fixed

@@ -1,8 +1,8 @@
 <header role="banner" id="global-header" class="with-proposition">
   <div [class.full-screen]="!isSolicitor" class="header-wrapper">
 
-    <div class="header-global">
-      <div *ngIf="isSolicitor" class="header-logo">
+    <div class="header-global" [class.header-logo]="isSolicitor">
+      <div *ngIf="isSolicitor">
         <a href="https://www.gov.uk" title="Go to the GOV.UK homepage" id="logo" class="content" style="margin-left: 0px;">
           <img src="/img/gov.uk_logotype_crown_invert_trans.png?0.23.0" width="36" height="32" alt=""> GOV.UK
         </a>
@@ -24,11 +24,9 @@
           </div>
         </div>
 
-        <div class="dropdown">
-          <button #usr class="dropbtn">{{username}} &#9660;</button>
-          <div class="dropdown-content" [style.min-width]="(usr.offsetWidth - 3) + 'px'">
-            <a (click)="signOut()" href="javascript:void(0)">Sign Out</a>  <!-- style="text-align: left;" -->
-          </div>
+        <div class="proposition-right">
+          <span id="user-name">{{username}}</span>
+          <a (click)="signOut()" id="sign-out" href="javascript:void(0)">Sign Out</a>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "1.1.6",
+  "version": "1.2.1",
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.js",
@@ -36,18 +36,20 @@
     "govuk-elements-sass": "^3.1.2"
   },
   "peerDependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/core": "^4.0.0"
+    "@angular/common": "~5.2.0",
+    "@angular/core": "~5.2.0",
+    "@angular/forms": "~5.2.0",
+    "@angular/router": "~5.2.0"
   },
   "devDependencies": {
-    "@angular/common": "^4.4.6",
-    "@angular/compiler": "^4.4.6",
-    "@angular/compiler-cli": "^4.4.6",
-    "@angular/core": "^4.4.6",
-    "@angular/forms": "^4.0.0",
-    "@angular/platform-browser": "^4.4.6",
-    "@angular/platform-browser-dynamic": "^4.4.6",
-    "@angular/router": "^4.4.6",
+    "@angular/common": "~5.2.0",
+    "@angular/compiler": "~5.2.0",
+    "@angular/compiler-cli": "~5.2.0",
+    "@angular/core": "~5.2.0",
+    "@angular/forms": "~5.2.0",
+    "@angular/platform-browser": "~5.2.0",
+    "@angular/platform-browser-dynamic": "~5.2.0",
+    "@angular/router": "~5.2.0",
     "@compodoc/compodoc": "^1.0.4",
     "@types/jasmine": "^2.8.2",
     "@types/karma": "^0.13.35",
