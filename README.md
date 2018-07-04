@@ -1,9 +1,11 @@
-# case-ui-toolkit
+# ccd-case-ui-toolkit
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/hmcts/ccd-case-ui-toolkit.svg?branch=master)](https://travis-ci.org/hmcts/ccd-case-ui-toolkit)
+[![codecov](https://codecov.io/gh/hmcts/ccd-case-ui-toolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/hmcts/ccd-case-ui-toolkit)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/93a438c61ff54973bc09a4387497e282)](https://www.codacy.com/app/adr1ancho/ccd-case-ui-toolkit?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hmcts/ccd-case-ui-toolkit&amp;utm_campaign=Badge_Grade)
-
-case-ui-toolkit
+[![Known Vulnerabilities](https://snyk.io/test/github/hmcts/ccd-case-ui-toolkit/badge.svg)](https://snyk.io/test/github/hmcts/ccd-case-ui-toolkit)
+[![HitCount](http://hits.dwyl.io/hmcts/ccd-case-ui-toolkit.svg)](#ccd-case-ui-toolkit)
+[![Issue Stats](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit/badge/pr)](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit)
 
 # Quick Start (for local development and testing)
 
@@ -40,13 +42,13 @@ case-ui-toolkit
   |  ├─ components                * Example of library components with tests
   |  ├─ services                  * Example of library services with tests
   |  ├─ index.ts                  * Library entry point that is used by builders
-  |  └─ headers-footers.module.ts       * Example of library module
+  |  └─ headers-footers.module.ts * Example of library module
   |
   ├─ .editorconfig                * Common IDE configuration
   ├─ .gitignore	                  * List of files that are ignored while publishing to git repo
-  ├─ .yarnignore                   * List of files that are ignored while publishing to yarn
+  ├─ .npmignore                   * List of files that are ignored while publishing to npmjs
   ├─ .travis.yml                  * Travic CI configuration
-  ├─ LICENSE                      * License details
+  ├─ LICENSE.md                   * License details
   ├─ README.md                    * README for you library
   ├─ gulpfile.js                  * Gulp helper scripts
   ├─ karma-test-entry.ts          * Entry script for Karma tests
@@ -57,7 +59,7 @@ case-ui-toolkit
   ├─ tslint.json                  * TypeScript linting configuration
   ├─ webpack-test.config.ts       * Webpack configuration for building test version of the library
   ├─ webpack-umd.config.ts        * Webpack configuration for building UMD bundle
-  └─ package-lock.json            * yarn lock file that locks dependency versions
+  └─ yarn.lock                    * yarn lock file that locks dependency versions
 ```
 
 # Getting Started
