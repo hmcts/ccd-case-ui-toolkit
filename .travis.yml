@@ -1,5 +1,7 @@
 language: node_js
 cache: yarn
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version v1.8.0
 install:
 - npm install -g codecov
 script:
