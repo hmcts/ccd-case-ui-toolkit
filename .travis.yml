@@ -7,7 +7,7 @@ script:
 - yarn build
 after_success:
 - yarn test:codacy-upload
-- yarn test:codecov-upload
+- yarn coverage
 deploy:
   provider: npm
   email: jenkins-reform@hmcts.net
