@@ -5,7 +5,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/93a438c61ff54973bc09a4387497e282)](https://www.codacy.com/app/adr1ancho/ccd-case-ui-toolkit?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hmcts/ccd-case-ui-toolkit&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/hmcts/ccd-case-ui-toolkit/badge.svg)](https://snyk.io/test/github/hmcts/ccd-case-ui-toolkit)
 [![HitCount](http://hits.dwyl.io/hmcts/ccd-case-ui-toolkit.svg)](#ccd-case-ui-toolkit)
-[![Issue Stats](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit/badge/pr)](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit)
+[![Issue Stats](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit/badge/pr)](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit) [![Greenkeeper badge](https://badges.greenkeeper.io/hmcts/ccd-case-ui-toolkit.svg)](https://greenkeeper.io/)
 
 # Quick Start (for local development and testing)
 
