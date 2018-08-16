@@ -31,6 +31,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   @Input()
   public formControl: FormControl;
 
+  public isTouched: boolean = false;
   public displayDay: string = null;
   public displayMonth: string = null;
   public displayYear: string = null;
@@ -173,9 +174,23 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     this.propagateChange(this.rawValue);
   }
 
+  public inputFocus() {
+    this.isTouched = false;
+    this.touch();
+  }
+
   public inputBlur() {
-    this.formControl.markAsTouched();
-    this.propagateChange(this.rawValue);
+    this.isTouched = true;
+    this.touch();
+  }
+
+  public touch() {
+    if (this.isTouched) {
+      this.formControl.markAsTouched();
+      this.propagateChange(this.rawValue);
+    } else {
+      this.formControl.markAsUntouched();
+    }
   }
 
   public dayId() {
