@@ -4,7 +4,7 @@
     <!-- Condition: Solicitor -->
     <div *ngIf="isSolicitor" class="footer-meta">
       <div class="footer-meta-inner">
-        <ng-content select="[footerNavLinks]"></ng-content>
+        <ng-content select="[footerSolsNavLinks]"></ng-content>
         <div class="open-government-licence">
           <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
           <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
@@ -30,6 +30,7 @@
       <div class="work-hours">
         <span class="footer-text">{{workhours}}</span>
       </div>
+      <ng-content select="[footerCaseWorkerNavLinks]"></ng-content>
     </div>
 
   </div>
