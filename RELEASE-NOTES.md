@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 1.2.2 - August 22 2018
+**RDM-2542** Enhancement:
+- GDPR - Solicitors footer links
+
 ### Version 1.2.1 - July 3 2018
 - New publishing key
 
