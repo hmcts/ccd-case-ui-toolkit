@@ -2,7 +2,7 @@
 
 ### Version 1.2.3 - August 22 2018
 **RDM-2542_2** Enhancement:
-- API Key for Jenkins is updated
+- API Key for publishing to npmjs is updated
 
 ### Version 1.2.2 - August 22 2018
 **RDM-2542** Enhancement:
