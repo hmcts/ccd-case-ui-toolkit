@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 1.2.4 - August 31 2018
+**RDM-2468** Bug:
+- Date field error correction
+
 ### Version 1.2.3 - August 24 2018
 - New publishing key
 
