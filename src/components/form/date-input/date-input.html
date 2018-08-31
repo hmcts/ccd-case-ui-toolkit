@@ -10,7 +10,8 @@
            [value]="displayDay"
            (change)="dayChange(dayInput.value)"
            (keyup)="dayChange(dayInput.value)"
-           (blur)="inputBlur()">
+           (blur)="inputBlur()"
+           (focus)="inputFocus()">
   </div>
 
   <div class="form-group form-group-month">
@@ -23,7 +24,8 @@
            [value]="displayMonth"
            (change)="monthChange(monthInput.value)"
            (keyup)="monthChange(monthInput.value)"
-           (blur)="inputBlur()">
+           (blur)="inputBlur()"
+           (focus)="inputFocus()">
   </div>
 
   <div class="form-group form-group-year">
@@ -36,7 +38,8 @@
            [value]="displayYear"
            (change)="yearChange(yearInput.value)"
            (keyup)="yearChange(yearInput.value)"
-           (blur)="inputBlur()">
+           (blur)="inputBlur()"
+           (focus)="inputFocus()">
   </div>
 
   <div class="form-group form-group-hour" *ngIf="isDateTime">
@@ -49,7 +52,8 @@
            [value]="displayHour"
            (change)="hourChange(hourInput.value)"
            (keyup)="hourChange(hourInput.value)"
-           (blur)="inputBlur()">
+           (blur)="inputBlur()"
+           (focus)="inputFocus()">
   </div>
 
   <div class="form-group form-group-minute" *ngIf="isDateTime">
@@ -62,7 +66,8 @@
            [value]="displayMinute"
            (change)="minuteChange(minuteInput.value)"
            (keyup)="minuteChange(minuteInput.value)"
-           (blur)="inputBlur()">
+           (blur)="inputBlur()"
+           (focus)="inputFocus()">
   </div>
 
   <div class="form-group form-group-second" *ngIf="isDateTime">
@@ -75,7 +80,8 @@
            [value]="displaySecond"
            (change)="secondChange(secondInput.value)"
            (keyup)="secondChange(secondInput.value)"
-           (blur)="inputBlur()">
+           (blur)="inputBlur()"
+           (focus)="inputFocus()">
   </div>
 
 </div>
