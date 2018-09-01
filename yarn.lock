@@ -123,11 +123,11 @@
   dependencies:
     tslib "^1.7.1"
 
-"@angular/platform-browser@~5.2.0":
-  version "5.2.11"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-5.2.11.tgz#5be379f96d74b4ebe84a447633ed5279cb7e641e"
+"@angular/platform-browser@~6.1.6":
+  version "6.1.6"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-6.1.6.tgz#9a9498aa455978e974436000ddde8af9f64eef13"
   dependencies:
-    tslib "^1.7.1"
+    tslib "^1.9.0"
 
 "@angular/router@~5.2.0":
   version "5.2.11"
