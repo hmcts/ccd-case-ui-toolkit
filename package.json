@@ -86,7 +86,7 @@
     "node-sass": "^4.6.1",
     "nyc": "^12.0.2",
     "raw-loader": "^0.5.1",
-    "rimraf": "2.6.1",
+    "rimraf": "2.6.2",
     "rollup-plugin-angular": "^0.4.12",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^3.0.0",
