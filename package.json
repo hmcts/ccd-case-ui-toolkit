@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.js",
@@ -103,7 +103,7 @@
     "to-string-loader": "^1.1.5",
     "ts-node": "^7.0.1",
     "tslint": "^5.8.0",
-    "typescript": "3.0.3",
+    "typescript": "2.9.2",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "4.20.2",
     "webpack-angular-externals": "^1.0.2",
