@@ -1,4 +1,4 @@
-import { Component, QueryList, ContentChildren, ElementRef, ViewChildren, OnInit } from '@angular/core';
+import { Component, QueryList, ContentChildren, ElementRef, ViewChildren, AfterContentInit } from '@angular/core';
 import { TabComponent } from './tab.component';
 import { ActivatedRoute } from '@angular/router';
 
@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
     './tabs.component.scss'
   ],
 })
-export class TabsComponent {
+export class TabsComponent implements AfterContentInit {
 
   @ViewChildren('tab')
   public tabs: QueryList<ElementRef>;

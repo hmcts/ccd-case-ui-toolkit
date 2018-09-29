@@ -1,0 +1,8 @@
+<dl class="complex-raw">
+  <ng-container *ngFor="let field of caseField | ccdFieldsFilter">
+    <dt>{{field.label}}</dt>
+    <dd>
+      <ccd-field-read [caseField]="field" [context]="context"></ccd-field-read>
+    </dd>
+  </ng-container>
+</dl>
