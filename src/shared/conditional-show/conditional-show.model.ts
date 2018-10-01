@@ -3,7 +3,8 @@ import { FieldsUtils } from '../utils/fields.utils';
 
 export class ShowCondition {
 
-  private static readonly AND_CONDITION_REGEX = /\sAND\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/g;
+  private static readonly AND_CONDITION = '\sAND\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)';
+  private static readonly AND_CONDITION_REGEXP = new RegExp(ShowCondition.AND_CONDITION);
 
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
@@ -17,7 +18,7 @@ export class ShowCondition {
   }
 
   private matchAndConditions(fields: any, condition: string): boolean {
-    let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEX);
+    let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
     return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition));
   }
 

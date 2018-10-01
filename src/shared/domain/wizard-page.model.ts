@@ -4,6 +4,7 @@ import { CaseField } from './definition/case-field.model';
 import { ShowCondition } from '../conditional-show/conditional-show.model';
 import { Type } from 'class-transformer';
 
+// @dynamic
 export class WizardPage implements Orderable {
 
   id: string;

@@ -5,6 +5,7 @@ import { DatePipe } from '../palette/utils/date.pipe';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Predicate } from '../predicate';
 
+// @dynamic
 @Injectable()
 export class FieldsUtils {
 

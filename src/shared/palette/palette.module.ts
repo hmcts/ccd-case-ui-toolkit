@@ -107,6 +107,25 @@ import { TabsModule } from '../../components/tabs/tabs.module';
   exports: [
     BaseFieldModule,
     PaletteUtilsModule,
+    UnsupportedFieldComponent,
+
+    // Read
+    ReadTextFieldComponent,
+    ReadTextAreaFieldComponent,
+    ReadNumberFieldComponent,
+    ReadEmailFieldComponent,
+    ReadPhoneUKFieldComponent,
+    ReadDateFieldComponent,
+    ReadCollectionFieldComponent,
+
+    // Write
+    WriteCollectionFieldComponent,
+    WriteTextFieldComponent,
+    WriteTextAreaFieldComponent,
+    WritePhoneUKFieldComponent,
+    WriteNumberFieldComponent,
+    WriteEmailFieldComponent,
+    WriteDateFieldComponent,
   ],
   providers: [
     PaletteService,

@@ -1,7 +1,7 @@
 import { CaseDetails } from './case-details';
 
+export const DRAFT = 'DRAFT';
 export class Draft {
-  public static readonly DRAFT = 'DRAFT';
 
   id: string;
   document?: CaseDetails;
@@ -14,7 +14,7 @@ export class Draft {
   }
 
   public static isDraft(id: string): boolean {
-    return String(id).startsWith(this.DRAFT);
+    return String(id).startsWith(DRAFT);
   }
 
 }

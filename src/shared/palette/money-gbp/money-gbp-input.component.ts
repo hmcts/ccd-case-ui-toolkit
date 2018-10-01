@@ -27,7 +27,8 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
 })
 export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
 
-  private static readonly PATTERN = /^\d*(\.\d{0,2})?$/;
+  private static readonly PATTERN = '^\d*(\.\d{0,2})?$';
+  private static readonly PATTERN_REGEXP = new RegExp(MoneyGbpInputComponent.PATTERN);
 
   @Input()
   id: string;
@@ -51,7 +52,7 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
     // get value from input
     let newValue = event.target.value;
 
-    if (newValue && MoneyGbpInputComponent.PATTERN.test(newValue)) {
+    if (newValue && MoneyGbpInputComponent.PATTERN_REGEXP.test(newValue)) {
       let parts = newValue.split('.');
 
       if (!parts[1]) {
@@ -112,7 +113,7 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
         pattern: 'This field is required'
       };
     }
-    if (control.value && !MoneyGbpInputComponent.PATTERN.test(control.value)) {
+    if (control.value && !MoneyGbpInputComponent.PATTERN_REGEXP.test(control.value)) {
       return {
         pattern: 'Should only contain numbers with up to 2 decimal places'
       };

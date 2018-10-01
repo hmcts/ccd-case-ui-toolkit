@@ -3,6 +3,7 @@ import { FieldType } from './field-type.model';
 import { WizardPageField } from '../wizard-page-field.model';
 import { Type } from 'class-transformer';
 
+// @dynamic
 export class CaseField implements Orderable {
   id: string;
   label: string;

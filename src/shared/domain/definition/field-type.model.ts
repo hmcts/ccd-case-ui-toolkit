@@ -3,6 +3,7 @@ import { FieldTypeEnum } from './field-type-enum.model';
 import { CaseField } from './case-field.model';
 import { Type } from 'class-transformer';
 
+// @dynamic
 export class FieldType {
   id: string;
   type: FieldTypeEnum;

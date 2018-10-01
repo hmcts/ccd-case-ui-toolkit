@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { MarkdownComponent } from './markdown.component';
 import { NgxMdModule } from 'ngx-md';
 
+export const forRoot: ModuleWithProviders = NgxMdModule.forRoot()
 @NgModule({
   imports: [
-    NgxMdModule.forRoot()
+    forRoot
   ],
   declarations: [
     MarkdownComponent
