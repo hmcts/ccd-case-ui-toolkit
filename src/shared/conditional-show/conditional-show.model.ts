@@ -3,7 +3,7 @@ import { FieldsUtils } from '../utils/fields.utils';
 
 export class ShowCondition {
 
-  private static readonly AND_CONDITION_REGEXP = new RegExp(/\sAND\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/g);
+  private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
 
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {

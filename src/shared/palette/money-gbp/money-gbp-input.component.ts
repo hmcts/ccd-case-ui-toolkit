@@ -27,7 +27,7 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
 })
 export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
 
-  private static readonly PATTERN_REGEXP = new RegExp(/^\d*(\.\d{0,2})?$/);
+  private static readonly PATTERN_REGEXP = new RegExp('^\\d*(\\.\\d{0,2})?$');
 
   @Input()
   id: string;

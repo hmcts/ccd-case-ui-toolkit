@@ -5,10 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DatePipe implements PipeTransform {
 
-  private static readonly DATE_FORMAT =
-    /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?|Z)?$/;
-//    1        2       3         4          5          6          7          8  9     10      11
-  private static readonly DATE_FORMAT_REGEXP = new RegExp(DatePipe.DATE_FORMAT);
+  private static readonly DATE_FORMAT_REGEXP =
+    new RegExp('^(\\d{4})-?(\\d\\d)-?(\\d\\d)(?:T(\\d\\d)(?::?(\\d\\d)(?::?(\\d\\d)(?:\\.(\\d+))?)?)?(Z|([+-])(\\d\\d):?(\\d\\d))?|Z)?$');
+           //    1        2       3         4          5          6          7          8  9     10      11
   private static readonly MONTHS = [
     ['Jan'], ['Feb'], ['Mar'], ['Apr'], ['May'], ['Jun'], ['Jul'], ['Aug'], ['Sep'], ['Oct'], ['Nov'], ['Dec'],
   ];
