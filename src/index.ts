@@ -39,4 +39,4 @@ export { HttpError } from './shared/http/http-error.model';
 export { HttpErrorService } from './shared/http/http-error.service';
 export { HttpService } from './shared/http/http.service';
 export { AuthService } from './shared/auth/auth.service';
-export { createCaseEventTrigger } from './shared/fixture/shared.fixture';
+export { createCaseEventTrigger, aCaseField, aWizardPage } from './shared/fixture/shared.fixture';

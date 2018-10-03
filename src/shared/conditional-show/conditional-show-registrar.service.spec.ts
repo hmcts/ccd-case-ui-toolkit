@@ -3,7 +3,7 @@ import { ConditionalShowRegistrarService } from './conditional-show-registrar.se
 import { async } from '@angular/core/testing';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../domain/definition/case-field.model';
-import { aCaseField } from '../case-editor/case-edit.spec';
+import { aCaseField } from '../fixture/shared.fixture';
 
 let registrarService: ConditionalShowRegistrarService;
 let conditionalShowDirective1: any;

@@ -1,6 +1,6 @@
 import { ShowCondition } from './conditional-show.model';
-import { aCaseField } from '../case-editor/case-edit.spec';
 import { CaseField } from '../domain/definition/case-field.model';
+import { aCaseField } from '../fixture/shared.fixture';
 
 describe('conditional-show', () => {
   let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
