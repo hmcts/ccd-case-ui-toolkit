@@ -41,3 +41,6 @@ tmp/*
 # IntelliJ IDEA files
 .idea/
 *.iml
+
+# Visual Studio Code
+.history/
