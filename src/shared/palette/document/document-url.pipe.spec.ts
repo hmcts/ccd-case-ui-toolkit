@@ -1,6 +1,6 @@
 import { DocumentUrlPipe } from './document-url.pipe';
 import createSpyObj = jasmine.createSpyObj;
-import { AppConfig } from '../../app.config';
+import { AbstractAppConfig } from '../../../app.config';
 
 describe('DocumentUrlPipe', () => {
   const DOCUMENT_MANAGEMENT_URL = 'http://localhost:1234/documents';
@@ -11,7 +11,7 @@ describe('DocumentUrlPipe', () => {
   let appConfig: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AppConfig>('appConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_PATTERN);
     documentUrlPipe = new DocumentUrlPipe(appConfig);

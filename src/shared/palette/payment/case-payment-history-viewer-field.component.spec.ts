@@ -3,10 +3,10 @@ import { DebugElement } from '@angular/core';
 import { FieldType } from '../../domain/definition/field-type.model';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
-import { AppConfig } from '../../app.config';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
+import { AbstractAppConfig } from '../../../app.config';
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
 
@@ -31,7 +31,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let de: DebugElement;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj<AppConfig>('AppConfig', ['getPaymentsUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
@@ -49,7 +49,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
           PaymentWebComponent
         ],
         providers: [
-          { provide: AppConfig, useValue: appConfig },
+          { provide: AbstractAppConfig, useValue: appConfig },
         ]
       })
       .compileComponents();

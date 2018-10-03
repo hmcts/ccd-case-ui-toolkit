@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpService } from '../../http/http.service';
+import 'rxjs/add/operator/map';
+import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from './address.model';
-import { AppConfig } from '../../app.config';
+import { HttpService } from '../../http';
 
 @Injectable()
 export class AddressesService {
 
   constructor(
     private http: HttpService,
-    private appConfig: AppConfig
+    private appConfig: AbstractAppConfig
   ) {}
 
   getAddressesForPostcode(postcode: string): Observable<Array<AddressModel>> {

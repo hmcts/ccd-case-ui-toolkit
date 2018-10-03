@@ -1,6 +1,6 @@
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Component } from '@angular/core';
-import { AppConfig } from '../../app.config';
+import { AbstractAppConfig } from '../../../app.config';
 
 @Component({
   selector: 'ccd-case-payment-history-viewer-field',
@@ -9,7 +9,7 @@ import { AppConfig } from '../../app.config';
 export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadComponent {
 
   constructor(
-    private appConfig: AppConfig
+    private appConfig: AbstractAppConfig
   ) {
     super();
   }

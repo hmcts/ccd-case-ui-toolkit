@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Headers, Http, RequestOptionsArgs, Response } from '@angular/http';
 import { HttpErrorService } from './http-error.service';
 import 'rxjs/add/operator/catch';

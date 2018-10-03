@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FieldsUtils } from '../utils/fields.utils';
 
+// @dynamic
 @Injectable()
 export class LabelSubstitutionService {
 

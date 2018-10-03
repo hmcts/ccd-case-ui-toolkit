@@ -1,9 +1,9 @@
 import { AuthService } from './auth.service';
 import { HttpService } from '../http/http.service';
-import { AppConfig } from '../app.config';
 import { of } from 'rxjs';
 import { Response, ResponseOptions } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
+import { AbstractAppConfig } from '../../app.config';
 
 describe('AuthService', () => {
 
@@ -24,7 +24,7 @@ describe('AuthService', () => {
     httpService = createSpyObj<HttpService>('httpService', ['get']);
     httpService.get.and.returnValue(RESPONSE);
 
-    appConfig = createSpyObj<AppConfig>('appConfig', [
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getOAuth2TokenEndpointUrl',
       'getOAuth2ClientId',
       'getLoginUrl',

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpError } from './http-error.model';
 import { Observable, throwError } from 'rxjs';
 import { Response } from '@angular/http';
-import { AuthService } from '../auth/auth.service';
+import { HttpError } from './http-error.model';
+import { AuthService } from '../auth';
 
 @Injectable()
 export class HttpErrorService {

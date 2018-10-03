@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { AppConfig } from '../../app.config';
+import { AbstractAppConfig } from '../../../app.config';
 
 @Pipe({
   name: 'ccdDocumentUrl'
 })
 export class DocumentUrlPipe implements PipeTransform {
 
-  constructor(private appConfig: AppConfig) {}
+  constructor(private appConfig: AbstractAppConfig) {}
 
   transform(value: string): string {
     let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
