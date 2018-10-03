@@ -8,6 +8,7 @@ export { AddressModel } from './shared/domain/addresses/address.model';
 export { AddressesService } from './shared/domain/addresses/addresses.service';
 export { CaseEventData } from './shared/domain/case-event-data';
 export { CaseField } from './shared/domain/definition/case-field.model';
+export { CaseDetails } from './shared/domain/case-details';
 export { CaseFieldService } from './shared/domain/case-field.service';
 export { ShowCondition } from './shared/conditional-show/conditional-show.model';
 export { Draft } from './shared/domain/draft';
