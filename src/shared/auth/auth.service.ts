@@ -14,9 +14,6 @@ export class AuthService {
               @Inject(DOCUMENT) private document: any) {}
 
   public signIn(): void {
-    console.log('this.appConfig=', this.appConfig);
-    console.log('this.appConfig.config=', this.appConfig.config);
-    console.log('this.appConfig.getLoginUrl()=', this.appConfig.getLoginUrl());
     let loginUrl = this.appConfig.getLoginUrl();
     let clientId = this.appConfig.getOAuth2ClientId();
     let redirectUri = encodeURIComponent(this.redirectUri());
