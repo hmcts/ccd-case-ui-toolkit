@@ -8,7 +8,6 @@ import createSpyObj = jasmine.createSpyObj;
 import { By } from '@angular/platform-browser';
 import { DocumentUrlPipe } from './document-url.pipe';
 import { AbstractAppConfig } from '../../../app.config';
-import { AppConfig } from '../../fixture/shared.fixture';
 
 describe('ReadDocumentFieldComponent', () => {
 
@@ -36,7 +35,7 @@ describe('ReadDocumentFieldComponent', () => {
   let mockAppConfig: any;
 
   beforeEach(() => {
-    mockAppConfig = createSpyObj<AppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+    mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
     mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
     mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(VALUE.document_binary_url);
 

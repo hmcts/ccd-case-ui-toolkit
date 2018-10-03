@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Orderable } from './orderable.model';
 
+// @dynamic
 @Injectable()
 export class OrderService {
 
