@@ -16,7 +16,6 @@ import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
-import { PaletteModule } from './shared/palette/palette.module';
 
 @NgModule({
     imports: [
@@ -26,7 +25,6 @@ import { PaletteModule } from './shared/palette/palette.module';
       BodyModule,
       FormModule,
       TabsModule,
-      PaletteModule,
     ],
     exports: [
       AlertComponent,
@@ -39,7 +37,6 @@ import { PaletteModule } from './shared/palette/palette.module';
       DateInputComponent,
       TabsComponent,
       TabComponent,
-      PaletteModule,
     ]
 })
 export class CaseUIToolkitModule {}
