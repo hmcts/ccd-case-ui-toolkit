@@ -1,6 +1,7 @@
 language: node_js
 cache: yarn
 install:
+- npm install -g ng-cli
 - yarn install
 script:
 - yarn --version
