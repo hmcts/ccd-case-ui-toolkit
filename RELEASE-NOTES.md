@@ -1,6 +1,9 @@
 ## RELEASE NOTES
 
 ### Version 1.2.5 - September 27 2018
+**RDM-3203** - Move palette from mgmt web.
+
+### Version 1.2.5 - September 27 2018
 **RDM-2569** - Upgraded to Angular version 6.1.8
 
 ### Version 1.2.4 - August 31 2018

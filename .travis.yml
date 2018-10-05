@@ -1,5 +1,7 @@
 language: node_js
 cache: yarn
+install:
+- yarn install
 script:
 - yarn --version
 - yarn lint
