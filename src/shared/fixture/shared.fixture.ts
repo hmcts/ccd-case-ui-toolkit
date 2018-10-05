@@ -37,14 +37,3 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
     show_summary_content_option: show_summary_content_option
   };
 };
-
-export let aWizardPage = (pageId: string, label: string, order: number): WizardPage => {
-  let wp = new WizardPage();
-  wp.id = pageId;
-  wp.label = label;
-  wp.order = order;
-  let parsedShowCondition = createSpyObj<ShowCondition>('parsedShowCondition', ['match']);
-  parsedShowCondition.match.and.returnValue(true);
-  wp.parsedShowCondition = parsedShowCondition;
-  return wp;
-};
