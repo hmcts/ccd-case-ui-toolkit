@@ -17,5 +17,5 @@ export class AlertComponent {
   public type: 'warning' | 'confirmation' | 'success' = AlertComponent.TYPE_WARNING;
 
   @Input()
-  public showIcon: boolean = true;
+  public showIcon = true;
 }

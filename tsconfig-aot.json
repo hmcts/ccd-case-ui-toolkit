@@ -6,7 +6,7 @@
     "sourceMap": true,
     "declaration": true,
     "removeComments": false,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowUnreachableCode": false,
@@ -15,7 +15,8 @@
     "stripInternal": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "./tmp/src-inlined"
+    "rootDir": "./tmp/src-inlined",
+    "lib": ["es2015", "dom"]
   },
   "files": [
     "./tmp/src-inlined/index.ts"
@@ -27,4 +28,12 @@
     "skipMetadataEmit": false,
     "strictMetadataEmit": true
   }
+  // ,
+  // "typeRoots": [
+  //   "node_modules/@types"
+  // ],
+  // "lib": [
+  //   "es2017",
+  //   "dom"
+  // ]
 }

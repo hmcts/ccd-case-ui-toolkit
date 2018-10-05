@@ -1,0 +1,15 @@
+.multi-select-list-field-table {
+
+  tr:first-child>td {
+    padding-top: 0;
+  }
+
+  tr:last-child>td {
+    border-bottom: none;
+  }
+
+  td.collection-actions {
+    width: 1px;
+    white-space: nowrap;
+  }
+}
