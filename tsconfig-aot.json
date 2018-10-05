@@ -28,12 +28,4 @@
     "skipMetadataEmit": false,
     "strictMetadataEmit": true
   }
-  // ,
-  // "typeRoots": [
-  //   "node_modules/@types"
-  // ],
-  // "lib": [
-  //   "es2017",
-  //   "dom"
-  // ]
 }
