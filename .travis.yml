@@ -6,7 +6,7 @@ install:
   - npm link @angular/cli
 script:
 - yarn --version
-- ng -v
+- ng --version
 - yarn lint
 - yarn test
 - yarn build
