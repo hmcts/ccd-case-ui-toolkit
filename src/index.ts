@@ -2,7 +2,7 @@ export { CaseUIToolkitModule } from './case-ui-toolkit.module';
 export { Config, AbstractAppConfig } from './app.config';
 export { FormValueService } from './shared/form/form-value.service';
 export { FormErrorService } from './shared/form/form-error.service';
-export { AbstractDocumentManagementService } from './shared/documentManagement/documentManagement.service';
+export { DocumentManagementService } from './shared/documentManagement/documentManagement.service';
 export { DocumentData } from './shared/domain/document/document-data.model';
 export { AddressModel } from './shared/domain/addresses/address.model';
 export { AddressesService } from './shared/domain/addresses/addresses.service';

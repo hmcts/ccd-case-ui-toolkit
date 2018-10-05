@@ -3,7 +3,7 @@ import { FieldType } from '../../domain/definition/field-type.model';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { DebugElement } from '@angular/core';
-import { AbstractDocumentManagementService } from '../../documentManagement/documentManagement.service';
+import { DocumentManagementService } from '../../documentManagement/documentManagement.service';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
@@ -91,7 +91,7 @@ describe('WriteDocumentFieldComponent', () => {
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
 
   beforeEach(() => {
-    mockDocumentManagementService = createSpyObj<AbstractDocumentManagementService>('documentManagementService', ['uploadFile']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT),
       of(RESPONSE_SECOND_DOCUMENT)
@@ -110,7 +110,7 @@ describe('WriteDocumentFieldComponent', () => {
           ReadDocumentComponent,
         ],
         providers: [
-          { provide: AbstractDocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
           { provide: MatDialog, useValue: dialog },
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },

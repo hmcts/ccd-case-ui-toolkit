@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AbstractDocumentManagementService } from '../../documentManagement/documentManagement.service';
+import { DocumentManagementService } from '../../documentManagement/documentManagement.service';
 import { HttpError } from '../../http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DocumentDialogComponent } from '../../document-dialog/document-dialog.component';
@@ -21,7 +21,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   uploadError: string;
   confirmReplaceResult: string;
 
-  constructor(private documentManagement: AbstractDocumentManagementService, private dialog: MatDialog) {
+  constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog) {
     super();
   }
 
