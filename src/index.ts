@@ -26,6 +26,7 @@ export { CaseEventTrigger } from './shared/domain/case-view/case-event-trigger.m
 export { WizardPage } from './shared/domain/wizard-page.model';
 export { WizardPageField } from './shared/domain/wizard-page-field.model';
 export { Orderable } from './shared/domain/order/orderable.model';
+export { OrderService } from './shared/domain/order/order.service';
 export { FieldType } from './shared/domain/definition/field-type.model';
 export { PaletteContext } from './shared/palette/base-field/palette-context.enum';
 export { ConditionalShowRegistrarService } from './shared/conditional-show/conditional-show-registrar.service';
