@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 1.2.7 - October 8 2018
+### Version 1.2.8 - October 8 2018
 **RDM-3023** - Move palette from mgmt web.
 
 ### Version 1.2.6 - October 4 2018
