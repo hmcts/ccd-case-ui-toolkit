@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 1.2.10 - October 8 2018
+**RDM-2880** - Corrected the aria role
+
 ### Version 1.2.5 - September 27 2018
 **RDM-2569** - Upgraded to Angular version 6.1.8
 
