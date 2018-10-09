@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.12 - October 9 2018
+**RDM-3023** - Fixing release issues.
+
 ### Version 1.2.11 - October 9 2018
 **RDM-3023** - Move palette from mgmt web part 4.
 
