@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material';
 @Component({
   selector: 'ccd-document-dialog',
   templateUrl: './document-dialog.component.html',
-  styleUrls: ['./document-dialog.component.scss']
+  styleUrls: ['../action-dialog.component.scss']
 })
 export class DocumentDialogComponent implements OnInit {
 

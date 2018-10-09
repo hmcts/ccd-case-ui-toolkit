@@ -30,7 +30,8 @@ export abstract class AbstractAppConfig {
   abstract getEdgeMinRequiredVersion(): number;
   abstract getFirefoxMinRequiredVersion(): number;
   abstract getCaseHistoryUrl(jurisdictionId: string, caseTypeId: string, caseId: string, eventId: string): string;
-  abstract getDraftsUrl(jid: string, ctid: string, eventData: CaseEventData): string
+  abstract getCreateOrUpdateDraftsUrl(jid: string, ctid: string, eventData: CaseEventData): string
+  abstract getViewOrDeleteDraftsUrl(jid: string, ctid: string, did: string): string
 }
 
 export class Config {

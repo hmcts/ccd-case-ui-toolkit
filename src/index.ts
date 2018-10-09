@@ -45,3 +45,4 @@ export { IsCompoundPipe } from './shared/palette/utils/is-compound.pipe';
 export { DashPipe } from './shared/palette/utils';
 export { AbstractFieldWriteComponent } from './shared/palette/base-field/abstract-field-write.component';
 export { FieldTypeEnum } from './shared/domain/definition/field-type-enum.model';
+export { DeleteOrCancelDialogComponent } from './shared/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
