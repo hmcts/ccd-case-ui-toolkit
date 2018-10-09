@@ -53,3 +53,4 @@ export { CaseTab } from './shared/domain/case-view/case-tab.model';
 export { CaseViewEvent } from './shared/domain/case-view/case-view-event.model';
 export { CaseViewTrigger } from './shared/domain/case-view/case-view-trigger.model';
 export { PageValidationService } from './shared/case-editor/page-validation.service';
+export { DeleteOrCancelDialogComponent } from './shared/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
