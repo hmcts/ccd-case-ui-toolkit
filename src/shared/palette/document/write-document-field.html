@@ -1,6 +1,6 @@
 <div class="form-group" [ngClass]="{'form-group-error': !valid}">
   <label [for]="id()">
-    <span class="form-label">{{caseField | ccdFieldLabel}}</span>
+    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{caseField | ccdFieldLabel}}</span>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
     <span class="error-message" *ngIf="uploadError && !valid">{{uploadError}}</span>
   </label>
