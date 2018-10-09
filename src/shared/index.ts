@@ -9,5 +9,6 @@ export * from './http';
 export * from './markdown';
 export * from './palette';
 export * from './remove-dialog';
+export * from './delete-or-cancel-dialog';
 export * from './substitutor';
 export * from './utils';
