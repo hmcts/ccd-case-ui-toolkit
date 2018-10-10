@@ -10,5 +10,6 @@ export * from './markdown';
 export * from './palette';
 export * from './remove-dialog';
 export * from './delete-or-cancel-dialog';
+export * from './save-or-discard-dialog';
 export * from './substitutor';
 export * from './utils';

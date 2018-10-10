@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.13 - October 10 2018
+**RDM-3023** - Migration of save or discard modal from mgmt web.
+
 ### Version 1.2.12 - October 9 2018
 **RDM-3023** - Fixing release issues.
 
