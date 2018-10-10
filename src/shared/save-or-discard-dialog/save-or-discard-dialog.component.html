@@ -1,0 +1,16 @@
+
+<div>
+  <div class="dialog-header">
+    <h2 (click)="cancel()" class="heading-medium x">X</h2>
+  </div>
+  <div>
+    <h2 class="heading-medium dialog-title">Would you like to save changes to the application?</h2>
+  </div>
+  <div class="dialog-info">
+    <span class="text-info">Would you like to save changes before you proceed?</span>
+  </div>
+  <div>
+    <button type="button" title="Save" class="button action-button" (click)="save()">Save</button>
+    <button type="button" title="Discard" class="button button-secondary" (click)="discard()">Discard</button>
+  </div>
+</div>
