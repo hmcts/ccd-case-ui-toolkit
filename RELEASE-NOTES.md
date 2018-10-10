@@ -1,4 +1,24 @@
 ## RELEASE NOTES
+### Version 1.2.13 - October 10 2018
+**RDM-3023** - Migration of save or discard modal from mgmt web.
+
+### Version 1.2.12 - October 9 2018
+**RDM-3023** - Fixing release issues.
+
+### Version 1.2.11 - October 9 2018
+**RDM-3023** - Move palette from mgmt web part 4.
+
+### Version 1.2.10 - October 8 2018
+**RDM-3023** - Move palette from mgmt web part 3.
+
+### Version 1.2.9 - October 8 2018
+**RDM-3023** - Move palette from mgmt web part 3.
+
+### Version 1.2.8 - October 8 2018
+**RDM-3023** - Move palette from mgmt web part 2.
+
+### Version 1.2.6 - October 4 2018
+**RDM-3023** - Move palette from mgmt web.
 
 ### Version 1.2.5 - September 27 2018
 **RDM-2569** - Upgraded to Angular version 6.1.8
