@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.14 - October 11 2018
+**RDM-3061** - Case progression: Extract services from Case Management Web.
+
 ### Version 1.2.13 - October 10 2018
 **RDM-3023** - Migration of save or discard modal from mgmt web.
 
