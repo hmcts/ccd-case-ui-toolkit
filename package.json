@@ -63,7 +63,7 @@
     "@angular/router": "~6.1.8",
     "@angular/upgrade": "~6.1.8",
     "@compodoc/compodoc": "^1.0.4",
-    "@hmcts/ccpay-web-component": "~1.5.0",
+    "@hmcts/ccpay-web-component": "~1.6.2",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
