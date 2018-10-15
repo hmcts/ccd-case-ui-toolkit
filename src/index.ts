@@ -63,7 +63,7 @@ export { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.c
 export { CaseEditFormComponent } from './shared/case-editor/case-edit-form.component';
 export { CaseEditConfirmComponent } from './shared/case-editor/case-edit-confirm.component';
 export { CaseEditWizardGuard } from './shared/case-editor/case-edit-wizard.guard';
-export { routing } from './shared/domain/case-edit/editor.routing';
+export { routing } from './shared/case-editor/editor.routing';
 export { CallbackErrorsComponent } from './shared/error/callback-errors.component';
 export { Profile } from './shared/profile/profile.model';
 export { Alert } from './shared/alert/alert.model';
