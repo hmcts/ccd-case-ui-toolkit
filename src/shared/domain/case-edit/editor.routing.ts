@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.component';
-import { CaseEditPageComponent } from './shared/case-editor/case-edit-page.component';
-import { CaseEditConfirmComponent } from './shared/case-editor/case-edit-confirm.component';
-import { CaseEditWizardGuard } from './shared/case-editor/case-edit-wizard.guard';
+import { CaseEditSubmitComponent } from '../../case-editor/case-edit-submit.component';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page.component';
+import { CaseEditConfirmComponent } from '../../case-editor/case-edit-confirm.component';
+import { CaseEditWizardGuard } from '../../case-editor/case-edit-wizard.guard';
 
 export const routing: Routes = [
   {
