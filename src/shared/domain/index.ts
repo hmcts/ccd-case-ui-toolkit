@@ -6,6 +6,7 @@ export * from './wizard-page-field.model';
 export * from './wizard-page.model';
 export * from './addresses';
 export * from './case-view';
+export * from './case-edit';
 export * from './definition';
 export * from './document';
 export * from './order';

@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 import { ConditionalShowModule } from '../../conditional-show/conditional-show.module';
 import { By } from '@angular/platform-browser';
-import 'rxjs/add/operator/map';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AddressesService } from '../../domain/addresses/addresses.service';
 import { AddressModel } from '../../domain/addresses/address.model';
