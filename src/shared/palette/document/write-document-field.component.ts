@@ -131,4 +131,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.openFileDialog();
     }
   }
+
+  getSelectedFile() {
+    if (this.uploadedDocument) {
+      return this.uploadedDocument.get('document_filename');
+    }
+  }
+
+  existUploadedDocument(): boolean {
+    return this.uploadedDocument !== undefined;
+  }
 }
