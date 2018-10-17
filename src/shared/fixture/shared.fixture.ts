@@ -1,8 +1,6 @@
 import { CaseField } from '../domain/definition/case-field.model';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
-import { FieldTypeEnum, WizardPage } from '../domain';
-import createSpyObj = jasmine.createSpyObj;
-import { ShowCondition } from '../conditional-show';
+import { FieldTypeEnum } from '../domain';
 
 export let createCaseEventTrigger = (id: string,
                                       name: string,
