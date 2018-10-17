@@ -20,6 +20,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   valid = true;
   uploadError: string;
   confirmReplaceResult: string;
+  selectedFileName: string;
 
   constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog) {
     super();
@@ -95,6 +96,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.uploadedDocument.get('document_url').setValue(url);
     this.uploadedDocument.get('document_binary_url').setValue(binaryUrl);
     this.uploadedDocument.get('document_filename').setValue(filename);
+    this.selectedFileName = filename;
   }
 
   private getErrorMessage(error: HttpError): string {
@@ -133,12 +135,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   getSelectedFile() {
-    if (this.uploadedDocument) {
-      return this.uploadedDocument.get('document_filename');
+    if (this.selectedFileName) {
+      return this.selectedFileName;
     }
   }
 
-  existUploadedDocument(): boolean {
-    return this.uploadedDocument !== undefined;
+  existSelectedDocument(): boolean {
+    return this.selectedFileName !== undefined;
   }
 }

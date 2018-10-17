@@ -135,6 +135,12 @@ describe('WriteDocumentFieldComponent', () => {
     expect(uploadElement).toBeTruthy();
   });
 
+  it('should display the selected file name if existsss', () => {
+    component.selectedFileName = 'Test.pdf';
+    expect(component.existSelectedDocument()).toBeTruthy();
+    expect(component.getSelectedFile()).toBe('Test.pdf');
+  });
+
   it('should render a ccd-read-document-field tag for an existing document', () => {
     let ccdReadDocumentElement = de.query(By.css('ccd-read-document-field'));
 
