@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../domain/definition/case-field.model';
+import { CaseField } from '../domain/definition';
 import { CurrencyPipe, } from '@angular/common';
-import { DatePipe } from '../palette/utils/date.pipe';
-import { WizardPage } from '../domain/wizard-page.model';
+import { DatePipe } from '../palette/utils';
+import { WizardPage } from '../domain';
 import { Predicate } from '../predicate';
+import { CaseView } from '../domain/case-view';
 
 // @dynamic
 @Injectable()
@@ -121,6 +122,15 @@ export class FieldsUtils {
 
   private cloneObject(obj: any): any {
     return Object.assign({}, obj);
+  }
+
+  // temporary function until this can be moved to CaseView class (RDM-2681)
+  public static getCaseFields(caseView: CaseView): CaseField[] {
+    const caseDataFields = caseView.tabs.reduce((acc, tab) => {
+      return acc.concat(tab.fields);
+    }, []);
+
+    return caseDataFields.concat(caseView.metadataFields);
   }
 
 }
