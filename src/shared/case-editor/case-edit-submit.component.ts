@@ -19,6 +19,7 @@ import { OrderService } from '../domain/order/order.service';
 import { CaseEventData } from '../domain/case-event-data';
 import { Confirmation } from '../domain/case-edit/confirmation.model';
 import { WizardPage } from '../domain/wizard-page.model';
+import { CaseEditPageComponent } from './case-edit-page.component';
 
 // @dynamic
 @Component({
@@ -138,7 +139,15 @@ export class CaseEditSubmitComponent implements OnInit {
   }
 
   cancel(): void {
-    this.caseEdit.cancel();
+    if (this.eventTrigger.can_save_draft) {
+      if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
+        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      } else {
+        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      }
+    } else {
+      this.caseEdit.cancelled.emit();
+    }
   }
 
   isChangeAllowed(field: CaseField): boolean {
@@ -234,5 +243,13 @@ export class CaseEditSubmitComponent implements OnInit {
 
   getCaseId(): String {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  getCancelText(): String {
+    if (this.eventTrigger.can_save_draft) {
+      return 'Cancel and return';
+    } else {
+      return 'Cancel';
+    }
   }
 }

@@ -37,7 +37,7 @@
     <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">Continue</button>
   </div>
 
-  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">Cancel and return</a></p>
+  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
 
 </form>
 </div>

@@ -146,22 +146,26 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   cancel(): void {
-    if (this.formValuesChanged) {
-      const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === 'Discard') {
-          this.discard();
-        } else if (result === 'Save') {
-          const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
-          if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-            this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
-          } else {
-            this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
+    if (this.eventTrigger.can_save_draft) {
+      if (this.formValuesChanged) {
+        const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);
+        dialogRef.afterClosed().subscribe(result => {
+          if (result === 'Discard') {
+            this.discard();
+          } else if (result === 'Save') {
+            const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
+            if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
+              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
+            } else {
+              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
+            }
           }
-        }
-      });
+        });
+      } else {
+        this.discard();
+      }
     } else {
-      this.discard();
+      this.caseEdit.cancelled.emit();
     }
   }
 
@@ -203,6 +207,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.caseEdit.saveDraft(draftCaseEventData).subscribe(
         (draft) => this.eventTrigger.case_id = DRAFT_PREFIX + draft.id, error => this.handleError(error)
       );
+    }
+  }
+
+  getCancelText(): String {
+    if (this.eventTrigger.can_save_draft) {
+      return 'Cancel and return';
+    } else {
+      return 'Cancel';
     }
   }
 }
