@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 1.2.16 - October 15 2018
+**RDM-3063** - Case Progression: Extract case progression with existing contract part 2
+
+### Version 1.2.15 - October 15 2018
+**RDM-3063** - Case Progression: Extract case progression with existing contract
+
 ### Version 1.2.14 - October 11 2018
 **RDM-3061** - Case progression: Extract services from Case Management Web.
 
