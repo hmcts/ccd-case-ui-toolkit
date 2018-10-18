@@ -135,7 +135,7 @@ describe('WriteDocumentFieldComponent', () => {
     expect(uploadElement).toBeTruthy();
   });
 
-  it('should display the selected file name if existsss', () => {
+  it('should display the selected file name if exists', () => {
     component.selectedFileName = 'Test.pdf';
     expect(component.existSelectedDocument()).toBeTruthy();
     expect(component.getSelectedFile()).toBe('Test.pdf');
