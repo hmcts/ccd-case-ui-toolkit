@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 1.2.19 - October 18 2018
+**RDM-3144** - Added missing exports
+
+### Version 1.2.18 - October 18 2018
+**RDM-3178** + **RDM-3179** + bug fix to cancel on CYA page of create case event with S&R
+
 ### Version 1.2.17 - October 18 2018
 **RDM-3144** - CaseTypeLite class introduced. Jurisdiction now refers to CaseTypeLite instead of CaseType to prevent cyclic dependency.
 
