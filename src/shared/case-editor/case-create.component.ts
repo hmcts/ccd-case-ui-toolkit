@@ -27,7 +27,6 @@ export class CaseCreateComponent implements OnInit {
   submitted: EventEmitter<any> = new EventEmitter();
 
   private eventTrigger: CaseEventTrigger;
-  isEventTriggerDataAvailable = false;
 
   constructor(
     private casesService: CasesService,
@@ -40,7 +39,6 @@ export class CaseCreateComponent implements OnInit {
     this.casesService.getEventTrigger(this.jurisdiction, this.caseType, this.event).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
-        this.isEventTriggerDataAvailable = true;
         console.log('this.eventTrigger=', this.eventTrigger);
       })
       .catch((error: HttpError) => {
@@ -51,7 +49,7 @@ export class CaseCreateComponent implements OnInit {
   }
 
   submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    console.log('validate');
+    console.log('submit');
     return (sanitizedEditForm: CaseEventData) => {
       sanitizedEditForm.draft_id = this.eventTrigger.case_id;
       return this.casesService.createCase(this.jurisdiction, this.caseType, sanitizedEditForm);
