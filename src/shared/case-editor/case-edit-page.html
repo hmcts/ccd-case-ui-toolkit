@@ -20,17 +20,14 @@
   <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
     <fieldset id="fieldset-case-data">
       <!-- single column -->
-      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']"
-                          [eventFields]="caseFields" [pageChangeSubject]="pageChangeSubject" (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
+      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="caseFields" [pageChangeSubject]="pageChangeSubject" (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
       <!-- two columns -->
       <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
         <div class="column-two-thirds rightBorderSeparator">
-          <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']"
-                              [eventFields]="caseFields"></ccd-case-edit-form>
+          <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="caseFields"></ccd-case-edit-form>
         </div>
         <div class="column-one-third">
-          <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()" [formGroup]="editForm.controls['data']"
-                              [eventFields]="caseFields"></ccd-case-edit-form>
+          <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()" [formGroup]="editForm.controls['data']" [eventFields]="caseFields"></ccd-case-edit-form>
         </div>
       </div>
     </fieldset>

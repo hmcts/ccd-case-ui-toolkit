@@ -97,6 +97,18 @@ export class FieldsUtils {
     return `{ Invalid ${type}: ${invalidValue} }`;
   }
 
+  // temporary function until this can be moved to CaseView class (RDM-2681)
+  public static getCaseFields(caseView: CaseView): CaseField[] {
+    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
+      return acc.concat(tab.fields);
+    }, []);
+
+    let metadataFields = caseView.metadataFields;
+    return metadataFields.concat(caseDataFields.filter(function (caseField) {
+      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
+    }));
+  }
+
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
     let currentState = this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
     return (page: WizardPage): boolean => {
@@ -122,18 +134,6 @@ export class FieldsUtils {
 
   private cloneObject(obj: any): any {
     return Object.assign({}, obj);
-  }
-
-  // temporary function until this can be moved to CaseView class (RDM-2681)
-  public static getCaseFields(caseView: CaseView): CaseField[] {
-    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
-      return acc.concat(tab.fields);
-    }, []);
-
-    let metadataFields = caseView.metadataFields;
-    return metadataFields.concat(caseDataFields.filter(function (caseField) {
-      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
-    }));
   }
 
 }
