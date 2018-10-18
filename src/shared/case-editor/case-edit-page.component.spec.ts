@@ -4,23 +4,20 @@ import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { CaseEditComponent } from './case-edit.component';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
-import {
-  aCaseField,
-  CaseEventData,
-  CaseField,
-  CaseFieldService,
-  CaseReferencePipe,
-  Draft,
-  FormErrorService,
-  FormValueService,
-  PageValidationService,
-  SaveOrDiscardDialogComponent,
-  WizardPage
-} from '@hmcts/ccd-case-ui-toolkit';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { CaseViewerComponent } from '../../cases/viewer/case-viewer.component';
+import { FormValueService } from '../form/form-value.service';
+import { FormErrorService } from '../form/form-error.service';
+import { PageValidationService } from './page-validation.service';
+import { SaveOrDiscardDialogComponent } from '../save-or-discard-dialog/save-or-discard-dialog.component';
+import { CaseReferencePipe } from '../utils/case-reference.pipe';
+import { aCaseField } from '../fixture/shared.fixture';
+import { WizardPage } from '../domain/wizard-page.model';
+import { CaseField } from '../domain/definition/case-field.model';
+import { CaseFieldService } from '../domain/case-field.service';
+import { Draft } from '../domain/draft';
+import { CaseEventData } from '../domain/case-event-data';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
@@ -48,14 +45,16 @@ describe('CaseEditPageComponent', () => {
 
   let caseEditComponentStub: any;
   let cancelled: any;
+  let caseField1 = new CaseField();
+  let caseField2 = new CaseField();
 
   beforeEach(async(() => {
     firstPage.id = 'first page';
-    cancelled = createSpyObj('cancelled', ['emit']);
+    cancelled = createSpyObj('cancelled', ['emit'])
     caseEditComponentStub = {
       'form': FORM_GROUP,
       'data': '',
-      'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false },
+      'eventTrigger': { 'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': false },
       'hasPrevious': () => true,
       'getPage': () => firstPage,
       'first': () => true,
@@ -63,15 +62,15 @@ describe('CaseEditPageComponent', () => {
       'previous': () => true,
       'cancel': () => undefined,
       'cancelled': cancelled,
-      'validate': (caseEventData: CaseEventData) => Observable.of(caseEventData),
-      'saveDraft': (caseEventData: CaseEventData) => Observable.of(someObservable),
-      'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [] },
+      'validate': (caseEventData: CaseEventData) => of(caseEventData),
+      'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
+      'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2] },
     };
     snapshot = {
       queryParamMap: createSpyObj('queryParamMap', ['get']),
     };
     route = {
-      params: Observable.of({ id: 123 }),
+      params: of({ id: 123 }),
       snapshot: snapshot
     };
 
@@ -174,7 +173,7 @@ describe('CaseEditPageComponent', () => {
     comp.formValuesChanged = false;
     snapshot.queryParamMap.get.and.callFake(key => {
       switch (key) {
-        case CaseViewerComponent.ORIGIN_QUERY_PARAM:
+        case CaseEditComponent.ORIGIN_QUERY_PARAM:
           return 'viewDraft';
       }
     });
@@ -202,11 +201,11 @@ describe('CaseEditPageComponent', () => {
     comp.formValuesChanged = true;
     snapshot.queryParamMap.get.and.callFake(key => {
       switch (key) {
-        case CaseViewerComponent.ORIGIN_QUERY_PARAM:
+        case CaseEditComponent.ORIGIN_QUERY_PARAM:
           return 'viewDraft';
       }
     });
-    matDialogRef.afterClosed.and.returnValue(Observable.of('Discard'));
+    matDialogRef.afterClosed.and.returnValue(of('Discard'));
     fixture.detectChanges();
 
     comp.cancel();
@@ -219,7 +218,7 @@ describe('CaseEditPageComponent', () => {
     comp.currentPage = wizardPage;
     comp.formValuesChanged = true;
     fixture.detectChanges();
-    matDialogRef.afterClosed.and.returnValue(Observable.of('Discard'));
+    matDialogRef.afterClosed.and.returnValue(of('Discard'));
 
     comp.cancel();
 
@@ -232,11 +231,11 @@ describe('CaseEditPageComponent', () => {
     comp.formValuesChanged = true;
     snapshot.queryParamMap.get.and.callFake(key => {
       switch (key) {
-        case CaseViewerComponent.ORIGIN_QUERY_PARAM:
+        case CaseEditComponent.ORIGIN_QUERY_PARAM:
           return 'viewDraft';
       }
     });
-    matDialogRef.afterClosed.and.returnValue(Observable.of('Save'));
+    matDialogRef.afterClosed.and.returnValue(of('Save'));
     fixture.detectChanges();
 
     comp.cancel();
@@ -247,7 +246,7 @@ describe('CaseEditPageComponent', () => {
     wizardPage.isMultiColumn = () => false;
     comp.currentPage = wizardPage;
     comp.formValuesChanged = true;
-    matDialogRef.afterClosed.and.returnValue(Observable.of('Save'));
+    matDialogRef.afterClosed.and.returnValue(of('Save'));
     fixture.detectChanges();
 
     comp.cancel();
@@ -285,4 +284,16 @@ describe('CaseEditPageComponent', () => {
     fixture.detectChanges();
     expect(comp.currentPageIsNotValid()).toBeFalsy();
   });
+
+  it('should init case fields to the event case fields when case details are not available', () => {
+    caseEditComponentStub.caseDetails = null;
+    comp.ngOnInit();
+    expect(comp.caseFields).toEqual([caseField1]);
+  });
+
+  it('should init case fields to the provided case view fields', () => {
+    comp.ngOnInit();
+    expect(comp.caseFields).toEqual([caseField2]);
+  });
+
 });
