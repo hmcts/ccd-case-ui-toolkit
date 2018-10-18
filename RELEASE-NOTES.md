@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.20 - October 18 2018
+**RDM-3144** - Updates on tags
+
 ### Version 1.2.19 - October 18 2018
 **RDM-3144** - Added missing exports
 
