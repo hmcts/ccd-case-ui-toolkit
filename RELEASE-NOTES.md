@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.17 - October 18 2018
+**RDM-3144** - CaseTypeLite class introduced. Jurisdiction now refers to CaseTypeLite instead of CaseType to prevent cyclic dependency.
+
 ### Version 1.2.16 - October 15 2018
 **RDM-3063** - Case Progression: Extract case progression with existing contract part 2
 
