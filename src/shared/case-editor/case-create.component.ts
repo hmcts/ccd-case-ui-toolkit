@@ -35,21 +35,17 @@ export class CaseCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('AAAAAAAA');
     this.casesService.getEventTrigger(this.jurisdiction, this.caseType, this.event).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
-        console.log('this.eventTrigger=', this.eventTrigger);
       })
       .catch((error: HttpError) => {
-        console.log('error=', error);
         this.alertService.error(error.message);
         return Observable.throw(error);
       });
   }
 
   submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    console.log('submit');
     return (sanitizedEditForm: CaseEventData) => {
       sanitizedEditForm.draft_id = this.eventTrigger.case_id;
       return this.casesService.createCase(this.jurisdiction, this.caseType, sanitizedEditForm);
@@ -57,12 +53,10 @@ export class CaseCreateComponent implements OnInit {
   }
 
   validate(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    console.log('validate');
     return (sanitizedEditForm: CaseEventData) => this.casesService.validateCase(this.jurisdiction, this.caseType, sanitizedEditForm);
   }
 
   saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
-    console.log('saveDraft');
     if (this.eventTrigger.can_save_draft) {
       return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.jurisdiction,
             this.caseType,
@@ -72,12 +66,10 @@ export class CaseCreateComponent implements OnInit {
   }
 
   emitCancelled(event): void {
-    console.log('!!!!!!!11111');
     this.cancelled.emit(event);
   }
 
   emitSubmitted(event): void {
-    console.log('!!!!!!!22222');
     this.submitted.emit(event);
   }
 
