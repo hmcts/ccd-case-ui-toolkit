@@ -93,5 +93,5 @@
     <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
     <button type="submit" [disabled]="isDisabled()" class="button">{{triggerText}}</button>
   </div>
-  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">Cancel and return</a></p>
+  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
 </form>
