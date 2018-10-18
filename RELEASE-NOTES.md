@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.17 - October 18 2018
+**RDM-3178** + **RDM-3179** + bug fix to cancel on CYA page of create case event with S&R
+
 ### Version 1.2.16 - October 15 2018
 **RDM-3063** - Case Progression: Extract case progression with existing contract part 2
 
