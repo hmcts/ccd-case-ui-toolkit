@@ -1,6 +1,6 @@
-import { WizardPage } from '../domain/wizard-page.model';
-import { Predicate } from '../predicate';
-import { OrderService } from '../domain/order/order.service';
+import { OrderService } from '../order';
+import { WizardPage } from '../wizard-page.model';
+import { Predicate } from '../../predicate';
 
 export class Wizard {
   private orderService = new OrderService();

@@ -1,7 +1,7 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseField } from '../domain/definition';
-import { FieldsUtils } from '../utils';
+import { CaseField } from '../domain/definition/case-field.model';
+import { FieldsUtils } from '../utils/fields.utils';
 import { LabelSubstitutionService } from '../case-editor';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })

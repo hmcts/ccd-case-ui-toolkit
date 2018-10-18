@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FormArray, FormControl } from '@angular/forms';
+import { FormArray, FormControl, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'ccd-write-multi-select-list-field',
@@ -40,7 +40,7 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
     }
   }
 
-  isSelected(code) {
+  isSelected(code): AbstractControl {
     return this.checkboxes.controls.find(control => control.value === code);
   }
 
