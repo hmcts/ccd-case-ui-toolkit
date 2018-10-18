@@ -126,11 +126,14 @@ export class FieldsUtils {
 
   // temporary function until this can be moved to CaseView class (RDM-2681)
   public static getCaseFields(caseView: CaseView): CaseField[] {
-    const caseDataFields = caseView.tabs.reduce((acc, tab) => {
+    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
       return acc.concat(tab.fields);
     }, []);
 
-    return caseDataFields.concat(caseView.metadataFields);
+    let metadataFields = caseView.metadataFields;
+    return metadataFields.concat(caseDataFields.filter(function (caseField) {
+      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
+    }));
   }
 
 }
