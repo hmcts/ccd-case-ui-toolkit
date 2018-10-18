@@ -1,4 +1,5 @@
 ## RELEASE NOTES
+
 ### Version 1.2.20 - October 18 2018
 **RDM-3144** - Updates on tags
 
