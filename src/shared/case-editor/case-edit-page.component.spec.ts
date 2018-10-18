@@ -4,21 +4,24 @@ import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { CaseEditComponent } from './case-edit.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
-import createSpyObj = jasmine.createSpyObj;
+import {
+  aCaseField,
+  CaseEventData,
+  CaseField,
+  CaseFieldService,
+  CaseReferencePipe,
+  Draft,
+  FormErrorService,
+  FormValueService,
+  PageValidationService,
+  SaveOrDiscardDialogComponent,
+  WizardPage
+} from '@hmcts/ccd-case-ui-toolkit';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { FormValueService } from '../form/form-value.service';
-import { FormErrorService } from '../form/form-error.service';
-import { PageValidationService } from './page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../save-or-discard-dialog/save-or-discard-dialog.component';
-import { CaseReferencePipe } from '../utils/case-reference.pipe';
-import { aCaseField } from '../fixture/shared.fixture';
-import { WizardPage } from '../domain/wizard-page.model';
-import { CaseField } from '../domain/definition/case-field.model';
-import { CaseFieldService } from '../domain/case-field.service';
-import { Draft } from '../domain/draft';
-import { CaseEventData } from '../domain/case-event-data';
+import { CaseViewerComponent } from '../../cases/viewer/case-viewer.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
 
@@ -48,7 +51,7 @@ describe('CaseEditPageComponent', () => {
 
   beforeEach(async(() => {
     firstPage.id = 'first page';
-    cancelled = createSpyObj('cancelled', ['emit'])
+    cancelled = createSpyObj('cancelled', ['emit']);
     caseEditComponentStub = {
       'form': FORM_GROUP,
       'data': '',
@@ -60,15 +63,15 @@ describe('CaseEditPageComponent', () => {
       'previous': () => true,
       'cancel': () => undefined,
       'cancelled': cancelled,
-      'validate': (caseEventData: CaseEventData) => of(caseEventData),
-      'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-      'caseDetails': { 'case_id': '1234567812345678' },
+      'validate': (caseEventData: CaseEventData) => Observable.of(caseEventData),
+      'saveDraft': (caseEventData: CaseEventData) => Observable.of(someObservable),
+      'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [] },
     };
     snapshot = {
       queryParamMap: createSpyObj('queryParamMap', ['get']),
     };
     route = {
-      params: of({id: 123}),
+      params: Observable.of({ id: 123 }),
       snapshot: snapshot
     };
 
@@ -171,7 +174,7 @@ describe('CaseEditPageComponent', () => {
     comp.formValuesChanged = false;
     snapshot.queryParamMap.get.and.callFake(key => {
       switch (key) {
-        case CaseEditComponent.ORIGIN_QUERY_PARAM:
+        case CaseViewerComponent.ORIGIN_QUERY_PARAM:
           return 'viewDraft';
       }
     });
@@ -199,11 +202,11 @@ describe('CaseEditPageComponent', () => {
     comp.formValuesChanged = true;
     snapshot.queryParamMap.get.and.callFake(key => {
       switch (key) {
-        case CaseEditComponent.ORIGIN_QUERY_PARAM:
+        case CaseViewerComponent.ORIGIN_QUERY_PARAM:
           return 'viewDraft';
       }
     });
-    matDialogRef.afterClosed.and.returnValue(of('Discard'));
+    matDialogRef.afterClosed.and.returnValue(Observable.of('Discard'));
     fixture.detectChanges();
 
     comp.cancel();
@@ -216,7 +219,7 @@ describe('CaseEditPageComponent', () => {
     comp.currentPage = wizardPage;
     comp.formValuesChanged = true;
     fixture.detectChanges();
-    matDialogRef.afterClosed.and.returnValue(of('Discard'));
+    matDialogRef.afterClosed.and.returnValue(Observable.of('Discard'));
 
     comp.cancel();
 
@@ -229,11 +232,11 @@ describe('CaseEditPageComponent', () => {
     comp.formValuesChanged = true;
     snapshot.queryParamMap.get.and.callFake(key => {
       switch (key) {
-        case CaseEditComponent.ORIGIN_QUERY_PARAM:
+        case CaseViewerComponent.ORIGIN_QUERY_PARAM:
           return 'viewDraft';
       }
     });
-    matDialogRef.afterClosed.and.returnValue(of('Save'));
+    matDialogRef.afterClosed.and.returnValue(Observable.of('Save'));
     fixture.detectChanges();
 
     comp.cancel();
@@ -244,7 +247,7 @@ describe('CaseEditPageComponent', () => {
     wizardPage.isMultiColumn = () => false;
     comp.currentPage = wizardPage;
     comp.formValuesChanged = true;
-    matDialogRef.afterClosed.and.returnValue(of('Save'));
+    matDialogRef.afterClosed.and.returnValue(Observable.of('Save'));
     fixture.detectChanges();
 
     comp.cancel();

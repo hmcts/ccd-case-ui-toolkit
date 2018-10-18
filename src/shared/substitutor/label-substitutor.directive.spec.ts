@@ -1,13 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By }              from '@angular/platform-browser';
-import { DebugElement, Component, Input }    from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Component, DebugElement, Input } from '@angular/core';
 import { LabelSubstitutorDirective } from './label-substitutor.directive';
 import { CaseField } from '../domain/definition/case-field.model';
-import { async } from '@angular/core/testing';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FieldsUtils } from '../utils/fields.utils';
-import createSpyObj = jasmine.createSpyObj;
 import { LabelSubstitutionService } from '../case-editor';
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
