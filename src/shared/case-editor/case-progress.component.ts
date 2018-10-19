@@ -5,7 +5,6 @@ import { CasesService } from '../cases/cases.service';
 import { HttpError } from '../http';
 import { AlertService } from '../alert';
 import { CaseEventData, CaseView } from '../domain';
-import { DraftService } from '../draft/draft.service';
 
 @Component({
   selector: 'ccd-case-progress',

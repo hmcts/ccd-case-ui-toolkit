@@ -1,5 +1,5 @@
 export { CaseUIToolkitModule } from './case-ui-toolkit.module';
-export { Config, AbstractAppConfig } from './app.config';
+export { CaseEditorConfig, AbstractAppConfig } from './app.config';
 export { FormValueService } from './shared/form/form-value.service';
 export { FormErrorService } from './shared/form/form-error.service';
 export { DocumentManagementService } from './shared/documentManagement/documentManagement.service';
