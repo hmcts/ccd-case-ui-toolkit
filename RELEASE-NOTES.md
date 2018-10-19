@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 1.2.24 - October 19 2018
+**RDM-3064** Add CaseCreateComponent and CaseProgressComponent to NgModule.
+
 ### Version 1.2.23 - October 19 2018
 **RDM-3064** Case progression: Merge master
 
