@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 1.2.23 - October 19 2018
+**RDM-3064** Case progression: Merge master
+
 ### Version 1.2.22 - October 19 2018
 **RDM-3064** Case progression: Better component contract + 	Facilitate configuration of case progression component
 
