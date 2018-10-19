@@ -1,4 +1,36 @@
 ## RELEASE NOTES
+### Version 1.2.18 - October 18 2018
+**RDM-3178** + **RDM-3179** + bug fix to cancel on CYA page of create case event with S&R
+
+### Version 1.2.16 - October 15 2018
+**RDM-3063** - Case Progression: Extract case progression with existing contract part 2
+
+### Version 1.2.15 - October 15 2018
+**RDM-3063** - Case Progression: Extract case progression with existing contract
+
+### Version 1.2.14 - October 11 2018
+**RDM-3061** - Case progression: Extract services from Case Management Web.
+
+### Version 1.2.13 - October 10 2018
+**RDM-3023** - Migration of save or discard modal from mgmt web.
+
+### Version 1.2.12 - October 9 2018
+**RDM-3023** - Fixing release issues.
+
+### Version 1.2.11 - October 9 2018
+**RDM-3023** - Move palette from mgmt web part 4.
+
+### Version 1.2.10 - October 8 2018
+**RDM-3023** - Move palette from mgmt web part 3.
+
+### Version 1.2.9 - October 8 2018
+**RDM-3023** - Move palette from mgmt web part 3.
+
+### Version 1.2.8 - October 8 2018
+**RDM-3023** - Move palette from mgmt web part 2.
+
+### Version 1.2.6 - October 4 2018
+**RDM-3023** - Move palette from mgmt web.
 
 ### Version 1.2.10 - October 8 2018
 **RDM-2880** - Corrected the aria role

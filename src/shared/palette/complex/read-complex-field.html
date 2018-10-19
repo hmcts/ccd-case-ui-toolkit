@@ -1,0 +1,12 @@
+<ng-container [ngSwitch]="context">
+  <ccd-read-complex-field-raw
+    *ngSwitchCase="paletteContext.CHECK_YOUR_ANSWER"
+    [caseField]="caseField"
+    [context]="context"
+  ></ccd-read-complex-field-raw>
+  <ccd-read-complex-field-table
+    *ngSwitchDefault
+    [caseField]="caseField"
+    [context]="context"
+  ></ccd-read-complex-field-table>
+</ng-container>

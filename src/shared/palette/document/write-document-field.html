@@ -1,0 +1,16 @@
+<div class="form-group" [ngClass]="{'form-group-error': !valid}">
+  <label [for]="id()">
+    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{caseField | ccdFieldLabel}}</span>
+    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+    <span class="error-message" *ngIf="uploadError && !valid">{{uploadError}}</span>
+  </label>
+
+  <div>
+    <ccd-read-document-field *ngIf="caseField" [caseField]="caseField"></ccd-read-document-field>
+  </div>
+
+  <div style='position:relative'>
+    <div id='fileInputWrapper' (click)="fileSelectEvent()"></div>
+    <input class="form-control bottom-30" [id]="id()" type="file" (change)="fileChangeEvent($event)" #fileInput/>
+  </div>
+</div>

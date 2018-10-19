@@ -1,0 +1,43 @@
+<!-- Current Page && Event trigger name -->
+<h1 class="heading-medium"><span *ngIf="currentPage && currentPage.label">{{currentPage.label}}&nbsp;-&nbsp;</span>{{ eventTrigger.name}}</h1>
+
+<!-- Case ID -->
+<h2 *ngIf="getCaseId()" class="heading-small">
+  #{{ getCaseId() | ccdCaseReference}}
+</h2>
+
+<div *ngIf="error" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+  <h3 class="heading-medium error-summary-heading" id="edit-case-event_error-summary-heading">
+    The event could not be created
+  </h3>
+  <p>{{error.message}}</p>
+  <ul *ngIf="error.details?.field_errors" class="error-summary-list">
+    <li *ngFor="let fieldError of error.details.field_errors" class=" ccd-error-summary-li">{{fieldError.message}}</li>
+  </ul>
+</div>
+<ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject" (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
+<div class="width-50">
+<form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
+  <fieldset id="fieldset-case-data">
+      <!-- single column -->
+      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields" [pageChangeSubject]="pageChangeSubject" (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
+      <!-- two columns -->
+      <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
+          <div class="column-two-thirds rightBorderSeparator">
+            <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields"></ccd-case-edit-form>
+          </div>
+          <div class="column-one-third">
+            <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()" [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields"></ccd-case-edit-form>
+          </div>
+      </div>
+  </fieldset>
+
+  <div class="form-group form-group-related">
+    <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
+    <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">Continue</button>
+  </div>
+
+  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
+
+</form>
+</div>
