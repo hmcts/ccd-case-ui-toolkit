@@ -42,7 +42,7 @@
     "mocha": "^5.0.5"
   },
   "peerDependencies": {
-    "@angular/common": "~6.1.8",
+    "@angular/common": "~7.0.0",
     "@angular/core": "~6.1.8",
     "@angular/forms": "~6.1.8",
     "@angular/router": "~6.1.8"
@@ -51,7 +51,7 @@
     "@angular-devkit/build-angular": "~0.8.3",
     "@angular/animations": "~6.1.8",
     "@angular/cdk": "^6.1.8",
-    "@angular/common": "~6.1.8",
+    "@angular/common": "~7.0.0",
     "@angular/compiler": "~6.1.8",
     "@angular/compiler-cli": "~6.1.8",
     "@angular/core": "~6.1.8",
