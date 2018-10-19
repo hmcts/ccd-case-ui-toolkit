@@ -73,6 +73,7 @@ export { AlertLevel } from './shared/alert/alert-level.model';
 export { Jurisdiction } from './shared/domain/definition/jurisdiction.model';
 export { RouterHelperService } from './shared/utils/router-helper.service';
 export { CaseType } from './shared/domain/definition/case-type.model';
+export { CaseTypeLite } from './shared/domain/definition/case-type-lite.model';
 export { CaseState } from './shared/domain/definition/case-state.model';
 export { AlertService } from './shared/alert/alert.service';
 export { CallbackErrorsContext } from './shared/error/error-context';
