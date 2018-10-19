@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DraftService } from '../draft';
+import { CaseProgressComponent } from './case-progress.component';
 
 @NgModule({
   imports: [
@@ -32,6 +33,8 @@ import { DraftService } from '../draft';
     CaseEditFormComponent,
     CaseEditSubmitComponent,
     CallbackErrorsComponent,
+    CaseCreateComponent,
+    CaseProgressComponent
   ],
   exports: [
     CaseCreateComponent,
@@ -41,6 +44,8 @@ import { DraftService } from '../draft';
     CaseEditFormComponent,
     CaseEditSubmitComponent,
     CallbackErrorsComponent,
+    CaseCreateComponent,
+    CaseProgressComponent,
     CaseReferencePipe,
   ],
   providers: [
