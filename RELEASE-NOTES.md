@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.22 - October 19 2018
+**RDM-3064** Case progression: Better component contract + 	Facilitate configuration of case progression component
+
 ### Version 1.2.18 - October 18 2018
 **RDM-3178** + **RDM-3179** + bug fix to cancel on CYA page of create case event with S&R
 
