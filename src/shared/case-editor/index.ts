@@ -7,3 +7,4 @@ export * from './case-edit-page.component';
 export * from './case-edit-submit.component';
 export * from './case-edit.component';
 export * from './case-create.component';
+export * from './case-progress.component';

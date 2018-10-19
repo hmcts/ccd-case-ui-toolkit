@@ -73,4 +73,7 @@ export class CaseCreateComponent implements OnInit {
     this.submitted.emit(event);
   }
 
+  isDataLoaded(): boolean {
+    return this.eventTrigger ? true : false;
+  }
 }

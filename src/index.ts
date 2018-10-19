@@ -64,6 +64,7 @@ export { CaseEditFormComponent } from './shared/case-editor/case-edit-form.compo
 export { CaseEditConfirmComponent } from './shared/case-editor/case-edit-confirm.component';
 export { CaseEditWizardGuard } from './shared/case-editor/case-edit-wizard.guard';
 export { CaseCreateComponent } from './shared/case-editor/case-create.component';
+export { CaseProgressComponent } from './shared/case-editor/case-progress.component';
 export { routing } from './shared/case-editor/editor.routing';
 export { CallbackErrorsComponent } from './shared/error/callback-errors.component';
 export { Profile } from './shared/profile/profile.model';
