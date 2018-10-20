@@ -2,7 +2,7 @@ import { Directive, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../domain/definition/case-field.model';
 import { FieldsUtils } from '../utils/fields.utils';
-import { LabelSubstitutionService } from '../case-editor/label-substitution.service';
+import { LabelSubstitutionService } from '../case-editor';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /** Checks all labels and substitutes any that reference other ones.

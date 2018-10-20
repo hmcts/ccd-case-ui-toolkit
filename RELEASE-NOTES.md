@@ -1,4 +1,25 @@
 ## RELEASE NOTES
+### Version 1.2.21 - October 18 2018
+**RDM-3144** - Merged changes from 1.2.18 & 1.2.20
+
+### Version 1.2.20 - October 18 2018
+**RDM-3144** - Updates on tags
+
+### Version 1.2.19 - October 18 2018
+**RDM-3144** - Added missing exports
+
+### Version 1.2.18 - October 18 2018
+**RDM-3178** + **RDM-3179** + bug fix to cancel on CYA page of create case event with S&R
+
+### Version 1.2.17 - October 18 2018
+**RDM-3144** - CaseTypeLite class introduced. Jurisdiction now refers to CaseTypeLite instead of CaseType to prevent cyclic dependency.
+
+### Version 1.2.16 - October 15 2018
+**RDM-3063** - Case Progression: Extract case progression with existing contract part 2
+
+### Version 1.2.15 - October 15 2018
+**RDM-3063** - Case Progression: Extract case progression with existing contract
+
 ### Version 1.2.14 - October 11 2018
 **RDM-3061** - Case progression: Extract services from Case Management Web.
 

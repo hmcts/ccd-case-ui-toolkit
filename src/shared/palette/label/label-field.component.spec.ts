@@ -6,8 +6,8 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldType } from '../../domain/definition/field-type.model';
 import { MockComponent } from 'ng2-mock-component';
 import { LabelSubstitutorDirective } from '../../substitutor/label-substitutor.directive';
-import { LabelSubstitutionService } from '../../case-editor/label-substitution.service';
 import { FieldsUtils } from '../../utils/fields.utils';
+import { LabelSubstitutionService } from '../../case-editor';
 
 describe('LabelFieldComponent', () => {
 

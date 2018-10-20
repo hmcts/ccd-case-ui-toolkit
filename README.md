@@ -33,6 +33,32 @@ yarn start
 
 ```
 
+*Note: The linking might be broken so if your encounter problems please follow this process:*
+
+```bash
+# Install all dependencies
+yarn install
+
+# Build library in watch mode
+yarn build:watch
+```
+
+In you project folder that should consume the library:
+
+```bash
+# Go to consumer repository folder
+cd case-management-web
+
+# Remove existing toolkit dist
+rm -rf node_modules/\@hmcts/ccd-case-ui-toolkit/dist
+
+# Link you library to the project
+cp <location of ccd-case-ui-toolkit>/dist node_modules/\@hmcts/ccd-case-ui-toolkit
+
+yarn start
+
+```
+
 # File Structure
 
 ```

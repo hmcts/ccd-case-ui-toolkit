@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from './address.model';
 import { HttpService } from '../../http';
@@ -16,6 +16,8 @@ export class AddressesService {
   getAddressesForPostcode(postcode: string): Observable<Array<AddressModel>> {
     return this.http
       .get(this.appConfig.getPostcodeLookupUrl().replace('${postcode}', postcode))
-      .map(response => response.json());
+      .pipe(
+        map(response => response.json())
+      );
   }
 }
