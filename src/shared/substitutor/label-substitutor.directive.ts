@@ -11,29 +11,29 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
-  @Input() formGroup: FormGroup;
+  @Input() formGroup: FormGroup = new FormGroup({});
 
   initialLabel: string;
 
-  constructor(private fieldsUtils: FieldsUtils, private labelSubstitutionService: LabelSubstitutionService) {}
+  constructor(private fieldsUtils: FieldsUtils, private labelSubstitutionService: LabelSubstitutionService) { }
 
   ngOnInit() {
-    if (this.caseField.label) {
-      this.initialLabel = this.caseField.label;
+    this.initialLabel = this.getLabel();
+    if (this.initialLabel) {
       this.formGroup = this.formGroup || new FormGroup({});
       // console.log('SubstitutorDirective FIELD: ' + this.caseField.id + ' init. Label: ' + this.caseField.label);
       // console.log('SubstitutorDirective EVENT_FIELDS: ', this.eventFields);
-      this.caseField.label = this.getResolvedLabel(this.getReadOnlyAndFormFields());
+      this.setLabel(this.getResolvedLabel(this.getReadOnlyAndFormFields()));
     }
   }
 
   ngOnDestroy() {
-    this.caseField.label = this.initialLabel;
+    this.setLabel(this.initialLabel);
   }
 
   private getResolvedLabel(fields) {
     // console.log('SubstitutorDirective FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields);
-    return this.labelSubstitutionService.substituteLabel(fields, this.caseField.label);
+    return this.labelSubstitutionService.substituteLabel(fields, this.getLabel());
     // console.log('SubstitutorDirective RESOLVED LABEL ', this.caseField.label);
   }
 
@@ -45,6 +45,17 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private getFormFieldsValuesIncludingDisabled() {
     return this.formGroup.getRawValue();
+  }
+
+  private getLabel() {
+    return this.caseField.value || this.caseField.label;
+  }
+  private setLabel(label: string) {
+    if (this.caseField.value) {
+      this.caseField.value = label;
+    } else {
+      this.caseField.label = label;
+    }
   }
 
 }

@@ -26,6 +26,14 @@ describe('LabelFieldComponent', () => {
     value: 'Label Field Value'
   };
 
+  const CASE_FIELD_VALUE_UNDEFINED: CaseField = {
+    id: 'label',
+    label: 'Label Field Label',
+    display_context: 'OPTIONAL',
+    field_type: FIELD_TYPE,
+    value: undefined
+  };
+
   const LABEL_CASE_FIELD: CaseField = {
     id: 'field',
     label: '${label}',
@@ -38,9 +46,11 @@ describe('LabelFieldComponent', () => {
     CASE_FIELD
   ];
 
-  let MarkdownComponent: any = MockComponent({ selector: 'ccd-markdown', inputs: [
-    'content'
-  ]});
+  let MarkdownComponent: any = MockComponent({
+    selector: 'ccd-markdown', inputs: [
+      'content'
+    ]
+  });
   let fixture: ComponentFixture<LabelFieldComponent>;
   let component: LabelFieldComponent;
   let de: DebugElement;
@@ -64,10 +74,10 @@ describe('LabelFieldComponent', () => {
     fixture = TestBed.createComponent(LabelFieldComponent);
   }));
 
-  describe('LabelFieldComponent without label substitution', () => {
+  describe('LabelFieldComponent without label substitution and value undefined', () => {
     beforeEach(() => {
       component = fixture.componentInstance;
-      component.caseField = CASE_FIELD;
+      component.caseField = CASE_FIELD_VALUE_UNDEFINED;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -78,7 +88,21 @@ describe('LabelFieldComponent', () => {
     });
   });
 
-  describe('LabelFieldComponent with label substitution', () => {
+  describe('LabelFieldComponent without label substitution', () => {
+    beforeEach(() => {
+      component = fixture.componentInstance;
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('Should render a table with the field label in the markdown tag in the header', () => {
+      expect(de.query($CONTENT).nativeElement.getAttribute('ng-reflect-content')).toBe(CASE_FIELD.value);
+    });
+  });
+
+  describe('LabelFieldComponent with label substitution ie with some value', () => {
     beforeEach(() => {
       component = fixture.componentInstance;
 
