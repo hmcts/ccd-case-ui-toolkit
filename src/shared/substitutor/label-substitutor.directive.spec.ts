@@ -6,8 +6,8 @@ import { CaseField } from '../domain/definition/case-field.model';
 import { async } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FieldsUtils } from '../utils/fields.utils';
-import { LabelSubstitutionService } from '../case-editor/label-substitution.service';
 import createSpyObj = jasmine.createSpyObj;
+import { LabelSubstitutionService } from '../case-editor';
 
 @Component({
     template: `

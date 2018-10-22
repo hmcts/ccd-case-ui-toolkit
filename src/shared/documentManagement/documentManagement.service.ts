@@ -1,9 +1,10 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { DocumentData } from '../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../app.config';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class DocumentManagementService {
@@ -21,6 +22,8 @@ export class DocumentManagementService {
     headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
     return this.http
       .post(url, formData, { headers })
-      .map(response => response.json());
+      .pipe(
+        map(response => response.json())
+      );
   }
 }
