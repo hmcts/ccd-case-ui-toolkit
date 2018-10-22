@@ -16,9 +16,6 @@ import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
-// import { CaseEditModule } from './shared/case-editor/case-edit.module';
-// import { CaseCreateComponent, CallbackErrorsComponent } from './shared';
-// import { CaseEditComponent } from './shared';
 
 @NgModule({
     imports: [
@@ -28,7 +25,6 @@ import { BannersModule } from './components/banners/banners.module';
       BodyModule,
       FormModule,
       TabsModule,
-      // CaseEditModule,
     ],
     exports: [
       AlertComponent,
@@ -41,9 +37,6 @@ import { BannersModule } from './components/banners/banners.module';
       DateInputComponent,
       TabsComponent,
       TabComponent,
-      // CaseCreateComponent,
-      // CaseEditComponent,
-      // CallbackErrorsComponent,
     ]
 })
 export class CaseUIToolkitModule {}
