@@ -16,7 +16,7 @@ import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
-import { CaseEditModule } from './shared/case-editor/case-edit.module';
+import { CaseEditorModule } from './shared/case-editor/case-editor.module';
 import { CaseEditConfirmComponent } from './shared/case-editor/case-edit-confirm.component';
 import { CaseEditComponent } from './shared/case-editor/case-edit.component';
 import { CaseEditPageComponent } from './shared/case-editor/case-edit-page.component';
@@ -31,7 +31,7 @@ import { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.c
       BodyModule,
       FormModule,
       TabsModule,
-      CaseEditModule,
+      CaseEditorModule,
     ],
     exports: [
       AlertComponent,

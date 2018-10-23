@@ -17,10 +17,34 @@ import { CaseFieldService } from '../domain/case-field.service';
 import { OrderService } from '../domain/order/order.service';
 
 @NgModule({
-    imports: [CommonModule, RouterModule],
-    declarations: [CaseEditConfirmComponent, CaseEditComponent, CaseEditPageComponent, CaseEditFormComponent, CaseEditSubmitComponent],
-    exports: [CaseEditConfirmComponent, CaseEditComponent, CaseEditPageComponent, CaseEditFormComponent, CaseEditSubmitComponent],
-    providers: [FieldsUtils, FieldsPurger, ConditionalShowRegistrarService, WizardFactoryService, FormValueService, FormErrorService,
-        PageValidationService, CaseFieldService, OrderService]
+    imports: [
+        CommonModule,
+        RouterModule
+    ],
+    declarations: [
+        CaseEditConfirmComponent,
+        CaseEditComponent,
+        CaseEditPageComponent,
+        CaseEditFormComponent,
+        CaseEditSubmitComponent
+    ],
+    exports: [
+        CaseEditConfirmComponent,
+        CaseEditComponent,
+        CaseEditPageComponent,
+        CaseEditFormComponent,
+        CaseEditSubmitComponent
+    ],
+    providers: [
+        FieldsUtils,
+        FieldsPurger,
+        ConditionalShowRegistrarService,
+        WizardFactoryService,
+        FormValueService,
+        FormErrorService,
+        PageValidationService,
+        CaseFieldService,
+        OrderService
+    ]
 })
-export class CaseEditModule {}
+export class CaseEditorModule {}
