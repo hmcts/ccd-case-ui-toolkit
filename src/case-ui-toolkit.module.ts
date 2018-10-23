@@ -22,6 +22,7 @@ import { CaseEditComponent } from './shared/case-editor/case-edit.component';
 import { CaseEditPageComponent } from './shared/case-editor/case-edit-page.component';
 import { CaseEditFormComponent } from './shared/case-editor/case-edit-form.component';
 import { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.component';
+import { CallbackErrorsComponent } from './shared/error/callback-errors.component';
 
 @NgModule({
     imports: [
@@ -49,6 +50,7 @@ import { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.c
       CaseEditPageComponent,
       CaseEditFormComponent,
       CaseEditSubmitComponent,
+      CallbackErrorsComponent,
     ]
 })
 export class CaseUIToolkitModule {}
