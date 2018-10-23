@@ -44,3 +44,6 @@ tmp/*
 
 # Visual Studio Code
 .history/
+
+# docs
+docs/

@@ -16,6 +16,12 @@ import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
+import { CaseEditModule } from './shared/case-editor/case-edit.module';
+import { CaseEditConfirmComponent } from './shared/case-editor/case-edit-confirm.component';
+import { CaseEditComponent } from './shared/case-editor/case-edit.component';
+import { CaseEditPageComponent } from './shared/case-editor/case-edit-page.component';
+import { CaseEditFormComponent } from './shared/case-editor/case-edit-form.component';
+import { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.component';
 
 @NgModule({
     imports: [
@@ -25,6 +31,7 @@ import { BannersModule } from './components/banners/banners.module';
       BodyModule,
       FormModule,
       TabsModule,
+      CaseEditModule,
     ],
     exports: [
       AlertComponent,
@@ -37,6 +44,11 @@ import { BannersModule } from './components/banners/banners.module';
       DateInputComponent,
       TabsComponent,
       TabComponent,
+      CaseEditConfirmComponent,
+      CaseEditComponent,
+      CaseEditPageComponent,
+      CaseEditFormComponent,
+      CaseEditSubmitComponent,
     ]
 })
 export class CaseUIToolkitModule {}
