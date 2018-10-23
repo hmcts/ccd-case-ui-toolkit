@@ -22,6 +22,8 @@ import { CallbackErrorsComponent } from '../error';
 import { PaletteModule } from '../palette/palette.module';
 import { LabelSubstitutorModule } from '../substitutor/label-substitutor.module';
 import { ConditionalShowModule } from '../conditional-show/conditional-show.module';
+import { CaseCreateComponent } from './case-create.component';
+import { CaseProgressComponent } from './case-progress.component';
 
 @NgModule({
     imports: [
@@ -41,6 +43,8 @@ import { ConditionalShowModule } from '../conditional-show/conditional-show.modu
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseCreateComponent,
+        CaseProgressComponent,
         CallbackErrorsComponent,
     ],
     exports: [
@@ -49,6 +53,8 @@ import { ConditionalShowModule } from '../conditional-show/conditional-show.modu
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseCreateComponent,
+        CaseProgressComponent,
         CallbackErrorsComponent,
     ],
     providers: [

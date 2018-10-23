@@ -23,6 +23,8 @@ import { CaseEditPageComponent } from './shared/case-editor/case-edit-page.compo
 import { CaseEditFormComponent } from './shared/case-editor/case-edit-form.component';
 import { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.component';
 import { CallbackErrorsComponent } from './shared/error/callback-errors.component';
+import { CaseCreateComponent } from './shared/case-editor/case-create.component';
+import { CaseProgressComponent } from './shared/case-editor/case-progress.component';
 
 @NgModule({
     imports: [
@@ -50,6 +52,8 @@ import { CallbackErrorsComponent } from './shared/error/callback-errors.componen
       CaseEditPageComponent,
       CaseEditFormComponent,
       CaseEditSubmitComponent,
+      CaseCreateComponent,
+      CaseProgressComponent,
       CallbackErrorsComponent,
     ]
 })
