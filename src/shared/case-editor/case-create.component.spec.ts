@@ -9,31 +9,13 @@ import { DraftService } from '../draft';
 import { AlertService } from '../alert';
 import { of, Observable } from 'rxjs';
 import { HttpError } from '../http';
+import { MockComponent } from 'ng2-mock-component';
 
-@Component({
+let CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
-  template: ``
-})
-class CaseEditComponent {
-
-  @Input()
-  eventTrigger: CaseEventTrigger;
-
-  @Input()
-  submit: (CaseEventData) => Observable<object>;
-
-  @Input()
-  validate: (CaseEventData) => Observable<object>;
-
-  @Input()
-  saveDraft: (CaseEventData) => Observable<Draft>;
-
-  @Output()
-  cancelled: EventEmitter<any> = new EventEmitter();
-
-  @Output()
-  submitted: EventEmitter<string> = new EventEmitter();
-}
+  inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
+  outputs: ['cancelled', 'submitted']
+});
 
 describe('CaseCreateComponent event trigger resolved and draft does not exist', () => {
 
