@@ -6,7 +6,6 @@ import { CaseEditComponent } from './case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
-import createSpyObj = jasmine.createSpyObj;
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { FormValueService } from '../form/form-value.service';
 import { FormErrorService } from '../form/form-error.service';
@@ -19,6 +18,7 @@ import { CaseField } from '../domain/definition/case-field.model';
 import { CaseFieldService } from '../domain/case-field.service';
 import { Draft } from '../domain/draft';
 import { CaseEventData } from '../domain/case-event-data';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
 
@@ -45,6 +45,8 @@ describe('CaseEditPageComponent', () => {
 
   let caseEditComponentStub: any;
   let cancelled: any;
+  let caseField1 = new CaseField();
+  let caseField2 = new CaseField();
 
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
@@ -53,7 +55,7 @@ describe('CaseEditPageComponent', () => {
       caseEditComponentStub = {
         'form': FORM_GROUP,
         'data': '',
-        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': true },
+        'eventTrigger': { 'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true },
         'hasPrevious': () => true,
         'getPage': () => firstPage,
         'first': () => true,
@@ -63,13 +65,13 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': { 'case_id': '1234567812345678' },
+        'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2] },
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
-        params: of({id: 123}),
+        params: of({ id: 123 }),
         snapshot: snapshot
       };
 
@@ -85,12 +87,12 @@ describe('CaseEditPageComponent', () => {
           CaseReferencePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog }
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseEditComponent, useValue: caseEditComponentStub },
+          { provide: PageValidationService, useValue: pageValidationService },
+          { provide: ActivatedRoute, useValue: route },
+          { provide: MatDialog, useValue: dialog }
         ]
       }).compileComponents();
     }));
@@ -180,7 +182,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -191,7 +193,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
     });
 
     it('should emit RESUMED_FORM_DISCARD on create event if discard triggered with value changed', () => {
@@ -209,7 +211,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -221,7 +223,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
     });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
@@ -239,7 +241,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
       expect(cancelled.emit)
-        .toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: { data: {'field1': 'SOME_VALUE'}}});
+        .toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: { data: { 'field1': 'SOME_VALUE' } } });
     });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
@@ -250,7 +252,10 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_SAVE, data: { data: {'field1': 'SOME_VALUE'}}});
+      expect(cancelled.emit).toHaveBeenCalledWith({
+        status: CaseEditPageComponent.NEW_FORM_SAVE,
+        data: { data: { 'field1': 'SOME_VALUE' } }
+      });
     });
 
     it('should delegate first calls to caseEditComponent', () => {
@@ -294,6 +299,17 @@ describe('CaseEditPageComponent', () => {
 
       expect(cancelText).toEqual('Cancel and return');
     });
+
+    it('should init case fields to the event case fields when case details are not available', () => {
+      caseEditComponentStub.caseDetails = null;
+      comp.ngOnInit();
+      expect(comp.caseFields).toEqual([caseField1]);
+    });
+
+    it('should init case fields to the provided case view fields', () => {
+      comp.ngOnInit();
+      expect(comp.caseFields).toEqual([caseField2]);
+    });
   });
 
   describe('Save and Resume disabled', () => {
@@ -303,7 +319,7 @@ describe('CaseEditPageComponent', () => {
       caseEditComponentStub = {
         'form': FORM_GROUP,
         'data': '',
-        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false },
+        'eventTrigger': { 'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false },
         'hasPrevious': () => true,
         'getPage': () => firstPage,
         'first': () => true,
@@ -313,13 +329,13 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': { 'case_id': '1234567812345678' },
+        'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [] },
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
-        params: of({id: 123}),
+        params: of({ id: 123 }),
         snapshot: snapshot
       };
 
@@ -335,12 +351,12 @@ describe('CaseEditPageComponent', () => {
           CaseReferencePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog }
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseEditComponent, useValue: caseEditComponentStub },
+          { provide: PageValidationService, useValue: pageValidationService },
+          { provide: ActivatedRoute, useValue: route },
+          { provide: MatDialog, useValue: dialog }
         ]
       }).compileComponents();
     }));
@@ -373,10 +389,10 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
 
       expect(cancelled.emit).toHaveBeenCalled();
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_SAVE});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_SAVE});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_SAVE });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_SAVE });
     });
   });
 

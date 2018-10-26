@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { CaseEditComponent } from './case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { MatDialogConfig, MatDialog } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CallbackErrorsComponent } from '../error/callback-errors.component';
 import { CallbackErrorsContext } from '../error/error-context';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
@@ -15,6 +15,8 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { FormErrorService } from '../form/form-error.service';
 import { CaseEventData } from '../domain/case-event-data';
 import { DRAFT_PREFIX } from '../domain/draft';
+import { CaseField } from '../domain/definition';
+import { FieldsUtils } from '../utils';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -40,6 +42,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   isSubmitting = false;
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
+  caseFields: CaseField[];
 
   constructor(
     private caseEdit: CaseEditComponent,
@@ -55,6 +58,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
+    this.caseFields = this.getCaseFields();
 
     this.route.params.subscribe(params => {
       let pageId = params['page'];
@@ -155,9 +159,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (result === 'Save') {
             const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData });
             } else {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData });
             }
           }
         });
@@ -216,5 +220,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     } else {
       return 'Cancel';
     }
+  }
+
+  private getCaseFields(): CaseField[] {
+    if (this.caseEdit.caseDetails) {
+      return FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
+    }
+
+    return this.eventTrigger.case_fields;
   }
 }
