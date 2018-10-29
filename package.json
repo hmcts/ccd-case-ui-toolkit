@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "1.2.22",
+  "version": "1.2.27",
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.js",
