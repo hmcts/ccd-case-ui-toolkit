@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.22 - October 29 2018
+**RDM-1202** - Custom case event field labels and hint texts
+
 ### Version 1.2.21 - October 18 2018
 **RDM-3144** - Merged changes from 1.2.18 & 1.2.20
 
