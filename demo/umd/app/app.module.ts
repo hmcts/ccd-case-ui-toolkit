@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component';
-
-import { TickTockModule } from 'ticktock';
+import { CaseCreateConsumerComponent } from './case-create-consumer.component';
+import { CaseUIToolkitModule } from '../../lib/case-ui-toolkit.module';
 
 @NgModule({
-  imports: [ BrowserModule, TickTockModule ],
-  declarations: [ AppComponent ],
-  bootstrap: [ AppComponent ]
+  imports: [ BrowserModule, CaseUIToolkitModule, RouterModule ],
+  declarations: [ CaseCreateConsumerComponent ],
+  bootstrap: [ CaseCreateConsumerComponent ]
 })
 export class AppModule {
 }

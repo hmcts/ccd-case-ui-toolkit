@@ -10,7 +10,7 @@ import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { HttpError } from '../http/http-error.model';
 import { FormValueService } from '../form/form-value.service';
 import { PageValidationService } from './page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../save-or-discard-dialog';
+import { SaveOrDiscardDialogComponent } from '../dialogs/save-or-discard-dialog';
 import { WizardPage } from '../domain/wizard-page.model';
 import { FormErrorService } from '../form/form-error.service';
 import { CaseEventData } from '../domain/case-event-data';

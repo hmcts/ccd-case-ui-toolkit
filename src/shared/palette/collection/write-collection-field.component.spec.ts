@@ -11,7 +11,7 @@ import { FormValidatorsService } from '../../form/form-validators.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { of } from 'rxjs';
-import { RemoveDialogComponent } from '../../remove-dialog/remove-dialog.component';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 

@@ -1,0 +1,4 @@
+{
+  "/aggregated/caseworkers/\\:uid/jurisdictions/:jid/case-types/:ctid/event-triggers/:etid" : "/create-case-event-trigger",
+  "/data/internal/cases/:cid": "/case"
+}

@@ -1,11 +1,11 @@
 const gulp = require('gulp');
-const copyfiles = require('copyfiles');
+const ncp = require('ncp').ncp;
 
-const LIBRARY_SRC = '../dist/**/*';
-const LIBRARY_DIST = 'esm/lib';
+const LIBRARY_SRC = '../dist';
+const LIBRARY_DIST = 'angular/node_modules/@hmcts/ccd-case-ui-toolkit/dist';
 
 gulp.task('copy-lib', (callback) => {
-  copyfiles([ LIBRARY_SRC, LIBRARY_DIST ], 2, callback);
+  ncp( LIBRARY_SRC, LIBRARY_DIST, callback );
 });
 
 gulp.task('copy-lib:watch', () => {

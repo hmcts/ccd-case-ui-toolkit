@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../app.config';
 import { plainToClass } from 'class-transformer';
 import { Headers } from '@angular/http';
 import { HttpService, HttpErrorService } from '../http';
 import { OrderService, CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, WizardPage, WizardPageField, Draft } from '../domain';
 import { ShowCondition } from '../conditional-show';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class CasesService {
@@ -38,11 +39,13 @@ export class CasesService {
 
     return this.http
       .get(url)
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      });
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
@@ -54,11 +57,13 @@ export class CasesService {
 
     return this.http
       .get(url, {headers})
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      });
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   getEventTrigger(jurisdictionId: string,
@@ -73,13 +78,15 @@ export class CasesService {
 
     return this.http
       .get(url)
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      })
-      .map((p: Object) => plainToClass(CaseEventTrigger, p))
-      .do(eventTrigger => this.initialiseEventTrigger(eventTrigger));
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }),
+        map((p: Object) => plainToClass(CaseEventTrigger, p)),
+        tap(eventTrigger => this.initialiseEventTrigger(eventTrigger))
+      );
   }
 
   createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<object> {
@@ -90,11 +97,13 @@ export class CasesService {
 
     return this.http
       .post(url, eventData)
-      .map(response => this.processResponse(response))
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      });
+      .pipe(
+        map(response => this.processResponse(response)),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   validateCase(jid: string, ctid: string, eventData: CaseEventData): Observable<object> {
@@ -103,11 +112,13 @@ export class CasesService {
 
     return this.http
       .post(url, eventData)
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      });
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   createCase(jid: string, ctid: string, eventData: CaseEventData): Observable<object> {
@@ -121,11 +132,13 @@ export class CasesService {
 
     return this.http
       .post(url, eventData)
-      .map(response => this.processResponse(response))
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      });
+      .pipe(
+        map(response => this.processResponse(response)),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   getPrintDocuments(jurisdictionId: string, caseTypeId: string, caseId: string): Observable<CasePrintDocument[]> {
@@ -138,11 +151,13 @@ export class CasesService {
 
     return this.http
       .get(url)
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return Observable.throw(error);
-      });
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   private buildEventTriggerUrl(jurisdictionId: string,

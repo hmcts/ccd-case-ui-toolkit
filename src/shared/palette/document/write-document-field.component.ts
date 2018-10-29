@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { DocumentManagementService } from '../../documentManagement/documentManagement.service';
 import { HttpError } from '../../http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DocumentDialogComponent } from '../../document-dialog/document-dialog.component';
+import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 
 @Component({
   selector: 'ccd-write-document-field',

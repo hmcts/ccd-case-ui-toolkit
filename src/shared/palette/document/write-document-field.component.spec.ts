@@ -13,7 +13,7 @@ import { FieldLabelPipe } from '../utils/field-label.pipe';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
-import { DocumentDialogComponent } from '../../document-dialog/document-dialog.component';
+import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 
 describe('WriteDocumentFieldComponent', () => {
 

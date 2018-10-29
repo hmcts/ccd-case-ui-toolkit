@@ -1,36 +1,59 @@
-const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
   devtool: 'source-map',
+  mode: 'development',
   entry: {
     polyfills: path.resolve(__dirname, 'src', 'polyfills.browser.ts'),
     main: path.resolve(__dirname, 'src', 'main-jit.ts')
   },
   resolve: {
-    extensions: ['.js', '.ts']
+    modules: ['node_modules', 'src'],
+    extensions: ['.js', '.ts', '.json']
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'jit'),
     filename: '[name].js'
   },
+  optimization: {
+    minimize: false
+  },
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: [
-          {
-            loader: 'awesome-typescript-loader',
-            options: {
-              configFileName: path.resolve(__dirname, 'tsconfig.json')
-            }
-          }
-        ]
+        loader: ['awesome-typescript-loader', 'angular2-template-loader'],
+      },
+      {
+        test: /\.html$/, 
+        loader: 'raw-loader'
+      },
+      {
+        test: /\.scss$/,
+        use: [{
+              loader: "style-loader"
+          }, {
+              loader: "css-loader"
+          }, {
+              loader: "sass-loader"
+        }],
       }
     ]
   },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       none_vendors: {
+  //         test: /[\\/]node_modules[\\/]/,
+  //         chunks: "all",
+  //         priority: 1
+  //       }
+  //     }
+  //   }
+  // }, 
   plugins: [
     new webpack.ProgressPlugin(),
 
@@ -59,31 +82,7 @@ const config = {
       path.resolve(__dirname, 'src'),
       {}
     ),
-
-    /*
-     * Plugin: CommonsChunkPlugin
-     * Description: Shares common code between the pages.
-     * It identifies common modules and put them into a commons chunk.
-     *
-     * See: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
-     * See: https://github.com/webpack/docs/wiki/optimization#multi-page-app
-     */
-    new CommonsChunkPlugin({
-      name: 'polyfills',
-      chunks: ['polyfills']
-    }),
-
-    // This enables tree shaking of the vendor modules
-    new CommonsChunkPlugin({
-      name: 'vendor',
-      chunks: ['main'],
-      minChunks: module => /node_modules/.test(module.resource)
-    }),
-
-    // Specify the correct order the scripts will be injected in
-    new CommonsChunkPlugin({
-      name: ['polyfills', 'vendor'].reverse()
-    }),
+    new ExtractTextPlugin({filename: 'src/app/app.scss'})
   ],
 
   devServer: {
@@ -92,7 +91,8 @@ const config = {
     watchOptions: {
       aggregateTimeout: 300,
       poll: 1000
-    }
+    },
+    contentBase: path.join(__dirname, 'dist')
   },
 };
 

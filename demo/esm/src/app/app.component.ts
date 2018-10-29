@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import '../style/app.scss';
 
 @Component({
   selector: 'my-app',
-  template: `<tick-tock></tick-tock>`
+  templateUrl: './app.component.html'
 })
-export class AppComponent {
-  public header: string = 'UMD Demo';
+export class AppComponent  implements OnInit {
+  ngOnInit() {
+    console.log('oninit!!!!!!!!!!!!!!!!!!!!!')
+}
 }

@@ -1,16 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 
 const config = {
   devtool: 'source-map',
   entry: {
-    polyfills: path.resolve(__dirname, 'src', 'polyfills.browser.ts'),
-    main: path.resolve(__dirname, 'src', 'main-aot.ts')
+    polyfills: path.resolve(__dirname, 'dist', 'esm', 'src', 'polyfills.browser.js'),
+    main: path.resolve(__dirname, 'dist', 'esm', 'src', 'main-aot.js')
   },
   resolve: {
-    extensions: ['.js', '.ts']
+    extensions: ['.js']
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'aot'),
@@ -19,18 +18,30 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.js$/,
         use: [
           {
             loader: 'awesome-typescript-loader',
             options: {
-              configFileName: path.resolve(__dirname, 'tsconfig.json')
+              configFileName: path.resolve(__dirname, 'tsconfig-aot.json')
             }
           }
-        ]
+        ],
+        exclude: [/node_modules/]
       }
     ]
   },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       none_vendors: {
+  //         test: /[\\/]node_modules[\\/]/,
+  //         chunks: "all",
+  //         priority: 1
+  //       }
+  //     }
+  //   }
+  // },
   plugins: [
     new webpack.ProgressPlugin(),
 
@@ -58,32 +69,7 @@ const config = {
       /angular(\\|\/)core(\\|\/)@angular/,
       path.resolve(__dirname, 'src'),
       {}
-    ),
-
-    /*
-     * Plugin: CommonsChunkPlugin
-     * Description: Shares common code between the pages.
-     * It identifies common modules and put them into a commons chunk.
-     *
-     * See: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
-     * See: https://github.com/webpack/docs/wiki/optimization#multi-page-app
-     */
-    new CommonsChunkPlugin({
-      name: 'polyfills',
-      chunks: ['polyfills']
-    }),
-
-    // This enables tree shaking of the vendor modules
-    new CommonsChunkPlugin({
-      name: 'vendor',
-      chunks: ['main'],
-      minChunks: module => /node_modules/.test(module.resource)
-    }),
-
-    // Specify the correct order the scripts will be injected in
-    new CommonsChunkPlugin({
-      name: ['polyfills', 'vendor'].reverse()
-    }),
+    )
   ]
 };
 

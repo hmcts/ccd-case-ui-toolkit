@@ -37,6 +37,8 @@ import { FootersModule } from '../../footers.module';
 import { BodyModule } from '../../body.module';
 import { FormModule } from '../../components/form/form.module';
 import { TabsModule } from '../../components/tabs/tabs.module';
+import { LabelFieldComponent } from './label';
+import { LabelSubstitutorModule } from '../substitutor';
 
 @NgModule({
   imports: [
@@ -61,9 +63,11 @@ import { TabsModule } from '../../components/tabs/tabs.module';
     BodyModule,
     FormModule,
     TabsModule,
+    LabelSubstitutorModule,
   ],
   declarations: [
     UnsupportedFieldComponent,
+    LabelFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -85,6 +89,7 @@ import { TabsModule } from '../../components/tabs/tabs.module';
   ],
   entryComponents: [
     UnsupportedFieldComponent,
+    LabelFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -108,6 +113,7 @@ import { TabsModule } from '../../components/tabs/tabs.module';
     BaseFieldModule,
     PaletteUtilsModule,
     UnsupportedFieldComponent,
+    LabelFieldComponent,
 
     // Read
     ReadTextFieldComponent,

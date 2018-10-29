@@ -11,7 +11,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { FormValueService } from '../form/form-value.service';
 import { FormErrorService } from '../form/form-error.service';
 import { PageValidationService } from './page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../save-or-discard-dialog/save-or-discard-dialog.component';
+import { SaveOrDiscardDialogComponent } from '../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CaseReferencePipe } from '../utils/case-reference.pipe';
 import { aCaseField } from '../fixture/shared.fixture';
 import { WizardPage } from '../domain/wizard-page.model';

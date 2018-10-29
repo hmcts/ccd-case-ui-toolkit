@@ -4,7 +4,7 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormValidatorsService } from '../../form/form-validators.service';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { RemoveDialogComponent } from '../../remove-dialog/remove-dialog.component';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 
