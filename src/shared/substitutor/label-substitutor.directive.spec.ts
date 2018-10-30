@@ -6,12 +6,15 @@ import { CaseField } from '../domain/definition/case-field.model';
 import { async } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FieldsUtils } from '../utils/fields.utils';
+import { LabelSubstitutionService } from '../case-editor/label-substitution.service';
 import createSpyObj = jasmine.createSpyObj;
-import { LabelSubstitutionService } from '../case-editor';
 
 @Component({
-    template: `
-      <td ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields">{{caseField.label}}</td>`
+  template: `
+    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields">
+      <td>{{caseField.label}}</td>
+      <td>{{caseField.hint_text}}</td>
+    </tr>`
 })
 class TestHostComponent {
 
@@ -20,12 +23,13 @@ class TestHostComponent {
     @Input() formGroup: FormGroup = new FormGroup({});
 }
 
-let field = (id, value, fieldType, label?) => {
+let field = (id, value, fieldType, label?, hintText?) => {
     let caseField = new CaseField();
     caseField.id = id;
     caseField.value = value;
     caseField.field_type = fieldType;
     caseField.label = label;
+    caseField.hint_text = hintText;
     return caseField;
 };
 
@@ -33,8 +37,9 @@ describe('LabelSubstitutorDirective', () => {
 
     let comp: TestHostComponent;
     let fixture: ComponentFixture<TestHostComponent>;
-    let de: DebugElement;
-    let el: HTMLElement;
+    let de:      DebugElement;
+    let labelEl: HTMLElement;
+    let hintEl: HTMLElement;
     let labelSubstitutionService: any;
 
     beforeEach(async(() => {
@@ -48,9 +53,10 @@ describe('LabelSubstitutorDirective', () => {
 
         fixture = TestBed.createComponent(TestHostComponent);
         comp = fixture.componentInstance;
-        de = fixture.debugElement.query(By.directive(LabelSubstitutorDirective));
-        el = de.nativeElement;
-    }));
+        de = fixture.debugElement;
+        labelEl = de.query(By.css('tr> td:nth-child(1)')).nativeElement;
+        hintEl = de.query(By.css('tr> td:nth-child(2)')).nativeElement;
+  }));
 
     describe('simple type fields', () => {
 
@@ -64,7 +70,22 @@ describe('LabelSubstitutorDirective', () => {
             labelSubstitutionService.substituteLabel.and.returnValue('Label B with valueA=ValueA and valueA=ValueA:');
             fixture.detectChanges();
 
-            expect(el.innerText).toBe('Label B with valueA=ValueA and valueA=ValueA:');
+            expect(labelEl.innerText).toBe('Label B with valueA=ValueA and valueA=ValueA:');
+        });
+
+        it('should display help text returned by label substitution service', () => {
+            let label = 'Label';
+            let helpText = 'Label B with valueA=${LabelA} and valueA=${LabelA}:';
+            comp.caseField = field('LabelB', '', {
+              id: 'LabelB',
+              type: 'Text'
+            }, label, helpText);
+            comp.eventFields = [comp.caseField];
+            labelSubstitutionService.substituteLabel.and.returnValues(label, 'Label B with valueA=ValueA and valueA=ValueA:');
+            fixture.detectChanges();
+
+            expect(labelEl.innerText).toBe(label);
+            expect(hintEl.innerText).toBe('Label B with valueA=ValueA and valueA=ValueA:');
         });
 
         it('should display label when value is defined', () => {
@@ -76,7 +97,7 @@ describe('LabelSubstitutorDirective', () => {
             comp.eventFields = [comp.caseField];
             labelSubstitutionService.substituteLabel.and.returnValue('Label B with valueA=ValueA and valueA=ValueA:');
             fixture.detectChanges();
-            expect(el.innerText).toBe(label);
+            expect(labelEl.innerText).toBe(label);
         });
         it('should pass case field value to substitute label when case field value but no form field value present', () => {
             let label = 'someLabel:';
