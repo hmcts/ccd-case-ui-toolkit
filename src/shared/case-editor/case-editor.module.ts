@@ -24,6 +24,7 @@ import { LabelSubstitutorModule } from '../substitutor/label-substitutor.module'
 import { ConditionalShowModule } from '../conditional-show/conditional-show.module';
 import { CaseCreateComponent } from './case-create.component';
 import { CaseProgressComponent } from './case-progress.component';
+import { EventTriggerService } from './eventTrigger.service';
 
 @NgModule({
     imports: [
@@ -67,6 +68,7 @@ import { CaseProgressComponent } from './case-progress.component';
         PageValidationService,
         CaseFieldService,
         OrderService,
+        EventTriggerService,
     ]
 })
 export class CaseEditorModule {}

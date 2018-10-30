@@ -7,6 +7,7 @@ import { HttpError } from '../http';
 import { AlertService } from '../alert';
 import { CaseEventData } from '../domain';
 import { DraftService } from '../draft/draft.service';
+import { EventTriggerService } from './eventTrigger.service';
 
 @Component({
   selector: 'ccd-case-create',
@@ -32,12 +33,16 @@ export class CaseCreateComponent implements OnInit {
     private casesService: CasesService,
     private alertService: AlertService,
     private draftService: DraftService,
+    private eventTriggerService: EventTriggerService,
   ) {}
 
   ngOnInit(): void {
+    console.log('CaseCreateComponent ngOnInit');
     this.casesService.getEventTrigger(this.jurisdiction, this.caseType, this.event).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
+        console.log('CaseCreateComponent announceEventTrigger');
+        this.eventTriggerService.announceEventTrigger(eventTrigger);
       })
       .catch((error: HttpError) => {
         this.alertService.error(error.message);

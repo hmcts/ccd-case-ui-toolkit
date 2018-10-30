@@ -54,6 +54,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
+    console.log('eventTrigger=', this.eventTrigger);
     this.editForm = this.caseEdit.form;
 
     this.route.params.subscribe(params => {

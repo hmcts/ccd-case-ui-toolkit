@@ -9,6 +9,8 @@ import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/case-edit/wizard.model';
 import { CaseField } from '../domain/definition/case-field.model';
+import { EventTriggerService } from './eventTrigger.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CaseEditWizardGuard implements Resolve<boolean> {
@@ -18,35 +20,46 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     private routerHelper: RouterHelperService,
     private wizardFactory: WizardFactoryService,
     private alertService: AlertService,
+    private eventTriggerService: EventTriggerService
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
-    let eventTrigger: CaseEventTrigger = route.parent.data.eventTrigger;
-    if (!eventTrigger.hasFields() || !eventTrigger.hasPages()) {
-      this.goToSubmit(route);
-      return Promise.resolve(false);
-    }
+    console.log('CaseEditWizardGuard resolve');
+    this.eventTriggerService.eventTriggerSource.subscribe(eventTrigger => {
+      console.log('CaseEditWizardGuard inside then');
+      if (!eventTrigger.hasFields() || !eventTrigger.hasPages()) {
+        this.goToSubmit(route);
+        return Promise.resolve(false);
+      }
 
-    let wizard = this.wizardFactory.create(eventTrigger);
-    let currentState = this.buildState(eventTrigger.case_fields);
-    // TODO Extract predicate and state creation in a factory
-    let canShowPredicate: Predicate<WizardPage> = (page: WizardPage): boolean => {
-      return new ShowCondition(page.show_condition).match(currentState);
-    };
+      let wizard = this.wizardFactory.create(eventTrigger);
+      let currentState = this.buildState(eventTrigger.case_fields);
+      // TODO Extract predicate and state creation in a factory
+      let canShowPredicate: Predicate<WizardPage> = (page: WizardPage): boolean => {
+        return new ShowCondition(page.show_condition).match(currentState);
+      };
 
-    if (!route.params['page']) {
-      this.goToFirst(wizard, canShowPredicate, route);
-      return Promise.resolve(false);
-    }
+      if (!route.params['page']) {
+        this.goToFirst(wizard, canShowPredicate, route);
+        return Promise.resolve(false);
+      }
 
-    let pageId = route.params['page'];
+      let pageId = route.params['page'];
 
-    if (!wizard.hasPage(pageId)) {
-      this.goToFirst(wizard, canShowPredicate, route)
-        .then(() => {
-          this.alertService.error(`No page could be found for '${pageId}'`);
-        });
-      return Promise.resolve(false);
+      if (!wizard.hasPage(pageId)) {
+        this.goToFirst(wizard, canShowPredicate, route)
+          .then(() => {
+            this.alertService.error(`No page could be found for '${pageId}'`);
+          });
+        return Promise.resolve(false);
+      }
+
+      return Promise.resolve(true);
+    });
+
+    if (route.parent.data.eventTrigger) {
+      console.log('CaseEditWizardGuard announceEventTrigger');
+      this.eventTriggerService.announceEventTrigger(route.parent.data.eventTrigger);
     }
 
     return Promise.resolve(true);
