@@ -25,7 +25,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
     console.log('CaseEditWizardGuard resolve');
-    this.eventTriggerService.eventTriggerSource.subscribe(eventTrigger => {
+    this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
       console.log('CaseEditWizardGuard inside then');
       if (!eventTrigger.hasFields() || !eventTrigger.hasPages()) {
         this.goToSubmit(route);
