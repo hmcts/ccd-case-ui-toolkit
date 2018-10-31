@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { CallbackErrorsComponent } from '../error/callback-errors.component';
 import { CallbackErrorsContext } from '../error/error-context';
 import { ActivatedRoute } from '@angular/router';
-import { Profile } from '../profile';
+import { Profile, ProfileNotifier } from '../profile';
 import { HttpError } from '../http';
 import { PaletteContext } from '../palette';
 import { FormValueService } from '../form/form-value.service';
@@ -20,6 +20,7 @@ import { CaseEventData } from '../domain/case-event-data';
 import { Confirmation } from '../domain/case-edit/confirmation.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { CaseEditPageComponent } from './case-edit-page.component';
+import { ProfileService } from '../profile/profile.service';
 
 // @dynamic
 @Component({
@@ -61,15 +62,18 @@ export class CaseEditSubmitComponent implements OnInit {
     private caseFieldService: CaseFieldService,
     private route: ActivatedRoute,
     private orderService: OrderService,
+    private profileService: ProfileService,
+    private profileNotifier: ProfileNotifier,
   ) {
   }
 
   ngOnInit(): void {
+    this.profileNotifier.profileSource.asObservable().first().subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
-    this.profile = this.getProfile(this.route);
+    this.announceProfile(this.route)
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
   }
 
@@ -218,8 +222,10 @@ export class CaseEditSubmitComponent implements OnInit {
     return this.profile.isSolicitor();
   }
 
-  private getProfile(route: ActivatedRoute) {
-    return route.snapshot.pathFromRoot[1].data.profile;
+  private announceProfile(route: ActivatedRoute): void {
+    route.snapshot.pathFromRoot[1].data.profile ?
+      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
+    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: any): Confirmation {

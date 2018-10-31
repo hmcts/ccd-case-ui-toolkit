@@ -5,6 +5,7 @@ import { CasesService } from '../cases/cases.service';
 import { HttpError } from '../http';
 import { AlertService } from '../alert';
 import { CaseEventData, CaseView } from '../domain';
+import { EventTriggerService } from './eventTrigger.service';
 
 @Component({
   selector: 'ccd-case-progress',
@@ -27,7 +28,8 @@ export class CaseProgressComponent implements OnInit {
 
   constructor(
     private casesService: CasesService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private eventTriggerService: EventTriggerService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +40,10 @@ export class CaseProgressComponent implements OnInit {
                                                           this.event,
                                                           caseView.case_id)
                                                           .toPromise())
-      .then(eventTrigger => this.eventTrigger = eventTrigger)
+      .then(eventTrigger => {
+        this.eventTriggerService.announceEventTrigger(eventTrigger);
+        this.eventTrigger = eventTrigger
+      })
       .catch((error: HttpError) => {
         this.alertService.error(error.message);
         return Observable.throw(error);

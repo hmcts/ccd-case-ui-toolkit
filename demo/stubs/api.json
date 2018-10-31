@@ -717,7 +717,11 @@
         "id": "DocumentUpload",
         "label": "Document upload",
         "hidden": null,
-        "value": null,
+        "value": {
+          "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
+          "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
+          "document_filename": "Example_evidence.xyz"
+        },
         "hint_text": null,
         "field_type": {
           "id": "Document",
@@ -928,68 +932,68 @@
           "id": "OrderSummary",
           "type": "Complex",
           "complex_fields": [
-            {  
-              "id":"PaymentReference",
-              "label":"Payment Reference",
-              "field_type":{  
-                  "id":"Text",
-                  "type":"Text"
+            {
+              "id": "PaymentReference",
+              "label": "Payment Reference",
+              "field_type": {
+                "id": "Text",
+                "type": "Text"
               }
             },
-            {  
-              "id":"PaymentTotal",
-              "label":"Total",
-              "field_type":{  
-                  "id":"MoneyGBP",
-                  "type":"MoneyGBP"
+            {
+              "id": "PaymentTotal",
+              "label": "Total",
+              "field_type": {
+                "id": "MoneyGBP",
+                "type": "MoneyGBP"
               }
             },
-            {  
-              "id":"Fees",
-              "label":"Fees",
-              "field_type":{  
-                  "id":"FeesList",
-                  "type":"Collection",
-                  "collection_field_type":{  
-                    "id":"Fee",
-                    "type":"Complex",
-                    "complex_fields":[  
-                        {  
-                          "id":"FeeCode",
-                          "label":"Fee Code",
-                          "field_type":{  
-                              "id":"Text",
-                              "type":"Text"
-                          }
-                        },
-                        {  
-                          "id":"FeeDescription",
-                          "label":"Fee Description",
-                          "field_type":{  
-                              "id":"Text",
-                              "type":"Text"
-                          }
-                        },
-                        {  
-                          "id":"FeeAmount",
-                          "label":"Fee Amount",
-                          "field_type":{  
-                              "id":"MoneyGBP",
-                              "type":"MoneyGBP"
-                          },
-                          "security_classification":"PUBLIC"
-                        },
-                        {  
-                          "id":"FeeVersion",
-                          "label":"Fee Version",
-                          "field_type":{  
-                              "id":"Text",
-                              "type":"Text"
-                          },
-                          "security_classification":"PUBLIC"
-                        }
-                    ]
-                  }
+            {
+              "id": "Fees",
+              "label": "Fees",
+              "field_type": {
+                "id": "FeesList",
+                "type": "Collection",
+                "collection_field_type": {
+                  "id": "Fee",
+                  "type": "Complex",
+                  "complex_fields": [
+                    {
+                      "id": "FeeCode",
+                      "label": "Fee Code",
+                      "field_type": {
+                        "id": "Text",
+                        "type": "Text"
+                      }
+                    },
+                    {
+                      "id": "FeeDescription",
+                      "label": "Fee Description",
+                      "field_type": {
+                        "id": "Text",
+                        "type": "Text"
+                      }
+                    },
+                    {
+                      "id": "FeeAmount",
+                      "label": "Fee Amount",
+                      "field_type": {
+                        "id": "MoneyGBP",
+                        "type": "MoneyGBP"
+                      },
+                      "security_classification": "PUBLIC"
+                    },
+                    {
+                      "id": "FeeVersion",
+                      "label": "Fee Version",
+                      "field_type": {
+                        "id": "Text",
+                        "type": "Text"
+                      },
+                      "security_classification": "PUBLIC"
+                    }
+                  ]
+                }
               }
             }
           ]
@@ -1154,6 +1158,263 @@
         ]
       }
     ]
+  },
+  "profile": {
+    "user": {
+      "idam": {
+        "id": 42,
+        "email": "case-worker@hmcts.net",
+        "first_name": "Case",
+        "last_name": "Worker",
+        "roles": [
+          "case-worker"
+        ]
+      }
+    },
+    "channels": [
+      "channel1"
+    ],
+    "jurisdictions": [
+      {
+        "id": "TEST",
+        "name": "Test",
+        "description": "Content for the Test Jurisdiction.",
+        "caseTypes": [
+          {
+            "id": "TestAddressBookCase",
+            "name": "Test Address Book Case",
+            "description": "Test Address Book Case",
+            "states": [
+              {
+                "id": "CaseCreated",
+                "name": "Case created",
+                "description": null
+              },
+              {
+                "id": "CaseEnteredIntoLegacy",
+                "name": "Case has been Entered into Legacy",
+                "description": null
+              },
+              {
+                "id": "CaseStopped",
+                "name": "Put case on hold",
+                "description": null
+              }
+            ]
+          },
+          {
+            "id": "TestComplexAddressBookCase",
+            "name": "Complex Address Book Case",
+            "description": "Complex Address Book Case",
+            "states": [
+              {
+                "id": "CaseCreated",
+                "name": "Complex Case created",
+                "description": null
+              },
+              {
+                "id": "CaseEnteredIntoLegacy",
+                "name": "Complex Case has been Entered into Legacy",
+                "description": null
+              },
+              {
+                "id": "CaseStopped",
+                "name": "Put Complex case on hold",
+                "description": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PROBATE",
+        "name": "Manage probate application",
+        "description": "Services (grant of representation, caveats, will lodgment, standing search, settlers, pre lodgement)",
+        "caseTypes": [
+          {
+            "id": "GrantOfRepresentation",
+            "name": "Grant of Representation",
+            "description": "Probate - Grant of Representation",
+            "states": [
+              {
+                "id": "SolAppCreated",
+                "name": "Application created",
+                "description": "Application created (Solicitor)"
+              },
+              {
+                "id": "SolAppUpdated",
+                "name": "Application updated",
+                "description": "Application updated (Solicitor)"
+              },
+              {
+                "id": "SolAppConfirmed",
+                "name": "Application confirmed",
+                "description": "Application confirmed (Solicitor)"
+              },
+              {
+                "id": "CaseCreated",
+                "name": "Case created",
+                "description": "Case created"
+              },
+              {
+                "id": "CasePrinted",
+                "name": "Case printed",
+                "description": "Case printed"
+              },
+              {
+                "id": "Stopped",
+                "name": "Stopped",
+                "description": "Stopped"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "DIVORCE",
+        "name": "Family Divorce",
+        "description": "Family Divorce: Dissolution of Marriage",
+        "caseTypes": [
+          {
+            "id": "FinancialRemedyMVP2",
+            "name": "Financial Remedy MVP_v0.3",
+            "description": "Financial Remedy MVP_v0.3",
+            "states": [
+              {
+                "id": "caseAdded",
+                "name": "Application Draft Added",
+                "description": null
+              },
+              {
+                "id": "orderAccepted",
+                "name": "Order Accepted",
+                "description": null
+              },
+              {
+                "id": "orderRejected",
+                "name": "Order Rejected",
+                "description": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "default": {
+      "workbasket": {
+        "jurisdiction_id": "TEST",
+        "case_type_id": "TestAddressBookCase",
+        "state_id": "CaseCreated"
+      }
+    }
+  },
+  "validate": {
+    "data": {
+      "PersonFirstName": "Mario",
+      "PersonLastName": null
+    },
+    "event": {
+      "id": "enterCaseIntoLegacy",
+      "summary": "",
+      "description": ""
+    },
+    "ignore_warning": false
+  },
+  "submitted_case": {
+    "data": {
+      "PersonFirstName": "Fred",
+      "HouseFlatNumber": null,
+      "PersonLastNameWithValidation": "Doe",
+      "HouseFlatPostcode": null,
+      "IsAddressForService": "Yes",
+      "PetitionerServiceAddress": {
+        "HouseFlatNumber2": null,
+        "HouseFlatPostcode2": null
+      },
+      "DateOfBirth": null,
+      "YourPhoneUk": null,
+      "TotalMonthlyIncome": null,
+      "DocumentUpload": {
+        "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
+        "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
+        "document_filename": "Example_evidence.xyz"
+      },
+      "CantProvideNationalInsuranceNumber": null,
+      "WhatNationality": [
+        "British",
+        "Irish"
+      ],
+      "ExamplesCollection": [
+        {
+          "id": null,
+          "value": "fafdsfdsa"
+        },
+        {
+          "id": null,
+          "value": null
+        },
+        {
+          "id": null,
+          "value": null
+        },
+        {
+          "id": null,
+          "value": null
+        }
+      ],
+      "PersonOrderSummary": {
+        "PaymentReference": "RC-1521-1095-0964-3143",
+        "PaymentTotal": "5000",
+        "Fees": [
+          {
+            "value": {
+              "FeeCode": "FEE0001",
+              "FeeAmount": "4545",
+              "FeeDescription": "First fee description",
+              "FeeVersion": "1"
+            }
+          },
+          {
+            "value": {
+              "FeeCode": "FEE0002",
+              "FeeAmount": "0455",
+              "FeeDescription": "Second fee description",
+              "FeeVersion": "1"
+            }
+          },
+          {
+            "value": {
+              "FeeCode": "FEE0003",
+              "FeeAmount": "7055",
+              "FeeDescription": "Third fee description",
+              "FeeVersion": "1"
+            }
+          }
+        ]
+      },
+      "MarritalStatus": "MARRIAGE",
+      "WhatIsYourAge": "234"
+    },
+    "event": {
+      "id": "createCase",
+      "summary": "",
+      "description": ""
+    },
+    "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJnZTllbTdwZ3ZiNmM4NWMxcG85aXE0b3JwcCIsInN1YiI6Ijk0OCIsImlhdCI6MTUwOTQ2MTY3NiwiZXZlbnQtaWQiOiJjcmVhdGVDYXNlIiwiY2FzZS10eXBlLWlkIjoiVGVzdEFkZHJlc3NCb29rQ2FzZSIsImp1cmlzZGljdGlvbi1pZCI6IlRFU1QiLCJjYXNlLXZlcnNpb24iOiJiZjIxYTllOGZiYzVhMzg0NmZiMDViNGZhMDg1OWUwOTE3YjIyMDJmIn0.VTXhC2-FnlAVVvq9gsKFglvaBM-s-mrXtRLN6ZwLdfk",
+    "ignore_warning": false,
+    "draft_id": null
+  },
+  "submitted_event": {
+    "data": {
+      "PersonFirstName": "Mario",
+      "PersonLastName": null
+    },
+    "event": {
+      "id": "enterCaseIntoLegacy",
+      "summary": "",
+      "description": ""
+    },
+    "ignore_warning": false
   },
   "case": {
     "case_id": "1111222233334444",
@@ -1692,6 +1953,243 @@
         "event_name": "Case has been Entered into Legacy",
         "summary": "Case processed",
         "comment": "Ut pretium odio massa, facilisis pharetra turpis imperdiet non. Fusce elit erat, scelerisque eget tortor sit amet, imperdiet condimentum tortor"
+      }
+    ]
+  },
+  "event-trigger": {
+    "id": "enterCaseIntoLegacy",
+    "name": "Enter the case into legacy system",
+    "description": "This is to enter a case into the legacy system",
+    "case_id": "1111222233334444",
+    "case_fields": [
+      {
+        "id": "PersonFirstName",
+        "label": "First Name",
+        "hidden": false,
+        "value": "Mario",
+        "hint_text": null,
+        "field_type": {
+          "id": "Text",
+          "type": "Text",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "validation_expr": null,
+        "security_label": null,
+        "order": null,
+        "display_context": "OPTIONAL",
+        "show_summary_change_option": true
+      },
+      {
+        "id": "PersonLastNameWithValidation",
+        "label": "Person Last Name With Validation",
+        "display_context": "OPTIONAL",
+        "field_type": {
+          "id": "Text",
+          "type": "Text"
+        },
+        "show_summary_change_option": true
+      },
+      {
+        "id": "PersonLastName",
+        "label": "Person Last Name",
+        "display_context": "OPTIONAL",
+        "field_type": {
+          "id": "Text",
+          "type": "Text"
+        },
+        "show_summary_change_option": true
+      },
+      {
+        "id": "PersonSecondAddress",
+        "label": "Second Address",
+        "hidden": null,
+        "value": null,
+        "show_condition": "PersonLastName=\"Paniccia\"",
+        "hint_text": null,
+        "field_type": {
+          "id": "Address",
+          "type": "Complex",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [],
+          "complex_fields": [
+            {
+              "id": "AddressLine1",
+              "value": "St james road",
+              "label": "Address Line 1",
+              "hidden": null,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "Text",
+                "type": "Text",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": null,
+              "live_from": null,
+              "live_until": null
+            },
+            {
+              "id": "AddressLine2",
+              "label": "Address Line 2",
+              "hidden": null,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "Text",
+                "type": "Text",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": null,
+              "live_from": null,
+              "live_until": null
+            },
+            {
+              "id": "AddressLine3",
+              "label": "Address Line 3",
+              "hidden": null,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "Text",
+                "type": "Text",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": null,
+              "live_from": null,
+              "live_until": null
+            },
+            {
+              "id": "Country",
+              "label": "Country",
+              "hidden": null,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "Text",
+                "type": "Text",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": null,
+              "live_from": null,
+              "live_until": null
+            },
+            {
+              "id": "Postcode",
+              "label": "Postcode",
+              "hidden": null,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "Postcode",
+                "type": "Postcode",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": null,
+              "live_from": null,
+              "live_until": null
+            }
+          ],
+          "collection_field_type": null
+        },
+        "validation_expr": null,
+        "security_label": null,
+        "order": null,
+        "display_context": "READONLY",
+        "show_summary_change_option": true
+      },
+      {
+        "id": "PersonEvidence",
+        "label": "Personal evidence",
+        "field_type": {
+          "id": "DocumentLink",
+          "type": "Document"
+        },
+        "value": {
+          "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
+          "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
+          "document_filename": "Example_evidence.xyz"
+        },
+        "display_context": "OPTIONAL",
+        "show_summary_change_option": true
+      }
+    ],
+    "show_summary": true,
+    "wizard_pages": [
+      {
+        "id": "page1",
+        "label": "Page 1",
+        "order": 1,
+        "show_condition": "PersonFirstName=\"Jonny\"",
+        "wizard_page_fields": [
+          {
+            "case_field_id": "PersonSecondAddress",
+            "order": 1
+          }
+        ]
+      },
+      {
+        "id": "page2",
+        "label": "Page 2",
+        "order": 2,
+        "show_condition": "",
+        "wizard_page_fields": [
+          {
+            "case_field_id": "PersonFirstName",
+            "order": 1
+          },
+          {
+            "case_field_id": "PersonLastName",
+            "order": 2
+          },
+          {
+            "case_field_id": "PersonSecondAddress",
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "page3",
+        "label": "Page 3",
+        "order": 3,
+        "show_condition": "PersonFirstName=\"Angel\"",
+        "wizard_page_fields": [
+          {
+            "case_field_id": "PersonEvidence",
+            "order": 1
+          }
+        ]
       }
     ]
   }

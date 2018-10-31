@@ -74,7 +74,7 @@
     </table>
   </ng-container>
   <ng-container *ngIf="showEventNotes()">
-    <fieldset id="fieldset-event" formGroupName="event" *ngIf="!isSolicitor()">
+    <fieldset id="fieldset-event" formGroupName="event" *ngIf="profile && !isSolicitor()">
       <div class="form-group">
         <label for="field-trigger-summary" class="form-label">
           Event summary (optional)

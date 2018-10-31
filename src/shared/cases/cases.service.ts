@@ -30,7 +30,6 @@ export class CasesService {
   getCaseView(jurisdictionId: string,
               caseTypeId: string,
               caseId: string): Observable<CaseView> {
-    // console.log('retrieving case');
     const url = this.appConfig.getApiUrl()
       + `/caseworkers/:uid`
       + `/jurisdictions/${jurisdictionId}`
@@ -71,7 +70,6 @@ export class CasesService {
                   eventTriggerId: string,
                   caseId?: string,
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
-    // console.log('retrieve event trigger');
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
     let url =  this.buildEventTriggerUrl(jurisdictionId, caseTypeId, eventTriggerId, caseId, ignoreWarning);

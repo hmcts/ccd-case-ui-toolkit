@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { Draft } from '../domain/draft';
 import { CasesService } from '../cases/cases.service';
@@ -7,7 +7,7 @@ import { HttpError } from '../http';
 import { AlertService } from '../alert';
 import { CaseEventData } from '../domain';
 import { DraftService } from '../draft/draft.service';
-import { ActivatedRoute } from '@angular/router';
+import { EventTriggerService } from './eventTrigger.service';
 
 @Component({
   selector: 'ccd-case-create',
@@ -33,19 +33,16 @@ export class CaseCreateComponent implements OnInit {
     private casesService: CasesService,
     private alertService: AlertService,
     private draftService: DraftService,
-    private route: ActivatedRoute,
+    private eventTriggerService: EventTriggerService,
   ) {}
 
   ngOnInit(): void {
-    console.log('CASE CREATE COMPONENT');
     this.casesService.getEventTrigger(this.jurisdiction, this.caseType, this.event).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
-        this.route.snapshot.data['eventTrigger'] = this.eventTrigger;
-        console.log('route=', this.route);
+        this.eventTriggerService.announceEventTrigger(eventTrigger);
       })
       .catch((error: HttpError) => {
-        console.log('error!=', error);
         this.alertService.error(error.message);
         return Observable.throw(error);
       });

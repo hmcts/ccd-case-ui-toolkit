@@ -1,4 +1,9 @@
 {
   "/aggregated/caseworkers/\\:uid/jurisdictions/:jid/case-types/:ctid/event-triggers/:etid" : "/create-case-event-trigger",
-  "/data/internal/cases/:cid": "/case"
+  "/data/caseworkers/\\:uid/jurisdictions/:jid/case-types/:ctid/validate": "/validate",
+  "/data/caseworkers/\\:uid/profile": "/profile",
+  "/data/internal/cases/:cid": "/case",
+  "/data/caseworkers/:uid/jurisdictions/:jid/case-types/:ctid/cases?ignore-warning=false": "/submitted_case",
+  "/aggregated/caseworkers/\\:uid/jurisdictions/:jid/case-types/:ctid/cases/:cid/event-triggers/:etid?ignore-warning=false": "/event-trigger",
+  "/data/caseworkers/\\:uid/jurisdictions/:jid/case-types/:ctid/cases/:cid/events": "/submitted_event"
 }
