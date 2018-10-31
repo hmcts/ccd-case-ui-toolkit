@@ -7,30 +7,7 @@ import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CaseCreateConsumerComponent } from './case-create-consumer.component';
-// import { CaseUIToolkitModule } from '../../lib/case-ui-toolkit.module';
-// import { ConditionalShowModule } from '../../lib/shared/conditional-show/conditional-show.module';
-// import { LabelSubstitutorModule } from '../../lib/shared/substitutor/label-substitutor.module';
-// import { MarkdownModule } from '../../lib/shared/markdown/markdown.module';
-// import { PaletteModule } from '../../lib/shared/palette/palette.module';
-// import { SharedUtilsModule } from '../../lib/shared/utils/shared-utils.module';
-// import { CaseReferencePipe } from '../../lib/shared/utils/case-reference.pipe';
-// import { FieldsPurger } from '../../lib/shared/utils/fields.purger';
-// import { FormValueService } from '../../lib/shared/form/form-value.service';
-// import { FormErrorService } from '../../lib/shared/form/form-error.service';
-// import { AddressesService } from '../../lib/shared/domain/addresses/addresses.service';
-// import { YesNoService } from '../../lib/shared/palette/yes-no/yes-no.service';
-// import { OrderService } from '../../lib/shared/domain/order/order.service';
-// import { DraftService } from '../../lib/shared/draft/draft.service';
-// import { AlertService } from '../../lib/shared/alert/alert.service';
-// import { HttpService } from '../../lib/shared/http/http.service';
-// import { AuthService } from '../../lib/shared/auth/auth.service';
-// import { PaletteService } from '../../lib/shared/palette/palette.service';
-// import { FormValidatorsService } from '../../lib/shared/form/form-validators.service';
-// import { CaseFieldService } from '../../lib/shared/domain/case-field.service';
-// import { CasesService } from '../../lib/shared/cases/cases.service';
-// import { HttpErrorService } from '../../lib/shared/http/http-error.service';
 import { AppConfig } from './app.config';
-// import { AbstractAppConfig } from '../../lib/app.config';
 import { routing } from './app.routing';
 import { AppComponent } from './app.component';
 import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
@@ -46,13 +23,8 @@ import { CaseProgressConsumerComponent } from './case-progress-consumer.componen
     CaseUIToolkitModule,
     RouterModule,
     CommonModule,
-    // ConditionalShowModule,
     FormsModule,
-    // LabelSubstitutorModule,
-    // MarkdownModule,
-    // PaletteModule,
     ReactiveFormsModule,
-    // SharedUtilsModule,
     MatDialogModule,
     BrowserAnimationsModule,
     HttpModule,
@@ -63,22 +35,12 @@ import { CaseProgressConsumerComponent } from './case-progress-consumer.componen
     CaseProgressConsumerComponent,
   ],
   providers: [
-  //   CaseReferencePipe,
     CasesService,
-  //   CaseFieldService,
-  //   FormValidatorsService,
-  //   PaletteService,
     AuthService,
     HttpService,
     HttpErrorService,
     AlertService,
     DraftService,
-  //   OrderService,
-  //   YesNoService,
-  //   AddressesService,
-  //   FormErrorService},
-  //   FormValueService,
-  //   FieldsPurger,
     LabelSubstitutionService,
     PageValidationService,
     CaseEditWizardGuard,
