@@ -1,10 +1,11 @@
 import { ProfileService } from './profile.service';
-import { AppConfig } from '../../app.config';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { Response, ResponseOptions } from '@angular/http';
 import { createAProfile } from './profile.test.fixture';
-import { HttpService, Profile } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig } from '../../app.config';
+import { Profile } from './profile.model';
+import { HttpService } from '../http';
 
 describe('ProfileService', () => {
 
@@ -21,7 +22,7 @@ describe('ProfileService', () => {
   describe('get()', () => {
 
     beforeEach(() => {
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
       appConfig.getApiUrl.and.returnValue(API_URL);
       appConfig.getCaseDataUrl.and.returnValue(API_URL);
 

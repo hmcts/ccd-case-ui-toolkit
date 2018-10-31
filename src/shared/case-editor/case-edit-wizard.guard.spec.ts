@@ -7,6 +7,7 @@ import { AlertService } from '../alert/alert.service';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../domain/definition/case-field.model';
 import { WizardPage } from '../domain/wizard-page.model';
+import { EventTriggerService } from './eventTrigger.service';
 
 describe('CaseEditWizardGuard', () => {
 
@@ -24,6 +25,7 @@ describe('CaseEditWizardGuard', () => {
   let wizardFactory: any;
   let wizard: any;
   let alertService: any;
+  let eventTriggerService: any;
 
   let wizardGuard: CaseEditWizardGuard;
 
@@ -57,9 +59,11 @@ describe('CaseEditWizardGuard', () => {
     wizardFactory = createSpyObj('WizardFactory', ['create']);
     wizardFactory.create.and.returnValue(wizard);
 
-  alertService = createSpyObj<AlertService>('AlertService', ['error']);
+    alertService = createSpyObj<AlertService>('AlertService', ['error']);
 
-    wizardGuard = new CaseEditWizardGuard(router, routerHelper, wizardFactory, alertService);
+    eventTriggerService = createSpyObj<EventTriggerService>('EventTriggerService', ['announceEventTrigger']);
+
+    wizardGuard = new CaseEditWizardGuard(router, routerHelper, wizardFactory, alertService, eventTriggerService);
   });
 
   it('by default, should not redirect', () => {
