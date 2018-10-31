@@ -27,6 +27,10 @@ import { CaseProgressComponent } from './case-progress.component';
 import { EventTriggerService } from './eventTrigger.service';
 import { ProfileService } from '../profile/profile.service';
 import { ProfileNotifier } from '../profile';
+import { AddressesService } from '../domain';
+import { DocumentManagementService } from '../documentManagement';
+import { RouterHelperService } from '../utils';
+import { CaseEditWizardGuard } from './case-edit-wizard.guard';
 
 @NgModule({
     imports: [
@@ -73,6 +77,11 @@ import { ProfileNotifier } from '../profile';
         EventTriggerService,
         ProfileService,
         ProfileNotifier,
+        AddressesService,
+        DocumentManagementService,
+        RouterHelperService,
+        ProfileService,
+        CaseEditWizardGuard,
     ]
 })
 export class CaseEditorModule {}

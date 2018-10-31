@@ -4,9 +4,8 @@
   "license": "MIT",
   "scripts": {
     "build": "ng build",
-    "clean": "rimraf node_modules",
     "copy-lib": "cp -rf ../dist node_modules/@hmcts/ccd-case-ui-toolkit/",
-    "prebuild": "npm run clean && npm run copy-lib",
+    "prebuild": "npm run copy-lib",
     "start": "ng serve",
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
     "stub-api": "json-server -p 3454 --delay 800 --routes stubs/routes.json --watch stubs/api.json"
