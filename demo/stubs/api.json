@@ -1326,7 +1326,7 @@
       "HouseFlatNumber": null,
       "PersonLastNameWithValidation": "Doe",
       "HouseFlatPostcode": null,
-      "IsAddressForService": "Yes",
+      "IsAddressForService": "",
       "PetitionerServiceAddress": {
         "HouseFlatNumber2": null,
         "HouseFlatPostcode2": null
@@ -1340,28 +1340,8 @@
         "document_filename": "Example_evidence.xyz"
       },
       "CantProvideNationalInsuranceNumber": null,
-      "WhatNationality": [
-        "British",
-        "Irish"
-      ],
-      "ExamplesCollection": [
-        {
-          "id": null,
-          "value": "fafdsfdsa"
-        },
-        {
-          "id": null,
-          "value": null
-        },
-        {
-          "id": null,
-          "value": null
-        },
-        {
-          "id": null,
-          "value": null
-        }
-      ],
+      "WhatNationality": [],
+      "ExamplesCollection": [],
       "PersonOrderSummary": {
         "PaymentReference": "RC-1521-1095-0964-3143",
         "PaymentTotal": "5000",
@@ -1392,8 +1372,8 @@
           }
         ]
       },
-      "MarritalStatus": "MARRIAGE",
-      "WhatIsYourAge": "234"
+      "MarritalStatus": "",
+      "WhatIsYourAge": null
     },
     "event": {
       "id": "createCase",
@@ -1954,7 +1934,8 @@
         "summary": "Case processed",
         "comment": "Ut pretium odio massa, facilisis pharetra turpis imperdiet non. Fusce elit erat, scelerisque eget tortor sit amet, imperdiet condimentum tortor"
       }
-    ]
+    ],
+    "metadataFields": []
   },
   "event-trigger": {
     "id": "enterCaseIntoLegacy",
