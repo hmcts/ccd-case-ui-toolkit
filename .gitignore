@@ -49,4 +49,4 @@ tmp/*
 docs/
 
 # demo
-demo/angular/dist/
+demo/dist/
