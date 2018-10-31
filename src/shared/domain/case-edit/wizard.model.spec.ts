@@ -1,6 +1,6 @@
 import { Wizard } from './wizard.model';
 import createSpy = jasmine.createSpy;
-import { WizardPage } from '../domain/wizard-page.model';
+import { WizardPage } from '../wizard-page.model';
 
 describe('wizard.model', () => {
 
