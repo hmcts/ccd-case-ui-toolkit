@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.29 - October 31 2018
+**RDM-3230** - Add missing providers in CaseEditorModule and write up README of demo app.
+
 ### Version 1.2.28 - October 29 2018
 **RDM-3230** - Vanilla app to POC the case progression facade components
 
