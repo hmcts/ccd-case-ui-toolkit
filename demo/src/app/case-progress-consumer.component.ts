@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'case-progress-consumer',
-  template: `<div class="screen-990">
+  template: `<div  class="container-fluid">
                 <ccd-case-progress [case]="caseId"
                               [event]="eventTriggerId"
                               (cancelled)="cancel($event)"
                               (submitted)="submit($event)"></ccd-case-progress>
-             </div>`,
-  styles: ['.screen-990 { width: 990px; margin: 0 auto; }']
+             </div>`
 })
 export class CaseProgressConsumerComponent {
   caseId = '123456789012345';

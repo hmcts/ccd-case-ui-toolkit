@@ -2,14 +2,13 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'case-create-consumer',
-  template: `<div class="screen-990">
+  template: `<div class="container-fluid">
                 <ccd-case-create [jurisdiction]="jurisdictionId"
                               [caseType]="caseTypeId"
                               [event]="eventTriggerId"
                               (cancelled)="cancel($event)"
                               (submitted)="submit($event)"></ccd-case-create>
-             </div>`,
-  styles: ['.screen-990 { width: 990px; margin: 0 auto; }']
+             </div>`
 })
 export class CaseCreateConsumerComponent {
   jurisdictionId = 'TEST';
