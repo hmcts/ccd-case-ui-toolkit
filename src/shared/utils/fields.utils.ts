@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../domain/definition/case-field.model';
+import { CaseField } from '../domain/definition';
 import { CurrencyPipe, } from '@angular/common';
-import { DatePipe } from '../palette/utils/date.pipe';
-import { WizardPage } from '../domain/wizard-page.model';
+import { DatePipe } from '../palette/utils';
+import { WizardPage } from '../domain';
 import { Predicate } from '../predicate';
+import { CaseView } from '../domain/case-view';
 
 // @dynamic
 @Injectable()
@@ -94,6 +95,18 @@ export class FieldsUtils {
 
   private static textForInvalidField(type: string, invalidValue: string): string {
     return `{ Invalid ${type}: ${invalidValue} }`;
+  }
+
+  // temporary function until this can be moved to CaseView class (RDM-2681)
+  public static getCaseFields(caseView: CaseView): CaseField[] {
+    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
+      return acc.concat(tab.fields);
+    }, []);
+
+    let metadataFields = caseView.metadataFields;
+    return metadataFields.concat(caseDataFields.filter(function (caseField) {
+      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
+    }));
   }
 
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
