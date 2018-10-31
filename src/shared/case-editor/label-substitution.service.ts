@@ -13,7 +13,7 @@ export class LabelSubstitutionService {
 
     constructor(private caseReferencePipe: CaseReferencePipe) { }
 
-    substituteLabel(pageFormFields, label): string {
+    substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing: Boolean): string {
         let startSubstitutionIndex = -1;
         let fieldIdToSubstitute = '';
         let isCollecting = false;
@@ -25,7 +25,7 @@ export class LabelSubstitutionService {
                 } else if (isCollecting) {
                     if (this.isClosingPlaceholder(label, scanIndex)) {
                         if (this.isMatchingLabelIdPattern(fieldIdToSubstitute)
-                            && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields)) {
+                            && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, isEmptyIfPlaceholderMissing)) {
                             label = this.substitute(pageFormFields, label, startSubstitutionIndex, fieldIdToSubstitute);
                             scanIndex = this.resetScanIndexAfterSubstitution(startSubstitutionIndex, pageFormFields, fieldIdToSubstitute);
                         }
@@ -44,8 +44,11 @@ export class LabelSubstitutionService {
         return fieldIdToSubstitute.match(LabelSubstitutionService.LABEL_ID_PATTERN);
     }
 
-    private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields) {
+    private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, isEmptyIfPlaceholderMissing: Boolean) {
         let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute);
+        if (isEmptyIfPlaceholderMissing === true) {
+            fieldValue = fieldValue === undefined ? '' : fieldValue;
+        }
         return fieldValue ? this.isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) : fieldValue !== undefined;
     }
 

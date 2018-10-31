@@ -12,6 +12,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
+  @Input() isEmptyIfPlaceholderMissing: Boolean = false;
   @Input() formGroup: FormGroup = new FormGroup({});
 
   initialLabel: string;
@@ -47,7 +48,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private substituteLabel(fields, label) {
-    return this.labelSubstitutionService.substituteLabel(fields, label);
+    return this.labelSubstitutionService.substituteLabel(fields, label, this.isEmptyIfPlaceholderMissing);
   }
 
   private getLabel() {
