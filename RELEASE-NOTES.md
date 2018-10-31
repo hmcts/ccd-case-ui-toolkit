@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.28 - October 29 2018
+**RDM-3230** - Vanilla app to POC the case progression facade components
+
 ### Version 1.2.27 - October 29 2018
 **RDM-1202** - Custom case event field labels and hint texts
 
