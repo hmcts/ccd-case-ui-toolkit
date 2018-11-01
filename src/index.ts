@@ -1,5 +1,5 @@
 export { CaseUIToolkitModule } from './case-ui-toolkit.module';
-export { Config, AbstractAppConfig } from './app.config';
+export { CaseEditorConfig, AbstractAppConfig } from './app.config';
 export { FormValueService } from './shared/form/form-value.service';
 export { FormErrorService } from './shared/form/form-error.service';
 export { DocumentManagementService } from './shared/documentManagement/documentManagement.service';
@@ -63,6 +63,8 @@ export { CaseEditSubmitComponent } from './shared/case-editor/case-edit-submit.c
 export { CaseEditFormComponent } from './shared/case-editor/case-edit-form.component';
 export { CaseEditConfirmComponent } from './shared/case-editor/case-edit-confirm.component';
 export { CaseEditWizardGuard } from './shared/case-editor/case-edit-wizard.guard';
+export { CaseCreateComponent } from './shared/case-editor/case-create.component';
+export { CaseProgressComponent } from './shared/case-editor/case-progress.component';
 export { routing } from './shared/case-editor/editor.routing';
 export { CallbackErrorsComponent } from './shared/error/callback-errors.component';
 export { Profile } from './shared/profile/profile.model';
@@ -75,3 +77,6 @@ export { CaseTypeLite } from './shared/domain/definition/case-type-lite.model';
 export { CaseState } from './shared/domain/definition/case-state.model';
 export { AlertService } from './shared/alert/alert.service';
 export { CallbackErrorsContext } from './shared/error/error-context';
+export { CasesService } from './shared/cases/cases.service';
+export { CasePrintDocument } from './shared/domain/case-view/case-print-document.model';
+export { DraftService } from './shared/draft/draft.service';
