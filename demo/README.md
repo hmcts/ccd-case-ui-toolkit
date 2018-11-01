@@ -1,4 +1,4 @@
-# `angular-library-seed` demo projects
+# `ccd-case-ui-toolkit` demo project
 
 > This folder contains a demo-project for [ccd-case-ui-toolkit](https://github.com/hmcts/ccd-case-ui-toolkit). This demo project may help you to test whether your library supports JIT build or not.
 >
@@ -22,7 +22,7 @@ yarn start:watch
 # File Structure
 
 ```
-angular-library-seed
+ccd-case-ui-toolkit
   └─ demo                           * Folder with demo application (MAY BE DELETED if not required) 
      ├─ src                         * Demo project
      |  ├─ app                      * Demo application sources. Adopt them with your library.
@@ -74,4 +74,4 @@ Once you're ready to develop your own library you should do the following.
 
 This command may be used simultaneously in combination with [ccd-case-ui-toolkit](https://github.com/hmcts/ccd-case-ui-toolkit)'s `yarn build:watch`. As a result once you change library source code it will be automatically re-compiled and in turn your demo-project will be automatically re-built and you will be able to see that changes in your browser instantly. 
 
-See [Development Workflow](https://github.com/trekhleb/angular-library-seed#development-workflow) section of [angular-library-seed](https://github.com/trekhleb/angular-library-seed)'s README for more details.
+See [Development Workflow](https://github.com/hmcts/ccd-case-ui-toolkit#development-workflow) section of [ccd-case-ui-toolkit](hhttps://github.com/hmcts/ccd-case-ui-toolkit)'s README for more details.
