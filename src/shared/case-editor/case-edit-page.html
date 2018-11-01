@@ -17,27 +17,27 @@
 </div>
 <ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject" (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
 <div class="width-50">
-<form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
-  <fieldset id="fieldset-case-data">
+  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
+    <fieldset id="fieldset-case-data">
       <!-- single column -->
-      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields" [pageChangeSubject]="pageChangeSubject" (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
+      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="caseFields" [pageChangeSubject]="pageChangeSubject" (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
       <!-- two columns -->
       <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
-          <div class="column-two-thirds rightBorderSeparator">
-            <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields"></ccd-case-edit-form>
-          </div>
-          <div class="column-one-third">
-            <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()" [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields"></ccd-case-edit-form>
-          </div>
+        <div class="column-two-thirds rightBorderSeparator">
+          <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [eventFields]="caseFields"></ccd-case-edit-form>
+        </div>
+        <div class="column-one-third">
+          <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()" [formGroup]="editForm.controls['data']" [eventFields]="caseFields"></ccd-case-edit-form>
+        </div>
       </div>
-  </fieldset>
+    </fieldset>
 
-  <div class="form-group form-group-related">
-    <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
-    <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">Continue</button>
-  </div>
+    <div class="form-group form-group-related">
+      <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
+      <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">Continue</button>
+    </div>
 
-  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
+    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
 
-</form>
+  </form>
 </div>

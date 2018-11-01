@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 1.2.27 - October 29 2018
+**RDM-1202** - Custom case event field labels and hint texts
+
 ### Version 1.2.24 - October 19 2018
 **RDM-3064** Add CaseCreateComponent and CaseProgressComponent to NgModule.
 
