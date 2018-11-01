@@ -409,6 +409,21 @@ describe('WriteComplexFieldComponent', () => {
       expect(labels[LINE_1].componentInstance.caseField.label).toBe(FIELD_TYPE.complex_fields[LINE_1].label);
       expect(labels[LINE_2].componentInstance.caseField.label).toBe(FIELD_TYPE.complex_fields[LINE_2].label);
     });
+
+    it('should render label if set to true', () => {
+      component.caseField = {
+        id: 'renderLabelId',
+        label: 'Test Label',
+        display_context: 'OPTIONAL',
+        field_type: FIELD_TYPE,
+        value: {
+          'AddressLine1': 'Flat 9'
+        }
+      };
+      component.renderLabel = true;
+      fixture.detectChanges();
+      expect(component.caseField.label).toBe('Test Label');
+    });
   });
 
   describe('when display_context of AddressLine1 is MANDATORY', () => {
