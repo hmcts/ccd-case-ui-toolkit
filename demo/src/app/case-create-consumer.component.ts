@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'case-create-consumer',
@@ -10,10 +10,14 @@ import { Component } from '@angular/core';
                               (submitted)="submit($event)"></ccd-case-create>
              </div>`
 })
-export class CaseCreateConsumerComponent {
+export class CaseCreateConsumerComponent implements OnInit {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
+
+  ngOnInit() {
+    console.log('CaseCreateConsumerComponent !!!!');
+  }
 
   submit(event: any): void {
     console.log('CaseCreateConsumerComponent submit event=', event);

@@ -9,7 +9,7 @@ import { CaseField } from '../domain/definition/case-field.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { EventTriggerService } from './eventTrigger.service';
 
-describe('CaseEditWizardGuard', () => {
+fdescribe('CaseEditWizardGuard', () => {
 
   const PARENT_URL = '/case/123/trigger/editEvent';
   const PARENT_URL_SEGMENTS = PARENT_URL.split('/');
@@ -61,7 +61,7 @@ describe('CaseEditWizardGuard', () => {
 
     alertService = createSpyObj<AlertService>('AlertService', ['error']);
 
-    eventTriggerService = createSpyObj<EventTriggerService>('EventTriggerService', ['announceEventTrigger']);
+    eventTriggerService = new EventTriggerService();
 
     wizardGuard = new CaseEditWizardGuard(router, routerHelper, wizardFactory, alertService, eventTriggerService);
   });
@@ -99,7 +99,7 @@ describe('CaseEditWizardGuard', () => {
       expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
     });
 
-    it('should resolve with false as current navigation was cancelled', done => {
+    fit('should resolve with false as current navigation was cancelled', done => {
       eventTrigger.case_fields = null;
 
       wizardGuard.resolve(route)

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
@@ -20,6 +20,7 @@ import { FormValueService } from '../form/form-value.service';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import { CaseEditComponent } from './case-edit.component';
 import { CaseEditPageComponent } from './case-edit-page.component';
+import { ProfileService, ProfileNotifier, Profile } from '../profile';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -39,6 +40,9 @@ describe('CaseEditSubmitComponent', () => {
   let pages: WizardPage[];
   let wizard: Wizard;
   let orderService;
+  let profileService;
+  let profileNotifier;
+  let profileNotifierSpy;
   let casesReferencePipe: any;
   let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 3);
   let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 2);
@@ -46,6 +50,32 @@ describe('CaseEditSubmitComponent', () => {
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
   let snapshot: any;
+
+  let USER = {
+    idam: {
+      id: 'userId',
+      email: 'string',
+      forename: 'string',
+      surname: 'string',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+    }
+  };
+  let FUNC = () => false;
+  let PROFILE: Profile = {
+    channels: [],
+    jurisdictions: [],
+    default: {
+      workbasket: {
+        case_type_id: '',
+        jurisdiction_id: '',
+        state_id: ''
+      }
+    },
+    user: USER,
+    'isSolicitor': FUNC,
+  };
+
+  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
 
   let mockRoute: any = {
     snapshot: {
@@ -55,18 +85,7 @@ describe('CaseEditSubmitComponent', () => {
         {},
         {
           data: {
-            profile: {
-              user: {
-                idam: {
-                  id: 'userId',
-                  email: 'string',
-                  forename: 'string',
-                  surname: 'string',
-                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
-                }
-              },
-              'isSolicitor': () => false,
-            }
+            profile: PROFILE
           }
         }
       ]
@@ -106,6 +125,10 @@ describe('CaseEditSubmitComponent', () => {
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileNotifier = new ProfileNotifier();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -121,7 +144,9 @@ describe('CaseEditSubmitComponent', () => {
           {provide: FieldsUtils, useValue: fieldsUtils},
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService}
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
 
@@ -132,6 +157,12 @@ describe('CaseEditSubmitComponent', () => {
       comp = fixture.componentInstance;
       de = fixture.debugElement;
       fixture.detectChanges();
+    });
+
+    it('should announce profile when profile exists on a path from root set by Router', () => {
+      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
+      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
+      expect(profileService.get).not.toHaveBeenCalled();
     });
 
     it('must render correct button label', () => {
@@ -305,13 +336,13 @@ describe('CaseEditSubmitComponent', () => {
     ];
     let firstPage = pages[0];
     wizard = new Wizard(pages);
-    let queryParamMap = createSpyObj('queryParamMap', ['get']);
-    snapshot = {
+    let queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    let snapshotNoProfile = {
       pathFromRoot: [
         {},
         {
           data: {
-            profile: {
+            nonProfileData: {
               user: {
                 idam: {
                   id: 'userId',
@@ -326,11 +357,11 @@ describe('CaseEditSubmitComponent', () => {
           }
         }
       ],
-      queryParamMap: queryParamMap,
+      queryParamMap: queryParamMapNoProfile,
     };
-    mockRoute = {
+    let mockRouteNoProfile = {
       params: of({id: 123}),
-      snapshot: snapshot
+      snapshot: snapshotNoProfile
     };
     beforeEach(async(() => {
       orderService = new OrderService();
@@ -354,6 +385,11 @@ describe('CaseEditSubmitComponent', () => {
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -368,8 +404,10 @@ describe('CaseEditSubmitComponent', () => {
           { provide: CaseFieldService, useValue: caseFieldService },
           { provide: FieldsUtils, useValue: fieldsUtils },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService }
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
         ]
       }).compileComponents();
 
@@ -382,13 +420,19 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
+    it('should announce profile when profile exists on a path from root set by Router', () => {
+      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
+      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
+      expect(profileService.get).toHaveBeenCalled();
+    });
+
     it('must render default button label when custom one is not supplied', () => {
       let buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual('Submit');
     });
 
     it('should emit RESUMED_FORM_DISCARD on create event if cancel triggered and originated from view case', () => {
-      queryParamMap.get.and.callFake(key => {
+      queryParamMapNoProfile.get.and.callFake(key => {
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -402,7 +446,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
-      queryParamMap.get.and.callFake(key => {
+      queryParamMapNoProfile.get.and.callFake(key => {
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return '';

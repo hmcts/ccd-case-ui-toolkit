@@ -73,7 +73,7 @@ export class CaseEditSubmitComponent implements OnInit {
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
-    this.announceProfile(this.route)
+    this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
   }
 

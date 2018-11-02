@@ -1,15 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, NO_ERRORS_SCHEMA, Component, Input, EventEmitter, Output } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import createSpyObj = jasmine.createSpyObj;
 import { CasesService } from '../cases/cases.service';
 import { CaseCreateComponent } from './case-create.component';
-import { CaseEventTrigger, Draft, CaseDetails, CaseEventData, DRAFT_PREFIX } from '../domain';
+import { CaseEventTrigger, CaseDetails, CaseEventData, DRAFT_PREFIX } from '../domain';
 import { createCaseEventTrigger } from '../fixture/shared.fixture';
 import { DraftService } from '../draft';
 import { AlertService } from '../alert';
 import { of, Observable } from 'rxjs';
 import { HttpError } from '../http';
 import { MockComponent } from 'ng2-mock-component';
+import { EventTriggerService } from './eventTrigger.service';
 
 let CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
@@ -77,6 +78,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
   let casesService: any;
   let draftService: any;
   let alertService: any;
+  let eventTriggerService: any;
 
   beforeEach(async(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -89,6 +91,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OB);
     draftService = createSpyObj('draftsService', ['createOrUpdateDraft']);
     alertService = createSpyObj('alertService', ['error']);
+    eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
 
     TestBed
       .configureTestingModule({
@@ -103,6 +106,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
           { provide: CasesService, useValue: casesService },
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
         ]
       })
       .compileComponents();
@@ -118,6 +122,11 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
       de = fixture.debugElement;
       fixture.detectChanges();
   }));
+
+  it('should get event trigger on loading and announce it', () => {
+    expect(casesService.getEventTrigger).toHaveBeenCalledWith(JID, CTID, ETID);
+    expect(eventTriggerService.announceEventTrigger).toHaveBeenCalledWith(EVENT_TRIGGER);
+  });
 
   it('should emit submitted event when submitted emitter is called', () => {
     component.ngOnInit();
@@ -211,6 +220,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
   let casesService: any;
   let draftService: any;
   let alertService: any;
+  let eventTriggerService: any;
 
   beforeEach(async(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -223,6 +233,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OB);
     draftService = createSpyObj('draftsService', ['createOrUpdateDraft']);
     alertService = createSpyObj('alertService', ['error']);
+    eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
 
     TestBed
       .configureTestingModule({
@@ -237,6 +248,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
           { provide: CasesService, useValue: casesService },
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
         ]
       })
       .compileComponents();
@@ -274,6 +286,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
   let casesService: any;
   let draftsService: any;
   let alertService: any;
+  let eventTriggerService: any;
 
   beforeEach(async(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -286,6 +299,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
     casesService.getEventTrigger.and.returnValue(ERROR_OBS);
     draftsService = createSpyObj('draftsService', ['createOrUpdateDraft']);
     alertService = createSpyObj('alertService', ['error']);
+    eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
 
     TestBed
       .configureTestingModule({
@@ -300,6 +314,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
           { provide: CasesService, useValue: casesService },
           { provide: DraftService, useValue: draftsService },
           { provide: AlertService, useValue: alertService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
         ]
       })
       .compileComponents();
@@ -313,9 +328,10 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
       fixture.detectChanges();
   }));
 
-  it('should alert warning message if getting event trigger fails', () => {
-    component.ngOnInit();
+  it('should alert warning message and never announce event trigger if getting event trigger fails', () => {
 
     expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
+
 });

@@ -1,14 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, NO_ERRORS_SCHEMA, Component, Input, EventEmitter, Output } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import createSpyObj = jasmine.createSpyObj;
 import { CasesService } from '../cases/cases.service';
 import { CaseProgressComponent } from './case-progress.component';
-import { CaseEventTrigger, Draft, CaseDetails, CaseEventData, CaseView } from '../domain';
+import { CaseEventTrigger, CaseDetails, CaseEventData, CaseView } from '../domain';
 import { createCaseEventTrigger } from '../fixture/shared.fixture';
 import { AlertService } from '../alert';
 import { of, Observable } from 'rxjs';
 import { HttpError } from '../http';
 import { MockComponent } from 'ng2-mock-component';
+import { EventTriggerService } from './eventTrigger.service';
 
 let CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
@@ -63,7 +64,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
     [],
     true
   );
-  const EVENT_TRIGGER_OB = of(EVENT_TRIGGER);
+  const EVENT_TRIGGER_OBS = of(EVENT_TRIGGER);
 
   const CREATED_CASE: CaseDetails = {
     id: '1234567890123456',
@@ -94,6 +95,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   let submitHandler: any;
   let casesService: any;
   let alertService: any;
+  let eventTriggerService: any;
 
   beforeEach(async(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -104,9 +106,12 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
 
     casesService = createSpyObj('casesService', ['getEventTrigger', 'getCaseViewV2', 'createEvent', 'validateCase']);
     casesService.getCaseViewV2.and.returnValue(CASE_VIEW_DATA_OB);
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OB);
+    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     casesService.createEvent.and.returnValue(CREATED_CASE_OBS);
     casesService.validateCase.and.returnValue(CREATED_CASE_OBS);
+
+    eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
+    eventTriggerService.announceEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
 
     TestBed
       .configureTestingModule({
@@ -120,6 +125,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
         providers: [
           { provide: CasesService, useValue: casesService },
           { provide: AlertService, useValue: alertService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
         ]
       })
       .compileComponents();
@@ -134,6 +140,20 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
       de = fixture.debugElement;
       fixture.detectChanges();
   }));
+
+  it('should get event trigger on loading and announce it', () => {
+    expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_VIEW_DATA.case_id);
+    expect(casesService.getEventTrigger).toHaveBeenCalledWith(JID, CTID, ETID, CASE_VIEW_DATA.case_id);
+    expect(eventTriggerService.announceEventTrigger).toHaveBeenCalledWith(EVENT_TRIGGER);
+  });
+
+  it('should emit submitted event when submitted emitter is called', () => {
+    component.ngOnInit();
+
+    let event = {id: 1, name: 'name'};
+    component.emitSubmitted(event);
+    expect(submitHandler.applyFilters).toHaveBeenCalledWith(event);
+  });
 
   it('should emit submitted event when submitted emitter is called', () => {
     component.ngOnInit();
@@ -200,6 +220,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
   let submitHandler: any;
   let casesService: any;
   let alertService: any;
+  let eventTriggerService: any;
 
   beforeEach(async(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -211,6 +232,9 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
     casesService = createSpyObj('casesService', ['getEventTrigger', 'getCaseViewV2']);
     casesService.getCaseViewV2.and.returnValue(ERROR_OBS);
     alertService = createSpyObj('alertService', ['error']);
+
+    eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
+    eventTriggerService.announceEventTrigger.and.returnValue(ERROR_OBS);
 
     TestBed
       .configureTestingModule({
@@ -224,6 +248,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
         providers: [
           { provide: CasesService, useValue: casesService },
           { provide: AlertService, useValue: alertService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
         ]
       })
       .compileComponents();
@@ -237,17 +262,19 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
       fixture.detectChanges();
   }));
 
-  it('should alert warning message if getting case details fails', () => {
+  it('should alert warning message and never announce event trigger if getting case details fails', () => {
     component.ngOnInit();
 
     expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
 
-  it('should alert warning message if getting event trigger fails', () => {
+  it('should alert warning message and never announce event trigger if getting event trigger fails', () => {
     casesService.getCaseViewV2.and.returnValue(CASE_VIEW_DATA_OB);
     casesService.getEventTrigger.and.returnValue(ERROR_OBS);
     component.ngOnInit();
 
     expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
 });
