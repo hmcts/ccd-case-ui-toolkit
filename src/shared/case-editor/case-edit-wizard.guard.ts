@@ -10,7 +10,6 @@ import { Wizard } from '../domain/case-edit/wizard.model';
 import { CaseField } from '../domain/definition/case-field.model';
 import { EventTriggerService } from './eventTrigger.service';
 import { CaseEventTrigger } from '../domain';
-// import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class CaseEditWizardGuard implements Resolve<boolean> {
@@ -64,7 +63,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     let firstPage = wizard.firstPage(canShowPredicate);
     // If there’s no specific wizard page called, it makes another navigation to either the first page available or to the submit page
     // TODO should find a way to navigate to target page without going through the whole loop (and make a second call to BE) again
-    // This will soon be fied in Angular.
+    // This will soon be fixed in Angular.
     // See: https://github.com/angular/angular/pull/19374
     //      https://github.com/angular/angular/pull/26496
     return this.router.navigate(this.parentUrlSegments(route))
