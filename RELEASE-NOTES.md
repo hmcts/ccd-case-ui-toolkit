@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.30 - November 03 2018
+**RDM-3230** - Fix issue with routing to start page broken when non existent page is requested.
+
 ### Version 1.2.29 - October 31 2018
 **RDM-3230** - Add missing providers in CaseEditorModule and write up README of demo app.
 
