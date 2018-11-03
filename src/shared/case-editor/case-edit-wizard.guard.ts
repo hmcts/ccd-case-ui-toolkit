@@ -32,9 +32,10 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     return Promise.resolve(true);
   }
 
-  private processEventTrigger(route: ActivatedRouteSnapshot, eventTrigger: CaseEventTrigger) {
+  private processEventTrigger(route: ActivatedRouteSnapshot, eventTrigger: CaseEventTrigger): Promise<boolean> {
     if (!eventTrigger.hasFields() || !eventTrigger.hasPages()) {
       this.goToSubmit(route);
+      return Promise.resolve(false);
     }
 
     let wizard = this.wizardFactory.create(eventTrigger);
@@ -46,6 +47,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
     if (!route.params['page']) {
       this.goToFirst(wizard, canShowPredicate, route);
+      return Promise.resolve(false);
     }
 
     let pageId = route.params['page'];
@@ -55,8 +57,9 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
         .then(() => {
           this.alertService.error(`No page could be found for '${pageId}'`);
         });
+      return Promise.resolve(false);
     }
-
+    return Promise.resolve(true);
   }
 
   private goToFirst(wizard: Wizard, canShowPredicate: Predicate<WizardPage>, route: ActivatedRouteSnapshot): Promise<boolean> {
