@@ -7,7 +7,7 @@ import { CaseEventTrigger, CaseDetails, CaseEventData, DRAFT_PREFIX } from '../d
 import { createCaseEventTrigger } from '../fixture/shared.fixture';
 import { DraftService } from '../draft';
 import { AlertService } from '../alert';
-import { of, Observable } from 'rxjs';
+import { of, Observable, throwError } from 'rxjs';
 import { HttpError } from '../http';
 import { MockComponent } from 'ng2-mock-component';
 import { EventTriggerService } from './eventTrigger.service';
@@ -275,7 +275,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
 describe('CaseCreateComponent failed to resolve event trigger', () => {
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'ERROR!';
-  const ERROR_OBS: Observable<HttpError> = Observable.throw(ERROR);
+  const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
 
   let fixture: ComponentFixture<CaseCreateComponent>;
   let component: CaseCreateComponent;

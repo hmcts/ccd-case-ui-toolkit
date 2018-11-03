@@ -1,7 +1,7 @@
 import { Response, ResponseOptions, Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../app.config';
 import { CasesService } from './cases.service';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { CasePrintDocument } from '../../shared/domain/case-view/case-print-document.model';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseView, OrderService, CaseEventTrigger, CaseEventData } from '../domain';
@@ -93,7 +93,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       casesService
         .getCaseView(JID, CTID, CASE_ID)
@@ -137,7 +137,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       casesService
         .getCaseViewV2(CASE_ID)
@@ -194,7 +194,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       casesService
         .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, 'true')
@@ -278,7 +278,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.post.and.returnValue(Observable.throw(ERROR));
+      httpService.post.and.returnValue(throwError(ERROR));
 
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
@@ -347,7 +347,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.post.and.returnValue(Observable.throw(ERROR));
+      httpService.post.and.returnValue(throwError(ERROR));
 
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
@@ -411,7 +411,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.post.and.returnValue(Observable.throw(ERROR));
+      httpService.post.and.returnValue(throwError(ERROR));
 
       casesService
         .createCase(JID, CTID, CASE_EVENT_DATA)
@@ -457,7 +457,7 @@ describe('CasesService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       casesService
         .getPrintDocuments(JID, CTID, CASE_ID)

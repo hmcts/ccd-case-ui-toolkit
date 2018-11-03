@@ -9,14 +9,26 @@ Demo-project is created as an alternative to `npm link` command. You may simply 
 # Quick Start
 
 ```bash
-# Assuming the you are already in case-ui-toolkit/demo folder
+# Open first terminal and assuming that you are already in case-ui-toolkit folder
 
 # Install all dependencies
 yarn install
 
-# Start watching library dist folder and do project build in watch mode.
+# Start build of ccd-case-ui-toolkit in esm watch mode
+yarn build:esm:watch
+
+# Open first terminal and assuming that you are already in case-ui-toolkit/demo folder
+
+# Install all dependencies
+yarn install
+
+# Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the watch task registers two changes: copy inited and copy finished)
 yarn start:watch
 
+# Open third terminal and assuming that you are already in case-ui-toolkit/demo folder
+
+# Start stub server if you want to run off stubbed data
+yarn stub-api
 ```
 
 # File Structure
@@ -59,12 +71,6 @@ Install Yarn by following the [instructions](https://yarnpkg.com/en/docs/install
 ## Installing
 - Switch to `demo` folder in your console.
 - `yarn install` to install required dependencies.
-
-## Replace `CaseUIToolkit` library related code with your own library tags and imports
-This step may be optional at first since you might just want to build demo projects with CaseUIToolkit library example.
-
-Once you're ready to develop your own library you should do the following.
-- Adjust source codes of `ccd-case-ui-toolkit/demo/src/app/*.ts` files for Angular builds.
 
 ## Build project
 - `yarn build` for building Angular Demo app.

@@ -8,8 +8,9 @@ import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../domain/definition/case-field.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { EventTriggerService } from './eventTrigger.service';
+import { fakeAsync, tick } from '@angular/core/testing';
 
-fdescribe('CaseEditWizardGuard', () => {
+describe('CaseEditWizardGuard', () => {
 
   const PARENT_URL = '/case/123/trigger/editEvent';
   const PARENT_URL_SEGMENTS = PARENT_URL.split('/');
@@ -40,7 +41,7 @@ fdescribe('CaseEditWizardGuard', () => {
     queryParams = { queryParams: [] };
 
     router = createSpyObj('router', ['navigate']);
-    router.navigate.and.returnValue(Promise.resolve(true));
+    router.navigate.and.returnValues(Promise.resolve(true), Promise.resolve(true));
     routerHelper = createSpyObj('RouterHelperService', ['getUrlSegmentsFromRoot']);
     routerHelper.getUrlSegmentsFromRoot.and.returnValue(PARENT_URL_SEGMENTS);
 
@@ -99,15 +100,6 @@ fdescribe('CaseEditWizardGuard', () => {
       expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
     });
 
-    fit('should resolve with false as current navigation was cancelled', done => {
-      eventTrigger.case_fields = null;
-
-      wizardGuard.resolve(route)
-        .then(value => expect(value).toEqual(false))
-        .then(done)
-        .catch(fail);
-    });
-
   });
 
   describe('when no pages', () => {
@@ -127,14 +119,6 @@ fdescribe('CaseEditWizardGuard', () => {
       expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
     });
 
-    it('should resolve with false as current navigation was cancelled', done => {
-      eventTrigger.wizard_pages = null;
-
-      wizardGuard.resolve(route)
-        .then(value => expect(value).toEqual(false))
-        .then(done)
-        .catch(fail);
-    });
   });
 
   describe('when no `page` param in route', () => {
@@ -144,34 +128,50 @@ fdescribe('CaseEditWizardGuard', () => {
       wizard.firstPage.and.returnValue(page('page1'));
     });
 
-    it('should redirect to first visible page of wizard', () => {
-      wizardGuard.resolve(route);
+    it('should redirect to first visible page of wizard', done => {
 
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'page1'], queryParams);
-      expect(wizard.firstPage).toHaveBeenCalled();
-    });
-
-    it('should resolve with false as current navigation was cancelled', done => {
       wizardGuard.resolve(route)
-        .then(value => expect(value).toEqual(false))
+        .then(() => {
+          expect(router.navigate.calls.allArgs()).toEqual([
+            [ [ ...PARENT_URL_SEGMENTS ] ],
+            [ [ ...PARENT_URL_SEGMENTS, 'page1' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
+          ]);
+          expect(wizard.firstPage).toHaveBeenCalled();
+        })
         .then(done)
         .catch(fail);
+
     });
 
-    it('should redirect when `page` param is empty', () => {
+    it('should redirect when `page` param is empty', done => {
       routeParams['page'] = '';
 
-      wizardGuard.resolve(route);
+      wizardGuard.resolve(route)
+        .then(() => {
+          expect(router.navigate.calls.allArgs()).toEqual([
+            [ [ ...PARENT_URL_SEGMENTS ] ],
+            [ [ ...PARENT_URL_SEGMENTS, 'page1' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
+          ]);
+          expect(wizard.firstPage).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(fail);
 
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'page1'], queryParams);
     });
 
-    it('should redirect to submit when all pages hidden', () => {
+    it('should redirect to submit when all pages hidden', done => {
       wizard.firstPage.and.returnValue(null);
 
-      wizardGuard.resolve(route);
-
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit'], queryParams);
+      wizardGuard.resolve(route)
+        .then(() => {
+          expect(router.navigate.calls.allArgs()).toEqual([
+            [ [ ...PARENT_URL_SEGMENTS ] ],
+            [ [ ...PARENT_URL_SEGMENTS, 'submit' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
+          ]);
+          expect(wizard.firstPage).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(fail);
     });
   });
 
@@ -183,28 +183,25 @@ fdescribe('CaseEditWizardGuard', () => {
       wizard.hasPage.and.returnValue(false);
     });
 
-    it('should redirect to first wizard page', () => {
-      wizardGuard.resolve(route);
-
-      expect(wizard.hasPage).toHaveBeenCalledWith('unknown');
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'page1'], queryParams);
-    });
-
-    it('should alert error', done => {
+    it('should redirect to first wizard page', done => {
       wizardGuard.resolve(route)
         .then(() => {
-          expect(alertService.error).toHaveBeenCalledWith(`No page could be found for 'unknown'`);
+          expect(router.navigate.calls.allArgs()).toEqual([
+            [ [ ...PARENT_URL_SEGMENTS ] ],
+            [ [ ...PARENT_URL_SEGMENTS, 'page1' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
+          ]);
+          expect(wizard.hasPage).toHaveBeenCalledWith('unknown');
         })
         .then(done)
         .catch(fail);
     });
 
-    it('should resolve with false as current navigation was cancelled', done => {
-      wizardGuard.resolve(route)
-        .then(value => expect(value).toEqual(false))
-        .then(done)
-        .catch(fail);
-    });
+    it('should alert error', fakeAsync(() => {
+      wizardGuard.resolve(route);
+      tick();
+      expect(alertService.error).toHaveBeenCalledWith(`No page could be found for 'unknown'`);
+    }));
+
   });
 
   function page(pageId: string): WizardPage {

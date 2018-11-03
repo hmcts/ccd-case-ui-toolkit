@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { Draft } from '../domain/draft';
 import { CasesService } from '../cases/cases.service';
@@ -46,7 +46,7 @@ export class CaseCreateComponent implements OnInit {
       })
       .catch((error: HttpError) => {
         this.alertService.error(error.message);
-        return Observable.throw(error);
+        return throwError(error);
       });
   }
 

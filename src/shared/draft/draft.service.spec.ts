@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Response, ResponseOptions } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { DraftService } from './draft.service';
@@ -84,7 +84,7 @@ describe('Drafts Service', () => {
     });
 
     it('should set error when error is thrown when creating draft', () => {
-      httpService.post.and.returnValue(Observable.throw(ERROR));
+      httpService.post.and.returnValue(throwError(ERROR));
 
       draftService.createDraft(JID, CT_ID, CASE_EVENT_DATA)
         .subscribe(data => {
@@ -104,7 +104,7 @@ describe('Drafts Service', () => {
     });
 
     it('should set error when error is thrown when updating draft', () => {
-      httpService.put.and.returnValue(Observable.throw(ERROR));
+      httpService.put.and.returnValue(throwError(ERROR));
 
       draftService.updateDraft(JID, CT_ID, DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(data => {
@@ -152,7 +152,7 @@ describe('Drafts Service', () => {
     });
 
     it('should set error when error is thrown when getting draft', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
       draftService
         .getDraft(JID, CT_ID, DRAFT_ID)
         .subscribe(data => {
@@ -177,7 +177,7 @@ describe('Drafts Service', () => {
     });
 
     it('should set error when error is thrown when deleting draft', () => {
-      httpService.delete.and.returnValue(Observable.throw(ERROR));
+      httpService.delete.and.returnValue(throwError(ERROR));
       draftService
         .deleteDraft(JID, CT_ID, DRAFT_ID)
         .subscribe(data => {

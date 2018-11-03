@@ -14,4 +14,5 @@ export const routing = RouterModule.forRoot(
       children: caseEditRouting
     }
   ]
+  // ,{ enableTracing: true }
 )

@@ -25,22 +25,17 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
-      return this.processEventTrigger(route, eventTrigger);
+      this.processEventTrigger(route, eventTrigger);
     });
-    console.log('route eventTrigger=', route.parent.data.eventTrigger);
     if (route.parent.data.eventTrigger) {
-      console.log('INSIDE =', route.parent.data.eventTrigger);
       this.eventTriggerService.announceEventTrigger(route.parent.data.eventTrigger);
     }
-    console.log('CaseEditWizardGuard END');
     return Promise.resolve(true);
   }
 
-  private processEventTrigger(route: ActivatedRouteSnapshot, eventTrigger: CaseEventTrigger): Promise<boolean> {
-    console.log('CaseEditWizardGuard=', eventTrigger);
+  private processEventTrigger(route: ActivatedRouteSnapshot, eventTrigger: CaseEventTrigger) {
     if (!eventTrigger.hasFields() || !eventTrigger.hasPages()) {
       this.goToSubmit(route);
-      return Promise.resolve(false);
     }
 
     let wizard = this.wizardFactory.create(eventTrigger);
@@ -52,7 +47,6 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
     if (!route.params['page']) {
       this.goToFirst(wizard, canShowPredicate, route);
-      return Promise.resolve(false);
     }
 
     let pageId = route.params['page'];
@@ -62,18 +56,24 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
         .then(() => {
           this.alertService.error(`No page could be found for '${pageId}'`);
         });
-      return Promise.resolve(false);
     }
 
-    return Promise.resolve(true);
   }
 
   private goToFirst(wizard: Wizard, canShowPredicate: Predicate<WizardPage>, route: ActivatedRouteSnapshot): Promise<boolean> {
     let firstPage = wizard.firstPage(canShowPredicate);
     // If there’s no specific wizard page called, it makes another navigation to either the first page available or to the submit page
     // TODO should find a way to navigate to target page without going through the whole loop (and make a second call to BE) again
-    return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'],
-      { queryParams: route.queryParams });
+    // This will soon be fied in Angular.
+    // See: https://github.com/angular/angular/pull/19374
+    //      https://github.com/angular/angular/pull/26496
+    return this.router.navigate(this.parentUrlSegments(route))
+            .then(() => {
+                return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'], {
+                    replaceUrl: true,
+                    queryParams: route.queryParams
+                });
+            });
   }
 
   private goToSubmit(route: ActivatedRouteSnapshot): Promise<boolean> {

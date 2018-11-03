@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Response } from '@angular/http';
 import { AbstractAppConfig } from '../../app.config';
 import { HttpService, HttpErrorService } from '../http';
@@ -20,7 +20,7 @@ export class DraftService {
       .map(response => response.json())
       .catch((error: any): any => {
         this.errorService.setError(error);
-        return Observable.throw(error);
+        return throwError(error);
       });
   }
 
@@ -31,7 +31,7 @@ export class DraftService {
       .map(response => response.json())
       .catch((error: any): any => {
         this.errorService.setError(error);
-        return Observable.throw(error);
+        return throwError(error);
       });
   }
 
@@ -42,7 +42,7 @@ export class DraftService {
       .map(response => response.json())
       .catch((error: any): any => {
         this.errorService.setError(error);
-        return Observable.throw(error);
+        return throwError(error);
       });
   }
 
@@ -52,7 +52,7 @@ export class DraftService {
       .delete(url)
       .catch((error: any): any => {
         this.errorService.setError(error);
-        return Observable.throw(error);
+        return throwError(error);
       });
   }
 
