@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.31 - November 03 2018
+**RDM-3230** - Fix alert error when going to first page if no page param or no fields or pages in data specified.
+
 ### Version 1.2.30 - November 03 2018
 **RDM-3230** - Fix issue with routing to start page broken when non existent page is requested.
 
