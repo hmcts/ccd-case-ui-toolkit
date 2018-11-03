@@ -80,3 +80,4 @@ export { CallbackErrorsContext } from './shared/error/error-context';
 export { CasesService } from './shared/cases/cases.service';
 export { CasePrintDocument } from './shared/domain/case-view/case-print-document.model';
 export { DraftService } from './shared/draft/draft.service';
+export { DialogsModule } from './shared/dialogs/dialogs.module';

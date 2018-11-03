@@ -31,4 +31,4 @@ import { RemoveDialogComponent } from './remove-dialog';
     RemoveDialogComponent,
   ]
 })
-export class Dialogs {}
+export class DialogsModule {}
