@@ -165,7 +165,7 @@ describe('WriteComplexFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('should not render a form group with a header for the complex type', () => {
+    it('should render a form group with a header for the complex type', () => {
       let panelTitle = de
         .query($COMPLEX_PANEL)
         .query($COMPLEX_PANEL_TITLE);
