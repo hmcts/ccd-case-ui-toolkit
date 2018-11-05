@@ -171,6 +171,7 @@ describe('WriteComplexFieldComponent', () => {
         .query($COMPLEX_PANEL_TITLE);
 
       expect(panelTitle).not.toBeNull();
+      expect(panelTitle.nativeElement.textContent).toBe(CASE_FIELD.label + ' (Optional)');
     });
 
     it('should render a field write component for each field in the complex type', () => {
