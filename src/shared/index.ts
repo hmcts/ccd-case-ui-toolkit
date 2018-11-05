@@ -5,6 +5,7 @@ export * from './conditional-show';
 export * from './document-dialog';
 export * from './documentManagement';
 export * from './domain';
+export * from './draft';
 export * from './error';
 export * from './form';
 export * from './http';
