@@ -29,7 +29,7 @@ export class ShowCondition {
       let value = fields[field];
       if (right.search(',') > -1) { // for  multi-select list
         let rights = right.split(',').sort().toString();
-        let values = value ? value.toString().split(',').sort().toString() : '';
+        let values = value ? value.sort().toString() : '';
         return rights === values;
       } else if (right.endsWith('*') && value) {
         return value.startsWith(this.removeStarChar(right));
@@ -43,7 +43,7 @@ export class ShowCondition {
       let value = fields[field];
       if (right.search(',') > -1) {
         let rights = right.split(',').sort();
-        let values = value ? value.toString().split(',').sort().toString() : '';
+        let values = value ? value.sort().toString() : '';
         return rights.every(item => values.search(item) >= 0);
       } else {
         // changed from '===' to '==' to cover number field conditions

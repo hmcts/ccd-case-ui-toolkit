@@ -254,7 +254,7 @@ describe('conditional-show', () => {
     }));
 
     it('should return true when all conditions are true', () => {
-      caseField1.value = '[s1,s2,s3]';
+      caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
 
       let matched = sc.matchByCaseFields(caseFields);
