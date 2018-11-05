@@ -6,17 +6,17 @@ node_js:
   - "node"    # Latest stable Node
 cache: yarn
 install:
-- npm install -g codecov
-- npm install -g ng-cli
-- yarn install
+  - npm install -g codecov
+  - npm install -g @angular/cli
+  - yarn install
 script:
-- yarn --version
-- yarn lint
-- yarn test
-- yarn build
+  - yarn --version
+  - yarn lint
+  - yarn test
+  - yarn build
 after_success:
-- yarn test:codacy-upload
-- yarn coverage
+  - yarn test:codacy-upload
+  - yarn coverage
 deploy:
   provider: npm
   email: jenkins-reform@hmcts.net
