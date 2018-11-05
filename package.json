@@ -84,7 +84,6 @@
     "express": "^4.16.2",
     "font-awesome": "^4.6.1",
     "gh-pages": "^2.0.0",
-    "git-message": "^2.0.2",
     "govuk_frontend_toolkit": "^8.0.0",
     "gulp": "^3.9.1",
     "gulp-inline-ng2-template": "^5.0.1",
