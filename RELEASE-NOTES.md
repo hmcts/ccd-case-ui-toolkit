@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 1.2.32 - November 06 2018
+**RDM-3230** Fix to emit event id when submitting in case create or progress components. Updated stub. Updated styling of demo app.
+
 ### Version 1.2.31 - November 03 2018
 **RDM-3230** - Fix alert error when going to first page if no page param or no fields or pages in data specified.
 
