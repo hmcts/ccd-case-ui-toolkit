@@ -185,7 +185,7 @@ export class CasesService {
   }
 
   private processResponse(response) {
-    if (response.headers && response.headers.get('content-type') === 'application/json;charset=UTF-8') {
+    if (response.headers && response.headers.get('content-type').indexOf('application/json') !== -1) {
       return response.json();
     }
     return {'id': ''};

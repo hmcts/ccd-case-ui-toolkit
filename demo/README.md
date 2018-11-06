@@ -17,7 +17,7 @@ yarn install
 # Start build of ccd-case-ui-toolkit in esm watch mode
 yarn build:esm:watch
 
-# Open first terminal and assuming that you are already in case-ui-toolkit/demo folder
+# Open second terminal and assuming that you are already in case-ui-toolkit/demo folder
 
 # Install all dependencies
 yarn install

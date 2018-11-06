@@ -15,6 +15,7 @@ import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthServi
   LabelSubstitutionService, DocumentManagementService, PageValidationService} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
+import { CoreComponent } from './core.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { CaseProgressConsumerComponent } from './case-progress-consumer.componen
   ],
   declarations: [
     AppComponent,
+    CoreComponent,
     CaseCreateConsumerComponent,
     CaseProgressConsumerComponent,
   ],
