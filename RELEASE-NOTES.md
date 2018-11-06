@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.0.0 - October 29 2018
+### Version 2.0.0 - November 06 2018
 **RDM-3064** - Case progression: Better component contract
 
 ### Version 1.2.27 - October 29 2018
