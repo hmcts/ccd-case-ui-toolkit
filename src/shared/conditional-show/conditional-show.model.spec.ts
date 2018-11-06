@@ -182,6 +182,16 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
+    it('field mentioned in multi value condition has no value asked in EQUALS condition', () => {
+      let sc = new ShowCondition('field="test,pest"');
+      let fields = {
+        field : undefined
+      };
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
+
     it('field mentioned in condition has no value asked in CONTAINS condition', () => {
       let sc = new ShowCondition('fieldCONTAINS"test,mest"');
       let fields = {
@@ -194,6 +204,16 @@ describe('conditional-show', () => {
 
     it('field mentioned in condition has no value', () => {
       let sc = new ShowCondition('fieldCONTAINS"test,mest"');
+      let fields = {
+        field : undefined
+      };
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
+
+    it('field mentioned in single value condition has no value', () => {
+      let sc = new ShowCondition('fieldCONTAINS"test"');
       let fields = {
         field : undefined
       };
@@ -321,9 +341,26 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
-    it('should return false when value does not match', () => {
+    it('should return false when values do not match', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s1,s4"');
+
+      let matched = sc.matchByCaseFields(caseFields);
+
+      expect(matched).toBe(false);
+    });
+
+    it('should return true when single value condition matches', () => {
+      caseField1.value = ['s1', 's2', 's3'];
+      let sc = new ShowCondition('field1CONTAINS"s3"');
+
+      let matched = sc.matchByCaseFields(caseFields);
+
+      expect(matched).toBe(true);
+    });
+
+    it('should return false for non multi select fields', () => {
+      let sc = new ShowCondition('field3CONTAINS"temmy"');
 
       let matched = sc.matchByCaseFields(caseFields);
 

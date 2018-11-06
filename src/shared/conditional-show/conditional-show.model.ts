@@ -46,8 +46,8 @@ export class ShowCondition {
         let values = value ? value.sort().toString() : '';
         return rights.every(item => values.search(item) >= 0);
       } else {
-        // changed from '===' to '==' to cover number field conditions
-        return value[0] == right; // tslint:disable-line
+        let values = value && Array.isArray(value) ? value.toString() : '';
+        return values.search(right) >= 0;
       }
     }
   }
