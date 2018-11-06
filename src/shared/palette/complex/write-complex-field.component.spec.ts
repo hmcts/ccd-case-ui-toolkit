@@ -170,7 +170,7 @@ describe('WriteComplexFieldComponent', () => {
         .query($COMPLEX_PANEL)
         .query($COMPLEX_PANEL_TITLE);
 
-      expect(panelTitle).toBeTruthy();
+      expect(panelTitle).not.toBeNull();
       expect(panelTitle.nativeElement.textContent).toBe(CASE_FIELD.label + ' (Optional)');
     });
 
