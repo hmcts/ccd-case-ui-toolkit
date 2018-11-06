@@ -42,7 +42,7 @@
     "server": "yarn --cwd demo stub-api",
     "client": "yarn --cwd demo start",
     "start": "concurrently \"yarn server\" \"yarn client\"",
-    "postinstall": "yarn build:esm && yarn --cwd demo build"
+    "postinstall": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
     "@angular/cli": "^6.0.8",
