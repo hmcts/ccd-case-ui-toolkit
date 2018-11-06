@@ -47,6 +47,6 @@ server.use(function (req, res) {
 });
 
 server.use(router)
-server.listen(3454, function () {
+server.listen(process.env.PORT || 3454, function () {
   console.log('JSON Server is running')
 });
