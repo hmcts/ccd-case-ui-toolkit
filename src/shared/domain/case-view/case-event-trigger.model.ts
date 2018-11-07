@@ -1,5 +1,5 @@
 import { CaseField } from '../definition/case-field.model';
-import { WizardPage } from '../wizard-page.model';
+import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
 import { Type } from 'class-transformer';
 
 // @dynamic

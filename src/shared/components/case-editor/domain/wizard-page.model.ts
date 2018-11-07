@@ -1,0 +1,35 @@
+import { Orderable } from '../../../domain/order/orderable.model';
+import { WizardPageField } from './wizard-page-field.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { Type } from 'class-transformer';
+
+// @dynamic
+export class WizardPage implements Orderable {
+
+  id: string;
+  label: string;
+  order?: number;
+
+  @Type(() => WizardPageField)
+  wizard_page_fields: WizardPageField[];
+
+  @Type(() => CaseField)
+  case_fields: CaseField[];
+
+  show_condition?: string;
+
+  parsedShowCondition: ShowCondition;
+
+  getCol1Fields(): CaseField[] {
+    return this.case_fields.filter(f =>
+      !f.wizardProps.page_column_no || f.wizardProps.page_column_no === 1);
+  }
+  getCol2Fields(): CaseField[] {
+    return this.case_fields.filter(f => f.wizardProps.page_column_no === 2);
+  }
+
+  isMultiColumn(): Boolean {
+    return this.getCol2Fields().length > 0;
+  }
+}
