@@ -7,8 +7,7 @@
     "copy-lib": "cp -rf ../dist node_modules/@hmcts/ccd-case-ui-toolkit/",
     "prebuild": "npm run copy-lib",
     "start": "node server.js",
-    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
-    "stub-api": "node stubs/server.js"
+    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\""
   },
   "dependencies": {
     "@angular/cli": "^7.0.3",

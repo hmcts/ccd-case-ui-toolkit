@@ -39,9 +39,7 @@
     "test:coverage": "istanbul check-coverage --statements 80 --lines 80 --functions 80 --branches 80",
     "test:watch": "karma start --auto-watch --no-single-run",
     "tslint": "tslint",
-    "server": "yarn --cwd demo stub-api",
-    "client": "yarn --cwd demo start",
-    "start": "concurrently \"yarn server\" \"yarn client\"",
+    "start": "yarn --cwd demo start",
     "postinstall": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
@@ -97,6 +95,7 @@
     "express": "^4.16.4",
     "font-awesome": "^4.6.1",
     "gh-pages": "^2.0.0",
+    "git-message": "^2.0.2",
     "govuk_frontend_toolkit": "^8.0.0",
     "gulp": "^3.9.1",
     "gulp-inline-ng2-template": "^5.0.1",

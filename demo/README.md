@@ -22,13 +22,8 @@ yarn build:esm:watch
 # Install all dependencies
 yarn install
 
-# Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the gulp watch task registers two changes: copy inited and copy finished)
+# Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the gulp watch task registers two changes: copy inited and copy finished; also notice this spins up stubs api in the same process - see server.js)
 yarn start:watch
-
-# Open third terminal and assuming that you are already in case-ui-toolkit/demo folder
-
-# Start stub server if you want to run off stubbed data
-yarn stub-api
 
 # To verify the demo app is working go to http://localhost:8080
 ```
@@ -50,6 +45,7 @@ ccd-case-ui-toolkit
      ├─ stubs                       * Stubs routes and data for stub server
      ├─ .gitignore                  * List of files that are ignored while publishing to git repository
      ├─ angular.json                * Typescript app configuration.
+     ├─ server.js                   * Node js server wrapping angular app (needed for heroku)
      ├─ gulpfile.js                 * Gulp helper scripts for building demos
      ├─ package.json                * NPM dependencies and helper scripts for building demos
      ├─ tsconfig.json               * Typescript base configuration.
