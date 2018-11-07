@@ -1,4 +1,4 @@
-import { CaseEventData } from './shared/domain/case-event-data';
+import { CaseEventData } from './shared/domain/case-event-data.model';
 
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;

@@ -1,4 +1,18 @@
 ## RELEASE NOTES
+### Version 1.2.32 - November 06 2018
+**RDM-3230** Fix to emit event id when submitting in case create or progress components. Updated stub. Updated styling of demo app.
+
+### Version 1.2.31 - November 03 2018
+**RDM-3230** - Fix alert error when going to first page if no page param or no fields or pages in data specified.
+
+### Version 1.2.30 - November 03 2018
+**RDM-3230** - Fix issue with routing to start page broken when non existent page is requested.
+
+### Version 1.2.29 - October 31 2018
+**RDM-3230** - Add missing providers in CaseEditorModule and write up README of demo app.
+
+### Version 1.2.28 - October 29 2018
+**RDM-3230** - Vanilla app to POC the case progression facade components
 
 ### Version 2.0.0 - November 06 2018
 **RDM-3064** - Case progression: Better component contract
