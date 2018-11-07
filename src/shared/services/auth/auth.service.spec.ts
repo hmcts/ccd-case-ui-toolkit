@@ -7,10 +7,8 @@ import { AbstractAppConfig } from '../../../app.config';
 
 describe('AuthService', () => {
 
-  const TOKEN_ENDPOINT = 'http://localhost:1234/oauth2/token';
   const RESPONSE = of(new Response(new ResponseOptions()));
   const LOGIN_URL = 'http://idam/login';
-  const LOGOUT_URL = 'http://gateway.ccd/logout';
   const OAUTH2_CLIENT_ID = 'some_client_id';
   const REDIRECT_URI = 'http://localhost/oauth2redirect';
   const REDIRECT_URI_ENCODED = encodeURIComponent(REDIRECT_URI);
@@ -25,14 +23,10 @@ describe('AuthService', () => {
     httpService.get.and.returnValue(RESPONSE);
 
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
-      'getOAuth2TokenEndpointUrl',
       'getOAuth2ClientId',
       'getLoginUrl',
-      'getLogoutUrl',
     ]);
-    appConfig.getOAuth2TokenEndpointUrl.and.returnValue(TOKEN_ENDPOINT);
     appConfig.getLoginUrl.and.returnValue(LOGIN_URL);
-    appConfig.getLogoutUrl.and.returnValue(LOGOUT_URL);
     appConfig.getOAuth2ClientId.and.returnValue(OAUTH2_CLIENT_ID);
     document = {
       location: {

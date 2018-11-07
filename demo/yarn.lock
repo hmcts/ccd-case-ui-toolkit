@@ -212,9 +212,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/ccd-case-ui-toolkit@1.2.24":
-  version "1.2.24"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-1.2.24.tgz#b524bffd050f776f9115a9242add2235d2438359"
+"@hmcts/ccd-case-ui-toolkit@1.2.29":
+  version "1.2.29"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-1.2.29.tgz#57c47f9085efac96e002e8db5b4fcdbc2ee7fb5f"
+  integrity sha512-At1We3jTkNRLgW4622A5nIIJh7HLkP3eqrktHlriK2Ch/mYEIOUPQBFPesxVgYvvg3hoqGlFmJqkmFmVB5KImA==
   dependencies:
     govuk-elements-sass "^3.1.2"
     karma-jasmine-html-reporter "^1.2.0"
