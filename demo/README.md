@@ -22,13 +22,15 @@ yarn build:esm:watch
 # Install all dependencies
 yarn install
 
-# Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the watch task registers two changes: copy inited and copy finished)
+# Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the gulp watch task registers two changes: copy inited and copy finished)
 yarn start:watch
 
 # Open third terminal and assuming that you are already in case-ui-toolkit/demo folder
 
 # Start stub server if you want to run off stubbed data
 yarn stub-api
+
+# To verify the demo app is working go to http://localhost:8080
 ```
 
 # File Structure
