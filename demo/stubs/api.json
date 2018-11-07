@@ -1321,80 +1321,218 @@
     "ignore_warning": false
   },
   "submitted_case": {
-    "data": {
-      "PersonFirstName": "Fred",
-      "HouseFlatNumber": null,
-      "PersonLastNameWithValidation": "Doe",
-      "HouseFlatPostcode": null,
-      "IsAddressForService": "",
-      "PetitionerServiceAddress": {
-        "HouseFlatNumber2": null,
-        "HouseFlatPostcode2": null
-      },
-      "DateOfBirth": null,
-      "YourPhoneUk": null,
-      "TotalMonthlyIncome": null,
-      "DocumentUpload": {
-        "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
-        "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
-        "document_filename": "Example_evidence.xyz"
-      },
-      "CantProvideNationalInsuranceNumber": null,
-      "WhatNationality": [],
-      "ExamplesCollection": [],
-      "PersonOrderSummary": {
-        "PaymentReference": "RC-1521-1095-0964-3143",
-        "PaymentTotal": "5000",
-        "Fees": [
-          {
-            "value": {
-              "FeeCode": "FEE0001",
-              "FeeAmount": "4545",
-              "FeeDescription": "First fee description",
-              "FeeVersion": "1"
-            }
+    "id": 1111222233334445,
+    "jurisdiction": "TEST",
+    "state": "CaseCreated",
+    "case_type_id": "TestAddressBookCase",
+    "created_date": "2018-11-06T14:21:37.794",
+    "last_modified": "2018-11-06T14:21:37.794",
+    "security_classification": "PUBLIC",
+    "case_data": {
+      "Group": [
+        {
+          "value": {
+            "Title": "re",
+            "FirstName": "rew",
+            "MiddleName": "gfd",
+            "LastName": "tre",
+            "DateOfBirth": "1234-12-12",
+            "NationalInsuranceNumber": "fdsfds"
           },
+          "id": "b05e2080-588f-4a01-a1b5-e75320b033b1"
+        }
+      ],
+      "Wage": null,
+      "PersonAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "AddressLine3": null,
+        "PostTown": null,
+        "County": null,
+        "PostCode": null,
+        "Country": null
+      },
+      "PersonLastName": null,
+      "PersonFirstName": null
+    },
+    "data_classification": {
+      "Group": {
+        "classification": "PUBLIC",
+        "value": [
           {
             "value": {
-              "FeeCode": "FEE0002",
-              "FeeAmount": "0455",
-              "FeeDescription": "Second fee description",
-              "FeeVersion": "1"
-            }
-          },
-          {
-            "value": {
-              "FeeCode": "FEE0003",
-              "FeeAmount": "7055",
-              "FeeDescription": "Third fee description",
-              "FeeVersion": "1"
-            }
+              "Title": "PUBLIC",
+              "FirstName": "PUBLIC",
+              "MiddleName": "PUBLIC",
+              "LastName": "PUBLIC",
+              "DateOfBirth": "PUBLIC",
+              "NationalInsuranceNumber": "PUBLIC"
+            },
+            "id": "b05e2080-588f-4a01-a1b5-e75320b033b1"
           }
         ]
       },
-      "MarritalStatus": "",
-      "WhatIsYourAge": null
+      "Wage": "PUBLIC",
+      "PersonAddress": {
+        "classification": "PUBLIC",
+        "value": {
+          "AddressLine1": "PUBLIC",
+          "AddressLine2": "PUBLIC",
+          "AddressLine3": "PUBLIC",
+          "PostTown": "PUBLIC",
+          "County": "PUBLIC",
+          "PostCode": "PUBLIC",
+          "Country": "PUBLIC"
+        }
+      },
+      "PersonLastName": "PUBLIC",
+      "PersonFirstName": "PUBLIC"
     },
-    "event": {
-      "id": "createCase",
-      "summary": "",
-      "description": ""
-    },
-    "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJnZTllbTdwZ3ZiNmM4NWMxcG85aXE0b3JwcCIsInN1YiI6Ijk0OCIsImlhdCI6MTUwOTQ2MTY3NiwiZXZlbnQtaWQiOiJjcmVhdGVDYXNlIiwiY2FzZS10eXBlLWlkIjoiVGVzdEFkZHJlc3NCb29rQ2FzZSIsImp1cmlzZGljdGlvbi1pZCI6IlRFU1QiLCJjYXNlLXZlcnNpb24iOiJiZjIxYTllOGZiYzVhMzg0NmZiMDViNGZhMDg1OWUwOTE3YjIyMDJmIn0.VTXhC2-FnlAVVvq9gsKFglvaBM-s-mrXtRLN6ZwLdfk",
-    "ignore_warning": false,
-    "draft_id": null
+    "after_submit_callback_response": null,
+    "callback_response_status_code": null,
+    "callback_response_status": null,
+    "delete_draft_response_status_code": 200,
+    "delete_draft_response_status": "DELETE_DRAFT_COMPLETED",
+    "security_classifications": {
+      "Group": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "value": {
+              "Title": "PUBLIC",
+              "FirstName": "PUBLIC",
+              "MiddleName": "PUBLIC",
+              "LastName": "PUBLIC",
+              "DateOfBirth": "PUBLIC",
+              "NationalInsuranceNumber": "PUBLIC"
+            },
+            "id": "b05e2080-588f-4a01-a1b5-e75320b033b1"
+          }
+        ]
+      },
+      "Wage": "PUBLIC",
+      "PersonAddress": {
+        "classification": "PUBLIC",
+        "value": {
+          "AddressLine1": "PUBLIC",
+          "AddressLine2": "PUBLIC",
+          "AddressLine3": "PUBLIC",
+          "PostTown": "PUBLIC",
+          "County": "PUBLIC",
+          "PostCode": "PUBLIC",
+          "Country": "PUBLIC"
+        }
+      },
+      "PersonLastName": "PUBLIC",
+      "PersonFirstName": "PUBLIC"
+    }
   },
   "submitted_event": {
-    "data": {
-      "PersonFirstName": "Mario",
-      "PersonLastName": null
+    "id": 1111222233334444,
+    "jurisdiction": "TEST",
+    "state": "CaseEnteredIntoLegacy",
+    "case_type_id": "TestAddressBookCase",
+    "created_date": "2018-11-06T14:26:17.981",
+    "last_modified": "2018-11-06T14:26:25.097",
+    "security_classification": "PUBLIC",
+    "case_data": {
+      "Wage": null,
+      "Group": [
+        {
+          "value": {
+            "Title": "rew",
+            "FirstName": "ewr",
+            "MiddleName": "gdf",
+            "LastName": "tre",
+            "DateOfBirth": "1234-12-12",
+            "NationalInsuranceNumber": "fds"
+          },
+          "id": "85c8c7a8-4330-466b-8464-37f7784c2a39"
+        }
+      ],
+      "PersonAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "AddressLine3": null,
+        "PostTown": null,
+        "County": null,
+        "PostCode": null,
+        "Country": null
+      },
+      "PersonLastName": null,
+      "PersonFirstName": null
     },
-    "event": {
-      "id": "enterCaseIntoLegacy",
-      "summary": "",
-      "description": ""
+    "data_classification": {
+      "Wage": "PUBLIC",
+      "Group": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "value": {
+              "Title": "PUBLIC",
+              "FirstName": "PUBLIC",
+              "MiddleName": "PUBLIC",
+              "LastName": "PUBLIC",
+              "DateOfBirth": "PUBLIC",
+              "NationalInsuranceNumber": "PUBLIC"
+            },
+            "id": "85c8c7a8-4330-466b-8464-37f7784c2a39"
+          }
+        ]
+      },
+      "PersonAddress": {
+        "classification": "PUBLIC",
+        "value": {
+          "AddressLine1": "PUBLIC",
+          "AddressLine2": "PUBLIC",
+          "AddressLine3": "PUBLIC",
+          "PostTown": "PUBLIC",
+          "County": "PUBLIC",
+          "PostCode": "PUBLIC",
+          "Country": "PUBLIC"
+        }
+      },
+      "PersonLastName": "PUBLIC",
+      "PersonFirstName": "PUBLIC"
     },
-    "ignore_warning": false
+    "after_submit_callback_response": null,
+    "callback_response_status_code": null,
+    "callback_response_status": null,
+    "delete_draft_response_status_code": null,
+    "delete_draft_response_status": null,
+    "security_classifications": {
+      "Wage": "PUBLIC",
+      "Group": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "value": {
+              "Title": "PUBLIC",
+              "FirstName": "PUBLIC",
+              "MiddleName": "PUBLIC",
+              "LastName": "PUBLIC",
+              "DateOfBirth": "PUBLIC",
+              "NationalInsuranceNumber": "PUBLIC"
+            },
+            "id": "85c8c7a8-4330-466b-8464-37f7784c2a39"
+          }
+        ]
+      },
+      "PersonAddress": {
+        "classification": "PUBLIC",
+        "value": {
+          "AddressLine1": "PUBLIC",
+          "AddressLine2": "PUBLIC",
+          "AddressLine3": "PUBLIC",
+          "PostTown": "PUBLIC",
+          "County": "PUBLIC",
+          "PostCode": "PUBLIC",
+          "Country": "PUBLIC"
+        }
+      },
+      "PersonLastName": "PUBLIC",
+      "PersonFirstName": "PUBLIC"
+    }
   },
   "case": {
     "case_id": "1111222233334444",

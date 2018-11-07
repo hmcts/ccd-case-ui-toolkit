@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
              </div>`
 })
 export class CaseProgressConsumerComponent {
-  caseId = '123456789012345';
+  caseId = '1111222233334444';
   eventTriggerId = 'enterCaseIntoLegacy';
 
   submit(event: any): void {
