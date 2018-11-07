@@ -135,9 +135,26 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   getSelectedFile() {
-    if (this.selectedFileName) {
-      return this.selectedFileName;
+    console.log('1');
+    console.log(this.uploadedDocument);
+    if (this.uploadedDocument) {
+      console.log('Uploaded document exist.');
+      console.log('Value: ' + this.uploadedDocument.value);
+      console.log('File : ' + this.uploadedDocument.get('document_filename'));
+      // return this.uploadedDocument.get('document_filename');
     }
+    console.log('2');
+    console.log(this.caseField.value);
+    if (this.caseField.value) {
+      console.log('this.caseField.value exists');
+      console.log('CF value: ' + this.caseField.value);
+      console.log('CF File : ' + this.caseField.value.document_binary_url);
+      // return this.caseField.value.document_binary_url;
+    }
+    return 'Karamath';
+/*    if (this.selectedFileName) {
+      return this.selectedFileName;
+    }*/
   }
 
   existSelectedDocument(): boolean {

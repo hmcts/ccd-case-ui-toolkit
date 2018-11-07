@@ -6,7 +6,8 @@
   </label>
 
   <div>
-    <span class="text-16" *ngIf="existSelectedDocument()">File name: {{getSelectedFile()}}</span>
+    <!--<span class="text-16" *ngIf="existSelectedDocument()">File name: {{getSelectedFile()}}</span>-->
+    <span class="text-16">File name: {{getSelectedFile()}}</span>
     <ccd-read-document-field *ngIf="caseField" [caseField]="caseField"></ccd-read-document-field>
   </div>
 
