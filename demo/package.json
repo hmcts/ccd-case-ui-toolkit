@@ -7,8 +7,7 @@
     "copy-lib": "cp -rf ../dist node_modules/@hmcts/ccd-case-ui-toolkit/",
     "prebuild": "npm run copy-lib",
     "start": "node server.js",
-    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
-    "stub-api": "node stubs/server.js"
+    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\""
   },
   "dependencies": {
     "@angular/cli": "^7.0.3",
@@ -31,7 +30,7 @@
     "@angular/router": "~6.1.8",
     "@angular/upgrade": "~6.1.8",
     "@hmcts/ccpay-web-component": "~1.6.1",
-    "@hmcts/ccd-case-ui-toolkit": "1.2.29",
+    "@hmcts/ccd-case-ui-toolkit": "2.0.0",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "angular2-router-loader": "^0.3.4",
     "angular2-template-loader": "^0.6.0",
