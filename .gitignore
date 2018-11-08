@@ -44,3 +44,10 @@ tmp/*
 
 # Visual Studio Code
 .history/
+
+# docs
+docs/
+
+# demo
+demo/dist/
+demo/node_modules
