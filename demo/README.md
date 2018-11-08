@@ -31,9 +31,9 @@ yarn start:watch
 # Heroku
 
 ```bash
-There is a `heroku-publish.sh` script in this folder that accepts two arguments (name of the app and branch name) that can be used as:
+There is a `heroku-publish.sh` script in this folder that can be used as:
 
-.heroku-publish.sh <app-name> <branch name>
+.heroku-publish.sh
 
 # After that the app is accessible in heroku under: https://ccd-case-ui-toolkit-demo.herokuapp.com/
 ```
