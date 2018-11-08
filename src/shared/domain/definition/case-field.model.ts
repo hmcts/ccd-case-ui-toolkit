@@ -1,6 +1,6 @@
 import { Orderable } from '../order/orderable.model';
 import { FieldType } from './field-type.model';
-import { WizardPageField } from '../wizard-page-field.model';
+import { WizardPageField } from '../../components/case-editor/domain';
 import { Type } from 'class-transformer';
 
 // @dynamic
