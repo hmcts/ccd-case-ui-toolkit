@@ -28,6 +28,16 @@ yarn start:watch
 # To verify the demo app is working go to http://localhost:8080
 ```
 
+# Heroku
+
+```bash
+There is a `heroku-publish.sh` script in this folder that accepts two arguments (name of the app and branch name) that can be used as:
+
+.heroku-publish.sh <app-name> <branch name>
+
+# After that the app is accessible in heroku under: https://ccd-case-ui-toolkit-demo.herokuapp.com/
+```
+
 # File Structure
 
 ```
@@ -45,6 +55,7 @@ ccd-case-ui-toolkit
      ├─ stubs                       * Stubs routes and data for stub server
      ├─ .gitignore                  * List of files that are ignored while publishing to git repository
      ├─ angular.json                * Typescript app configuration.
+     ├─ heroku-publish.sh           * Heroku publish script.
      ├─ server.js                   * Node js server wrapping angular app (needed for heroku)
      ├─ gulpfile.js                 * Gulp helper scripts for building demos
      ├─ package.json                * NPM dependencies and helper scripts for building demos

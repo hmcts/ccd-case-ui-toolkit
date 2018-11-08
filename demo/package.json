@@ -4,8 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "ng build",
-    "copy-lib": "mkdir -p node_modules/@hmcts/ccd-case-ui-toolkit/dist && cp -rf ../dist node_modules/@hmcts/ccd-case-ui-toolkit/",
-    "prebuild": "npm run copy-lib",
+    "prebuild": "gulp copy-lib",
     "start": "node server.js",
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\""
   },
