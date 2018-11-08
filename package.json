@@ -40,7 +40,7 @@
     "test:watch": "karma start --auto-watch --no-single-run",
     "tslint": "tslint",
     "start": "yarn --cwd demo start",
-    "postinstall": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
+    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
     "@angular/cli": "^6.0.8",
