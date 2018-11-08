@@ -718,8 +718,8 @@
         "label": "Document upload",
         "hidden": null,
         "value": {
-          "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
-          "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
+          "document_url": "https://documentLocation/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
+          "document_binary_url": "https://documentLocation/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
           "document_filename": "Example_evidence.xyz"
         },
         "hint_text": null,
@@ -1656,8 +1656,8 @@
             "order": 8,
             "show_condition": "",
             "value": {
-              "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
-              "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
+              "document_url": "https://documentLocation/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
+              "document_binary_url": "https://documentLocation/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
               "document_filename": "Example_evidence.xyz"
             }
           }
@@ -2256,8 +2256,8 @@
           "type": "Document"
         },
         "value": {
-          "document_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
-          "document_binary_url": "https://api-gateway.test.evidence.reform.hmcts.net/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
+          "document_url": "https://documentLocation/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f",
+          "document_binary_url": "https://documentLocation/documents/6ed8ff37-2a40-4766-abd5-c33ef5abe13f/binary",
           "document_filename": "Example_evidence.xyz"
         },
         "display_context": "OPTIONAL",
