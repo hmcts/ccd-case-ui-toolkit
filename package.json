@@ -43,7 +43,7 @@
     "postinstall": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
-    "@angular/cli": "^6.0.8",
+    "@angular/cli": "^7.0.4",
     "@angular/compiler-cli": "~6.1.8",
     "enhanced-resolve": "3.3.0",
     "govuk-elements-sass": "^3.1.2",
