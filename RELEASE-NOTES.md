@@ -1,6 +1,12 @@
 ## RELEASE NOTES
+### Version 2.1.0 - November 08 2018
+**RDM-3230** - Demo app published to Heroku. New library directory structure. Reorganising the code. Refactor old rxjs 5 syntax to 6. Fixes to the lib around how event trigger is being loaded and how router handles loading non existent pages.
+
+### Version 2.0.0 - November 06 2018
+**RDM-3064** - Case progression: Better component contract
+
 ### Version 1.2.32 - November 06 2018
-**RDM-3230** Fix to emit event id when submitting in case create or progress components. Updated stub. Updated styling of demo app.
+**RDM-3230** - Fix to emit event id when submitting in case create or progress components. Updated stub. Updated styling of demo app.
 
 ### Version 1.2.31 - November 03 2018
 **RDM-3230** - Fix alert error when going to first page if no page param or no fields or pages in data specified.
@@ -13,9 +19,6 @@
 
 ### Version 1.2.28 - October 29 2018
 **RDM-3230** - Vanilla app to POC the case progression facade components
-
-### Version 2.0.0 - November 06 2018
-**RDM-3064** - Case progression: Better component contract
 
 ### Version 1.2.27 - October 29 2018
 **RDM-1202** - Custom case event field labels and hint texts
