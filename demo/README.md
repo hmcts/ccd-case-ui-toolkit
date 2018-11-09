@@ -1,4 +1,5 @@
 # `ccd-case-ui-toolkit` demo project
+[![Heroku CI Status](https://ci-badges.herokuapp.com/pipelines/420ca0bc-031b-479a-9335-1d51046daab2/master.svg)](https://ccd-case-ui-toolkit-demo.herokuapp.com/)
 
 > This folder contains a demo-project for [ccd-case-ui-toolkit](https://github.com/hmcts/ccd-case-ui-toolkit). This demo project may help you to test whether your library supports JIT build or not.
 >
@@ -28,6 +29,16 @@ yarn start:watch
 # To verify the demo app is working go to http://localhost:8080
 ```
 
+# Heroku
+
+```bash
+There is a `heroku-publish.sh` script in this folder that can be used as:
+
+./heroku-publish.sh
+
+# After that the app is accessible in heroku under: https://ccd-case-ui-toolkit-demo.herokuapp.com/
+```
+
 # File Structure
 
 ```
@@ -45,6 +56,7 @@ ccd-case-ui-toolkit
      ├─ stubs                       * Stubs routes and data for stub server
      ├─ .gitignore                  * List of files that are ignored while publishing to git repository
      ├─ angular.json                * Typescript app configuration.
+     ├─ heroku-publish.sh           * Heroku publish script.
      ├─ server.js                   * Node js server wrapping angular app (needed for heroku)
      ├─ gulpfile.js                 * Gulp helper scripts for building demos
      ├─ package.json                * NPM dependencies and helper scripts for building demos
