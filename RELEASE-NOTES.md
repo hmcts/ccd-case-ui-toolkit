@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.3.0 - November 09 2018
+**RDM-3230** - Relax versions for yarn and npm in engine section.
+
 ### Version 2.2.0 - November 09 2018
 **RDM-3230** - Heroku publish script and simplifying deployment process. Fixing builds steps and removing postinstall which now is heroku-postbuild and does not affect pipeline or other teams now.
 
