@@ -1,5 +1,5 @@
 # `ccd-case-ui-toolkit` demo project
-[![Heroku CI Status](https://heroku-badge.herokuapp.com/?app=heroku-badge&style=flat))](https://ccd-case-ui-toolkit-demo.herokuapp.com/)
+[![Heroku CI Status](https://heroku-badge.herokuapp.com/?app=heroku-badge&style=flat)](https://ccd-case-ui-toolkit-demo.herokuapp.com/)
 
 > This folder contains a demo-project for [ccd-case-ui-toolkit](https://github.com/hmcts/ccd-case-ui-toolkit). This demo project may help you to test whether your library supports JIT build or not.
 >
