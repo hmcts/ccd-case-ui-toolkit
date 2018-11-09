@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.2.0 - November 09 2018
+**RDM-3230** - Heroku publish script and simplifying deployment process. Fixing builds steps and removing postinstall which now is heroku-postbuild and does not affect pipeline or other teams now.
+
 ### Version 2.1.0 - November 08 2018
 **RDM-3230** - Demo app published to Heroku. New library directory structure. Reorganising the code. Refactor old rxjs 5 syntax to 6. Fixes to the lib around how event trigger is being loaded and how router handles loading non existent pages.
 
