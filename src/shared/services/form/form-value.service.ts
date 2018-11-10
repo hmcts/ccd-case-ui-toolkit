@@ -15,9 +15,22 @@ export class FormValueService {
 
     let sanitisedObject = {};
     Object.keys(rawObject).forEach(key => {
-      sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+      if ('case_reference' === key) {
+        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+      } else {
+        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+      }
     });
     return sanitisedObject;
+  }
+
+  public sanitiseCaseReference(reference: string): string {
+    // strip non digits
+    const s: string = reference.replace(/[\D]/g, '');
+    if (s.length > 16) {
+      return s.substr(s.length - 16, 16);
+    }
+    return s;
   }
 
   private sanitiseArray(rawArray: any[]): any[] {

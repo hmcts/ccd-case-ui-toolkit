@@ -49,6 +49,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document.document_binary_url,
         document.document_filename,
       );
+    } else {
+      this.createDocumentGroup();
     }
   }
 
@@ -129,6 +131,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   triggerReplace() {
     if (this.confirmReplaceResult === 'Replace') {
       this.openFileDialog();
+    }
+  }
+
+  getUploadedFileName() {
+    if (this.uploadedDocument) {
+      return this.uploadedDocument.get('document_filename').value;
+    } else {
+      return undefined;
     }
   }
 }
