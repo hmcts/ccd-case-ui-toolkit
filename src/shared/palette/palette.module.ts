@@ -37,12 +37,14 @@ import { FootersModule } from '../../footers.module';
 import { BodyModule } from '../../body.module';
 import { FormModule } from '../../components/form/form.module';
 import { TabsModule } from '../../components/tabs/tabs.module';
+import { FixedRadioListModule } from './fixed-radio-list';
 
 @NgModule({
   imports: [
     CommonModule,
     BaseFieldModule,
     FixedListModule,
+    FixedRadioListModule,
     YesNoModule,
     ComplexModule,
     MultiSelectListModule,
@@ -132,4 +134,4 @@ import { TabsModule } from '../../components/tabs/tabs.module';
     FormValidatorsService,
   ]
 })
-export class PaletteModule {}
+export class PaletteModule { }
