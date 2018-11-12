@@ -24,7 +24,6 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
-      console.log('CaseEditWizardGuard inside resolve subscribe');
       this.processEventTrigger(route, eventTrigger);
     });
     if (route.parent.data.eventTrigger) {
@@ -67,10 +66,6 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     let firstPage = wizard.firstPage(canShowPredicate);
     // If there’s no specific wizard page called, it makes another navigation to either the first page available or to the submit page
     // TODO should find a way to navigate to target page without going through the whole loop (and make a second call to BE) again
-    // This will soon be fixed in Angular.
-    // See: https://github.com/angular/angular/pull/19374
-    //      https://github.com/angular/angular/pull/26496
-    console.log('CaseEditWizardGuard goToFirst');
     return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'],
       { queryParams: route.queryParams });
   }
