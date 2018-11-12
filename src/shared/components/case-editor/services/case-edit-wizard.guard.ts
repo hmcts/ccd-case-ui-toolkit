@@ -24,6 +24,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
+      console.log('CaseEditWizardGuard inside resolve subscribe');
       this.processEventTrigger(route, eventTrigger);
     });
     if (route.parent.data.eventTrigger) {
@@ -69,13 +70,9 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     // This will soon be fixed in Angular.
     // See: https://github.com/angular/angular/pull/19374
     //      https://github.com/angular/angular/pull/26496
-    return this.router.navigate(this.parentUrlSegments(route))
-            .then(() => {
-                return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'], {
-                    replaceUrl: true,
-                    queryParams: route.queryParams
-                });
-            });
+    console.log('CaseEditWizardGuard goToFirst');
+    return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'],
+      { queryParams: route.queryParams });
   }
 
   private goToSubmit(route: ActivatedRouteSnapshot): Promise<boolean> {
