@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.4.0 - November 12 2018
+**RDM-3230** - Up version of angular to fix Router bug angular/angular#26496
+
 ### Version 2.3.0 - November 09 2018
 **RDM-3230** - Relax versions for yarn and npm in engine section.
 
