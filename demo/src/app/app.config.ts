@@ -6,14 +6,14 @@ import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-c
 export class AppConfig extends AbstractAppConfig {
 
   protected config: CaseEditorConfig = {
-    'api_url': 'http://localhost:3454/aggregated',
-    'case_data_url': 'http://localhost:3454/data',
-    'document_management_url': 'http://localhost:3454/documents',
-    'login_url': 'https://localhost:3501/login',
+    'api_url': '/aggregated',
+    'case_data_url': '/data',
+    'document_management_url': '/documents',
+    'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': 'http://localhost:3454/addresses?postcode=${postcode}',
-    'remote_document_management_url': 'http://localhost:4603/documents',
-    'payments_url': 'http://localhost:3454/payments'
+    'postcode_lookup_url': '/addresses?postcode=${postcode}',
+    'remote_document_management_url': '/documents',
+    'payments_url': '/payments'
   };
 
   constructor(private http: Http) {
