@@ -29,8 +29,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
   static readonly RESUMED_FORM_SAVE = 'RESUMED_FORM_SAVE';
-  static readonly TRIGGER_TEXT_START = 'Submit';
-  static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Submit';
+  static readonly TRIGGER_TEXT_START = 'Continue';
+  static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
 
   eventTrigger: CaseEventTrigger;
   editForm: FormGroup;
