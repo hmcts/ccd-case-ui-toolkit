@@ -7,6 +7,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
+import { Profile } from '../../../domain';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -20,9 +21,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private items: QueryList<ElementRef>;
 
   constructor(private formValidatorsService: FormValidatorsService,
-              private dialog: MatDialog,
-              private scrollToService: ScrollToService,
-              ) {
+    private dialog: MatDialog,
+    private scrollToService: ScrollToService,
+    private profile: Profile
+  ) {
     super();
   }
 
@@ -38,7 +40,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,
       value: item.value,
-      label: null
+      label: null,
+      acls: this.caseField.acls
     };
   }
 
@@ -69,7 +72,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    this.caseField.value.push({value: null});
+    this.caseField.value.push({ value: null });
 
     let lastIndex = this.caseField.value.length - 1;
 
@@ -77,10 +80,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-            target: this.buildIdPrefix(lastIndex) + lastIndex,
-            duration: 1000,
-            offset: -150,
-          })
+          target: this.buildIdPrefix(lastIndex) + lastIndex,
+          duration: 1000,
+          offset: -150,
+        })
           .pipe(finalize(() => this.focusLastItem()))
           .subscribe(null, console.error);
       });
@@ -103,6 +106,15 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
   }
 
+  isNotAuthorisedToDelete() {
+    let result = true;
+    this.profile.user.idam.roles.forEach(role => {
+      if (this.caseField.acls.filter(acl => (acl.role === role && acl.delete === true))) {
+        return false
+      }
+    })
+    return result;
+  }
   openModal(i: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
