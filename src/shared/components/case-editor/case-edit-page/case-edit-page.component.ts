@@ -123,7 +123,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       caseEventData.ignore_warning = this.ignoreWarning;
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
-          this.updateFormData(jsonData as CaseEventData);
+          if (jsonData) {
+            this.updateFormData(jsonData as CaseEventData);
+          }
           this.saveDraft();
           this.next();
         }, error => this.handleError(error));
@@ -156,7 +158,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
     let theControl = formGroup.controls['data'].get(caseFieldId);
     if (theControl) {
-      theControl.setValue(value);
+      theControl.patchValue(value);
     }
   }
 
