@@ -7,7 +7,7 @@
 
   <div>
     <span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>
-    <ccd-read-document-field *ngIf="caseField" [caseField]="caseField"></ccd-read-document-field>
+    <ccd-read-document-field *ngIf="caseField && !getUploadedFileName()" [caseField]="caseField"></ccd-read-document-field>
   </div>
 
   <div style='position:relative'>
