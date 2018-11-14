@@ -105,9 +105,10 @@ export class CasesService {
       );
   }
 
-  validateCase(jid: string, ctid: string, eventData: CaseEventData): Observable<object> {
+  validateCase(jid: string, ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
+    const pageIdString = pageId ? '?pageId=' + pageId : '';
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/validate`;
+      + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/validate${pageIdString}`;
 
     return this.http
       .post(url, eventData)
