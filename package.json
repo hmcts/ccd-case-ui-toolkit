@@ -119,7 +119,7 @@
     "multidep": "2.0.2",
     "ng2-mock-component": "^0.1.1",
     "ngx-device-detector": "^1.3.0",
-    "ngx-md": "~6.0.0",
+    "ngx-md": "~7.0.0",
     "ngx-pagination": "^3.0.3",
     "node-sass": "^4.6.1",
     "nyc": "^13.0.1",
