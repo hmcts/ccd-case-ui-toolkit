@@ -41,7 +41,7 @@ describe('CaseEditWizardGuard', () => {
     queryParams = { queryParams: [] };
 
     router = createSpyObj('router', ['navigate']);
-    router.navigate.and.returnValues(Promise.resolve(true), Promise.resolve(true));
+    router.navigate.and.returnValues(Promise.resolve(true));
     routerHelper = createSpyObj('RouterHelperService', ['getUrlSegmentsFromRoot']);
     routerHelper.getUrlSegmentsFromRoot.and.returnValue(PARENT_URL_SEGMENTS);
 
@@ -128,50 +128,32 @@ describe('CaseEditWizardGuard', () => {
       wizard.firstPage.and.returnValue(page('page1'));
     });
 
-    it('should redirect to first visible page of wizard', done => {
+    it('should redirect to first visible page of wizard', () => {
 
-      wizardGuard.resolve(route)
-        .then(() => {
-          expect(router.navigate.calls.allArgs()).toEqual([
-            [ [ ...PARENT_URL_SEGMENTS ] ],
-            [ [ ...PARENT_URL_SEGMENTS, 'page1' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
-          ]);
-          expect(wizard.firstPage).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(fail);
+      wizardGuard.resolve(route);
+
+      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'page1'], queryParams);
+      expect(wizard.firstPage).toHaveBeenCalled();
 
     });
 
-    it('should redirect when `page` param is empty', done => {
+    it('should redirect when `page` param is empty', () => {
       routeParams['page'] = '';
 
-      wizardGuard.resolve(route)
-        .then(() => {
-          expect(router.navigate.calls.allArgs()).toEqual([
-            [ [ ...PARENT_URL_SEGMENTS ] ],
-            [ [ ...PARENT_URL_SEGMENTS, 'page1' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
-          ]);
-          expect(wizard.firstPage).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(fail);
+      wizardGuard.resolve(route);
+
+      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'page1'], queryParams);
+      expect(wizard.firstPage).toHaveBeenCalled();
 
     });
 
-    it('should redirect to submit when all pages hidden', done => {
+    it('should redirect to submit when all pages hidden', () => {
       wizard.firstPage.and.returnValue(null);
 
-      wizardGuard.resolve(route)
-        .then(() => {
-          expect(router.navigate.calls.allArgs()).toEqual([
-            [ [ ...PARENT_URL_SEGMENTS ] ],
-            [ [ ...PARENT_URL_SEGMENTS, 'submit' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
-          ]);
-          expect(wizard.firstPage).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(fail);
+      wizardGuard.resolve(route);
+
+      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit'], queryParams);
+      expect(wizard.firstPage).toHaveBeenCalled();
     });
   });
 
@@ -183,17 +165,11 @@ describe('CaseEditWizardGuard', () => {
       wizard.hasPage.and.returnValue(false);
     });
 
-    it('should redirect to first wizard page', done => {
-      wizardGuard.resolve(route)
-        .then(() => {
-          expect(router.navigate.calls.allArgs()).toEqual([
-            [ [ ...PARENT_URL_SEGMENTS ] ],
-            [ [ ...PARENT_URL_SEGMENTS, 'page1' ], Object({ replaceUrl: true, queryParams: [  ] }) ]
-          ]);
-          expect(wizard.hasPage).toHaveBeenCalledWith('unknown');
-        })
-        .then(done)
-        .catch(fail);
+    it('should redirect to first wizard page', () => {
+      wizardGuard.resolve(route);
+
+      expect(wizard.hasPage).toHaveBeenCalledWith('unknown');
+      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'page1'], queryParams);
     });
 
     it('should alert error', fakeAsync(() => {
