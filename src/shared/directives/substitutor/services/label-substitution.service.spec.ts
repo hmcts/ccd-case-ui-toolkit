@@ -1,5 +1,5 @@
 import { LabelSubstitutionService } from './label-substitution.service';
-import { CaseReferencePipe } from '../utils';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe'
 
 describe('LabelSubstitutionService', () => {
 

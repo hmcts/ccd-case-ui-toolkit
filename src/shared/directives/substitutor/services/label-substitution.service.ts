@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { CaseReferencePipe } from '../utils/case-reference.pipe';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe'
 
 // @dynamic
 @Injectable()
