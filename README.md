@@ -59,6 +59,13 @@ yarn start
 
 ```
 
+You can also look at an example usage of the UI Toolkit demo project by:
+```bash
+# start demo app and stub server in same process
+yarn start
+# Go to http://localhost:8080
+```
+
 # File Structure
 
 ```

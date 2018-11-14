@@ -47,3 +47,7 @@ tmp/*
 
 # docs
 docs/
+
+# demo
+demo/dist/
+demo/node_modules
