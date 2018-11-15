@@ -14,7 +14,8 @@ export { FormValueService,
          AddressesService,
          CaseFieldService,
          OrderService,
-         RouterHelperService } from './shared/services';
+         RouterHelperService,
+         ProfileService } from './shared/services';
 export { DocumentData,
          AddressModel,
          CaseEventData,
