@@ -1,6 +1,7 @@
 <dl class="case-field" ccdLabelSubstitutor [caseField]="caseField" [eventFields]="eventFields">
   <dt>
-    <ccd-markdown [content]="caseField.label"></ccd-markdown>
+    <ccd-markdown [content]="caseField.value || caseField.label"></ccd-markdown>
+
   </dt>
   <dd></dd>
 </dl>
