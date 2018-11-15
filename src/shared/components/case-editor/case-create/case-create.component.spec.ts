@@ -48,6 +48,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
 
   const EVENT_TRIGGER_OB = of(EVENT_TRIGGER);
 
+  const PAGE_ID = 'pageId';
   const JID = 'PROBATE';
   const CTID = 'ComplexTestType';
   const CREATED_CASE: CaseDetails = {
@@ -155,9 +156,9 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
 
   it('should validate case details with sanitised data when validated', () => {
     casesService.validateCase.and.returnValue(CREATED_CASE_OBS);
-    component.validate()(SANITISED_EDIT_FORM);
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID);
 
-    expect(casesService.validateCase).toHaveBeenCalledWith(JID, CTID, SANITISED_EDIT_FORM);
+    expect(casesService.validateCase).toHaveBeenCalledWith(JID, CTID, SANITISED_EDIT_FORM, PAGE_ID);
   });
 
   it('should create a draft when saveDraft called with sanitised data', () => {
