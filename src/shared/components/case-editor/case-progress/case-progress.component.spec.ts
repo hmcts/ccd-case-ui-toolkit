@@ -21,6 +21,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
 
   const JID = 'PROBATE';
   const CTID = 'ComplexTestType';
+  const PAGE_ID = 'pageId';
   const CASE_VIEW_DATA: CaseView = {
     case_id: '11',
     case_type: {
@@ -178,9 +179,9 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   });
 
   it('should validate case details with sanitised data when validated', () => {
-    component.validate()(SANITISED_EDIT_FORM);
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID);
 
-    expect(casesService.validateCase).toHaveBeenCalledWith(JID, CTID, SANITISED_EDIT_FORM);
+    expect(casesService.validateCase).toHaveBeenCalledWith(JID, CTID, SANITISED_EDIT_FORM, PAGE_ID);
   });
 
 });
