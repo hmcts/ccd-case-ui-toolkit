@@ -1,12 +1,14 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { AbstractFieldWriteComponent } from '../base-field';
+import { CaseField } from '../../../domain/definition';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FormValidatorsService } from '../../../services/form';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Profile } from '../../../domain/profile';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -16,17 +18,21 @@ import { finalize } from 'rxjs/operators';
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   formArray: FormArray;
 
+  profile: Profile;
+
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
 
   constructor(private formValidatorsService: FormValidatorsService,
               private dialog: MatDialog,
               private scrollToService: ScrollToService,
-              ) {
+              private route: ActivatedRoute,
+  ) {
     super();
   }
 
   ngOnInit(): void {
+    this.profile = this.route.parent.parent.parent.snapshot.data.profile;
     this.caseField.value = this.caseField.value || [];
 
     this.formArray = this.registerControl(new FormArray([]));
@@ -38,7 +44,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,
       value: item.value,
-      label: null
+      label: null,
+      acls: this.caseField.acls
     };
   }
 
@@ -77,10 +84,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-            target: this.buildIdPrefix(lastIndex) + lastIndex,
-            duration: 1000,
-            offset: -150,
-          })
+          target: this.buildIdPrefix(lastIndex) + lastIndex,
+          duration: 1000,
+          offset: -150,
+        })
           .pipe(finalize(() => this.focusLastItem()))
           .subscribe(null, console.error);
       });
@@ -101,6 +108,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   itemLabel(index: number) {
     let displayIndex = index + 1;
     return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
+  }
+
+  isNotAuthorisedToCreate() {
+    return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.create === true));
+  }
+s
+  isNotAuthorisedToDelete() {
+    return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
   }
 
   openModal(i: number) {
@@ -127,3 +142,4 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
 }
+

@@ -5,7 +5,7 @@
     <h3 class="heading-small heading-17">
       {{caseField | ccdFieldLabel}}
     </h3>
-    <button class="button" type="button" (click)="addItem(true)">Add new</button>
+    <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate()">Add new</button>
     <h3 class="heading-medium error-spacing">
       <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
       <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError}}</span>
@@ -19,7 +19,7 @@
             <label class="form-label" [for]="buildIdPrefix(i) + i">{{itemLabel(i)}}</label>
           </div>
           <div class="float-right">
-            <button class="button button-secondary" type="button" (click)="openModal(i)">Remove</button>
+            <button class="button button-secondary" type="button" (click)="openModal(i)" [disabled]="isNotAuthorisedToDelete()">Remove</button>
           </div>
         </div>
         <ccd-field-write [caseField]="buildCaseField(item, i)" [registerControl]="buildControlRegistrer(item.id, i)" [idPrefix]="buildIdPrefix(i)"></ccd-field-write>
@@ -27,7 +27,7 @@
 
     </div>
 
-    <button class="button" type="button" (click)="addItem()" *ngIf="caseField.value && caseField.value.length">Add new</button>
+    <button class="button" type="button" (click)="addItem()" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
 
   </div>
 
