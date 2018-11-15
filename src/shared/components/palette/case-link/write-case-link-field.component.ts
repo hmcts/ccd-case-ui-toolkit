@@ -24,14 +24,14 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     if (this.caseField.value) {
       this.caseLinkGroup = this.registerControl(new FormGroup({
-        'case_reference': new FormControl(this.caseField.value.case_reference),
+        'CaseReference': new FormControl(this.caseField.value.CaseReference),
       }));
     } else {
       this.caseLinkGroup = this.registerControl(new FormGroup({
-        'case_reference': new FormControl(),
+        'CaseReference': new FormControl(),
       }));
     }
-    this.caseReferenceControl = this.caseLinkGroup.controls['case_reference'];
+    this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
     this.caseReferenceControl.setValidators(CaseReferenceValidator(this.formValueService));
   }
 }

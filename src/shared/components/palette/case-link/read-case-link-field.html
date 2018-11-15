@@ -1,10 +1,3 @@
-<tr>
-  <th>
-    <div class="case-viewer-label text-16">{{caseField.label}}</div>
-  </th>
-  <td>
-    <a href="/v2/case/{{caseField.value.CaseReference}}" target="_blank">
-      <span class="text-16">{{caseField.value.CaseReference ? (caseField.value.CaseReference | ccdCaseReference) : ''}}</span>
-    </a>
-  </td>
-</tr>
+<a href="/v2/case/{{caseField.value.CaseReference}}" target="_blank">
+  <span class="text-16">{{caseField.value.CaseReference ? (caseField.value.CaseReference | ccdCaseReference) : ''}}</span>
+</a>
