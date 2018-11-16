@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field';
-import { CaseField } from '../../../domain/definition';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FormValidatorsService } from '../../../services/form';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
 import { Profile } from '../../../domain/profile';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -84,10 +84,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-          target: this.buildIdPrefix(lastIndex) + lastIndex,
-          duration: 1000,
-          offset: -150,
-        })
+            target: this.buildIdPrefix(lastIndex) + lastIndex,
+            duration: 1000,
+            offset: -150,
+          })
           .pipe(finalize(() => this.focusLastItem()))
           .subscribe(null, console.error);
       });
@@ -113,7 +113,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   isNotAuthorisedToCreate() {
     return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.create === true));
   }
-s
+
   isNotAuthorisedToDelete() {
     return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
   }
@@ -142,4 +142,3 @@ s
   }
 
 }
-
