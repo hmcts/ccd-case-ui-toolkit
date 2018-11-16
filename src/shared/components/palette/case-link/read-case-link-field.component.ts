@@ -3,8 +3,7 @@ import {AbstractFieldReadComponent} from '../base-field/abstract-field-read.comp
 
 @Component({
   selector: 'ccd-read-case-link-field',
-  templateUrl: 'read-case-link-field.html',
-  styleUrls: ['case-link-field.scss']
+  templateUrl: 'read-case-link-field.html'
 })
 export class ReadCaseLinkFieldComponent extends AbstractFieldReadComponent {
 }
