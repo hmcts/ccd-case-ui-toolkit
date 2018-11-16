@@ -22,6 +22,11 @@ export class Wizard {
     return canShow(foundPage) ? foundPage : undefined;
   }
 
+  public findWizardPage(caseFieldId: string): WizardPage {
+    return this.pages.find(wizardPage => wizardPage.case_fields &&
+        wizardPage.case_fields.filter(caseField => caseField.id === caseFieldId).length > 0);
+  }
+
   public nextPage(pageId: string, canShow: Predicate<WizardPage>): WizardPage {
     let currentIndex = this.findExistingIndex(pageId);
 

@@ -1,11 +1,15 @@
 import { Wizard } from './wizard.model';
 import createSpy = jasmine.createSpy;
 import { WizardPage } from './wizard-page.model';
+import { CaseField } from '../../../domain/definition';
 
 describe('wizard.model', () => {
 
   const PAGE_1: WizardPage = buildPage('page1', 'Page 1', 1);
-  const PAGE_2: WizardPage = buildPage('page2', 'Page 2', 2);
+  const PAGE_2: WizardPage = buildPage('page2', 'Page 2', 2, [
+    buildCaseField('caseField1', 'someValue1'),
+    buildCaseField('caseField2', 'someValue2')
+  ]);
   const PAGE_3: WizardPage = buildPage('page3', 'Page 3', 3);
 
   const PAGES: WizardPage[] = [ PAGE_1, PAGE_2, PAGE_3];
@@ -88,6 +92,18 @@ describe('wizard.model', () => {
     });
   });
 
+  describe('find page containing caseFieldId', () => {
+    it('should get next page', () => {
+      let page = wizard.findWizardPage('caseField1');
+      expect(page).toBe(PAGE_2);
+    });
+
+    it('should return undefined if wizardPage does not exists', () => {
+      let page = wizard.findWizardPage('nonExistentCaseFieldId');
+      expect(page).toBeUndefined();
+    });
+  });
+
   describe('when some pages hidden', () => {
     it('should return first visible page', () => {
       canShow.and.returnValues(false, true);
@@ -163,11 +179,19 @@ describe('wizard.model', () => {
     });
   });
 
-  function buildPage(pageId: string, label: string, order: number): WizardPage {
+  function buildPage(pageId: string, label: string, order: number, caseFields: CaseField[] = undefined): WizardPage {
     let wp = new WizardPage();
     wp.id = pageId;
     wp.label = label;
     wp.order = order;
+    wp.case_fields = caseFields;
     return wp;
+  }
+
+  function buildCaseField(caseFieldId: string, caseFieldValue: any) {
+    let caseField = new CaseField();
+    caseField.id = caseFieldId;
+    caseField.value = caseFieldValue;
+    return caseField;
   }
 });
