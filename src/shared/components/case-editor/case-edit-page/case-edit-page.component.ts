@@ -4,7 +4,6 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { CallbackErrorsComponent } from '../../error/callback-errors.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { HttpError } from '../../../domain/http/http-error.model';
@@ -15,6 +14,7 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
+import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { ProfileNotifier } from '../../../services/profile';
@@ -32,16 +32,20 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
   static readonly RESUMED_FORM_SAVE = 'RESUMED_FORM_SAVE';
+  static readonly TRIGGER_TEXT_START = 'Continue';
+  static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
 
   eventTrigger: CaseEventTrigger;
   editForm: FormGroup;
+  wizard: Wizard;
   currentPage: WizardPage;
-  currentPageForm: FormGroup;
   dialogConfig: MatDialogConfig;
   error: HttpError;
   callbackErrorsSubject: Subject<any> = new Subject();
   ignoreWarning = false;
-  triggerText: string = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+  triggerTextStart = CaseEditPageComponent.TRIGGER_TEXT_START;
+  triggerTextIgnoreWarnings = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
+  triggerText: string = CaseEditPageComponent.TRIGGER_TEXT_START;
   isSubmitting = false;
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
@@ -64,6 +68,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
+    this.wizard = this.caseEdit.wizard;
     this.caseFields = this.getCaseFields();
     this.profileNotifier.profileSource.asObservable().first().subscribe(_ => this.profile = _);
     this.announceProfile(this.route);
@@ -123,12 +128,44 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       let caseEventData: CaseEventData = this.formValueService.sanitise(currentPageFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
-      this.caseEdit.validate(caseEventData)
-        .subscribe(() => {
+      this.caseEdit.validate(caseEventData, this.currentPage.id)
+        .subscribe((jsonData) => {
+          if (jsonData) {
+            this.updateFormData(jsonData as CaseEventData);
+          }
           this.saveDraft();
           this.next();
         }, error => this.handleError(error));
       this.scrollToTop();
+    }
+  }
+
+  updateFormData(jsonData: CaseEventData): void {
+    for (const caseFieldId of Object.keys(jsonData.data)) {
+      if (this.pageWithFieldExists(caseFieldId)) {
+        this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
+        this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
+      }
+    }
+  }
+
+  // we do the check, becasue the data comes from the external source
+  pageWithFieldExists(caseFieldId) {
+    return this.wizard.findWizardPage(caseFieldId);
+  }
+
+  updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
+    if (eventTrigger.case_fields) {
+      eventTrigger.case_fields
+        .filter(element => element.id === caseFieldId)
+        .forEach(element => element.value = jsonData.data[caseFieldId]);
+    }
+  }
+
+  updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
+    let theControl = formGroup.controls['data'].get(caseFieldId);
+    if (theControl) {
+      theControl.patchValue(value);
     }
   }
 
@@ -138,6 +175,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   next(): Promise<boolean> {
+    this.resetErrors();
     this.isSubmitting = false;
     this.formValuesChanged = false;
     this.pageChangeSubject.next(true);
@@ -145,7 +183,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   previous(): Promise<boolean> {
-    this.error = null;
+    this.resetErrors();
     this.saveDraft();
     this.formValuesChanged = false;
     this.pageChangeSubject.next(true);
@@ -204,6 +242,31 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.formErrorService
         .mapFieldErrors(this.error.details.field_errors, this.editForm.controls['data'] as FormGroup, 'validation');
     }
+  }
+
+  private resetErrors(): void {
+    this.error = null;
+    this.ignoreWarning = false;
+    this.triggerText = CaseEditPageComponent.TRIGGER_TEXT_START;
+    this.callbackErrorsSubject.next(null);
+  }
+
+  isCreatable(): boolean {
+    return !this.hasCallbackErrors() &&
+      !this.hasInvalidData();
+  }
+
+  private hasCallbackErrors(): boolean {
+    return this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length;
+  }
+
+  private hasInvalidData(): boolean {
+    return this.error
+      && this.error.details
+      && this.error.details.field_errors
+      && this.error.details.field_errors.length;
   }
 
   getCaseId(): String {

@@ -15,9 +15,14 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_IGNORE = 'Ignore Warning and Go';
 
   @Input()
+  triggerTextIgnore: string = CallbackErrorsComponent.TRIGGER_TEXT_IGNORE;
+  @Input()
+  triggerTextContinue: string = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+  @Input()
   callbackErrorsSubject: Subject<any> = new Subject();
+
   @Output()
-  callbackErrorsContext: EventEmitter<any> = new EventEmitter();
+  callbackErrorsContext: EventEmitter<CallbackErrorsContext> = new EventEmitter();
 
   error: HttpError;
 
@@ -39,10 +44,10 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
     let errorContext: CallbackErrorsContext = new CallbackErrorsContext();
     if (this.hasWarnings() && !this.hasErrors() && !this.hasInvalidData()) {
       errorContext.ignore_warning = true;
-      errorContext.trigger_text = CallbackErrorsComponent.TRIGGER_TEXT_IGNORE;
+      errorContext.trigger_text = this.triggerTextIgnore;
     } else {
       errorContext.ignore_warning = false;
-      errorContext.trigger_text = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+      errorContext.trigger_text = this.triggerTextContinue;
     }
     return errorContext;
   }
