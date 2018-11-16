@@ -54,10 +54,12 @@ export class CaseProgressComponent implements OnInit {
     return (sanitizedEditForm: CaseEventData) => this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
   }
 
-  validate(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData) => this.casesService.validateCase(
+  validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(
       this.caseDetails.case_type.jurisdiction.id,
-      this.caseDetails.case_type.id, sanitizedEditForm);
+      this.caseDetails.case_type.id,
+      sanitizedEditForm,
+      pageId);
   }
 
   emitCancelled(event): void {

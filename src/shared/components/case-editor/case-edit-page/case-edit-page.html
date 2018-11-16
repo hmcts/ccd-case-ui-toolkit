@@ -15,7 +15,12 @@
     <li *ngFor="let fieldError of error.details.field_errors" class=" ccd-error-summary-li">{{fieldError.message}}</li>
   </ul>
 </div>
-<ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject" (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
+<ccd-callback-errors
+  [triggerTextContinue]="triggerTextStart"
+  [triggerTextIgnore]="triggerTextIgnoreWarnings"
+  [callbackErrorsSubject]="callbackErrorsSubject"
+  (callbackErrorsContext)="callbackErrorsNotify($event)">
+</ccd-callback-errors>
 <div class="width-50">
   <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
     <fieldset id="fieldset-case-data">
@@ -34,7 +39,7 @@
 
     <div class="form-group form-group-related">
       <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
-      <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">Continue</button>
+      <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting() || !isCreatable()">{{triggerText}}</button>
     </div>
 
     <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>

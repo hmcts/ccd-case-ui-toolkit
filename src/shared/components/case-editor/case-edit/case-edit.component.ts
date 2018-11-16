@@ -27,7 +27,7 @@ export class CaseEditComponent implements OnInit {
   submit: (CaseEventData) => Observable<object>;
 
   @Input()
-  validate: (CaseEventData) => Observable<object>;
+  validate: (CaseEventData, pageId: string) => Observable<object>;
 
   @Input()
   saveDraft: (CaseEventData) => Observable<Draft>;
