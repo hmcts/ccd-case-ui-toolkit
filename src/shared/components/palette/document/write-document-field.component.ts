@@ -88,8 +88,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private createDocumentGroup(url?: string, binaryUrl?: string, filename?: string): void {
     this.uploadedDocument = this.registerControl(new FormGroup({
       document_url: new FormControl(url || ''),
-      document_binary_url: new FormControl(binaryUrl),
-      document_filename: new FormControl(filename)
+      document_binary_url: new FormControl(binaryUrl || ''),
+      document_filename: new FormControl(filename || '')
     }));
   }
 
