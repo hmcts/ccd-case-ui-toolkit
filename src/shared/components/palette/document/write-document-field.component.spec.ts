@@ -135,10 +135,10 @@ describe('WriteDocumentFieldComponent', () => {
     expect(uploadElement).toBeTruthy();
   });
 
-  it('should render a ccd-read-document-field tag for an existing document', () => {
+  it('should not render a ccd-read-document-field if Uploaded document exists', () => {
     let ccdReadDocumentElement = de.query(By.css('ccd-read-document-field'));
-
-    expect(ccdReadDocumentElement).toBeTruthy();
+    expect (component.getUploadedFileName()).toBeTruthy();
+    expect(ccdReadDocumentElement).toBeFalsy();
   });
 
   it('should initialise formControl with provided value', () => {
