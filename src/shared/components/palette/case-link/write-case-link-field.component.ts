@@ -1,9 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, ValidatorFn} from '@angular/forms';
-import {AbstractFieldWriteComponent} from '../base-field/abstract-field-write.component';
-import {WriteComplexFieldComponent} from '../complex/write-complex-field.component';
-import {CaseReferenceValidator} from './case-reference.validator';
-import {FormValueService} from '../../../services/form/form-value.service'
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
+import { CaseReferenceValidator } from './case-reference.validator';
+import { FormValueService } from '../../../services/form/form-value.service'
 
 @Component({
   selector: 'ccd-write-case-link-field',

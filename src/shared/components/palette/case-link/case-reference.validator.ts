@@ -1,5 +1,5 @@
-import {AbstractControl, ValidatorFn} from '@angular/forms';
-import {FormValueService} from '../../../services/form/form-value.service';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormValueService } from '../../../services/form/form-value.service';
 
 export function CaseReferenceValidator(formValueService: FormValueService): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } => {
