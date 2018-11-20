@@ -1,7 +1,6 @@
 ## RELEASE NOTES
-### Version 2.6.0 - November 19 2018
-**RDM-3238** - Case Linking and document file name fix.
-**RDM-2323** - Support field concatenation in List / results views.
+### Version 2.6.0 - November 20 2018
+**RDM-3238** - Support for case linking.
 
 ### Version 2.5.1 - November 15 2018
 **RDM-3230** - Small patch to export profile service.
