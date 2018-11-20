@@ -40,4 +40,9 @@ describe('IsCompoundPipe', () => {
       .toBeTruthy();
   });
 
+  it('should identify Complex fields and CaseLink id as NOT compound', () => {
+    expect(isCompound.transform({ field_type: { type: 'Complex', id: 'CaseLink' }} as CaseField))
+      .toBeFalsy();
+  });
+
 });
