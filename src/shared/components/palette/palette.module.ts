@@ -39,6 +39,8 @@ import { FormModule } from '../../../components/form/form.module';
 import { TabsModule } from '../../../components/tabs/tabs.module';
 import { LabelFieldComponent } from './label';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { FixedRadioListModule } from './fixed-radio-list';
 
 @NgModule({
@@ -79,6 +81,7 @@ import { FixedRadioListModule } from './fixed-radio-list';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadCaseLinkFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -88,6 +91,7 @@ import { FixedRadioListModule } from './fixed-radio-list';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseLinkFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -101,6 +105,7 @@ import { FixedRadioListModule } from './fixed-radio-list';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadCaseLinkFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -110,6 +115,7 @@ import { FixedRadioListModule } from './fixed-radio-list';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseLinkFieldComponent,
   ],
   exports: [
     BaseFieldModule,
@@ -140,4 +146,4 @@ import { FixedRadioListModule } from './fixed-radio-list';
     FormValidatorsService,
   ]
 })
-export class PaletteModule { }
+export class PaletteModule {}

@@ -50,6 +50,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document.document_filename,
       );
     }
+/*  else {
+      this.createDocumentGroup();
+    } */
   }
 
   fileChangeEvent(fileInput: any) {
@@ -85,9 +88,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private createDocumentGroup(url?: string, binaryUrl?: string, filename?: string): void {
     this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url),
-      document_binary_url: new FormControl(binaryUrl),
-      document_filename: new FormControl(filename)
+      document_url: new FormControl(url || ''),
+      document_binary_url: new FormControl(binaryUrl || ''),
+      document_filename: new FormControl(filename || '')
     }));
   }
 
@@ -129,6 +132,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   triggerReplace() {
     if (this.confirmReplaceResult === 'Replace') {
       this.openFileDialog();
+    }
+  }
+
+  getUploadedFileName() {
+    if (this.uploadedDocument) {
+      return this.uploadedDocument.get('document_filename').value;
+    } else {
+      return undefined;
     }
   }
 }

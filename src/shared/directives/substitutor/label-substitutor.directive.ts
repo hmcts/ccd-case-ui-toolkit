@@ -12,8 +12,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
-  @Input() isEmptyIfPlaceholderMissing: Boolean = false;
-  @Input() formGroup: FormGroup = new FormGroup({});
+  @Input() formGroup: FormGroup;
 
   initialLabel: string;
   initialHintText: string;
@@ -22,19 +21,19 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initialLabel = this.getLabel();
-    if (this.initialLabel) {
+    if (this.caseField.label) {
+      this.initialLabel = this.caseField.label;
       this.initialHintText = this.caseField.hint_text;
       this.formGroup = this.formGroup || new FormGroup({});
 
       let fields = this.getReadOnlyAndFormFields();
-      this.setLabel(this.substituteLabel(fields, this.getLabel()));
+      this.caseField.label = this.substituteLabel(fields, this.caseField.label);
       this.caseField.hint_text = this.substituteLabel(fields, this.caseField.hint_text);
     }
   }
 
   ngOnDestroy() {
-    this.setLabel(this.initialLabel);
+    this.caseField.label = this.initialLabel;
     this.caseField.hint_text = this.initialHintText;
   }
 
@@ -48,18 +47,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private substituteLabel(fields, label) {
-    return this.labelSubstitutionService.substituteLabel(fields, label, this.isEmptyIfPlaceholderMissing);
-  }
-
-  private getLabel() {
-    return this.caseField.value || this.caseField.label;
-  }
-  private setLabel(label: string) {
-    if (this.caseField.value) {
-      this.caseField.value = label;
-    } else {
-      this.caseField.label = label;
-    }
+    return this.labelSubstitutionService.substituteLabel(fields, label);
   }
 
 }
