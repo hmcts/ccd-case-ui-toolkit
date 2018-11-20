@@ -15,6 +15,7 @@ describe('CasesService', () => {
   const JID = 'TEST';
   const CTID = 'TestAddressBookCase';
   const CASE_ID = '1';
+  const PAGE_ID = 'pageId';
   const DRAFT_ID = 'DRAFT1';
   const CASE_URL = `${API_URL}/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}`;
   const V2_CASE_VIEW_URL = `${API_URL}/internal/cases/${CASE_ID}`;
@@ -24,7 +25,7 @@ describe('CasesService', () => {
   const EVENT_TRIGGER_DRAFT_URL = API_URL
     + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/drafts/${DRAFT_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
   const CREATE_EVENT_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/events`;
-  const VALIDATE_CASE_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/validate`;
+  const VALIDATE_CASE_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/validate?pageId=${PAGE_ID}`;
   const PRINT_DOCUMENTS_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/documents`;
   const CREATE_CASE_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases?ignore-warning=false`;
   const CASE_VIEW: CaseView = {
@@ -333,7 +334,7 @@ describe('CasesService', () => {
 
     it('should use HttpService::post with correct url', () => {
       casesService
-        .validateCase(JID, CTID, CASE_EVENT_DATA)
+        .validateCase(JID, CTID, CASE_EVENT_DATA, PAGE_ID)
         .subscribe();
 
       expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA);
@@ -341,7 +342,7 @@ describe('CasesService', () => {
 
     it('should validate case on server', () => {
       casesService
-        .validateCase(JID, CTID, CASE_EVENT_DATA)
+        .validateCase(JID, CTID, CASE_EVENT_DATA, PAGE_ID)
         .subscribe(
           data => expect(data).toEqual(EVENT_RESPONSE)
         );

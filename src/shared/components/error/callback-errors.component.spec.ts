@@ -27,6 +27,8 @@ describe('CallbackErrorsComponent', () => {
   let fixture: ComponentFixture<CallbackErrorsComponent>;
   let component: CallbackErrorsComponent;
   let de: DebugElement;
+  let triggerTextIgnore = 'Ignore Warnings and Submit test';
+  let triggerTextContinue = 'Submit test';
   let callbackErrorsSubject: any;
   let mockCallbackErrorsContext: any;
 
@@ -45,6 +47,8 @@ describe('CallbackErrorsComponent', () => {
 
     fixture = TestBed.createComponent(CallbackErrorsComponent);
     component = fixture.componentInstance;
+    component.triggerTextIgnore = triggerTextIgnore;
+    component.triggerTextContinue = triggerTextContinue;
     component.callbackErrorsSubject = callbackErrorsSubject;
     component.callbackErrorsContext = mockCallbackErrorsContext;
 
@@ -58,7 +62,7 @@ describe('CallbackErrorsComponent', () => {
 
     let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = true;
-    expectedCallbackErrorsContext.trigger_text = CallbackErrorsComponent.TRIGGER_TEXT_IGNORE;
+    expectedCallbackErrorsContext.trigger_text = triggerTextIgnore;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -69,7 +73,7 @@ describe('CallbackErrorsComponent', () => {
 
     let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -79,7 +83,7 @@ describe('CallbackErrorsComponent', () => {
 
     let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -126,7 +130,7 @@ describe('CallbackErrorsComponent', () => {
     expect(component.error).toEqual(httpError);
     let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
