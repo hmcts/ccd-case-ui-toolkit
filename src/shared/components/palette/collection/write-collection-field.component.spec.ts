@@ -3,17 +3,18 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { WriteCollectionFieldComponent } from './write-collection-field.component';
 import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
+import { FieldType } from '../../../domain/definition';
+import { CaseField } from '../../../domain/definition';
+import { PaletteUtilsModule } from '../utils';
 import { By } from '@angular/platform-browser';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FormValidatorsService } from '../../../services/form';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { of } from 'rxjs';
-import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { ActivatedRoute } from '@angular/router';
 
 const FIELD_ID = 'Values';
 const SIMPLE_FIELD_TYPE: FieldType = {
@@ -71,6 +72,7 @@ describe('WriteCollectionFieldComponent', () => {
   let dialog: any;
   let dialogRef: any;
   let scrollToService: any;
+  let route: any;
 
   let caseField: CaseField;
 
@@ -88,7 +90,36 @@ describe('WriteCollectionFieldComponent', () => {
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
       display_context: 'OPTIONAL',
-      value: VALUES.slice(0)
+      value: VALUES.slice(0),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: true,
+          read: true,
+          update: true,
+          delete: true
+        }
+      ]
+    };
+
+    route = {
+      parent: {
+        parent: {
+          parent: {
+            snapshot: {
+              data: {
+                profile: {
+                  user: {
+                    idam: {
+                      roles: ['caseworker-divorce']
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     };
 
     TestBed
@@ -106,6 +137,7 @@ describe('WriteCollectionFieldComponent', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
+          { provide: ActivatedRoute, useValue: route },
           RemoveDialogComponent
         ]
       })
@@ -304,5 +336,121 @@ describe('WriteCollectionFieldComponent', () => {
 
     let fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
+  });
+});
+
+describe('WriteCollectionFieldComponent CRUD impact', () => {
+  const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
+  const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
+  const $WRITE_FIELDS = By.css('ccd-field-write');
+
+  let FieldWriteComponent = MockComponent({
+    selector: 'ccd-field-write',
+    inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded'],
+    template: '<input type="text" />',
+  });
+
+  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
+  let component: WriteCollectionFieldComponent;
+
+  let de: DebugElement;
+  let formValidatorService: any;
+  let dialog: any;
+  let dialogRef: any;
+  let scrollToService: any;
+  let route: any;
+
+  let caseField: CaseField;
+
+  beforeEach(async(() => {
+    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of());
+    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+    dialog.open.and.returnValue(dialogRef);
+    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+    scrollToService.scrollTo.and.returnValue(of());
+
+    caseField = {
+      id: FIELD_ID,
+      label: 'X',
+      field_type: SIMPLE_FIELD_TYPE,
+      display_context: 'OPTIONAL',
+      value: VALUES.slice(0),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: false,
+          read: true,
+          update: true,
+          delete: false
+        }
+      ]
+    };
+
+    route = {
+      parent: {
+        parent: {
+          parent: {
+            snapshot: {
+              data: {
+                profile: {
+                  user: {
+                    idam: {
+                      roles: ['caseworker-divorce']
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          PaletteUtilsModule
+        ],
+        declarations: [
+          WriteCollectionFieldComponent,
+          // Mock
+          FieldWriteComponent,
+        ],
+        providers: [
+          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: ScrollToService, useValue: scrollToService },
+          { provide: ActivatedRoute, useValue: route },
+          RemoveDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+    component = fixture.componentInstance;
+
+    component.registerControl = REGISTER_CONTROL;
+    component.caseField = caseField;
+
+    component.ngOnInit();
+
+    de = fixture.debugElement;
+    fixture.detectChanges();
+
+    // Manually populate the form array as item field are mocked and can't register themselves
+    VALUES.forEach((collectionItem, index) => {
+      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+    });
+
+    fixture.detectChanges();
+  }));
+
+  it('should disable remove buttons when user does not have DELETE right', () => {
+    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+
+    expect(removeButtons[0].nativeElement.disabled).toBe(true);
   });
 });

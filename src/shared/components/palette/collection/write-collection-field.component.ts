@@ -7,7 +7,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
-import { Profile } from '../../../domain';
+import { Profile } from '../../../domain/profile';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -17,18 +18,21 @@ import { Profile } from '../../../domain';
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   formArray: FormArray;
 
+  profile: Profile;
+
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
 
   constructor(private formValidatorsService: FormValidatorsService,
-    private dialog: MatDialog,
-    private scrollToService: ScrollToService,
-    private profile: Profile
+              private dialog: MatDialog,
+              private scrollToService: ScrollToService,
+              private route: ActivatedRoute,
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.profile = this.route.parent.parent.parent.snapshot.data.profile;
     this.caseField.value = this.caseField.value || [];
 
     this.formArray = this.registerControl(new FormArray([]));
@@ -107,14 +111,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   isNotAuthorisedToDelete() {
-    let result = true;
-    this.profile.user.idam.roles.forEach(role => {
-      if (this.caseField.acls.filter(acl => (acl.role === role && acl.delete === true))) {
-        return false
-      }
-    })
-    return result;
+    return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
   }
+
   openModal(i: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
