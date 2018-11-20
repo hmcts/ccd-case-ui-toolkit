@@ -49,9 +49,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document.document_binary_url,
         document.document_filename,
       );
-    } else {
-      this.createDocumentGroup();
     }
+/*  else {
+      this.createDocumentGroup();
+    } */
   }
 
   fileChangeEvent(fileInput: any) {
