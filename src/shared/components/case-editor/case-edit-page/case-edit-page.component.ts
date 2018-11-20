@@ -17,7 +17,6 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
-import { CaseView } from '../../../domain/case-view';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -48,7 +47,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
-  caseDetails: CaseView;
 
   constructor(
     private caseEdit: CaseEditComponent,
@@ -66,7 +64,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
     this.caseFields = this.getCaseFields();
-    this.caseDetails = this.caseEdit.caseDetails;
 
     this.route.params.subscribe(params => {
       let pageId = params['page'];
