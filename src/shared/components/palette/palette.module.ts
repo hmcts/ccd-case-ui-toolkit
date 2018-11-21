@@ -41,12 +41,14 @@ import { LabelFieldComponent } from './label';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
+import { FixedRadioListModule } from './fixed-radio-list';
 
 @NgModule({
   imports: [
     CommonModule,
     BaseFieldModule,
     FixedListModule,
+    FixedRadioListModule,
     YesNoModule,
     ComplexModule,
     MultiSelectListModule,
