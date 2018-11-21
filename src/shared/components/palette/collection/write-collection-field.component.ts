@@ -76,7 +76,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    this.caseField.value.push({value: null});
+    this.caseField.value.push({ value: null });
 
     let lastIndex = this.caseField.value.length - 1;
 
@@ -84,10 +84,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-            target: this.buildIdPrefix(lastIndex) + lastIndex,
-            duration: 1000,
-            offset: -150,
-          })
+          target: this.buildIdPrefix(lastIndex) + lastIndex,
+          duration: 1000,
+          offset: -150,
+        })
           .pipe(finalize(() => this.focusLastItem()))
           .subscribe(null, console.error);
       });
@@ -114,8 +114,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.create === true));
   }
 
-  isNotAuthorisedToDelete() {
-    return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
+  isNotAuthorisedToDelete(index: number) {
+    let id = false;
+    if (this.formArray.at(index)) {
+      id = this.formArray.at(index).get('id').value;
+    }
+    return !!id && !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
   }
 
   openModal(i: number) {

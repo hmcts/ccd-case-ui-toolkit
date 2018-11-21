@@ -342,7 +342,16 @@ describe('WriteCollectionFieldComponent', () => {
 describe('WriteCollectionFieldComponent CRUD impact', () => {
   const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
   const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
-  const $WRITE_FIELDS = By.css('ccd-field-write');
+
+  const collectionValues = [
+    {
+      id: '123',
+      value: 'v1'
+    },
+    {
+      value: 'v2'
+    }
+  ];
 
   let FieldWriteComponent = MockComponent({
     selector: 'ccd-field-write',
@@ -376,7 +385,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
       display_context: 'OPTIONAL',
-      value: VALUES.slice(0),
+      value: collectionValues.slice(),
       acls: [
         {
           role: 'caseworker-divorce',
@@ -441,7 +450,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     fixture.detectChanges();
 
     // Manually populate the form array as item field are mocked and can't register themselves
-    VALUES.forEach((collectionItem, index) => {
+    collectionValues.forEach((collectionItem, index) => {
       component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
     });
 
@@ -452,6 +461,12 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     let removeButtons = de.queryAll($REMOVE_BUTTONS);
 
     expect(removeButtons[0].nativeElement.disabled).toBe(true);
+  });
+
+  it('should not disable remove buttons for newly added items even when user does not have DELETE right', () => {
+    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+
+    expect(removeButtons[1].nativeElement.disabled).toBe(false);
   });
 
   it('should disable add button when user does not have CREATE right', () => {
