@@ -110,8 +110,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
   }
 
-  isNotAuthorisedToDelete() {
-    return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
+  isNotAuthorisedToDelete(index: number) {
+    let id = false;
+    if (this.formArray.at(index)) {
+      id = this.formArray.at(index).get('id').value;
+    }
+    return !!id && !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
   }
 
   openModal(i: number) {
