@@ -32,6 +32,9 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summary-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
+import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
+import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
 
 @Injectable()
 export class PaletteService {
@@ -58,6 +61,8 @@ export class PaletteService {
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
       case 'FixedList':
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
+      case 'FixedRadioList':
+        return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':
         switch (caseField.field_type.id) {
           case 'AddressGlobalUK':
@@ -65,6 +70,8 @@ export class PaletteService {
             return write ? WriteAddressFieldComponent : ReadComplexFieldComponent;
           case 'OrderSummary':
             return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
+          case 'CaseLink':
+            return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }

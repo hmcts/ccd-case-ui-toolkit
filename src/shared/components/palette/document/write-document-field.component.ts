@@ -51,6 +51,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document.document_filename,
       );
     }
+/*  else {
+      this.createDocumentGroup();
+    } */
   }
 
   fileChangeEvent(fileInput: any) {
@@ -86,9 +89,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private createDocumentGroup(url?: string, binaryUrl?: string, filename?: string): void {
     this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url),
-      document_binary_url: new FormControl(binaryUrl),
-      document_filename: new FormControl(filename)
+      document_url: new FormControl(url || ''),
+      document_binary_url: new FormControl(binaryUrl || ''),
+      document_filename: new FormControl(filename || '')
     }));
   }
 
@@ -134,30 +137,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  getSelectedFile() {
-    console.log('1');
-    console.log(this.uploadedDocument);
+  getUploadedFileName() {
     if (this.uploadedDocument) {
-      console.log('Uploaded document exist.');
-      console.log('Value: ' + this.uploadedDocument.value);
-      console.log('File : ' + this.uploadedDocument.get('document_filename'));
-      // return this.uploadedDocument.get('document_filename');
+      return this.uploadedDocument.get('document_filename').value;
+    } else {
+      return undefined;
     }
-    console.log('2');
-    console.log(this.caseField.value);
-    if (this.caseField.value) {
-      console.log('this.caseField.value exists');
-      console.log('CF value: ' + this.caseField.value);
-      console.log('CF File : ' + this.caseField.value.document_binary_url);
-      // return this.caseField.value.document_binary_url;
-    }
-    return 'Karamath';
-/*    if (this.selectedFileName) {
-      return this.selectedFileName;
-    }*/
-  }
-
-  existSelectedDocument(): boolean {
-    return this.selectedFileName !== undefined;
   }
 }

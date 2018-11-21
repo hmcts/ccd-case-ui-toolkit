@@ -39,12 +39,16 @@ import { FormModule } from '../../../components/form/form.module';
 import { TabsModule } from '../../../components/tabs/tabs.module';
 import { LabelFieldComponent } from './label';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
+import { FixedRadioListModule } from './fixed-radio-list';
 
 @NgModule({
   imports: [
     CommonModule,
     BaseFieldModule,
     FixedListModule,
+    FixedRadioListModule,
     YesNoModule,
     ComplexModule,
     MultiSelectListModule,
@@ -77,6 +81,7 @@ import { LabelSubstitutorModule } from '../../directives/substitutor';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadCaseLinkFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -86,6 +91,7 @@ import { LabelSubstitutorModule } from '../../directives/substitutor';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseLinkFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -99,6 +105,7 @@ import { LabelSubstitutorModule } from '../../directives/substitutor';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadCaseLinkFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -108,6 +115,7 @@ import { LabelSubstitutorModule } from '../../directives/substitutor';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseLinkFieldComponent,
   ],
   exports: [
     BaseFieldModule,

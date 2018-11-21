@@ -1,4 +1,13 @@
 ## RELEASE NOTES
+### Version 2.6.0 - November 20 2018
+**RDM-3238** - Support for case linking.
+
+### Version 2.5.1 - November 15 2018
+**RDM-3230** - Small patch to export profile service.
+
+### Version 2.5.0 - November 14 2018
+**RDM-3000** - Support for Midevent Callback (Display of Errors and Warning messages)
+
 ### Version 2.4.0 - November 12 2018
 **RDM-3230** - Up version of angular to fix Router bug angular/angular#26496
 
