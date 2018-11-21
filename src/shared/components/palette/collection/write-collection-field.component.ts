@@ -7,8 +7,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
-import { Profile } from '../../../domain/profile';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -18,21 +16,17 @@ import { ActivatedRoute } from '@angular/router';
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   formArray: FormArray;
 
-  profile: Profile;
-
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
 
   constructor(private formValidatorsService: FormValidatorsService,
               private dialog: MatDialog,
               private scrollToService: ScrollToService,
-              private route: ActivatedRoute,
-  ) {
+              ) {
     super();
   }
 
   ngOnInit(): void {
-    this.profile = this.route.parent.parent.parent.snapshot.data.profile;
     this.caseField.value = this.caseField.value || [];
 
     this.formArray = this.registerControl(new FormArray([]));
@@ -44,8 +38,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,
       value: item.value,
-      label: null,
-      acls: this.caseField.acls
+      label: null
     };
   }
 
@@ -76,7 +69,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    this.caseField.value.push({ value: null });
+    this.caseField.value.push({value: null});
 
     let lastIndex = this.caseField.value.length - 1;
 
@@ -84,10 +77,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-          target: this.buildIdPrefix(lastIndex) + lastIndex,
-          duration: 1000,
-          offset: -150,
-        })
+            target: this.buildIdPrefix(lastIndex) + lastIndex,
+            duration: 1000,
+            offset: -150,
+          })
           .pipe(finalize(() => this.focusLastItem()))
           .subscribe(null, console.error);
       });
@@ -108,14 +101,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   itemLabel(index: number) {
     let displayIndex = index + 1;
     return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
-  }
-
-  isNotAuthorisedToDelete(index: number) {
-    let id = false;
-    if (this.formArray.at(index)) {
-      id = this.formArray.at(index).get('id').value;
-    }
-    return !!id && !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
   }
 
   openModal(i: number) {

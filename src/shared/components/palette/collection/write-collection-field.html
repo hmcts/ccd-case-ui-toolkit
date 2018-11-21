@@ -19,7 +19,7 @@
             <label class="form-label" [for]="buildIdPrefix(i) + i">{{itemLabel(i)}}</label>
           </div>
           <div class="float-right">
-            <button class="button button-secondary" type="button" (click)="openModal(i)" [disabled]="isNotAuthorisedToDelete(i)">Remove</button>
+            <button class="button button-secondary" type="button" (click)="openModal(i)">Remove</button>
           </div>
         </div>
         <ccd-field-write [caseField]="buildCaseField(item, i)" [registerControl]="buildControlRegistrer(item.id, i)" [idPrefix]="buildIdPrefix(i)"></ccd-field-write>
