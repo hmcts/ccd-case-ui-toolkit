@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.6.0 - November 20 2018
+**RDM-3238** - Support for case linking.
+
 ### Version 2.5.1 - November 15 2018
 **RDM-3230** - Small patch to export profile service.
 
