@@ -1,3 +1,3 @@
-<a href="/v2/case/{{caseField.value.CaseReference}}" target="_blank">
-  <span class="text-16">{{caseField.value.CaseReference ? (caseField.value.CaseReference | ccdCaseReference) : ''}}</span>
+<a href="/v2/case/{{ getCaseReference() }}" target="_blank">
+  <span class="text-16">{{ getCaseReference() ? (getCaseReference() | ccdCaseReference) : ''}}</span>
 </a>

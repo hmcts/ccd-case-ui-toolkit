@@ -14,7 +14,10 @@ export class FormValidatorsService {
     if (caseField.display_context === FormValidatorsService.MANDATORY
       && this.CUSTOM_VALIDATED_TYPES.indexOf(caseField.field_type.type) === -1) {
       let validators = [Validators.required];
-      if (control.validator) {
+      if (caseField.field_type.type === 'Text' &&
+          caseField.field_type.regular_expression) {
+        validators.push(Validators.pattern(caseField.field_type.regular_expression));
+      } else if (control.validator) {
         validators.push(control.validator);
       }
       control.setValidators(validators);

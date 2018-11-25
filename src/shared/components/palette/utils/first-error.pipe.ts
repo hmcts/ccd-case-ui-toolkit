@@ -18,6 +18,8 @@ export class FirstErrorPipe implements PipeTransform {
     }
     if (keys[0] ===  'required') {
       return 'This field is required';
+    } else if (keys[0] ===  'pattern') {
+      return 'Invalid data';
     }
     return value[keys[0]];
   }

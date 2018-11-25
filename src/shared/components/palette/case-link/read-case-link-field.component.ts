@@ -6,4 +6,12 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   templateUrl: 'read-case-link-field.html'
 })
 export class ReadCaseLinkFieldComponent extends AbstractFieldReadComponent {
+
+  getCaseReference(): string {
+    if (this.caseField && this.caseField.value) {
+      return this.caseField.value.CaseReference;
+    }
+    return null;
+  }
+
 }
