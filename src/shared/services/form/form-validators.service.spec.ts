@@ -34,5 +34,9 @@ describe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeFalsy();
+    result.setValue(' ');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.invalid).toBeTruthy();
   });
 });
