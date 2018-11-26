@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+### Version 2.7.0 - November 22 2018
+**RDM-2803** - Hide & Show to support multiple ANDs and CONTAINS.
+**RDM-1893** - As a user I am able to see fixed list as a radio buttoned list - New Type 'RadioButtonList'
+
 ### Version 2.6.0 - November 20 2018
 **RDM-3238** - Support for case linking.
 
