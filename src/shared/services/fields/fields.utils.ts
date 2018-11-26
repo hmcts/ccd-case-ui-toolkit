@@ -17,9 +17,21 @@ export class FieldsUtils {
   public static toValuesMap(caseFields: CaseField[]): any {
     let valueMap = {};
     caseFields.forEach(field => {
-      valueMap[field.id] = field.value;
+      valueMap[field.id] = FieldsUtils.prepareValue(field);
     });
     return valueMap;
+  }
+
+  private static prepareValue(field: CaseField) {
+    if (field.value) {
+      return field.value;
+    } else if (field.field_type.type === 'Complex') {
+      let valueMap = {};
+      field.field_type.complex_fields.forEach(complexField => {
+        valueMap[complexField.id] = FieldsUtils.prepareValue(complexField);
+      });
+      return valueMap;
+    }
   }
 
   private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any) {
