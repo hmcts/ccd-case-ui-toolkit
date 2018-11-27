@@ -90,10 +90,6 @@ export class LabelSubstitutionService {
     private getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute) {
         let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute);
 
-        if (fieldIdToSubstitute === '[CASE_REFERENCE]') {
-            fieldValue = this.caseReferencePipe.transform(pageFormFields[fieldIdToSubstitute])
-        }
-
         if (fieldValue instanceof Array) {
             fieldValue = fieldValue.join(', ');
         }
