@@ -26,14 +26,10 @@ export class ShowCondition {
     if (condition.search(ShowCondition.CONTAINS) === -1) {
       let field = condition.split('=')[0];
       let right = this.unquoted(condition.split('=')[1]);
-      let value;
-      if (field.search('.') > -1) {
-        const [head, ...tail] = field.split('.');
-        value = this.findValueForComplexCondition(fields, head, tail);
-      } else {
-        value = fields[field];
-      }
-      if (right.search(',') > -1) { // for  multi-select list
+      const [head, ...tail] = field.split('.');
+      let value = this.findValueForComplexCondition(fields, head, tail);
+
+      if (right.search('[,]') > -1) { // for  multi-select list
         let rights = right.split(',').sort().toString();
         let values = value ? value.sort().toString() : '';
         return rights === values;
@@ -46,13 +42,9 @@ export class ShowCondition {
     } else {
       let field = condition.split(ShowCondition.CONTAINS)[0];
       let right = this.unquoted(condition.split(ShowCondition.CONTAINS)[1]);
-      let value;
-      if (field.search('[\.]') > -1) {
-        const [head, ...tail] = field.split('.');
-        value = this.findValueForComplexCondition(fields, head, tail);
-      } else {
-        value = fields[field];
-      }
+      const [head, ...tail] = field.split('.');
+      let value = this.findValueForComplexCondition(fields, head, tail);
+
       if (right.search(',') > -1) {
         let rights = right.split(',').sort();
         let values = value ? value.sort().toString() : '';
