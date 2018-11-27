@@ -10,6 +10,6 @@ export class MarkdownComponent implements OnInit {
   content: string;
 
   ngOnInit(): void {
-    this.content = this.content.split('  ').join('<br>');
+    this.content = this.content.replace(/  \n/g, '<br>');
   }
 }
