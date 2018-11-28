@@ -8,7 +8,6 @@ import { MockComponent } from 'ng2-mock-component';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor/label-substitutor.directive';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { LabelSubstitutionService } from '../../../directives/substitutor/services/label-substitution.service';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe'
 
 describe('LabelFieldComponent', () => {
 
@@ -67,8 +66,7 @@ describe('LabelFieldComponent', () => {
         ],
         providers: [
           FieldsUtils,
-          LabelSubstitutionService,
-          CaseReferencePipe,
+          LabelSubstitutionService
         ]
       })
       .compileComponents();
