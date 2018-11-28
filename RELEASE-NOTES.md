@@ -1,4 +1,14 @@
 ## RELEASE NOTES
+### Version 2.8.0 - November 22 2018
+**RDM-3427** - Start consuming new start case internal API endpoint (mgmt web and demo).
+
+### Version 2.7.0 - November 22 2018
+**RDM-2803** - Hide & Show to support multiple ANDs and CONTAINS.
+**RDM-1893** - As a user I am able to see fixed list as a radio buttoned list - New Type 'RadioButtonList'
+
+### Version 2.6.0 - November 20 2018
+**RDM-3238** - Support for case linking.
+
 ### Version 2.5.1 - November 15 2018
 **RDM-3230** - Small patch to export profile service.
 

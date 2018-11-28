@@ -3,6 +3,7 @@
 
 .complex-panel {
   $padding: 5px;
+  margin: 13px 0px;
 
   border: 1px solid $border-colour;
 
@@ -33,7 +34,7 @@
   .complex-panel-simple-field {
     th {
       padding-left: $padding;
-      width: 25%;
+      width: 295px;
     }
   }
 

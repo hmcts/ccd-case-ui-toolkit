@@ -7,7 +7,7 @@ describe('LabelSubstitutionService', () => {
   let caseReferencePipe: CaseReferencePipe;
   let isEmptyIfPlaceholderMissing: Boolean = false;
   beforeEach(() => {
-    labelSubstitutionService = new LabelSubstitutionService(caseReferencePipe);
+    labelSubstitutionService = new LabelSubstitutionService();
   });
 
   describe('simple types', () => {

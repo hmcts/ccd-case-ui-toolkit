@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe'
 
 // @dynamic
 @Injectable()
@@ -10,8 +9,6 @@ export class LabelSubstitutionService {
     private static readonly STARTING_PLACEHOLDER = '$';
     private static readonly OPENING_PLACEHOLDER = '{';
     private static readonly CLOSING_PLACEHOLDER = '}';
-
-    constructor(private caseReferencePipe: CaseReferencePipe) { }
 
     substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing: Boolean): string {
         let startSubstitutionIndex = -1;
@@ -78,8 +75,8 @@ export class LabelSubstitutionService {
 
     private substitute(pageFormFields, label, startSubstitutionIndex, fieldIdToSubstitute): string {
         let replacedString = label.substring(startSubstitutionIndex)
-            .replace('${'.concat(fieldIdToSubstitute).concat('}'),
-                this.getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute));
+                                .replace('${'.concat(fieldIdToSubstitute).concat('}'),
+                                        this.getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute));
         return label.substring(0, startSubstitutionIndex).concat(replacedString);
     }
 
@@ -89,7 +86,6 @@ export class LabelSubstitutionService {
 
     private getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute) {
         let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute);
-
         if (fieldValue instanceof Array) {
             fieldValue = fieldValue.join(', ');
         }
