@@ -32,7 +32,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   ngOnInit(): void {
-    this.profile = this.route.parent.parent.parent.snapshot.data.profile;
+    if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
+      this.profile = this.route.parent.parent.parent.snapshot.data.profile;
+    }
     this.caseField.value = this.caseField.value || [];
 
     this.formArray = this.registerControl(new FormArray([]));
@@ -111,10 +113,16 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   isNotAuthorisedToCreate() {
+    if (this.isExpanded) {
+      return false;
+    }
     return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.create === true));
   }
 
   isNotAuthorisedToDelete(index: number) {
+    if (this.isExpanded) {
+      return false;
+    }
     let id = false;
     if (this.formArray.at(index)) {
       id = this.formArray.at(index).get('id').value;
