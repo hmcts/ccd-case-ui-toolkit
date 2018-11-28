@@ -24,7 +24,7 @@
     "@angular/upgrade": "~7.0.3",
     "@angular/platform-browser": "^7.0.3",
     "@angular/platform-browser-dynamic": "^7.0.3",
-    "@hmcts/ccd-case-ui-toolkit": "2.3.0",
+    "@hmcts/ccd-case-ui-toolkit": "2.8.0",
     "@hmcts/ccpay-web-component": "1.6.2",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "copyfiles": "^2.1.0",

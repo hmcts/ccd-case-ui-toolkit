@@ -1308,17 +1308,12 @@
       }
     }
   },
-  "validate": {
-    "data": {
-      "ContactEmail": null
-    },
-    "event": {
-      "id": "createCase",
-      "summary": "",
-      "description": ""
-    },
-    "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJnZTllbTdwZ3ZiNmM4NWMxcG85aXE0b3JwcCIsInN1YiI6Ijk0OCIsImlhdCI6MTUwOTQ2MTY3NiwiZXZlbnQtaWQiOiJjcmVhdGVDYXNlIiwiY2FzZS10eXBlLWlkIjoiVGVzdEFkZHJlc3NCb29rQ2FzZSIsImp1cmlzZGljdGlvbi1pZCI6IlRFU1QiLCJjYXNlLXZlcnNpb24iOiJiZjIxYTllOGZiYzVhMzg0NmZiMDViNGZhMDg1OWUwOTE3YjIyMDJmIn0.VTXhC2-FnlAVVvq9gsKFglvaBM-s-mrXtRLN6ZwLdfk",
-    "ignore_warning": false
+  "validate": {  
+    "data":{  
+      "PersonLastName": "Tom",
+      "PersonFirstName": "Smith",
+      "Wage": "50000"
+    }
   },
   "submitted_case": {
     "id": 1111222233334445,
