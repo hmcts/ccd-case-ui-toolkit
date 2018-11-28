@@ -13,6 +13,8 @@ import { WizardPage, WizardPageField } from '../domain';
 export class CasesService {
 
   public static readonly V2_MEDIATYPE_CASE_VIEW = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json';
+  public static readonly V2_MEDIATYPE_START_TRIGGER =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-trigger.v2+json;charset=UTF-8';
 
   /**
    *
@@ -73,10 +75,35 @@ export class CasesService {
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url =  this.buildEventTriggerUrl(jurisdictionId, caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    let url =  this.buildEventTriggerUrl(this.appConfig.getApiUrl(), caseTypeId, eventTriggerId, caseId, ignoreWarning, jurisdictionId);
 
     return this.http
       .get(url)
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }),
+        map((p: Object) => plainToClass(CaseEventTrigger, p)),
+        tap(eventTrigger => this.initialiseEventTrigger(eventTrigger))
+      );
+  }
+
+  getEventTriggerV2(caseTypeId: string,
+                    eventTriggerId: string,
+                    caseId?: string,
+                    ignoreWarning?: string): Observable<CaseEventTrigger> {
+    ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
+
+    let url =  this.buildEventTriggerUrl(this.appConfig.getCaseDataUrl() + '/internal', caseTypeId, eventTriggerId, caseId, ignoreWarning);
+
+    const headers = new Headers({
+      'Accept': CasesService.V2_MEDIATYPE_START_TRIGGER,
+      'experimental': 'true',
+    });
+    return this.http
+      .get(url, {headers})
       .pipe(
         map(response => response.json()),
         catchError(error => {
@@ -160,15 +187,20 @@ export class CasesService {
       );
   }
 
-  private buildEventTriggerUrl(jurisdictionId: string,
-                              caseTypeId: string,
-                              eventTriggerId: string,
-                              caseId?: string,
-                              ignoreWarning?: string): string {
-    let url = this.appConfig.getApiUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`;
+  private buildEventTriggerUrl(baseUrl: string,
+                               caseTypeId: string,
+                               eventTriggerId: string,
+                               caseId?: string,
+                               ignoreWarning?: string,
+                               jurisdictionId?: string): string {
+    let url = baseUrl;
+    if (jurisdictionId === undefined || jurisdictionId === null) {
+      url += `/case-types/${caseTypeId}`;
+    } else {
+      url += `/caseworkers/:uid`
+        + `/jurisdictions/${jurisdictionId}`
+        + `/case-types/${caseTypeId}`;
+    }
 
     if (caseId === undefined || caseId === null) {
       url += `/event-triggers/${eventTriggerId}`
