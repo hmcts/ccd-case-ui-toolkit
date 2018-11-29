@@ -14,9 +14,13 @@ export class FormValidatorsService {
     if (caseField.display_context === FormValidatorsService.MANDATORY
       && this.CUSTOM_VALIDATED_TYPES.indexOf(caseField.field_type.type) === -1) {
       let validators = [Validators.required];
-      if (caseField.field_type.type === 'Text' &&
-          caseField.field_type.regular_expression) {
-        validators.push(Validators.pattern(caseField.field_type.regular_expression));
+      if (caseField.field_type.type === 'Text') {
+        if (caseField.field_type.regular_expression) {
+          validators.push(Validators.pattern(caseField.field_type.regular_expression));
+        }
+        if (caseField.field_type.min || caseField.field_type.max) {
+          validators.push(Validators.pattern('.*[^ ].*'));
+        }
       } else if (control.validator) {
         validators.push(control.validator);
       }
