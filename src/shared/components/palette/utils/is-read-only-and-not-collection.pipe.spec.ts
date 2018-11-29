@@ -2,7 +2,7 @@ import { CaseFieldService } from '../../../services/case-fields';
 import { CaseField } from '../../../domain/definition';
 import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collection.pipe';
 
-fdescribe('IsReadOnlyAndNotCollectionPipe', () => {
+describe('IsReadOnlyAndNotCollectionPipe', () => {
 
   let caseFieldService = new CaseFieldService();
   let isReadOnlyAndNotCollectionPipe: IsReadOnlyAndNotCollectionPipe = new IsReadOnlyAndNotCollectionPipe(caseFieldService);
