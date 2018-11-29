@@ -119,6 +119,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.create === true));
   }
 
+  isNotAuthorisedToUpdate(index: number) {
+    if (this.isExpanded) {
+      return false;
+    }
+    let id = false;
+    if (this.formArray.at(index)) {
+      id = this.formArray.at(index).get('id').value;
+    }
+    return !!id && !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.update === true));
+  }
+
   isNotAuthorisedToDelete(index: number) {
     if (this.isExpanded) {
       return false;

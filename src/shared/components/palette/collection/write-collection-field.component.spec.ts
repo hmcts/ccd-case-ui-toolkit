@@ -25,7 +25,6 @@ const SIMPLE_FIELD_TYPE: FieldType = {
     type: 'Text'
   }
 };
-
 const COMPLEX_FIELD_TYPE: FieldType = {
   id: 'Address',
   type: 'Collection',
@@ -44,36 +43,36 @@ const VALUES = [
     value: 'v2'
   }
 ];
-
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {
   FORM_GROUP.addControl(FIELD_ID, control);
   return control;
 };
+const $WRITE_FIELDS = By.css('ccd-field-write');
+const $READ_FIELDS = By.css('ccd-field-read');
+const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
+const $ADD_BUTTON_BOTTOM = By.css('.form-group>.panel>.button:nth-of-type(2)');
+const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
+
+let FieldWriteComponent = MockComponent({
+  selector: 'ccd-field-write',
+  inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded'],
+  template: '<input type="text" />',
+});
+let FieldReadComponent = MockComponent({
+  selector: 'ccd-field-read',
+  inputs: ['caseField', 'context']
+});
 
 describe('WriteCollectionFieldComponent', () => {
-
-  const $WRITE_FIELDS = By.css('ccd-field-write');
-  const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
-  const $ADD_BUTTON_BOTTOM = By.css('.form-group>.panel>.button:nth-of-type(2)');
-  const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
-
-  let FieldWriteComponent = MockComponent({
-    selector: 'ccd-field-write',
-    inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded'],
-    template: '<input type="text" />',
-  });
-
   let fixture: ComponentFixture<WriteCollectionFieldComponent>;
   let component: WriteCollectionFieldComponent;
-
   let de: DebugElement;
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
   let scrollToService: any;
   let route: any;
-
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -84,7 +83,6 @@ describe('WriteCollectionFieldComponent', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-
     caseField = {
       id: FIELD_ID,
       label: 'X',
@@ -101,7 +99,6 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     };
-
     route = {
       parent: {
         parent: {
@@ -132,6 +129,7 @@ describe('WriteCollectionFieldComponent', () => {
           WriteCollectionFieldComponent,
           // Mock
           FieldWriteComponent,
+          FieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -145,20 +143,15 @@ describe('WriteCollectionFieldComponent', () => {
 
     fixture = TestBed.createComponent(WriteCollectionFieldComponent);
     component = fixture.componentInstance;
-
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
-
     component.ngOnInit();
-
     de = fixture.debugElement;
     fixture.detectChanges();
-
     // Manually populate the form array as item field are mocked and can't register themselves
     VALUES.forEach((collectionItem, index) => {
       component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
     });
-
     fixture.detectChanges();
   }));
 
@@ -340,9 +333,6 @@ describe('WriteCollectionFieldComponent', () => {
 });
 
 describe('WriteCollectionFieldComponent CRUD impact', () => {
-  const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
-  const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
-
   const collectionValues = [
     {
       id: '123',
@@ -353,22 +343,14 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     }
   ];
 
-  let FieldWriteComponent = MockComponent({
-    selector: 'ccd-field-write',
-    inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded'],
-    template: '<input type="text" />',
-  });
-
   let fixture: ComponentFixture<WriteCollectionFieldComponent>;
   let component: WriteCollectionFieldComponent;
-
   let de: DebugElement;
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
   let scrollToService: any;
   let route: any;
-
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -379,7 +361,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-
     caseField = {
       id: FIELD_ID,
       label: 'X',
@@ -396,7 +377,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         }
       ]
     };
-
     route = {
       parent: {
         parent: {
@@ -427,6 +407,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
           WriteCollectionFieldComponent,
           // Mock
           FieldWriteComponent,
+          FieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -440,20 +421,15 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
 
     fixture = TestBed.createComponent(WriteCollectionFieldComponent);
     component = fixture.componentInstance;
-
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
-
     component.ngOnInit();
-
     de = fixture.debugElement;
     fixture.detectChanges();
-
     // Manually populate the form array as item field are mocked and can't register themselves
     collectionValues.forEach((collectionItem, index) => {
       component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
     });
-
     fixture.detectChanges();
   }));
 
@@ -473,5 +449,122 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     let addButton = de.query($ADD_BUTTON_TOP);
 
     expect(addButton.nativeElement.disabled).toBe(true);
+  });
+
+  it('should render a row with a write field for each items', () => {
+    let writeFields = de.queryAll($WRITE_FIELDS);
+
+    expect(writeFields.length).toEqual(2);
+  });
+});
+
+describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
+  const collectionValues = [
+    {
+      id: '123',
+      value: 'v1'
+    },
+    {
+      id: '123',
+      value: 'v2'
+    }
+  ];
+
+  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
+  let component: WriteCollectionFieldComponent;
+  let de: DebugElement;
+  let formValidatorService: any;
+  let dialog: any;
+  let dialogRef: any;
+  let scrollToService: any;
+  let route: any;
+  let caseField: CaseField;
+
+  beforeEach(async(() => {
+    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of());
+    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+    dialog.open.and.returnValue(dialogRef);
+    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+    scrollToService.scrollTo.and.returnValue(of());
+    caseField = {
+      id: FIELD_ID,
+      label: 'X',
+      field_type: SIMPLE_FIELD_TYPE,
+      display_context: 'OPTIONAL',
+      value: collectionValues.slice(),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: false,
+          read: true,
+          update: false,
+          delete: false
+        }
+      ]
+    };
+    route = {
+      parent: {
+        parent: {
+          parent: {
+            snapshot: {
+              data: {
+                profile: {
+                  user: {
+                    idam: {
+                      roles: ['caseworker-divorce']
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          PaletteUtilsModule
+        ],
+        declarations: [
+          WriteCollectionFieldComponent,
+          // Mock
+          FieldWriteComponent,
+          FieldReadComponent
+        ],
+        providers: [
+          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: ScrollToService, useValue: scrollToService },
+          { provide: ActivatedRoute, useValue: route },
+          RemoveDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+    component = fixture.componentInstance;
+    component.registerControl = REGISTER_CONTROL;
+    component.caseField = caseField;
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    // Manually populate the form array as item field are mocked and can't register themselves
+    collectionValues.forEach((collectionItem, index) => {
+      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+    });
+    fixture.detectChanges();
+  }));
+
+  it('should render a row with a read field for each items when user does not have update right', () => {
+    let readFields = de.queryAll($READ_FIELDS);
+    let writeFields = de.queryAll($WRITE_FIELDS);
+
+    expect(writeFields.length).toEqual(0);
+    expect(readFields.length).toEqual(2);
   });
 });
