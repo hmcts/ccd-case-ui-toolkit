@@ -20,6 +20,10 @@ export class FirstErrorPipe implements PipeTransform {
       return 'This field is required';
     } else if (keys[0] ===  'pattern') {
       return 'Invalid data';
+    } else if (keys[0] ===  'minlength') {
+      return 'Required minimum length';
+    } else if (keys[0] ===  'maxlength') {
+      return 'Exceeds maximum length';
     }
     return value[keys[0]];
   }

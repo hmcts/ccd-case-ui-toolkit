@@ -18,8 +18,11 @@ export class FormValidatorsService {
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
         }
-        if (caseField.field_type.min || caseField.field_type.max) {
-          validators.push(Validators.pattern('.*[^ ].*'));
+        if (caseField.field_type.min) {
+          validators.push(Validators.minLength(caseField.field_type.min));
+        }
+        if (caseField.field_type.max) {
+          validators.push(Validators.maxLength(caseField.field_type.max));
         }
       } else if (control.validator) {
         validators.push(control.validator);
