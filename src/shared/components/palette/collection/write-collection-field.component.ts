@@ -116,7 +116,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    return !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.create === true));
+    return !this.profile.user.idam.roles.find(role => this.hasCreateAccess(role));
+  }
+
+  hasCreateAccess(role: any) {
+    return !!this.caseField.acls.find( acl => acl.role === role && acl.create === true);
   }
 
   isNotAuthorisedToUpdate(index: number) {
@@ -127,7 +131,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.formArray.at(index)) {
       id = this.formArray.at(index).get('id').value;
     }
-    return !!id && !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.update === true));
+    return !!id && !this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+  }
+
+  hasUpdateAccess(role: any): boolean {
+    return !!this.caseField.acls.find( acl => acl.role === role && acl.update === true);
   }
 
   isNotAuthorisedToDelete(index: number) {
@@ -138,8 +146,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.formArray.at(index)) {
       id = this.formArray.at(index).get('id').value;
     }
-    return !!id && !this.profile.user.idam.roles.find(role => !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true));
+    return !!id && !this.profile.user.idam.roles.find(role => this.hasDeleteAccess(role));
   }
+
+  hasDeleteAccess(role: any): boolean {
+    return !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true);
+}
 
   openModal(i: number) {
     const dialogConfig = new MatDialogConfig();
