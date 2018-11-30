@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 2.8.1 - November 28 2018
+**RDM-3463** - Update dependency on compodoc to Version 1.1.7, to eliminate vulnerability introduced by compromised version (> 3.3.4) of event-stream package.
+
+### Version 2.8.0 - November 22 2018
+**RDM-3427** - Start consuming new start case internal API endpoint (mgmt web and demo).
+
 ### Version 2.7.0 - November 22 2018
 **RDM-2803** - Hide & Show to support multiple ANDs and CONTAINS.
 **RDM-1893** - As a user I am able to see fixed list as a radio buttoned list - New Type 'RadioButtonList'
