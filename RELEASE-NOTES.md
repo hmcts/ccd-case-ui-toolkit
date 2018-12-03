@@ -2,6 +2,7 @@
 
 ### Version 2.9.0 - November 
 **RDM-2323** - Support field concatenation in List / results views
+**RDM-3391** - Fix for selecting an option by clicking on a radio button label  
 
 ### Version 2.8.1 - November 28 2018
 **RDM-3463** - Update dependency on compodoc to Version 1.1.7, to eliminate vulnerability introduced by compromised version (> 3.3.4) of event-stream package.
