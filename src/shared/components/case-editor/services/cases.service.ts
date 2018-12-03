@@ -13,8 +13,10 @@ import { WizardPage, WizardPageField } from '../domain';
 export class CasesService {
 
   public static readonly V2_MEDIATYPE_CASE_VIEW = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json';
-  public static readonly V2_MEDIATYPE_START_TRIGGER =
-    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-trigger.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_START_CASE_TRIGGER =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-case-trigger.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_START_EVENT_TRIGGER =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8';
 
   /**
    *
@@ -98,10 +100,14 @@ export class CasesService {
 
     let url =  this.buildEventTriggerUrl(this.appConfig.getCaseDataUrl() + '/internal', caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    const headers = new Headers({
-      'Accept': CasesService.V2_MEDIATYPE_START_TRIGGER,
-      'experimental': 'true',
+    let headers = new Headers({
+      'experimental': 'true'
     });
+    if (caseId !== undefined && caseId !== null) {
+      headers.set('Accpet', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+    } else {
+      headers.set('Accpet', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+    }
     return this.http
       .get(url, {headers})
       .pipe(

@@ -105,9 +105,9 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
     submitHandler = createSpyObj('submitHandler', ['applyFilters']);
     submitHandler.applyFilters.and.returnValue();
 
-    casesService = createSpyObj('casesService', ['getEventTrigger', 'getCaseViewV2', 'createEvent', 'validateCase']);
+    casesService = createSpyObj('casesService', ['getEventTriggerV2', 'getCaseViewV2', 'createEvent', 'validateCase']);
     casesService.getCaseViewV2.and.returnValue(CASE_VIEW_DATA_OB);
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
+    casesService.getEventTriggerV2.and.returnValue(EVENT_TRIGGER_OBS);
     casesService.createEvent.and.returnValue(CREATED_CASE_OBS);
     casesService.validateCase.and.returnValue(CREATED_CASE_OBS);
 
@@ -144,7 +144,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
 
   it('should get event trigger on loading and announce it', () => {
     expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_VIEW_DATA.case_id);
-    expect(casesService.getEventTrigger).toHaveBeenCalledWith(JID, CTID, ETID, CASE_VIEW_DATA.case_id);
+    expect(casesService.getEventTriggerV2).toHaveBeenCalledWith(CTID, ETID, CASE_VIEW_DATA.case_id);
     expect(eventTriggerService.announceEventTrigger).toHaveBeenCalledWith(EVENT_TRIGGER);
   });
 
@@ -230,7 +230,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
     submitHandler = createSpyObj('submitHandler', ['applyFilters']);
     submitHandler.applyFilters.and.returnValue();
 
-    casesService = createSpyObj('casesService', ['getEventTrigger', 'getCaseViewV2']);
+    casesService = createSpyObj('casesService', ['getEventTriggerV2', 'getCaseViewV2']);
     casesService.getCaseViewV2.and.returnValue(ERROR_OBS);
     alertService = createSpyObj('alertService', ['error']);
 
@@ -272,7 +272,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
 
   it('should alert warning message and never announce event trigger if getting event trigger fails', () => {
     casesService.getCaseViewV2.and.returnValue(CASE_VIEW_DATA_OB);
-    casesService.getEventTrigger.and.returnValue(ERROR_OBS);
+    casesService.getEventTriggerV2.and.returnValue(ERROR_OBS);
     component.ngOnInit();
 
     expect(alertService.error).toHaveBeenCalledWith('ERROR!');
