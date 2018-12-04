@@ -77,7 +77,7 @@ export class CasesService {
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url =  this.buildEventTriggerUrl(this.appConfig.getApiUrl(), caseTypeId, eventTriggerId, caseId, ignoreWarning, jurisdictionId);
+    let url =  this.buildEventTriggerUrl(jurisdictionId, caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
     return this.http
       .get(url)
@@ -92,21 +92,21 @@ export class CasesService {
       );
   }
 
-  getEventTriggerV2(caseTypeId: string,
-                    eventTriggerId: string,
+  getEventTriggerV2(eventTriggerId: string,
+                    caseTypeId?: string,
                     caseId?: string,
                     ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url =  this.buildEventTriggerUrl(this.appConfig.getCaseDataUrl() + '/internal', caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    let url =  this.buildEventTriggerUrlV2(eventTriggerId, caseTypeId, caseId, ignoreWarning);
 
     let headers = new Headers({
       'experimental': 'true'
     });
     if (caseId !== undefined && caseId !== null) {
-      headers.set('Accpet', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+      headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
     } else {
-      headers.set('Accpet', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+      headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
     }
     return this.http
       .get(url, {headers})
@@ -193,33 +193,48 @@ export class CasesService {
       );
   }
 
-  private buildEventTriggerUrl(baseUrl: string,
+  private buildEventTriggerUrl(jurisdictionId: string,
                                caseTypeId: string,
                                eventTriggerId: string,
                                caseId?: string,
-                               ignoreWarning?: string,
-                               jurisdictionId?: string): string {
-    let url = baseUrl;
-    if (jurisdictionId === undefined || jurisdictionId === null) {
-      url += `/case-types/${caseTypeId}`;
-    } else {
-      url += `/caseworkers/:uid`
-        + `/jurisdictions/${jurisdictionId}`
-        + `/case-types/${caseTypeId}`;
-    }
+                               ignoreWarning?: string): string {
+    let url = this.appConfig.getApiUrl()
+    + `/caseworkers/:uid`
+    + `/jurisdictions/${jurisdictionId}`
+    + `/case-types/${caseTypeId}`;
 
     if (caseId === undefined || caseId === null) {
       url += `/event-triggers/${eventTriggerId}`
-        + `?ignore-warning=${ignoreWarning}`;
+      + `?ignore-warning=${ignoreWarning}`;
     } else if (Draft.isDraft(caseId)) {
       url += `/drafts/${caseId}`
-        + `/event-triggers/${eventTriggerId}`
-        + `?ignore-warning=${ignoreWarning}`
+      + `/event-triggers/${eventTriggerId}`
+      + `?ignore-warning=${ignoreWarning}`
     } else {
       url += `/cases/${caseId}`
-        + `/event-triggers/${eventTriggerId}`
-        + `?ignore-warning=${ignoreWarning}`
+      + `/event-triggers/${eventTriggerId}`
+      + `?ignore-warning=${ignoreWarning}`
     }
+
+    return url;
+  }
+
+  private buildEventTriggerUrlV2(eventTriggerId: string,
+                                 caseTypeId?: string,
+                                 caseId?: string,
+                                 ignoreWarning?: string): string {
+    let url = this.appConfig.getCaseDataUrl() + `/internal`;
+
+    if (caseTypeId === undefined || caseTypeId === null) {
+      url += `/cases/${caseId}`
+      + `/event-triggers/${eventTriggerId}`
+      + `?ignore-warning=${ignoreWarning}`
+    } else {
+      url += `/case-types/${caseTypeId}`
+      + `/event-triggers/${eventTriggerId}`
+      + `?ignore-warning=${ignoreWarning}`;
+    }
+
     return url;
   }
 

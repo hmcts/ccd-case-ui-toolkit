@@ -127,7 +127,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
   }));
 
   it('should get event trigger on loading and announce it', () => {
-    expect(casesService.getEventTriggerV2).toHaveBeenCalledWith(CTID, ETID);
+    expect(casesService.getEventTriggerV2).toHaveBeenCalledWith(ETID, CTID);
     expect(eventTriggerService.announceEventTrigger).toHaveBeenCalledWith(EVENT_TRIGGER);
   });
 

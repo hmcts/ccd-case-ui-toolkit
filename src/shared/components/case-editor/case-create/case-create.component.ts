@@ -37,7 +37,7 @@ export class CaseCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.casesService.getEventTriggerV2(this.caseType, this.event).toPromise()
+    this.casesService.getEventTriggerV2(this.event, this.caseType).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
         this.eventTriggerService.announceEventTrigger(eventTrigger);
