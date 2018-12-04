@@ -56,10 +56,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     return this.caseField.value || this.caseField.label;
   }
   private setLabel(label: string) {
-    if (this.caseField.value == null) {
-      this.caseField.label = label;
-    } else {
+    if (this.caseField.value) {
       this.caseField.value = label;
+    } else {
+      this.caseField.label = label;
     }
   }
 }
