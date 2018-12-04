@@ -140,6 +140,9 @@ export class FieldsUtils {
     let result = this.cloneObject(formFields);
     caseFields.forEach(field => {
       mergeFunction(field, result);
+      if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
+        result[field.id] = this.mergeFields(field.field_type.complex_fields, result[field.id], mergeFunction);
+      }
     });
     return result;
   }
