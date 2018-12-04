@@ -39,6 +39,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
+    // TODO: Delete following line when @Input eventFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
     let uniqueEventFields = this.removeDuplicates(this.eventFields);
     return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueEventFields, formFields);
   }
