@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.8.1 - November 28 2018
+**RDM-3463** - Update dependency on compodoc to Version 1.1.7, to eliminate vulnerability introduced by compromised version (> 3.3.4) of event-stream package.
+
 ### Version 2.8.0 - November 22 2018
 **RDM-3427** - Start consuming new start case internal API endpoint (mgmt web and demo).
 
