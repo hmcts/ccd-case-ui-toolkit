@@ -244,24 +244,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.callbackErrorsSubject.next(null);
   }
 
-  isCreatable(): boolean {
-    return !this.hasCallbackErrors() &&
-      !this.hasInvalidData();
-  }
-
-  private hasCallbackErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
-  private hasInvalidData(): boolean {
-    return this.error
-      && this.error.details
-      && this.error.details.field_errors
-      && this.error.details.field_errors.length;
-  }
-
   getCaseId(): String {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
