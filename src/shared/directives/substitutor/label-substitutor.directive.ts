@@ -29,7 +29,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       this.formGroup = this.formGroup || new FormGroup({});
 
       let fields = this.getReadOnlyAndFormFields();
+
       this.setLabel(this.substituteLabel(fields, this.getLabel()));
+
       this.caseField.hint_text = this.substituteLabel(fields, this.caseField.hint_text);
     }
   }
@@ -56,10 +58,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     return this.caseField.value || this.caseField.label;
   }
   private setLabel(label: string) {
-    if (this.caseField.value) {
-      this.caseField.value = label;
-    } else {
+    if (this.caseField.value == null) {
       this.caseField.label = label;
+    } else {
+      this.caseField.value = label;
     }
   }
 }
