@@ -1,10 +1,8 @@
 import { LabelSubstitutionService } from './label-substitution.service';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe'
 
 describe('LabelSubstitutionService', () => {
 
   let labelSubstitutionService: LabelSubstitutionService;
-  let caseReferencePipe: CaseReferencePipe;
   let isEmptyIfPlaceholderMissing: Boolean = false;
   beforeEach(() => {
     labelSubstitutionService = new LabelSubstitutionService();
