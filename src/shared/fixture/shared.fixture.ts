@@ -23,12 +23,13 @@ export let createCaseEventTrigger = (id: string,
 };
 
 export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-  show_summary_content_option: number): CaseField => {
+  show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
   return {
     id: id || 'personFirstName',
     field_type: {
       id: type.toString() || 'Text',
-      type: type || 'Text'
+      type: type || 'Text',
+      complex_fields: typeComplexFields || []
     },
     display_context: display_context || 'OPTIONAL',
     label: label || 'First name',
