@@ -22,6 +22,7 @@ let CaseEditComponent: any = MockComponent({
 
 describe('CaseCreateComponent event trigger resolved and draft does not exist', () => {
 
+  const JID_UNDEFINED = undefined;
   const ETID = 'TEST_TRIGGER';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     ETID,
@@ -90,8 +91,8 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     submitHandler = createSpyObj('submitHandler', ['applyFilters']);
     submitHandler.applyFilters.and.returnValue();
 
-    casesService = createSpyObj('casesService', ['getEventTriggerV2', 'createCase', 'validateCase']);
-    casesService.getEventTriggerV2.and.returnValue(EVENT_TRIGGER_OB);
+    casesService = createSpyObj('casesService', ['getEventTrigger', 'createCase', 'validateCase']);
+    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OB);
     draftService = createSpyObj('draftsService', ['createOrUpdateDraft']);
     alertService = createSpyObj('alertService', ['error']);
     eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
@@ -127,7 +128,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
   }));
 
   it('should get event trigger on loading and announce it', () => {
-    expect(casesService.getEventTriggerV2).toHaveBeenCalledWith(ETID, CTID);
+    expect(casesService.getEventTrigger).toHaveBeenCalledWith(JID_UNDEFINED, CTID, ETID);
     expect(eventTriggerService.announceEventTrigger).toHaveBeenCalledWith(EVENT_TRIGGER);
   });
 
@@ -232,8 +233,8 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
     submitHandler = createSpyObj('submitHandler', ['applyFilters']);
     submitHandler.applyFilters.and.returnValue();
 
-    casesService = createSpyObj('casesService', ['getEventTriggerV2', 'createCase', 'validateCase']);
-    casesService.getEventTriggerV2.and.returnValue(EVENT_TRIGGER_OB);
+    casesService = createSpyObj('casesService', ['getEventTrigger', 'createCase', 'validateCase']);
+    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OB);
     draftService = createSpyObj('draftsService', ['createOrUpdateDraft']);
     alertService = createSpyObj('alertService', ['error']);
     eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
@@ -298,8 +299,8 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
     submitHandler = createSpyObj('submitHandler', ['applyFilters']);
     submitHandler.applyFilters.and.returnValue();
 
-    casesService = createSpyObj('casesService', ['getEventTriggerV2', 'createCase', 'validateCase']);
-    casesService.getEventTriggerV2.and.returnValue(ERROR_OBS);
+    casesService = createSpyObj('casesService', ['getEventTrigger', 'createCase', 'validateCase']);
+    casesService.getEventTrigger.and.returnValue(ERROR_OBS);
     draftsService = createSpyObj('draftsService', ['createOrUpdateDraft']);
     alertService = createSpyObj('alertService', ['error']);
     eventTriggerService = createSpyObj('eventTriggerService', ['announceEventTrigger']);
