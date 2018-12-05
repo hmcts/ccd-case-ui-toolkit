@@ -43,7 +43,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   ignoreWarning = false;
   triggerTextStart = CaseEditPageComponent.TRIGGER_TEXT_START;
   triggerTextIgnoreWarnings = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
-  triggerText: string = this.getTriggerText();
+  triggerText: string;
   isSubmitting = false;
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
@@ -65,6 +65,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
     this.caseFields = this.getCaseFields();
+    this.triggerText = this.getTriggerText();
 
     this.route.params.subscribe(params => {
       let pageId = params['page'];
