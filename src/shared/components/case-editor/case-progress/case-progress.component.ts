@@ -33,11 +33,11 @@ export class CaseProgressComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let jurisdictionId = undefined;
+    let caseTypeId = undefined;
     this.casesService.getCaseViewV2(this.case).toPromise()
       .then(caseView => this.caseDetails = caseView)
-      .then(caseView => this.casesService.getEventTriggerV2(this.event,
-                                                            undefined,
-                                                            caseView.case_id)
+      .then(caseView => this.casesService.getEventTrigger(jurisdictionId, caseTypeId, this.event, caseView.case_id)
                                                             .toPromise())
       .then(eventTrigger => {
         this.eventTriggerService.announceEventTrigger(eventTrigger);

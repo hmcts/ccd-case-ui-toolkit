@@ -79,35 +79,19 @@ export class CasesService {
 
     let url =  this.buildEventTriggerUrl(jurisdictionId, caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    return this.http
-      .get(url)
-      .pipe(
-        map(response => response.json()),
-        catchError(error => {
-          this.errorService.setError(error);
-          return throwError(error);
-        }),
-        map((p: Object) => plainToClass(CaseEventTrigger, p)),
-        tap(eventTrigger => this.initialiseEventTrigger(eventTrigger))
-      );
-  }
+    let headers = new Headers({});
 
-  getEventTriggerV2(eventTriggerId: string,
-                    caseTypeId?: string,
-                    caseId?: string,
-                    ignoreWarning?: string): Observable<CaseEventTrigger> {
-    ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
-
-    let url =  this.buildEventTriggerUrlV2(eventTriggerId, caseTypeId, caseId, ignoreWarning);
-
-    let headers = new Headers({
-      'experimental': 'true'
-    });
-    if (caseId !== undefined && caseId !== null) {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
-    } else {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+    if (this.isNotDraftIdIfExists(caseId)) {
+      headers = new Headers({
+        'experimental': 'true'
+      });
+      if (caseId !== undefined && caseId !== null) {
+        headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+      } else {
+        headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+      }
     }
+
     return this.http
       .get(url, {headers})
       .pipe(
@@ -193,30 +177,26 @@ export class CasesService {
       );
   }
 
+  private isNotDraftIdIfExists(caseId): boolean {
+    return caseId === undefined && caseId === null || !Draft.isDraft(caseId);
+  }
+
   private buildEventTriggerUrl(jurisdictionId: string,
                                caseTypeId: string,
                                eventTriggerId: string,
                                caseId?: string,
                                ignoreWarning?: string): string {
-    let url = this.appConfig.getApiUrl()
-    + `/caseworkers/:uid`
-    + `/jurisdictions/${jurisdictionId}`
-    + `/case-types/${caseTypeId}`;
-
-    if (caseId === undefined || caseId === null) {
-      url += `/event-triggers/${eventTriggerId}`
+    if (Draft.isDraft(caseId)) {
+      return this.appConfig.getApiUrl()
+      + `/caseworkers/:uid`
+      + `/jurisdictions/${jurisdictionId}`
+      + `/case-types/${caseTypeId}`
+      + `/drafts/${caseId}`
+      + `/event-triggers/${eventTriggerId}`
       + `?ignore-warning=${ignoreWarning}`;
-    } else if (Draft.isDraft(caseId)) {
-      url += `/drafts/${caseId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`
     } else {
-      url += `/cases/${caseId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`
+      return this.buildEventTriggerUrlV2(eventTriggerId, caseTypeId, caseId, ignoreWarning);
     }
-
-    return url;
   }
 
   private buildEventTriggerUrlV2(eventTriggerId: string,
