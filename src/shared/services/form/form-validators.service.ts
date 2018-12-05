@@ -6,6 +6,8 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 @Injectable()
 export class FormValidatorsService {
   static readonly MANDATORY: string = 'MANDATORY';
+  static readonly REGEX_WHITESPACES: string = '^(?! )[A-Za-z0-9 ]*(?<! )$';
+
   private readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
     'Date', 'MoneyGBP'
   ];
@@ -17,6 +19,8 @@ export class FormValidatorsService {
       if (caseField.field_type.type === 'Text') {
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
+        } else {
+          validators.push(Validators.pattern(FormValidatorsService.REGEX_WHITESPACES));   // no only whitespaces & leading/trailing spaces
         }
         if (caseField.field_type.min) {
           validators.push(Validators.minLength(caseField.field_type.min));
