@@ -13,15 +13,20 @@ describe('CasesService', () => {
 
   const API_URL = 'http://aggregated.ccd.reform';
   const JID = 'TEST';
+  const JID_UNDEFINED = undefined;
   const CTID = 'TestAddressBookCase';
+  const CTID_UNDEFINED = undefined;
   const CASE_ID = '1';
+  const CASE_ID_UNDEFINED = undefined;
   const PAGE_ID = 'pageId';
   const DRAFT_ID = 'DRAFT1';
   const CASE_URL = `${API_URL}/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}`;
   const V2_CASE_VIEW_URL = `${API_URL}/internal/cases/${CASE_ID}`;
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
-  const EVENT_TRIGGER_URL = API_URL
-    + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_FOR_CASE_TYPE_URL = API_URL
+    + `/internal/case-types/${CTID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_FOR_CASE_URL = API_URL
+    + `/internal/cases/${CASE_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
   const EVENT_TRIGGER_DRAFT_URL = API_URL
     + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/drafts/${DRAFT_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
   const CREATE_EVENT_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/events`;
@@ -163,12 +168,28 @@ describe('CasesService', () => {
       }))));
     });
 
-    it('should use HttpService::get with correct url', () => {
+    it('should use HttpService::get with correct url for create case', () => {
       casesService
-        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, CASE_ID, 'true')
+        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, CASE_ID_UNDEFINED, 'true')
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_URL);
+      const headers = new Headers({
+        'experimental': 'true',
+        'Accept': CasesService.V2_MEDIATYPE_START_CASE_TRIGGER
+      });
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, {headers});
+    });
+
+    it('should use HttpService::get with correct url for create event', () => {
+      casesService
+        .getEventTrigger(JID_UNDEFINED, CTID_UNDEFINED, EVENT_TRIGGER_ID, CASE_ID, 'true')
+        .subscribe();
+
+      const headers = new Headers({
+        'experimental': 'true',
+        'Accept': CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER
+      });
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, {headers});
     });
 
     it('should use HttpService::get with correct url for DRAFTS', () => {
@@ -176,7 +197,8 @@ describe('CasesService', () => {
         .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, DRAFT_ID, 'true')
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL);
+      const headers = new Headers({});
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, {headers});
     });
 
     it('should retrieve event trigger from server by case id', () => {
