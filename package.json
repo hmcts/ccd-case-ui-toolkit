@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.8.1",
+  "version": "2.10.0",
   "engines": {
     "yarn": "^1.9.2",
     "npm": "^5.6.0"
@@ -84,7 +84,7 @@
     "angular2-template-loader": "^0.6.2",
     "awesome-typescript-loader": "^5.2.1",
     "class-transformer": "^0.1.8",
-    "codacy-coverage": "^3.0.0",
+    "codacy-coverage": "^2.1.1",
     "codecov": "^3.0.0",
     "codelyzer": "^4.1.0",
     "concurrently": "^4.0.1",
