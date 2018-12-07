@@ -14,7 +14,7 @@ export class LabelSubstitutionService {
         let startSubstitutionIndex = -1;
         let fieldIdToSubstitute = '';
         let isCollecting = false;
-        if (label) {
+        if (label && typeof label === 'string') {
             for (let scanIndex = 0; scanIndex < label.length; scanIndex++) {
                 if (this.isStartPlaceholderAndNotCollecting(label, scanIndex, isCollecting)) {
                     startSubstitutionIndex = scanIndex;
