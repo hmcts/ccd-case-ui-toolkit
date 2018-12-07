@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.10.0 - December 06 2018
+**RDM-3484** - Start consuming new start event internal API endpoint (mgmt web and demo app).
 
 ### Version 2.9.0 - December 5 2018
 **RDM-2009** - ComplexType element (non-collection) in Labels (with markdown) & show/hide

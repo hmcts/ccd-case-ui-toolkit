@@ -24,11 +24,11 @@ app.use(function (req, res) {
         response = db.get('create-case-event-trigger').value();
       } else if (req.url.indexOf('profile') !== -1) {
         response = db.get('profile').value();
-      } else if (req.url.indexOf('internal/cases/1111222233334444') !== -1) {
-        response = db.get('case').value();
       } else if (req.url.indexOf('event-triggers/enterCaseIntoLegacy') !== -1) {
         response = db.get('event-trigger').value();
-      }
+      } else if (req.url.indexOf('internal/cases/1111222233334444') !== -1) {
+        response = db.get('case').value();
+      } 
     }
     if (response) {
       res.jsonp(response);
