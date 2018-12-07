@@ -32,7 +32,7 @@ describe('IsReadOnlyPipe', () => {
       .toBeFalsy();
   });
 
-  it('should identify READONLY display_context field as NOT readOnly', () => {
+  it('should identify READONLY display_context field as readOnly', () => {
     expect(isReadOnly.transform({ display_context: 'READONLY' } as CaseField))
       .toBeTruthy();
   });
