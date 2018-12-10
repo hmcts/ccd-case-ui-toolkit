@@ -2,7 +2,9 @@
 
 ### Version 2.12.0 - December 10 2018
 **RDM-3256** - Save and Resume content changes
+
 **Revert-RDM-3284** - Revert RDM-3284 until Backend changes are completely implemented
+
 **RDM-2974** - Implement the <BR> style for Markdown linebreaks 
   
 ### Version 2.11.0 - December 07 2018 - *Deprecated Version*
