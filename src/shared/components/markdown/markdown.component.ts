@@ -1,11 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'ccd-markdown',
-    templateUrl: './markdown.html'
+  selector: 'ccd-markdown',
+  templateUrl: './markdown.html'
 })
-export class MarkdownComponent {
+export class MarkdownComponent implements OnInit {
 
-    @Input()
-    content: string;
+  @Input()
+  content: string;
+
+  ngOnInit(): void {
+    this.content = this.content.replace(/  \n/g, '<br>');
+  }
 }

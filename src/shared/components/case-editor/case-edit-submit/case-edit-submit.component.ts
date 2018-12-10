@@ -254,7 +254,7 @@ export class CaseEditSubmitComponent implements OnInit {
 
   getCancelText(): String {
     if (this.eventTrigger.can_save_draft) {
-      return 'Cancel and return';
+      return 'Return to case list';
     } else {
       return 'Cancel';
     }
