@@ -1,6 +1,6 @@
 <ng-container *ngFor="let field of fields">
     <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [formGroup]="formGroup" [eventFields]="eventFields">
-      <ng-container [ngSwitch]="field | ccdIsReadOnly">
+      <ng-container [ngSwitch]="field | ccdIsReadOnlyAndNotCollection ">
         <ccd-field-read *ngSwitchCase="true" [caseField]="field" [withLabel]="true"></ccd-field-read>
         <ng-container *ngSwitchCase="false">
           <ng-container *ngIf="!(field | ccdIsCompound); else CompoundRow">
