@@ -47,7 +47,7 @@ let textField = (id, value, label?, hintText?) => {
     return caseField;
 };
 
-fdescribe('LabelSubstitutorDirective', () => {
+describe('LabelSubstitutorDirective', () => {
 
   let comp: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
