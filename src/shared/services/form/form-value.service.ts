@@ -55,8 +55,13 @@ export class FormValueService {
     switch (typeof rawValue) {
       case 'object':
         return this.sanitiseObject(rawValue);
-      case 'string':
-        return rawValue.trim();
+      case 'string': {
+        if (rawValue.trim().length === 0) {
+          return rawValue;
+        } else {
+          return rawValue.trim();
+        }
+      }
       case 'number':
         return String(rawValue);
       default:
