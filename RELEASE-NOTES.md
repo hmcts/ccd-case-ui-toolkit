@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.11.0 - December 07 2018
+### Version 2.12.0 - December 10 2018
 **RDM-2974** - Implement the <BR> style for Markdown linebreaks
 **RDM-3256** - Save and Resume content changes
 
