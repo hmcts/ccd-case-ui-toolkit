@@ -3,7 +3,6 @@ import { LabelSubstitutionService } from './label-substitution.service';
 describe('LabelSubstitutionService', () => {
 
   let labelSubstitutionService: LabelSubstitutionService;
-  let isEmptyIfPlaceholderMissing: Boolean = false;
   beforeEach(() => {
     labelSubstitutionService = new LabelSubstitutionService();
   });
@@ -14,7 +13,7 @@ describe('LabelSubstitutionService', () => {
       let pageFormFields = [{}];
       let label = 'Email for ${PersonFirstName} is';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe(label);
     });
@@ -23,7 +22,7 @@ describe('LabelSubstitutionService', () => {
       let pageFormFields = [{ 'PersonFirstName': 'John' }];
       let label = null;
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBeNull();
     });
@@ -32,7 +31,7 @@ describe('LabelSubstitutionService', () => {
       let pageFormFields = { 'PersonFirstName': null };
       let label = 'Email for ${PersonFirstName} is';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('Email for  is');
     });
@@ -41,7 +40,7 @@ describe('LabelSubstitutionService', () => {
       let pageFormFields = { 'PersonFirstName': '' };
       let label = 'Email for ${PersonFirstName} is';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('Email for  is');
     });
@@ -50,7 +49,7 @@ describe('LabelSubstitutionService', () => {
       let pageFormFields = { 'Age': 34, 'PersonFirstName': 'John' };
       let label = 'Email for ${PersonFirstName} of ${Age} is';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('Email for John of 34 is');
     });
@@ -59,7 +58,7 @@ describe('LabelSubstitutionService', () => {
       let pageFormFields = { 'PersonFirstName': 'John', 'PersonLastName': 'Smith' };
       let label = 'Email for ${PersonFirstName} ${PersonLastName} is ${PersonFirstName}.${PersonLastName}@gmail.com';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('Email for John Smith is John.Smith@gmail.com');
     });
@@ -69,7 +68,7 @@ describe('LabelSubstitutionService', () => {
       let label = `First Name is \${Age} years old \${Age} \
 and markdown is \${Markdownlabel} and address is \${Address} and document \${D8Document}`;
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('First Name is  years old  and markdown is  and address is ${Address} and document photo.jpg');
     });
@@ -78,7 +77,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1': 'one', '%2': 'two', '?3': { 'field': 'value' }, '$4': 'four', '_5': 'five' };
       let label = '${_1} ${%2} ${?3} ${$4} {_5}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('one ${%2} ${?3} ${$4} {_5}');
     });
@@ -87,7 +86,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1': 'one' };
       let label = 'This ${_1} but not this ${${_1}} and not this ${field${_1}field} but this ${_1} too';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('This one but not this ${${_1}} and not this ${field${_1}field} but this one too');
     });
@@ -96,7 +95,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': '${_1_one}' };
       let label = '${_1_one}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('${_1_one}');
     });
@@ -105,7 +104,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one-LABEL': ['label1', 'label2'], '_3_three': 'simpleValue' };
       let label = '${_1_one} ${_3_three}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('label1, label2 simpleValue');
     });
@@ -122,7 +121,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       };
       let label = '${complex.nested} and ${complex.nested2} and ${complex.nested3} and ${complex.nested3.doubleNested}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('nested value and nested value2 and ${complex.nested3} and double nested');
     });
@@ -131,7 +130,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { 'complex': { 'nested': { 'doubleNested': 'double nested' } } };
       let label = '${complex} and ${complex.nested} and ${complex.nested.} and ${complex.nested.double} and ${complex.nested.doubleNested}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('${complex} and ${complex.nested} and ${complex.nested.} and ${complex.nested.double} and double nested');
     });
@@ -143,7 +142,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': [{ 'value': 'value1' }, { 'value': 'value2' }], '_3_three': 'simpleValue' };
       let label = '${_1_one} ${_3_three}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('value1, value2 simpleValue');
     });
@@ -152,7 +151,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': [{ 'value': 35 }, { 'value': 45 }], '_3_three': 'simpleValue' };
       let label = '${_1_one} ${_3_three}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('35, 45 simpleValue');
     });
@@ -161,7 +160,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': [{ 'value': { 'id': 'complex1' } }, { 'value': { 'id': 'complex2' } }], '_3_three': 'simpleValue' };
       let label = '${_1_one} ${_3_three}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('${_1_one} simpleValue');
     });
@@ -173,7 +172,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       };
       let label = '${_1_one} ${_3_three}';
 
-      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing);
+      let actual = labelSubstitutionService.substituteLabel(pageFormFields, label);
 
       expect(actual).toBe('${_1_one} simpleValue');
     });

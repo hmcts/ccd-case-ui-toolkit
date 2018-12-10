@@ -13,30 +13,31 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
-  @Input() isEmptyIfPlaceholderMissing: Boolean = false;
 
   initialLabel: string;
   initialHintText: string;
+  initialValue: string;
 
   constructor(private fieldsUtils: FieldsUtils, private labelSubstitutionService: LabelSubstitutionService) {
   }
 
   ngOnInit() {
-    this.initialLabel = this.getLabel();
-    if (this.initialLabel) {
-      this.initialLabel = this.caseField.label;
-      this.initialHintText = this.caseField.hint_text;
-      this.formGroup = this.formGroup || new FormGroup({});
+    this.initialLabel = this.caseField.label;
+    this.initialHintText = this.caseField.hint_text;
+    this.initialValue = this.caseField.value;
+    this.formGroup = this.formGroup || new FormGroup({});
 
-      let fields = this.getReadOnlyAndFormFields();
-      this.setLabel(this.substituteLabel(fields, this.getLabel()));
-      this.caseField.hint_text = this.substituteLabel(fields, this.caseField.hint_text);
-    }
+    let fields = this.getReadOnlyAndFormFields();
+
+    this.caseField.label = this.resolvePlaceholders(fields, this.caseField.label);
+    this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);
+    this.caseField.value = this.resolvePlaceholders(fields, this.caseField.value);
   }
 
   ngOnDestroy() {
     this.caseField.label = this.initialLabel;
     this.caseField.hint_text = this.initialHintText;
+    this.caseField.value = this.initialValue;
   }
 
   private getReadOnlyAndFormFields() {
@@ -60,18 +61,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     return this.formGroup.getRawValue();
   }
 
-  private substituteLabel(fields, label) {
-    return this.labelSubstitutionService.substituteLabel(fields, label, this.isEmptyIfPlaceholderMissing);
-  }
-
-  private getLabel() {
-    return this.caseField.value || this.caseField.label;
-  }
-  private setLabel(label: string) {
-    if (this.caseField.value == null) {
-      this.caseField.label = label;
-    } else {
-      this.caseField.value = label;
-    }
+  private resolvePlaceholders(fields, stringToResolve) {
+    return this.labelSubstitutionService.substituteLabel(fields, stringToResolve);
   }
 }
