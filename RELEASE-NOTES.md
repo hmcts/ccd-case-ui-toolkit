@@ -1,4 +1,19 @@
 ## RELEASE NOTES
+
+### Version 2.12.0 - December 10 2018
+**RDM-2974** - Implement the <BR> style for Markdown linebreaks
+**RDM-3256** - Save and Resume content changes
+
+### Version 2.11.0 - December 07 2018
+**RDM-3284** - CRUD contract on Collection for Add new item
+
+### Version 2.10.0 - December 06 2018
+**RDM-3484** - Start consuming new start event internal API endpoint (mgmt web and demo app).
+
+### Version 2.9.0 - December 5 2018
+**RDM-2009** - ComplexType element (non-collection) in Labels (with markdown) & show/hide
+**RDM-3391** - Radio option should be selected when clicked on the label text
+
 ### Version 2.8.1 - November 28 2018
 **RDM-3463** - Update dependency on compodoc to Version 1.1.7, to eliminate vulnerability introduced by compromised version (> 3.3.4) of event-stream package.
 

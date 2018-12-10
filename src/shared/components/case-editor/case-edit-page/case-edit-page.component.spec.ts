@@ -292,14 +292,14 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeFalsy();
     });
 
-    it('should return "Cancel and return" as cancel button text if save and resume enabled for event', () => {
+    it('should return "Return to case list" as cancel button text if save and resume enabled for event', () => {
       wizardPage.isMultiColumn = () => true;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
 
       let cancelText = comp.getCancelText();
 
-      expect(cancelText).toEqual('Cancel and return');
+      expect(cancelText).toEqual('Return to case list');
     });
 
     it('should init case fields to the event case fields when case details are not available', () => {

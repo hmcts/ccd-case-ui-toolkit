@@ -9,10 +9,10 @@ describe('MarkdownComponent', () => {
   const $MARKDOWN = By.css('markdown');
 
   const CONTENT = `| Tables | Are | Cool |
-|----------|:-------------:|------:|
-| col 1 is | left-aligned | $1600 |
-| col 2 is | centered | $12 |
-| col 3 is | right-aligned | $1 |`;
+ |----------|:-------------:|------:|
+ | col 1 is | left-aligned | $1600 |
+ | col 2 is | centered | $12 |
+ | col 3 is | right-aligned | $1 |`;
   const EXPECTED_CONTENT = `<table>
 <thead>
 <tr>
