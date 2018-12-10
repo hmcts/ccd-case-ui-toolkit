@@ -6,7 +6,7 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { async } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FieldsUtils } from '../../services/fields/fields.utils';
-import { LabelSubstitutionService } from './services/label-substitution.service';
+import { PlaceholderResolverService } from './services/placeholder-resolver.service';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
@@ -55,15 +55,15 @@ describe('LabelSubstitutorDirective', () => {
   let labelEl: HTMLElement;
   let hintEl: HTMLElement;
   let valueEl: HTMLElement;
-  let labelSubstitutionService: any;
+  let placeholderResolverService: any;
 
   beforeEach(async(() => {
-    labelSubstitutionService = createSpyObj<LabelSubstitutionService>('labelSubstitutionService', ['substituteLabel']);
+    placeholderResolverService = createSpyObj<PlaceholderResolverService>('placeholderResolverService', ['resolvePlaceholders']);
 
     TestBed.configureTestingModule({
       declarations: [LabelSubstitutorDirective, TestHostComponent],
       providers: [FieldsUtils,
-        {provide: LabelSubstitutionService, useValue: labelSubstitutionService}]
+        {provide: PlaceholderResolverService, useValue: placeholderResolverService}]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -83,7 +83,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.eventFields = [comp.caseField];
 
-      labelSubstitutionService.substituteLabel.and
+      placeholderResolverService.resolvePlaceholders.and
         .returnValues('Label B with valueA=ValueA and valueA=ValueA:1',
           'Label B with valueA=ValueA and valueA=ValueA:2',
           'Label B with valueA=ValueA and valueA=ValueA:3');
@@ -101,7 +101,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.eventFields = [comp.caseField];
 
-      labelSubstitutionService.substituteLabel.and.returnValues(label, hintText, value);
+      placeholderResolverService.resolvePlaceholders.and.returnValues(label, hintText, value);
       fixture.detectChanges();
 
       expect(labelEl.innerText).toBe('');
@@ -116,7 +116,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.eventFields = [comp.caseField];
 
-      labelSubstitutionService.substituteLabel.and.returnValues(label, hintText, value);
+      placeholderResolverService.resolvePlaceholders.and.returnValues(label, hintText, value);
       fixture.detectChanges();
 
       expect(labelEl.innerText).toBe('');
@@ -130,7 +130,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.eventFields = [comp.caseField, field('LabelA', 'ValueA', '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: undefined, LabelA: 'ValueA'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: undefined, LabelA: 'ValueA'}, label);
     });
 
     it('should pass form value to substitute label if both case field and form values exist for same field', () => {
@@ -142,7 +142,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: 'ValueA2'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'ValueA2'}, label);
     });
 
     it('should pass correct values when both form field and case field values present for different fields', () => {
@@ -155,7 +155,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel)
+      expect(placeholderResolverService.resolvePlaceholders)
         .toHaveBeenCalledWith({LabelB: '', LabelA: 'ValueA', LabelC: 'ValueC', LabelD: 'ValueD'}, label);
     });
   });
@@ -184,7 +184,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith(
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith(
         {LabelB: '', LabelA: 'Option A'}, label);
     });
 
@@ -207,7 +207,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith(
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith(
         {LabelB: '', LabelA: 'Option C'}, label);
     });
 
@@ -233,7 +233,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith(
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith(
         {LabelB: '', LabelA: 'Option A'}, label);
     });
   });
@@ -266,7 +266,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith(
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith(
         {LabelB: '', LabelA: ['ValueA', 'ValueD'], 'LabelA-LABEL': ['Option A', 'Option D']}, label);
     });
 
@@ -293,7 +293,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith(
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith(
         {LabelB: '', LabelA: ['ValueC', 'ValueD'], 'LabelA-LABEL': ['Option C', 'Option D']}, label);
     });
 
@@ -323,7 +323,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith(
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith(
         {LabelB: '', LabelA: ['ValueA', 'ValueC'], 'LabelA-LABEL': ['Option A', 'Option C']}, label);
     });
   });
@@ -339,7 +339,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: null}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, label);
     });
 
     it('should pass case field value with MoneyGBP when case field value but no form field value present', () => {
@@ -351,7 +351,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
     });
 
     it('should pass form field value with MoneyGBP when form field value but no case field value present', () => {
@@ -366,7 +366,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
     });
 
     it('should pass form field value with MoneyGBP when both form and case field values present', () => {
@@ -381,7 +381,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
     });
   });
 
@@ -396,7 +396,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
     });
 
     it('should pass form field value with Date when form field value but no case field value present', () => {
@@ -411,7 +411,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
     });
 
     it('should pass form field value with Date when both form and case field values present', () => {
@@ -426,7 +426,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
     });
 
     it('should pass form field value with invalid date when both form and case field values present', () => {
@@ -441,7 +441,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: '{ Invalid Date: 2018-03 }'}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '{ Invalid Date: 2018-03 }'}, label);
     });
   });
 
@@ -471,7 +471,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
     });
 
     it('should pass form field value with comma delimited text items when form field value but no case field value present', () => {
@@ -501,7 +501,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
     });
 
     it('should pass form field value with comma delimited text items when both form and case field values present', () => {
@@ -541,7 +541,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
     });
   });
 
@@ -575,7 +575,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
@@ -609,7 +609,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
@@ -643,7 +643,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
     });
   });
 
@@ -664,7 +664,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
@@ -685,7 +685,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
@@ -706,7 +706,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
     });
   });
 
@@ -727,7 +727,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
@@ -748,7 +748,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
@@ -769,7 +769,7 @@ describe('LabelSubstitutorDirective', () => {
       });
       fixture.detectChanges();
 
-      expect(labelSubstitutionService.substituteLabel).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderResolverService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
     });
   });
 });

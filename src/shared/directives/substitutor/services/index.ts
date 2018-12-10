@@ -1,1 +1,1 @@
-export * from './label-substitution.service';
+export * from './placeholder-resolver.service';

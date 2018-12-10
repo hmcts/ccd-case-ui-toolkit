@@ -2,7 +2,7 @@ import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
-import { LabelSubstitutionService } from './services';
+import { PlaceholderResolverService } from './services';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -18,7 +18,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   initialHintText: string;
   initialValue: string;
 
-  constructor(private fieldsUtils: FieldsUtils, private labelSubstitutionService: LabelSubstitutionService) {
+  constructor(private fieldsUtils: FieldsUtils, private placeholderResolverService: PlaceholderResolverService) {
   }
 
   ngOnInit() {
@@ -62,6 +62,6 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private resolvePlaceholders(fields, stringToResolve) {
-    return this.labelSubstitutionService.substituteLabel(fields, stringToResolve);
+    return this.placeholderResolverService.resolvePlaceholders(fields, stringToResolve);
   }
 }
