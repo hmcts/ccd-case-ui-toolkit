@@ -7,7 +7,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockComponent } from 'ng2-mock-component';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor/label-substitutor.directive';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { PlaceholderResolverService } from '../../../directives/substitutor/services/placeholder-resolver.service';
+import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
 
 describe('LabelFieldComponent', () => {
 
@@ -61,7 +61,7 @@ describe('LabelFieldComponent', () => {
         ],
         providers: [
           FieldsUtils,
-          PlaceholderResolverService,
+          PlaceholderService,
         ]
       })
       .compileComponents();

@@ -3,7 +3,7 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 // @dynamic
 @Injectable()
-export class PlaceholderResolverService {
+export class PlaceholderService {
 
     private static readonly PLACEHOLDER_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
     private static readonly STARTING_PLACEHOLDER = '$';
@@ -38,7 +38,7 @@ export class PlaceholderResolverService {
     }
 
     private isMatchingPlaceholderPattern(fieldIdToSubstitute) {
-        return fieldIdToSubstitute.match(PlaceholderResolverService.PLACEHOLDER_PATTERN);
+        return fieldIdToSubstitute.match(PlaceholderService.PLACEHOLDER_PATTERN);
     }
 
     private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields) {
@@ -55,7 +55,7 @@ export class PlaceholderResolverService {
     }
 
     private isStartingPlaceholder(stringToResolve, scanIndex): boolean {
-        return stringToResolve.charAt(scanIndex) === PlaceholderResolverService.STARTING_PLACEHOLDER;
+        return stringToResolve.charAt(scanIndex) === PlaceholderService.STARTING_PLACEHOLDER;
     }
 
     private isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollectingPlaceholder): boolean {
@@ -63,11 +63,11 @@ export class PlaceholderResolverService {
     }
 
     private isClosingPlaceholder(stringToResolve, scanIndex): boolean {
-        return stringToResolve.charAt(scanIndex) === PlaceholderResolverService.CLOSING_PLACEHOLDER;
+        return stringToResolve.charAt(scanIndex) === PlaceholderService.CLOSING_PLACEHOLDER;
     }
 
     private isOpeningPlaceholder(stringToResolve, scanIndex): boolean {
-        return stringToResolve.charAt(scanIndex) === PlaceholderResolverService.OPENING_PLACEHOLDER;
+        return stringToResolve.charAt(scanIndex) === PlaceholderService.OPENING_PLACEHOLDER;
     }
 
     private substitute(pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute): string {

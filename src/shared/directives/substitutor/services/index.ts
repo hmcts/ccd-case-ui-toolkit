@@ -1,1 +1,1 @@
-export * from './placeholder-resolver.service';
+export * from './placeholder.service';

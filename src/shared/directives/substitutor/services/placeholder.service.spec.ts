@@ -1,10 +1,10 @@
-import { PlaceholderResolverService } from './placeholder-resolver.service';
+import { PlaceholderService } from './placeholder.service';
 
-describe('PlaceholderResolverService', () => {
+describe('PlaceholderService', () => {
 
-  let placeholderResolverService: PlaceholderResolverService;
+  let placeholderService: PlaceholderService;
   beforeEach(() => {
-    placeholderResolverService = new PlaceholderResolverService();
+    placeholderService = new PlaceholderService();
   });
 
   describe('simple types', () => {
@@ -13,7 +13,7 @@ describe('PlaceholderResolverService', () => {
       let pageFormFields = [{}];
       let stringToResolve = 'Email for ${PersonFirstName} is';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe(stringToResolve);
     });
@@ -22,7 +22,7 @@ describe('PlaceholderResolverService', () => {
       let pageFormFields = [{ 'PersonFirstName': 'John' }];
       let stringToResolve = null;
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBeNull();
     });
@@ -31,7 +31,7 @@ describe('PlaceholderResolverService', () => {
       let pageFormFields = { 'PersonFirstName': null };
       let stringToResolve = 'Email for ${PersonFirstName} is';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('Email for  is');
     });
@@ -40,7 +40,7 @@ describe('PlaceholderResolverService', () => {
       let pageFormFields = { 'PersonFirstName': '' };
       let stringToResolve = 'Email for ${PersonFirstName} is';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('Email for  is');
     });
@@ -49,7 +49,7 @@ describe('PlaceholderResolverService', () => {
       let pageFormFields = { 'Age': 34, 'PersonFirstName': 'John' };
       let stringToResolve = 'Email for ${PersonFirstName} of ${Age} is';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('Email for John of 34 is');
     });
@@ -58,7 +58,7 @@ describe('PlaceholderResolverService', () => {
       let pageFormFields = { 'PersonFirstName': 'John', 'PersonLastName': 'Smith' };
       let stringToResolve = 'Email for ${PersonFirstName} ${PersonLastName} is ${PersonFirstName}.${PersonLastName}@gmail.com';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('Email for John Smith is John.Smith@gmail.com');
     });
@@ -68,7 +68,7 @@ describe('PlaceholderResolverService', () => {
       let stringToResolve = `First Name is \${Age} years old \${Age} \
 and markdown is \${Markdownlabel} and address is \${Address} and document \${D8Document}`;
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('First Name is  years old  and markdown is  and address is ${Address} and document photo.jpg');
     });
@@ -77,7 +77,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1': 'one', '%2': 'two', '?3': { 'field': 'value' }, '$4': 'four', '_5': 'five' };
       let stringToResolve = '${_1} ${%2} ${?3} ${$4} {_5}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('one ${%2} ${?3} ${$4} {_5}');
     });
@@ -86,7 +86,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1': 'one' };
       let stringToResolve = 'This ${_1} but not this ${${_1}} and not this ${field${_1}field} but this ${_1} too';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('This one but not this ${${_1}} and not this ${field${_1}field} but this one too');
     });
@@ -95,7 +95,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': '${_1_one}' };
       let stringToResolve = '${_1_one}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('${_1_one}');
     });
@@ -104,7 +104,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one-LABEL': ['label1', 'label2'], '_3_three': 'simpleValue' };
       let stringToResolve = '${_1_one} ${_3_three}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('label1, label2 simpleValue');
     });
@@ -121,7 +121,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       };
       let stringToResolve = '${complex.nested} and ${complex.nested2} and ${complex.nested3} and ${complex.nested3.doubleNested}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('nested value and nested value2 and ${complex.nested3} and double nested');
     });
@@ -130,7 +130,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { 'complex': { 'nested': { 'doubleNested': 'double nested' } } };
       let s = '${complex} and ${complex.nested} and ${complex.nested.} and ${complex.nested.double} and ${complex.nested.doubleNested}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, s);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, s);
 
       expect(actual).toBe('${complex} and ${complex.nested} and ${complex.nested.} and ${complex.nested.double} and double nested');
     });
@@ -142,7 +142,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': [{ 'value': 'value1' }, { 'value': 'value2' }], '_3_three': 'simpleValue' };
       let stringToResolve = '${_1_one} ${_3_three}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('value1, value2 simpleValue');
     });
@@ -151,7 +151,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': [{ 'value': 35 }, { 'value': 45 }], '_3_three': 'simpleValue' };
       let stringToResolve = '${_1_one} ${_3_three}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('35, 45 simpleValue');
     });
@@ -160,7 +160,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let pageFormFields = { '_1_one': [{ 'value': { 'id': 'complex1' } }, { 'value': { 'id': 'complex2' } }], '_3_three': 'simpleValue' };
       let stringToResolve = '${_1_one} ${_3_three}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('${_1_one} simpleValue');
     });
@@ -172,7 +172,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       };
       let stringToResolve = '${_1_one} ${_3_three}';
 
-      let actual = placeholderResolverService.resolvePlaceholders(pageFormFields, stringToResolve);
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('${_1_one} simpleValue');
     });

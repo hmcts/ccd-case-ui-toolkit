@@ -12,7 +12,7 @@ import { routing } from './app.routing';
 import { AppComponent } from './app.component';
 import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  PlaceholderResolverService, DocumentManagementService, PageValidationService} from '@hmcts/ccd-case-ui-toolkit';
+  PlaceholderService, DocumentManagementService, PageValidationService} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
@@ -43,7 +43,7 @@ import { CoreComponent } from './core.component';
     HttpErrorService,
     AlertService,
     DraftService,
-    PlaceholderResolverService,
+    PlaceholderService,
     PageValidationService,
     CaseEditWizardGuard,
     RouterHelperService,
