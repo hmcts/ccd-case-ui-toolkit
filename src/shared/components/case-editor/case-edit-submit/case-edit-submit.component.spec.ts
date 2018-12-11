@@ -460,9 +460,9 @@ describe('CaseEditSubmitComponent', () => {
       expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
     });
 
-    it('should return "Cancel and return" text label for cancel button when save and resume enabled', () => {
+    it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
       let result = comp.getCancelText();
-      expect(result).toBe('Cancel and return');
+      expect(result).toBe('Return to case list');
     });
   });
 });
