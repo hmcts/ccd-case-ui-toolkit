@@ -24,4 +24,11 @@ export class CaseFieldService {
     }
     return field.display_context.toUpperCase() === 'MANDATORY';
   }
+
+  public isLabel (field: CaseField) {
+    if (!field || !field.field_type) {
+      return false;
+    }
+    return field.field_type.type === 'Label';
+  }
 }
