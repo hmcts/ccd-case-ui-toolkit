@@ -7,8 +7,10 @@ describe('conditional-show', () => {
   let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
   let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', null);
   let caseField4: CaseField = aCaseField('field4', 'field4', 'Text', 'OPTIONAL', null);
+  let complexAddressUK: CaseField = aCaseField('AddressUKCode', 'Address UK', 'AddressUK', 'OPTIONAL', null);
+  let claimantDetailsField: CaseField = aCaseField('claimantDetails', 'ClaimantsDetails', 'Complex', 'OPTIONAL', null, [complexAddressUK]);
 
-  let caseFields = [caseField1, caseField2, caseField3, caseField4];
+  let caseFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
 
   describe('matches when', () => {
     it('empty condition', () => {
@@ -73,6 +75,44 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
+    it('should return true when value will match exactly on a complex field', () => {
+      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let fields = {
+        claimantDetails: {
+          NamePrefix: 'Mr.'
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(true);
+    });
+
+    it('should return true when value will match exactly on AddressUK complex field', () => {
+      let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
+      let fields = {
+        solicitorName: 'Ben Kember',
+        claimantDetails: {
+          NamePrefix: 'Mr.',
+          FirstName: 'John',
+          LastName: 'Snow',
+          AddressUKCode: {
+            AddressLine1: '3rd Floor, Mitre House',
+            AddressLine2: '177 Regent Street',
+            AddressLine3: 'London',
+            PostTown: 'London',
+            County: 'Middlesex',
+            PostCode: 'E17 7QN',
+            Country: 'United Kingdom'
+          }
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(true);
+    });
+
   });
 
   describe('matchByCaseFields when', () => {
@@ -81,6 +121,15 @@ describe('conditional-show', () => {
       caseField2.value = 3;
       caseField3.value = 'temmy';
       caseField4.value = 's1 AND s2';
+      complexAddressUK.value = {
+        AddressLine1: '3rd Floor, Mitre House',
+        AddressLine2: '177 Regent Street',
+        AddressLine3: 'London',
+        PostTown: 'London',
+        County: 'Middlesex',
+        PostCode: 'E17 7QN',
+        Country: 'United Kingdom'
+      };
     }));
 
     it('empty condition', () => {
@@ -123,6 +172,14 @@ describe('conditional-show', () => {
     it('should return true when multiple values match exactly regardless of the order', () => {
       caseField1.value = ['s2' , 's1'];
       let sc = new ShowCondition('field1="s1,s2"');
+
+      let matched = sc.matchByCaseFields(caseFields);
+
+      expect(matched).toBe(true);
+    });
+
+    it('should return true when complex values match exactly', () => {
+      let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
 
       let matched = sc.matchByCaseFields(caseFields);
 
@@ -220,6 +277,32 @@ describe('conditional-show', () => {
 
       expect(matched).toBe(false);
     });
+
+    it('invalid field mentioned in complex field condition', () => {
+      let sc = new ShowCondition('claimantDetails.InvalidField="Mr."');
+      let fields = {
+        claimantDetails: {
+          NamePrefix: 'Mr.'
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
+
+    it('field mentioned in complex field condition has no value', () => {
+      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let fields = {
+        claimantDetails: {
+          NamePrefix: undefined
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
   });
 
   describe('not matches ByCaseFields when', () => {
@@ -228,6 +311,15 @@ describe('conditional-show', () => {
       caseField2.value = 3;
       caseField3.value = 'temmy';
       caseField4.value = 's1 AND s2';
+      complexAddressUK.value = {
+        AddressLine1: '3rd Floor, Mitre House',
+        AddressLine2: '177 Regent Street',
+        AddressLine3: 'London',
+        PostTown: 'London',
+        County: 'Middlesex',
+        PostCode: 'E17 7QN',
+        Country: 'United Kingdom'
+      };
     }));
 
     it('field value is not equal to condition', () => {
@@ -262,6 +354,13 @@ describe('conditional-show', () => {
 
       expect(matched).toBe(false);
     });
+    it('should return true when complex values match exactly', () => {
+      let sc = new ShowCondition('claimantDetails.AddressUKCode="London"');
+
+      let matched = sc.matchByCaseFields(caseFields);
+
+      expect(matched).toBe(false);
+    });
   });
 
   describe('multiple AND conditions', () => {
@@ -270,6 +369,15 @@ describe('conditional-show', () => {
       caseField2.value = 3;
       caseField3.value = 'temmy';
       caseField4.value = 's1 AND s2';
+      complexAddressUK.value = {
+        AddressLine1: '3rd Floor, Mitre House',
+        AddressLine2: '177 Regent Street',
+        AddressLine3: 'London',
+        PostTown: 'London',
+        County: 'Middlesex',
+        PostCode: 'E17 7QN',
+        Country: 'UK'
+      };
     }));
 
     it('should return true when all conditions are true', () => {
@@ -299,6 +407,16 @@ describe('conditional-show', () => {
     it('should evaluate AND conditions correctly for a mix of EQUALS and CONTAINS', () => {
       caseField2.value = ['s4', 's2', 's3'];
       let sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINSs3,s4');
+
+      let matched = sc.matchByCaseFields(caseFields);
+
+      expect(matched).toBe(true);
+    });
+
+    it('should return true when all conditions are true when using Complex fields', () => {
+      caseField1.value = ['s1', 's2', 's3'];
+      let sc = new ShowCondition(
+        'field1CONTAINS"s3,s2" AND claimantDetails.AddressUKCode.PostTown="London" AND claimantDetails.AddressUKCode.Country="UK"');
 
       let matched = sc.matchByCaseFields(caseFields);
 
@@ -373,6 +491,17 @@ describe('conditional-show', () => {
       let matched = sc.matchByCaseFields(caseFields);
 
       expect(matched).toBe(false);
+    });
+
+    it('should return true when single value condition matches when using Complex field', () => {
+      complexAddressUK.value = {
+        County: ['Middlesex', 'London'],
+      };
+      let sc = new ShowCondition('claimantDetails.AddressUKCode.CountyCONTAINS"London"');
+
+      let matched = sc.matchByCaseFields(caseFields);
+
+      expect(matched).toBe(true);
     });
   });
 });
