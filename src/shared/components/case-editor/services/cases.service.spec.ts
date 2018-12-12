@@ -193,7 +193,7 @@ describe('CasesService', () => {
         .getEventTrigger(CTID, EVENT_TRIGGER_ID, DRAFT_ID, 'true')
         .subscribe();
 
-        const headers = new Headers({
+      const headers = new Headers({
           'experimental': 'true',
           'Accept': CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER
         });
