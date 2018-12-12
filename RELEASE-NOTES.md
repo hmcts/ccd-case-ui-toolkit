@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.13.0 - December 12 2018
+**RDM-3512** - Implement internal Get Trigger for Draft endpoint in API v2
+
 ### Version 2.12.0 - December 10 2018
 **RDM-3256** - Save and Resume content changes
 
