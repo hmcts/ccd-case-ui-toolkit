@@ -13,7 +13,6 @@ describe('CasesService', () => {
 
   const API_URL = 'http://aggregated.ccd.reform';
   const JID = 'TEST';
-  const JID_UNDEFINED = undefined;
   const CTID = 'TestAddressBookCase';
   const CTID_UNDEFINED = undefined;
   const CASE_ID = '1';
@@ -23,12 +22,9 @@ describe('CasesService', () => {
   const CASE_URL = `${API_URL}/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}`;
   const V2_CASE_VIEW_URL = `${API_URL}/internal/cases/${CASE_ID}`;
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
-  const EVENT_TRIGGER_FOR_CASE_TYPE_URL = API_URL
-    + `/internal/case-types/${CTID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
-  const EVENT_TRIGGER_FOR_CASE_URL = API_URL
-    + `/internal/cases/${CASE_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
-  const EVENT_TRIGGER_DRAFT_URL = API_URL
-    + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/drafts/${DRAFT_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_FOR_CASE_TYPE_URL = API_URL + `/internal/case-types/${CTID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_FOR_CASE_URL = API_URL + `/internal/cases/${CASE_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_DRAFT_URL = API_URL + `/internal/drafts/${DRAFT_ID}/event-trigger?ignore-warning=true`;
   const CREATE_EVENT_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/events`;
   const VALIDATE_CASE_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/validate?pageId=${PAGE_ID}`;
   const PRINT_DOCUMENTS_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/documents`;
@@ -170,7 +166,7 @@ describe('CasesService', () => {
 
     it('should use HttpService::get with correct url for create case', () => {
       casesService
-        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, CASE_ID_UNDEFINED, 'true')
+        .getEventTrigger(CTID, EVENT_TRIGGER_ID, CASE_ID_UNDEFINED, 'true')
         .subscribe();
 
       const headers = new Headers({
@@ -182,7 +178,7 @@ describe('CasesService', () => {
 
     it('should use HttpService::get with correct url for create event', () => {
       casesService
-        .getEventTrigger(JID_UNDEFINED, CTID_UNDEFINED, EVENT_TRIGGER_ID, CASE_ID, 'true')
+        .getEventTrigger(CTID_UNDEFINED, EVENT_TRIGGER_ID, CASE_ID, 'true')
         .subscribe();
 
       const headers = new Headers({
@@ -194,16 +190,19 @@ describe('CasesService', () => {
 
     it('should use HttpService::get with correct url for DRAFTS', () => {
       casesService
-        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, DRAFT_ID, 'true')
+        .getEventTrigger(CTID, EVENT_TRIGGER_ID, DRAFT_ID, 'true')
         .subscribe();
 
-      const headers = new Headers({});
+        const headers = new Headers({
+          'experimental': 'true',
+          'Accept': CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER
+        });
       expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, {headers});
     });
 
     it('should retrieve event trigger from server by case id', () => {
       casesService
-        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, CASE_ID, 'true')
+        .getEventTrigger(CTID, EVENT_TRIGGER_ID, CASE_ID, 'true')
         .subscribe(
           eventTrigger => expect(eventTrigger).toEqual(EVENT_TRIGGER)
         );
@@ -211,7 +210,7 @@ describe('CasesService', () => {
 
     it('should retrieve event trigger from server by case type id', () => {
       casesService
-        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, 'true')
+        .getEventTrigger(CTID, EVENT_TRIGGER_ID, 'true')
         .subscribe(
           eventTrigger => expect(eventTrigger).toEqual(EVENT_TRIGGER)
         );
@@ -221,7 +220,7 @@ describe('CasesService', () => {
       httpService.get.and.returnValue(throwError(ERROR));
 
       casesService
-        .getEventTrigger(JID, CTID, EVENT_TRIGGER_ID, 'true')
+        .getEventTrigger(CTID, EVENT_TRIGGER_ID, 'true')
         .subscribe(data => {
           expect(data).toEqual(EVENT_TRIGGER);
         }, err => {
