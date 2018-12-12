@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.12.1 - December 12 2018
+**RDM-3418** - BUG FIX - Validation errors prevents navigation
+
 ### Version 2.12.0 - December 10 2018
 **RDM-3256** - Save and Resume content changes
 
