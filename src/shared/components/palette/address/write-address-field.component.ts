@@ -63,7 +63,12 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           console.log(`An error occurred retrieving addresses for postcode ${postcode}.`);
         });
       this.addressList.setValue(undefined);
+      setTimeout(this.focusAddressList, 1000);
     }
+  }
+
+  focusAddressList() {
+    document.getElementById('addressList').focus();
   }
 
   blankAddress() {
