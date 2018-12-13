@@ -13,6 +13,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
+  @Input() elementsToSubstitute: string[] = ['label', 'hint_text'];
 
   initialLabel: string;
   initialHintText: string;
@@ -27,9 +28,19 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
     let fields = this.getReadOnlyAndFormFields();
 
-    this.caseField.label = this.resolvePlaceholders(fields, this.caseField.label);
-    this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);
-    this.caseField.value = this.resolvePlaceholders(fields, this.caseField.value);
+    if (this.shouldSubstitute('label')) {
+      this.caseField.label = this.resolvePlaceholders(fields, this.caseField.label);
+    }
+    if (this.shouldSubstitute('hint_text')) {
+      this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);
+    }
+    if (this.shouldSubstitute('value')) {
+      this.caseField.value = this.resolvePlaceholders(fields, this.caseField.value);
+    }
+  }
+
+  private shouldSubstitute(element: string) {
+    return this.elementsToSubstitute.find(e => e === element) !== undefined;
   }
 
   ngOnDestroy() {

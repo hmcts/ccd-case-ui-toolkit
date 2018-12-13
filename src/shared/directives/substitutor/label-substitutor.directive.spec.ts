@@ -11,7 +11,8 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields">
+    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields"
+        [elementsToSubstitute]="elementsToSubstitute">
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>
       <td>{{caseField.value}}</td>
@@ -22,6 +23,7 @@ class TestHostComponent {
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[];
   @Input() formGroup: FormGroup = new FormGroup({});
+  @Input() elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
 }
 
 let field = (id, value, fieldType, label?, hintText?) => {
@@ -122,6 +124,22 @@ describe('LabelSubstitutorDirective', () => {
       expect(labelEl.innerText).toBe('');
       expect(hintEl.innerText).toBe('');
       expect(valueEl.innerText).toBe('');
+    });
+
+    it('should use elementsToSubstitute to select which caseField elements we substitute', () => {
+      let label = 'Some label';
+      let hintText = 'Some hint text';
+      let value = 'Some value';
+      comp.caseField = textField('LabelB', value, label, hintText);
+      comp.eventFields = [comp.caseField];
+      comp.elementsToSubstitute = ['value'];
+
+      placeholderService.resolvePlaceholders.and.returnValues('updated value');
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(label);
+      expect(hintEl.innerText).toBe(hintText);
+      expect(valueEl.innerText).toBe('updated value');
     });
 
     it('should pass case field value to substitute label when case field value but no form field value present', () => {
