@@ -19,6 +19,8 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_START_DRAFT_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-data-validate.v2+json;charset=UTF-8';
 
   /**
    *
@@ -80,9 +82,7 @@ export class CasesService {
 
     let url =  this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new Headers({});
-
-    headers = new Headers({
+    let headers = new Headers({
       'experimental': 'true'
     });
     if (Draft.isDraft(caseId)) {
@@ -123,13 +123,18 @@ export class CasesService {
       );
   }
 
-  validateCase(jid: string, ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
+  validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
     const pageIdString = pageId ? '?pageId=' + pageId : '';
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/validate${pageIdString}`;
+      + `/internal/case-types/${ctid}/validate${pageIdString}`;
+
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE
+    });
 
     return this.http
-      .post(url, eventData)
+      .post(url, eventData, {headers})
       .pipe(
         map(response => response.json()),
         catchError(error => {
