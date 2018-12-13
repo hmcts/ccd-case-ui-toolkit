@@ -16,7 +16,6 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   initialLabel: string;
   initialHintText: string;
-  initialValue: string;
 
   constructor(private fieldsUtils: FieldsUtils, private placeholderService: PlaceholderService) {
   }
@@ -24,7 +23,6 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   ngOnInit() {
     this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
-    this.initialValue = this.caseField.value;
     this.formGroup = this.formGroup || new FormGroup({});
 
     let fields = this.getReadOnlyAndFormFields();
@@ -37,7 +35,6 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.caseField.label = this.initialLabel;
     this.caseField.hint_text = this.initialHintText;
-    this.caseField.value = this.initialValue;
   }
 
   private getReadOnlyAndFormFields() {
