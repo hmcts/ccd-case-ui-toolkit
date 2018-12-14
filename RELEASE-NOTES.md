@@ -1,5 +1,6 @@
 ## RELEASE NOTES
 
+
 ### Version 2.14.0 - December 14 2018
 **RDM-3502** - UI Toolkit: Use Validate API v2
 

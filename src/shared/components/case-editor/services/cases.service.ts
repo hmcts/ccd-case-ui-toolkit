@@ -22,6 +22,7 @@ export class CasesService {
   public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
 
+
   /**
    *
    * @type {(caseId:string)=>"../../Observable".Observable<Case>}
