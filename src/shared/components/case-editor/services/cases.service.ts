@@ -20,7 +20,7 @@ export class CasesService {
   public static readonly V2_MEDIATYPE_START_DRAFT_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
-    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-data-validate.v2+json;charset=UTF-8';
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
 
   /**
    *
@@ -126,7 +126,7 @@ export class CasesService {
   validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
     const pageIdString = pageId ? '?pageId=' + pageId : '';
     const url = this.appConfig.getCaseDataUrl()
-      + `/internal/case-types/${ctid}/validate${pageIdString}`;
+      + `/case-types/${ctid}/validate${pageIdString}`;
 
     let headers = new Headers({
       'experimental': 'true',
