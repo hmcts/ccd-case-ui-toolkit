@@ -39,7 +39,7 @@
 
     <div class="form-group form-group-related">
       <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
-      <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting() || !isCreatable()">{{triggerText}}</button>
+      <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">{{triggerText}}</button>
     </div>
 
     <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
