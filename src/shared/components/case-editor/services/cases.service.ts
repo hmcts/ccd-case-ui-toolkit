@@ -17,6 +17,8 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-case-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_START_EVENT_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_START_DRAFT_TRIGGER =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
 
   /**
    *
@@ -70,26 +72,25 @@ export class CasesService {
       );
   }
 
-  getEventTrigger(jurisdictionId: string,
-                  caseTypeId: string,
+  getEventTrigger(caseTypeId: string,
                   eventTriggerId: string,
                   caseId?: string,
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url =  this.buildEventTriggerUrl(jurisdictionId, caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    let url =  this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
     let headers = new Headers({});
 
-    if (this.isNotDraftIdIfExists(caseId)) {
-      headers = new Headers({
-        'experimental': 'true'
-      });
-      if (caseId !== undefined && caseId !== null) {
-        headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
-      } else {
-        headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
-      }
+    headers = new Headers({
+      'experimental': 'true'
+    });
+    if (Draft.isDraft(caseId)) {
+      headers.set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
+    } else if (caseId !== undefined && caseId !== null) {
+      headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+    } else {
+      headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
     }
 
     return this.http
@@ -177,38 +178,20 @@ export class CasesService {
       );
   }
 
-  private isNotDraftIdIfExists(caseId): boolean {
-    return caseId === undefined && caseId === null || !Draft.isDraft(caseId);
-  }
-
-  private buildEventTriggerUrl(jurisdictionId: string,
-                               caseTypeId: string,
+  private buildEventTriggerUrl(caseTypeId: string,
                                eventTriggerId: string,
                                caseId?: string,
                                ignoreWarning?: string): string {
-    if (Draft.isDraft(caseId)) {
-      return this.appConfig.getApiUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`
-      + `/drafts/${caseId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`;
-    } else {
-      return this.buildEventTriggerUrlV2(eventTriggerId, caseTypeId, caseId, ignoreWarning);
-    }
-  }
-
-  private buildEventTriggerUrlV2(eventTriggerId: string,
-                                 caseTypeId?: string,
-                                 caseId?: string,
-                                 ignoreWarning?: string): string {
     let url = this.appConfig.getCaseDataUrl() + `/internal`;
 
-    if (caseTypeId === undefined || caseTypeId === null) {
+    if (Draft.isDraft(caseId)) {
+      url += `/drafts/${caseId}`
+      + `/event-trigger`
+      + `?ignore-warning=${ignoreWarning}`;
+    } else if (caseTypeId === undefined || caseTypeId === null) {
       url += `/cases/${caseId}`
       + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`
+      + `?ignore-warning=${ignoreWarning}`;
     } else {
       url += `/case-types/${caseTypeId}`
       + `/event-triggers/${eventTriggerId}`
