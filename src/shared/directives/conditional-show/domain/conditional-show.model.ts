@@ -37,7 +37,7 @@ export class ShowCondition {
         return value.startsWith(this.removeStarChar(right));
       } else {
         // changed from '===' to '==' to cover number field conditions
-        return value == right; // tslint:disable-line
+        return value == right || this.okIfBothEmpty(right, value); // tslint:disable-line
       }
     } else {
       let field = condition.split(ShowCondition.CONTAINS)[0];
@@ -75,4 +75,9 @@ export class ShowCondition {
   matchByCaseFields(caseFields: CaseField[]): boolean {
     return this.match(FieldsUtils.toValuesMap(caseFields));
   }
+
+  private okIfBothEmpty(right: string, value: any) {
+    return value === null && (right === '');
+  }
+
 }
