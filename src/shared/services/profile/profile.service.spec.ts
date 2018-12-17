@@ -6,13 +6,14 @@ import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { createAProfile } from '../../domain/profile/profile.test.fixture';
 import { Profile } from '../../domain';
+import { Headers } from '@angular/http';
 
 describe('ProfileService', () => {
 
   const MOCK_PROFILE: Profile = createAProfile();
 
-  const API_URL = 'http://aggregated.ccd.reform';
-  const PROFILE_URL = API_URL + '/caseworkers/:uid/profile';
+  const API_URL = 'http://data.ccd.reform';
+  const PROFILE_URL = API_URL + '/internal/profile';
 
   let appConfig: any;
   let httpService: any;
@@ -39,7 +40,11 @@ describe('ProfileService', () => {
         .get()
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(PROFILE_URL);
+      expect(httpService.get).toHaveBeenCalledWith(PROFILE_URL, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': ProfileService.V2_MEDIATYPE_USER_PROFILE
+        })});
     });
 
     it('should retrieve profile from server', () => {
