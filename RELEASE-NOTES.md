@@ -3,6 +3,7 @@
 
 ### Version 2.14.0 - December 14 2018
 **RDM-3502** - UI Toolkit: Use Validate API v2
+**RDM-2323** - Support field concatenation in List / results views
 
 ### Version 2.13.0 - December 12 2018
 **RDM-3512** - Implement internal Get Trigger for Draft endpoint in API v2
