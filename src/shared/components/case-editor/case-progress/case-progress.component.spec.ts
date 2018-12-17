@@ -183,7 +183,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   it('should validate case details with sanitised data when validated', () => {
     component.validate()(SANITISED_EDIT_FORM, PAGE_ID);
 
-    expect(casesService.validateCase).toHaveBeenCalledWith(JID, CTID, SANITISED_EDIT_FORM, PAGE_ID);
+    expect(casesService.validateCase).toHaveBeenCalledWith(CTID, SANITISED_EDIT_FORM, PAGE_ID);
   });
 
 });
