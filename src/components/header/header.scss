@@ -81,14 +81,12 @@ $header-background-color: $black;
   font-size: 16px;
   font-weight: bold;
   border: none;
-  outline: none;
   color: white;
-  padding: 0 0 0 9px;
+  margin: 0 0 0 9px;
   text-decoration: none;
   background-color: $header-background-color;
   &:focus {
     color: $white;
-    outline: none;
   }
 }
 #sign-out:hover {
