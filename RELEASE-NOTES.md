@@ -1,5 +1,7 @@
 ## RELEASE NOTES
 
+### Version 2.15.0 - December 14 2018
+**RDM-2323** - Support field concatenation in List / results views
 
 ### Version 2.14.0 - December 14 2018
 **RDM-3502** - UI Toolkit: Use Validate API v2
