@@ -2,7 +2,7 @@ import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
-import { LabelSubstitutionService } from './services';
+import { PlaceholderService } from './services';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -13,23 +13,34 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
+  @Input() elementsToSubstitute: string[] = ['label', 'hint_text'];
 
   initialLabel: string;
   initialHintText: string;
 
-  constructor(private fieldsUtils: FieldsUtils, private labelSubstitutionService: LabelSubstitutionService) {
+  constructor(private fieldsUtils: FieldsUtils, private placeholderService: PlaceholderService) {
   }
 
   ngOnInit() {
-    if (this.caseField.label) {
-      this.initialLabel = this.caseField.label;
-      this.initialHintText = this.caseField.hint_text;
-      this.formGroup = this.formGroup || new FormGroup({});
+    this.initialLabel = this.caseField.label;
+    this.initialHintText = this.caseField.hint_text;
+    this.formGroup = this.formGroup || new FormGroup({});
 
-      let fields = this.getReadOnlyAndFormFields();
-      this.caseField.label = this.substituteLabel(fields, this.caseField.label);
-      this.caseField.hint_text = this.substituteLabel(fields, this.caseField.hint_text);
+    let fields = this.getReadOnlyAndFormFields();
+
+    if (this.shouldSubstitute('label')) {
+      this.caseField.label = this.resolvePlaceholders(fields, this.caseField.label);
     }
+    if (this.shouldSubstitute('hint_text')) {
+      this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);
+    }
+    if (this.shouldSubstitute('value')) {
+      this.caseField.value = this.resolvePlaceholders(fields, this.caseField.value);
+    }
+  }
+
+  private shouldSubstitute(element: string) {
+    return this.elementsToSubstitute.find(e => e === element) !== undefined;
   }
 
   ngOnDestroy() {
@@ -58,8 +69,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     return this.formGroup.getRawValue();
   }
 
-  private substituteLabel(fields, label) {
-    return this.labelSubstitutionService.substituteLabel(fields, label);
+  private resolvePlaceholders(fields, stringToResolve) {
+    return this.placeholderService.resolvePlaceholders(fields, stringToResolve);
   }
-
 }

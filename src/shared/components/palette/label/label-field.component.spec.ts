@@ -7,7 +7,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockComponent } from 'ng2-mock-component';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor/label-substitutor.directive';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { LabelSubstitutionService } from '../../../directives/substitutor/services/label-substitution.service';
+import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
 
 describe('LabelFieldComponent', () => {
 
@@ -17,7 +17,12 @@ describe('LabelFieldComponent', () => {
     id: 'Label',
     type: 'Label'
   };
-
+  const CASE_FIELD_WITH_NO_VALUE: CaseField = {
+    id: 'label',
+    label: 'Label Field Label',
+    display_context: 'OPTIONAL',
+    field_type: FIELD_TYPE,
+  };
   const CASE_FIELD: CaseField = {
     id: 'label',
     label: 'Label Field Label',
@@ -56,7 +61,7 @@ describe('LabelFieldComponent', () => {
         ],
         providers: [
           FieldsUtils,
-          LabelSubstitutionService,
+          PlaceholderService,
         ]
       })
       .compileComponents();
@@ -67,14 +72,14 @@ describe('LabelFieldComponent', () => {
   describe('LabelFieldComponent without label substitution', () => {
     beforeEach(() => {
       component = fixture.componentInstance;
-      component.caseField = CASE_FIELD;
+      component.caseField = CASE_FIELD_WITH_NO_VALUE;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     });
 
     it('Should render a table with the field label in the markdown tag in the header', () => {
-      expect(de.query($CONTENT).nativeElement.getAttribute('ng-reflect-content')).toBe(CASE_FIELD.label);
+      expect(de.query($CONTENT).nativeElement.getAttribute('ng-reflect-content')).toBe(CASE_FIELD_WITH_NO_VALUE.label);
     });
   });
 
