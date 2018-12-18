@@ -1,6 +1,5 @@
 ## RELEASE NOTES
 
-
 ### Version 2.16.0 - December 18 2018
 **RDM-3501** - UI Toolkit: Use Get Profile API v2
 
