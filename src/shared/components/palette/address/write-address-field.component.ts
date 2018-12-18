@@ -68,7 +68,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   focusAddressList() {
-    document.getElementById('addressList').focus();
+    if (document.getElementById('addressList')) {
+      document.getElementById('addressList').focus();
+    }
   }
 
   blankAddress() {
