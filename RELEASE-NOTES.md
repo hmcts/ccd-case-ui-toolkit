@@ -13,13 +13,10 @@
 **RDM-3418** - BUG FIX - Validation errors prevents navigation
 
 ### Version 2.12.0 - December 10 2018
+**RDM-2974** - Implement the <BR> style for Markdown linebreaks
 **RDM-3256** - Save and Resume content changes
 
-**Revert-RDM-3284** - Revert RDM-3284 until Backend changes are completely implemented
-
-**RDM-2974** - Implement the `<BR>` style for Markdown linebreaks 
-  
-### Version 2.11.0 - December 07 2018 - *Deprecated Version*
+### Version 2.11.0 - December 07 2018
 **RDM-3284** - CRUD contract on Collection for Add new item
 
 ### Version 2.10.0 - December 06 2018
