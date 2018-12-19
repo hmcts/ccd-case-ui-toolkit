@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.16.0 - December 18 2018
+**RDM-3501** - UI Toolkit: Use Get Profile API v2
+
 ### Version 2.15.0 - December 14 2018
 **RDM-2323** - Support field concatenation in List / results views
 
