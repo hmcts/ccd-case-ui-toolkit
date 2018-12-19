@@ -33,16 +33,14 @@ export class CaseProgressComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let caseTypeId = undefined;
     this.casesService.getCaseViewV2(this.case).toPromise()
       .then(caseView => this.caseDetails = caseView)
-      .then(caseView => this.casesService.getEventTrigger(caseView.case_type.jurisdiction.id,
-                                                          caseView.case_type.id,
-                                                          this.event,
-                                                          caseView.case_id)
-                                                          .toPromise())
+      .then(caseView => this.casesService.getEventTrigger(caseTypeId, this.event, caseView.case_id)
+                                                            .toPromise())
       .then(eventTrigger => {
         this.eventTriggerService.announceEventTrigger(eventTrigger);
-        this.eventTrigger = eventTrigger
+        this.eventTrigger = eventTrigger;
       })
       .catch((error: HttpError) => {
         this.alertService.error(error.message);
@@ -56,7 +54,6 @@ export class CaseProgressComponent implements OnInit {
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(
-      this.caseDetails.case_type.jurisdiction.id,
       this.caseDetails.case_type.id,
       sanitizedEditForm,
       pageId);

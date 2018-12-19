@@ -45,7 +45,7 @@ export { DocumentData,
 export { ShowCondition,
          ConditionalShowDirective,
          ConditionalShowModule,
-         LabelSubstitutionService,
+         PlaceholderService,
          LabelSubstitutorDirective,
          LabelSubstitutorModule,
          ConditionalShowRegistrarService } from './shared/directives';

@@ -3,49 +3,46 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 // @dynamic
 @Injectable()
-export class LabelSubstitutionService {
+export class PlaceholderService {
 
-    private static readonly LABEL_ID_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
+    private static readonly PLACEHOLDER_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
     private static readonly STARTING_PLACEHOLDER = '$';
     private static readonly OPENING_PLACEHOLDER = '{';
     private static readonly CLOSING_PLACEHOLDER = '}';
 
-    substituteLabel(pageFormFields, label, isEmptyIfPlaceholderMissing): string {
+    resolvePlaceholders(pageFormFields, stringToResolve): string {
         let startSubstitutionIndex = -1;
         let fieldIdToSubstitute = '';
         let isCollecting = false;
-        if (label) {
-            for (let scanIndex = 0; scanIndex < label.length; scanIndex++) {
-                if (this.isStartPlaceholderAndNotCollecting(label, scanIndex, isCollecting)) {
+        if (stringToResolve && typeof stringToResolve === 'string') {
+            for (let scanIndex = 0; scanIndex < stringToResolve.length; scanIndex++) {
+                if (this.isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollecting)) {
                     startSubstitutionIndex = scanIndex;
                     isCollecting = true;
                 } else if (isCollecting) {
-                    if (this.isClosingPlaceholder(label, scanIndex)) {
-                        if (this.isMatchingLabelIdPattern(fieldIdToSubstitute)
-                            && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, isEmptyIfPlaceholderMissing)) {
-                            label = this.substitute(pageFormFields, label, startSubstitutionIndex, fieldIdToSubstitute);
+                    if (this.isClosingPlaceholder(stringToResolve, scanIndex)) {
+                        if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
+                            && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields)) {
+                            stringToResolve = this.substitute(pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute);
                             scanIndex = this.resetScanIndexAfterSubstitution(startSubstitutionIndex, pageFormFields, fieldIdToSubstitute);
                         }
                         isCollecting = false;
                         fieldIdToSubstitute = '';
-                    } else if (!this.isOpeningPlaceholder(label, scanIndex)) {
-                        fieldIdToSubstitute += label.charAt(scanIndex);
+                    } else if (!this.isOpeningPlaceholder(stringToResolve, scanIndex)) {
+                        fieldIdToSubstitute += stringToResolve.charAt(scanIndex);
                     }
                 }
             }
         }
-        return label;
+        return stringToResolve;
     }
 
-    private isMatchingLabelIdPattern(fieldIdToSubstitute) {
-        return fieldIdToSubstitute.match(LabelSubstitutionService.LABEL_ID_PATTERN);
+    private isMatchingPlaceholderPattern(fieldIdToSubstitute) {
+        return fieldIdToSubstitute.match(PlaceholderService.PLACEHOLDER_PATTERN);
     }
 
-    private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, isEmptyIfPlaceholderMissing) {
+    private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields) {
         let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute);
-        if (isEmptyIfPlaceholderMissing === true) {
-            fieldValue = fieldValue === undefined ? '' : fieldValue;
-        }
         return fieldValue ? this.isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) : fieldValue !== undefined;
     }
 
@@ -57,27 +54,27 @@ export class LabelSubstitutionService {
         return !this.isObject(fieldValue[0]) && !Array.isArray(fieldValue[0]) && fieldValue[0] !== undefined;
     }
 
-    private isStartingPlaceholder(label, scanIndex): boolean {
-        return label.charAt(scanIndex) === LabelSubstitutionService.STARTING_PLACEHOLDER;
+    private isStartingPlaceholder(stringToResolve, scanIndex): boolean {
+        return stringToResolve.charAt(scanIndex) === PlaceholderService.STARTING_PLACEHOLDER;
     }
 
-    private isStartPlaceholderAndNotCollecting(label, scanIndex, isCollectingPlaceholder): boolean {
-        return this.isStartingPlaceholder(label, scanIndex) && !isCollectingPlaceholder;
+    private isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollectingPlaceholder): boolean {
+        return this.isStartingPlaceholder(stringToResolve, scanIndex) && !isCollectingPlaceholder;
     }
 
-    private isClosingPlaceholder(label, scanIndex): boolean {
-        return label.charAt(scanIndex) === LabelSubstitutionService.CLOSING_PLACEHOLDER;
+    private isClosingPlaceholder(stringToResolve, scanIndex): boolean {
+        return stringToResolve.charAt(scanIndex) === PlaceholderService.CLOSING_PLACEHOLDER;
     }
 
-    private isOpeningPlaceholder(label, scanIndex): boolean {
-        return label.charAt(scanIndex) === LabelSubstitutionService.OPENING_PLACEHOLDER;
+    private isOpeningPlaceholder(stringToResolve, scanIndex): boolean {
+        return stringToResolve.charAt(scanIndex) === PlaceholderService.OPENING_PLACEHOLDER;
     }
 
-    private substitute(pageFormFields, label, startSubstitutionIndex, fieldIdToSubstitute): string {
-        let replacedString = label.substring(startSubstitutionIndex)
+    private substitute(pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute): string {
+        let replacedString = stringToResolve.substring(startSubstitutionIndex)
             .replace('${'.concat(fieldIdToSubstitute).concat('}'),
                 this.getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute));
-        return label.substring(0, startSubstitutionIndex).concat(replacedString);
+        return stringToResolve.substring(0, startSubstitutionIndex).concat(replacedString);
     }
 
     private resetScanIndexAfterSubstitution(startSubstitutionIndex, pageFormFields, fieldIdToSubstitute): number {

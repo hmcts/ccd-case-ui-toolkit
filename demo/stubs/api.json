@@ -1157,7 +1157,12 @@
           }
         ]
       }
-    ]
+    ],
+    "_links": {
+      "self": {
+          "href": "http://localhost:8080/internal/cases/1543420570779902/event-triggers/UPDATE{?ignore-warning}"
+      }
+    }
   },
   "profile": {
     "user": {
@@ -2305,6 +2310,11 @@
           }
         ]
       }
-    ]
+    ],
+    "_links": {
+      "self": {
+          "href": "http://localhost:8080/internal/cases/1111222233334444/event-triggers/enterCaseIntoLegacy{?ignore-warning}"
+      }
+  }
   }
 }

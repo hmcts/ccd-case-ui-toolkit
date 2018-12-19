@@ -37,7 +37,7 @@ export class CaseCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.casesService.getEventTriggerV2(this.caseType, this.event).toPromise()
+    this.casesService.getEventTrigger(this.caseType, this.event).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
         this.eventTriggerService.announceEventTrigger(eventTrigger);
@@ -57,7 +57,7 @@ export class CaseCreateComponent implements OnInit {
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService
-      .validateCase(this.jurisdiction, this.caseType, sanitizedEditForm, pageId);
+      .validateCase(this.caseType, sanitizedEditForm, pageId);
   }
 
   saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {

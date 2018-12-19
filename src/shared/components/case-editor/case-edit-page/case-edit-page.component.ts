@@ -30,6 +30,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
   static readonly RESUMED_FORM_SAVE = 'RESUMED_FORM_SAVE';
   static readonly TRIGGER_TEXT_START = 'Continue';
+  static readonly TRIGGER_TEXT_SAVE = 'Save and continue';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
 
   eventTrigger: CaseEventTrigger;
@@ -42,7 +43,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   ignoreWarning = false;
   triggerTextStart = CaseEditPageComponent.TRIGGER_TEXT_START;
   triggerTextIgnoreWarnings = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
-  triggerText: string = CaseEditPageComponent.TRIGGER_TEXT_START;
+  triggerText: string;
   isSubmitting = false;
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
@@ -64,6 +65,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
     this.caseFields = this.getCaseFields();
+    this.triggerText = this.getTriggerText();
 
     this.route.params.subscribe(params => {
       let pageId = params['page'];
@@ -240,26 +242,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private resetErrors(): void {
     this.error = null;
     this.ignoreWarning = false;
-    this.triggerText = CaseEditPageComponent.TRIGGER_TEXT_START;
+    this.triggerText = this.getTriggerText();
     this.callbackErrorsSubject.next(null);
-  }
-
-  isCreatable(): boolean {
-    return !this.hasCallbackErrors() &&
-      !this.hasInvalidData();
-  }
-
-  private hasCallbackErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
-  private hasInvalidData(): boolean {
-    return this.error
-      && this.error.details
-      && this.error.details.field_errors
-      && this.error.details.field_errors.length;
   }
 
   getCaseId(): String {
@@ -279,9 +263,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   getCancelText(): String {
     if (this.eventTrigger.can_save_draft) {
-      return 'Cancel and return';
+      return 'Return to case list';
     } else {
       return 'Cancel';
+    }
+  }
+
+  getTriggerText(): string {
+    if (this.eventTrigger && this.eventTrigger.can_save_draft) {
+      return CaseEditPageComponent.TRIGGER_TEXT_SAVE;
+    } else {
+      return CaseEditPageComponent.TRIGGER_TEXT_START;
     }
   }
 
