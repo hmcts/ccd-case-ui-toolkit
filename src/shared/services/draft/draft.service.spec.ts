@@ -79,14 +79,18 @@ describe('Drafts Service', () => {
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL, CASE_EVENT_DATA);
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL, CASE_EVENT_DATA, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_CREATE
+        })});
     });
 
     it('should set error when error is thrown when creating draft', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
       draftService.createDraft(JID, CT_ID, CASE_EVENT_DATA)
-        .subscribe(data => {
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
@@ -99,14 +103,18 @@ describe('Drafts Service', () => {
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
-      expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA);
+      expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_UPDATE
+        })});
     });
 
     it('should set error when error is thrown when updating draft', () => {
       httpService.put.and.returnValue(throwError(ERROR));
 
       draftService.updateDraft(JID, CT_ID, DRAFT_ID, CASE_EVENT_DATA)
-        .subscribe(data => {
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
@@ -147,7 +155,11 @@ describe('Drafts Service', () => {
         .subscribe(
           data => expect(data).toEqual(CASE_VIEW_DATA)
         );
-      expect(httpService.get).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL);
+      expect(httpService.get).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
+        })});
     });
 
     it('should set error when error is thrown when getting draft', () => {
@@ -172,7 +184,11 @@ describe('Drafts Service', () => {
       draftService
         .deleteDraft(DRAFT_ID);
 
-      expect(httpService.delete).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL);
+      expect(httpService.delete).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_DELETE
+        })});
     });
 
     it('should set error when error is thrown when deleting draft', () => {
