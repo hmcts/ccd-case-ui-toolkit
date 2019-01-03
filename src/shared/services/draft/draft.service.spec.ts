@@ -13,9 +13,8 @@ describe('Drafts Service', () => {
   const CT_ID = 'TestAddressBookCase';
   const DRAFT_ID = 'Draft1';
   const EVENT_TRIGGER_ID = 'createCase';
-  const CREATE_OR_UPDATE_DRAFT_URL = DATA_URL +
-    `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CT_ID}/event-trigger/${EVENT_TRIGGER_ID}/drafts/`;
-  const GET_OR_DELETE_DRAFT_URL = DATA_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CT_ID}/drafts/1`;
+  const CREATE_OR_UPDATE_DRAFT_URL = DATA_URL + `/internal/case-types/${CT_ID}/drafts/`;
+  const GET_OR_DELETE_DRAFT_URL = DATA_URL + `/internal/drafts/1`;
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
@@ -144,7 +143,7 @@ describe('Drafts Service', () => {
 
     it('should get draft on server', () => {
       draftService
-        .getDraft(JID, CT_ID, DRAFT_ID)
+        .getDraft(DRAFT_ID)
         .subscribe(
           data => expect(data).toEqual(CASE_VIEW_DATA)
         );
@@ -154,8 +153,8 @@ describe('Drafts Service', () => {
     it('should set error when error is thrown when getting draft', () => {
       httpService.get.and.returnValue(throwError(ERROR));
       draftService
-        .getDraft(JID, CT_ID, DRAFT_ID)
-        .subscribe(data => {
+        .getDraft(DRAFT_ID)
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
@@ -171,7 +170,7 @@ describe('Drafts Service', () => {
 
     it('should delete draft on server', () => {
       draftService
-        .deleteDraft(JID, CT_ID, DRAFT_ID);
+        .deleteDraft(DRAFT_ID);
 
       expect(httpService.delete).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL);
     });
@@ -179,8 +178,8 @@ describe('Drafts Service', () => {
     it('should set error when error is thrown when deleting draft', () => {
       httpService.delete.and.returnValue(throwError(ERROR));
       draftService
-        .deleteDraft(JID, CT_ID, DRAFT_ID)
-        .subscribe(data => {
+        .deleteDraft(DRAFT_ID)
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
