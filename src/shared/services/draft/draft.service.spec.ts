@@ -1,5 +1,5 @@
 import { Observable, throwError } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
+import { Response, ResponseOptions, Headers } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { DraftService } from './draft.service';
 import { AbstractAppConfig } from '../../../app.config';
