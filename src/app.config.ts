@@ -10,11 +10,7 @@ export abstract class AbstractAppConfig {
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
   abstract getPaymentsUrl(): string;
-<<<<<<< Updated upstream
-  abstract getCreateOrUpdateDraftsUrl(jid: string, ctid: string): string
-=======
   abstract getCreateOrUpdateDraftsUrl(ctid: string): string
->>>>>>> Stashed changes
   abstract getViewOrDeleteDraftsUrl(did: string): string
 }
 
