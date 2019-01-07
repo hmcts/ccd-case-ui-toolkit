@@ -75,7 +75,7 @@ describe('Drafts Service', () => {
     it('should create a draft on server', () => {
       let UNDEFINED_DRAFT_ID = undefined;
       draftService
-        .createOrUpdateDraft(JID, CT_ID, UNDEFINED_DRAFT_ID, CASE_EVENT_DATA)
+        .createOrUpdateDraft(CT_ID, UNDEFINED_DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
@@ -89,7 +89,7 @@ describe('Drafts Service', () => {
     it('should set error when error is thrown when creating draft', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
-      draftService.createDraft(JID, CT_ID, CASE_EVENT_DATA)
+      draftService.createDraft(CT_ID, CASE_EVENT_DATA)
         .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
@@ -99,7 +99,7 @@ describe('Drafts Service', () => {
 
     it('should update a draft on server', () => {
       draftService
-        .createOrUpdateDraft(JID, CT_ID, DRAFT_ID, CASE_EVENT_DATA)
+        .createOrUpdateDraft(CT_ID, DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
@@ -113,7 +113,7 @@ describe('Drafts Service', () => {
     it('should set error when error is thrown when updating draft', () => {
       httpService.put.and.returnValue(throwError(ERROR));
 
-      draftService.updateDraft(JID, CT_ID, DRAFT_ID, CASE_EVENT_DATA)
+      draftService.updateDraft(CT_ID, DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
