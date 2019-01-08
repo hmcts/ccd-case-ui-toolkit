@@ -1,5 +1,5 @@
 import { Observable, throwError } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
+import { Response, ResponseOptions, Headers } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { DraftService } from './draft.service';
 import { AbstractAppConfig } from '../../../app.config';
@@ -13,9 +13,8 @@ describe('Drafts Service', () => {
   const CT_ID = 'TestAddressBookCase';
   const DRAFT_ID = 'Draft1';
   const EVENT_TRIGGER_ID = 'createCase';
-  const CREATE_OR_UPDATE_DRAFT_URL = DATA_URL +
-    `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CT_ID}/event-trigger/${EVENT_TRIGGER_ID}/drafts/`;
-  const GET_OR_DELETE_DRAFT_URL = DATA_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CT_ID}/drafts/1`;
+  const CREATE_OR_UPDATE_DRAFT_URL = DATA_URL + `/internal/case-types/${CT_ID}/drafts/`;
+  const GET_OR_DELETE_DRAFT_URL = DATA_URL + `/internal/drafts/1`;
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
@@ -76,18 +75,22 @@ describe('Drafts Service', () => {
     it('should create a draft on server', () => {
       let UNDEFINED_DRAFT_ID = undefined;
       draftService
-        .createOrUpdateDraft(JID, CT_ID, UNDEFINED_DRAFT_ID, CASE_EVENT_DATA)
+        .createOrUpdateDraft(CT_ID, UNDEFINED_DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL, CASE_EVENT_DATA);
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL, CASE_EVENT_DATA, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_CREATE
+        })});
     });
 
     it('should set error when error is thrown when creating draft', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
-      draftService.createDraft(JID, CT_ID, CASE_EVENT_DATA)
-        .subscribe(data => {
+      draftService.createDraft(CT_ID, CASE_EVENT_DATA)
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
@@ -96,18 +99,22 @@ describe('Drafts Service', () => {
 
     it('should update a draft on server', () => {
       draftService
-        .createOrUpdateDraft(JID, CT_ID, DRAFT_ID, CASE_EVENT_DATA)
+        .createOrUpdateDraft(CT_ID, DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
-      expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA);
+      expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_UPDATE
+        })});
     });
 
     it('should set error when error is thrown when updating draft', () => {
       httpService.put.and.returnValue(throwError(ERROR));
 
-      draftService.updateDraft(JID, CT_ID, DRAFT_ID, CASE_EVENT_DATA)
-        .subscribe(data => {
+      draftService.updateDraft(CT_ID, DRAFT_ID, CASE_EVENT_DATA)
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
@@ -144,18 +151,22 @@ describe('Drafts Service', () => {
 
     it('should get draft on server', () => {
       draftService
-        .getDraft(JID, CT_ID, DRAFT_ID)
+        .getDraft(DRAFT_ID)
         .subscribe(
           data => expect(data).toEqual(CASE_VIEW_DATA)
         );
-      expect(httpService.get).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL);
+      expect(httpService.get).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
+        })});
     });
 
     it('should set error when error is thrown when getting draft', () => {
       httpService.get.and.returnValue(throwError(ERROR));
       draftService
-        .getDraft(JID, CT_ID, DRAFT_ID)
-        .subscribe(data => {
+        .getDraft(DRAFT_ID)
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
@@ -171,16 +182,20 @@ describe('Drafts Service', () => {
 
     it('should delete draft on server', () => {
       draftService
-        .deleteDraft(JID, CT_ID, DRAFT_ID);
+        .deleteDraft(DRAFT_ID);
 
-      expect(httpService.delete).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL);
+      expect(httpService.delete).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL, {
+        headers: new Headers({
+          'experimental': 'true',
+          'Accept': DraftService.V2_MEDIATYPE_DRAFT_DELETE
+        })});
     });
 
     it('should set error when error is thrown when deleting draft', () => {
       httpService.delete.and.returnValue(throwError(ERROR));
       draftService
-        .deleteDraft(JID, CT_ID, DRAFT_ID)
-        .subscribe(data => {
+        .deleteDraft(DRAFT_ID)
+        .subscribe(_ => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
