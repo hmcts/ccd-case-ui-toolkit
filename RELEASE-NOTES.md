@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.19.1 - January 9 2019
+**RDM-3594** - Fix failed regex (callback) validation not being displayed in the Error Box
+
 ### Version 2.19.0 - January 9 2019
 **RDM-3651** - Update Check Your Answer wording
 
