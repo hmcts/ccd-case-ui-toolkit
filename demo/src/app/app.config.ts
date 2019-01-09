@@ -69,11 +69,11 @@ export class AppConfig extends AbstractAppConfig {
       + `/case-history`;
   }
 
-  public getCreateOrUpdateDraftsUrl(jid: string, ctid: string, eventData: CaseEventData) {
-    return this.getCaseDataUrl() + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/event-trigger/${eventData.event.id}/drafts/`;
+  public getCreateOrUpdateDraftsUrl(ctid: string) {
+    return this.getCaseDataUrl() + `/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(jid: string, ctid: string, did: string) {
-    return this.getCaseDataUrl() + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/drafts/${did}`;
+    return this.getCaseDataUrl() + `/drafts/${did}`;
   }
 }

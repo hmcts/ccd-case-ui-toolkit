@@ -10,8 +10,8 @@ export abstract class AbstractAppConfig {
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
   abstract getPaymentsUrl(): string;
-  abstract getCreateOrUpdateDraftsUrl(jid: string, ctid: string, eventData: CaseEventData): string
-  abstract getViewOrDeleteDraftsUrl(jid: string, ctid: string, did: string): string
+  abstract getCreateOrUpdateDraftsUrl(ctid: string): string
+  abstract getViewOrDeleteDraftsUrl(did: string): string
 }
 
 export class CaseEditorConfig {
