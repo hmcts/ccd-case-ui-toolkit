@@ -1,13 +1,13 @@
 ## RELEASE NOTES
 
-### Version 2.15.1 - December 19 2018
-**DEMO*RDM-2994** -Demo Release- CRUD contract on Collection for Add new item
-
 ### Version 2.18.0 - January 8 2019
 **RDM-3574** - UI Toolkit: Use Post/Put/Get/Delete Draft endpoint in API v2
 
 ### Version 2.17.0 - December 18 2018
 **RDM-3501** - UI Toolkit: Use Get Profile API v2
+
+### Version 2.15.1 - December 19 2018
+**DEMO*RDM-2994** -Demo Release- CRUD contract on Collection for Add new item
 
 ### Version 2.15.0 - December 14 2018
 **RDM-2323** - Support field concatenation in List / results views
