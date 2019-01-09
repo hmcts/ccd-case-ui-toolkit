@@ -62,10 +62,9 @@ export class CaseCreateComponent implements OnInit {
 
   saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
     if (this.eventTrigger.can_save_draft) {
-      return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.jurisdiction,
-            this.caseType,
-            this.eventTrigger.case_id,
-            caseEventData);
+      return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.caseType,
+                                                                                     this.eventTrigger.case_id,
+                                                                                     caseEventData);
     }
   }
 
