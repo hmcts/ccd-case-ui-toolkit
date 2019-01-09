@@ -1,6 +1,12 @@
 ## RELEASE NOTES
 
-### Version 2.16.0 - December 18 2018
+### Version 2.19.0 - January 9 2019
+**RDM-3651** - Update Check Your Answer wording
+
+### Version 2.18.0 - January 8 2019
+**RDM-3574** - UI Toolkit: Use Post/Put/Get/Delete Draft endpoint in API v2
+
+### Version 2.17.0 - December 18 2018
 **RDM-3501** - UI Toolkit: Use Get Profile API v2
 
 ### Version 2.15.0 - December 14 2018
@@ -20,8 +26,8 @@
 
 **Revert-RDM-3284** - Revert RDM-3284 until Backend changes are completely implemented
 
-**RDM-2974** - Implement the `<BR>` style for Markdown linebreaks 
-  
+**RDM-2974** - Implement the `<BR>` style for Markdown linebreaks
+
 ### Version 2.11.0 - December 07 2018 - *Deprecated Version*
 **RDM-3284** - CRUD contract on Collection for Add new item
 
@@ -159,19 +165,19 @@
 - Upgraded to Angular version 5.2.0
 
 ### Version 1.1.8 - July 3 2018
-- Bumped the version to 1.1.8 
+- Bumped the version to 1.1.8
 
 ### Version 1.1.7 - July 2 2018
-**RDM-1886** Enhancement: 
+**RDM-1886** Enhancement:
 - Sign Out link redesign
 
 ### Version 1.1.6 - May 24 2018
-**RDM-1149** Fixes added: 
+**RDM-1149** Fixes added:
 - Mandatory field skipping issue found in tests fixed
 - Several PR comments addressed
 
 ### Version 1.1.5 - May 22 2018
-**RDM-1149** Fixes added: 
+**RDM-1149** Fixes added:
 - Issue 'error on single digit hour'
 - Incorrect Hour/Minute/Second initialization when field is mandatory
 - Changed to a simpler Regex validation
