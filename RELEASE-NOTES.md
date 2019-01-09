@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.20.1 - January 9 2019
+**RDM-3628** - Add null check for CaseLinks
+
 ### Version 2.20.0 - January 9 2019
 **RDM-2455** - CRUD contract on Collection Items - Standard API
 
