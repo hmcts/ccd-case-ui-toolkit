@@ -8,7 +8,7 @@ import { AuthService } from '../auth';
 export class HttpErrorService {
 
   private static readonly CONTENT_TYPE = 'Content-Type';
-  private static readonly APPLICATION_JSON = 'application/json';
+  private static readonly JSON = 'json';
 
   private error: HttpError;
 
@@ -30,7 +30,7 @@ export class HttpErrorService {
     if (error instanceof Response) {
       if (error.headers
           && error.headers.get(HttpErrorService.CONTENT_TYPE)
-          && error.headers.get(HttpErrorService.CONTENT_TYPE).startsWith(HttpErrorService.APPLICATION_JSON)) {
+          && error.headers.get(HttpErrorService.CONTENT_TYPE).indexOf(HttpErrorService.JSON) !== -1) {
         try {
           httpError = HttpError.from(error.json() || {});
         } catch (e) {
