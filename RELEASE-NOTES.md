@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 2.20.2 - January 10 2019
+**RDM-3628** - revert for CRUD contract on Collection Items - Standard API
+
+### Version 2.20.1 - January 9 2019
+**RDM-3628** - Add null check for CaseLinks
+
+### Version 2.20.0 - January 9 2019
+**RDM-2455** - CRUD contract on Collection Items - Standard API
+ 
 ### Version 2.19.1 - January 9 2019
 **RDM-3594** - Fix failed regex (callback) validation not being displayed in the Error Box
 
