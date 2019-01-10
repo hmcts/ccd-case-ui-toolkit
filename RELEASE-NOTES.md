@@ -1,8 +1,5 @@
 ## RELEASE NOTES
 
-### Version 2.20.0 - January 9 2019
-**RDM-2455** - CRUD contract on Collection Items - Standard API
-
 ### Version 2.19.1 - January 9 2019
 **RDM-3594** - Fix failed regex (callback) validation not being displayed in the Error Box
 
@@ -14,9 +11,6 @@
 
 ### Version 2.17.0 - December 18 2018
 **RDM-3501** - UI Toolkit: Use Get Profile API v2
-
-### Version 2.15.1 - December 19 2018
-**DEMO*RDM-2994** -Demo Release- CRUD contract on Collection for Add new item
 
 ### Version 2.15.0 - December 14 2018
 **RDM-2323** - Support field concatenation in List / results views

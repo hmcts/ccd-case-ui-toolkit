@@ -7,7 +7,6 @@ import { IsCompoundPipe } from './is-compound.pipe';
 import { IsReadOnlyPipe } from './is-read-only.pipe';
 import { IsMandatoryPipe } from './is-mandatory.pipe';
 import { DashPipe } from './dash.pipe';
-import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collection.pipe';
 
 @NgModule({
   imports: [
@@ -20,7 +19,6 @@ import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collectio
     IsCompoundPipe,
     IsMandatoryPipe,
     IsReadOnlyPipe,
-    IsReadOnlyAndNotCollectionPipe,
     DashPipe,
   ],
   exports: [
@@ -30,7 +28,6 @@ import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collectio
     IsCompoundPipe,
     IsMandatoryPipe,
     IsReadOnlyPipe,
-    IsReadOnlyAndNotCollectionPipe,
     DashPipe,
   ]
 })
