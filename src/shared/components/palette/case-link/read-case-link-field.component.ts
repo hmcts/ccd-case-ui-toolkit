@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
@@ -6,4 +6,8 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   templateUrl: 'read-case-link-field.html'
 })
 export class ReadCaseLinkFieldComponent extends AbstractFieldReadComponent {
+
+  public hasReference(): boolean {
+    return this.caseField.value && this.caseField.value.CaseReference;
+  }
 }
