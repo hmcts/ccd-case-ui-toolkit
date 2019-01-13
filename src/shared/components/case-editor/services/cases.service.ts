@@ -3,11 +3,12 @@ import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { plainToClass } from 'class-transformer';
 import { Headers } from '@angular/http';
-import { OrderService, HttpService, HttpErrorService } from '../../../services';
+import { OrderService, HttpService, HttpErrorService, FieldsUtils } from '../../../services';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { catchError, map, tap } from 'rxjs/operators';
-import { CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, Draft } from '../../../domain';
+import { CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, Draft, CaseField } from '../../../domain';
 import { WizardPage, WizardPageField } from '../domain';
+import { ComplexFieldMask } from '../domain/wizard-page-field-complex-mask.model';
 
 @Injectable()
 export class CasesService {
@@ -217,15 +218,125 @@ export class CasesService {
     if (!eventTrigger.wizard_pages) {
       eventTrigger.wizard_pages = [];
     }
-    /* FIXME: find a better place for this code */
+
     eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
       wizardPage.parsedShowCondition = new ShowCondition(wizardPage.show_condition);
       let orderedWPFields = this.orderService.sort(wizardPage.wizard_page_fields);
       wizardPage.case_fields = orderedWPFields.map((wizardField: WizardPageField) => {
-        let case_field = eventTrigger.case_fields.find(cf => cf.id === wizardField.case_field_id);
+
+        let caseFields = eventTrigger.case_fields;
+        let case_field = caseFields.find(e => e.id === wizardField.case_field_id);
+
+        // hardcode mask for finalReturn here - this will emulate API call response.
+        if (wizardField.display_context === 'COMPLEX' && wizardField.case_field_id === 'finalReturn') {
+
+          wizardField.complexFieldMask = JSON.parse('[' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.dateOfVisit",' +
+            '    "display_context": "READONLY",' +
+            '    "order": 2,' +
+            '    "label": "Date of Visit altered",' +
+            '    "hint_text": "",' +
+            '    "show_condition": ""' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.typeOfContact",' +
+            '    "display_context": "MANDATORY",' +
+            '    "order": 1,' +
+            '    "label": "",' +
+            '    "hint_text": "",' +
+            '    "show_condition": ""' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.bailiffName",' +
+            '    "display_context": "HIDDEN"' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.personToAction",' +
+            '    "display_context": "HIDDEN"' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
+            '    "display_context": "OPTIONAL",' +
+            '    "order": 3,' +
+            '    "label": "",' +
+            '    "hint_text": "",' +
+            '    "show_condition": ""' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.AddressLine2",' +
+            '    "display_context": "HIDDEN"' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.AddressLine3",' +
+            '    "display_context": "HIDDEN"' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.PostTown",' +
+            '    "display_context": "HIDDEN"' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.County",' +
+            '    "display_context": "HIDDEN"' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
+            '    "display_context": "OPTIONAL",' +
+            '    "order": 4,' +
+            '    "label": "",' +
+            '    "hint_text": "",' +
+            '    "show_condition": ""' +
+            '  },' +
+            '  {' +
+            '    "complex_field_id": "finalReturn.addressAttended.Country",' +
+            '    "display_context": "HIDDEN"' +
+            '  }' +
+            ']');
+        }
+        case_field.id = wizardField.case_field_id;
         case_field.wizardProps = wizardField;
+        case_field.display_context = wizardField.display_context;
+
+        if (wizardField.display_context === 'COMPLEX' && wizardField.complexFieldMask) {
+          wizardField.complexFieldMask.forEach((complexFieldMask: ComplexFieldMask) => {
+            if (complexFieldMask.display_context !== 'HIDDEN') {
+              const caseFieldIds = complexFieldMask.complex_field_id.split('.');
+              let case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, eventTrigger.case_fields);
+              if (complexFieldMask.order) {
+                case_field_leaf.order = complexFieldMask.order;
+              }
+              if (complexFieldMask.label && complexFieldMask.label.length > 0) {
+                case_field_leaf.label = complexFieldMask.label;
+              }
+              if (complexFieldMask.hint_text && complexFieldMask.hint_text.length > 0) {
+                case_field_leaf.hint_text = complexFieldMask.hint_text;
+              }
+              if (complexFieldMask.show_condition && complexFieldMask.show_condition.length > 0) {
+                case_field_leaf.show_condition = complexFieldMask.show_condition;
+              }
+            }
+          });
+        }
+
         return case_field;
       });
     });
   }
+
+  private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
+    const [head, ...tail] = caseFieldId;
+    if (caseFieldId.length === 1) {
+      return caseFields.find(e => e.id === head);
+    } else if (caseFieldId.length > 1) {
+      let caseField = caseFields.find(e => e.id === head);
+      if (!caseField.field_type && !caseField.field_type.complex_fields) {
+        throw new Error(`field_type or complex_fields missing for ${caseFieldId.join('.')}`);
+      }
+      let newCaseFields = caseField.field_type.complex_fields;
+      return this.getCaseFieldLeaf(tail, newCaseFields)
+    } else {
+      throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
+    }
+  }
+
 }

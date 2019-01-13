@@ -4,10 +4,15 @@
         <ccd-field-read *ngSwitchCase="true" [caseField]="field" [withLabel]="true"></ccd-field-read>
         <ng-container *ngSwitchCase="false">
           <ng-container *ngIf="!(field | ccdIsCompound); else CompoundRow">
-            <ccd-field-write [caseField]="field" [formGroup]="formGroup" [idPrefix]=""></ccd-field-write>
+            <ccd-field-write [caseField]="field"
+                             [formGroup]="formGroup"
+                             [idPrefix]=""></ccd-field-write>
           </ng-container>
           <ng-template #CompoundRow>
-            <ccd-field-write [caseField]="field" [formGroup]="formGroup" [idPrefix]="field.id + '_'"></ccd-field-write>
+            <ccd-field-write [caseField]="field"
+                             [formGroup]="formGroup"
+                             [idPrefix]="field.id + '_'"
+                             [mask]="field.wizardProps.complexFieldMask"></ccd-field-write>
           </ng-template>
         </ng-container>
       </ng-container>

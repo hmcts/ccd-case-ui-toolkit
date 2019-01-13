@@ -22,7 +22,11 @@
             <button class="button button-secondary" type="button" (click)="openModal(i)">Remove</button>
           </div>
         </div>
-        <ccd-field-write [caseField]="buildCaseField(item, i)" [registerControl]="buildControlRegistrer(item.id, i)" [idPrefix]="buildIdPrefix(i)"></ccd-field-write>
+        <ccd-field-write [caseField]="buildCaseField(item, i)"
+                         [registerControl]="buildControlRegistrer(item.id, i)"
+                         [idPrefix]="buildIdPrefix(i)"
+                         [mask]="mask">
+        </ccd-field-write>
       </div>
 
     </div>
