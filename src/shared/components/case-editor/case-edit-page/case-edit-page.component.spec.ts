@@ -53,6 +53,7 @@ describe('CaseEditPageComponent', () => {
   let cancelled: any;
   let caseField1 = new CaseField();
   let caseField2 = new CaseField();
+  let caseEventData = new CaseEventData();
 
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
@@ -512,6 +513,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       spyOn(caseEditComponentStub, 'form');
       spyOn(caseEditComponentStub, 'validate').and.returnValue(of(`{"data":{"field1": "EX12345678"}}`));
+      spyOn(formValueService, 'sanitise').and.returnValue(caseEventData);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
@@ -545,7 +547,10 @@ describe('CaseEditPageComponent', () => {
       comp.submit();
 
       fixture.whenStable().then(() => {
-        expect(caseEditComponentStub.validate).toHaveBeenCalled();
+        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(caseEventData, wizardPage.id);
+        expect(caseEventData.event_data).toEqual(FORM_GROUP.value.data);
+        expect(caseEventData.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(caseEventData.event_token).toEqual(comp.eventTrigger.event_token);
       });
     });
 

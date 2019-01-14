@@ -123,6 +123,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       let caseEventData: CaseEventData = this.formValueService.sanitise(currentPageFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
+      caseEventData.event_data = this.editForm.value.data;
+
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
           if (jsonData) {
