@@ -221,106 +221,191 @@ export class CasesService {
 
     eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
       wizardPage.parsedShowCondition = new ShowCondition(wizardPage.show_condition);
-      let orderedWPFields = this.orderService.sort(wizardPage.wizard_page_fields);
-      wizardPage.case_fields = orderedWPFields.map((wizardField: WizardPageField) => {
-
-        let caseFields = eventTrigger.case_fields;
-        let case_field = caseFields.find(e => e.id === wizardField.case_field_id);
-
-        // hardcode mask for finalReturn here - this will emulate API call response.
-        if (wizardField.display_context === 'COMPLEX' && wizardField.case_field_id === 'finalReturn') {
-
-          wizardField.complexFieldMask = JSON.parse('[' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.dateOfVisit",' +
-            '    "display_context": "READONLY",' +
-            '    "order": 2,' +
-            '    "label": "Date of Visit altered",' +
-            '    "hint_text": "",' +
-            '    "show_condition": ""' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.typeOfContact",' +
-            '    "display_context": "MANDATORY",' +
-            '    "order": 1,' +
-            '    "label": "",' +
-            '    "hint_text": "",' +
-            '    "show_condition": ""' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.bailiffName",' +
-            '    "display_context": "HIDDEN"' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.personToAction",' +
-            '    "display_context": "HIDDEN"' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
-            '    "display_context": "OPTIONAL",' +
-            '    "order": 3,' +
-            '    "label": "",' +
-            '    "hint_text": "",' +
-            '    "show_condition": ""' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.AddressLine2",' +
-            '    "display_context": "HIDDEN"' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.AddressLine3",' +
-            '    "display_context": "HIDDEN"' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.PostTown",' +
-            '    "display_context": "HIDDEN"' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.County",' +
-            '    "display_context": "HIDDEN"' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
-            '    "display_context": "OPTIONAL",' +
-            '    "order": 4,' +
-            '    "label": "",' +
-            '    "hint_text": "",' +
-            '    "show_condition": ""' +
-            '  },' +
-            '  {' +
-            '    "complex_field_id": "finalReturn.addressAttended.Country",' +
-            '    "display_context": "HIDDEN"' +
-            '  }' +
-            ']');
-        }
-        case_field.id = wizardField.case_field_id;
-        case_field.wizardProps = wizardField;
-        case_field.display_context = wizardField.display_context;
-
-        if (wizardField.display_context === 'COMPLEX' && wizardField.complexFieldMask) {
-          wizardField.complexFieldMask.forEach((complexFieldMask: ComplexFieldMask) => {
-            if (complexFieldMask.display_context !== 'HIDDEN') {
-              const caseFieldIds = complexFieldMask.complex_field_id.split('.');
-              let case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, eventTrigger.case_fields);
-              if (complexFieldMask.order) {
-                case_field_leaf.order = complexFieldMask.order;
-              }
-              if (complexFieldMask.label && complexFieldMask.label.length > 0) {
-                case_field_leaf.label = complexFieldMask.label;
-              }
-              if (complexFieldMask.hint_text && complexFieldMask.hint_text.length > 0) {
-                case_field_leaf.hint_text = complexFieldMask.hint_text;
-              }
-              if (complexFieldMask.show_condition && complexFieldMask.show_condition.length > 0) {
-                case_field_leaf.show_condition = complexFieldMask.show_condition;
-              }
-            }
-          });
-        }
-
-        return case_field;
+      wizardPage.case_fields = wizardPage.wizard_page_fields.map((wizardField: WizardPageField) => {
+        return this.wizardPageFieldToCaseFieldMapper(wizardField, eventTrigger.case_fields);
       });
+      wizardPage.case_fields = this.deepOrder(wizardPage.case_fields);
     });
+  }
+
+  private wizardPageFieldToCaseFieldMapper(wizardPageField: WizardPageField, caseFields: CaseField[]) {
+
+    // hardcode mask for finalReturn here - this will emulate API call response.
+    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.case_field_id === 'finalReturn') {
+
+      wizardPageField.complexFieldMask = JSON.parse('[' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.dateOfVisit",' +
+        '    "display_context": "READONLY",' +
+        '    "order": 2,' +
+        '    "label": "Date of Visit altered",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.typeOfContact",' +
+        '    "display_context": "MANDATORY",' +
+        '    "order": 1,' +
+        '    "label": "",' +
+        '    "hint_text": "",' +
+        '    "show_condition": "finalReturn.typeOfContact=\"faceToFaceContact\""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.bailiffName",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.personToAction",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
+        '    "display_context": "OPTIONAL",' +
+        '    "order": 3,' +
+        '    "label": "",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.AddressLine2",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.AddressLine3",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.PostTown",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.County",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
+        '    "display_context": "OPTIONAL",' +
+        '    "order": 4,' +
+        '    "label": "",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.Country",' +
+        '    "display_context": "HIDDEN"' +
+        '  }' +
+        ']');
+    }
+
+    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.case_field_id === 'interimReturns') {
+
+      wizardPageField.complexFieldMask = JSON.parse('[' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.dateOfVisit",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.typeOfContact",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "interimReturns.bailiffName",' +
+        '    "display_context": "READONLY",' +
+        '    "order": 1,' +
+        '    "label": "Baliff in attendence updated",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "interimReturns.outcomeOfVisit",' +
+        '    "display_context": "READONLY",' +
+        '    "order": 2,' +
+        '    "label": "Outcome of Visit",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.AddressLine2",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.AddressLine3",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.PostTown",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "interimReturns.addressAttended.County",' +
+        '    "display_context": "READONLY",' +
+        '    "order": 4,' +
+        '    "label": "Address Attended",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.addressAttended.Country",' +
+        '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "interimReturns.personToAction",' +
+        '    "display_context": "MANDATORY",' +
+        '    "order": 3,' +
+        '    "label": "Personel to action",' +
+        '    "hint_text": "",' +
+        '    "show_condition": ""' +
+        '  }' +
+        ']');
+    }
+
+    let case_field: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
+    case_field.id = wizardPageField.case_field_id;
+    case_field.wizardProps = wizardPageField;
+    case_field.display_context = wizardPageField.display_context;
+    case_field.order = wizardPageField.order;
+
+    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.complexFieldMask) {
+
+      wizardPageField.complexFieldMask.forEach((complexFieldMask: ComplexFieldMask) => {
+        const caseFieldIds = complexFieldMask.complex_field_id.split('.');
+        let case_field_leaf;
+
+        if (case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex') {
+          const [_, ...tail] = caseFieldIds;
+          case_field_leaf = this.getCaseFieldLeaf(tail, case_field.field_type.collection_field_type.complex_fields);
+        } else {
+          case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, caseFields);
+        }
+
+        if (complexFieldMask.display_context !== 'HIDDEN') {
+          if (complexFieldMask.order) {
+            case_field_leaf.order = complexFieldMask.order;
+          }
+          if (complexFieldMask.label && complexFieldMask.label.length > 0) {
+            case_field_leaf.label = complexFieldMask.label;
+          }
+          if (complexFieldMask.hint_text && complexFieldMask.hint_text.length > 0) {
+            case_field_leaf.hint_text = complexFieldMask.hint_text;
+          }
+          if (complexFieldMask.show_condition && complexFieldMask.show_condition.length > 0) {
+            case_field_leaf.show_condition = complexFieldMask.show_condition;
+          }
+        } else {
+          case_field_leaf.hidden = true;
+        }
+      });
+    }
+
+    return case_field;
   }
 
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
@@ -339,4 +424,13 @@ export class CasesService {
     }
   }
 
+  private deepOrder(case_fields: CaseField[]): CaseField[] {
+    let orderedCaseFields = this.orderService.sort(case_fields);
+    orderedCaseFields.forEach((caseField: CaseField) => {
+      if (caseField.field_type && caseField.field_type.type === 'Complex') {
+        caseField.field_type.complex_fields = this.deepOrder(caseField.field_type.complex_fields);
+      }
+    });
+    return orderedCaseFields;
+  }
 }

@@ -6,6 +6,7 @@ import { Type } from 'class-transformer';
 // @dynamic
 export class CaseField implements Orderable {
   id: string;
+  hidden?: boolean;
   label: string;
   order?: number;
 

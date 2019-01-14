@@ -16,7 +16,7 @@ import { FormValidatorsService } from '../../../services/form/form-validators.se
 @Component({
   selector: 'ccd-field-write',
   template: `
-    <div [hidden]="!isVisible()">
+    <div [hidden]="caseField.hidden">
       <ng-container #fieldContainer></ng-container>
     </div>
   `
@@ -84,25 +84,5 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
       return fieldMaskValue;
     }
     return currentValue;
-  }
-
-  isVisible(): boolean {
-    console.log('FieldId: '  + this.id()); // TODO: delete this
-    console.log('Mask: ', this.mask); // TODO: delete this
-    if (!this.mask) {
-      return true;
-    }
-    let fullyQualifiedId = this.id().replace(/_/g, '.');
-    // console.log(fullyQualifiedId, this.mask, this.caseField.id); // TODO: delete this
-
-    let foundElement = this.mask.find(item => {
-      return item.complex_field_id === fullyQualifiedId
-    });
-
-    if (foundElement) {
-      return foundElement.display_context !== 'HIDDEN';
-    } else {
-      return true;
-    }
   }
 }
