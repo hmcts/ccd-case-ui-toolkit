@@ -198,24 +198,6 @@ describe('WriteCollectionFieldComponent', () => {
     expect(addedField.caseField.field_type).toEqual(SIMPLE_FIELD_TYPE.collection_field_type);
   });
 
-  it('should focus 1st input of newly added item', done => {
-    let addButton = de.query($ADD_BUTTON_TOP);
-
-    addButton.nativeElement.click();
-    fixture.detectChanges();
-
-    let writeFields = de.queryAll($WRITE_FIELDS);
-    let lastWriteField = writeFields[writeFields.length - 1];
-
-    let lastFieldInput = lastWriteField.query(By.css('input'));
-
-    setTimeout(() => {
-      // Timeout required for focus to be effective
-      expect(lastFieldInput.nativeElement).toBe(document.activeElement);
-      done();
-    });
-  });
-
   it('should scroll when item added with top button', done => {
     let addButton = de.query($ADD_BUTTON_TOP);
 

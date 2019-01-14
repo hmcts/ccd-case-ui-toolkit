@@ -11,7 +11,7 @@
     <div class="form-group bottom-30">
 
   	  <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{selected: yesNoControl.value === value}">
-  	    <input [id]="id()+'-'+value" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
+  	    <input class="form-control" [id]="id()+'-'+value" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
   	    <label class="form-label" [for]="id()+'-'+value">{{value}}</label>
   	  </div>
 

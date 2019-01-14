@@ -82,6 +82,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       }
     });
+    if (document.getElementById('main-content')) {
+      document.getElementById('main-content').focus();
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -134,6 +137,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           this.next();
         }, error => this.handleError(error));
       this.scrollToTop();
+    }
+    if (document.getElementById('main-content')) {
+      document.getElementById('main-content').focus();
     }
   }
 
