@@ -248,7 +248,7 @@ export class CasesService {
         '    "order": 1,' +
         '    "label": "",' +
         '    "hint_text": "",' +
-        '    "show_condition": "finalReturn.typeOfContact=\"faceToFaceContact\""' +
+        '    "show_condition": ""' +
         '  },' +
         '  {' +
         '    "complex_field_id": "finalReturn.bailiffName",' +
@@ -293,6 +293,16 @@ export class CasesService {
         '  {' +
         '    "complex_field_id": "finalReturn.addressAttended.Country",' +
         '    "display_context": "HIDDEN"' +
+        '  },' +
+        '  {' +
+        '    "complex_field_id": "finalReturn.outcomeOfVisit",' +
+        '    "display_context": "MANDATORY",' +
+        '    "order": 5,' +
+        '    "label": "",' +
+        '    "hint_text": "",' +
+        '    "show_condition": "typeOfContact=\\\"faceToFaceContact\\\""' +
+        // '    "show_condition": "finalReturn.typeOfContact=\\\"faceToFaceContact\\\""' +
+        // TODO: check conditional-show.directive.ts used in write-complex-field.html
         '  }' +
         ']');
     }
@@ -301,11 +311,11 @@ export class CasesService {
 
       wizardPageField.complexFieldMask = JSON.parse('[' +
         '  {' +
-        '    "complex_field_id": "finalReturn.dateOfVisit",' +
+        '    "complex_field_id": "interimReturns.dateOfVisit",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.typeOfContact",' +
+        '    "complex_field_id": "interimReturns.typeOfContact",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
@@ -325,19 +335,19 @@ export class CasesService {
         '    "show_condition": ""' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
+        '    "complex_field_id": "interimReturns.addressAttended.AddressLine1",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.AddressLine2",' +
+        '    "complex_field_id": "interimReturns.addressAttended.AddressLine2",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.AddressLine3",' +
+        '    "complex_field_id": "interimReturns.addressAttended.AddressLine3",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.PostTown",' +
+        '    "complex_field_id": "interimReturns.addressAttended.PostTown",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
@@ -349,11 +359,11 @@ export class CasesService {
         '    "show_condition": ""' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
+        '    "complex_field_id": "interimReturns.addressAttended.PostCode",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.Country",' +
+        '    "complex_field_id": "interimReturns.addressAttended.Country",' +
         '    "display_context": "HIDDEN"' +
         '  },' +
         '  {' +
@@ -387,6 +397,7 @@ export class CasesService {
         }
 
         if (complexFieldMask.display_context !== 'HIDDEN') {
+          case_field_leaf.display_context = complexFieldMask.display_context;
           if (complexFieldMask.order) {
             case_field_leaf.order = complexFieldMask.order;
           }

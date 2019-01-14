@@ -15,9 +15,6 @@ export class AbstractFieldWriteComponent {
   @Input()
   idPrefix = '';
 
-  @Input()
-  mask: any = false;
-
   public id() {
     return this.idPrefix + this.caseField.id;
   }

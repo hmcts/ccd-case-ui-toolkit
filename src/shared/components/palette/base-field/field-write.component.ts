@@ -62,27 +62,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
       component.instance['ignoreMandatory'] = true;
     }
     component.instance['isExpanded'] = this.isExpanded;
-    component.instance['mask'] = this.mask;
     let castedObject: AbstractFieldWriteComponent = <AbstractFieldWriteComponent> component.instance;
-    this.processMask(this.mask, castedObject.id());
     this.fieldContainer.insert(component.hostView);
-  }
-
-  private processMask(mask: object, fieldId: string): any {
-    if (mask && mask.hasOwnProperty(fieldId) && mask[fieldId]['display_context'] !== 'HIDDEN') {
-      let fieldMask = mask[fieldId];
-      this.caseField.display_context = fieldMask['display_context'];
-      this.caseField.order = fieldMask['order'];
-      this.caseField.label = this.updateFieldIfNewValuePresent(fieldMask['label'], this.caseField.label);
-      this.caseField.hint_text = this.updateFieldIfNewValuePresent(fieldMask['hint_text'], this.caseField.hint_text);
-      this.caseField.show_condition = this.updateFieldIfNewValuePresent(fieldMask['show_condition'], this.caseField.show_condition);
-    }
-  }
-
-  private updateFieldIfNewValuePresent(fieldMaskValue: string, currentValue: string) {
-    if (fieldMaskValue.trim().length > 0) {
-      return fieldMaskValue;
-    }
-    return currentValue;
   }
 }
