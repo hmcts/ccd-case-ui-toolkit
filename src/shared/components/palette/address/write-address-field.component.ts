@@ -80,7 +80,18 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     this.setFormValue();
   }
 
+  isComplexWithHiddenFields() {
+    if (this.caseField.field_type
+      && this.caseField.field_type.complex_fields
+      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
+      return true;
+    }
+  }
+
   shouldShowDetailFields() {
+    if (this.isComplexWithHiddenFields()) {
+      return true;
+    }
     if (this.isExpanded) {
       return true;
     }
