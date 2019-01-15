@@ -94,7 +94,9 @@ export class FieldsFilterPipe implements PipeTransform {
       })
       .filter(f => keepEmpty || FieldsFilterPipe.keepField(f))
       .map(f => {
-        f.display_context = complexField.display_context;
+        if (!f.display_context) {
+          f.display_context = complexField.display_context;
+        }
         return f;
       });
   }

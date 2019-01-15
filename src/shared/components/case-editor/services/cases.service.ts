@@ -262,7 +262,7 @@ export class CasesService {
         '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
         '    "display_context": "OPTIONAL",' +
         '    "order": 3,' +
-        '    "label": "",' +
+        '    "label": "House number attended",' +
         '    "hint_text": "",' +
         '    "show_condition": ""' +
         '  },' +
@@ -286,8 +286,8 @@ export class CasesService {
         '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
         '    "display_context": "OPTIONAL",' +
         '    "order": 4,' +
-        '    "label": "",' +
-        '    "hint_text": "",' +
+        '    "label": "Postcode attended",' +
+        '    "hint_text": "Enter the postcode",' +
         '    "show_condition": ""' +
         '  },' +
         '  {' +
@@ -323,7 +323,7 @@ export class CasesService {
         '    "display_context": "READONLY",' +
         '    "order": 1,' +
         '    "label": "Baliff in attendence updated",' +
-        '    "hint_text": "",' +
+        '    "hint_text": "Test hint text",' +
         '    "show_condition": ""' +
         '  },' +
         '  {' +
@@ -354,7 +354,7 @@ export class CasesService {
         '    "complex_field_id": "interimReturns.addressAttended.County",' +
         '    "display_context": "READONLY",' +
         '    "order": 4,' +
-        '    "label": "Address Attended",' +
+        '    "label": "County attended",' +
         '    "hint_text": "",' +
         '    "show_condition": ""' +
         '  },' +
