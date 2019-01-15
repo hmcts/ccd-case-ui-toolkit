@@ -1,0 +1,30 @@
+<table class="EventLogTable">
+  <caption><h3 class="heading-small">History</h3></caption>
+  <thead>
+  <tr>
+    <th><span class="text-16">Event</span></th>
+    <th><span class="text-16">Date</span></th>
+    <th><span class="text-16">Author</span></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let event of events" (click)="select(event)" [ngClass]="{'EventLogTable-Selected': selected === event}">
+    <td>
+      <a [routerLink]="['./', 'event', event.id, 'history']"
+           [target]="'_blank'"
+           *ngIf="event.state_id !== 'Draft'" class="text-16 event-link">{{event.event_name}}</a>
+      <span *ngIf="event.state_id === 'Draft'">{{event.event_name}}</span>
+      <div class="tooltip" *ngIf="significantItemExist(event)">
+        <a href="{{getSignificantItemUrl(event)}}" target="_blank">
+          <img class="doc-img" src='../../img/doc-link.png'/>
+        </a>
+        <span class="tooltiptext doc-tooltip">{{getSignificantItemDesc(event)}}</span>
+      </div>
+    </td>
+    <td><div class="tooltip text-16">{{event.timestamp | ccdDate : 'local'}}
+      <span class="tooltiptext">UTC: {{event.timestamp | ccdDate : 'utc'}}</span>
+    </div></td>
+    <td><span class="text-16">{{event.user_first_name | titlecase}} {{event.user_last_name | uppercase}}</span></td>
+  </tr>
+  </tbody>
+</table>

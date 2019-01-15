@@ -1,7 +1,7 @@
 import createSpyObj = jasmine.createSpyObj;
 import { CaseEditWizardGuard } from './case-edit-wizard.guard';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { createCaseEventTrigger } from '../../../fixture/shared.fixture';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { TestRouteSnapshotBuilder } from '../../../test/test-route-snapshot-builder';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';

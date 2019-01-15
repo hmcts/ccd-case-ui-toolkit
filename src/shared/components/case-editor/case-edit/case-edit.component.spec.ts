@@ -13,7 +13,7 @@ import { PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
-import { createCaseEventTrigger } from '../../../fixture/shared.fixture';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { WizardPageField } from '../domain/wizard-page-field.model';
 import { CaseField } from '../../../domain/definition/case-field.model';

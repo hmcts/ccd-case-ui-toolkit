@@ -4,7 +4,7 @@ import { PageValidationService } from './page-validation.service';
 import { WizardPage } from '../domain/wizard-page.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { aCaseField } from '../../../fixture/shared.fixture';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
 
 describe('PageValidationService', () => {
 
