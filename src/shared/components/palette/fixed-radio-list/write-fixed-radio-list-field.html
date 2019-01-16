@@ -10,7 +10,7 @@
     </legend>
     <ng-container>
       <div class="multiple-choice" *ngFor="let radioButton of caseField.field_type.fixed_list_items" [ngClass]="{selected: fixedRadioListControl.value === radioButton.code}">
-          <input [id]="id()+'-'+radioButton.code" [name]="id()" type="radio" [formControl]="fixedRadioListControl" [value]="radioButton.code">
+          <input class="form-control" [id]="id()+'-'+radioButton.code" [name]="id()" type="radio" [formControl]="fixedRadioListControl" [value]="radioButton.code">
           <label class="form-label" [for]="id()+'-'+radioButton.code">{{radioButton.label}}</label>
       </div>
     </ng-container>
