@@ -1,31 +1,6 @@
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
 
-.collection-field-table {
-  tr:first-child>td {
-    padding-top: 0;
-  }
-  tr:last-child>td {
-    border-bottom: none;
-  }
-  td.collection-actions {
-    width: 1px;
-    white-space: nowrap;
-  }
-}
-.error-spacing {
-  margin-top: 10px;
-}
-.collection-title{
-  height: 51px;
-}
-.float-left {
-  float: left;
-  padding-top: 8px;
-}
-.float-right {
-  float: right;
-}
 .complex-panel {
   $padding: 5px;
   margin: 13px 0px;

@@ -16,6 +16,7 @@ export class CaseField implements Orderable {
   hint_text?: string;
   security_label?: string;
   display_context: string;
+  display_context_parameter?: string;
   show_condition?: string;
   show_summary_change_option?: boolean;
   show_summary_content_option?: number;

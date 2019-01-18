@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
+import { ReadComplexFieldNewTableComponent } from './read-complex-field-new-table.component';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { BaseFieldModule } from '../base-field/base-field.module';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
@@ -25,6 +26,7 @@ import { ReadComplexFieldComponent } from './read-complex-field.component';
   declarations: [
     ReadComplexFieldComponent,
     ReadComplexFieldTableComponent,
+    ReadComplexFieldNewTableComponent,
     ReadComplexFieldRawComponent,
     WriteComplexFieldComponent,
     FieldsFilterPipe,

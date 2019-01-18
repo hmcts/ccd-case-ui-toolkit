@@ -1,13 +1,13 @@
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Component, OnInit } from '@angular/core';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field';
 
 @Component({
-  selector: 'ccd-read-collection-field',
-  templateUrl: './read-collection-field.html',
-  styleUrls: ['./collection-field.scss']
+  selector: 'ccd-read-complex-field-new-table',
+  templateUrl: './read-complex-field-new-table.html',
+  styleUrls: ['./read-complex-field-new-table.scss']
 })
-export class ReadCollectionFieldComponent extends AbstractFieldReadComponent implements OnInit {
+export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponent  implements OnInit {
 
   public isDisplayContextParameterAvailable: boolean = false;
   public columns: String[];
@@ -45,4 +45,5 @@ export class ReadCollectionFieldComponent extends AbstractFieldReadComponent imp
       this.columnsAllLabels = allLabels;
     }
   }
+
 }
