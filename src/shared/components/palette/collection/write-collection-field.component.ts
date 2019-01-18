@@ -99,7 +99,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   private focusLastItem() {
-    this.items.last.nativeElement.querySelector('input').focus();
+    if (this.items.last.nativeElement.querySelector('.form-control')) {
+      this.items.last.nativeElement.querySelector('.form-control').focus();
+    }
   }
 
   removeItem(index: number): void {

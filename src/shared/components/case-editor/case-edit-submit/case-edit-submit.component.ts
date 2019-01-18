@@ -155,6 +155,10 @@ export class CaseEditSubmitComponent implements OnInit {
     }
   }
 
+  isLabel(field: CaseField): boolean {
+    return this.caseFieldService.isLabel(field);
+  }
+
   isChangeAllowed(field: CaseField): boolean {
     return !this.caseFieldService.isReadOnly(field);
   }
