@@ -23,7 +23,7 @@
     </select>
   </div>
 
-  <span class="manual-link bottom-30" *ngIf="!shouldShowDetailFields()" (click)="blankAddress()">I can't enter a UK postcode</span>
+  <a class="manual-link bottom-30" *ngIf="!shouldShowDetailFields()" (click)="blankAddress()" href="javascript:void(0)">I can't enter a UK postcode</a>
 
   <ccd-write-complex-type-field
     [hidden]="!shouldShowDetailFields()"

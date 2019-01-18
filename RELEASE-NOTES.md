@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.21.0 - January 14 2019
+**RDM-2806** - Markdown in CYA displays the actual Markdown (used for Section headings)
+**RDM-3401, RDM-3403, RDM-3404, RDM-3409, RDM-3410** - Accessibility fixes
+
 ### Version 2.20.2 - January 10 2019
 **RDM-3628** - revert for CRUD contract on Collection Items - Standard API
 
