@@ -12,12 +12,14 @@ import { By } from '@angular/platform-browser';
 describe('ReadComplexFieldComponent', () => {
 
   const $COMPLEX_AS_TABLE = By.css('ccd-read-complex-field-table');
+  const $COMPLEX_AS_NEW_TABLE = By.css('ccd-read-complex-new-field-table');
   const $COMPLEX_AS_RAW = By.css('ccd-read-complex-field-raw');
 
   const caseField: CaseField = new CaseField();
 
   let ReadComplexFieldRawComponent;
   let ReadComplexFieldTableComponent;
+  let ReadComplexFieldNewTableComponent;
 
   let fixture: ComponentFixture<ReadComplexFieldComponent>;
   let component: ReadComplexFieldComponent;
@@ -50,6 +52,11 @@ describe('ReadComplexFieldComponent', () => {
       inputs: ['caseField', 'context']
     });
 
+    ReadComplexFieldNewTableComponent = MockComponent({
+      selector: 'ccd-read-complex-field-new-table',
+      inputs: ['caseField', 'context']
+    });
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -63,6 +70,7 @@ describe('ReadComplexFieldComponent', () => {
           // Mock
           ReadComplexFieldRawComponent,
           ReadComplexFieldTableComponent,
+          ReadComplexFieldNewTableComponent,
         ],
         providers: []
       })

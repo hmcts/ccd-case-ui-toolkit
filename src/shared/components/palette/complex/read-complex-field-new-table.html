@@ -1,6 +1,4 @@
-<tr>
-  <td>
-    <div class="complex-panel">
+ <div class="complex-panel">
       <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
       <table class="complex-panel-table">
         <tbody>
@@ -17,7 +15,7 @@
           <tr>
             <ng-container *ngFor="let heading of columnsHorizontalLabel | keyvalue">
               <ng-container  *ngFor="let name of item.value | keyvalue">
-                <td *ngIf="heading.key == name.key">
+                <td *ngIf="heading.key == name.key" class="text-16">
                   <ccd-field-read [caseField]="{
                         id: name.key,
                         label: name.value.label,
@@ -37,7 +35,7 @@
                   <ng-container  *ngFor="let name of item.value | keyvalue">
                     <tr *ngIf="vLabel.key == name.key">
                       <th ><span class="text-16">{{vLabel.value.label}}</span></th>
-                      <td>
+                      <td class="text-16">
                         <ccd-field-read [caseField]="{
                               id: name.key,
                               label: vLabel.value.label,
@@ -57,4 +55,3 @@
         </tbody>
       </table>
     </div>
-</tr>

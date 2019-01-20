@@ -27,7 +27,7 @@ export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponen
       let labelsHorizontal: { [k: string]: any } = {};
       let allLabels: { [k: string]: any } = {};
 
-      for (let obj of this.caseField.field_type.collection_field_type.complex_fields) {
+      for (let obj of this.caseField.field_type.complex_fields) {
         labelsVertical[obj.id] = { label: obj.label, type: obj.field_type.type};
         allLabels[obj.id] = { label: obj.label, type: obj.field_type.type};
       }
