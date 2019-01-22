@@ -10,11 +10,14 @@ export abstract class AbstractAppConfig {
   abstract getPaymentsUrl(): string;
   abstract getCreateOrUpdateDraftsUrl(ctid: string): string
   abstract getViewOrDeleteDraftsUrl(did: string): string
-  abstract getActivityUrl()
-  abstract getActivityNexPollRequestMs()
-  abstract getActivityRetry()
-  abstract getActivityBatchCollectionDelayMs()
-  abstract getActivityMaxRequestPerBatch()
+  abstract getActivityUrl(): string;
+  abstract getActivityNexPollRequestMs(): number;
+  abstract getActivityRetry(): number;
+  abstract getActivityBatchCollectionDelayMs(): number;
+  abstract getActivityMaxRequestPerBatch(): number;
+  abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
+  abstract getPrintServiceUrl(): string;
+  abstract getRemotePrintServiceUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -31,4 +34,6 @@ export class CaseEditorConfig {
   activity_retry: number;
   activity_url: string;
   activity_max_request_per_batch: number;
+  print_service_url: string;
+  remote_print_service_url: string;
 }

@@ -90,7 +90,10 @@ export { PaletteModule,
          CaseHeaderModule,
          EventTriggerModule,
          EventLogModule,
-         routing } from './shared/components';
+         CaseResolver,
+         EventTriggerResolver,
+         viewerRouting,
+         editorRouting } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
 export { createCaseEventTrigger,

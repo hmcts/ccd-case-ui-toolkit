@@ -11,6 +11,11 @@ import { EventLogModule } from '../event-log';
 import { TabsModule } from '../../../components/tabs';
 import { PaletteModule } from '../palette';
 import { LabelSubstitutorModule } from '../../directives';
+import { CasePrinterComponent, CasePrintDocumentsResolver, PrintUrlPipe } from './printer';
+import { CaseEventTriggerComponent } from './case-event-trigger';
+import { CaseHistoryComponent } from './case-history';
+import { EventTriggerResolver, CaseResolver, CaseHistoryResolver, CaseHistoryService } from './services';
+import { CaseEditorModule } from '../case-editor';
 
 @NgModule({
     imports: [
@@ -24,19 +29,32 @@ import { LabelSubstitutorModule } from '../../directives';
         TabsModule,
         PaletteModule,
         LabelSubstitutorModule,
+        CaseEditorModule,
     ],
     declarations: [
-        CaseViewerComponent
+        CaseHistoryComponent,
+        CaseEventTriggerComponent,
+        CasePrinterComponent,
+        CaseViewerComponent,
+        PrintUrlPipe,
     ],
     exports: [
+        CaseHistoryComponent,
+        CaseEventTriggerComponent,
+        CasePrinterComponent,
         CaseViewerComponent,
     ],
     providers: [
+        CasePrintDocumentsResolver,
+        EventTriggerResolver,
         ActivityService,
         ActivityPollingService,
         OrderService,
         DraftService,
         HttpService,
+        CaseResolver,
+        CaseHistoryResolver,
+        CaseHistoryService,
     ]
 })
 export class CaseViewerModule {}
