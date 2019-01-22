@@ -7,7 +7,6 @@ import { ErrorsModule } from '../error/errors.module';
 import { ActivityModule } from '../activity/activity.module';
 import { CaseHeaderModule } from '../case-header';
 import { EventTriggerModule } from '../event-trigger/event-trigger.module';
-import { EventLogModule } from '../event-log';
 import { TabsModule } from '../../../components/tabs';
 import { PaletteModule } from '../palette';
 import { LabelSubstitutorModule } from '../../directives';
@@ -16,6 +15,7 @@ import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseHistoryComponent } from './case-history';
 import { EventTriggerResolver, CaseResolver, CaseHistoryResolver, CaseHistoryService } from './services';
 import { CaseEditorModule } from '../case-editor';
+import { EventLogModule } from './event-log';
 
 @NgModule({
     imports: [
