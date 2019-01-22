@@ -1,5 +1,4 @@
 export * from './activity';
-export * from './event-log';
 export * from './case-editor';
 export * from './case-header';
 export * from './case-viewer';

@@ -1,4 +1,5 @@
 export * from './domain';
+export * from './event-log';
 export * from './services';
 export * from './case-event-trigger';
 export * from './case-history';

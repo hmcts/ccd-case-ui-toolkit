@@ -2,8 +2,8 @@ import { EventLogDetailsComponent } from './event-log-details.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { CaseViewEvent } from '../../domain';
-import { DatePipe, DashPipe } from '../palette';
+import { CaseViewEvent } from '../../../domain';
+import { DatePipe, DashPipe } from '../../palette';
 
 describe('EventLogDetails', () => {
 
