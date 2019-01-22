@@ -16,7 +16,7 @@
       <span *ngIf="event.state_id === 'Draft'">{{event.event_name}}</span>
       <div class="tooltip" *ngIf="significantItemExist(event)">
         <a href="{{getSignificantItemUrl(event)}}" target="_blank">
-          <img class="doc-img" src='./doc-link.png'/>
+          <img class="doc-img" src='doc-link.png'/>
         </a>
         <span class="tooltiptext doc-tooltip">{{getSignificantItemDesc(event)}}</span>
       </div>

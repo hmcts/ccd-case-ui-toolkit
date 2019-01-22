@@ -9,12 +9,12 @@ import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { attr } from '../../../test/helpers';
 import { CaseHistory } from '../domain';
-import { createCaseHistory } from '../services/case-history.test.fixture';
 import { HttpError } from '../../../domain';
 import { OrderService, FieldsUtils } from '../../../services';
 import { PaletteUtilsModule } from '../../palette';
 import { LabelSubstitutorDirective, PlaceholderService } from '../../../directives';
 import { CaseReferencePipe } from '../../../pipes';
+import { createCaseHistory } from '../../../fixture';
 
 describe('CaseHistoryComponent', () => {
 
