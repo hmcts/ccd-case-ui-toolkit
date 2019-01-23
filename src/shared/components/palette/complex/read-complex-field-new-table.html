@@ -10,30 +10,35 @@
               </th>
             </ng-container>
           </ng-container>
+          <th></th>
         </tr>
         <ng-container *ngFor="let item of caseField.value;  let i = index">
-          <tr>
-            <ng-container *ngFor="let heading of columnsHorizontalLabel | keyvalue">
+          <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
+            <ng-container *ngFor="let heading of columns">
               <ng-container  *ngFor="let name of item.value | keyvalue">
-                <td *ngIf="heading.key == name.key" class="text-16">
+                <td *ngIf="heading.trim() == name.key" class="text-16">
                   <ccd-field-read [caseField]="{
                         id: name.key,
                         label: name.value.label,
-                         field_type: { type: heading.value.type},
+                        field_type: { type: columnsHorizontalLabel[heading.trim()].type},
                         value: name.value
                       }" [context]="context"></ccd-field-read>
                 </td>
-                <!--<span class="text-16">{{name.value}}</span></td>-->
               </ng-container>
             </ng-container>
+              <td>
+                <div style="float: right;">
+                  <img src="{{ getImage(i) }}" class="accordion-image"/>
+                </div>
+               </td>
           </tr>
           <tr>
-            <td>
+            <td [colSpan]="columns.length +1">
               <table class="complex-panel-table">
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
                   <ng-container  *ngFor="let name of item.value | keyvalue">
-                    <tr *ngIf="vLabel.key == name.key">
+                    <tr *ngIf="vLabel.key == name.key"  class="complex-panel-simple-field accordion-body" [hidden]="isHidden[i]" [class.last-accordion]="lastAccordion">
                       <th ><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td class="text-16">
                         <ccd-field-read [caseField]="{

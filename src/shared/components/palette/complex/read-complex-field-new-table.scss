@@ -25,12 +25,21 @@
     }
 
     &>tbody>tr:last-child {
-      &>th, &>td {
+      &>th {
         border-bottom: none;
       }
     }
+    th {
+      font-weight: bold;
+      border-bottom: none;
+    }
+    td {
+      border-bottom: none;
+    }
   }
-
+  .new-table-row{
+    border-top: 1px solid $border-colour;
+  }
   .complex-panel-simple-field {
     th {
       padding-left: $padding;
@@ -41,6 +50,40 @@
   .complex-panel-compound-field {
     td {
       padding: $padding;
+      border-bottom: none;
     }
   }
 }
+
+.accordion-wrapper {
+
+  margin-bottom: 20px;
+
+  .heading-medium {
+    margin: 0px;
+  }
+  .accordion-heading{
+    border-top: 1px solid #bfc1c3;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    height: 20px;
+    cursor: pointer;
+
+    .accordion-image {
+      width: 25px;
+      margin-right: 20px;
+    }
+  }
+  .accordion-body {
+    margin-top: 20px;
+    margin-right: 20px;
+  }
+  .last-accordion {
+    border-bottom: 1px solid #bfc1c3;
+    padding-bottom: 30px;
+  }
+
+}
+
+
+

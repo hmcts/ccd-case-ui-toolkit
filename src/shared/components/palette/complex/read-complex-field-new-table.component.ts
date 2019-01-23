@@ -14,7 +14,10 @@ export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponen
   public columnsLabel: String[];
   public columnsVerticalLabel: any;
   public columnsHorizontalLabel: any;
+  public columnsHorizontalLabelVisibility: any;
   public columnsAllLabels: any;
+
+  public isHidden:boolean[] = [];
 
   ngOnInit(): void {
     if (this.caseField.display_context_parameter && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
@@ -25,8 +28,11 @@ export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponen
       let labels = '';
       let labelsVertical: { [k: string]: any } = {};
       let labelsHorizontal: { [k: string]: any } = {};
+      let labelsHorizontalVisibility: { [k: string]: any } = {};
       let allLabels: { [k: string]: any } = {};
-
+      for(let obj of this.caseField.value){
+        this.isHidden.push(true);
+      }
       for (let obj of this.caseField.field_type.complex_fields) {
         labelsVertical[obj.id] = { label: obj.label, type: obj.field_type.type};
         allLabels[obj.id] = { label: obj.label, type: obj.field_type.type};
@@ -36,13 +42,23 @@ export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponen
         let horizontalColumnFields: any;
         let verticalColumnFields: any;
         labelsHorizontal[id.trim()] = allLabels[id.trim()];
+        labelsHorizontalVisibility[id.trim()] = true;
         delete labelsVertical[id.trim()];
       }
 
       this.columnsLabel = labels.split(',');
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
+      this.columnsHorizontalLabelVisibility = labelsHorizontalVisibility;
       this.columnsAllLabels = allLabels;
+    }
+  }
+
+  getImage(row) {
+    if (this.isHidden[row]) {
+      return 'img/accordion-plus.png';
+    } else {
+      return 'img/accordion-minus.png';
     }
   }
 
