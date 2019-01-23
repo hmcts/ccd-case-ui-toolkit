@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseHistory } from '../domain';
-import { CaseTab } from '../../../domain';
+import { CaseTab, CaseDetails } from '../../../domain';
 import { OrderService } from '../../../services';
 import { ShowCondition } from '../../../directives';
 
@@ -12,6 +12,7 @@ import { ShowCondition } from '../../../directives';
 export class CaseHistoryComponent implements OnInit {
 
   caseHistory: CaseHistory;
+  caseDetails: CaseDetails;
   tabs: CaseTab[];
 
   constructor(
@@ -20,6 +21,7 @@ export class CaseHistoryComponent implements OnInit {
 
   ngOnInit() {
     this.caseHistory = this.route.snapshot.data.caseHistory;
+    this.caseDetails = this.route.snapshot.data.case;
     this.tabs = this.orderService.sort(this.caseHistory.tabs);
     this.tabs = this.sortTabFieldsAndFilterTabs(this.tabs);
   }
