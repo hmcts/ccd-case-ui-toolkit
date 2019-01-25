@@ -1,0 +1,16 @@
+<ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
+<h3 class="heading-medium">Print</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let document of documents">
+      <td class="document-name"><a [href]="document.url | ccdPrintUrl" target="_blank" rel="external">{{document.name}}</a></td>
+      <td class="document-type">{{document.type}}</td>
+    </tr>
+  </tbody>
+</table>

@@ -12,7 +12,7 @@ import { FormErrorService } from '../../../services/form/form-error.service';
 import { PageValidationService } from '../services/page-validation.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.fixture';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
