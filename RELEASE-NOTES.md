@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.22.0 - January 25 2019
+**RDM-3675** - Extraction of Case View into toolkit
+
 ### Version 2.21.2 - January 22 2019
 **RDM-3584** - Previous page data to be sent on Midevent callback
 
