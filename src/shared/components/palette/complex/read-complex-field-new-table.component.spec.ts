@@ -14,8 +14,8 @@ describe('ReadComplexFieldNewTableComponent', () => {
 
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
-  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('table>tbody>tr>th>span');
-  const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('table>tbody>tr');
+  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
+  const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('div>table>tbody>tr>td>ccd-field-read');
   const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
   const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
 
@@ -159,15 +159,14 @@ describe('ReadComplexFieldNewTableComponent', () => {
       let simpleRowsHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
-      expect(simpleRowsHeaders.length).toBe(3);
+      expect(simpleRowsHeaders.length).toBe(2);
       expect(simpleRowsHeaders[LINE_1].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label);
       expect(simpleRowsHeaders[LINE_2].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
-      expect(simpleRowsHeaders[POSTCODE].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].label);
 
       let simpleRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
-      expect(simpleRowsValues.length).toBe(4);
+      expect(simpleRowsValues.length).toBe(2);
     });
 
   });
