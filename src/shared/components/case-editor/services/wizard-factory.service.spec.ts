@@ -1,7 +1,7 @@
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { WizardFactoryService } from './wizard-factory.service';
-import { createCaseEventTrigger } from '../../../fixture/shared.fixture'
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture'
 
 describe('WizardFactoryService', () => {
 

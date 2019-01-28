@@ -1,0 +1,16 @@
+<div class="activityComponent" *ngIf="isActivityEnabled()">
+  <div *ngIf="displayMode === dspMode.ICON && editorsPresent()" [class.activityEditorsAndViewersIcons]="viewersPresent()" [class.activityEditorsIcon]="!viewersPresent()">
+    <ccd-activity-icon imageLink="/img/editor.png" [description]="editorsText"></ccd-activity-icon>
+  </div>
+  <div *ngIf="displayMode === dspMode.ICON && viewersPresent()" class="activityViewersIcon">
+    <ccd-activity-icon imageLink="/img/viewer.png" [description]="viewersText"></ccd-activity-icon>
+  </div>
+  <div *ngIf="displayMode === dspMode.BANNER && editorsPresent()">
+    <ccd-activity-banner imageLink="/img/editorBanner.png" [description]="editorsText" bannerType="editor">
+    </ccd-activity-banner>
+  </div>
+  <div *ngIf="displayMode === dspMode.BANNER && viewersPresent()">
+    <ccd-activity-banner imageLink="/img/viewerBanner.png" [description]="viewersText" bannerType="viewer">
+    </ccd-activity-banner>
+  </div>
+</div>

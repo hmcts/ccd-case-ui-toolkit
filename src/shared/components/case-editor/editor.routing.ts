@@ -4,7 +4,7 @@ import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 
-export const routing: Routes = [
+export const editorRouting: Routes = [
   {
     path: '',
     resolve: {

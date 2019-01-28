@@ -50,18 +50,12 @@ gulp.task('build:esm:watch', ['build:esm'], () => {
   gulp.watch('src/**/*', ['build:esm']);
 });
 
-gulp.task('copy-cut-styles', () => {
-  return merge(
-    gulp.src('components/**/*.scss', {base: 'src', cwd: 'src'})
-  ).pipe(gulp.dest('dist/cut-styles'));
-});
-
 /**
  * Copy Case UI Toolkit styles.
  */
 gulp.task('copy-cut-styles', () => {
   return merge(
-    gulp.src('components/**/*.scss', {base: 'src', cwd: 'src'})
+    gulp.src('**/*.scss', {base: 'src', cwd: 'src'})
   ).pipe(gulp.dest('dist/cut-styles'));
 });
 

@@ -12,7 +12,7 @@ import { FormErrorService } from '../../../services/form/form-error.service';
 import { PageValidationService } from '../services/page-validation.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.fixture';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -53,6 +53,7 @@ describe('CaseEditPageComponent', () => {
   let cancelled: any;
   let caseField1 = new CaseField();
   let caseField2 = new CaseField();
+  let eventData = new CaseEventData();
 
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
@@ -62,7 +63,7 @@ describe('CaseEditPageComponent', () => {
         'form': FORM_GROUP,
         'wizard': WIZARD,
         'data': '',
-        'eventTrigger': { 'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true },
+        'eventTrigger': {'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true},
         'hasPrevious': () => true,
         'getPage': () => firstPage,
         'first': () => true,
@@ -72,13 +73,13 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2] },
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
-        params: of({ id: 123 }),
+        params: of({id: 123}),
         snapshot: snapshot
       };
 
@@ -94,12 +95,12 @@ describe('CaseEditPageComponent', () => {
           CaseReferencePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: FormValueService, useValue: formValueService },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseEditComponent, useValue: caseEditComponentStub },
-          { provide: PageValidationService, useValue: pageValidationService },
-          { provide: ActivatedRoute, useValue: route },
-          { provide: MatDialog, useValue: dialog }
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog}
         ]
       }).compileComponents();
     }));
@@ -184,7 +185,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -195,7 +196,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
     });
 
     it('should emit RESUMED_FORM_DISCARD on create event if discard triggered with value changed', () => {
@@ -213,7 +214,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -225,7 +226,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
     });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
@@ -243,7 +244,10 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
       expect(cancelled.emit)
-        .toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: { data: { 'field1': 'SOME_VALUE' } } });
+        .toHaveBeenCalledWith({
+          status: CaseEditPageComponent.RESUMED_FORM_SAVE,
+          data: {data: {'field1': 'SOME_VALUE'}}
+        });
     });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
@@ -256,7 +260,7 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageComponent.NEW_FORM_SAVE,
-        data: { data: { 'field1': 'SOME_VALUE' } }
+        data: {data: {'field1': 'SOME_VALUE'}}
       });
     });
 
@@ -322,7 +326,7 @@ describe('CaseEditPageComponent', () => {
         'form': FORM_GROUP,
         'wizard': WIZARD,
         'data': '',
-        'eventTrigger': { 'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false },
+        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false},
         'hasPrevious': () => true,
         'getPage': () => firstPage,
         'first': () => true,
@@ -332,13 +336,13 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [] },
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': []},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
-        params: of({ id: 123 }),
+        params: of({id: 123}),
         snapshot: snapshot
       };
 
@@ -354,12 +358,12 @@ describe('CaseEditPageComponent', () => {
           CaseReferencePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: FormValueService, useValue: formValueService },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseEditComponent, useValue: caseEditComponentStub },
-          { provide: PageValidationService, useValue: pageValidationService },
-          { provide: ActivatedRoute, useValue: route },
-          { provide: MatDialog, useValue: dialog }
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog}
         ]
       }).compileComponents();
     }));
@@ -386,10 +390,10 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
 
       expect(cancelled.emit).toHaveBeenCalled();
-      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
-      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
-      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.RESUMED_FORM_SAVE });
-      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageComponent.NEW_FORM_SAVE });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_SAVE});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_SAVE});
     });
   });
 
@@ -427,7 +431,7 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': { 'case_id': '1234567812345678' },
+        'caseDetails': {'case_id': '1234567812345678'},
       };
 
       TestBed.configureTestingModule({
@@ -440,7 +444,7 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog }
+          {provide: MatDialog, useValue: dialog}
         ]
       }).compileComponents();
     }));
@@ -483,7 +487,7 @@ describe('CaseEditPageComponent', () => {
         'form': FORM_GROUP,
         'wizard': WIZARD,
         'data': '',
-        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true },
+        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
         'hasPrevious': () => true,
         'getPage': () => firstPage,
         'first': () => true,
@@ -493,7 +497,7 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': { 'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2] },
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -512,6 +516,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       spyOn(caseEditComponentStub, 'form');
       spyOn(caseEditComponentStub, 'validate').and.returnValue(of(`{"data":{"field1": "EX12345678"}}`));
+      spyOn(formValueService, 'sanitise').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
@@ -523,7 +528,7 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog }
+          {provide: MatDialog, useValue: dialog}
         ]
       }).compileComponents();
     }));
@@ -539,13 +544,16 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should call validate', async() => {
+    it('should call validate', async () => {
       fixture.detectChanges();
 
       comp.submit();
 
       fixture.whenStable().then(() => {
-        expect(caseEditComponentStub.validate).toHaveBeenCalled();
+        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
+        expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
+        expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
       });
     });
 
