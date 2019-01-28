@@ -26,9 +26,13 @@ describe('CaseHistoryResolver', () => {
         firstChild: {
           url: []
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        parent: {
+          paramMap: createSpyObj('paramMap', ['get'])
+        }
       };
-      route.paramMap.get.and.returnValues(CASE_ID, EVENT_ID);
+      route.parent.paramMap.get.and.returnValue(CASE_ID);
+      route.paramMap.get.and.returnValue(EVENT_ID);
     });
 
     it('should resolve case history when the route is the one for case history view', () => {
@@ -40,6 +44,7 @@ describe('CaseHistoryResolver', () => {
           expect(caseData).toBe(CASE_HISTORY);
         });
 
+      expect(route.parent.paramMap.get).toHaveBeenCalledWith(CaseHistoryResolver.PARAM_CASE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(CaseHistoryResolver.PARAM_EVENT_ID);
       expect(caseHistoryService.get).toHaveBeenCalledWith(CASE_ID, EVENT_ID);
     });

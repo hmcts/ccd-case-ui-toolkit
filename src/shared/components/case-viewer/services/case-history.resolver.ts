@@ -14,7 +14,7 @@ export class CaseHistoryResolver implements Resolve<CaseHistory> {
               private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<CaseHistory> {
-    let caseId = route.paramMap.get(CaseHistoryResolver.PARAM_CASE_ID);
+    let caseId = route.parent.paramMap.get(CaseHistoryResolver.PARAM_CASE_ID);
     let triggerId = route.paramMap.get(CaseHistoryResolver.PARAM_EVENT_ID);
     return this.getCaseHistoryView(caseId, triggerId);
   }
