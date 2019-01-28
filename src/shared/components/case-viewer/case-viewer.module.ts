@@ -48,6 +48,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         CasePrinterComponent,
         CaseViewerComponent,
         CaseViewComponent,
+        PrintUrlPipe,
     ],
     providers: [
         CaseService,
