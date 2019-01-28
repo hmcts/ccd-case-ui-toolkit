@@ -8,8 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReadCollectionFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-  public isDisplayContextParameterAvailable: boolean = false;
-
+  public isDisplayContextParameterAvailable = false;
 
   ngOnInit(): void {
     this.isDisplayContextParameterAvailable =

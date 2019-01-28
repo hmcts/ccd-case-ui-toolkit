@@ -103,16 +103,21 @@ describe('ReadComplexFieldNewTableComponent', () => {
       id: '',
       label: 'Complex Field',
       display_context: 'OPTIONAL',
-      value:[
+      value: [
         {
           value: {
+            label: 'SomeLabel',
             AddressLine1: 'Flat 9',
-            AddressLine2: "111 East India road",
-​​​          AddressPostcode:'TE45ED'
-          }}],
-      display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
-      field_type: FIELD_TYPE_WITH_VALUES
-    };
+            AddressLine2: '111 East India road',
+​​​            AddressPostcode:'TE45ED'
+  }
+  }],
+    display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
+      field_type
+  :
+    FIELD_TYPE_WITH_VALUES
+  }
+    ;
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -167,6 +172,8 @@ describe('ReadComplexFieldNewTableComponent', () => {
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
       expect(simpleRowsValues.length).toBe(2);
+      expect(simpleRowsValues[LINE_1].componentInstance.caseField.value).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].value);
+      expect(simpleRowsValues[LINE_2].componentInstance.caseField.value).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].value);
     });
 
   });
