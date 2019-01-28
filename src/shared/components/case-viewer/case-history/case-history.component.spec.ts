@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CaseHistoryComponent } from './case-history.component';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
@@ -15,6 +14,7 @@ import { PaletteUtilsModule } from '../../palette';
 import { LabelSubstitutorDirective, PlaceholderService } from '../../../directives';
 import { CaseReferencePipe } from '../../../pipes';
 import { createCaseHistory } from '../../../fixture';
+import { CaseService } from '../../case-editor';
 
 describe('CaseHistoryComponent', () => {
 
@@ -74,6 +74,7 @@ describe('CaseHistoryComponent', () => {
 
   let router: any;
   let orderService;
+  let caseService;
 
   let FieldReadComponent: any = MockComponent({ selector: 'ccd-field-read', inputs: [
       'caseField',
@@ -90,6 +91,7 @@ describe('CaseHistoryComponent', () => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
+    caseService = createSpyObj<CaseService>('caseService', ['announceCase']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));
 
@@ -113,6 +115,7 @@ describe('CaseHistoryComponent', () => {
           CaseReferencePipe,
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
+          { provide: CaseService, useValue: caseService },
           { provide: Router, useValue: router }
         ]
       })

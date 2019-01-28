@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, CasePrintDocumentsResolver } from './printer';
-import { EventTriggerResolver, CaseHistoryResolver } from './services';
+import { CaseHistoryResolver, EventTriggerResolver } from './services';
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from './case-history/case-history.component';
@@ -9,7 +9,7 @@ import { CaseHistoryComponent } from './case-history/case-history.component';
 export const viewerRouting: Routes = [
     {
       path: '',
-      component: CaseViewerComponent
+      component: CaseViewerComponent,
     },
     {
       path: 'print',

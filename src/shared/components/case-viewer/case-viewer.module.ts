@@ -14,8 +14,10 @@ import { CasePrinterComponent, CasePrintDocumentsResolver, PrintUrlPipe } from '
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseHistoryComponent } from './case-history';
 import { EventTriggerResolver, CaseResolver, CaseHistoryResolver, CaseHistoryService } from './services';
-import { CaseEditorModule } from '../case-editor';
+import { CaseEditorModule, CaseService } from '../case-editor';
 import { EventLogModule } from './event-log';
+import { CaseViewComponent } from './case-view/case-view.component';
+import { PipesModule, CaseReferencePipe } from '../../pipes';
 
 @NgModule({
     imports: [
@@ -30,12 +32,14 @@ import { EventLogModule } from './event-log';
         PaletteModule,
         LabelSubstitutorModule,
         CaseEditorModule,
+        PipesModule,
     ],
     declarations: [
         CaseHistoryComponent,
         CaseEventTriggerComponent,
         CasePrinterComponent,
         CaseViewerComponent,
+        CaseViewComponent,
         PrintUrlPipe,
     ],
     exports: [
@@ -43,8 +47,11 @@ import { EventLogModule } from './event-log';
         CaseEventTriggerComponent,
         CasePrinterComponent,
         CaseViewerComponent,
+        CaseViewComponent,
     ],
     providers: [
+        CaseService,
+        CaseReferencePipe,
         CasePrintDocumentsResolver,
         EventTriggerResolver,
         ActivityService,

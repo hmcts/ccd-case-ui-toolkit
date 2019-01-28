@@ -2,33 +2,13 @@ import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { CaseHistoryResolver } from './case-history.resolver';
 import { CaseHistory } from '../domain';
-import { CaseView } from '../../../domain';
 
 describe('CaseHistoryResolver', () => {
   describe('resolve()', () => {
-    const JURISDICTION_ID = 'TEST';
-    const CASE_TYPE_ID = 'TEST_CASE_TYPE';
     const CASE_ID = '42';
     const EVENT_ID = '100';
     const CASE_HISTORY: CaseHistory = createSpyObj<any>('case', ['toString']);
     const CASE_OBS: Observable<CaseHistory> = Observable.of(CASE_HISTORY);
-
-    const CASE: CaseView = {
-      case_id: CASE_ID,
-      case_type: {
-        id: CASE_TYPE_ID,
-        name: '',
-        jurisdiction: {
-          id: JURISDICTION_ID,
-          name: ''
-        }
-      },
-      state: null,
-      channels: null,
-      tabs: null,
-      triggers: null,
-      events: null
-    };
 
     let caseHistoryResolver: CaseHistoryResolver;
 
@@ -46,14 +26,9 @@ describe('CaseHistoryResolver', () => {
         firstChild: {
           url: []
         },
-        paramMap: createSpyObj('paramMap', ['get']),
-        parent: {
-          data: {
-            case: CASE
-          }
-        }
+        paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValue(EVENT_ID);
+      route.paramMap.get.and.returnValues(CASE_ID, EVENT_ID);
     });
 
     it('should resolve case history when the route is the one for case history view', () => {
@@ -61,7 +36,7 @@ describe('CaseHistoryResolver', () => {
 
       caseHistoryResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(CASE_HISTORY);
         });
 
@@ -74,7 +49,7 @@ describe('CaseHistoryResolver', () => {
 
       caseHistoryResolver
         .resolve(route)
-        .subscribe(data => {
+        .then(data => {
           expect(data).toBeFalsy();
         }, err => {
           expect(err).toBeTruthy();

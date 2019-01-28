@@ -7,6 +7,8 @@ import { CasePrintDocument, HttpError, CaseView } from '../../../../domain';
 describe('CasePrintDocumentsResolver', () => {
 
   const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
+  const PARAM_CASE_TYPE_ID = CaseResolver.PARAM_CASE_TYPE_ID;
+  const PARAM_JURISDICTION_ID = CaseResolver.PARAM_JURISDICTION_ID;
   const JURISDICTION = 'TEST';
   const CASE_TYPE = 'TestAddressBookCase';
   const CASE_ID = '42';
@@ -63,8 +65,10 @@ describe('CasePrintDocumentsResolver', () => {
     route = {
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
-        data: {
-          case: CASE
+        params: {
+          jid: CASE.case_type.jurisdiction.id,
+          ctid: CASE.case_type.id,
+          cid: CASE.case_id,
         }
       }
     };
@@ -73,6 +77,10 @@ describe('CasePrintDocumentsResolver', () => {
       switch (key) {
         case PARAM_CASE_ID:
           return CASE_ID;
+        case PARAM_CASE_TYPE_ID:
+          return CASE_TYPE;
+        case PARAM_JURISDICTION_ID:
+          return JURISDICTION;
       }
     });
   });
@@ -82,7 +90,7 @@ describe('CasePrintDocumentsResolver', () => {
 
     documentsResolver
       .resolve(route)
-      .subscribe(documentsData => {
+      .then(documentsData => {
         expect(documentsData).toBe(DOCUMENTS);
       });
 
@@ -95,7 +103,7 @@ describe('CasePrintDocumentsResolver', () => {
 
     documentsResolver
       .resolve(route)
-      .subscribe(data => {
+      .then(data => {
         fail(data);
       }, err => {
         expect(err).toBeTruthy();

@@ -7,12 +7,8 @@ import { DraftService, AlertService } from '../../../services';
 describe('CaseResolver', () => {
   describe('resolve()', () => {
 
-    const PARAM_JURISDICTION_ID = CaseResolver.PARAM_JURISDICTION_ID;
-    const PARAM_CASE_TYPE_ID = CaseResolver.PARAM_CASE_TYPE_ID;
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
 
-    const JURISDICTION_ID = 'TEST';
-    const CASE_TYPE_ID = 'TEST_CASE_TYPE';
     const CASE_ID = '42';
     const CASE: CaseView = createSpyObj<any>('case', ['toString']);
     const CASE_CACHED: CaseView = createSpyObj<any>('caseCached', ['toString']);
@@ -41,7 +37,7 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_ID);
     });
 
     it('should resolve case and cache when the route is the one for case view', () => {
@@ -50,13 +46,11 @@ describe('CaseResolver', () => {
 
       caseResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(CASE);
         });
 
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
-      expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_JURISDICTION_ID);
-      expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_TYPE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
       // allows to access private cachedCaseView field
       expect(caseResolver['cachedCaseView']).toBe(CASE);
@@ -72,11 +66,11 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_ID);
 
       caseResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(CASE_CACHED);
         });
       expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
@@ -93,11 +87,11 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_ID);
 
       caseResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(CASE);
         });
 
@@ -115,11 +109,11 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_ID);
 
       caseResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(CASE_CACHED);
         });
       expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
@@ -135,11 +129,11 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_ID);
 
       caseResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(CASE);
         });
 
@@ -153,7 +147,7 @@ describe('CaseResolver', () => {
 
       caseResolver
         .resolve(route)
-        .subscribe(data => {
+        .then(data => {
           expect(data).toBeFalsy();
         }, err => {
           expect(err).toBeTruthy();
@@ -165,7 +159,7 @@ describe('CaseResolver', () => {
     it('should redirect to case list page when case id is empty', () => {
       let navigationResult = Promise.resolve('someResult');
       router.navigate.and.returnValue(navigationResult);
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, '');
+      route.paramMap.get.and.returnValue('');
 
       caseResolver.resolve(route);
 
@@ -179,12 +173,8 @@ describe('CaseResolver', () => {
 
   describe('resolve()', () => {
 
-    const PARAM_JURISDICTION_ID = CaseResolver.PARAM_JURISDICTION_ID;
-    const PARAM_CASE_TYPE_ID = CaseResolver.PARAM_CASE_TYPE_ID;
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
 
-    const JURISDICTION_ID = 'TEST';
-    const CASE_TYPE_ID = 'TEST_CASE_TYPE';
     const DRAFT_ID = 'DRAFT42';
     const DRAFT: CaseView = createSpyObj<any>('draft', ['toString']);
     const DRAFT_CACHED: CaseView = createSpyObj<any>('draftCached', ['toString']);
@@ -213,7 +203,7 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValues(JURISDICTION_ID, CASE_TYPE_ID, DRAFT_ID);
+      route.paramMap.get.and.returnValue(DRAFT_ID);
     });
 
     it('should resolve draft and cache when the route is the one for case DRAFT', () => {
@@ -221,13 +211,11 @@ describe('CaseResolver', () => {
 
       caseResolver
         .resolve(route)
-        .subscribe(caseData => {
+        .then(caseData => {
           expect(caseData).toBe(DRAFT);
         });
 
       expect(draftService.getDraft).toHaveBeenCalledWith(DRAFT_ID);
-      expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_JURISDICTION_ID);
-      expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_TYPE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
       // allows to access private cachedCaseView field
       expect(caseResolver['cachedCaseView']).toBe(DRAFT);

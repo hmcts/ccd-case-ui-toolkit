@@ -1,4 +1,4 @@
-<div class="grid-row">
+<div *ngIf="isDataLoaded()" class="grid-row">
   <div class="column-full">
     <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
   </div>

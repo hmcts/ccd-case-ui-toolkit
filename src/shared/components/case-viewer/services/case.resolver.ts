@@ -1,8 +1,7 @@
-import { ActivatedRouteSnapshot, ParamMap, Resolve, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Response } from '@angular/http';
-import 'rxjs/add/operator/catch';
+import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CasesService } from '../../case-editor';
 import { DraftService, AlertService } from '../../../services';
@@ -25,27 +24,19 @@ export class CaseResolver implements Resolve<CaseView> {
                private router: Router,
                private alertService: AlertService) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CaseView> {
+  resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
 
-    let {jid, ctid, cid} = this.getParams(route.paramMap);
+    let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
 
     if (!cid) {
       // when redirected to case view after a case created, and the user has no READ access,
       // the post returns no id
       this.navigateToCaseList();
     } else {
-      return this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(jid, ctid, cid)
-        : this.cachedCaseView ? Observable.of(this.cachedCaseView)
-        : this.getAndCacheCaseView(jid, ctid, cid);
+      return this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
+        : this.cachedCaseView ? Promise.resolve(this.cachedCaseView)
+        : this.getAndCacheCaseView(cid);
     }
-  }
-
-  private getParams(pm: ParamMap) {
-    const jid = pm.get(CaseResolver.PARAM_JURISDICTION_ID);
-    const ctid = pm.get(CaseResolver.PARAM_CASE_TYPE_ID);
-    const cid = pm.get(CaseResolver.PARAM_CASE_ID);
-
-    return {jid, ctid, cid};
   }
 
   private navigateToCaseList() {
@@ -63,22 +54,26 @@ export class CaseResolver implements Resolve<CaseView> {
     return route.firstChild && route.firstChild.fragment;
   }
 
-  private getAndCacheCaseView(jid, ctid, cid): Observable<CaseView> {
+  private getAndCacheCaseView(cid): Promise<CaseView> {
     if (Draft.isDraft(cid)) {
-      return this.getAndCacheDraft(jid, ctid, cid);
+      return this.getAndCacheDraft(cid);
     } else {
-    return this.casesService
-          .getCaseViewV2(cid)
-          .do(caseView => this.cachedCaseView = caseView)
-          .catch((error: Response | any) => this.checkAuthorizationError(error));
+      return this.casesService
+        .getCaseViewV2(cid)
+        .pipe(
+          map(caseView => this.cachedCaseView = caseView),
+          catchError(error => this.checkAuthorizationError(error))
+        ).toPromise();
     }
   }
 
-  private getAndCacheDraft(jid, ctid, cid): Observable<CaseView> {
+  private getAndCacheDraft(cid): Promise<CaseView> {
     return this.draftService
       .getDraft(cid)
-      .do(caseView => this.cachedCaseView = caseView)
-      .catch((error: Response | any) => this.checkAuthorizationError(error));
+      .pipe(
+        map(caseView => this.cachedCaseView = caseView),
+        catchError(error => this.checkAuthorizationError(error))
+      ).toPromise();
   }
 
   private checkAuthorizationError(error: any) {

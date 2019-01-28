@@ -1,35 +1,35 @@
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Response } from '@angular/http';
-import 'rxjs/add/operator/catch';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { CaseHistory } from '../domain';
 import { CaseHistoryService } from './case-history.service';
-import { CaseView } from '../../../domain';
 
 @Injectable()
 export class CaseHistoryResolver implements Resolve<CaseHistory> {
+  public static readonly PARAM_CASE_ID = 'cid';
   public static readonly PARAM_EVENT_ID = 'eid';
 
   constructor(private caseHistoryService: CaseHistoryService,
               private router: Router) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CaseHistory> {
-    let caseView: CaseView = route.parent.data.case;
-    let caseId = caseView.case_id;
+  resolve(route: ActivatedRouteSnapshot): Promise<CaseHistory> {
+    let caseId = route.paramMap.get(CaseHistoryResolver.PARAM_CASE_ID);
     let triggerId = route.paramMap.get(CaseHistoryResolver.PARAM_EVENT_ID);
     return this.getCaseHistoryView(caseId, triggerId);
   }
 
-  private getCaseHistoryView(cid, eid): Observable<CaseHistory> {
+  private getCaseHistoryView(cid, eid): Promise<CaseHistory> {
     return this.caseHistoryService
       .get(cid, eid)
-      .catch((error: Response | any) => {
-        console.error(error);
-        if (error.status !== 401 && error.status !== 403) {
-          this.router.navigate(['/error']);
-        }
-        return Observable.throw(error);
-      });
+      .pipe(
+        catchError(error => {
+          console.error(error);
+          if (error.status !== 401 && error.status !== 403) {
+            this.router.navigate(['/error']);
+          }
+          return throwError(error);
+          })
+      ).toPromise();
   }
 }

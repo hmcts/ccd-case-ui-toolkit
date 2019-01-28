@@ -10,6 +10,7 @@ import { CaseView, CasePrintDocument } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
 import { PaletteUtilsModule } from '../../palette';
 import { attr, text } from '../../../test/helpers';
+import { CaseService } from '../../case-editor';
 
 describe('CasePrinterComponent', () => {
 
@@ -60,6 +61,7 @@ describe('CasePrinterComponent', () => {
   let component: CasePrinterComponent;
   let de: DebugElement;
 
+  let caseService;
   let mockRoute: any = {
     snapshot: {
       data: {
@@ -76,6 +78,7 @@ describe('CasePrinterComponent', () => {
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
     appConfig.getRemotePrintServiceUrl.and.returnValue(REMOTE_PRINT_SERVICE_URL);
 
+    caseService = createSpyObj('CaseService', ['announceCase']);
     TestBed
       .configureTestingModule({
         imports: [
@@ -89,6 +92,7 @@ describe('CasePrinterComponent', () => {
           CaseHeaderComponent
         ],
         providers: [
+          { provide: CaseService, useValue: mockRoute },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: AbstractAppConfig, useValue: appConfig }
         ]

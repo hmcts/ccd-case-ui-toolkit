@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseHistory } from '../domain';
-import { CaseTab, CaseDetails } from '../../../domain';
+import { CaseTab, CaseView } from '../../../domain';
 import { OrderService } from '../../../services';
 import { ShowCondition } from '../../../directives';
+import { CaseService } from '../../case-editor';
 
 @Component({
   templateUrl: './case-history.component.html',
@@ -12,18 +13,29 @@ import { ShowCondition } from '../../../directives';
 export class CaseHistoryComponent implements OnInit {
 
   caseHistory: CaseHistory;
-  caseDetails: CaseDetails;
+  caseDetails: CaseView;
   tabs: CaseTab[];
 
   constructor(
     private route: ActivatedRoute,
-    private orderService: OrderService) { }
+    private orderService: OrderService,
+    private caseService: CaseService) { }
 
   ngOnInit() {
     this.caseHistory = this.route.snapshot.data.caseHistory;
-    this.caseDetails = this.route.snapshot.data.case;
+    if (!this.route.snapshot.data.case) {
+      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+        this.caseDetails = caseDetails;
+      });
+    } else {
+      this.caseDetails = this.route.snapshot.data.case;
+    }
     this.tabs = this.orderService.sort(this.caseHistory.tabs);
     this.tabs = this.sortTabFieldsAndFilterTabs(this.tabs);
+  }
+
+  isDataLoaded() {
+    return this.caseDetails && this.caseHistory ? true : false;
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
