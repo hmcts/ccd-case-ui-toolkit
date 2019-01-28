@@ -109,7 +109,7 @@ describe('ReadComplexFieldNewTableComponent', () => {
             label: 'SomeLabel',
             AddressLine1: 'Flat 9',
             AddressLine2: '111 East India road',
-​​​            AddressPostcode:'TE45ED'
+​​​            AddressPostcode: 'TE45ED'
   }
   }],
     display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
