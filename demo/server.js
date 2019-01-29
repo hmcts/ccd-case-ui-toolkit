@@ -39,7 +39,7 @@ app.use(function (req, res) {
     if (response) {
       // history opens in new tab
       if (req.url.indexOf('history') !== -1) {
-        res.sendFile(path.join(__dirname+'/dist/browser/index.html'))
+        res.sendFile(path.join(__dirname+'/dist/browser/index.html'));
       } else {
         res.jsonp(response);
       }
