@@ -7,8 +7,8 @@ import { CasePrintDocument, HttpError, CaseView } from '../../../../domain';
 describe('CasePrintDocumentsResolver', () => {
 
   const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
-  const PARAM_CASE_TYPE_ID = CaseResolver.PARAM_CASE_TYPE_ID;
-  const PARAM_JURISDICTION_ID = CaseResolver.PARAM_JURISDICTION_ID;
+  const PARAM_CASE_TYPE_ID = CasePrintDocumentsResolver.PARAM_CASE_TYPE_ID;
+  const PARAM_JURISDICTION_ID = CasePrintDocumentsResolver.PARAM_JURISDICTION_ID;
   const JURISDICTION = 'TEST';
   const CASE_TYPE = 'TestAddressBookCase';
   const CASE_ID = '42';

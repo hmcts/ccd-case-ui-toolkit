@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import createSpyObj = jasmine.createSpyObj;
@@ -103,12 +103,22 @@ describe('CaseEventTriggerComponent', () => {
     selector: 'a'
   });
 
+  let URL_SEGMENTS: UrlSegment[] = [
+    new UrlSegment('a', {}),
+    new UrlSegment('b', {})
+  ];
+
+  let URL_SEGMENTS_OBS: Observable<UrlSegment[]> = Observable.of(URL_SEGMENTS);
+
   let mockRoute: any = {
     snapshot: {
       data: {
         case: CASE_DETAILS,
         eventTrigger: EVENT_TRIGGER
       }
+    },
+    parent: {
+      url: URL_SEGMENTS_OBS
     }
   };
 
@@ -187,8 +197,7 @@ describe('CaseEventTriggerComponent', () => {
 
     component.submitted({caseId: 123});
 
-    expect(router.navigate).toHaveBeenCalledWith(['case', CASE_DETAILS.case_type.jurisdiction.id, CASE_DETAILS.case_type.id,
-      CASE_DETAILS.case_id]);
+    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
   });
 
   it('should alert success message after navigation upon successful event creation', () => {
@@ -218,7 +227,6 @@ describe('CaseEventTriggerComponent', () => {
   it('should have a cancel button going back to the create case', () => {
     component.cancel();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/case', CASE_DETAILS.case_type.jurisdiction.id, CASE_DETAILS.case_type.id,
-      CASE_DETAILS.case_id]);
+    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
   });
 });

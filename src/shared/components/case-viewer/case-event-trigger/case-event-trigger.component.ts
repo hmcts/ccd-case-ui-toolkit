@@ -16,6 +16,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   eventTrigger: CaseEventTrigger;
   caseDetails: CaseView;
   subscription: Subscription;
+  parentUrl: string;
 
   constructor(
     private casesService: CasesService,
@@ -41,6 +42,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         // console.log('Posted EDIT activity and result is: ' + JSON.stringify(resolved));
       });
     }
+    this.route.parent.url.subscribe(path => {
+      this.parentUrl = `/${path.join('/')}`;
+    });
   }
 
   ngOnDestroy() {
@@ -66,7 +70,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   submitted(event: any): void {
     let eventStatus: string = event['status'];
     this.router
-      .navigate(['case', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id])
+      .navigate([this.parentUrl])
       .then(() => {
         let caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
         if (EventStatusService.isIncomplete(eventStatus)) {
@@ -79,8 +83,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   cancel(): Promise<boolean> {
-    return this.router.navigate(['/case', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id,
-      this.caseDetails.case_id]);
+    return this.router.navigate([this.parentUrl]);
   }
 
   isDataLoaded(): boolean {

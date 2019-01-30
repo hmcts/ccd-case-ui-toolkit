@@ -9,8 +9,6 @@ import { DraftService, AlertService } from '../../../services';
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
 
-  public static readonly PARAM_JURISDICTION_ID = 'jid';
-  public static readonly PARAM_CASE_TYPE_ID = 'ctid';
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
 
