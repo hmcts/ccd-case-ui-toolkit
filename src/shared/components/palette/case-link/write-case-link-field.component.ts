@@ -3,7 +3,6 @@ import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/f
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { CaseReferenceValidator } from './case-reference.validator';
-import { FormValueService } from '../../../services/form/form-value.service'
 
 @Component({
   selector: 'ccd-write-case-link-field',
@@ -17,7 +16,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
-  constructor(private formValueService: FormValueService) {
+  constructor() {
     super();
   }
 
@@ -32,6 +31,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
       }));
     }
     this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
-    this.caseReferenceControl.setValidators(CaseReferenceValidator(this.formValueService));
+    this.caseReferenceControl.setValidators(CaseReferenceValidator());
   }
 }
