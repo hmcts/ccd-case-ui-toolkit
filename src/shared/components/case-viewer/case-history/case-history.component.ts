@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseHistory } from '../domain';
-import { CaseTab, CaseView } from '../../../domain';
-import { OrderService } from '../../../services';
+import { CaseTab, CaseView, HttpError } from '../../../domain';
+import { OrderService, AlertService } from '../../../services';
 import { ShowCondition } from '../../../directives';
 import { CaseService } from '../../case-editor';
+import { catchError, map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { CaseHistoryService } from '../services';
 
 @Component({
   templateUrl: './case-history.component.html',
@@ -12,26 +15,47 @@ import { CaseService } from '../../case-editor';
 })
 export class CaseHistoryComponent implements OnInit {
 
+  private static readonly ERROR_MESSAGE = 'No case history to show';
+  public static readonly PARAM_EVENT_ID = 'eid';
+
   caseHistory: CaseHistory;
   caseDetails: CaseView;
   tabs: CaseTab[];
 
   constructor(
     private route: ActivatedRoute,
+    private alertService: AlertService,
     private orderService: OrderService,
-    private caseService: CaseService) { }
+    private caseService: CaseService,
+    private caseHistoryService: CaseHistoryService) { }
 
   ngOnInit() {
-    this.caseHistory = this.route.snapshot.data.caseHistory;
-    if (!this.route.snapshot.data.case) {
-      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
-        this.caseDetails = caseDetails;
-      });
-    } else {
-      this.caseDetails = this.route.snapshot.data.case;
-    }
-    this.tabs = this.orderService.sort(this.caseHistory.tabs);
-    this.tabs = this.sortTabFieldsAndFilterTabs(this.tabs);
+    this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+      this.caseDetails = caseDetails;
+      this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID);
+      this.caseHistoryService
+        .get(this.caseDetails.case_id, this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID))
+        .pipe(
+          map(caseHistory => {
+            if (!caseHistory) {
+              let error = new HttpError();
+              error.message = CaseHistoryComponent.ERROR_MESSAGE;
+              throw error;
+            }
+
+            this.caseHistory = caseHistory;
+            this.tabs = this.orderService.sort(this.caseHistory.tabs);
+            this.tabs = this.sortTabFieldsAndFilterTabs(this.tabs);
+          }),
+          catchError(error => {
+            console.error(error);
+            if (error.status !== 401 && error.status !== 403) {
+              this.alertService.error(error.message);
+            }
+            return throwError(error);
+            })
+        ).toPromise();
+    });
   }
 
   isDataLoaded() {

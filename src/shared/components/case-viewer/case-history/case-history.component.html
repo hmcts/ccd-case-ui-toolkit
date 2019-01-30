@@ -1,65 +1,67 @@
-<div *ngIf="isDataLoaded()" class="grid-row">
-  <div class="column-full">
-    <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
-  </div>
-</div>
-<div class="grid-row">
-  <div class="column-full">
-    <div>
-      <h2 class="heading-medium">Event Details</h2>
-      <table class="EventDetails">
-        <tbody>
-        <tr>
-          <th>Date</th>
-          <td>{{caseHistory.event.timestamp | ccdDate}}</td>
-        </tr>
-        <tr>
-          <th>Author</th>
-          <td>{{caseHistory.event.user_first_name | titlecase}} {{caseHistory.event.user_last_name | uppercase}}</td>
-        </tr>
-        <tr>
-          <th>End state</th>
-          <td>{{caseHistory.event.state_name}}</td>
-        </tr>
-        <tr>
-          <th>Event</th>
-          <td>{{caseHistory.event.event_name}}</td>
-        </tr>
-        <tr>
-          <th>Summary</th>
-          <td>{{caseHistory.event.summary | ccdDash}}</td>
-        </tr>
-        <tr>
-          <th>Comment</th>
-          <td>{{caseHistory.event.comment | ccdDash}}</td>
-        </tr>
-        </tbody>
-      </table>
+<div *ngIf="isDataLoaded()">
+  <div class="grid-row">
+    <div class="column-full">
+      <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
     </div>
-    <div>
-      <h2 class="heading-medium">Case Details</h2>
-      <ng-container *ngFor="let tab of tabs">
-        <div class="caseHistorySection">
-          <h3 class="heading-small">{{tab.label}}</h3>
-          <table class="CaseHistory" id="{{tab.id}}">
-            <ng-container *ngFor="let field of tab.fields">
-              <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="tab.fields">
-                <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-                  <tr *ngSwitchCase="true">
-                    <th>
-                      <div class="case-viewer-label">{{field.label}}</div>
-                    </th>
-                    <td><ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read></td>
-                  </tr>
-                  <tr *ngSwitchCase="false" class="compound-field">
-                    <td colspan="2"><ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read></td>
-                  </tr>
-                </ng-container>
-              </div>
-            </ng-container>
-          </table>
-        </div>
-      </ng-container>
+  </div>
+  <div class="grid-row">
+    <div class="column-full">
+      <div>
+        <h2 class="heading-medium">Event Details</h2>
+        <table class="EventDetails">
+          <tbody>
+          <tr>
+            <th>Date</th>
+            <td>{{caseHistory.event.timestamp | ccdDate}}</td>
+          </tr>
+          <tr>
+            <th>Author</th>
+            <td>{{caseHistory.event.user_first_name | titlecase}} {{caseHistory.event.user_last_name | uppercase}}</td>
+          </tr>
+          <tr>
+            <th>End state</th>
+            <td>{{caseHistory.event.state_name}}</td>
+          </tr>
+          <tr>
+            <th>Event</th>
+            <td>{{caseHistory.event.event_name}}</td>
+          </tr>
+          <tr>
+            <th>Summary</th>
+            <td>{{caseHistory.event.summary | ccdDash}}</td>
+          </tr>
+          <tr>
+            <th>Comment</th>
+            <td>{{caseHistory.event.comment | ccdDash}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2 class="heading-medium">Case Details</h2>
+        <ng-container *ngFor="let tab of tabs">
+          <div class="caseHistorySection">
+            <h3 class="heading-small">{{tab.label}}</h3>
+            <table class="CaseHistory" id="{{tab.id}}">
+              <ng-container *ngFor="let field of tab.fields">
+                <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="tab.fields">
+                  <ng-container [ngSwitch]="!(field | ccdIsCompound)">
+                    <tr *ngSwitchCase="true">
+                      <th>
+                        <div class="case-viewer-label">{{field.label}}</div>
+                      </th>
+                      <td><ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read></td>
+                    </tr>
+                    <tr *ngSwitchCase="false" class="compound-field">
+                      <td colspan="2"><ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read></td>
+                    </tr>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </table>
+          </div>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

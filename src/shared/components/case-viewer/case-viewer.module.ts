@@ -13,7 +13,7 @@ import { LabelSubstitutorModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseHistoryComponent } from './case-history';
-import { EventTriggerResolver, CaseResolver, CaseHistoryResolver, CaseHistoryService } from './services';
+import { EventTriggerResolver, CaseResolver, CaseHistoryService } from './services';
 import { CaseEditorModule, CaseService } from '../case-editor';
 import { EventLogModule } from './event-log';
 import { CaseViewComponent } from './case-view/case-view.component';
@@ -60,7 +60,6 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         DraftService,
         HttpService,
         CaseResolver,
-        CaseHistoryResolver,
         CaseHistoryService,
     ]
 })
