@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { CaseViewerComponent } from './case-viewer.component';
-import { CasePrinterComponent, CasePrintDocumentsResolver } from './printer';
+import { CasePrinterComponent } from './printer';
 import { CaseHistoryResolver, EventTriggerResolver } from './services';
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { editorRouting } from '../case-editor';
@@ -14,9 +14,6 @@ export const viewerRouting: Routes = [
     {
       path: 'print',
       component: CasePrinterComponent,
-      resolve: {
-        documents: CasePrintDocumentsResolver
-      },
     },
     {
       path: 'trigger/:eid',

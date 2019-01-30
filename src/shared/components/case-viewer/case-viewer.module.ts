@@ -10,7 +10,7 @@ import { EventTriggerModule } from '../event-trigger/event-trigger.module';
 import { TabsModule } from '../../../components/tabs';
 import { PaletteModule } from '../palette';
 import { LabelSubstitutorModule } from '../../directives';
-import { CasePrinterComponent, CasePrintDocumentsResolver, PrintUrlPipe } from './printer';
+import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseHistoryComponent } from './case-history';
 import { EventTriggerResolver, CaseResolver, CaseHistoryResolver, CaseHistoryService } from './services';
@@ -53,7 +53,6 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
     providers: [
         CaseService,
         CaseReferencePipe,
-        CasePrintDocumentsResolver,
         EventTriggerResolver,
         ActivityService,
         ActivityPollingService,

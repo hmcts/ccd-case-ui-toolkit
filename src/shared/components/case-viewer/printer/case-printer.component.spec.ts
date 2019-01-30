@@ -10,7 +10,9 @@ import { CaseView, CasePrintDocument } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
 import { PaletteUtilsModule } from '../../palette';
 import { attr, text } from '../../../test/helpers';
-import { CaseService } from '../../case-editor';
+import { CaseService, CasesService } from '../../case-editor';
+import { AlertService } from '../../../services';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 describe('CasePrinterComponent', () => {
 
@@ -56,20 +58,15 @@ describe('CasePrinterComponent', () => {
       url: `${REMOTE_PRINT_SERVICE_URL}/doc2.jpg`
     }
   ];
+  const DOCUMENT_OBS: Observable<CasePrintDocument[]> = Observable.of(DOCUMENTS);
 
   let fixture: ComponentFixture<CasePrinterComponent>;
   let component: CasePrinterComponent;
   let de: DebugElement;
 
-  let caseService;
-  let mockRoute: any = {
-    snapshot: {
-      data: {
-        case: CASE_VIEW,
-        documents: DOCUMENTS
-      }
-    }
-  };
+  let caseService: CaseService;
+  let casesService;
+  let alertService;
 
   let appConfig;
 
@@ -78,7 +75,11 @@ describe('CasePrinterComponent', () => {
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
     appConfig.getRemotePrintServiceUrl.and.returnValue(REMOTE_PRINT_SERVICE_URL);
 
-    caseService = createSpyObj('CaseService', ['announceCase']);
+    caseService = new CaseService();
+    caseService.caseViewSource = new BehaviorSubject(CASE_VIEW);
+    casesService = createSpyObj('CasesService', ['getPrintDocuments']);
+    casesService.getPrintDocuments.and.returnValue(DOCUMENT_OBS);
+    alertService = createSpyObj('AlertService', ['error']);
     TestBed
       .configureTestingModule({
         imports: [
@@ -92,8 +93,9 @@ describe('CasePrinterComponent', () => {
           CaseHeaderComponent
         ],
         providers: [
-          { provide: CaseService, useValue: mockRoute },
-          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: CaseService, useValue: caseService },
+          { provide: CasesService, useValue: casesService },
+          { provide: AlertService, useValue: alertService },
           { provide: AbstractAppConfig, useValue: appConfig }
         ]
       })
@@ -106,12 +108,14 @@ describe('CasePrinterComponent', () => {
   }));
 
   it('should render a case header', () => {
+    caseService.announceCase(CASE_VIEW);
     let header = de.query(By.directive(CaseHeaderComponent));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });
 
   it('should retrieve documents from route data', () => {
+    caseService.announceCase(CASE_VIEW);
     expect(component.documents).toEqual(DOCUMENTS);
   });
 

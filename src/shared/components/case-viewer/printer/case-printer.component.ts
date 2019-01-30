@@ -1,30 +1,50 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CaseView, CasePrintDocument } from '../../../domain';
-import { CaseService } from '../../case-editor';
+import { CaseView, CasePrintDocument, HttpError } from '../../../domain';
+import { CaseService, CasesService } from '../../case-editor';
+import { catchError, map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { AlertService } from '../../../services';
 
 @Component({
   templateUrl: './case-printer.html'
 })
 export class CasePrinterComponent implements OnInit {
 
+  private static readonly ERROR_MESSAGE = 'No documents to print';
+
   caseDetails: CaseView;
   documents: CasePrintDocument[];
 
   constructor(
     private caseService: CaseService,
-    private route: ActivatedRoute
+    private casesService: CasesService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
-    if (!this.route.snapshot.data.case) {
-      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
-        this.caseDetails = caseDetails;
-      });
-    } else {
-      this.caseDetails = this.route.snapshot.data.case;
-    }
-    this.documents = this.route.snapshot.data.documents;
+    this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+      this.caseDetails = caseDetails;
+      this.casesService
+        .getPrintDocuments(this.caseDetails.case_type.jurisdiction.id,
+                           this.caseDetails.case_type.id,
+                           this.caseDetails.case_id)
+        .pipe(
+          map(documents => {
+
+            if (!documents || !documents.length) {
+              let error = new HttpError();
+              error.message = CasePrinterComponent.ERROR_MESSAGE;
+              throw error;
+            }
+
+            this.documents = documents;
+          }),
+          catchError(error => {
+            this.alertService.error(error.message);
+            return throwError(error);
+          })
+        ).toPromise();
+    });
   }
 
   isDataLoaded() {
