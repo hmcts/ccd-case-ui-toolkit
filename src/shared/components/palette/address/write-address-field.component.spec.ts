@@ -9,6 +9,7 @@ import { AddressModel } from '../../../domain/addresses/address.model';
 import { of } from 'rxjs';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
 describe('WriteAddressFieldComponent', () => {
 
@@ -120,6 +121,7 @@ describe('WriteAddressFieldComponent', () => {
           MockWriteComplexFieldComponent,
         ],
         providers: [
+          IsCompoundPipe,
           { provide: AddressesService, useValue: addressesService }
         ]
       })
