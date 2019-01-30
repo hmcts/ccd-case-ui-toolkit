@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
              </div>`
 })
 export class CaseViewConsumerComponent implements OnInit {
-    caseId;
+    caseId: string;
 
     constructor(
         private route: ActivatedRoute
