@@ -62,7 +62,6 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
       component.instance['ignoreMandatory'] = true;
     }
     component.instance['isExpanded'] = this.isExpanded;
-    let castedObject: AbstractFieldWriteComponent = <AbstractFieldWriteComponent> component.instance;
     this.fieldContainer.insert(component.hostView);
   }
 }

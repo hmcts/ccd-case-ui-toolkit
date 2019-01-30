@@ -6,5 +6,5 @@ export class WizardPageField implements Orderable {
   order?: number;
   page_column_no?: number;
   display_context?: string;
-  complexFieldMask?: ComplexFieldMask[];
+  complex_field_mask_list?: ComplexFieldMask[];
 }

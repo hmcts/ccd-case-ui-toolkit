@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { plainToClass } from 'class-transformer';
 import { Headers } from '@angular/http';
-import { OrderService, HttpService, HttpErrorService, FieldsUtils } from '../../../services';
+import { OrderService, HttpService, HttpErrorService } from '../../../services';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { catchError, map, tap } from 'rxjs/operators';
 import { CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, Draft, CaseField } from '../../../domain';
@@ -228,154 +228,7 @@ export class CasesService {
     });
   }
 
-  private wizardPageFieldToCaseFieldMapper(wizardPageField: WizardPageField, caseFields: CaseField[]) {
-
-    // hardcode mask for finalReturn here - this will emulate API call response.
-    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.case_field_id === 'finalReturn') {
-
-      wizardPageField.complexFieldMask = JSON.parse('[' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.dateOfVisit",' +
-        '    "display_context": "READONLY",' +
-        '    "order": 2,' +
-        '    "label": "Date of Visit altered",' +
-        '    "hint_text": "",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.typeOfContact",' +
-        '    "display_context": "MANDATORY",' +
-        '    "order": 1,' +
-        '    "label": "",' +
-        '    "hint_text": "",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.bailiffName",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.personToAction",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.AddressLine1",' +
-        '    "display_context": "OPTIONAL",' +
-        '    "order": 3,' +
-        '    "label": "House number attended",' +
-        '    "hint_text": "",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.AddressLine2",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.AddressLine3",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.PostTown",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.County",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.PostCode",' +
-        '    "display_context": "OPTIONAL",' +
-        '    "order": 4,' +
-        '    "label": "Postcode attended",' +
-        '    "hint_text": "Enter the postcode",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.addressAttended.Country",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "finalReturn.outcomeOfVisit",' +
-        '    "display_context": "MANDATORY",' +
-        '    "order": 5,' +
-        '    "label": "",' +
-        '    "hint_text": "",' +
-        '    "show_condition": "typeOfContact=\\\"faceToFaceContact\\\""' +
-        // '    "show_condition": "finalReturn.typeOfContact=\\\"faceToFaceContact\\\""' +
-        // TODO: check conditional-show.directive.ts used in write-complex-field.html
-        '  }' +
-        ']');
-    }
-
-    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.case_field_id === 'interimReturns') {
-
-      wizardPageField.complexFieldMask = JSON.parse('[' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.dateOfVisit",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.typeOfContact",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.bailiffName",' +
-        '    "display_context": "READONLY",' +
-        '    "order": 1,' +
-        '    "label": "Baliff in attendence updated",' +
-        '    "hint_text": "Test hint text",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.outcomeOfVisit",' +
-        '    "display_context": "READONLY",' +
-        '    "order": 2,' +
-        '    "label": "Outcome of Visit",' +
-        '    "hint_text": "",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.AddressLine1",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.AddressLine2",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.AddressLine3",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.PostTown",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.County",' +
-        '    "display_context": "READONLY",' +
-        '    "order": 4,' +
-        '    "label": "County attended",' +
-        '    "hint_text": "",' +
-        '    "show_condition": ""' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.PostCode",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.addressAttended.Country",' +
-        '    "display_context": "HIDDEN"' +
-        '  },' +
-        '  {' +
-        '    "complex_field_id": "interimReturns.personToAction",' +
-        '    "display_context": "MANDATORY",' +
-        '    "order": 3,' +
-        '    "label": "Personel to action",' +
-        '    "hint_text": "",' +
-        '    "show_condition": ""' +
-        '  }' +
-        ']');
-    }
+  private wizardPageFieldToCaseFieldMapper(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
 
     let case_field: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
     case_field.id = wizardPageField.case_field_id;
@@ -383,9 +236,9 @@ export class CasesService {
     case_field.display_context = wizardPageField.display_context;
     case_field.order = wizardPageField.order;
 
-    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.complexFieldMask) {
+    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.complex_field_mask_list) {
 
-      wizardPageField.complexFieldMask.forEach((complexFieldMask: ComplexFieldMask) => {
+      wizardPageField.complex_field_mask_list.forEach((complexFieldMask: ComplexFieldMask) => {
         const caseFieldIds = complexFieldMask.complex_field_id.split('.');
         let case_field_leaf;
 
