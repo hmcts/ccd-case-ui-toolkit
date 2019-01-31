@@ -267,6 +267,7 @@ describe('CasesService', () => {
     const WIZARD_PAGES = [
       createWizardPage('FinalReturnfinalReturn', 'Final Return', 1,
         [
+          createWizardPageField('debtorName', 2, null, 'MANDATORY', []),
           createWizardPageField('finalReturn', 1, null, 'COMPLEX', [
             createComplexFieldMask('finalReturn.addressAttended.AddressLine1',
               3,
@@ -306,13 +307,20 @@ describe('CasesService', () => {
         .getEventTrigger(CTID, EVENT_TRIGGER_ID, CASE_ID, 'false')
         .subscribe(eventTrigger => {
           const util = require('util');
-          let finalReturn = eventTrigger.wizard_pages[0].case_fields[0];
+          let debtorName = eventTrigger.wizard_pages[0].case_fields[0];
+          let finalReturn = eventTrigger.wizard_pages[0].case_fields[1];
           let addressUK = finalReturn.field_type.complex_fields[0];
           let addressLine1 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine1');
           let addressLine2 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine2');
           let postCode = addressUK.field_type.complex_fields.find(e => e.id === 'PostCode');
 
           console.log(util.inspect(addressLine1, {showHidden: false, depth: null}));
+
+          expect(debtorName.hidden).toBeUndefined('debtorName.hidden should be undefined');
+          expect(debtorName.display_context).toEqual('MANDATORY');
+          expect(debtorName.id).toEqual('debtorName');
+          expect(debtorName.order).toEqual(2);
+          expect(debtorName.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
 
           expect(addressLine1.hidden).toBeUndefined('addressLine1.hidden should be undefined');
           expect(addressLine1.display_context).toEqual('MANDATORY');

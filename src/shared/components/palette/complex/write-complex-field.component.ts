@@ -38,7 +38,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
           && 'TextMax150' === caseField.field_type.id
           && FormValidatorsService.MANDATORY === caseField.display_context
           || !this.ignoreMandatory;
-      }
+      };
       if (validatorsRequired.call(this)) {
         // console.log('WriteComplexFieldComponent add validators for caseField', caseField);
         this.formValidatorsService.addValidators(caseField, control);

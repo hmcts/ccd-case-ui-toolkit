@@ -240,7 +240,7 @@ export class CasesService {
 
       wizardPageField.complex_field_mask_list.forEach((complexFieldMask: ComplexFieldMask) => {
         const caseFieldIds = complexFieldMask.complex_field_id.split('.');
-        let case_field_leaf;
+        let case_field_leaf: CaseField;
 
         if (case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex') {
           const [_, ...tail] = caseFieldIds;
@@ -250,6 +250,7 @@ export class CasesService {
         }
 
         if (complexFieldMask.display_context !== 'HIDDEN') {
+          case_field_leaf.hidden = false;
           case_field_leaf.display_context = complexFieldMask.display_context;
           if (complexFieldMask.order) {
             case_field_leaf.order = complexFieldMask.order;
@@ -275,7 +276,11 @@ export class CasesService {
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
     const [head, ...tail] = caseFieldId;
     if (caseFieldId.length === 1) {
-      return caseFields.find(e => e.id === head);
+      let caseLeaf = caseFields.find(e => e.id === head);
+      if (!caseLeaf) {
+        throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
+      }
+      return caseLeaf;
     } else if (caseFieldId.length > 1) {
       let caseField = caseFields.find(e => e.id === head);
       if (!caseField.field_type && !caseField.field_type.complex_fields) {
