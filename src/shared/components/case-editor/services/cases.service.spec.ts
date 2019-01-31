@@ -316,13 +316,13 @@ describe('CasesService', () => {
 
           console.log(util.inspect(addressLine1, {showHidden: false, depth: null}));
 
-          expect(debtorName.hidden).toBeUndefined('debtorName.hidden should be undefined');
+          expect(debtorName.hidden).toBeFalsy('debtorName.hidden should be undefined');
           expect(debtorName.display_context).toEqual('MANDATORY');
           expect(debtorName.id).toEqual('debtorName');
           expect(debtorName.order).toEqual(2);
           expect(debtorName.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
 
-          expect(addressLine1.hidden).toBeUndefined('addressLine1.hidden should be undefined');
+          expect(addressLine1.hidden).toBeFalsy('addressLine1.hidden should be undefined');
           expect(addressLine1.display_context).toEqual('MANDATORY');
           expect(addressLine1.label).toEqual('House number attended altered');
           expect(addressLine1.hint_text).toEqual('Altered hint text');
@@ -331,7 +331,7 @@ describe('CasesService', () => {
 
           expect(addressLine2.hidden).toEqual(true);
 
-          expect(postCode.hidden).toBeUndefined('postCode.hidden should be undefined');
+          expect(postCode.hidden).toBeFalsy('postCode.hidden should be undefined');
           expect(postCode.display_context).toEqual('OPTIONAL');
           expect(postCode.label).toEqual('Postcode attended');
           expect(postCode.hint_text).toEqual('Enter the postcode');
