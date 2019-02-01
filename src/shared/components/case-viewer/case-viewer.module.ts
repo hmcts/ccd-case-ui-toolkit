@@ -43,12 +43,8 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         PrintUrlPipe,
     ],
     exports: [
-        CaseHistoryComponent,
-        CaseEventTriggerComponent,
-        CasePrinterComponent,
         CaseViewerComponent,
         CaseViewComponent,
-        PrintUrlPipe,
     ],
     providers: [
         CaseService,
