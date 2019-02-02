@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.22.2 - January 25 2019
+### Version 2.22.2 - February 02 2019
 **RDM-3849** - Fixed hide show not enabled
 
 ### Version 2.22.0 - January 25 2019
