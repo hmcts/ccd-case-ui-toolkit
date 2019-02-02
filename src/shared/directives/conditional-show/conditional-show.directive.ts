@@ -29,12 +29,13 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
               private registry: ConditionalShowRegistrarService) {}
 
   ngAfterViewInit() {
+    console.log('initializing');
     if (this.caseField.show_condition) {
       this.condition = new ShowCondition(this.caseField.show_condition);
-      // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
+      console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
-      // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
+      console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
@@ -42,7 +43,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   refreshVisibility() {
-    // console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
+    console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
     this.updateVisibility(this.getReadOnlyAndFormFields(), true);
     this.subscribeToFormChanges();
   }
@@ -53,15 +54,15 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private subscribeToFormChanges() {
     this.unsubscribeFromFormChanges();
-    // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
+    console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
+      console.log('FIELD ' + this.caseField.id + ' reacting to form change');
       this.updateVisibility(this.getReadOnlyAndFormFields());
     });
   }
 
   private updateVisibility(fields, forced = false) {
-    // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
+    console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {
       this.onHide();
     } else if (this.shouldToggleToShow(fields)) {
@@ -70,11 +71,11 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private onHide() {
-    // console.log('on hide is form field', this.formField);
+    console.log('on hide is form field', this.formField);
 
     if (this.formField) {
       this.unsubscribeFromFormChanges();
-      // console.log('FIELD ' + this.caseField.id + ' disabling form field');
+      console.log('FIELD ' + this.caseField.id + ' disabling form field');
       this.formField.disable();
       this.subscribeToFormChanges();
     }
@@ -84,7 +85,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private onShow() {
     if (this.formField) {
       this.unsubscribeFromFormChanges();
-      // console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
+      console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
       this.formField.enable();
       this.subscribeToFormChanges();
     }
@@ -112,7 +113,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
-    // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
+    console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
     return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
   }
 
@@ -133,28 +134,28 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   // TODO This must be extracted to a generic service for traversing see RDM-2233
   private checkHideShowCondition(key: string, aControl: AbstractControl) {
     if (aControl instanceof FormArray) {  // We're in a collection
-      // console.log('traversing array', aControl);
+      console.log('traversing array', aControl);
       aControl.controls.forEach((formControl, i) => {
-        // console.log('in array', formControl);
+        console.log('in array', formControl);
         this.checkHideShowCondition('' + i, formControl)
       });
     } else if (aControl instanceof FormGroup) {
-      // console.log('met a FormGroup ', aControl, ' fromGroup.controls', aControl.controls);
+      console.log('met a FormGroup ', aControl, ' fromGroup.controls', aControl.controls);
       if (aControl.get('value')) { // Complex Field
         let complexControl = aControl.get('value') as FormGroup;
         Object.keys(complexControl.controls).forEach(controlKey => {
-          // console.log('traversing formGroup item', key, complexControl.get(key));
+          console.log('traversing formGroup item', key, complexControl.get(key));
           this.checkHideShowCondition(controlKey, complexControl.get(controlKey));
         });
       } else if (aControl.controls) { // Special Field like AddressUK, AddressGlobal
         Object.keys(aControl.controls).forEach(controlKey => {
-          // console.log('traversing formGroup item', key, aControl.get(key));
+          console.log('traversing formGroup item', key, aControl.get(key));
           this.checkHideShowCondition(controlKey, aControl.get(controlKey));
         })
       }
     } else if (aControl instanceof FormControl) {  // FormControl
       if (aControl.invalid) {
-        // console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
+        console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
         this.registry.refresh();
       }
     }
