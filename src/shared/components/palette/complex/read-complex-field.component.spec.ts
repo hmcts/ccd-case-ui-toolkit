@@ -53,7 +53,7 @@ describe('ReadComplexFieldComponent', () => {
     });
 
     ReadComplexFieldNewTableComponent = MockComponent({
-      selector: 'ccd-read-complex-field-new-table',
+      selector: 'ccd-read-complex-field-collection-table',
       inputs: ['caseField', 'context']
     });
 

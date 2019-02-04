@@ -3,11 +3,11 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { SortOrder } from './sort-order'
 
 @Component({
-  selector: 'ccd-read-complex-field-new-table',
-  templateUrl: './read-complex-field-new-table.html',
-  styleUrls: ['./read-complex-field-new-table.scss']
+  selector: 'ccd-read-complex-field-collection-table',
+  templateUrl: './read-complex-field-collection-table.html',
+  styleUrls: ['./read-complex-field-collection-table.scss']
 })
-export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponent implements OnInit {
+export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
 
   public isDisplayContextParameterAvailable = false;
   public columns: String[];

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadComplexFieldNewTableComponent } from './read-complex-field-new-table.component';
+import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { By } from '@angular/platform-browser';
@@ -10,7 +10,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 
-describe('ReadComplexFieldNewTableComponent', () => {
+describe('ReadComplexFieldCollectionTableComponent', () => {
 
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
@@ -24,8 +24,8 @@ describe('ReadComplexFieldNewTableComponent', () => {
     inputs: ['caseField', 'context']
   });
 
-  let fixture: ComponentFixture<ReadComplexFieldNewTableComponent>;
-  let component: ReadComplexFieldNewTableComponent;
+  let fixture: ComponentFixture<ReadComplexFieldCollectionTableComponent>;
+  let component: ReadComplexFieldCollectionTableComponent;
   let de: DebugElement;
 
   describe('when values split accross children fields', () => {
@@ -131,7 +131,7 @@ describe('ReadComplexFieldNewTableComponent', () => {
             ConditionalShowModule
           ],
           declarations: [
-            ReadComplexFieldNewTableComponent,
+            ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
 
             // Mock
@@ -141,7 +141,7 @@ describe('ReadComplexFieldNewTableComponent', () => {
         })
         .compileComponents();
 
-      fixture = TestBed.createComponent(ReadComplexFieldNewTableComponent);
+      fixture = TestBed.createComponent(ReadComplexFieldCollectionTableComponent);
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
