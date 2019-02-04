@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
-  selector: 'ccd-read-complex-field-new-table',
-  templateUrl: './read-complex-field-new-table.html',
-  styleUrls: ['./read-complex-field-new-table.scss']
+  selector: 'ccd-read-complex-field-collection-table',
+  templateUrl: './read-complex-field-collection-table.html',
+  styleUrls: ['./read-complex-field-collection-table.scss']
 })
-export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponent implements OnInit {
+export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
 
   public isDisplayContextParameterAvailable = false;
   public columns: String[];
@@ -29,27 +29,36 @@ export class ReadComplexFieldNewTableComponent extends AbstractFieldReadComponen
       let labelsHorizontal: { [k: string]: any } = {};
       let labelsHorizontalVisibility: { [k: string]: any } = {};
       let allLabels: { [k: string]: any } = {};
-      for (let obj of this.caseField.value) {
-        this.isHidden.push(true);
-      }
-      for (let obj of this.caseField.field_type.complex_fields) {
-        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type};
-        allLabels[obj.id] = {label: obj.label, type: obj.field_type.type};
-      }
-
-      for (let id of this.columns) {
-        let horizontalColumnFields: any;
-        let verticalColumnFields: any;
-        labelsHorizontal[id.trim()] = allLabels[id.trim()];
-        labelsHorizontalVisibility[id.trim()] = true;
-        delete labelsVertical[id.trim()];
-      }
+      this.populateIsHiddenStatus();
+      this.populateLabels(labelsVertical, allLabels);
+      this.horizontalLabels(labelsHorizontal, allLabels, labelsHorizontalVisibility, labelsVertical);
 
       this.columnsLabel = labels.split(',');
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
       this.columnsHorizontalLabelVisibility = labelsHorizontalVisibility;
       this.columnsAllLabels = allLabels;
+    }
+  }
+
+  private horizontalLabels(labelsHorizontal: { [p: string]: any }, allLabels: { [p: string]: any }, labelsHorizontalVisibility: { [p: string]: any }, labelsVertical: { [p: string]: any }) {
+    for (let id of this.columns) {
+      labelsHorizontal[id.trim()] = allLabels[id.trim()];
+      labelsHorizontalVisibility[id.trim()] = true;
+      delete labelsVertical[id.trim()];
+    }
+  }
+
+  private populateLabels(labelsVertical: { [p: string]: any }, allLabels: { [p: string]: any }) {
+    for (let obj of this.caseField.field_type.complex_fields) {
+      labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type};
+      allLabels[obj.id] = {label: obj.label, type: obj.field_type.type};
+    }
+  }
+
+  private populateIsHiddenStatus() {
+    for (let obj of this.caseField.value) {
+      this.isHidden.push(true);
     }
   }
 
