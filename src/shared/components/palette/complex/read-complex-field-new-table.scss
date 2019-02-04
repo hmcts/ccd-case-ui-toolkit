@@ -30,10 +30,12 @@
       }
     }
     th {
+      padding-left: $padding;
       font-weight: bold;
       border-bottom: none;
     }
     td {
+      padding-left: $padding;
       border-bottom: none;
     }
   }
@@ -53,6 +55,11 @@
       border-bottom: none;
     }
   }
+}
+.sort-widget {
+  cursor: pointer;
+  text-decoration: none;
+  color: $black;
 }
 
 .accordion-wrapper {

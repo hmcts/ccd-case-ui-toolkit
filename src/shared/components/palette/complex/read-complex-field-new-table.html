@@ -7,15 +7,16 @@
             <ng-container *ngFor="let name of columnsAllLabels | keyvalue">
               <th *ngIf="heading.trim() == name.key">
                 <span class="text-16">{{name.value.label}}</span>
+                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value  )"></a>
               </th>
             </ng-container>
           </ng-container>
           <th></th>
         </tr>
-        <ng-container *ngFor="let item of caseField.value;  let i = index">
+        <ng-container *ngFor="let item of rows;  let i = index;trackBy:trackByIndex;" >
           <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
             <ng-container *ngFor="let heading of columns">
-              <ng-container  *ngFor="let name of item.value | keyvalue">
+              <ng-container  *ngFor="let name of item | keyvalue">
                 <td *ngIf="heading.trim() == name.key" class="text-16">
                   <ccd-field-read [caseField]="{
                         id: name.key,
@@ -37,7 +38,7 @@
               <table class="complex-panel-table">
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
-                  <ng-container  *ngFor="let name of item.value | keyvalue">
+                  <ng-container  *ngFor="let name of item | keyvalue">
                     <tr *ngIf="vLabel.key == name.key"  class="complex-panel-simple-field accordion-body" [hidden]="isHidden[i]" [class.last-accordion]="lastAccordion">
                       <th ><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td class="text-16">
