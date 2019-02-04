@@ -33,7 +33,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         LabelSubstitutorModule,
         CaseEditorModule,
         PipesModule,
-        ConditionalShowModule
+        ConditionalShowModule,
     ],
     declarations: [
         CaseHistoryComponent,
