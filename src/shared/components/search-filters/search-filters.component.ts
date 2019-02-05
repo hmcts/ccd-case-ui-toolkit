@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { SearchInput } from './domain/search-input.model';
 import { SearchService, WindowService, OrderService } from '../../services';
 import { Jurisdiction, CaseTypeLite, CaseState } from '../../domain';
-import { JurisdictionService } from '../../services/jurisdiction';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
 const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
@@ -46,13 +45,13 @@ export class SearchFiltersComponent implements OnInit {
 
   constructor(private searchService: SearchService,
     private orderService: OrderService,
-    private jurisdictionService: JurisdictionService,
     private windowService: WindowService) {
   }
 
   ngOnInit(): void {
     this.selected = {};
     const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
+    console.log('jurisdiction=', jurisdiction);
     if (this.jurisdictions.length === 1 || jurisdiction) {
       this.selected.jurisdiction = this.jurisdictions[0];
       if (jurisdiction) {
@@ -122,7 +121,6 @@ export class SearchFiltersComponent implements OnInit {
 
   onJurisdictionIdChange(): void {
     this.selected.caseType = null;
-    this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
     this.selectCaseType(this.selectedJurisdictionCaseTypes);
   }
@@ -131,6 +129,7 @@ export class SearchFiltersComponent implements OnInit {
     this.formGroup = new FormGroup({});
     this.searchInputsReady = false;
     this.searchInputs = [];
+    console.log('this.selected=', this.selected);
     this.searchService.getSearchInputs(
       this.selected.jurisdiction.id,
       this.selected.caseType.id
