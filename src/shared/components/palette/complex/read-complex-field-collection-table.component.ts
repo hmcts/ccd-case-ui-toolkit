@@ -22,7 +22,9 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public isHidden: boolean[] = [];
 
   ngOnInit(): void {
-    if (this.caseField.display_context_parameter && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
+    if (this.caseField.display_context_parameter
+        && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
+
       this.isDisplayContextParameterAvailable = true;
       let displayContextParamter = this.caseField.display_context_parameter.trim();
       let result: string = displayContextParamter.replace('#TABLE(', '');
@@ -40,10 +42,13 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
       this.columnsAllLabels = allLabels;
+
     }
   }
 
-  private populateHorizontalLabels(labelsHorizontal: { [p: string]: any }, allLabels: { [p: string]: any }, labelsVertical: { [p: string]: any }) {
+  private populateHorizontalLabels(labelsHorizontal: { [p: string]: any },
+                                   allLabels: { [p: string]: any },
+                                   labelsVertical: { [p: string]: any }) {
 
     for (let id of this.columns) {
       labelsHorizontal[id.trim()] = allLabels[id.trim()];
@@ -75,7 +80,9 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   sortRowsByColumns(column) {
-    let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
+    let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
+                                    || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
+
     switch (this.columnsHorizontalLabel[column].type) {
       case 'Number':
       case 'MoneyGBP': {
@@ -110,14 +117,12 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   private isSortAscending(column: any): boolean {
-    return !    (column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
+    return !(column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
   }
-
 
   sortWidget(column: any) {
     return this.isSortAscending(column) ? '&#9660;' : '&#9650;';
   }
-
 
   trackByIndex(index: number, obj: any): any {
     return index;
