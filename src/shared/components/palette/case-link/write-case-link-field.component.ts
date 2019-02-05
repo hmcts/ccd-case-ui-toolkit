@@ -49,6 +49,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     if (!valueString )  {
       return false;
     }
-    return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString);
+    return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());
   }
 }
