@@ -335,9 +335,9 @@
     is-absolute "^1.0.0"
     is-negated-glob "^1.0.0"
 
-"@hmcts/ccpay-web-component@~1.6.1":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-1.6.2.tgz#ac02986bfe6575f332cefc795b2fef84c049a9e3"
+"@hmcts/ccpay-web-component@~1.8.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-1.8.1.tgz#296e091489aac06a457064f066c80ecc74dc0192"
   dependencies:
     tslib "^1.9.0"
 
