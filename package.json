@@ -34,7 +34,7 @@
     "prebuild": "rimraf dist tmp",
     "prebuild:watch": "rimraf dist tmp",
     "preversion": "npm run ci",
-    "test": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI --sourcemaps=false",
+    "test": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI --source-map=false",
     "test:codacy-upload": "echo `cat ./coverage/lcov.info | codacy-coverage`",
     "test:coverage": "istanbul check-coverage --statements 80 --lines 80 --functions 80 --branches 80",
     "test:watch": "karma start --auto-watch --no-single-run",
