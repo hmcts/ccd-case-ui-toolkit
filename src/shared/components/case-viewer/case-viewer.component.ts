@@ -18,8 +18,10 @@ import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
+import { CaseService } from '../case-editor';
 
 @Component({
+  selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html',
   styleUrls: ['./case-viewer.scss']
 })
@@ -50,14 +52,34 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private activityPollingService: ActivityPollingService,
     private dialog: MatDialog,
     private alertService: AlertService,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private caseService: CaseService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.initDialog();
+    if (!this.route.snapshot.data.case) {
+      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+        this.caseDetails = caseDetails;
+        this.init();
+      });
+    } else {
+      this.caseDetails = this.route.snapshot.data.case;
+      this.init();
+    }
+  }
 
-    this.caseDetails = this.route.snapshot.data.case;
+  ngOnDestroy() {
+    if (this.activityPollingService.isEnabled) {
+      this.subscription.unsubscribe();
+    }
+  }
 
+  postViewActivity(): Observable<Activity[]> {
+    return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
+  }
+
+  private init() {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
 
@@ -65,17 +87,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
 
-    this.subscription = this.postViewActivity().subscribe((_resolved) => {
-      // console.log('Posted VIEW activity and result is: ' + JSON.stringify(resolved));
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  postViewActivity(): Observable<Activity[]> {
-    return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
+    if (this.activityPollingService.isEnabled) {
+      this.subscription = this.postViewActivity().subscribe((_resolved) => {
+        // console.log('Posted VIEW activity and result is: ' + JSON.stringify(resolved));
+      });
+    }
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
@@ -136,19 +152,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initDialog() {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
+  isDataLoaded(): boolean {
+    return this.caseDetails ? true : false;
   }
 
   callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext) {
@@ -166,6 +171,21 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   isDraft(): boolean {
     return Draft.isDraft(this.caseDetails.case_id);
+  }
+
+  private initDialog() {
+    this.dialogConfig = new MatDialogConfig();
+    this.dialogConfig.disableClose = true;
+    this.dialogConfig.autoFocus = true;
+    this.dialogConfig.ariaLabel = 'Label';
+    this.dialogConfig.height = '245px';
+    this.dialogConfig.width = '550px';
+    this.dialogConfig.panelClass = 'dialog';
+
+    this.dialogConfig.closeOnNavigation = false;
+    this.dialogConfig.position = {
+      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
+    }
   }
 
   private handleError(error: HttpError, trigger: CaseViewTrigger) {
