@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { Observable } from 'rxjs';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/catch';
-import { CaseEventTrigger, CaseView, HttpError } from '../../../domain';
+import { CaseEventTrigger, CaseView } from '../../../domain';
+import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { CasesService } from '../../case-editor';
 import { AlertService } from '../../../services';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
 
+  public static readonly PARAM_CASE_ID = 'cid';
   public static readonly PARAM_EVENT_ID = 'eid';
   public static readonly IGNORE_WARNING = 'ignoreWarning';
 
@@ -21,9 +21,9 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     private alertService: AlertService,
     ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
+  resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
     return this.isRootTriggerEventRoute(route) ? this.getAndCacheEventTrigger(route)
-        : this.cachedEventTrigger ? Observable.of(this.cachedEventTrigger)
+        : this.cachedEventTrigger ? Promise.resolve(this.cachedEventTrigger)
         : this.getAndCacheEventTrigger(route);
   }
 
@@ -32,8 +32,8 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     return !route.firstChild || !route.firstChild.url.length;
   }
 
-  private getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
-    let caseDetails: CaseView = route.parent.data.case;
+  private getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
+    let cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
     let caseTypeId = undefined;
     let eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
@@ -41,12 +41,13 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
       ignoreWarning = 'false';
     }
     return this.casesService
-      .getEventTrigger(caseTypeId, eventTriggerId, caseDetails.case_id, ignoreWarning)
-      .do(eventTrigger => this.cachedEventTrigger = eventTrigger)
-      .catch((error: HttpError) => {
-        this.alertService.error(error.message);
-
-        return Observable.throw(error);
-      });
+      .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
+      .pipe(
+        map(eventTrigger => this.cachedEventTrigger = eventTrigger),
+        catchError(error => {
+          this.alertService.error(error.message);
+          return throwError(error);
+        })
+      ).toPromise();
   }
 }

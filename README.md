@@ -108,6 +108,9 @@ You may also build UMD bundle and ESM files separately:
 - `yarn build:umd` - for building UMD bundle only.
 - `yarn build:umd:watch` - the same as previous command but in watch-mode.
 
+## Build the library (for CCD devs working on ccd-case-management-web)
+For CCD developers it should be noted the library should be built with just the `yarn build:esm` which is much faster. That will build the JIT version that is currently used by case management web.
+
 ## Other commands
 
 #### Test the library
