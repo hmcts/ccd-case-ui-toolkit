@@ -33,7 +33,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   ReadEmailFieldComponent, ReadPhoneUKFieldComponent, ReadDateFieldComponent, ReadCollectionFieldComponent, WriteCollectionFieldComponent,
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
-  LabelSubstitutorDirective, CaseViewerComponent} from './shared';
+  LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, PrintUrlPipe} from './shared';
 
 @NgModule({
     imports: [
@@ -67,7 +67,9 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       CaseEditComponent,
       CaseCreateComponent,
       CaseProgressComponent,
+      CaseViewComponent,
       CaseViewerComponent,
+      PrintUrlPipe,
       CallbackErrorsComponent,
       PaletteModule,
       DocumentDialogComponent,
