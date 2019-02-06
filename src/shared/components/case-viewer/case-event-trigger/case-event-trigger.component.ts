@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { DisplayMode, CaseEventTrigger, CaseView, Activity, CaseEventData } from '../../../domain';
-import { CasesService } from '../../case-editor';
+import { CaseService, CasesService } from '../../case-editor';
 import { AlertService, ActivityPollingService, EventStatusService } from '../../../services';
 import { CaseReferencePipe } from '../../../pipes';
 
@@ -16,9 +16,11 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   eventTrigger: CaseEventTrigger;
   caseDetails: CaseView;
   subscription: Subscription;
+  parentUrl: string;
 
   constructor(
     private casesService: CasesService,
+    private caseService: CaseService,
     private router: Router,
     private alertService: AlertService,
     private route: ActivatedRoute,
@@ -27,15 +29,28 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case;
+    if (this.route.snapshot.data.case) {
+      this.caseDetails = this.route.snapshot.data.case;
+    } else {
+        this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+          this.caseDetails = caseDetails;
+        });
+    }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
-    this.subscription = this.postEditActivity().subscribe((_resolved) => {
-      // console.log('Posted EDIT activity and result is: ' + JSON.stringify(resolved));
+    if (this.activityPollingService.isEnabled) {
+      this.subscription = this.postEditActivity().subscribe((_resolved) => {
+        // console.log('Posted EDIT activity and result is: ' + JSON.stringify(resolved));
+      });
+    }
+    this.route.parent.url.subscribe(path => {
+      this.parentUrl = `/${path.join('/')}`;
     });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if (this.activityPollingService.isEnabled) {
+      this.subscription.unsubscribe();
+    }
   }
 
   postEditActivity(): Observable<Activity[]> {
@@ -55,7 +70,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   submitted(event: any): void {
     let eventStatus: string = event['status'];
     this.router
-      .navigate(['case', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id])
+      .navigate([this.parentUrl])
       .then(() => {
         let caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
         if (EventStatusService.isIncomplete(eventStatus)) {
@@ -68,7 +83,10 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   cancel(): Promise<boolean> {
-    return this.router.navigate(['/case', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id,
-      this.caseDetails.case_id]);
+    return this.router.navigate([this.parentUrl]);
+  }
+
+  isDataLoaded(): boolean {
+    return this.eventTrigger && this.caseDetails ? true : false;
   }
 }

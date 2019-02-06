@@ -24,6 +24,7 @@ import { CaseReferencePipe } from '../../pipes/case-reference';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material';
+import { CaseService } from '../case-editor';
 
 @Component({
   // tslint:disable-next-line
@@ -392,6 +393,7 @@ describe('CaseViewerComponent', () => {
   let alertService: any;
   let dialog: any;
   let matDialogRef: any;
+  let caseService: any;
 
   const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
@@ -421,6 +423,8 @@ describe('CaseViewerComponent', () => {
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(Observable.of({}));
+
+    caseService = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
@@ -462,6 +466,7 @@ describe('CaseViewerComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
+          { provide: CaseService, useValue: caseService },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
           { provide: Router, useValue: router },

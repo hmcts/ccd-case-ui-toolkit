@@ -16,7 +16,7 @@ script:
   - yarn --version
   - yarn lint
   - yarn test
-  - yarn build
+  - yarn build:esm
 after_success:
   - yarn test:codacy-upload
   - yarn coverage
