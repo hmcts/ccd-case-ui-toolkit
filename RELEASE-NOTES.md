@@ -1,10 +1,13 @@
 ## RELEASE NOTES
 
-### Version 2.23.2 Betav2 - February 07 2019
-**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes
+### Version 2.23.3 Beta-v3 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v3
+
+### Version 2.23.2 Beta-v2 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v2
 
 ### Version 2.23.1 Beta - February 07 2019
-**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta
 
 ### Version 2.23.0 - February 06 2019
 **RDM-3799** - New case view contract.
