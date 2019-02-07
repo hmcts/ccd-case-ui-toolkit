@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.25.0 - February 07 2019
+**RDM-3820** - New contract - extract Case Search Form component
+
+### Version 2.24.0 - February 07 2019
+**RDM-3821** - Extract Case Search Form to ui-toolkit as is
+
 ### Version 2.23.0 - February 06 2019
 **RDM-3799** - New case view contract.
 **RDM-3545** - Case Linking - Error text missing when value input into field of type CaseLink fails validation on event
