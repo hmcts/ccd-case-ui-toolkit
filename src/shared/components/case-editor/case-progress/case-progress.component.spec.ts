@@ -4,7 +4,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CasesService } from '../services/cases.service';
 import { CaseProgressComponent } from './case-progress.component';
 import { CaseEventTrigger, CaseDetails, CaseEventData, CaseView } from '../../../domain';
-import { createCaseEventTrigger } from '../../../fixture/shared.fixture';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { AlertService } from '../../../services/alert';
 import { of, Observable, throwError } from 'rxjs';
 import { HttpError } from '../../../domain/http';

@@ -12,10 +12,11 @@ import { routing } from './app.routing';
 import { AppComponent } from './app.component';
 import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  PlaceholderService, DocumentManagementService, PageValidationService} from '@hmcts/ccd-case-ui-toolkit';
+  PlaceholderService, DocumentManagementService, PageValidationService, PipesModule} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
+import { CaseViewConsumerComponent } from './case-view-consumer.component';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { CoreComponent } from './core.component';
     CoreComponent,
     CaseCreateConsumerComponent,
     CaseProgressConsumerComponent,
+    CaseViewConsumerComponent,
   ],
   providers: [
     CasesService,
