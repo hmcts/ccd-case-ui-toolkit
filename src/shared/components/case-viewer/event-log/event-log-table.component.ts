@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../domain';
-import { ActivatedRoute } from '@angular/router';
-import { CasesService } from '../../case-editor';
 
 @Component({
   selector: 'ccd-event-log-table',
