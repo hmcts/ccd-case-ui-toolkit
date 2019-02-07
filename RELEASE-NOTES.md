@@ -2,6 +2,7 @@
 
 ### Version 2.23.0 - February 06 2019
 **RDM-3799** - New case view contract.
+**RDM-3545** - Case Linking - Error text missing when value input into field of type CaseLink fails validation on event
 
 ### Version 2.22.2 - Beta Release - February 02 2019
 **RDM-3849** - Fixed hide show not enabled
