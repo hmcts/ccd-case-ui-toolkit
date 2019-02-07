@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CaseField } from '../../domain/definition';
-import { CurrencyPipe, } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { DatePipe } from '../../components/palette/utils';
 import { WizardPage } from '../../components/case-editor/domain';
 import { Predicate } from '../../domain/predicate.model';
@@ -151,4 +151,51 @@ export class FieldsUtils {
     return Object.assign({}, obj);
   }
 
+  showGreyBar(caseField: CaseField, element: HTMLElement) {
+    if (caseField.field_type.type !== 'Collection') {
+      if (element) {
+        if ( !this.isCYAPage(element) && this.isSamePage(caseField) ) {
+          element.classList.add('show-condition-grey-bar');
+        }
+      }
+    }
+  }
+
+  private isCYAPage(element: HTMLElement): boolean {
+    let tempElement = element.parentElement;
+    while ( tempElement.parentElement ) {
+      if ( tempElement.tagName === 'FORM' ) {
+        if ( tempElement.classList.contains('check-your-answers') ) {
+          return true;
+        }
+      }
+      tempElement = tempElement.parentElement;
+    }
+    return false;
+  }
+
+  private isSamePage(caseField: CaseField): boolean {
+    let idElements: HTMLCollectionOf<Element>;
+    let fieldset = document.querySelector('fieldset');
+    if ( fieldset ) {
+      idElements = fieldset.getElementsByClassName('form-control');
+    }
+    let idList = [];
+    if ( idElements ) {
+      for (let i = 0; i < idElements.length; i++) {
+        idList.push(idElements[i].id.replace(/-yes|-no/gi, ''));
+      }
+    }
+    let condFields = this.getConditionFields(caseField.show_condition);
+    return condFields.every(cond => {
+      return ( idList.indexOf(cond) !== -1 );
+    });
+  }
+
+  private getConditionFields(condition: string): any[] {
+    let condFields = [];
+    let conditions = condition.split('AND');
+    conditions.forEach(cond => condFields.push(cond.split('=')[0].trim()));
+    return condFields;
+  }
 }

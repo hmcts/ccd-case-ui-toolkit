@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By }              from '@angular/platform-browser';
-import { DebugElement, Component, Input }    from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { DebugElement, Component, Input } from '@angular/core';
 import { ConditionalShowDirective } from './conditional-show.directive';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { async } from '@angular/core/testing';
@@ -8,6 +8,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import createSpyObj = jasmine.createSpyObj;
+import { FieldType } from '../../domain/definition';
 
 @Component({
     template: `
@@ -22,9 +23,13 @@ class TestHostComponent {
 
 let field = (id, value, showCondition?) => {
     let caseField = new CaseField();
+    let fieldType = new FieldType();
+    fieldType.id = 'fieldId';
+    fieldType.type = 'Text';
     caseField.id = id;
     caseField.value = value;
     caseField.show_condition = showCondition;
+    caseField.field_type = fieldType;
     return caseField;
 };
 
@@ -64,6 +69,34 @@ describe('ConditionalShowDirective', () => {
 
         expect(el.hidden).toBe(false);
         expect(conditionalShow.condition).toBeUndefined();
+    });
+
+    it('should display grey bar when conditional show evaluates but not on CYA page', () => {
+      comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
+      let fieldType = new FieldType();
+      fieldType.id = 'fieldId';
+      fieldType.type = 'Text';
+      comp.caseField.field_type = fieldType;
+      expect(comp.caseField.field_type.type).toBe('Text');
+      comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+      expect(conditionalShow.condition.condition).toBe('PersonLastName="Doe"');
+    });
+
+    it('should not display grey bar when conditional show does not evaluates', () => {
+      comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
+      let fieldType = new FieldType();
+      fieldType.id = 'fieldId';
+      fieldType.type = 'Text';
+      comp.caseField.field_type = fieldType;
+      expect(comp.caseField.field_type.type).toBe('Text');
+      comp.eventFields = [comp.caseField, field('OtherField', 'Doe', '')];
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+      expect(conditionalShow.condition.condition).toBe('PersonLastName="Doe"');
     });
 
     it('should display when condition matches a read only field. No form fields', () => {

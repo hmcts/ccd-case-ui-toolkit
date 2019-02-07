@@ -38,6 +38,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.updateVisibility(this.getReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
+      this.fieldsUtils.showGreyBar(this.caseField, this.el.nativeElement);
     }
   }
 
@@ -99,6 +100,11 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private show() {
+    this.showField();
+    this.fieldsUtils.showGreyBar(this.caseField, this.el.nativeElement);
+  }
+
+  private showField() {
     this.el.nativeElement.hidden = false;
   }
 
