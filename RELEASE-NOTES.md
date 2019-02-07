@@ -1,6 +1,7 @@
 ## RELEASE NOTES
-### Version 2.22.0 - January 9 2019
-**RDM-2455** - CRUD contract on Collection Items - Standard API applied after BE fixes
+
+### Version 2.23.1 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes
 
 ### Version 2.23.0 - February 06 2019
 **RDM-3799** - New case view contract.
