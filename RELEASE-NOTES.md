@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.23.1 - February 08 2019
+### Version 2.23.4 - February 08 2019
 **RDM-3675** - fix to image sourcing
 
 ### Version 2.23.0 - February 06 2019
