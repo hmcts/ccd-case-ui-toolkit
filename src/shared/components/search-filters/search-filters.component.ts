@@ -133,7 +133,6 @@ export class SearchFiltersComponent implements OnInit {
     this.formGroup = new FormGroup({});
     this.searchInputsReady = false;
     this.searchInputs = [];
-    console.log('this.selected=', this.selected);
     this.searchService.getSearchInputs(
       this.selected.jurisdiction.id,
       this.selected.caseType.id
