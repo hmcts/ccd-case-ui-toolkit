@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.23.5 - February 08 2019
+**Test Fixes** - Upgrade to Chrome Headless
+
+### Version 2.23.4 - February 08 2019
+**RDM-3675** - fix to image sourcing
+
 ### Version 2.23.3 Beta-v3 - February 07 2019
 **RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v3
 

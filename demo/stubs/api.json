@@ -2060,7 +2060,12 @@
         "event_id": "CaseCreated",
         "event_name": "Case created",
         "summary": "Creation by service",
-        "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio tellus, maximus eget venenatis sit amet, eleifend eu libero. Maecenas mi dolor, volutpat in justo eget, mattis interdum dolor"
+        "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio tellus, maximus eget venenatis sit amet, eleifend eu libero. Maecenas mi dolor, volutpat in justo eget, mattis interdum dolor",
+        "significant_item": {
+          "type": "DOCUMENT",
+          "description": "testDescription",
+          "url": "testUrl"
+         }
       },
       {
         "id": 2,
