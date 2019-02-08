@@ -1,7 +1,14 @@
 ## RELEASE NOTES
 
-### Version 2.23.0 - January 25 2019
+### Version 2.24.0 - February 07 2019
+**RDM-3821** - Extract Case Search Form to ui-toolkit as is
+
+### Version 2.23.0 - February 06 2019
 **RDM-3799** - New case view contract.
+**RDM-3545** - Case Linking - Error text missing when value input into field of type CaseLink fails validation on event
+
+### Version 2.22.2 - Beta Release - February 02 2019
+**RDM-3849** - Fixed hide show not enabled
 
 ### Version 2.22.0 - January 25 2019
 **RDM-3675** - Extraction of Case View into toolkit
@@ -21,7 +28,7 @@
 
 ### Version 2.20.0 - January 9 2019
 **RDM-2455** - CRUD contract on Collection Items - Standard API
- 
+
 ### Version 2.19.1 - January 9 2019
 **RDM-3594** - Fix failed regex (callback) validation not being displayed in the Error Box
 
