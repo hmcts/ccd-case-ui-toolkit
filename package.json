@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.23.0",
+  "version": "2.23.5",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -34,7 +34,7 @@
     "prebuild": "rimraf dist tmp",
     "prebuild:watch": "rimraf dist tmp",
     "preversion": "npm run ci",
-    "test": "ng test --code-coverage",
+    "test": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI --source-map=false",
     "test:codacy-upload": "echo `cat ./coverage/lcov.info | codacy-coverage`",
     "test:coverage": "istanbul check-coverage --statements 80 --lines 80 --functions 80 --branches 80",
     "test:watch": "karma start --auto-watch --no-single-run",
