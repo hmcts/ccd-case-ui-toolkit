@@ -23,6 +23,7 @@ script:
   - yarn lint
   - yarn test
   - yarn build:esm
+  - yarn build:demo
 after_success:
   - yarn test:codacy-upload
   - yarn coverage
