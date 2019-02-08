@@ -51,7 +51,6 @@ export class SearchFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.selected = {};
     const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
-    console.log('jurisdiction=', jurisdiction);
     if (this.jurisdictions.length === 1 || jurisdiction) {
       this.selected.jurisdiction = this.jurisdictions[0];
       if (jurisdiction) {
