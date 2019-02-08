@@ -30,7 +30,7 @@ describe('CaseEditPageComponent', () => {
 
   let comp: CaseEditPageComponent;
   let fixture: ComponentFixture<CaseEditPageComponent>;
-  let wizardPage: WizardPage;
+  let wizardPage = new WizardPage();
   let readOnly = new CaseField();
   let formValueService = new FormValueService();
   let formErrorService = new FormErrorService();
@@ -480,6 +480,11 @@ describe('CaseEditPageComponent', () => {
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
+      let validateResult = {
+        'data': {
+          'field1': 'EX12345678'
+        }
+      };
 
       let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
 
@@ -515,7 +520,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       spyOn(caseEditComponentStub, 'form');
-      spyOn(caseEditComponentStub, 'validate').and.returnValue(of(`{"data":{"field1": "EX12345678"}}`));
+      spyOn(caseEditComponentStub, 'validate').and.returnValue(of(validateResult));
       spyOn(formValueService, 'sanitise').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
@@ -557,7 +562,7 @@ describe('CaseEditPageComponent', () => {
       });
     });
 
-    it('should change button label when callback warnings notified', () => {
+    it('should change button label when callback warnings notified ', () => {
       let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
       callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_START;
       comp.callbackErrorsNotify(callbackErrorsContext);
