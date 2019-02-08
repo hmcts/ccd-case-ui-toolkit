@@ -549,7 +549,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should call validateee', async () => {
+    it('should call validate', async () => {
       fixture.detectChanges();
 
       comp.submit();
