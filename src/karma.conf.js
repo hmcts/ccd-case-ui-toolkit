@@ -37,7 +37,6 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     },
-    // browsers: ["PhantomJS"],
     autoWatch: false,
     singleRun: true
   });

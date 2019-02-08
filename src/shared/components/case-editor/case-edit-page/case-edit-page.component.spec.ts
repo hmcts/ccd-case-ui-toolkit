@@ -30,7 +30,7 @@ describe('CaseEditPageComponent', () => {
 
   let comp: CaseEditPageComponent;
   let fixture: ComponentFixture<CaseEditPageComponent>;
-  let wizardPage: WizardPage;
+  let wizardPage = new WizardPage();
   let readOnly = new CaseField();
   let formValueService = new FormValueService();
   let formErrorService = new FormErrorService();
@@ -476,106 +476,111 @@ describe('CaseEditPageComponent', () => {
     });
   });
 
-  // describe('submit the form', () => {
-  //   beforeEach(async(() => {
-  //     firstPage.id = 'first page';
-  //     cancelled = createSpyObj('cancelled', ['emit']);
-  //
-  //     let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
-  //
-  //     caseEditComponentStub = {
-  //       'form': FORM_GROUP,
-  //       'wizard': WIZARD,
-  //       'data': '',
-  //       'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
-  //       'hasPrevious': () => true,
-  //       'getPage': () => firstPage,
-  //       'first': () => true,
-  //       'next': () => true,
-  //       'previous': () => true,
-  //       'cancel': () => undefined,
-  //       'cancelled': cancelled,
-  //       'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
-  //       'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-  //       'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
-  //     };
-  //     snapshot = {
-  //       queryParamMap: createSpyObj('queryParamMap', ['get']),
-  //     };
-  //     route = {
-  //       params: of({id: 123}),
-  //       snapshot: snapshot
-  //     };
-  //
-  //     matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
-  //     dialog = createSpyObj<MatDialog>('dialog', ['open']);
-  //     dialog.open.and.returnValue(matDialogRef);
-  //
-  //     spyOn(caseEditComponentStub, 'first');
-  //     spyOn(caseEditComponentStub, 'next');
-  //     spyOn(caseEditComponentStub, 'previous');
-  //     spyOn(caseEditComponentStub, 'form');
-  //     spyOn(caseEditComponentStub, 'validate').and.returnValue(of(`{"data":{"field1": "EX12345678"}}`));
-  //     spyOn(formValueService, 'sanitise').and.returnValue(eventData);
-  //
-  //     TestBed.configureTestingModule({
-  //       declarations: [CaseEditPageComponent,
-  //         CaseReferencePipe],
-  //       schemas: [NO_ERRORS_SCHEMA],
-  //       providers: [
-  //         {provide: FormValueService, useValue: formValueService},
-  //         {provide: FormErrorService, useValue: formErrorService},
-  //         {provide: CaseEditComponent, useValue: caseEditComponentStub},
-  //         {provide: PageValidationService, useValue: pageValidationService},
-  //         {provide: ActivatedRoute, useValue: route},
-  //         {provide: MatDialog, useValue: dialog}
-  //       ]
-  //     }).compileComponents();
-  //   }));
-  //
-  //   beforeEach(() => {
-  //     fixture = TestBed.createComponent(CaseEditPageComponent);
-  //     comp = fixture.componentInstance;
-  //
-  //     wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
-  //     comp.currentPage = wizardPage;
-  //
-  //     de = fixture.debugElement;
-  //     fixture.detectChanges();
-  //   });
-  //
-  //   it('should call validate', async () => {
-  //     fixture.detectChanges();
-  //
-  //     comp.submit();
-  //
-  //     fixture.whenStable().then(() => {
-  //       expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
-  //       expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
-  //       expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
-  //       expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
-  //     });
-  //   });
-  //
-  //   it('should change button label when callback warnings notified', () => {
-  //     let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-  //     callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_START;
-  //     comp.callbackErrorsNotify(callbackErrorsContext);
-  //
-  //     fixture.detectChanges();
-  //     let button = de.query($SELECT_SUBMIT_BUTTON);
-  //     expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_START);
-  //     expect(comp.ignoreWarning).toBeFalsy();
-  //
-  //     callbackErrorsContext.ignore_warning = true;
-  //     callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
-  //     comp.callbackErrorsNotify(callbackErrorsContext);
-  //
-  //     fixture.detectChanges();
-  //     expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_CONTINUE);
-  //     expect(comp.ignoreWarning).toBeTruthy();
-  //   });
-  // });
+  describe('submit the form', () => {
+    beforeEach(async(() => {
+      firstPage.id = 'first page';
+      cancelled = createSpyObj('cancelled', ['emit']);
+      let validateResult = {
+        'data': {
+          'field1': 'EX12345678'
+        }
+      };
+
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+
+      caseEditComponentStub = {
+        'form': FORM_GROUP,
+        'wizard': WIZARD,
+        'data': '',
+        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'first': () => true,
+        'next': () => true,
+        'previous': () => true,
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
+        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+      };
+      snapshot = {
+        queryParamMap: createSpyObj('queryParamMap', ['get']),
+      };
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
+      };
+
+      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
+      dialog = createSpyObj<MatDialog>('dialog', ['open']);
+      dialog.open.and.returnValue(matDialogRef);
+
+      spyOn(caseEditComponentStub, 'first');
+      spyOn(caseEditComponentStub, 'next');
+      spyOn(caseEditComponentStub, 'previous');
+      spyOn(caseEditComponentStub, 'form');
+      spyOn(caseEditComponentStub, 'validate').and.returnValue(of(validateResult));
+      spyOn(formValueService, 'sanitise').and.returnValue(eventData);
+
+      TestBed.configureTestingModule({
+        declarations: [CaseEditPageComponent,
+          CaseReferencePipe],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog}
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditPageComponent);
+      comp = fixture.componentInstance;
+
+      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
+      comp.currentPage = wizardPage;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should call validateee', async () => {
+      fixture.detectChanges();
+
+      comp.submit();
+
+      fixture.whenStable().then(() => {
+        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
+        expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
+        expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
+      });
+    });
+
+    it('should change button label when callback warnings notified ', () => {
+      let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+      callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_START;
+      comp.callbackErrorsNotify(callbackErrorsContext);
+
+      fixture.detectChanges();
+      let button = de.query($SELECT_SUBMIT_BUTTON);
+      expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_START);
+      expect(comp.ignoreWarning).toBeFalsy();
+
+      callbackErrorsContext.ignore_warning = true;
+      callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
+      comp.callbackErrorsNotify(callbackErrorsContext);
+
+      fixture.detectChanges();
+      expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_CONTINUE);
+      expect(comp.ignoreWarning).toBeTruthy();
+    });
+  });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
     let cf = new CaseField();
