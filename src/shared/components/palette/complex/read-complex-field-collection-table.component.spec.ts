@@ -15,10 +15,11 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
+  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK = By.css('div>table>tbody>tr>th>a');
   const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('div>table>tbody>tr>td>ccd-field-read');
   const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
   const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
-
+  const UNORDERED = '&#9650;';
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
@@ -110,8 +111,16 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             AddressLine1: 'Flat 9',
             AddressLine2: '111 East India road',
 ​​​            AddressPostcode: 'TE45ED'
-  }
-  }],
+          }
+        }, {
+          value: {
+            label: 'Label 1',
+              AddressLine1: 'AAFlat 10',
+              AddressLine2: 'West India road',
+    ​​​            AddressPostcode: 'TE45ED'
+          }
+        }
+  ],
     display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
       field_type
   :
@@ -171,11 +180,30 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       let simpleRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
-      expect(simpleRowsValues.length).toBe(2);
-      expect(simpleRowsValues[LINE_1].componentInstance.caseField.value).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].value);
-      expect(simpleRowsValues[LINE_2].componentInstance.caseField.value).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].value);
+      expect(simpleRowsValues.length).toBe(4);
+      expect(simpleRowsValues[0].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value["AddressLine1"]);
+      expect(simpleRowsValues[1].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value["AddressLine2"]);
+      expect(simpleRowsValues[2].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value["AddressLine1"]);
+      expect(simpleRowsValues[3].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value["AddressLine2"]);
+
+      let simpleRowsHeadersClickers = de
+        .query($COMPLEX_PANEL)
+        .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK);
+      expect(simpleRowsHeadersClickers.length).toBe(2);
+
+      expect(simpleRowsHeadersClickers[0].properties.innerHTML).toEqual(UNORDERED);
+      expect(simpleRowsHeadersClickers[1].properties.innerHTML).toEqual(UNORDERED);
+
     });
 
+    it('should sort rows based on column name', () => {
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value["AddressLine1"]);
+      component.sortRowsByColumns('AddressLine1');
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value["AddressLine1"]);
+      component.sortRowsByColumns('AddressLine1');
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value["AddressLine1"]);
+
+    });
   });
 
 });
