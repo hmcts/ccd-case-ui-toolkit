@@ -154,42 +154,54 @@ export class FieldsUtils {
   showGreyBar(caseField: CaseField, element: HTMLElement) {
     if (caseField.field_type.type !== 'Collection') {
       if (element) {
-        if ( !this.isCYAPage(element) && this.isSamePage(caseField) ) {
-          element.classList.add('show-condition-grey-bar');
+        if ( !this.isCYAPage(element) ) {  // && this.isSamePage(caseField, element)
+          let divSelector = element.querySelector('div')
+          if (divSelector) {
+            divSelector.classList.add('show-condition-grey-bar');
+          }
         }
       }
     }
   }
 
   private isCYAPage(element: HTMLElement): boolean {
-    let tempElement = element.parentElement;
-    while ( tempElement.parentElement ) {
-      if ( tempElement.tagName === 'FORM' ) {
-        if ( tempElement.classList.contains('check-your-answers') ) {
-          return true;
-        }
-      }
-      tempElement = tempElement.parentElement;
-    }
-    return false;
+    let formElement = this.searchParentByTag(element, 'FORM');
+    return (formElement && formElement.classList.contains('check-your-answers'));
   }
 
-  private isSamePage(caseField: CaseField): boolean {
+  private isSamePage(caseField: CaseField, element: HTMLElement): boolean {
+
+    let cefElement = this.searchParentByTag(element, 'CCD-CASE-EDIT-FORM');
     let idElements: HTMLCollectionOf<Element>;
-    let fieldset = document.querySelector('fieldset');
-    if ( fieldset ) {
-      idElements = fieldset.getElementsByClassName('form-control');
+    if ( cefElement ) {
+      idElements = cefElement.children;
     }
     let idList = [];
     if ( idElements ) {
       for (let i = 0; i < idElements.length; i++) {
-        idList.push(idElements[i].id.replace(/-yes|-no/gi, ''));
+        let formControlElement = idElements[i].querySelector('.form-control');
+        if ( formControlElement && formControlElement.id ) {
+          idList.push(formControlElement.id.replace(/-yes|-no/gi, ''));
+        }
       }
     }
     let condFields = this.getConditionFields(caseField.show_condition);
     return condFields.every(cond => {
       return ( idList.indexOf(cond) !== -1 );
     });
+  }
+
+  private searchParentByTag(element: HTMLElement, tag: string): HTMLElement {
+    if (element) {
+      let tempElement = element.parentElement;
+      while (tempElement.parentElement) {
+        if (tempElement.tagName === tag) {
+          return tempElement;
+        }
+        tempElement = tempElement.parentElement;
+      }
+    }
+    return undefined;
   }
 
   private getConditionFields(condition: string): any[] {
