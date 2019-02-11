@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SearchInput } from './domain/search-input.model';
-import { SearchService, WindowService, OrderService } from '../../services';
+import { SearchService, WindowService, OrderService, JurisdictionService } from '../../services';
 import { Jurisdiction, CaseTypeLite, CaseState } from '../../domain';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
@@ -48,6 +48,7 @@ export class SearchFiltersComponent implements OnInit {
 
   constructor(private searchService: SearchService,
     private orderService: OrderService,
+    private jurisdictionService: JurisdictionService,
     private windowService: WindowService) {
   }
 
@@ -123,6 +124,7 @@ export class SearchFiltersComponent implements OnInit {
 
   onJurisdictionIdChange(): void {
     this.selected.caseType = null;
+    this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
     this.selectCaseType(this.selectedJurisdictionCaseTypes);
     this.onJurisdiction.emit(this.selected.jurisdiction);
