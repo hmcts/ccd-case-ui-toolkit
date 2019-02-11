@@ -144,7 +144,7 @@ const METADATA_FIELDS = ['PersonLastName'];
 const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
   + `\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`
-fdescribe('SearchFiltersComponent', () => {
+describe('SearchFiltersComponent', () => {
 
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
@@ -210,6 +210,22 @@ fdescribe('SearchFiltersComponent', () => {
       .then(() => {
         expect(component.selected.jurisdiction).toBe(JURISDICTION_1);
         expect(component.selected.caseType).toBe(null);
+      });
+  }));
+
+  it('should emit on apply if autoApply is true', async(() => {
+    resetCaseTypes(JURISDICTION_1, []);
+    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
+    component.jurisdictions = [JURISDICTION_1];
+    fixture.detectChanges();
+    component.autoApply = true;
+    component.ngOnInit();
+
+    fixture
+      .whenStable()
+      .then(() => {
+        expect(searchHandler.applyFilters).toHaveBeenCalledWith(
+          {jurisdiction: JURISDICTION_1, caseType: null, formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined});
       });
   }));
 
