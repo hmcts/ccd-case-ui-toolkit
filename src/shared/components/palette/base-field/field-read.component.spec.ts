@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
 import { PaletteContext } from './palette-context.enum';
@@ -62,6 +62,7 @@ describe('FieldReadComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          ReactiveFormsModule,
           FormsModule
         ],
         declarations: [

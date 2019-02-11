@@ -6,7 +6,7 @@ import { CasePrintDocument } from '../../../../shared/domain/case-view/case-prin
 import createSpyObj = jasmine.createSpyObj;
 import { OrderService } from '../../../services/order/order.service';
 import { HttpService, HttpErrorService } from '../../../services/http';
-import { createCaseEventTrigger } from '../../../fixture/shared.fixture';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { CaseView, HttpError, CaseEventTrigger, CaseEventData } from '../../../domain';
 
 describe('CasesService', () => {

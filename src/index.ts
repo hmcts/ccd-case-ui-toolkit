@@ -15,6 +15,8 @@ export { FormValueService,
          CaseFieldService,
          OrderService,
          RouterHelperService,
+         ActivityService,
+         ActivityPollingService,
          ProfileService } from './shared/services';
 export { DocumentData,
          AddressModel,
@@ -41,7 +43,10 @@ export { DocumentData,
          CaseType,
          CaseTypeLite,
          CaseState,
-         CasePrintDocument } from './shared/domain';
+         CasePrintDocument,
+         Activity,
+         DisplayMode,
+         ActivityInfo } from './shared/domain';
 export { ShowCondition,
          ConditionalShowDirective,
          ConditionalShowModule,
@@ -80,8 +85,17 @@ export { PaletteModule,
          CallbackErrorsComponent,
          CallbackErrorsContext,
          CasesService,
-         routing } from './shared/components';
+         ActivityModule,
+         CaseHeaderModule,
+         EventTriggerModule,
+         EventLogModule,
+         CaseResolver,
+         EventTriggerResolver,
+         viewerRouting,
+         editorRouting } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
 export { createCaseEventTrigger,
-         aCaseField } from './shared/fixture/shared.fixture';
+         aCaseField,
+         createCaseView,
+         createCaseTabArray } from './shared/fixture/';
