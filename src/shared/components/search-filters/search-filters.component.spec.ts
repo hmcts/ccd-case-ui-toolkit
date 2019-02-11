@@ -153,7 +153,7 @@ describe('SearchFiltersComponent', () => {
   let windowService;
   beforeEach(async(() => {
 
-    searchHandler = createSpyObj('searchHandler', ['applyFilters']);
+    searchHandler = createSpyObj('searchHandler', ['applyFilters', 'resetFilters']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
     jurisdictionService = new JurisdictionService();
@@ -191,6 +191,7 @@ describe('SearchFiltersComponent', () => {
           JURISDICTION_2
         ];
         component.onApply.subscribe(searchHandler.applyFilters);
+        component.onReset.subscribe(searchHandler.resetFilters);
 
         de = fixture.debugElement;
         fixture.detectChanges();
@@ -214,10 +215,6 @@ describe('SearchFiltersComponent', () => {
   }));
 
   it('should emit on apply if autoApply is true', async(() => {
-    resetCaseTypes(JURISDICTION_1, []);
-    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    component.jurisdictions = [JURISDICTION_1];
-    fixture.detectChanges();
     component.autoApply = true;
     component.ngOnInit();
 
@@ -225,7 +222,7 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         expect(searchHandler.applyFilters).toHaveBeenCalledWith(
-          {jurisdiction: JURISDICTION_1, caseType: null, formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined});
+          {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined});
       });
   }));
 
@@ -561,6 +558,16 @@ describe('Clear localStorage', () => {
 
         de = fixture.debugElement;
         fixture.detectChanges();
+      });
+  }));
+
+  it('should emit on reset if reset is clicked', async(() => {
+    component.reset();
+
+    fixture
+      .whenStable()
+      .then(() => {
+        expect(searchHandler.applyReset).toHaveBeenCalled();
       });
   }));
 
