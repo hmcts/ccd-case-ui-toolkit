@@ -30,7 +30,13 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ["PhantomJS"],
+    browsers: ['Chrome'],
+    customLaunchers: {
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     autoWatch: false,
     singleRun: true
   });
