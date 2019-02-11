@@ -137,13 +137,14 @@ function createObservableFrom<T>(param: T): Observable<T> {
 let searchHandler;
 let mockSearchService;
 let orderService;
+let onJurisdictionHandler: any;
 
 const TEST_FORM_GROUP = new FormGroup({});
 const METADATA_FIELDS = ['PersonLastName'];
 const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
   + `\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`
-describe('SearchFiltersComponent', () => {
+fdescribe('SearchFiltersComponent', () => {
 
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
@@ -157,6 +158,10 @@ describe('SearchFiltersComponent', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     jurisdictionService = new JurisdictionService();
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+
+    onJurisdictionHandler = createSpyObj('onJurisdictionHandler', ['applyJurisdiction']);
+    onJurisdictionHandler.applyJurisdiction.and.returnValue();
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -177,6 +182,8 @@ describe('SearchFiltersComponent', () => {
       .then(() => {
         fixture = TestBed.createComponent(SearchFiltersComponent);
         component = fixture.componentInstance;
+
+        component.onJurisdiction.subscribe(onJurisdictionHandler.applyJurisdiction);
 
         component.formGroup = TEST_FORM_GROUP;
         component.jurisdictions = [
@@ -219,7 +226,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if not in LocalStorage already', () => {
+  it('should select the first caseType from newly selected jurisdiction if nothing in LocalStorage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
@@ -232,6 +239,22 @@ describe('SearchFiltersComponent', () => {
 
     expect(component.selected.jurisdiction).toBe(JURISDICTION_3);
     expect(component.selected.caseType).toBe(CASE_TYPE_1);
+    expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
+  });
+
+  it('should select the first caseType from newly selected jurisdiction if not in LocalStorage already', () => {
+    resetCaseTypes(JURISDICTION_3, [CASE_TYPE_2]);
+    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
+    component.jurisdictions = [JURISDICTION_3];
+    windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_1));
+    fixture.detectChanges();
+    component.ngOnInit();
+
+    component.onJurisdictionIdChange();
+    fixture.detectChanges();
+
+    expect(component.selected.jurisdiction).toBe(JURISDICTION_3);
+    expect(component.selected.caseType).toBe(CASE_TYPE_2);
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
@@ -298,6 +321,7 @@ describe('SearchFiltersComponent', () => {
       .then(() => {
         expect(selector.nativeElement.selectedIndex).toEqual(0);
         expect(component.selected.jurisdiction).toBe(JURISDICTION_1);
+        expect(onJurisdictionHandler.applyJurisdiction).toHaveBeenCalledWith(JURISDICTION_1);
       });
   }));
 
