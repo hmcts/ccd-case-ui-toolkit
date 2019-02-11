@@ -9,13 +9,15 @@ import { CaseHeaderModule } from '../case-header';
 import { EventTriggerModule } from '../event-trigger/event-trigger.module';
 import { TabsModule } from '../../../components/tabs';
 import { PaletteModule } from '../palette';
-import { LabelSubstitutorModule } from '../../directives';
-import { CasePrinterComponent, CasePrintDocumentsResolver, PrintUrlPipe } from './printer';
+import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
+import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseHistoryComponent } from './case-history';
-import { EventTriggerResolver, CaseResolver, CaseHistoryResolver, CaseHistoryService } from './services';
-import { CaseEditorModule } from '../case-editor';
+import { EventTriggerResolver, CaseResolver, CaseHistoryService } from './services';
+import { CaseEditorModule, CaseService } from '../case-editor';
 import { EventLogModule } from './event-log';
+import { CaseViewComponent } from './case-view/case-view.component';
+import { PipesModule, CaseReferencePipe } from '../../pipes';
 
 @NgModule({
     imports: [
@@ -30,12 +32,15 @@ import { EventLogModule } from './event-log';
         PaletteModule,
         LabelSubstitutorModule,
         CaseEditorModule,
+        PipesModule,
+        ConditionalShowModule
     ],
     declarations: [
         CaseHistoryComponent,
         CaseEventTriggerComponent,
         CasePrinterComponent,
         CaseViewerComponent,
+        CaseViewComponent,
         PrintUrlPipe,
     ],
     exports: [
@@ -43,9 +48,12 @@ import { EventLogModule } from './event-log';
         CaseEventTriggerComponent,
         CasePrinterComponent,
         CaseViewerComponent,
+        CaseViewComponent,
+        PrintUrlPipe,
     ],
     providers: [
-        CasePrintDocumentsResolver,
+        CaseService,
+        CaseReferencePipe,
         EventTriggerResolver,
         ActivityService,
         ActivityPollingService,
@@ -53,7 +61,6 @@ import { EventLogModule } from './event-log';
         DraftService,
         HttpService,
         CaseResolver,
-        CaseHistoryResolver,
         CaseHistoryService,
     ]
 })

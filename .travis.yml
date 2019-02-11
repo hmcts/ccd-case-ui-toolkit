@@ -12,11 +12,17 @@ install:
   - npm install -g codecov
   - npm install -g @angular/cli
   - yarn install --frozen-lockfile
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 script:
   - yarn --version
   - yarn lint
   - yarn test
-  - yarn build
+  - yarn build:esm
 after_success:
   - yarn test:codacy-upload
   - yarn coverage

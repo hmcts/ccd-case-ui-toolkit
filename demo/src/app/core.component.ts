@@ -11,6 +11,9 @@ import { Component } from '@angular/core';
                         <li>
                         <a [routerLink]="'/case/progress'" [routerLinkActive]="'item-bold'">Progress Case</a>
                         </li>
+                        <li>
+                        <a [routerLink]="'/case'" [routerLinkActive]="'item-bold'">View Case</a>
+                        </li>
                     </ul>
                 </div>
             </div>
