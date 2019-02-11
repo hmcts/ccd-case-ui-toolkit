@@ -7,9 +7,9 @@ import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
   template: `<div class="container-fluid">
                 <ccd-search-filters [jurisdictions]="jurisdictions"
                                     [autoApply]="true"
-                                    (onApply)="applied()"
+                                    (onApply)="applied($event)"
                                     (onReset)="reset()"
-                                    (onJuridiction)="jurisdictionSelected()"></ccd-search-filters>
+                                    (onJuridiction)="jurisdictionSelected($event)"></ccd-search-filters>
              </div>`
 })
 export class SearchFiltersConsumerComponent implements OnInit {
@@ -73,10 +73,10 @@ export class SearchFiltersConsumerComponent implements OnInit {
     }
 
     reset() {
-        console.log('reset:');
+        console.log('reset');
     }
 
-    jurisdictionSelected(selectedJurisdiction) {
-        console.log('selected jurisdiction:', selectedJurisdiction);
+    jurisdictionSelected(jurisdiction) {
+        console.log('selected jurisdiction:', jurisdiction);
     }
 }

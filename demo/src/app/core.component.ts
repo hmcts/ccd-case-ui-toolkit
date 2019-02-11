@@ -6,16 +6,16 @@ import { Component } from '@angular/core';
                 <div class="nav-left">
                     <ul id="menu-links-left">
                         <li>
-                        <a [routerLink]="'/case/create'" [routerLinkActive]="'item-bold'">Create Case</a>
+                            <a [routerLink]="'/case/create'" [routerLinkActive]="'item-bold'">Create Case</a>
                         </li>
                         <li>
-                        <a [routerLink]="'/case/progress'" [routerLinkActive]="'item-bold'">Progress Case</a>
+                            <a [routerLink]="'/case/progress'" [routerLinkActive]="'item-bold'">Progress Case</a>
                         </li>
                         <li>
-                        <a [routerLink]="'/case'" [routerLinkActive]="'item-bold'">View Case</a>
+                            <a [routerLink]="'/case/view'" [routerLinkActive]="'item-bold'">View Case</a>
                         </li>
                         <li>
-                        <a [routerLink]="'/search'" [routerLinkActive]="'item-bold'">Search</a>
+                            <a [routerLink]="'/search'" [routerLinkActive]="'item-bold'">Search</a>
                         </li>
                     </ul>
                 </div>

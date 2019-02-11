@@ -19,10 +19,10 @@ export const routing = RouterModule.forRoot([
         component: CaseProgressConsumerComponent,
         children: editorRouting
       },
-      { path: 'case',
-        redirectTo: 'case/TEST/TestAddressBookCase/1111222233334444'
+      { path: 'case/view',
+        redirectTo: 'case/view/TEST/TestAddressBookCase/1111222233334444'
       },
-      { path: 'case/:jid/:ctid/:cid',
+      { path: 'case/view/:jid/:ctid/:cid',
         component: CaseViewConsumerComponent,
         children: viewerRouting
       },
