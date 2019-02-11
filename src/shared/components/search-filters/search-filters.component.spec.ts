@@ -235,22 +235,6 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if different in LocalStorage already', () => {
-    resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1]);
-    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    component.jurisdictions = [JURISDICTION_3];
-    windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
-    fixture.detectChanges();
-    component.ngOnInit();
-
-    component.onJurisdictionIdChange();
-    fixture.detectChanges();
-
-    expect(component.selected.jurisdiction).toBe(JURISDICTION_3);
-    expect(component.selected.caseType).toBe(CASE_TYPE_1);
-    expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
-  });
-
   it('should select the caseType when no LocalStorage is present', () => {
     resetCaseTypes(JURISDICTION_1, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
