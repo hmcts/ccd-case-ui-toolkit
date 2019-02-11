@@ -20,6 +20,9 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
   const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
   const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
   const UNORDERED = '&#9650;';
+  const FIRST_COLUMN = 'AddressLine1';
+  const SECOND_COLUMN = 'AddressLine2';
+
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
@@ -181,10 +184,10 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
       expect(simpleRowsValues.length).toBe(4);
-      expect(simpleRowsValues[0].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value["AddressLine1"]);
-      expect(simpleRowsValues[1].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value["AddressLine2"]);
-      expect(simpleRowsValues[2].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value["AddressLine1"]);
-      expect(simpleRowsValues[3].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value["AddressLine2"]);
+      expect(simpleRowsValues[0].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value[FIRST_COLUMN]);
+      expect(simpleRowsValues[1].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
+      expect(simpleRowsValues[2].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
+      expect(simpleRowsValues[3].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[SECOND_COLUMN]);
 
       let simpleRowsHeadersClickers = de
         .query($COMPLEX_PANEL)
@@ -197,13 +200,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
     });
 
     it('should sort rows based on column name', () => {
-      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value["AddressLine1"]);
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value[FIRST_COLUMN]);
       component.sortRowsByColumns('AddressLine1');
-      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value["AddressLine1"]);
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
       component.sortRowsByColumns('AddressLine1');
-      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value["AddressLine1"]);
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value[FIRST_COLUMN]);
 
     });
+
   });
 
 });
