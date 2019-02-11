@@ -4,6 +4,7 @@ import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { HttpService } from '../http/http.service';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class DefinitionsService {
@@ -18,7 +19,7 @@ export class DefinitionsService {
 
     return this.http
       .get(url)
-      .map(response => response.json());
+      .pipe(map(response => response.json()));
   }
 
   getJurisdictions(access: string): Observable<Jurisdiction[]> {
@@ -28,6 +29,6 @@ export class DefinitionsService {
 
     return this.http
       .get(url)
-      .map(response => response.json());
+      .pipe(map(response => response.json()));
   }
 }

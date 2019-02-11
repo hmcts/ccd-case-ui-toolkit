@@ -34,6 +34,8 @@ app.use(function (req, res) {
         response = db.get('case').value();
       } else if (req.url.indexOf('/documents') !== -1) {
         response = db.get('documents').value();
+      }else if (req.url.indexOf('aggregated/caseworkers/:uid/jurisdictions') !== -1) {
+        response = db.get('jurisdictions').value();
       }
     }
     if (response) {
