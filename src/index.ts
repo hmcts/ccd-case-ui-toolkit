@@ -101,7 +101,8 @@ export { PaletteModule,
          CaseResolver,
          EventTriggerResolver,
          viewerRouting,
-         editorRouting } from './shared/components';
+         editorRouting,
+         CreateCaseFiltersComponent } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
 export { createCaseEventTrigger,
