@@ -27,8 +27,12 @@ export const routing = RouterModule.forRoot([
         children: viewerRouting
       },
       { path: 'search',
+<<<<<<< HEAD
         component: SearchFiltersConsumerComponent,
         children: viewerRouting
+=======
+        component: SearchFiltersConsumerComponent
+>>>>>>> RDM-3820
       }
     ]
   }
