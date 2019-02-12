@@ -113,6 +113,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
           this.columnsHorizontalLabel[column].sortOrder = SortOrder.DESCENDING;
         }
       }
+          break;
     }
   }
 

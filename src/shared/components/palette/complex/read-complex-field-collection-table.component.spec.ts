@@ -85,8 +85,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           label: 'Line 2',
           display_context: 'OPTIONAL',
           field_type: {
-            id: 'Text',
-            type: 'Text'
+            id: 'Number',
+            type: 'Number'
           },
           value: '111 East India road'
         },
@@ -112,14 +112,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           value: {
             label: 'SomeLabel',
             AddressLine1: 'Flat 9',
-            AddressLine2: '111 East India road',
+            AddressLine2: 222,
 ​​​            AddressPostcode: 'TE45ED'
           }
         }, {
           value: {
             label: 'Label 1',
               AddressLine1: 'AAFlat 10',
-              AddressLine2: 'West India road',
+              AddressLine2: 111,
     ​​​            AddressPostcode: 'TE45ED'
           }
         }
@@ -205,7 +205,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
       component.sortRowsByColumns('AddressLine1');
       expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value[FIRST_COLUMN]);
+    });
 
+    it('should sort rows based on Number type', () => {
+      expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
+      component.sortRowsByColumns('AddressLine2');
+      expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[1].value[SECOND_COLUMN]);
+      component.sortRowsByColumns('AddressLine2');
+      expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
     });
 
   });
