@@ -17,7 +17,6 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
 import { CaseViewConsumerComponent } from './case-view-consumer.component';
-import { CaseCreateFilterComponent } from './case-create-filter.component.';
 
 @NgModule({
   imports: [
@@ -37,8 +36,7 @@ import { CaseCreateFilterComponent } from './case-create-filter.component.';
     CoreComponent,
     CaseCreateConsumerComponent,
     CaseProgressConsumerComponent,
-    CaseViewConsumerComponent,
-    CaseCreateFilterComponent
+    CaseViewConsumerComponent
   ],
   providers: [
     CasesService,
