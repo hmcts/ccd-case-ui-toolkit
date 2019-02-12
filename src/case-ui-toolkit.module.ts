@@ -33,7 +33,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   ReadEmailFieldComponent, ReadPhoneUKFieldComponent, ReadDateFieldComponent, ReadCollectionFieldComponent, WriteCollectionFieldComponent,
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
-  LabelSubstitutorDirective, CaseViewerComponent} from './shared';
+  LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, SearchFiltersComponent} from './shared';
 
 @NgModule({
     imports: [
@@ -52,6 +52,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       PaletteModule,
       ConditionalShowModule,
       LabelSubstitutorModule,
+      SearchFiltersModule,
     ],
     exports: [
       AlertComponent,
@@ -67,7 +68,9 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       CaseEditComponent,
       CaseCreateComponent,
       CaseProgressComponent,
+      CaseViewComponent,
       CaseViewerComponent,
+      SearchFiltersComponent,
       CallbackErrorsComponent,
       PaletteModule,
       DocumentDialogComponent,
