@@ -224,7 +224,7 @@ export class CasesService {
       wizardPage.case_fields = wizardPage.wizard_page_fields.map((wizardField: WizardPageField) => {
         return this.wizardPageFieldToCaseFieldMapper(wizardField, eventTrigger.case_fields);
       });
-      wizardPage.case_fields = this.deepOrder(wizardPage.case_fields);
+      wizardPage.case_fields = this.orderService.deepSort(wizardPage.case_fields);
     });
   }
 
@@ -291,21 +291,5 @@ export class CasesService {
     } else {
       throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
     }
-  }
-
-  private deepOrder(case_fields: CaseField[]): CaseField[] {
-    case_fields.forEach((caseField: CaseField) => {
-      if (caseField.field_type && caseField.field_type.type === 'Complex') {
-        // If parent is not ordered we get the order from the first child
-        if (!caseField.order && caseField.field_type.complex_fields && caseField.field_type.complex_fields.length > 0) {
-          let caseFieldOptional = caseField.field_type.complex_fields.find(e => e.order !== undefined);
-          if (caseFieldOptional !== undefined) {
-            caseField.order = caseFieldOptional.order;
-          }
-        }
-        caseField.field_type.complex_fields = this.deepOrder(caseField.field_type.complex_fields);
-      }
-    });
-    return this.orderService.sort(case_fields);
   }
 }

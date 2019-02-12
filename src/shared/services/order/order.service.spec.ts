@@ -1,4 +1,5 @@
 import { OrderService } from './order.service';
+import { createCaseField, createFieldType, textFieldType } from '../../fixture/shared.test.fixture';
 
 describe('OrderService', () => {
 
@@ -65,4 +66,129 @@ describe('OrderService', () => {
     });
   });
 
+  describe('should sort caseFields', () => {
+    it('should keep the order of the fields if already sorted', () => {
+      const CASE_FIELDS = [
+        createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3),
+        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5)];
+
+      let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField1');
+      expect(caseFieldsOrdered[1].order).toEqual(5);
+      expect(caseFieldsOrdered[1].id).toEqual('testField2');
+    });
+
+    it('should sort fields in order', () => {
+      const CASE_FIELDS = [
+        createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 5),
+        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3)];
+
+      let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField2');
+      expect(caseFieldsOrdered[1].order).toEqual(5);
+      expect(caseFieldsOrdered[1].id).toEqual('testField1');
+    });
+
+    it('fields without order should end up on the bottom', () => {
+      const CASE_FIELDS = [
+        createCaseField('testField1', 'Debtor name', '', textFieldType(), null),
+        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3)];
+
+      let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField2');
+      expect(caseFieldsOrdered[1].order).toBeUndefined();
+      expect(caseFieldsOrdered[1].id).toEqual('testField1');
+    });
+
+    it('should sort caseFields with Complex type - order is defined only on the Complex type leafs', () => {
+      const CASE_FIELDS_WITH_COMPLEX_TYPE = [
+        createCaseField('testField1', 'Test field 1', '', textFieldType(), null, 1),
+        createCaseField('finalReturn', 'Final return', '',
+          createFieldType('Return', 'Complex', [
+            createCaseField('addressAttended',
+              'Address Attended',
+              'Address Attended hint text',
+              createFieldType('AddressUK', 'Complex', [
+                createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2),
+                createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
+                createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3)
+              ]),
+              null
+            )
+          ]), 'COMPLEX'),
+        createCaseField('testField2', 'Test field 2', '', textFieldType(), null, 4)
+      ];
+
+      let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS_WITH_COMPLEX_TYPE);
+
+      let testField1 = caseFieldsOrdered[0];
+
+      let finalReturn = caseFieldsOrdered[1];
+      let addressAttended = finalReturn.field_type.complex_fields[0];
+      console.log('finalReturn', JSON.stringify(finalReturn, null, 2));
+      console.log('addressAttended', JSON.stringify(addressAttended, null, 2));
+      let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+      let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
+      let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
+
+      let testField2 = caseFieldsOrdered[2];
+
+      expect(testField1.id).toEqual('testField1');
+      expect(testField1.order).toEqual(1);
+      expect(finalReturn.id).toEqual('finalReturn');
+      expect(finalReturn.order).toEqual(2);
+      expect(addressAttended.order).toEqual(addressLine1.order);
+      expect(addressLine2.order).toBeUndefined();
+      expect(postCode.order).toEqual(3);
+
+      expect(testField2.id).toEqual('testField2');
+      expect(testField2.order).toEqual(4);
+    });
+
+    it('should sort Collection type containing Complex type', () => {
+      const CASE_FIELDS_WITH_COMPLEX_TYPE_IN_COLLECTION = [
+        createCaseField('debtorName', 'Debtor name', '', textFieldType(), null, 1),
+        createCaseField('interimReturns', 'Interim returns', '',
+          createFieldType('interimReturns', 'Collection', [],
+            createFieldType('Return', 'Complex', [
+              createCaseField('addressAttended',
+                'Address Attended',
+                'Address Attended hint text',
+                createFieldType('AddressUK', 'Complex', [
+                  createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2),
+                  createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
+                  createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3)
+                ]),
+                null
+              )
+            ])
+          ), 'COMPLEX')
+      ];
+
+      let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS_WITH_COMPLEX_TYPE_IN_COLLECTION);
+
+      let debtorName = caseFieldsOrdered[0];
+      let interimReturns = caseFieldsOrdered[1];
+
+      let addressAttended = interimReturns.field_type.collection_field_type.complex_fields[0];
+      let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+      let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
+      let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
+
+      expect(debtorName.id).toEqual('debtorName');
+      expect(debtorName.order).toEqual(1);
+      expect(interimReturns.id).toEqual('interimReturns');
+      expect(interimReturns.order).toEqual(addressLine1.order);
+      expect(addressLine1.order).toEqual(2);
+      expect(addressAttended.order).toEqual(addressLine1.order);
+      expect(addressLine2.order).toBeUndefined();
+      expect(postCode.order).toEqual(3);
+    });
+  });
 });

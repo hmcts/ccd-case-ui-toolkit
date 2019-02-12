@@ -95,7 +95,12 @@ export let createHiddenComplexFieldMask = (id: string): ComplexFieldMask => {
   return complexFieldMask;
 };
 
-export let createCaseField = (id: string, label: string, hint: string, fieldType: FieldType, display_context: string): CaseField => {
+export let createCaseField = (id: string,
+                              label: string,
+                              hint: string,
+                              fieldType: FieldType,
+                              display_context: string,
+                              order = undefined): CaseField => {
   return {
     id: id || 'personFirstName',
     field_type: fieldType || textFieldType(),
@@ -103,14 +108,19 @@ export let createCaseField = (id: string, label: string, hint: string, fieldType
     label: label || 'First name',
     hint_text: hint || 'First name hint text',
     show_summary_content_option: 0,
+    order: order
   };
 };
 
-export let createFieldType = (typeId: string, type: FieldTypeEnum, complex_fields: CaseField[] = []): FieldType => {
+export let createFieldType = (typeId: string,
+                              type: FieldTypeEnum,
+                              complex_fields: CaseField[] = [],
+                              collection_field_type: FieldType = undefined): FieldType => {
   return {
     id: typeId || 'Text',
     type: type || 'Text',
-    complex_fields: complex_fields || []
+    complex_fields: complex_fields || [],
+    collection_field_type: collection_field_type || undefined
   };
 };
 
