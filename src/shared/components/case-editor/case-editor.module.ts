@@ -82,7 +82,7 @@ import { ErrorsModule } from '../error/errors.module';
         DocumentManagementService,
         RouterHelperService,
         ProfileService,
-        CaseEditWizardGuard
+        CaseEditWizardGuard,
     ]
 })
 export class CaseEditorModule {}
