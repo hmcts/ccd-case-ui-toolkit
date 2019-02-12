@@ -27,8 +27,7 @@ export const routing = RouterModule.forRoot([
         children: viewerRouting
       },
       { path: 'search',
-        component: SearchFiltersConsumerComponent,
-        children: viewerRouting
+        component: SearchFiltersConsumerComponent
       }
     ]
   }

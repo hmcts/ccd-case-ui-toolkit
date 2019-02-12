@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
@@ -59,10 +58,6 @@ export class SearchFiltersConsumerComponent implements OnInit {
       };
 
     jurisdictions: Jurisdiction[];
-
-    constructor(
-        private route: ActivatedRoute
-    ) {}
 
     ngOnInit() {
         this.jurisdictions = [this.JURISDICTION_1, this.JURISDICTION_2];
