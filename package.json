@@ -39,6 +39,7 @@
     "test:coverage": "istanbul check-coverage --statements 80 --lines 80 --functions 80 --branches 80",
     "test:watch": "karma start --auto-watch --no-single-run",
     "tslint": "tslint",
+    "install:demo": "yarn --cwd demo install",
     "build:demo": "yarn --cwd demo build",
     "start:demo": "yarn --cwd demo start",
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
