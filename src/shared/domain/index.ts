@@ -7,6 +7,7 @@ export * from './document';
 export * from './http';
 export * from './order';
 export * from './profile';
+export * from './search';
 export * from './predicate.model';
 export * from './draft.model';
 export * from './case-details.model';
