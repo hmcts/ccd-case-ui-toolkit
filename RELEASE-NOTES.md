@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.24.0 - February 07 2019
+**RDM-3821** - Extract Case Search Form to ui-toolkit as is
+
 ### Version 2.23.5 - February 08 2019
 **Test Fixes** - Upgrade to Chrome Headless
 

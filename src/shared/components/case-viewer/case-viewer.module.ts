@@ -33,7 +33,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         LabelSubstitutorModule,
         CaseEditorModule,
         PipesModule,
-        ConditionalShowModule
+        ConditionalShowModule,
     ],
     declarations: [
         CaseHistoryComponent,
@@ -44,12 +44,8 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         PrintUrlPipe,
     ],
     exports: [
-        CaseHistoryComponent,
-        CaseEventTriggerComponent,
-        CasePrinterComponent,
         CaseViewerComponent,
         CaseViewComponent,
-        PrintUrlPipe,
     ],
     providers: [
         CaseService,
