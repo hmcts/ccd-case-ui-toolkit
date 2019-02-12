@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AbstractAppConfig as AppConfig } from '../../../app.config';
+import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http/http.service';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class DefinitionsService {
 
-  constructor(private http: HttpService, private appConfig: AppConfig) {}
+  constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
   getCaseTypes(jurisdictionId: string, access: string): Observable<CaseTypeLite[]> {
     const url = this.appConfig.getApiUrl()
