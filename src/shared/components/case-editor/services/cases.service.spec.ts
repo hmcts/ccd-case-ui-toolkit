@@ -337,6 +337,9 @@ describe('CasesService', () => {
           expect(postCode.hint_text).toEqual('Enter the postcode');
           expect(postCode.order).toEqual(1);
           expect(postCode.show_condition).toEqual('debtorName="Some name"');
+
+          expect(addressUK.order).toEqual(addressLine1.order);
+          expect(finalReturn.order).toEqual(1);
         }, error => {
           console.log(error);
           return throwError(error);

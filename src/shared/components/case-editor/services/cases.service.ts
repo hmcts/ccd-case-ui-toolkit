@@ -294,12 +294,18 @@ export class CasesService {
   }
 
   private deepOrder(case_fields: CaseField[]): CaseField[] {
-    let orderedCaseFields = this.orderService.sort(case_fields);
-    orderedCaseFields.forEach((caseField: CaseField) => {
+    case_fields.forEach((caseField: CaseField) => {
       if (caseField.field_type && caseField.field_type.type === 'Complex') {
+        // If parent is not ordered we get the order from the first child
+        if (!caseField.order && caseField.field_type.complex_fields && caseField.field_type.complex_fields.length > 0) {
+          let caseFieldOptional = caseField.field_type.complex_fields.find(e => e.order !== undefined);
+          if (caseFieldOptional !== undefined) {
+            caseField.order = caseFieldOptional.order;
+          }
+        }
         caseField.field_type.complex_fields = this.deepOrder(caseField.field_type.complex_fields);
       }
     });
-    return orderedCaseFields;
+    return this.orderService.sort(case_fields);
   }
 }
