@@ -36,7 +36,7 @@ import { CaseViewConsumerComponent } from './case-view-consumer.component';
     CoreComponent,
     CaseCreateConsumerComponent,
     CaseProgressConsumerComponent,
-    CaseViewConsumerComponent
+    CaseViewConsumerComponent,
   ],
   providers: [
     CasesService,
