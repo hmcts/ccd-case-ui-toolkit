@@ -34,7 +34,8 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, SearchFiltersComponent} from './shared';
-import { CreateCaseFiltersComponent } from './shared/components/case-editor/create-case-filters/create-case-filters.component';
+import { CreateCaseFiltersModule } from './shared/components/create-case-filters/create-case-filters.module';
+import { CreateCaseFiltersComponent } from './shared/components/create-case-filters';
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import { CreateCaseFiltersComponent } from './shared/components/case-editor/crea
       ConditionalShowModule,
       LabelSubstitutorModule,
       SearchFiltersModule,
+      CreateCaseFiltersModule
     ],
     exports: [
       AlertComponent,
@@ -72,7 +74,6 @@ import { CreateCaseFiltersComponent } from './shared/components/case-editor/crea
       CaseViewComponent,
       CaseViewerComponent,
       SearchFiltersComponent,
-      CreateCaseFiltersComponent,
       CallbackErrorsComponent,
       PaletteModule,
       DocumentDialogComponent,
@@ -81,6 +82,7 @@ import { CreateCaseFiltersComponent } from './shared/components/case-editor/crea
       RemoveDialogComponent,
       CaseReferencePipe,
       MarkdownComponent,
+      CreateCaseFiltersComponent,
 
       BaseFieldModule,
       PaletteUtilsModule,

@@ -32,8 +32,6 @@ import { DocumentManagementService } from '../../services/document-management';
 import { RouterHelperService } from '../../services/router';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { ErrorsModule } from '../error/errors.module';
-import { CreateCaseFiltersComponent } from './create-case-filters/create-case-filters.component';
-import { DefinitionsService } from '../../services/definitions/definitions.service';
 
 @NgModule({
     imports: [
@@ -55,7 +53,6 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
         CaseEditFormComponent,
         CaseEditSubmitComponent,
         CaseCreateComponent,
-        CreateCaseFiltersComponent,
         CaseProgressComponent
     ],
     exports: [
@@ -65,7 +62,6 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
         CaseEditFormComponent,
         CaseEditSubmitComponent,
         CaseCreateComponent,
-        CreateCaseFiltersComponent,
         CaseProgressComponent,
         CallbackErrorsComponent,
     ],
@@ -86,8 +82,7 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
         DocumentManagementService,
         RouterHelperService,
         ProfileService,
-        CaseEditWizardGuard,
-        DefinitionsService
+        CaseEditWizardGuard
     ]
 })
 export class CaseEditorModule {}
