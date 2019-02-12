@@ -11,7 +11,7 @@
     <ng-container *ngFor="let checkbox of caseField.field_type.fixed_list_items">
 
       <div class="multiple-choice">
-        <input [id]="id()+'-'+checkbox.code" [name]="id()" type="checkbox" [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
+        <input class="form-control" [id]="id()+'-'+checkbox.code" [name]="id()" type="checkbox" [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
         <label class="form-label" [for]="id()+'-'+checkbox.code">{{checkbox.label}}</label>
       </div>
 

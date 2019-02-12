@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.fixture';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';

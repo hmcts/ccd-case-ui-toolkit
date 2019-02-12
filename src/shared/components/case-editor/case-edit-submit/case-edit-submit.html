@@ -23,7 +23,7 @@
   <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
     <h2 class="heading-small">Check your answers</h2>
-    <span class="text-16">Check the information below carefully. This will form a record of your application.</span>
+    <span class="text-16">Check the information below carefully.</span>
 
     <table class="form-table">
       <tbody>
@@ -33,8 +33,8 @@
             <ng-container *ngIf="canShowFieldInCYA(field)">
               <tr ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
                 [formGroup]="editForm.controls['data']" [eventFields]="eventTrigger.case_fields">
-                <th class="valign-top"><span class="text-16">{{field.label}}</span></th>
-                <td class="form-cell">
+                <th *ngIf="!isLabel(field)" class="valign-top"><span class="text-16">{{field.label}}</span></th>
+                <td class="form-cell" [attr.colspan]="isLabel(field) ? '2' : '1'">
                   <ccd-field-read [caseField]="summaryCaseField(field)" [context]="paletteContext"></ccd-field-read>
                 </td>
                 <td class="valign-top check-your-answers__change">

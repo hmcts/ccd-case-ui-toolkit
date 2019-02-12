@@ -31,6 +31,7 @@ import { AddressesService } from '../../services/addresses';
 import { DocumentManagementService } from '../../services/document-management';
 import { RouterHelperService } from '../../services/router';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { ErrorsModule } from '../error/errors.module';
 
 @NgModule({
     imports: [
@@ -43,6 +44,7 @@ import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
         PaletteModule,
         ConditionalShowModule,
         LabelSubstitutorModule,
+        ErrorsModule,
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -51,8 +53,7 @@ import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
         CaseEditFormComponent,
         CaseEditSubmitComponent,
         CaseCreateComponent,
-        CaseProgressComponent,
-        CallbackErrorsComponent,
+        CaseProgressComponent
     ],
     exports: [
         CaseEditConfirmComponent,

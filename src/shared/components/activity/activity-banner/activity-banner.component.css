@@ -1,0 +1,40 @@
+.caseLocked {
+    margin-top: 4px;
+    height: 40px;
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    background-color: #e72626;
+}
+
+.someoneViewing {
+    margin-top: 4px;
+    height: 40px;
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    background-color: #912b88;
+}
+
+.bannerIcon{
+    float: left;
+    color: #FFFFFF;
+    padding-left: 9px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-40%);
+}
+
+.bannerText {
+    padding-left: 40px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 20px;
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    font-family: "nta", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.25;
+    text-align: left;
+    color: #ffffff;
+}

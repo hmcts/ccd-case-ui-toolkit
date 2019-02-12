@@ -17,6 +17,7 @@ import { TabComponent } from './components/tabs/tab.component';
 import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
 import { CaseEditorModule } from './shared/components/case-editor/case-editor.module';
+import { CaseViewerModule } from './shared/components/case-viewer/case-viewer.module';
 import { CaseEditComponent } from './shared/components/case-editor/case-edit/case-edit.component';
 import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
 import { CaseCreateComponent } from './shared/components/case-editor/case-create/case-create.component';
@@ -32,7 +33,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   ReadEmailFieldComponent, ReadPhoneUKFieldComponent, ReadDateFieldComponent, ReadCollectionFieldComponent, WriteCollectionFieldComponent,
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
-  LabelSubstitutorDirective } from './shared';
+  LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, SearchFiltersComponent} from './shared';
 
 @NgModule({
     imports: [
@@ -43,6 +44,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       FormModule,
       TabsModule,
       CaseEditorModule,
+      CaseViewerModule,
       PaletteModule,
       DialogsModule,
       PipesModule,
@@ -50,6 +52,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       PaletteModule,
       ConditionalShowModule,
       LabelSubstitutorModule,
+      SearchFiltersModule,
     ],
     exports: [
       AlertComponent,
@@ -65,6 +68,9 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       CaseEditComponent,
       CaseCreateComponent,
       CaseProgressComponent,
+      CaseViewComponent,
+      CaseViewerComponent,
+      SearchFiltersComponent,
       CallbackErrorsComponent,
       PaletteModule,
       DocumentDialogComponent,

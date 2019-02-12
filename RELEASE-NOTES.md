@@ -1,6 +1,59 @@
 ## RELEASE NOTES
 
-### Version 2.16.0 - December 18 2018
+### Version 2.24.0 - February 07 2019
+**RDM-3821** - Extract Case Search Form to ui-toolkit as is
+
+### Version 2.23.5 - February 08 2019
+**Test Fixes** - Upgrade to Chrome Headless
+
+### Version 2.23.4 - February 08 2019
+**RDM-3675** - fix to image sourcing
+
+### Version 2.23.3 Beta-v3 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v3
+
+### Version 2.23.2 Beta-v2 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v2
+
+### Version 2.23.1 Beta - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta
+
+### Version 2.23.0 - February 06 2019
+**RDM-3799** - New case view contract.
+**RDM-3545** - Case Linking - Error text missing when value input into field of type CaseLink fails validation on event
+
+### Version 2.22.2 - Beta Release - February 02 2019
+**RDM-3849** - Fixed hide show not enabled
+
+### Version 2.22.0 - January 25 2019
+**RDM-3675** - Extraction of Case View into toolkit
+
+### Version 2.21.2 - January 22 2019
+**RDM-3584** - Previous page data to be sent on Midevent callback
+
+### Version 2.21.0 - January 14 2019
+**RDM-2806** - Markdown in CYA displays the actual Markdown (used for Section headings)
+**RDM-3401, RDM-3403, RDM-3404, RDM-3409, RDM-3410** - Accessibility fixes
+
+### Version 2.20.2 - January 10 2019
+**RDM-3628** - revert for CRUD contract on Collection Items - Standard API
+
+### Version 2.20.1 - January 9 2019
+**RDM-3628** - Add null check for CaseLinks
+
+### Version 2.20.0 - January 9 2019
+**RDM-2455** - CRUD contract on Collection Items - Standard API
+
+### Version 2.19.1 - January 9 2019
+**RDM-3594** - Fix failed regex (callback) validation not being displayed in the Error Box
+
+### Version 2.19.0 - January 9 2019
+**RDM-3651** - Update Check Your Answer wording
+
+### Version 2.18.0 - January 8 2019
+**RDM-3574** - UI Toolkit: Use Post/Put/Get/Delete Draft endpoint in API v2
+
+### Version 2.17.0 - December 18 2018
 **RDM-3501** - UI Toolkit: Use Get Profile API v2
 
 ### Version 2.15.0 - December 14 2018
@@ -20,8 +73,8 @@
 
 **Revert-RDM-3284** - Revert RDM-3284 until Backend changes are completely implemented
 
-**RDM-2974** - Implement the `<BR>` style for Markdown linebreaks 
-  
+**RDM-2974** - Implement the `<BR>` style for Markdown linebreaks
+
 ### Version 2.11.0 - December 07 2018 - *Deprecated Version*
 **RDM-3284** - CRUD contract on Collection for Add new item
 
@@ -159,19 +212,19 @@
 - Upgraded to Angular version 5.2.0
 
 ### Version 1.1.8 - July 3 2018
-- Bumped the version to 1.1.8 
+- Bumped the version to 1.1.8
 
 ### Version 1.1.7 - July 2 2018
-**RDM-1886** Enhancement: 
+**RDM-1886** Enhancement:
 - Sign Out link redesign
 
 ### Version 1.1.6 - May 24 2018
-**RDM-1149** Fixes added: 
+**RDM-1149** Fixes added:
 - Mandatory field skipping issue found in tests fixed
 - Several PR comments addressed
 
 ### Version 1.1.5 - May 22 2018
-**RDM-1149** Fixes added: 
+**RDM-1149** Fixes added:
 - Issue 'error on single digit hour'
 - Incorrect Hour/Minute/Second initialization when field is mandatory
 - Changed to a simpler Regex validation

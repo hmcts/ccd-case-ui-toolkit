@@ -6,12 +6,18 @@ node_js:
   - "node"    # Latest stable Node
 cache: yarn
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.2
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
   - export PATH="$HOME/.yarn/bin:$PATH"
 install:
   - npm install -g codecov
   - npm install -g @angular/cli
   - yarn install --frozen-lockfile
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 script:
   - yarn --version
   - yarn lint

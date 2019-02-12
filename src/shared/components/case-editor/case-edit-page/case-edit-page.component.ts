@@ -82,6 +82,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       }
     });
+    if (document.getElementById('main-content')) {
+      document.getElementById('main-content').focus();
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -123,6 +126,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       let caseEventData: CaseEventData = this.formValueService.sanitise(currentPageFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
+      caseEventData.event_data = this.editForm.value.data;
+
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
           if (jsonData) {
@@ -132,6 +137,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           this.next();
         }, error => this.handleError(error));
       this.scrollToTop();
+    }
+    if (document.getElementById('main-content')) {
+      document.getElementById('main-content').focus();
     }
   }
 

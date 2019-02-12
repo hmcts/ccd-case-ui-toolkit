@@ -1,5 +1,3 @@
-import { CaseEventData } from './shared/domain/case-event-data.model';
-
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
@@ -10,8 +8,16 @@ export abstract class AbstractAppConfig {
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
   abstract getPaymentsUrl(): string;
-  abstract getCreateOrUpdateDraftsUrl(jid: string, ctid: string, eventData: CaseEventData): string
-  abstract getViewOrDeleteDraftsUrl(jid: string, ctid: string, did: string): string
+  abstract getCreateOrUpdateDraftsUrl(ctid: string): string
+  abstract getViewOrDeleteDraftsUrl(did: string): string
+  abstract getActivityUrl(): string;
+  abstract getActivityNexPollRequestMs(): number;
+  abstract getActivityRetry(): number;
+  abstract getActivityBatchCollectionDelayMs(): number;
+  abstract getActivityMaxRequestPerBatch(): number;
+  abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
+  abstract getPrintServiceUrl(): string;
+  abstract getRemotePrintServiceUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -23,4 +29,11 @@ export class CaseEditorConfig {
   postcode_lookup_url: string;
   remote_document_management_url: string;
   payments_url: string;
+  activity_batch_collection_delay_ms: number;
+  activity_next_poll_request_ms: number;
+  activity_retry: number;
+  activity_url: string;
+  activity_max_request_per_batch: number;
+  print_service_url: string;
+  remote_print_service_url: string;
 }

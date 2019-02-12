@@ -25,17 +25,12 @@ a {
   &:focus {
     background-color: $blue;
     color: $white;
-    outline: none;
   }
-
-  input {
-    float: right;
-    background-color: $green;
-
-    &:focus {
-      outline: none;
-    }
-  }
+}
+input {
+  float: right;
+  background-color: $green;
+  margin-top: -3px;
 }
 
 .item-bold {
