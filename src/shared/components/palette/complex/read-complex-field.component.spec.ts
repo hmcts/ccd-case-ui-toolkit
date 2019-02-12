@@ -147,9 +147,7 @@ describe('when context is TABLE_VIEW', () => {
     expect(componentInstance.context).toBe(expectedContext);
   };
 
-
-
-  caseField_dsp.display_context_parameter =  '#TABLE(AddressLine1, AddressLine2)';
+  caseField_dsp.display_context_parameter = '#TABLE(AddressLine1, AddressLine2)';
 
   beforeEach(async(() => {
 
