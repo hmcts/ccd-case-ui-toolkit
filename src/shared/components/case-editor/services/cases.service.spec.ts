@@ -5,17 +5,8 @@ import { Observable, throwError } from 'rxjs';
 import { CasePrintDocument } from '../../../../shared/domain/case-view/case-print-document.model';
 import { HttpErrorService, HttpService } from '../../../services/http';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
-import { ShowCondition } from '../../../directives/conditional-show/domain';
-import {
-  createCaseEventTrigger,
-  createCaseField,
-  createComplexFieldMask,
-  createFieldType,
-  createHiddenComplexFieldMask,
-  createWizardPage,
-  createWizardPageField,
-  textFieldType
-} from '../../../fixture/shared.test.fixture';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasesService', () => {
@@ -64,6 +55,7 @@ describe('CasesService', () => {
   let httpService: any;
   let orderService: any;
   let errorService: any;
+  let wizardPageFieldToCaseFieldMapper: any;
 
   let casesService: CasesService;
 
@@ -74,6 +66,8 @@ describe('CasesService', () => {
 
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
+    wizardPageFieldToCaseFieldMapper = createSpyObj<WizardPageFieldToCaseFieldMapper>(
+      'wizardPageFieldToCaseFieldMapper', ['mapAll']);
 
     orderService = {
       sort: function() {}
@@ -82,7 +76,7 @@ describe('CasesService', () => {
       return caseFields;
     });
 
-    casesService = new CasesService(httpService, appConfig, orderService, errorService);
+    casesService = new CasesService(httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper);
   });
 
   describe('getCaseView()', () => {
@@ -240,109 +234,6 @@ describe('CasesService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-        });
-    });
-  });
-
-  describe('getEventTrigger() - use wizard page masks to mask/update case field data', () => {
-
-    const CASE_FIELDS = [
-      createCaseField('debtorName', 'Debtor name', '', textFieldType(), null),
-      createCaseField('finalReturn', 'Final return', '',
-        createFieldType('Return', 'Complex', [
-          createCaseField('addressAttended',
-            'Address Attended',
-            'Address Attended hint text',
-            createFieldType('AddressUK', 'Complex', [
-                createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null),
-                createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
-                createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null)
-            ]),
-            null
-          )
-        ]),
-        'COMPLEX')
-    ];
-
-    const WIZARD_PAGES = [
-      createWizardPage('FinalReturnfinalReturn', 'Final Return', 1,
-        [
-          createWizardPageField('debtorName', 2, null, 'MANDATORY', []),
-          createWizardPageField('finalReturn', 1, null, 'COMPLEX', [
-            createComplexFieldMask('finalReturn.addressAttended.AddressLine1',
-              3,
-              'MANDATORY',
-              'House number attended altered',
-              'Altered hint text',
-              ''),
-            createHiddenComplexFieldMask('finalReturn.addressAttended.AddressLine2'),
-            createComplexFieldMask('finalReturn.addressAttended.PostCode',
-              1,
-              'OPTIONAL',
-              'Postcode attended',
-              'Enter the postcode',
-              'debtorName="Some name"')
-            ])
-        ],
-        [], null, new ShowCondition(null))
-    ];
-
-    const EVENT_TRIGGER_RESPONSE: CaseEventTrigger = createCaseEventTrigger('FinalReturn',
-      'Final Return',
-      '1547555344187688',
-      false,
-      CASE_FIELDS,
-      WIZARD_PAGES
-      );
-
-    beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(EVENT_TRIGGER_RESPONSE)
-      }))));
-    });
-
-    it('should prepare case_fields to be displayed based on wizard_page_fields', () => {
-
-      casesService
-        .getEventTrigger(CTID, EVENT_TRIGGER_ID, CASE_ID, 'false')
-        .subscribe(eventTrigger => {
-          const util = require('util');
-          let debtorName = eventTrigger.wizard_pages[0].case_fields[0];
-          let finalReturn = eventTrigger.wizard_pages[0].case_fields[1];
-          let addressUK = finalReturn.field_type.complex_fields[0];
-          let addressLine1 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine1');
-          let addressLine2 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine2');
-          let postCode = addressUK.field_type.complex_fields.find(e => e.id === 'PostCode');
-
-          console.log(util.inspect(addressLine1, {showHidden: false, depth: null}));
-
-          expect(debtorName.hidden).toBeFalsy('debtorName.hidden should be undefined');
-          expect(debtorName.display_context).toEqual('MANDATORY');
-          expect(debtorName.id).toEqual('debtorName');
-          expect(debtorName.order).toEqual(2);
-          expect(debtorName.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
-
-          expect(addressLine1.hidden).toBeFalsy('addressLine1.hidden should be undefined');
-          expect(addressLine1.display_context).toEqual('MANDATORY');
-          expect(addressLine1.label).toEqual('House number attended altered');
-          expect(addressLine1.hint_text).toEqual('Altered hint text');
-          expect(addressLine1.order).toEqual(3);
-          expect(addressLine1.show_condition).toBeUndefined('addressLine1.show_condition should be undefined');
-
-          expect(addressLine2.hidden).toEqual(true);
-
-          expect(postCode.hidden).toBeFalsy('postCode.hidden should be undefined');
-          expect(postCode.display_context).toEqual('OPTIONAL');
-          expect(postCode.label).toEqual('Postcode attended');
-          expect(postCode.hint_text).toEqual('Enter the postcode');
-          expect(postCode.order).toEqual(1);
-          expect(postCode.show_condition).toEqual('debtorName="Some name"');
-
-          expect(addressUK.order).toEqual(addressLine1.order);
-          expect(finalReturn.order).toEqual(1);
-        }, error => {
-          console.log(error);
-          return throwError(error);
         });
     });
   });

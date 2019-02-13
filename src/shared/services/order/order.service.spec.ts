@@ -131,8 +131,8 @@ describe('OrderService', () => {
 
       let finalReturn = caseFieldsOrdered[1];
       let addressAttended = finalReturn.field_type.complex_fields[0];
-      console.log('finalReturn', JSON.stringify(finalReturn, null, 2));
-      console.log('addressAttended', JSON.stringify(addressAttended, null, 2));
+      // console.log('finalReturn', JSON.stringify(finalReturn, null, 2));
+      // console.log('addressAttended', JSON.stringify(addressAttended, null, 2));
       let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
       let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
       let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
