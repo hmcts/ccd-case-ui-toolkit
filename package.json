@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.24.1",
+  "version": "2.25.0",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -39,7 +39,9 @@
     "test:coverage": "istanbul check-coverage --statements 80 --lines 80 --functions 80 --branches 80",
     "test:watch": "karma start --auto-watch --no-single-run",
     "tslint": "tslint",
-    "start": "yarn --cwd demo start",
+    "install:demo": "yarn --cwd demo install",
+    "build:demo": "yarn --cwd demo build",
+    "start:demo": "yarn --cwd demo start",
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
