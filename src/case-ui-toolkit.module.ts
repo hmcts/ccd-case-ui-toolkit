@@ -52,7 +52,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       PaletteModule,
       ConditionalShowModule,
       LabelSubstitutorModule,
-      SearchFiltersModule
+      SearchFiltersModule,
     ],
     exports: [
       AlertComponent,
