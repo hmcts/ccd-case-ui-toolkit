@@ -1,1 +1,1 @@
-export * from './create-case-filters.component';
+export * from './create-case-filters.module';
