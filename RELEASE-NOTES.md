@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.24.1 - February 13 2019
+**RDM-2963** changed initialisation values to null 
+
 ### Version 2.24.0 - February 07 2019
 **RDM-3821** - Extract Case Search Form to ui-toolkit as is
 
