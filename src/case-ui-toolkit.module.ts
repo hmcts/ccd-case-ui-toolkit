@@ -35,7 +35,6 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, SearchFiltersComponent} from './shared';
 import { CreateCaseFiltersModule } from './shared/components/create-case-filters/create-case-filters.module';
-import { CreateCaseFiltersComponent } from './shared/components/create-case-filters';
 
 @NgModule({
     imports: [
@@ -82,7 +81,6 @@ import { CreateCaseFiltersComponent } from './shared/components/create-case-filt
       RemoveDialogComponent,
       CaseReferencePipe,
       MarkdownComponent,
-      CreateCaseFiltersComponent,
 
       BaseFieldModule,
       PaletteUtilsModule,

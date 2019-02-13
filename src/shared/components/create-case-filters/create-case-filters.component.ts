@@ -2,15 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
-import { CREATE_ACCESS } from '../../../domain/case-view/access-types.model';
-import { DefinitionsService } from '../../../services/definitions/definitions.service';
-import { Jurisdiction } from '../../../domain/definition/jurisdiction.model';
-import { CaseTypeLite } from '../../../domain/definition/case-type-lite.model';
-import { CaseEvent } from '../../../domain/definition/case-event.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { OrderService } from '../../../services/order/order.service';
-import { AlertService } from '../../../services/alert/alert.service';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
+import { CaseEvent } from '../../domain/definition/case-event.model';
+import { HttpError } from '../../domain/http/http-error.model';
+import { DefinitionsService } from '../../services/definitions/definitions.service';
+import { OrderService } from '../../services/order/order.service';
+import { AlertService } from '../../services/alert/alert.service';
+import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
+import { CallbackErrorsContext } from '../error/domain/error-context';
 
 @Component({
   selector: 'ccd-create-case-filters',
