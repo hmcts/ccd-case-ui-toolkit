@@ -3,9 +3,9 @@ import { CaseEventTrigger } from '../../../domain';
 import {
   createCaseEventTrigger,
   createCaseField,
-  createComplexFieldMask,
+  createComplexFieldOverride,
   createFieldType,
-  createHiddenComplexFieldMask,
+  createHiddenComplexFieldOverride,
   createWizardPage,
   createWizardPageField,
   textFieldType
@@ -38,14 +38,14 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
       [
         createWizardPageField('debtorName', 2, null, 'MANDATORY', []),
         createWizardPageField('finalReturn', 1, null, 'COMPLEX', [
-          createComplexFieldMask('finalReturn.addressAttended.AddressLine1',
+          createComplexFieldOverride('finalReturn.addressAttended.AddressLine1',
             3,
             'MANDATORY',
             'House number attended altered',
             'Altered hint text',
             ''),
-          createHiddenComplexFieldMask('finalReturn.addressAttended.AddressLine2'),
-          createComplexFieldMask('finalReturn.addressAttended.PostCode',
+          createHiddenComplexFieldOverride('finalReturn.addressAttended.AddressLine2'),
+          createComplexFieldOverride('finalReturn.addressAttended.PostCode',
             1,
             'OPTIONAL',
             'Postcode attended',
@@ -67,7 +67,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     wizardPageFieldToCaseFieldMapper = new WizardPageFieldToCaseFieldMapper();
   });
 
-  it('should map wizardPageFields using complex_field_mask_list data', () => {
+  it('should map wizardPageFields using complex_field_overrides data', () => {
 
     let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
     console.log(JSON.stringify(caseFields, null, 2));

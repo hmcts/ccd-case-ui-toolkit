@@ -1,6 +1,6 @@
 import { WizardPageField } from '../domain';
 import { CaseField } from '../../../domain';
-import { ComplexFieldMask } from '../domain/wizard-page-field-complex-mask.model';
+import { ComplexFieldOverride } from '../domain/wizard-page-field-complex-override.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -8,54 +8,54 @@ import { Injectable } from '@angular/core';
 })
 export class WizardPageFieldToCaseFieldMapper {
 
-  mapAll(wizardPageField: WizardPageField[], caseFields: CaseField[]): CaseField[] {
-    return wizardPageField.map((wizardField: WizardPageField) => {
+  mapAll(wizardPageFields: WizardPageField[], caseFields: CaseField[]): CaseField[] {
+    return wizardPageFields.map(wizardField => {
       return this.map(wizardField, caseFields);
     });
   }
 
   private map(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
 
-    let case_field: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
-    case_field.id = wizardPageField.case_field_id;
-    case_field.wizardProps = wizardPageField;
-    case_field.display_context = wizardPageField.display_context;
-    case_field.order = wizardPageField.order;
+    let caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
+    caseField.id = wizardPageField.case_field_id;
+    caseField.wizardProps = wizardPageField;
+    caseField.display_context = wizardPageField.display_context;
+    caseField.order = wizardPageField.order;
 
-    if (wizardPageField.display_context === 'COMPLEX' && wizardPageField.complex_field_mask_list) {
-      wizardPageField.complex_field_mask_list.forEach((complexFieldMask: ComplexFieldMask) => {
-        this.processComplexFieldMask(complexFieldMask, case_field, caseFields);
+    if (wizardPageField.complex_field_overrides && wizardPageField.complex_field_overrides.length > 0) {
+      wizardPageField.complex_field_overrides.forEach((override: ComplexFieldOverride) => {
+        this.processComplexFieldOverride(override, caseField, caseFields);
       });
     }
 
-    return case_field;
+    return caseField;
   }
 
-  private processComplexFieldMask(complexFieldMask: ComplexFieldMask, case_field: CaseField, caseFields: CaseField[]) {
-    const caseFieldIds = complexFieldMask.complex_field_id.split('.');
+  private processComplexFieldOverride(override: ComplexFieldOverride, case_field: CaseField, caseFields: CaseField[]) {
+    const caseFieldIds = override.complex_field_element_id.split('.');
     let case_field_leaf: CaseField;
 
-    if (case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex') {
+    if (this.isCollectionOfComplex(case_field)) {
       const [_, ...tail] = caseFieldIds;
       case_field_leaf = this.getCaseFieldLeaf(tail, case_field.field_type.collection_field_type.complex_fields);
     } else {
       case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, caseFields);
     }
 
-    if (complexFieldMask.display_context !== 'HIDDEN') {
+    if (override.display_context !== 'HIDDEN') {
       case_field_leaf.hidden = false;
-      case_field_leaf.display_context = complexFieldMask.display_context;
-      if (complexFieldMask.order) {
-        case_field_leaf.order = complexFieldMask.order;
+      case_field_leaf.display_context = override.display_context;
+      if (override.order) {
+        case_field_leaf.order = override.order;
       }
-      if (complexFieldMask.label && complexFieldMask.label.length > 0) {
-        case_field_leaf.label = complexFieldMask.label;
+      if (override.label && override.label.length > 0) {
+        case_field_leaf.label = override.label;
       }
-      if (complexFieldMask.hint_text && complexFieldMask.hint_text.length > 0) {
-        case_field_leaf.hint_text = complexFieldMask.hint_text;
+      if (override.hint_text && override.hint_text.length > 0) {
+        case_field_leaf.hint_text = override.hint_text;
       }
-      if (complexFieldMask.show_condition && complexFieldMask.show_condition.length > 0) {
-        case_field_leaf.show_condition = complexFieldMask.show_condition;
+      if (override.show_condition && override.show_condition.length > 0) {
+        case_field_leaf.show_condition = override.show_condition;
       }
     } else {
       case_field_leaf.hidden = true;
@@ -80,5 +80,9 @@ export class WizardPageFieldToCaseFieldMapper {
     } else {
       throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
     }
+  }
+
+  private isCollectionOfComplex(case_field: CaseField) {
+    return case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex';
   }
 }

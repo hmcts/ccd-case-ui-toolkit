@@ -1,7 +1,7 @@
 import { CaseField } from '../domain/definition/case-field.model';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { FieldType, FieldTypeEnum } from '../domain';
-import { ComplexFieldMask } from '../components/case-editor/domain/wizard-page-field-complex-mask.model';
+import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-page-field-complex-override.model';
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ShowCondition } from '../directives/conditional-show/domain';
 
@@ -62,37 +62,37 @@ export let createWizardPageField = (id: string,
                                     order: number,
                                     pageColumnNumber: number,
                                     displayContext: string,
-                                    complexFieldMaskList: ComplexFieldMask[] = []): WizardPageField => {
+                                    complexFieldOverrides: ComplexFieldOverride[] = []): WizardPageField => {
   const wizardPageField = new WizardPageField();
   wizardPageField.case_field_id = id;
   wizardPageField.order = order;
   wizardPageField.page_column_no = pageColumnNumber;
   wizardPageField.display_context = displayContext;
-  wizardPageField.complex_field_mask_list = complexFieldMaskList;
+  wizardPageField.complex_field_overrides = complexFieldOverrides;
   return wizardPageField;
 };
 
-export let createComplexFieldMask = (id: string,
-                                     order: number,
-                                     displayContext: string,
-                                     label: string,
-                                     hint: string,
-                                     showCondition: string): ComplexFieldMask => {
-  const complexFieldMask = new ComplexFieldMask();
-  complexFieldMask.complex_field_id = id;
-  complexFieldMask.order = order;
-  complexFieldMask.display_context = displayContext;
-  complexFieldMask.label = label;
-  complexFieldMask.hint_text = hint;
-  complexFieldMask.show_condition = showCondition;
-  return complexFieldMask;
+export let createComplexFieldOverride = (id: string,
+                                         order: number,
+                                         displayContext: string,
+                                         label: string,
+                                         hint: string,
+                                         showCondition: string): ComplexFieldOverride => {
+  const complexFieldOverride = new ComplexFieldOverride();
+  complexFieldOverride.complex_field_element_id = id;
+  complexFieldOverride.order = order;
+  complexFieldOverride.display_context = displayContext;
+  complexFieldOverride.label = label;
+  complexFieldOverride.hint_text = hint;
+  complexFieldOverride.show_condition = showCondition;
+  return complexFieldOverride;
 };
 
-export let createHiddenComplexFieldMask = (id: string): ComplexFieldMask => {
-  const complexFieldMask = new ComplexFieldMask();
-  complexFieldMask.complex_field_id = id;
-  complexFieldMask.display_context = 'HIDDEN';
-  return complexFieldMask;
+export let createHiddenComplexFieldOverride = (id: string): ComplexFieldOverride => {
+  const complexFieldOverride = new ComplexFieldOverride();
+  complexFieldOverride.complex_field_element_id = id;
+  complexFieldOverride.display_context = 'HIDDEN';
+  return complexFieldOverride;
 };
 
 export let createCaseField = (id: string,
