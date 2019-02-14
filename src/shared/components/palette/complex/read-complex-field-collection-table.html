@@ -17,7 +17,7 @@
           <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
             <ng-container *ngFor="let heading of columns">
               <ng-container  *ngFor="let name of item | keyvalue">
-                <td *ngIf="heading.trim() == name.key" class="text-16">
+                <td *ngIf="heading.trim() == name.key && name.value" class="text-16">
                   <ccd-field-read [caseField]="{
                         id: name.key,
                         label: name.value.label,
