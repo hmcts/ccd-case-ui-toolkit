@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -6,23 +6,22 @@ import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { HttpError } from '../../domain/http/http-error.model';
-import { DefinitionsService } from '../../services/definitions/definitions.service';
 import { OrderService } from '../../services/order/order.service';
 import { AlertService } from '../../services/alert/alert.service';
-import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
 import { CallbackErrorsContext } from '../error/domain/error-context';
 
 @Component({
   selector: 'ccd-create-case-filters',
   templateUrl: './create-case-filters.html'
 })
-export class CreateCaseFiltersComponent implements OnInit {
+export class CreateCaseFiltersComponent implements OnInit, OnChanges {
   static readonly TRIGGER_TEXT_START = 'Start';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Start';
 
   @Input()
   formGroup: FormGroup = new FormGroup({});
 
+  @Input()
   jurisdictions: Jurisdiction[];
   callbackErrorsSubject: Subject<any> = new Subject();
 
@@ -47,7 +46,6 @@ export class CreateCaseFiltersComponent implements OnInit {
   error: HttpError;
 
   constructor(private router: Router,
-              private definitionsService: DefinitionsService,
               private orderService: OrderService,
               private alertService: AlertService) {
   }
@@ -55,13 +53,14 @@ export class CreateCaseFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.selected = {};
     this.initControls();
-    this.definitionsService.getJurisdictions(CREATE_ACCESS)
-      .subscribe(jurisdictions => {
-        this.jurisdictions = jurisdictions;
-        this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
-      });
     if (document.getElementById('cc-jurisdiction')) {
       document.getElementById('cc-jurisdiction').focus();
+    }
+  }
+
+  ngOnChanges(): void {
+    if (this.jurisdictions.length > 0) {
+      this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
     }
   }
 
