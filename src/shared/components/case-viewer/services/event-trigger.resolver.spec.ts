@@ -11,8 +11,6 @@ describe('EventTriggerResolver', () => {
   const IGNORE_WARNING_VALUE = 'false';
   const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
   const PARAM_EVENT_ID = EventTriggerResolver.PARAM_EVENT_ID;
-  const JURISDICTION = 'TEST';
-  const CASE_TYPE = 'TestAddressBookCase';
   const CASE_ID = '42';
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', CASE_ID, true, []);
@@ -24,22 +22,6 @@ describe('EventTriggerResolver', () => {
     error: '',
     exception: '',
     path: ''
-  };
-  const CASE: CaseView = {
-    case_id: CASE_ID,
-    case_type: {
-      id: CASE_TYPE,
-      name: '',
-      jurisdiction: {
-        id: JURISDICTION,
-        name: ''
-      }
-    },
-    state: null,
-    channels: null,
-    tabs: null,
-    triggers: null,
-    events: null
   };
 
   let eventTriggerResolver: EventTriggerResolver;
@@ -68,18 +50,21 @@ describe('EventTriggerResolver', () => {
       queryParamMap : createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
-        data: {
-          case: CASE
-        }
+        paramMap: createSpyObj('paramMap', ['get']),
       }
     };
 
     route.paramMap.get.and.callFake(key => {
       switch (key) {
-        case PARAM_CASE_ID:
-          return CASE_ID;
         case PARAM_EVENT_ID:
           return EVENT_TRIGGER_ID;
+      }
+    });
+
+    route.parent.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case PARAM_CASE_ID:
+          return CASE_ID;
       }
     });
 
@@ -97,7 +82,7 @@ describe('EventTriggerResolver', () => {
 
     eventTriggerResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .then(triggerData => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -115,9 +100,7 @@ describe('EventTriggerResolver', () => {
       queryParamMap : createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
-        data: {
-          case: CASE
-        }
+        paramMap: createSpyObj('paramMap', ['get']),
       }
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -125,7 +108,7 @@ describe('EventTriggerResolver', () => {
 
     eventTriggerResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .then(triggerData => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -143,9 +126,7 @@ describe('EventTriggerResolver', () => {
       queryParamMap : createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
-        data: {
-          case: CASE
-        }
+        paramMap: createSpyObj('paramMap', ['get'])
       }
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -153,7 +134,7 @@ describe('EventTriggerResolver', () => {
 
     eventTriggerResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .then(triggerData => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -166,7 +147,7 @@ describe('EventTriggerResolver', () => {
 
     eventTriggerResolver
       .resolve(route)
-      .subscribe(data => {
+      .then(data => {
         fail(data);
       }, err => {
         expect(err).toBeTruthy();

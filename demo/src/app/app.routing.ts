@@ -1,8 +1,9 @@
 import { RouterModule } from '@angular/router';
 import { CaseCreateConsumerComponent } from './case-create-consumer.component';
-import { routing as caseEditRouting } from '@hmcts/ccd-case-ui-toolkit';
+import { editorRouting, viewerRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
+import { CaseViewConsumerComponent } from './case-view-consumer.component';
 
 export const routing = RouterModule.forRoot([
   {
@@ -11,13 +12,20 @@ export const routing = RouterModule.forRoot([
     children: [
       { path: 'case/create',
         component: CaseCreateConsumerComponent,
-        children: caseEditRouting
+        children: editorRouting
       },
       { path: 'case/progress',
         component: CaseProgressConsumerComponent,
-        children: caseEditRouting
+        children: editorRouting
+      },
+      { path: 'case/view',
+        redirectTo: 'case/view/TEST/TestAddressBookCase/1111222233334444'
+      },
+      { path: 'case/view/:jid/:ctid/:cid',
+        component: CaseViewConsumerComponent,
+        children: viewerRouting
       }
     ]
   }
- ] // ,{ enableTracing: true }
+ ]
 )

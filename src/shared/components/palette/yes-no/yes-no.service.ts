@@ -12,7 +12,7 @@ export class YesNoService {
   ];
   private static readonly YES = 'Yes';
   private static readonly NO = 'No';
-  private static readonly EMPTY = '';
+  private static readonly EMPTY = null;
 
   format(value: any): string {
 

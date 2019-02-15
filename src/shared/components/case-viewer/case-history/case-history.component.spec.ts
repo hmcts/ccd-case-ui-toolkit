@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CaseHistoryComponent } from './case-history.component';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
@@ -10,11 +9,14 @@ import any = jasmine.any;
 import { attr } from '../../../test/helpers';
 import { CaseHistory } from '../domain';
 import { HttpError, CaseView } from '../../../domain';
-import { OrderService, FieldsUtils } from '../../../services';
+import { OrderService, FieldsUtils, AlertService } from '../../../services';
 import { PaletteUtilsModule } from '../../palette';
 import { LabelSubstitutorDirective, PlaceholderService } from '../../../directives';
 import { CaseReferencePipe } from '../../../pipes';
 import { createCaseHistory } from '../../../fixture';
+import { CaseService } from '../../case-editor';
+import { CaseHistoryService } from '../services';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 describe('CaseHistoryComponent', () => {
 
@@ -33,6 +35,7 @@ describe('CaseHistoryComponent', () => {
   const $CASE_DETAIL_HEADERS = 'h3';
 
   const CASE_HISTORY: CaseHistory = createCaseHistory();
+  const CASE_HISTORY_OBS: Observable<CaseHistory> = Observable.of(CASE_HISTORY);
   const CASE_VIEW: CaseView = {
     case_id: '1',
     case_type: {
@@ -65,15 +68,15 @@ describe('CaseHistoryComponent', () => {
 
   let mockRoute: any = {
     snapshot: {
-      data: {
-        caseHistory: CASE_HISTORY,
-        case: CASE_VIEW
-      }
+      paramMap: createSpyObj('paramMap', ['get']),
     }
   };
 
   let router: any;
   let orderService;
+  let caseService;
+  let caseHistoryService;
+  let alertService;
 
   let FieldReadComponent: any = MockComponent({ selector: 'ccd-field-read', inputs: [
       'caseField',
@@ -90,8 +93,12 @@ describe('CaseHistoryComponent', () => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
+    caseService = new CaseService();
+    caseService.caseViewSource = new BehaviorSubject(CASE_VIEW);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));
+    caseHistoryService = createSpyObj<CaseHistoryService>('caseHistoryService', ['get']);
+    caseHistoryService.get.and.returnValue(CASE_HISTORY_OBS);
 
     TestBed
       .configureTestingModule({
@@ -111,8 +118,11 @@ describe('CaseHistoryComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
+          { provide: AlertService, useValue: alertService },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
+          { provide: CaseService, useValue: caseService },
+          { provide: CaseHistoryService, useValue: caseHistoryService },
           { provide: Router, useValue: router }
         ]
       })
