@@ -3574,5 +3574,77 @@
        "type":"CCD Print Type",
        "description":"Printing for CCD"
     }
- ]
+  ],
+  "CT0inputs" : [  
+    {  
+      "label":"Search `Text` field",
+      "order":1,
+      "field":{  
+          "id":"TextField",
+          "metadata":false,
+          "field_type":{  
+            "id":"Text",
+            "type":"Text",
+            "min":null,
+            "max":null,
+            "regular_expression":null,
+            "fixed_list_items":[  
+
+            ],
+            "complex_fields":[  
+
+            ],
+            "collection_field_type":null
+          }
+      }
+    }
+  ],
+  "CT2inputs" : [
+    {  
+      "label":"Search `Number` field",
+      "order":1,
+      "field":{  
+          "id":"NumberField",
+          "metadata":false,
+          "field_type":{  
+            "id":"Number",
+            "type":"Number",
+            "min":null,
+            "max":null,
+            "regular_expression":null,
+            "fixed_list_items":[  
+
+            ],
+            "complex_fields":[  
+
+            ],
+            "collection_field_type":null
+          }
+      }
+    }
+  ],
+  "CT3inputs" : [
+    {  
+      "label":"Search `YesOrNo` field",
+      "order":1,
+      "field":{  
+          "id":"YesOrNoField",
+          "metadata":false,
+          "field_type":{  
+            "id":"YesOrNo",
+            "type":"YesOrNo",
+            "min":null,
+            "max":null,
+            "regular_expression":null,
+            "fixed_list_items":[  
+
+            ],
+            "complex_fields":[  
+
+            ],
+            "collection_field_type":null
+          }
+      }
+    }
+  ]
 }
