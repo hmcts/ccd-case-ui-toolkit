@@ -71,32 +71,46 @@ describe('ConditionalShowDirective', () => {
         expect(conditionalShow.condition).toBeUndefined();
     });
 
-    it('should display grey bar when conditional show evaluates but not on CYA page', () => {
+    it('should display grey bar on show', () => {
       comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
       let fieldType = new FieldType();
       fieldType.id = 'fieldId';
       fieldType.type = 'Text';
       comp.caseField.field_type = fieldType;
-      expect(comp.caseField.field_type.type).toBe('Text');
       comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
       fixture.detectChanges();
 
       expect(el.hidden).toBe(false);
-      expect(conditionalShow.condition.condition).toBe('PersonLastName="Doe"');
+      de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
+      expect(de).toBeDefined();
     });
 
-    it('should not display grey bar when conditional show does not evaluates', () => {
+    it('should not display grey bar if field is hidden', () => {
       comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
       let fieldType = new FieldType();
       fieldType.id = 'fieldId';
       fieldType.type = 'Text';
       comp.caseField.field_type = fieldType;
-      expect(comp.caseField.field_type.type).toBe('Text');
-      comp.eventFields = [comp.caseField, field('OtherField', 'Doe', '')];
+      comp.eventFields = [comp.caseField, field('PersonLastName', 'Jack', '')];
       fixture.detectChanges();
 
       expect(el.hidden).toBe(true);
-      expect(conditionalShow.condition.condition).toBe('PersonLastName="Doe"');
+      de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
+      expect(de).toBeNull();
+    });
+
+    it('should not display grey bar on show for Collection fields', () => {
+      comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
+      let fieldType = new FieldType();
+      fieldType.id = 'fieldId';
+      fieldType.type = 'Collection';
+      comp.caseField.field_type = fieldType;
+      comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+      de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
+      expect(de).toBeNull();
     });
 
     it('should display when condition matches a read only field. No form fields', () => {
