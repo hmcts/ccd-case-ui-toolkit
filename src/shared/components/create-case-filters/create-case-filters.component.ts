@@ -1,6 +1,5 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
@@ -18,10 +17,12 @@ export class CreateCaseFiltersComponent implements OnChanges {
   static readonly TRIGGER_TEXT_START = 'Start';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Start';
 
-  formGroup: FormGroup = new FormGroup({});
-
   @Input()
   jurisdictions: Jurisdiction[];
+  @Output()
+  selectionChanged: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
+
+  formGroup: FormGroup = new FormGroup({});
   callbackErrorsSubject: Subject<any> = new Subject();
 
   selected: {
@@ -44,9 +45,10 @@ export class CreateCaseFiltersComponent implements OnChanges {
   ignoreWarning = false;
   error: HttpError;
 
-  constructor(private router: Router,
-              private orderService: OrderService,
-              private alertService: AlertService) {
+  constructor(
+    private orderService: OrderService,
+    private alertService: AlertService
+  ) {
   }
 
   ngOnChanges(): void {
@@ -99,17 +101,12 @@ export class CreateCaseFiltersComponent implements OnChanges {
       !this.hasInvalidData();
   }
 
-  apply(): Promise<boolean | void> {
-    let queryParams = {};
-    if (this.ignoreWarning) {
-      queryParams['ignoreWarning'] = this.ignoreWarning;
-    }
-    return this.router.navigate(['/create/case', this.selected.jurisdiction.id, this.selected.caseType.id, this.selected.event.id], {
-      queryParams
-    }).catch(error => {
-      this.error = error;
-      this.callbackErrorsSubject.next(error);
-    });
+  apply() {
+    this.selectionChanged.emit({
+      jurisdictionId: this.selected.jurisdiction.id,
+      caseTypeId: this.selected.caseType.id,
+      eventId: this.selected.event.id
+    })
   }
 
   callbackErrorsNotify(errorContext: CallbackErrorsContext) {
@@ -205,5 +202,17 @@ export class CreateCaseFiltersComponent implements OnChanges {
 
   private isEmpty(value: any): boolean {
     return value === null || value === undefined;
+  }
+}
+
+export class CreateCaseFiltersSelection {
+  jurisdictionId: string
+  caseTypeId: string
+  eventId: string
+
+  constructor() {
+    this.jurisdictionId = 'TEST',
+    this.caseTypeId = 'TestAddressBookCase',
+    this.eventId = 'startCase'
   }
 }
