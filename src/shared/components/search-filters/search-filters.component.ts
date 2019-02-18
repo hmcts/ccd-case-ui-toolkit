@@ -27,6 +27,9 @@ export class SearchFiltersComponent implements OnInit {
   @Output()
   onReset: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  onJurisdiction: EventEmitter<any> = new EventEmitter();
+
   searchInputs: SearchInput[];
   searchInputsReady: boolean;
 
@@ -124,6 +127,7 @@ export class SearchFiltersComponent implements OnInit {
     this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
     this.selectCaseType(this.selectedJurisdictionCaseTypes);
+    this.onJurisdiction.emit(this.selected.jurisdiction);
   }
 
   onCaseTypeIdChange(): void {
@@ -163,12 +167,17 @@ export class SearchFiltersComponent implements OnInit {
   private selectCaseType(caseTypes: CaseTypeLite[]) {
     if (caseTypes && caseTypes.length > 0) {
       this.selected.caseType = caseTypes[0];
-      const caseType = this.windowService.getLocalStorage(CASE_TYPE_LOC_STORAGE)
-
+      const caseType = this.windowService.getLocalStorage(CASE_TYPE_LOC_STORAGE);
       if (caseType) {
         const caseTypeObject = JSON.parse(caseType);
-        const result = caseTypes.filter(c => c.id === caseTypeObject.id)
-        this.selected.caseType = result[0];
+        const result = caseTypes.filter(c => c.id === caseTypeObject.id);
+        if (result !== undefined && result.length > 0) {
+          this.selected.caseType = result[0];
+        } else {
+          this.selected.caseType = caseTypes[0];
+        }
+      } else {
+        this.selected.caseType = caseTypes[0];
       }
       this.onCaseTypeIdChange();
     }
