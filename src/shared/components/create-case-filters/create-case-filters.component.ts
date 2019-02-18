@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -14,11 +14,10 @@ import { CallbackErrorsContext } from '../error/domain/error-context';
   selector: 'ccd-create-case-filters',
   templateUrl: './create-case-filters.html'
 })
-export class CreateCaseFiltersComponent implements OnInit, OnChanges {
+export class CreateCaseFiltersComponent implements OnChanges {
   static readonly TRIGGER_TEXT_START = 'Start';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Start';
 
-  @Input()
   formGroup: FormGroup = new FormGroup({});
 
   @Input()
@@ -50,17 +49,14 @@ export class CreateCaseFiltersComponent implements OnInit, OnChanges {
               private alertService: AlertService) {
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.selected = {};
     this.initControls();
+    if (this.jurisdictions.length > 0 && this.filterJurisdictionControl) {
+      this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
+    }
     if (document.getElementById('cc-jurisdiction')) {
       document.getElementById('cc-jurisdiction').focus();
-    }
-  }
-
-  ngOnChanges(): void {
-    if (this.jurisdictions.length > 0) {
-      this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
     }
   }
 
