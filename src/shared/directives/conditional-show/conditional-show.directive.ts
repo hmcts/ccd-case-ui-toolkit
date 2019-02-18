@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { Subscription } from 'rxjs';
@@ -26,7 +26,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   constructor(private el: ElementRef,
               private fieldsUtils: FieldsUtils,
-              private registry: ConditionalShowRegistrarService) {}
+              private registry: ConditionalShowRegistrarService,
+              private renderer: Renderer2) {}
 
   ngAfterViewInit() {
     if (this.caseField.show_condition) {
@@ -38,7 +39,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.updateVisibility(this.getReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
-      this.fieldsUtils.showGreyBar(this.caseField, this.el.nativeElement);
     }
   }
 
@@ -79,7 +79,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.formField.disable();
       this.subscribeToFormChanges();
     }
-    this.hide();
+    this.hideField();
+    this.removeGreyBar();
   }
 
   private onShow() {
@@ -89,23 +90,33 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.formField.enable();
       this.subscribeToFormChanges();
     }
-    this.show();
+    this.showField();
+    this.showGreyBar();
     if (this.formField) {
       this.checkHideShowCondition(this.caseField.id, this.formField);
     }
   }
 
-  private hide() {
+  private hideField() {
     this.el.nativeElement.hidden = true;
-  }
-
-  private show() {
-    this.showField();
-    this.fieldsUtils.showGreyBar(this.caseField, this.el.nativeElement);
   }
 
   private showField() {
     this.el.nativeElement.hidden = false;
+  }
+
+  private showGreyBar() {
+    if (this.caseField.field_type.type !== 'Collection') {
+      let divSelector = this.el.nativeElement.querySelector('div')
+        this.renderer.addClass(divSelector, 'show-condition-grey-bar');
+    }
+  }
+
+  private removeGreyBar() {
+    if (this.caseField.field_type.type !== 'Collection') {
+      let divSelector = this.el.nativeElement.querySelector('div')
+        this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
+    }
   }
 
   private shouldToggleToHide(fields, forced) {
