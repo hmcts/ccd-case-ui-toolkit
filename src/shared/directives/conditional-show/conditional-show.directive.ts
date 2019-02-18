@@ -108,14 +108,18 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private showGreyBar() {
     if (this.caseField.field_type.type !== 'Collection') {
       let divSelector = this.el.nativeElement.querySelector('div')
+      if (divSelector) {
         this.renderer.addClass(divSelector, 'show-condition-grey-bar');
+      }
     }
   }
 
   private removeGreyBar() {
     if (this.caseField.field_type.type !== 'Collection') {
       let divSelector = this.el.nativeElement.querySelector('div')
+      if (divSelector) {
         this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
+      }
     }
   }
 
