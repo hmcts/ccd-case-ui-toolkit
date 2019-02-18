@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CaseField } from '../../domain/definition';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, } from '@angular/common';
 import { DatePipe } from '../../components/palette/utils';
 import { WizardPage } from '../../components/case-editor/domain';
 import { Predicate } from '../../domain/predicate.model';
@@ -150,4 +150,5 @@ export class FieldsUtils {
   private cloneObject(obj: any): any {
     return Object.assign({}, obj);
   }
+
 }
