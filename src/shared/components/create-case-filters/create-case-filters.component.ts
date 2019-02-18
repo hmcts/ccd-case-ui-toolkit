@@ -8,6 +8,7 @@ import { HttpError } from '../../domain/http/http-error.model';
 import { OrderService } from '../../services/order/order.service';
 import { AlertService } from '../../services/alert/alert.service';
 import { CallbackErrorsContext } from '../error/domain/error-context';
+import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -202,17 +203,5 @@ export class CreateCaseFiltersComponent implements OnChanges {
 
   private isEmpty(value: any): boolean {
     return value === null || value === undefined;
-  }
-}
-
-export class CreateCaseFiltersSelection {
-  jurisdictionId: string
-  caseTypeId: string
-  eventId: string
-
-  constructor() {
-    this.jurisdictionId = 'TEST',
-    this.caseTypeId = 'TestAddressBookCase',
-    this.eventId = 'startCase'
   }
 }
