@@ -107,7 +107,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
       jurisdictionId: this.selected.jurisdiction.id,
       caseTypeId: this.selected.caseType.id,
       eventId: this.selected.event.id
-    })
+    });
   }
 
   callbackErrorsNotify(errorContext: CallbackErrorsContext) {
