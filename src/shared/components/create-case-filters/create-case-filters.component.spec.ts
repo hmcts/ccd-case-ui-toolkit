@@ -243,7 +243,6 @@ describe('CreateCaseFiltersComponent', () => {
           FormsModule,
           ReactiveFormsModule
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           CreateCaseFiltersComponent
         ], providers: [

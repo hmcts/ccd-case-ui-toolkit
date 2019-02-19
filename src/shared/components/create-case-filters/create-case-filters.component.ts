@@ -1,13 +1,9 @@
 import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
-import { HttpError } from '../../domain/http/http-error.model';
 import { OrderService } from '../../services/order/order.service';
-import { AlertService } from '../../services/alert/alert.service';
-import { CallbackErrorsContext } from '../error/domain/error-context';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 
 @Component({
@@ -15,8 +11,6 @@ import { CreateCaseFiltersSelection } from './create-case-filters-selection.mode
   templateUrl: './create-case-filters.html'
 })
 export class CreateCaseFiltersComponent implements OnChanges {
-  static readonly TRIGGER_TEXT_START = 'Start';
-  static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Start';
 
   @Input()
   jurisdictions: Jurisdiction[];
@@ -24,7 +18,6 @@ export class CreateCaseFiltersComponent implements OnChanges {
   selectionChanged: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
 
   formGroup: FormGroup = new FormGroup({});
-  callbackErrorsSubject: Subject<any> = new Subject();
 
   selected: {
     jurisdiction?: Jurisdiction,
@@ -40,15 +33,8 @@ export class CreateCaseFiltersComponent implements OnChanges {
   filterCaseTypeControl: FormControl;
   filterEventControl: FormControl;
 
-  triggerTextStart = CreateCaseFiltersComponent.TRIGGER_TEXT_START;
-  triggerTextIgnoreWarnings = CreateCaseFiltersComponent.TRIGGER_TEXT_CONTINUE;
-  triggerText = CreateCaseFiltersComponent.TRIGGER_TEXT_START;
-  ignoreWarning = false;
-  error: HttpError;
-
   constructor(
-    private orderService: OrderService,
-    private alertService: AlertService
+    private orderService: OrderService
   ) {
   }
 
@@ -85,7 +71,6 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   onEventIdChange(): void {
-    this.resetErrors();
     if (this.filterEventControl.value !== '') {
       this.selected.event = this.findEvent(this.selectedCaseTypeEvents, this.filterEventControl.value);
     } else {
@@ -97,9 +82,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
     return !this.isEmpty(this.selected) &&
       !this.isEmpty(this.selected.jurisdiction) &&
       !this.isEmpty(this.selected.caseType) &&
-      !this.isEmpty(this.selected.event) &&
-      !this.hasCallbackErrors() &&
-      !this.hasInvalidData();
+      !this.isEmpty(this.selected.event);
   }
 
   apply() {
@@ -108,11 +91,6 @@ export class CreateCaseFiltersComponent implements OnChanges {
       caseTypeId: this.selected.caseType.id,
       eventId: this.selected.event.id
     });
-  }
-
-  callbackErrorsNotify(errorContext: CallbackErrorsContext) {
-    this.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
   }
 
   private sortEvents(events: CaseEvent[]) {
@@ -166,7 +144,6 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   private resetCaseType(): void {
-    this.resetErrors();
     this.filterCaseTypeControl.setValue('');
     this.selected.caseType = null;
     this.selectedJurisdictionCaseTypes = [];
@@ -174,31 +151,10 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   private resetEvent(): void {
-    this.resetErrors();
     this.filterEventControl.setValue('');
     this.selected.event = null;
     this.selectedCaseTypeEvents = [];
     this.formGroup.controls['event'].disable();
-  }
-
-  resetErrors(): void {
-    this.error = null;
-    this.ignoreWarning = false;
-    this.callbackErrorsSubject.next(null);
-    this.alertService.clear();
-  }
-
-  private hasCallbackErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
-  private hasInvalidData(): boolean {
-    return this.error
-      && this.error.details
-      && this.error.details.field_errors
-      && this.error.details.field_errors.length;
   }
 
   private isEmpty(value: any): boolean {
