@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { CasePrinterComponent } from './case-printer.component';
 import createSpyObj = jasmine.createSpyObj;
