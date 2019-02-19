@@ -1,10 +1,11 @@
-import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { OrderService } from '../../services/order/order.service';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
+import { HttpError } from '../../domain';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -14,8 +15,12 @@ export class CreateCaseFiltersComponent implements OnChanges {
 
   @Input()
   jurisdictions: Jurisdiction[];
+  @Input()
+  error: HttpError;
   @Output()
-  selectionChanged: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
+  selectionSubmitted: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
+  @Output()
+  selectionChanged: EventEmitter<any> = new EventEmitter();
 
   formGroup: FormGroup = new FormGroup({});
 
@@ -38,14 +43,16 @@ export class CreateCaseFiltersComponent implements OnChanges {
   ) {
   }
 
-  ngOnChanges(): void {
-    this.selected = {};
-    this.initControls();
-    if (this.jurisdictions.length > 0 && this.filterJurisdictionControl) {
-      this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
-    }
-    if (document.getElementById('cc-jurisdiction')) {
-      document.getElementById('cc-jurisdiction').focus();
+  ngOnChanges(changes?: SimpleChanges): void {
+    if (changes.jurisdiction) {
+      this.selected = {};
+      this.initControls();
+      if (this.jurisdictions.length > 0 && this.filterJurisdictionControl) {
+        this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
+      }
+      if (document.getElementById('cc-jurisdiction')) {
+        document.getElementById('cc-jurisdiction').focus();
+      }
     }
   }
 
@@ -71,6 +78,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   onEventIdChange(): void {
+    this.resetErrors();
     if (this.filterEventControl.value !== '') {
       this.selected.event = this.findEvent(this.selectedCaseTypeEvents, this.filterEventControl.value);
     } else {
@@ -82,11 +90,12 @@ export class CreateCaseFiltersComponent implements OnChanges {
     return !this.isEmpty(this.selected) &&
       !this.isEmpty(this.selected.jurisdiction) &&
       !this.isEmpty(this.selected.caseType) &&
-      !this.isEmpty(this.selected.event);
+      !this.isEmpty(this.selected.event) &&
+      !this.hasErrors();
   }
 
   apply() {
-    this.selectionChanged.emit({
+    this.selectionSubmitted.emit({
       jurisdictionId: this.selected.jurisdiction.id,
       caseTypeId: this.selected.caseType.id,
       eventId: this.selected.event.id
@@ -144,6 +153,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   private resetCaseType(): void {
+    this.resetErrors();
     this.filterCaseTypeControl.setValue('');
     this.selected.caseType = null;
     this.selectedJurisdictionCaseTypes = [];
@@ -151,13 +161,31 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   private resetEvent(): void {
+    this.resetErrors();
     this.filterEventControl.setValue('');
     this.selected.event = null;
     this.selectedCaseTypeEvents = [];
     this.formGroup.controls['event'].disable();
   }
 
+  resetErrors(): void {
+    if (this.selectionChanged) {
+      this.selectionChanged.emit();
+    }
+  }
+
   private isEmpty(value: any): boolean {
     return value === null || value === undefined;
+  }
+
+  private hasErrors(): boolean {
+    return (this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length)
+      ||
+      (this.error
+        && this.error.details
+        && this.error.details.field_errors
+        && this.error.details.field_errors.length);
   }
 }

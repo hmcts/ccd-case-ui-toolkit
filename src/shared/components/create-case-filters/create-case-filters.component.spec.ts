@@ -583,13 +583,13 @@ describe('CreateCaseFiltersComponent', () => {
     component.filterEventControl.setValue(EVENT_ID_2);
     component.onEventIdChange();
 
-    spyOn(component.selectionChanged, 'emit');
+    spyOn(component.selectionSubmitted, 'emit');
 
     fixture.detectChanges();
     let button = de.query($SELECT_BUTTON);
     button.nativeElement.click();
 
-    expect(component.selectionChanged.emit).toHaveBeenCalledWith({
+    expect(component.selectionSubmitted.emit).toHaveBeenCalledWith({
       jurisdictionId: JURISDICTION_2.id,
       caseTypeId: CASE_TYPES_2[2].id,
       eventId: EVENT_ID_2
