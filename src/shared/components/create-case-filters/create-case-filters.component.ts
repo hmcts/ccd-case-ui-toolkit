@@ -17,6 +17,8 @@ export class CreateCaseFiltersComponent implements OnChanges {
   jurisdictions: Jurisdiction[];
   @Input()
   error: HttpError;
+  @Input()
+  triggerText: string;
   @Output()
   selectionSubmitted: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
   @Output()
@@ -41,12 +43,14 @@ export class CreateCaseFiltersComponent implements OnChanges {
   constructor(
     private orderService: OrderService
   ) {
+    this.selected = {};
+    this.selectedJurisdictionCaseTypes = [];
+    this.selectedCaseTypeEvents = [];
+    this.initControls();
   }
 
   ngOnChanges(changes?: SimpleChanges): void {
-    if (changes.jurisdiction) {
-      this.selected = {};
-      this.initControls();
+    if (changes.jurisdictions && changes.jurisdictions.currentValue) {
       if (this.jurisdictions.length > 0 && this.filterJurisdictionControl) {
         this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
       }
@@ -78,7 +82,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   onEventIdChange(): void {
-    this.resetErrors();
+    this.emitChange();
     if (this.filterEventControl.value !== '') {
       this.selected.event = this.findEvent(this.selectedCaseTypeEvents, this.filterEventControl.value);
     } else {
@@ -153,7 +157,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   private resetCaseType(): void {
-    this.resetErrors();
+    this.emitChange();
     this.filterCaseTypeControl.setValue('');
     this.selected.caseType = null;
     this.selectedJurisdictionCaseTypes = [];
@@ -161,14 +165,14 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   private resetEvent(): void {
-    this.resetErrors();
+    this.emitChange();
     this.filterEventControl.setValue('');
     this.selected.event = null;
     this.selectedCaseTypeEvents = [];
     this.formGroup.controls['event'].disable();
   }
 
-  resetErrors(): void {
+  emitChange(): void {
     if (this.selectionChanged) {
       this.selectionChanged.emit();
     }
