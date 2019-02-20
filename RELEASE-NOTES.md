@@ -1,6 +1,15 @@
 ## RELEASE NOTES
 
-### Version 2.24.0 - February 07 2019
+### Version 2.26.0 - February 19 2019
+**RDM-3915** - Extract Case Create filters component as is
+
+### Version 2.25.0 - February 13 2019
+**RDM-3820** - New contract - extract Case Search Form component
+
+### Version 2.24.1 - February 13 2019
+**RDM-2963** changed initialisation values to null 
+
+### Version 2.24.0 - February 12 2019
 **RDM-3821** - Extract Case Search Form to ui-toolkit as is
 
 ### Version 2.23.5 - February 08 2019

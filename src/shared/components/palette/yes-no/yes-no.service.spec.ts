@@ -4,7 +4,7 @@ describe('YesNoService', () => {
 
   const YES = 'Yes';
   const NO = 'No';
-  const EMPTY = '';
+  const EMPTY = null;
 
   let yesNoService: YesNoService;
 
@@ -69,15 +69,15 @@ describe('YesNoService', () => {
   });
 
   describe('empty', () => {
-    it('should return empty string when value is undefined', () => {
+    it('should return null when value is undefined', () => {
       expect(yesNoService.format(undefined)).toBe(EMPTY);
     });
 
-    it('should return empty string when value is null', () => {
+    it('should return null when value is null', () => {
       expect(yesNoService.format(null)).toBe(EMPTY);
     });
 
-    it('should return empty string when value is not a supported value', () => {
+    it('should return null when value is not a supported value', () => {
       expect(yesNoService.format('plop')).toBe(EMPTY);
       expect(yesNoService.format('yesno')).toBe(EMPTY);
       expect(yesNoService.format('nop')).toBe(EMPTY);
