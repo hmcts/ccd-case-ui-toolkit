@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.27.0 - February 21 2019
+**RDM-2986** - New ComplexType to Events mapping
+
 ### Version 2.26.0 - February 19 2019
 **RDM-3915** - Extract Case Create filters component as is
 
