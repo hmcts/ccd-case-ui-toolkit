@@ -52,6 +52,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes.jurisdictions && changes.jurisdictions.currentValue) {
       if (this.jurisdictions.length > 0 && this.filterJurisdictionControl) {
+        this.initControls();
         this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
       }
       if (document.getElementById('cc-jurisdiction')) {

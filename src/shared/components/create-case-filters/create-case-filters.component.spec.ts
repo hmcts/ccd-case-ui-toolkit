@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateCaseFiltersComponent } from './create-case-filters.component';
@@ -221,6 +221,17 @@ let mockAlertService: any;
 
 const TEST_FORM_GROUP = new FormGroup({});
 
+const changeDummy = (jurisdictions) => {
+  return {
+    jurisdictions: {
+      isFirstChange: () => true,
+      previousValue: null,
+      firstChange: true,
+      currentValue: jurisdictions
+    }
+  };
+}
+
 describe('CreateCaseFiltersComponent', () => {
 
   let fixture: ComponentFixture<CreateCaseFiltersComponent>;
@@ -255,7 +266,6 @@ describe('CreateCaseFiltersComponent', () => {
     fixture = TestBed.createComponent(CreateCaseFiltersComponent);
     component = fixture.componentInstance;
     component.jurisdictions = [];
-    component.ngOnChanges();
     component.formGroup = TEST_FORM_GROUP;
 
     de = fixture.debugElement;
@@ -264,17 +274,13 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should select the jurisdiction if there is only one jurisdiction', () => {
     component.jurisdictions = [JURISDICTION_1];
-    fixture.detectChanges();
-    component.ngOnChanges();
-    fixture.detectChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_1]));
     expect(component.filterJurisdictionControl.value).toBe(JURISDICTION_1.id);
   });
 
   it('should select the caseType if there is only one caseType', () => {
     component.jurisdictions = [JURISDICTION_1];
-    fixture.detectChanges();
-    component.ngOnChanges();
-    fixture.detectChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_1]));
     expect(component.filterJurisdictionControl.value).toBe(JURISDICTION_1.id);
     expect(component.filterCaseTypeControl.value).toBe('CT0');
   });
@@ -282,9 +288,7 @@ describe('CreateCaseFiltersComponent', () => {
   it('should select the event if there is only one event', () => {
     component.jurisdictions = [JURISDICTION_SINGLE_EVENT];
     mockOrderService.sort.and.returnValue(SINGLE_EVENT);
-    fixture.detectChanges();
-    component.ngOnChanges();
-    fixture.detectChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_SINGLE_EVENT]));
     expect(component.filterJurisdictionControl.value).toBe(JURISDICTION_SINGLE_EVENT.id);
     expect(component.filterCaseTypeControl.value).toBe('CT0');
     expect(component.filterEventControl.value).toBe(EVENT_ID_1);
@@ -292,8 +296,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should sort events', () => {
     component.jurisdictions = [JURISDICTION_1];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_1]));
     component.filterJurisdictionControl.setValue(JURISDICTION_1.id);
     component.onJurisdictionIdChange();
     component.filterCaseTypeControl.setValue(CASE_TYPES_1[0].id);
@@ -306,8 +309,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should initialise jurisdiction selector with given jurisdictions and no selection', () => {
     component.jurisdictions = [JURISDICTION_1, JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges((changeDummy([JURISDICTION_1, JURISDICTION_2])));
     component.filterJurisdictionControl.setValue('');
     component.onJurisdictionIdChange();
     fixture.detectChanges();
@@ -330,8 +332,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should update selected jurisdiction', async(() => {
     component.jurisdictions = [JURISDICTION_SINGLE_EVENT];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_SINGLE_EVENT]));
     component.filterJurisdictionControl.setValue(JURISDICTION_SINGLE_EVENT.id);
     component.onJurisdictionIdChange();
     fixture.detectChanges();
@@ -344,8 +345,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should initialise case type selector with types from selected jurisdiction but no events', async(() => {
     component.jurisdictions = [JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_2]));
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
     component.onJurisdictionIdChange();
     fixture.detectChanges();
@@ -372,8 +372,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should update selected case type', async(() => {
     component.jurisdictions = [JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_2]));
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
     component.onJurisdictionIdChange();
     component.filterCaseTypeControl.setValue(CASE_TYPES_2[2].id);
@@ -386,8 +385,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should disable case type and event if jurisdiction not selected', async(() => {
     component.jurisdictions = [JURISDICTION_1, JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_1, JURISDICTION_2]));
     component.filterJurisdictionControl.setValue('');
     component.onJurisdictionIdChange();
     fixture.detectChanges();
@@ -414,8 +412,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should initialise event selector from case type with no pre states', async(() => {
     component.jurisdictions = [JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_2]));
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
     component.onJurisdictionIdChange();
     component.filterCaseTypeControl.setValue(CASE_TYPES_2[2].id);
@@ -454,8 +451,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should reset case type back to empty disabled if set before and jurisdiction changed to empty', async(() => {
     component.jurisdictions = [JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_2]));
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
     component.onJurisdictionIdChange();
     fixture.detectChanges();
@@ -481,8 +477,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should reset event back to default if set before and case type changed', async(() => {
     component.jurisdictions = [JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_2]));
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
     component.onJurisdictionIdChange();
     component.filterCaseTypeControl.setValue(CASE_TYPES_2[0].id);
@@ -515,8 +510,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   it('should reset event back to default if set before and jurisdiction changed', async(() => {
     component.jurisdictions = [JURISDICTION_2];
-    fixture.detectChanges();
-    component.ngOnChanges();
+    component.ngOnChanges(changeDummy([JURISDICTION_2]));
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
     component.onJurisdictionIdChange();
     component.filterCaseTypeControl.setValue(CASE_TYPES_2[0].id);
