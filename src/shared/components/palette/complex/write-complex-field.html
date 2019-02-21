@@ -1,6 +1,6 @@
 <div class="form-group" [id]="id()">
 
-  <h3 *ngIf="renderLabel" class="heading-small heading-17">{{caseField | ccdFieldLabel}}</h3>
+  <h3 *ngIf="renderLabel" class="heading-h3">{{caseField | ccdFieldLabel}}</h3>
   <ng-container *ngFor="let field of caseField | ccdFieldsFilter:true">
     <ng-container [ngSwitch]="field | ccdIsReadOnly">
       <ccd-field-read *ngSwitchCase="true"

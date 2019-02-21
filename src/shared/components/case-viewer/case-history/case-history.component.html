@@ -41,7 +41,7 @@
         <h2 class="heading-medium">Case Details</h2>
         <ng-container *ngFor="let tab of tabs">
           <div class="caseHistorySection">
-            <h3 class="heading-small">{{tab.label}}</h3>
+            <h3 class="heading-h3">{{tab.label}}</h3>
             <table class="CaseHistory" id="{{tab.id}}">
               <ng-container *ngFor="let field of tab.fields">
                 <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="tab.fields">
