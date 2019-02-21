@@ -1,13 +1,13 @@
-import { Response, ResponseOptions, Headers } from '@angular/http';
+import { Headers, Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CasesService } from './cases.service';
 import { Observable, throwError } from 'rxjs';
 import { CasePrintDocument } from '../../../../shared/domain/case-view/case-print-document.model';
-import createSpyObj = jasmine.createSpyObj;
-import { OrderService } from '../../../services/order/order.service';
-import { HttpService, HttpErrorService } from '../../../services/http';
+import { HttpErrorService, HttpService } from '../../../services/http';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { CaseView, HttpError, CaseEventTrigger, CaseEventData } from '../../../domain';
+import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CasesService', () => {
 
@@ -55,6 +55,7 @@ describe('CasesService', () => {
   let httpService: any;
   let orderService: any;
   let errorService: any;
+  let wizardPageFieldToCaseFieldMapper: any;
 
   let casesService: CasesService;
 
@@ -65,10 +66,17 @@ describe('CasesService', () => {
 
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
+    wizardPageFieldToCaseFieldMapper = createSpyObj<WizardPageFieldToCaseFieldMapper>(
+      'wizardPageFieldToCaseFieldMapper', ['mapAll']);
 
-    orderService = createSpyObj<OrderService>('orderService', ['sort']);
+    orderService = {
+      sort: function() {}
+    };
+    spyOn(orderService, 'sort').and.callFake((caseFields: CaseField[]) => {
+      return caseFields;
+    });
 
-    casesService = new CasesService(httpService, appConfig, orderService, errorService);
+    casesService = new CasesService(httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper);
   });
 
   describe('getCaseView()', () => {
