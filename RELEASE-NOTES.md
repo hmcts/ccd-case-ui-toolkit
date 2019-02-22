@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.27.1 - February 22 2019
+**RDM-3430** - Run polling outside angular zone
 
 ### Version 2.27.0 - February 21 2019
 **RDM-2986** - New ComplexType to Events mapping
