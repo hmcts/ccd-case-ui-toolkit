@@ -147,7 +147,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
     return events.find(event => event.id === id);
   }
 
-  private initControls(): void {
+  initControls(): void {
     this.filterJurisdictionControl = new FormControl('');
     this.formGroup.addControl('jurisdiction', this.filterJurisdictionControl);
     this.filterCaseTypeControl = new FormControl({ value: '', disabled: true });

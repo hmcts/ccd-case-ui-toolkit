@@ -270,6 +270,7 @@ describe('CreateCaseFiltersComponent', () => {
 
     de = fixture.debugElement;
     fixture.detectChanges();
+    component.initControls();
   }));
 
   it('should select the jurisdiction if there is only one jurisdiction', () => {
