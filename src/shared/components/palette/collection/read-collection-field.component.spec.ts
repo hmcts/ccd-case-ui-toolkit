@@ -36,7 +36,8 @@ describe('ReadCollectionFieldComponent', () => {
     label: 'X',
     field_type: FIELD_TYPE,
     display_context: 'OPTIONAL',
-    value: VALUES
+    value: VALUES,
+    hidden: false
   };
 
   let FieldReadComponent = MockComponent({
@@ -89,7 +90,8 @@ describe('ReadCollectionFieldComponent', () => {
           id: 'Text',
           type: 'Text'
         },
-        value: VALUES[i].value
+        value: VALUES[i].value,
+        hidden: false
       });
     }
   });
