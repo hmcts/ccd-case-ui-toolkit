@@ -13,12 +13,14 @@ import { ConditionalShowRegistrarService } from './services/conditional-show-reg
  *  shown. Evaluation of the show condition includes disabled fields, which can be on their initial value or empty. And executes on the
  *  host field initialization and when any field of the form changes.
  */
-// export class ConditionalShowDirective implements OnInit, OnDestroy {
 export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
+  // add comment
+  @Input() pageFields: CaseField[];
   @Input() formGroup: FormGroup;
+  @Input() greyBarEnabled = false;
 
   condition: ShowCondition;
   private formChangesSubscription: Subscription;
@@ -36,7 +38,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
       // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
-      this.updateVisibility(this.getReadOnlyAndFormFields());
+      this.updateVisibility(this.getAllReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
     }
@@ -44,7 +46,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   refreshVisibility() {
     // console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
-    this.updateVisibility(this.getReadOnlyAndFormFields(), true);
+    this.updateVisibility(this.getAllReadOnlyAndFormFields(), true);
     this.subscribeToFormChanges();
   }
 
@@ -57,25 +59,30 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
       // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
-      this.updateVisibility(this.getReadOnlyAndFormFields());
+      this.updateVisibility(this.getAllReadOnlyAndFormFields());
     });
   }
 
   private updateVisibility(fields, forced = false) {
-    // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
+    console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {
+      console.log('should toggle to hide');
       this.onHide();
     } else if (this.shouldToggleToShow(fields)) {
+      console.log('should toggle to show');
       this.onShow();
+    } else if (this.greyBarEnabled && this.shouldApplyGreyBar()) {
+      console.log('should reapply grey bar');
+      this.showGreyBar();
     }
   }
 
   private onHide() {
-    // console.log('on hide is form field', this.formField);
+    console.log('on hide is form field', this.formField);
 
     if (this.formField) {
       this.unsubscribeFromFormChanges();
-      // console.log('FIELD ' + this.caseField.id + ' disabling form field');
+      console.log('FIELD ' + this.caseField.id + ' disabling form field');
       this.formField.disable();
       this.subscribeToFormChanges();
     }
@@ -84,9 +91,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private onShow() {
+    console.log('showing');
     if (this.formField) {
       this.unsubscribeFromFormChanges();
-      // console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
+      console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
       this.formField.enable();
       this.subscribeToFormChanges();
     }
@@ -106,21 +114,58 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private showGreyBar() {
+    if (!this.greyBarEnabled) {
+      return;
+    }
+    if (this.pageFields) {
+      // console.warn('grey bar enabled but mandatory pageFields attribute not set in the ccdConditionalShow directive. Disabling grey bar');
+      // return;
+
+
+    let showConditionFields = this.condition.getShowConditionFields();
+    console.log('show condition fields:' + showConditionFields);
+
+    let allFields = this.getAllReadOnlyAndFormFields();
+    let pageOnlyFields = {};
+
+    this.pageFields.forEach(f => {
+      pageOnlyFields[f.id] = allFields[f.id];
+    });
+
+    let samePage = (fieldId: string) => pageOnlyFields[fieldId];
+
+    console.log('page fields: ' + JSON.stringify(pageOnlyFields));
+    console.log('some same page: ' + showConditionFields.some(samePage));
+
+    // console.log('show condition matches on page only fields: ' + this.condition.match(pageOnlyFields));
+
+    if (showConditionFields.some(samePage)) {
+      this.addGreyBar();
+    }
+  } else {
+    this.addGreyBar();
+  }
+  }
+
+  private addGreyBar() {
     if (this.caseField.field_type.type !== 'Collection') {
       let divSelector = this.el.nativeElement.querySelector('div')
       if (divSelector) {
         this.renderer.addClass(divSelector, 'show-condition-grey-bar');
+        // divSelector.classList.add('show-condition-grey-bar');
       }
     }
   }
 
   private removeGreyBar() {
-    if (this.caseField.field_type.type !== 'Collection') {
-      let divSelector = this.el.nativeElement.querySelector('div')
-      if (divSelector) {
-        this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
-      }
-    }
+    console.log('remove grey bar');
+    // if (this.caseField.field_type.type !== 'Collection') {
+    //   let divSelector = this.el.nativeElement.querySelector('div')
+    //   if (divSelector) {
+    //     // this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
+    //     divSelector.classList.remove('show-condition-grey-bar');
+    //   }
+    // }
   }
 
   private shouldToggleToHide(fields, forced) {
@@ -128,13 +173,18 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private shouldToggleToShow(fields) {
+    console.log('this.isHidden(): ' + this.isHidden());
+    console.log('this.condition.match(fields): ' + this.condition.match(fields));
     return this.isHidden() && this.condition.match(fields);
   }
 
-  private getReadOnlyAndFormFields() {
+  private getAllReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
-    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
+
+    let pageFields = this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
+    // console.log('pageFields:' + JSON.stringify(pageFields));
+    return pageFields;
   }
 
   private getFormFieldsValuesIncludingDisabled() {
@@ -149,6 +199,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     if (this.formChangesSubscription) {
       this.formChangesSubscription.unsubscribe();
     }
+  }
+
+  private shouldApplyGreyBar() {
+    return !this.isHidden() && !this.el.nativeElement.classList.contains('show-condition-grey-bar')
   }
 
   // TODO This must be extracted to a generic service for traversing see RDM-2233

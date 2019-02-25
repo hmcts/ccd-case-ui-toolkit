@@ -6,6 +6,7 @@
     *ngFor="let field of caseField | ccdFieldsFilter:true"
     ccdConditionalShow
     ccdLabelSubstitutor
+    [greyBarEnabled]="true"
     [caseField]="field"
     [formGroup]="complexGroup"
     [registerControl]="buildControlRegistrer(field)"
