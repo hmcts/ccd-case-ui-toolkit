@@ -127,16 +127,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private displayGreyBarOnlyIfShowConditionContainsAPageField() {
     let showConditionFields = this.condition.getShowConditionFields();
     // console.log('show condition fields:' + showConditionFields);
+    let samePage = (fieldId: string) => this.pageFields.some(pageField => pageField.id === fieldId);
 
-    let allFields = this.getCurrentPagesReadOnlyAndFormFieldsValues();
-    let pageFieldsCurrentValues = {};
-    this.pageFields.forEach(f => pageFieldsCurrentValues[f.id] = allFields[f.id]);
-
-    let samePage = (fieldId: string) => pageFieldsCurrentValues[fieldId];
-
-    // console.log('page fields current values: ' + JSON.stringify(pageFieldsCurrentValues));
+    // console.log('page fields: ' + JSON.stringify(this.pageFields));
     // console.log('show condition has a current page field: ' + showConditionFields.some(samePage));
-
     if (showConditionFields.some(samePage)) {
       this.addGreyBar();
     }
@@ -152,14 +146,13 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private removeGreyBar() {
-    console.log('remove grey bar');
-    // if (this.caseField.field_type.type !== 'Collection') {
-    //   let divSelector = this.el.nativeElement.querySelector('div')
-    //   if (divSelector) {
-    //     // this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
-    //     divSelector.classList.remove('show-condition-grey-bar');
-    //   }
-    // }
+    // console.log('remove grey bar');
+    if (this.caseField.field_type.type !== 'Collection') {
+      let divSelector = this.el.nativeElement.querySelector('div')
+      if (divSelector) {
+        this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
+      }
+    }
   }
 
   private shouldToggleToHide(fields, forced) {
