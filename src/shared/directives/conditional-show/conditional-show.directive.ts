@@ -17,7 +17,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
-  // add comment
+  // when set, the grey bar is displayed only if the show condition contains any page field
   @Input() pageFields: CaseField[];
   @Input() formGroup: FormGroup;
   @Input() greyBarEnabled = false;
@@ -38,7 +38,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
       // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
-      this.updateVisibility(this.getAllReadOnlyAndFormFields());
+      this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
     }
@@ -46,7 +46,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   refreshVisibility() {
     // console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
-    this.updateVisibility(this.getAllReadOnlyAndFormFields(), true);
+    this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFields(), true);
     this.subscribeToFormChanges();
   }
 
@@ -59,7 +59,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
       // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
-      this.updateVisibility(this.getAllReadOnlyAndFormFields());
+      this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFields());
     });
   }
 
@@ -125,7 +125,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     let showConditionFields = this.condition.getShowConditionFields();
     console.log('show condition fields:' + showConditionFields);
 
-    let allFields = this.getAllReadOnlyAndFormFields();
+    let allFields = this.getCurrentPagesReadOnlyAndFormFields();
     let pageOnlyFields = {};
 
     this.pageFields.forEach(f => {
@@ -178,7 +178,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     return this.isHidden() && this.condition.match(fields);
   }
 
-  private getAllReadOnlyAndFormFields() {
+  private getCurrentPagesReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
 
