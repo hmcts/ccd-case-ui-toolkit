@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ccd-field-read',
@@ -18,6 +20,12 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
 
   @Input()
   withLabel = false;
+
+  @Input()
+  formGroup: FormGroup;
+
+  @Input()
+  eventFields: CaseField[] = [];
 
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
@@ -33,6 +41,11 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
 
     // Provide component @Inputs
     component.instance['caseField'] = this.caseField;
+    // console.log('this.caseField', this.caseField);
+    // console.log('this.eventFields', this.eventFields);
+    // console.log('this.formGroup', this.formGroup);
+    component.instance['eventFields'] = this.eventFields;
+    component.instance['formGroup'] = this.formGroup;
     component.instance['caseReference'] = this.caseReference;
     component.instance['context'] = this.context;
 

@@ -9,6 +9,50 @@ describe('conditional-show', () => {
   let caseField4: CaseField = aCaseField('field4', 'field4', 'Text', 'OPTIONAL', null);
   let complexAddressUK: CaseField = aCaseField('AddressUKCode', 'Address UK', 'AddressUK', 'OPTIONAL', null);
   let claimantDetailsField: CaseField = aCaseField('claimantDetails', 'ClaimantsDetails', 'Complex', 'OPTIONAL', null, [complexAddressUK]);
+  const COLLECTION_OF_INTERIM_RETURNS = {
+    interimReturns: [
+      {
+        id: '382c950a-a929-43fd-bc72-8b13d0333460',
+        value: {
+          bailiffName: 'petergriffin@gmail.com',
+          addressAttended: {
+            County: 'Cheshire',
+            AddressLine1: null,
+            AddressLine2: null,
+            AddressLine3: null,
+            PostTown: null,
+            PostCode: null,
+            Country: null
+          },
+          personToAction: 'James',
+          outcomeOfVisit: null,
+          dateOfVisit: null,
+          typeOfContact: null
+        }
+      },
+      {
+        id: null,
+        value: {
+          bailiffName: 'rachelbruno@gmail.com',
+          addressAttended: {
+            County: 'Cornwall',
+            AddressLine1: null,
+            AddressLine2: null,
+            AddressLine3: null,
+            PostTown: null,
+            PostCode: null,
+            Country: null
+          },
+          personToAction: 'Anna',
+          outcomeOfVisit: null,
+          dateOfVisit: null,
+          typeOfContact: null
+        }
+      }
+    ],
+    debtorFirstNames: 'John',
+    debtorSurname: 'Snow'
+  };
 
   let caseFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
 
@@ -109,6 +153,16 @@ describe('conditional-show', () => {
       };
 
       let matched = sc.match(fields);
+
+      expect(matched).toBe(true);
+    });
+
+    it('should return true when value will match on a collection element with a complex field', () => {
+      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+
+      let fields = COLLECTION_OF_INTERIM_RETURNS;
+      let path = 'interimReturns_1_outcomeOfVisit'; // path tells the matcher we will match against the element with index 1
+      let matched = sc.match(fields, path);
 
       expect(matched).toBe(true);
     });
@@ -303,6 +357,37 @@ describe('conditional-show', () => {
 
       expect(matched).toBe(false);
     });
+
+    it('should return false when value will not match on a collection element with a complex field', () => {
+      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+
+      let fields = COLLECTION_OF_INTERIM_RETURNS;
+      let path = 'interimReturns_0_outcomeOfVisit'; // path tells the matcher we will match against the element with index 0
+      let matched = sc.match(fields, path);
+
+      expect(matched).toBe(false);
+    });
+
+    it('should return false when the provided path collection number is invalid', () => {
+      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+
+      let fields = COLLECTION_OF_INTERIM_RETURNS;
+      let path = 'interimReturns_wrongNumber_outcomeOfVisit'; // we provide invalid element index
+      let matched = sc.match(fields, path);
+
+      expect(matched).toBe(false);
+    });
+
+    it('should return false when the provided path is broken', () => {
+      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+
+      let fields = COLLECTION_OF_INTERIM_RETURNS;
+      let path = 'nonMatchingField_0_outcomeOfVisit';
+      let matched = sc.match(fields, path);
+
+      expect(matched).toBe(false);
+    });
+
   });
 
   describe('not matches ByCaseFields when', () => {

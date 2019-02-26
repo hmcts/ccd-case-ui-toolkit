@@ -17,7 +17,8 @@ import { ConditionalShowRegistrarService } from './services/conditional-show-reg
 export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[] = [];
+  @Input() idPrefix: string;
+  @Input() eventFields: CaseField[] = []; // all case data - should be caseFields, but keeping old name for backward compatibility
   @Input() formGroup: FormGroup;
 
   condition: ShowCondition;
@@ -34,7 +35,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
-      // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
+      // console.log('ccdConditionalShow Field id: ', this.caseField.id);
+      // console.log('formField: ', this.formField);
+      // console.log('ccdConditionalShow formGroup: ', this.formGroup);
+      // console.log('Case fields: ', this.eventFields);
       this.updateVisibility(this.getReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
@@ -55,7 +59,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     this.unsubscribeFromFormChanges();
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
+      // console.log('Update: field ', this.caseField.id);
+      // console.log('Update: formField ', this.formField);
+      // console.log('Update: ccdConditionalShow formUpdate formGroup: ', this.formGroup);
+      // console.log('Update: Case fields ', this.eventFields);
       this.updateVisibility(this.getReadOnlyAndFormFields());
     });
   }
@@ -103,11 +110,15 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private shouldToggleToHide(fields, forced) {
-    return (!this.isHidden() || forced) && !this.condition.match(fields);
+    let path = this.idPrefix + this.caseField.id;
+    // console.log('ccdConditionalShow idPrefix ', path);
+    return (!this.isHidden() || forced) && !this.condition.match(fields, path);
   }
 
   private shouldToggleToShow(fields) {
-    return this.isHidden() && this.condition.match(fields);
+    let path = this.idPrefix + this.caseField.id;
+    // console.log('ccdConditionalShow idPrefix ', path);
+    return this.isHidden() && this.condition.match(fields, path);
   }
 
   private getReadOnlyAndFormFields() {

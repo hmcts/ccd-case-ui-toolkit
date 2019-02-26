@@ -10,24 +10,28 @@ export class ShowCondition {
   constructor(public condition: string) {
   }
 
-  match(fields): boolean {
+  match(fields, path?: string): boolean {
+    // if (path) {
+    //   console.log('ShowCondition path', path);
+    // }
     if (!this.condition) {
       return true;
     }
-    return this.matchAndConditions(fields, this.condition);
+    return this.matchAndConditions(fields, this.condition, path);
   }
 
-  private matchAndConditions(fields: any, condition: string): boolean {
+  private matchAndConditions(fields: any, condition: string, path?: string): boolean {
     let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-    return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition));
+    return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
   }
 
-  private matchEqualityCondition(fields: any, condition: string): boolean {
+  private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
+    // console.log('fields', JSON.stringify(fields, null, 2));
     if (condition.search(ShowCondition.CONTAINS) === -1) {
       let field = condition.split('=')[0];
       let right = this.unquoted(condition.split('=')[1]);
       const [head, ...tail] = field.split('.');
-      let value = this.findValueForComplexCondition(fields, head, tail);
+      let value = this.findValueForComplexCondition(fields, head, tail, path);
 
       if (right.search('[,]') > -1) { // for  multi-select list
         let rights = right.split(',').sort().toString();
@@ -43,7 +47,7 @@ export class ShowCondition {
       let field = condition.split(ShowCondition.CONTAINS)[0];
       let right = this.unquoted(condition.split(ShowCondition.CONTAINS)[1]);
       const [head, ...tail] = field.split('.');
-      let value = this.findValueForComplexCondition(fields, head, tail);
+      let value = this.findValueForComplexCondition(fields, head, tail, path);
 
       if (right.search(',') > -1) {
         let rights = right.split(',').sort();
@@ -56,11 +60,34 @@ export class ShowCondition {
     }
   }
 
-  private findValueForComplexCondition(fields: any, head: string, tail: string[]) {
+  private findValueForComplexCondition(fields: any, head: string, tail: string[], path?: string) {
     if (tail.length === 0) {
       return fields[head];
     } else {
-      return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1));
+      if (Array.isArray(fields[head])) {
+        // use the path to resolve which array element we refer to
+        if (path.startsWith(head)) {
+          const [_, ...pathTail] = path.split(/[_]+/g);
+          if (pathTail.length > 0) {
+            try {
+              let arrayIndex = Number.parseInt(pathTail[0], 10);
+              const [__, ...dropNumberPath] = pathTail;
+              return this.findValueForComplexCondition(fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_'));
+            } catch (e) {
+              console.log('Error while parsing number', pathTail[0], e);
+            }
+          }
+        } else {
+          console.log('Path in formArray should start with ', head, ', full path: ', path);
+        }
+      } else {
+        if (path) {
+          const [_, ...pathTail] = path.split(/[_]+/g);
+          return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), pathTail.join('_'));
+        } else {
+          return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), path);
+        }
+      }
     }
   }
 

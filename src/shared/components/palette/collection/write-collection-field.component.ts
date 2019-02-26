@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -16,6 +16,12 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./collection-field.scss']
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+  @Input()
+  eventFields: CaseField[] = [];
+
+  @Input()
+  formGroup: FormGroup;
+
   formArray: FormArray;
 
   profile: Profile;
@@ -70,8 +76,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   buildIdPrefix(index: number): string {
     if ('Complex' === this.caseField.field_type.collection_field_type.type) {
+      // console.log('collection idPrefix.id', this.idPrefix + this.caseField.id + '_' + index + '_');
       return this.idPrefix + this.caseField.id + '_' + index + '_';
     } else {
+      // console.log('collection idPrefix.id', this.idPrefix + this.caseField.id + '_');
       return this.idPrefix + this.caseField.id + '_';
     }
   }

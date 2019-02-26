@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { By } from '@angular/platform-browser';
-import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { of } from 'rxjs';
@@ -29,14 +29,15 @@ describe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-host-component`,
-    template: `<ccd-write-address-field [caseField]="caseField" [registerControl]="registerControl"></ccd-write-address-field>`
+    template: `<ccd-write-address-field [caseField]="caseField" [registerControl]="registerControl" [formGroup]="formGroup">
+    </ccd-write-address-field>`
   })
   class TestHostComponent {
     @ViewChild(WriteAddressFieldComponent)
     public componentUnderTest: WriteAddressFieldComponent;
 
     caseField = caseField(null);
-
+    formGroup = addressFormGroup();
     registerControl = () => {};
   }
 
@@ -80,6 +81,18 @@ describe('WriteAddressFieldComponent', () => {
       field_type: { id: 'FieldTypeId', type: 'Complex' },
       value: address
     };
+  }
+
+  function addressFormGroup() {
+    return new FormGroup({
+      AddressLine1: new FormControl(),
+      AddressLine2: new FormControl(),
+      AddressLine3: new FormControl(),
+      PostTown: new FormControl(),
+      County: new FormControl(),
+      PostCode: new FormControl(),
+      Country: new FormControl()
+    });
   }
 
   function buildAddress(entryNo: number): AddressModel {

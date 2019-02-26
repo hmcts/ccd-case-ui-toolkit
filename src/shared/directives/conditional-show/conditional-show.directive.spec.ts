@@ -11,11 +11,12 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
     template: `
-      <tr ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields"></tr>`
+      <tr ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields" [idPrefix]="idPrefix"></tr>`
 })
 class TestHostComponent {
 
     @Input() caseField: CaseField;
+    @Input() idPrefix: string;
     @Input() eventFields: CaseField[];
     @Input() formGroup: FormGroup;
 }

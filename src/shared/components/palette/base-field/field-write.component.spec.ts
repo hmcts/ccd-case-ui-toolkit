@@ -37,6 +37,7 @@ describe('FieldWriteComponent', () => {
   let formValidatorService: any;
 
   let formGroup: FormGroup;
+  let eventFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -73,6 +74,7 @@ describe('FieldWriteComponent', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
+    component.eventFields = eventFields;
     component.formGroup = formGroup;
 
     de = fixture.debugElement;
@@ -93,6 +95,8 @@ describe('FieldWriteComponent', () => {
 
     let fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toBe(CASE_FIELD);
+    expect(fieldTest.eventFields).toBe(eventFields);
+    expect(fieldTest.formGroup).toBe(formGroup);
     expect(fieldTest.registerControl).not.toBeNull();
   });
 

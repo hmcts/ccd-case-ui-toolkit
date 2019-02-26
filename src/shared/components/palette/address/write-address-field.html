@@ -31,9 +31,10 @@
     [hidden]="!shouldShowDetailFields()"
     [(caseField)]="caseField"
     [renderLabel]="false"
+    [formGroup]="formGroup"
     [registerControl]="registerControl"
     [ignoreMandatory]="true"
-    [idPrefix]="idPrefix"
+    [idPrefix]="buildIdPrefix(caseField)"
     #writeComplexFieldComponent>
   </ccd-write-complex-type-field>
 
