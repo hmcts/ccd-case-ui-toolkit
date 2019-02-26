@@ -5,7 +5,6 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { OrderService } from '../../services/order/order.service';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
-import { HttpError } from '../../domain';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -16,9 +15,9 @@ export class CreateCaseFiltersComponent implements OnChanges {
   @Input()
   jurisdictions: Jurisdiction[];
   @Input()
-  error: HttpError;
+  isDisabled: boolean;
   @Input()
-  triggerText: string;
+  startButtonText: string;
   @Output()
   selectionSubmitted: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
   @Output()
@@ -95,7 +94,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
       !this.isEmpty(this.selected.jurisdiction) &&
       !this.isEmpty(this.selected.caseType) &&
       !this.isEmpty(this.selected.event) &&
-      !this.hasErrors();
+      !this.isDisabled;
   }
 
   apply() {
@@ -182,16 +181,5 @@ export class CreateCaseFiltersComponent implements OnChanges {
 
   private isEmpty(value: any): boolean {
     return value === null || value === undefined;
-  }
-
-  private hasErrors(): boolean {
-    return (this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length)
-      ||
-      (this.error
-        && this.error.details
-        && this.error.details.field_errors
-        && this.error.details.field_errors.length);
   }
 }
