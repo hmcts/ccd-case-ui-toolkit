@@ -173,7 +173,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
   }
 
   emitChange(): void {
-    setTimeout(() => {
+    setTimeout(() => { // workaround to prevent 'ExpressionChangedAfterItHasBeenCheckedError'
       if (this.selectionChanged) {
         this.selectionChanged.emit();
       }
