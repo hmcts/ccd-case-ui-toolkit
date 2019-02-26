@@ -16,7 +16,9 @@ import { FormValidatorsService } from '../../../services/form/form-validators.se
 @Component({
   selector: 'ccd-field-write',
   template: `
-    <ng-container #fieldContainer></ng-container>
+    <div [hidden]="caseField.hidden">
+      <ng-container #fieldContainer></ng-container>
+    </div>
   `
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
@@ -27,7 +29,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
 
-  private  defaultControlRegistrer(formGroup: FormGroup,
+  private defaultControlRegistrer(formGroup: FormGroup,
                                    caseField: CaseField): (control: FormControl) => AbstractControl {
     return control => {
       if (formGroup.controls[caseField.id]) {

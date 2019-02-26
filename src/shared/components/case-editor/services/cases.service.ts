@@ -3,11 +3,12 @@ import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { plainToClass } from 'class-transformer';
 import { Headers } from '@angular/http';
-import { OrderService, HttpService, HttpErrorService } from '../../../services';
+import { HttpErrorService, HttpService, OrderService } from '../../../services';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { catchError, map, tap } from 'rxjs/operators';
-import { CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, Draft } from '../../../domain';
-import { WizardPage, WizardPageField } from '../domain';
+import { CaseEventData, CaseEventTrigger, CasePrintDocument, CaseView, Draft } from '../../../domain';
+import { WizardPage } from '../domain';
+import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 
 @Injectable()
 export class CasesService {
@@ -33,7 +34,8 @@ export class CasesService {
     private http: HttpService,
     private appConfig: AbstractAppConfig,
     private orderService: OrderService,
-    private errorService: HttpErrorService
+    private errorService: HttpErrorService,
+    private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper
   ) {}
 
   getCaseView(jurisdictionId: string,
@@ -217,15 +219,12 @@ export class CasesService {
     if (!eventTrigger.wizard_pages) {
       eventTrigger.wizard_pages = [];
     }
-    /* FIXME: find a better place for this code */
+
     eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
       wizardPage.parsedShowCondition = new ShowCondition(wizardPage.show_condition);
-      let orderedWPFields = this.orderService.sort(wizardPage.wizard_page_fields);
-      wizardPage.case_fields = orderedWPFields.map((wizardField: WizardPageField) => {
-        let case_field = eventTrigger.case_fields.find(cf => cf.id === wizardField.case_field_id);
-        case_field.wizardProps = wizardField;
-        return case_field;
-      });
+      wizardPage.case_fields = this.orderService
+        .deepSort(this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });
   }
+
 }
