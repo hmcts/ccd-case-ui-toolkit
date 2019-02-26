@@ -1,15 +1,21 @@
 <div class="form-group" [id]="id()">
 
   <h3 *ngIf="renderLabel" class="heading-small heading-17">{{caseField | ccdFieldLabel}}</h3>
-
-  <ccd-field-write
-    *ngFor="let field of caseField | ccdFieldsFilter:true"
-    ccdConditionalShow
-    ccdLabelSubstitutor
-    [caseField]="field"
-    [formGroup]="complexGroup"
-    [registerControl]="buildControlRegistrer(field)"
-    [idPrefix]="buildIdPrefix(field)">
-  </ccd-field-write>
-
+  <ng-container *ngFor="let field of caseField | ccdFieldsFilter:true">
+    <ng-container [ngSwitch]="field | ccdIsReadOnly">
+      <ccd-field-read *ngSwitchCase="true"
+                      [caseField]="field"
+                      [withLabel]="true">
+      </ccd-field-read>
+      <ccd-field-write *ngSwitchCase="false"
+                       ccdConditionalShow
+                       ccdLabelSubstitutor
+                       [caseField]="field"
+                       [eventFields]="[caseField]"
+                       [formGroup]="complexGroup"
+                       [registerControl]="buildControlRegistrer(field)"
+                       [idPrefix]="buildIdPrefix(field)">
+      </ccd-field-write>
+    </ng-container>
+  </ng-container>
 </div>

@@ -5,6 +5,8 @@ import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressOption } from './address-option.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
 @Component({
   selector: 'ccd-write-address-field',
@@ -27,7 +29,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   missingPostcode = false;
 
-  constructor (addressesService: AddressesService) {
+  constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
     super();
     this.addressesService = addressesService;
   }
@@ -78,7 +80,18 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     this.setFormValue();
   }
 
+  isComplexWithHiddenFields() {
+    if (this.caseField.field_type
+      && this.caseField.field_type.complex_fields
+      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
+      return true;
+    }
+  }
+
   shouldShowDetailFields() {
+    if (this.isComplexWithHiddenFields()) {
+      return true;
+    }
     if (this.isExpanded) {
       return true;
     }
@@ -108,6 +121,10 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     }
   }
 
+  buildIdPrefix(field: CaseField): string {
+    return this.isCompoundPipe.transform(field) ? `${this.idPrefix}${field.id}_` : `${this.idPrefix}`;
+  }
+
   private defaultLabel(numberOfAddresses) {
     return numberOfAddresses === 0 ? 'No address found'
       : numberOfAddresses + (numberOfAddresses === 1 ? ' address ' : ' addresses ') + 'found';
@@ -120,5 +137,4 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       );
     }
   }
-
 }

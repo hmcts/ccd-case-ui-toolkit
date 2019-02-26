@@ -5,6 +5,7 @@ import { Observable, Subscription, empty, Subject } from 'rxjs';
 import { NgZone } from '@angular/core';
 import polling, { IOptions } from 'rx-polling';
 import { AbstractAppConfig } from '../../../app.config';
+import { ActivityComponent } from '../../components/activity/activity.component';
 
 // @dynamic
 @Injectable()
@@ -85,18 +86,23 @@ export class ActivityPollingService {
   protected performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
     // console.log('issuing batch request for cases: ' + caseIds);
-    this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe(
-      (activities: Activity[]) => {
-        activities.forEach((activity) => {
-          // console.log('pushing activity: ' + activity.caseId);
-          requests.get(activity.caseId).next(activity);
-        });
-      },
-      (err) => {
-        console.log('error: ' + err);
-        Array.from(requests.values()).forEach((subject) => subject.error(err));
-      }
-    );
+    this.ngZone.runOutsideAngular( () => {
+      // run polling outside angular zone so it does not trigger change detection
+      this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe(
+              // process activity inside zone so it triggers change detection for activity.component.ts
+        (activities: Activity[]) => this.ngZone.run( () => {
+            activities.forEach((activity) => {
+              // console.log('pushing activity: ' + activity.caseId);
+              requests.get(activity.caseId).next(activity);
+            });
+          },
+          (err) => {
+            console.log('error: ' + err);
+            Array.from(requests.values()).forEach((subject) => subject.error(err));
+          }
+        )
+      )
+    })
   }
 
   postViewActivity(caseId: string): Observable<Activity[]> {
