@@ -31,6 +31,8 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
     let injector = Injector.create([], this.fieldContainer.parentInjector);
     let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
+    console.log('this.caseField=', this.caseField);
+    console.log('this.withLabel=', this.withLabel);
     // Provide component @Inputs
     component.instance['caseField'] = this.caseField;
     component.instance['caseReference'] = this.caseReference;

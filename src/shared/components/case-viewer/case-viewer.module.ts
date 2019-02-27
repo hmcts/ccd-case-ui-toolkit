@@ -6,18 +6,18 @@ import { ActivityService, ActivityPollingService, OrderService, DraftService, Ht
 import { ErrorsModule } from '../error/errors.module';
 import { ActivityModule } from '../activity/activity.module';
 import { CaseHeaderModule } from '../case-header';
+import { CaseHistoryModule } from '../case-history';
 import { EventTriggerModule } from '../event-trigger/event-trigger.module';
 import { TabsModule } from '../../../components/tabs';
 import { PaletteModule } from '../palette';
 import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
-import { CaseHistoryComponent } from './case-history';
-import { EventTriggerResolver, CaseResolver, CaseHistoryService } from './services';
+import { EventTriggerResolver, CaseResolver } from './services';
 import { CaseEditorModule, CaseService } from '../case-editor';
-import { EventLogModule } from './event-log';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
+import { EventLogModule } from '../palette/history/event-log';
 
 @NgModule({
     imports: [
@@ -34,9 +34,9 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         CaseEditorModule,
         PipesModule,
         ConditionalShowModule,
+        CaseHistoryModule,
     ],
     declarations: [
-        CaseHistoryComponent,
         CaseEventTriggerComponent,
         CasePrinterComponent,
         CaseViewerComponent,
@@ -57,7 +57,6 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         DraftService,
         HttpService,
         CaseResolver,
-        CaseHistoryService,
     ]
 })
 export class CaseViewerModule {}

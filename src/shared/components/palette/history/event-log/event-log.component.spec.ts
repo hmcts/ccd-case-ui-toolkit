@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventLogComponent } from './event-log.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { CaseViewEvent } from '../../../domain';
-import { DatePipe } from '../../palette';
+import { CaseViewEvent } from '../../../../domain/case-view';
+import { DatePipe } from '../../utils';
 
 describe('EventLogComponent', () => {
 
