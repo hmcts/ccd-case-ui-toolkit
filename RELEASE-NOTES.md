@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.28.0 - February 27 2019
+**RDM-4109** - Management web consuming the new case history base type
+
 ### Version 2.27.0 - February 21 2019
 **RDM-2986** - New ComplexType to Events mapping
 
