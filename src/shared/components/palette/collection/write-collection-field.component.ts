@@ -45,6 +45,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       id: index.toString(),
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,
+      hidden: this.caseField.hidden,
       value: item.value,
       label: null,
       acls: this.caseField.acls

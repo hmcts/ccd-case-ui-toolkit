@@ -22,8 +22,15 @@
             <button class="button button-secondary" type="button" (click)="openModal(i)" [disabled]="isNotAuthorisedToDelete(i)">Remove</button>
           </div>
         </div>
-        <ccd-field-write [caseField]="buildCaseField(item, i)" [registerControl]="buildControlRegistrer(item.id, i)" [idPrefix]="buildIdPrefix(i)" *ngIf="!isNotAuthorisedToUpdate(i)"></ccd-field-write>
-        <ccd-field-read [caseField]="buildCaseField(item, i)" [context]="context" *ngIf="isNotAuthorisedToUpdate(i)"></ccd-field-read>
+        <ccd-field-write [caseField]="buildCaseField(item, i)"
+                         [registerControl]="buildControlRegistrer(item.id, i)"
+                         [idPrefix]="buildIdPrefix(i)"
+                         *ngIf="!isNotAuthorisedToUpdate(i)">
+        </ccd-field-write>
+        <ccd-field-read [caseField]="buildCaseField(item, i)"
+                        [context]="context"
+                        *ngIf="isNotAuthorisedToUpdate(i)">
+        </ccd-field-read>
       </div>
 
     </div>
