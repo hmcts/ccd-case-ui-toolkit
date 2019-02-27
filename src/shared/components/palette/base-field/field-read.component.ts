@@ -41,9 +41,6 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
 
     // Provide component @Inputs
     component.instance['caseField'] = this.caseField;
-    // console.log('this.caseField', this.caseField);
-    // console.log('this.eventFields', this.eventFields);
-    // console.log('this.formGroup', this.formGroup);
     component.instance['eventFields'] = this.eventFields;
     component.instance['formGroup'] = this.formGroup;
     component.instance['caseReference'] = this.caseReference;

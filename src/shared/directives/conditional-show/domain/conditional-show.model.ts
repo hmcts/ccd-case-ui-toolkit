@@ -11,9 +11,6 @@ export class ShowCondition {
   }
 
   match(fields, path?: string): boolean {
-    // if (path) {
-    //   console.log('ShowCondition path', path);
-    // }
     if (!this.condition) {
       return true;
     }
@@ -26,7 +23,6 @@ export class ShowCondition {
   }
 
   private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
-    // console.log('fields', JSON.stringify(fields, null, 2));
     if (condition.search(ShowCondition.CONTAINS) === -1) {
       let field = condition.split('=')[0];
       let right = this.unquoted(condition.split('=')[1]);
