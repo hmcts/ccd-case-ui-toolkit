@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.27.1 - February 22 2019
+**RDM-3430** - Run polling outside angular zone
 
 ### Version 2.28.0 - February 27 2019
 **RDM-4109** - Management web consuming the new case history base type
