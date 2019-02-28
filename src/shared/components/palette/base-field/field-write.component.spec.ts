@@ -84,7 +84,8 @@ describe('FieldWriteComponent', () => {
   });
 
   it('should inject component instance as child', () => {
-    let ngContent = de.children[0];
+    let divWrapper = de.children[0];
+    let ngContent = divWrapper.children[0];
     expect(ngContent.children.length).toBe(1);
 
     let fieldTestComponent = ngContent.children[0];

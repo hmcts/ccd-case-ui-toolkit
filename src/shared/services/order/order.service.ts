@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Orderable } from '../../domain/order/orderable.model';
+import { CaseField, FieldType } from '../../domain';
 
 // @dynamic
 @Injectable()
@@ -24,7 +25,7 @@ export class OrderService {
     }
 
     return a.order - b.order;
-  }
+  };
 
   /**
    * Clone and sort array. Ascending order used by default.
@@ -38,4 +39,42 @@ export class OrderService {
       .sort(sortingFunction);
   }
 
+  public deepSort(case_fields: CaseField[]): CaseField[] {
+    case_fields.forEach((caseField: CaseField) => {
+      if (this.isComplex(caseField)) {
+        let sorted = this.deepSort(caseField.field_type.complex_fields);
+        caseField.field_type.complex_fields = sorted;
+      }
+      if (this.isCollection(caseField)) {
+        let sorted = this.deepSort(caseField.field_type.collection_field_type.complex_fields);
+        caseField.field_type.collection_field_type.complex_fields = sorted;
+      }
+      if (caseField.hidden !== true && !caseField.order) {
+        if (this.isComplex(caseField)) {
+          this.deriveOrderFromChildComplexFields(caseField, caseField.field_type);
+        }
+        if (this.isCollection(caseField)) {
+          this.deriveOrderFromChildComplexFields(caseField, caseField.field_type.collection_field_type);
+        }
+      }
+    });
+    return this.sort(case_fields);
+  }
+
+  private isCollection(caseField: CaseField) {
+    return caseField.field_type && caseField.field_type.type === 'Collection';
+  }
+
+  private isComplex(caseField: CaseField) {
+    return caseField.field_type && caseField.field_type.type === 'Complex';
+  }
+
+  private deriveOrderFromChildComplexFields(caseField: CaseField, fieldType: FieldType) {
+    if (fieldType && fieldType.complex_fields && fieldType.complex_fields.length > 0) {
+      let caseFieldOptional = fieldType.complex_fields.find(e => e.order !== undefined);
+      if (caseFieldOptional !== undefined) {
+        caseField.order = caseFieldOptional.order;
+      }
+    }
+  }
 }

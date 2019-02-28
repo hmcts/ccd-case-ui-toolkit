@@ -1,4 +1,12 @@
 ## RELEASE NOTES
+### Version 2.29.0 - February 28 2019
+**RDM-3916** - Move create case filters to toolkit and implement new contract
+
+### Version 2.27.1 - February 22 2019
+**RDM-3430** - Run polling outside angular zone
+
+### Version 2.27.0 - February 21 2019
+**RDM-2986** - New ComplexType to Events mapping
 
 ### Version 2.26.0 - February 19 2019
 **RDM-3915** - Extract Case Create filters component as is
