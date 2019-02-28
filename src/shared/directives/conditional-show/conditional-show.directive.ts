@@ -32,9 +32,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if (this.caseField.show_condition) {
       this.condition = new ShowCondition(this.caseField.show_condition);
+      // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
-
+      // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getReadOnlyAndFormFields());
       this.subscribeToFormChanges();
       this.registry.register(this);
@@ -42,6 +43,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   refreshVisibility() {
+    // console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
     this.updateVisibility(this.getReadOnlyAndFormFields(), true);
     this.subscribeToFormChanges();
   }
@@ -52,13 +54,15 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private subscribeToFormChanges() {
     this.unsubscribeFromFormChanges();
-
+    // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
+      // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
       this.updateVisibility(this.getReadOnlyAndFormFields());
     });
   }
 
   private updateVisibility(fields, forced = false) {
+    // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {
       this.onHide();
     } else if (this.shouldToggleToShow(fields)) {
@@ -67,8 +71,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private onHide() {
+    // console.log('on hide is form field', this.formField);
     if (this.formField) {
       this.unsubscribeFromFormChanges();
+      // console.log('FIELD ' + this.caseField.id + ' disabling form field');
       this.formField.disable();
       this.subscribeToFormChanges();
     }
@@ -78,6 +84,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private onShow() {
     if (this.formField) {
       this.unsubscribeFromFormChanges();
+      // console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
       this.formField.enable();
       this.subscribeToFormChanges();
     }
@@ -112,6 +119,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
+    // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
     return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.caseFields, formFields);
   }
 
