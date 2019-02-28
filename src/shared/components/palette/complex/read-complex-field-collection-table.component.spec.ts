@@ -120,7 +120,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             label: 'Label 1',
               AddressLine1: 'AAFlat 10',
               AddressLine2: 111,
-    ​​​            AddressPostcode: 'TE45ED'
+    ​​​          AddressPostcode: 'TE45ED'
           }
         }
   ],

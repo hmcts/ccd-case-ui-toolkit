@@ -59,8 +59,15 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
   private populateLabels(labelsVertical: { [p: string]: any }, allLabels: { [p: string]: any }) {
     for (let obj of this.caseField.field_type.complex_fields) {
-      labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type};
-      allLabels[obj.id] = {label: obj.label, type: obj.field_type.type};
+      if(obj.field_type.type === 'FixedList' ||
+        obj.field_type.type === 'MultiSelectList' ||
+        obj.field_type.type === 'FixedRadioList'){
+        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type};
+        allLabels[obj.id] = {label: obj.label, type: obj.field_type};
+      } else {
+        labelsVertical[obj.id] = {label: obj.label, type: {type: obj.field_type.type}};
+        allLabels[obj.id] = {label: obj.label, type: {type: obj.field_type.type}};
+      }
     }
   }
 
@@ -83,7 +90,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
                                     || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
 
-    switch (this.columnsHorizontalLabel[column].type) {
+    switch (this.columnsHorizontalLabel[column].type.type) {
       case 'Number':
       case 'MoneyGBP': {
         if (shouldSortInAscendingOrder) {

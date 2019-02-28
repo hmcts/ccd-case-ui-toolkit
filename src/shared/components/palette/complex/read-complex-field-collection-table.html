@@ -22,7 +22,7 @@
                   <ccd-field-read [caseField]="{
                         id: name.key,
                         label: name.value.label,
-                        field_type: { type: columnsHorizontalLabel[heading.trim()].type},
+                        field_type: columnsHorizontalLabel[heading.trim()].type,
                         value: name.value
                       }" [context]="context"></ccd-field-read>
                   </div>
@@ -49,7 +49,7 @@
                         <ccd-field-read [caseField]="{
                               id: name.key,
                               label: vLabel.value.label,
-                               field_type: { type: vLabel.value.type},
+                               field_type:  vLabel.value.type,
                               value: name.value
                             }" [context]="context"></ccd-field-read>
                       </td>
