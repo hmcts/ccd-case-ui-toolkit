@@ -17,7 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   @Input()
-  eventFields: CaseField[] = [];
+  caseFields: CaseField[] = [];
 
   @Input()
   formGroup: FormGroup;

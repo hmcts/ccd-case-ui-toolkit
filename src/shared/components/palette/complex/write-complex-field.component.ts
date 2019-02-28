@@ -12,7 +12,7 @@ import { FormValidatorsService } from '../../../services/form/form-validators.se
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   @Input()
-  eventFields: CaseField[] = [];
+  caseFields: CaseField[] = [];
 
   @Input()
   formGroup: FormGroup;

@@ -18,7 +18,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() idPrefix: string;
-  @Input() eventFields: CaseField[] = []; // all case data - should be caseFields, but keeping old name for backward compatibility
+  @Input() caseFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
 
   condition: ShowCondition;
@@ -112,7 +112,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
-    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
+    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.caseFields, formFields);
   }
 
   private getFormFieldsValuesIncludingDisabled() {

@@ -56,12 +56,12 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 let FieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'eventFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded'],
+  inputs: ['caseField', 'caseFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded'],
   template: '<input type="text" />',
 });
 let FieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'eventFields', 'formGroup', 'context']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
@@ -149,7 +149,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
-    component.eventFields = [caseField];
+    component.caseFields = [caseField];
     component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
@@ -415,7 +415,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
-    component.eventFields = [caseField];
+    component.caseFields = [caseField];
     component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
@@ -548,7 +548,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
-    component.eventFields = [caseField];
+    component.caseFields = [caseField];
     component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;

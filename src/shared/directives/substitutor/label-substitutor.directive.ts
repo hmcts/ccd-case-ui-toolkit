@@ -11,7 +11,7 @@ import { PlaceholderService } from './services';
 export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[] = [];
+  @Input() caseFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
   @Input() elementsToSubstitute: string[] = ['label', 'hint_text'];
 
@@ -50,9 +50,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
-    // TODO: Delete following line when @Input eventFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
-    let uniqueEventFields = this.removeDuplicates(this.eventFields);
-    return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueEventFields, formFields);
+    // TODO: Delete following line when @Input caseFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
+    let uniqueCaseFields = this.removeDuplicates(this.caseFields);
+    return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueCaseFields, formFields);
   }
 
   private removeDuplicates(arr: CaseField[]) {

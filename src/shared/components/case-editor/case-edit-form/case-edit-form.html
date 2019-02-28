@@ -1,17 +1,17 @@
 <ng-container *ngFor="let field of fields">
-    <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [formGroup]="formGroup" [eventFields]="eventFields">
+    <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [formGroup]="formGroup" [caseFields]="caseFields">
       <ng-container [ngSwitch]="field | ccdIsReadOnlyAndNotCollection ">
-        <ccd-field-read *ngSwitchCase="true" [caseField]="field" [eventFields]="eventFields" [withLabel]="true"></ccd-field-read>
+        <ccd-field-read *ngSwitchCase="true" [caseField]="field" [caseFields]="caseFields" [withLabel]="true"></ccd-field-read>
         <ng-container *ngSwitchCase="false">
           <ng-container *ngIf="!(field | ccdIsCompound); else CompoundRow">
             <ccd-field-write [caseField]="field"
-                             [eventFields]="eventFields"
+                             [caseFields]="caseFields"
                              [formGroup]="formGroup"
                              [idPrefix]=""></ccd-field-write>
           </ng-container>
           <ng-template #CompoundRow>
             <ccd-field-write [caseField]="field"
-                             [eventFields]="eventFields"
+                             [caseFields]="caseFields"
                              [formGroup]="formGroup"
                              [idPrefix]="field.id + '_'"></ccd-field-write>
           </ng-template>

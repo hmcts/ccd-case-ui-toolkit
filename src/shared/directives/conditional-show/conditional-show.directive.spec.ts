@@ -11,13 +11,13 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
     template: `
-      <tr ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields" [idPrefix]="idPrefix"></tr>`
+      <tr ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [caseFields]="caseFields" [idPrefix]="idPrefix"></tr>`
 })
 class TestHostComponent {
 
     @Input() caseField: CaseField;
     @Input() idPrefix: string;
-    @Input() eventFields: CaseField[];
+    @Input() caseFields: CaseField[];
     @Input() formGroup: FormGroup;
 }
 
@@ -69,7 +69,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches a read only field. No form fields', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
         fixture.detectChanges();
 
         expect(el.hidden).toBe(false);
@@ -78,7 +78,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match any read only field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Mundy', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Mundy', '')];
         fixture.detectChanges();
 
         expect(el.hidden).toBe(true);
@@ -86,7 +86,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match an undefined readonly field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', '', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', '', '')];
         fixture.detectChanges();
 
         expect(el.hidden).toBe(true);
@@ -94,7 +94,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches a form field. No read only fields', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', '')];
+        comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonHasSecondAddress: new FormControl('Yes'),
             PersonSecondAddress: new FormControl(''),
@@ -106,7 +106,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches a form field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', ''), field('PersonHasSecondAddress', 'Yes', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''), field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonHasSecondAddress: new FormControl('Yes'),
             PersonSecondAddress: new FormControl(''),
@@ -119,7 +119,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match any form field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
                              field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonSecondAddress: new FormControl(''),
@@ -134,7 +134,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match because form field is undefined', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonSecondAddress: new FormControl(''),
@@ -147,7 +147,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches after field change', () => {
         comp.caseField = field('PersonLastName', 'Paniccia', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+        comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                             field('PersonFirstName', 'Mario', '')];
         comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Paniccia'),
@@ -166,7 +166,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should disable a form field when hiding and keep its value', () => {
         comp.caseField = field('PersonLastName', 'Paniccia', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
+        comp.caseFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Paniccia'),
@@ -199,7 +199,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not clear a form field on hide if not dirty', () => {
         comp.caseField = field('PersonLastName', 'Paniccia', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
+        comp.caseFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Paniccia'),

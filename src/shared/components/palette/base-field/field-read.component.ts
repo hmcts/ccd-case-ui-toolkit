@@ -25,7 +25,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   formGroup: FormGroup;
 
   @Input()
-  eventFields: CaseField[] = [];
+  caseFields: CaseField[] = [];
 
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
@@ -41,7 +41,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
 
     // Provide component @Inputs
     component.instance['caseField'] = this.caseField;
-    component.instance['eventFields'] = this.eventFields;
+    component.instance['caseFields'] = this.caseFields;
     component.instance['formGroup'] = this.formGroup;
     component.instance['caseReference'] = this.caseReference;
     component.instance['context'] = this.context;

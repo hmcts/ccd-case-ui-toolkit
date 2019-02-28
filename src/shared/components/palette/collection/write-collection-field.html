@@ -23,14 +23,14 @@
           </div>
         </div>
         <ccd-field-write [caseField]="buildCaseField(item, i)"
-                         [eventFields]="eventFields"
+                         [caseFields]="caseFields"
                          [formGroup]="formGroup"
                          [registerControl]="buildControlRegistrer(item.id, i)"
                          [idPrefix]="buildIdPrefix(i)"
                          *ngIf="!isNotAuthorisedToUpdate(i)">
         </ccd-field-write>
         <ccd-field-read [caseField]="buildCaseField(item, i)"
-                        [eventFields]="eventFields"
+                        [caseFields]="caseFields"
                         [formGroup]="formGroup"
                         [context]="context"
                         *ngIf="isNotAuthorisedToUpdate(i)">
