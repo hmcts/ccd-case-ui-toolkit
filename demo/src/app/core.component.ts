@@ -17,6 +17,9 @@ import { Component } from '@angular/core';
                         <li>
                             <a [routerLink]="'/search'" [routerLinkActive]="'item-bold'">Search</a>
                         </li>
+                        <li>
+                            <a [routerLink]="'/case/create-filters'" [routerLinkActive]="'item-bold'">Create Case Filters</a>
+                        </li>
                     </ul>
                 </div>
             </div>
