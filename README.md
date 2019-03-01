@@ -59,10 +59,16 @@ yarn start
 
 ```
 
-You can also look at an example usage of the UI Toolkit demo project by:
+You can also have a quick look at an example usage of the UI Toolkit demo project by (after both folders had `yarn install` ran on them):
 ```bash
+# build UI Toolkit
+yarn build:esm
+
+# copy UI Toolkit dist folder to demo/node_modules/@hmcts/ccd-case-ui-toolkit/dist
+yarn build:demo
+
 # start demo app and stub server in same process
-yarn start
+yarn start:demo
 # Go to http://localhost:8080
 ```
 
