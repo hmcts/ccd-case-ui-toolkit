@@ -59,7 +59,7 @@ yarn start
 
 ```
 
-You can also have a quick look at an example usage of the UI Toolkit demo project by (after both folders had `yarn install` ran on them):
+You can also have a quick look at an example usage of the UI Toolkit demo project (after both folders had `yarn install` ran on them) by:
 ```bash
 # build UI Toolkit
 yarn build:esm
