@@ -11,6 +11,15 @@ export class CreateCaseFiltersConsumerComponent implements OnInit {
     error: HttpError;
     startButtonText:  string;
 
+    code = `
+    <ccd-create-case-filters
+        [jurisdictions]="jurisdictions"
+        [isDisabled]="hasErrors()"
+        [startButtonText]="startButtonText"
+        (selectionSubmitted)="apply($event)"
+        (selectionChanged)="resetErrors()"
+    ></ccd-create-case-filters>`;
+
     constructor() {
     }
 

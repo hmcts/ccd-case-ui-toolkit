@@ -1,29 +1,48 @@
-<div class="container-fluid">
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Create Case Filters component</h1>
 
-    <p>1. Have the CaseUIToolkitModule imported and SearchService plus RequestOptionsBuilder services provided in
-        \`app.module\`:</p>
-    <pre>
-        <code>
-        </code>
-    </pre>
-    <p>2. Create a consumer component that will have the \`ccd-case-view\` component embedded:</p>
-    <pre>
-        <code>
-        </code>
-    </pre>
-    <p>3. Start using the component via either app routing or directly embedding it on a parent template.</p>
-    <pre>
-        <code>
-            &lt;ccd-create-case-filters
+        <div class="text">
+            <p> This component is used to determine the jurisdiction, case type and event when creating a case. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events</li>
+                        <li>isDisabled - boolean which controls the `disable` state of the button</li>
+                        <li>startButtonText - label of the button</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>selectionSubmitted - a notification event about a CreateCaseFiltersSelection being submitted containing an event with:
+                            <ul class="list list-bullet text">
+                                <li>jurisdictionId: string</li>
+                                <li>caseTypeId: string</li>
+                                <li>eventId: string</li>  
+                            </ul>
+                        </li>
+                        <li>selectionChanged - a notification event about selection change on any of the dropdowns
+                            
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-create-case-filters
                 [jurisdictions]="jurisdictions"
                 [isDisabled]="hasErrors()"
                 [startButtonText]="startButtonText"
                 (selectionSubmitted)="apply($event)"
                 (selectionChanged)="resetErrors()"
-            &gt;&lt;/ccd-create-case-filters&gt;
-        </code>
-    </pre>
-    <ccd-create-case-filters [jurisdictions]="jurisdictions" [isDisabled]="hasErrors()"
-        [startButtonText]="startButtonText" (selectionSubmitted)="apply($event)" (selectionChanged)="resetErrors()">
-    </ccd-create-case-filters>
+            ></ccd-create-case-filters>
+        </div>
+    </main>
 </div>
