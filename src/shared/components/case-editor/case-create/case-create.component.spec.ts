@@ -13,6 +13,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { EventTriggerService } from '../services/event-trigger.service';
 import { CaseDetails } from '../../../domain/case-details.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
+import { newCaseField } from '../../../fixture';
 
 let CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
@@ -22,7 +23,6 @@ let CaseEditComponent: any = MockComponent({
 
 describe('CaseCreateComponent event trigger resolved and draft does not exist', () => {
 
-  const JID_UNDEFINED = undefined;
   const ETID = 'TEST_TRIGGER';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     ETID,
@@ -30,18 +30,8 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     undefined,
     false,
     [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        field_type: null,
-        display_context: 'READONLY'
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        field_type: null,
-        display_context: 'OPTIONAL'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build(),
     ],
     [],
     true
@@ -180,18 +170,8 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
     DRAFT_PREFIX + DRAFT_ID,
     false,
     [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        field_type: null,
-        display_context: 'READONLY'
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        field_type: null,
-        display_context: 'OPTIONAL'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build(),
     ],
     [],
     true

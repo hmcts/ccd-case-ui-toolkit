@@ -4,6 +4,7 @@ import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { DatePipe } from '../utils/date.pipe';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadDateFieldComponent', () => {
 
@@ -12,13 +13,7 @@ describe('ReadDateFieldComponent', () => {
     type: 'Date'
   };
   const VALUE = '1800-07-15';
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
   const FORMATTED_VALUE = '15 Jul 1800';
   const EMPTY = '';
 

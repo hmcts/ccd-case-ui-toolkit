@@ -25,21 +25,6 @@ export let createCaseEventTrigger = (id: string,
   return eventTrigger;
 };
 
-export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-  show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
-  return {
-    id: id || 'personFirstName',
-    field_type: {
-      id: type.toString() || 'Text',
-      type: type || 'Text',
-      complex_fields: typeComplexFields || []
-    },
-    display_context: display_context || 'OPTIONAL',
-    label: label || 'First name',
-    show_summary_content_option: show_summary_content_option
-  };
-};
-
 export let createWizardPage = (id: string,
                                label: string,
                                order: number,
@@ -95,39 +80,22 @@ export let createHiddenComplexFieldOverride = (id: string): ComplexFieldOverride
   return complexFieldOverride;
 };
 
-export let createCaseField = (id: string,
-                              label: string,
-                              hint: string,
-                              fieldType: FieldType,
-                              display_context: string,
-                              order = undefined): CaseField => {
-  return {
-    id: id || 'personFirstName',
-    field_type: fieldType || textFieldType(),
-    display_context: display_context || 'OPTIONAL',
-    label: label || 'First name',
-    hint_text: hint || 'First name hint text',
-    show_summary_content_option: 0,
-    order: order
-  };
-};
-
 export let createFieldType = (typeId: string,
                               type: FieldTypeEnum,
                               complex_fields: CaseField[] = [],
                               collection_field_type: FieldType = undefined): FieldType => {
-  return {
+  return Object.assign(new FieldType(), {
     id: typeId || 'Text',
     type: type || 'Text',
     complex_fields: complex_fields || [],
     collection_field_type: collection_field_type || undefined
-  };
+  });
 };
 
 export let textFieldType = (): FieldType => {
-  return {
+  return Object.assign(new FieldType(), {
     id: 'Text',
     type: 'Text',
     complex_fields: []
-  };
+  });
 };

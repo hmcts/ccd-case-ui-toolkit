@@ -1,5 +1,6 @@
 import { OrderService } from './order.service';
-import { createCaseField, createFieldType, textFieldType } from '../../fixture/shared.test.fixture';
+import { createFieldType, textFieldType } from '../../fixture/shared.test.fixture';
+import { newCaseField } from '../../fixture';
 
 describe('OrderService', () => {
 
@@ -69,8 +70,8 @@ describe('OrderService', () => {
   describe('should sort caseFields', () => {
     it('should keep the order of the fields if already sorted', () => {
       const CASE_FIELDS = [
-        createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3),
-        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5)];
+        newCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3).build(),
+        newCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5).build()];
 
       let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
 
@@ -82,8 +83,8 @@ describe('OrderService', () => {
 
     it('should sort fields in order', () => {
       const CASE_FIELDS = [
-        createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 5),
-        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3)];
+        newCaseField('testField1', 'Debtor name', '', textFieldType(), null, 5).build(),
+        newCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3).build()];
 
       let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
 
@@ -95,8 +96,8 @@ describe('OrderService', () => {
 
     it('fields without order should end up on the bottom', () => {
       const CASE_FIELDS = [
-        createCaseField('testField1', 'Debtor name', '', textFieldType(), null),
-        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3)];
+        newCaseField('testField1', 'Debtor name', '', textFieldType(), null).build(),
+        newCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3).build()];
 
       let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
 
@@ -108,21 +109,21 @@ describe('OrderService', () => {
 
     it('should sort caseFields with Complex type - order is defined only on the Complex type leafs', () => {
       const CASE_FIELDS_WITH_COMPLEX_TYPE = [
-        createCaseField('testField1', 'Test field 1', '', textFieldType(), null, 1),
-        createCaseField('finalReturn', 'Final return', '',
+        newCaseField('testField1', 'Test field 1', '', textFieldType(), null, 1).build(),
+        newCaseField('finalReturn', 'Final return', '',
           createFieldType('Return', 'Complex', [
-            createCaseField('addressAttended',
+            newCaseField('addressAttended',
               'Address Attended',
               'Address Attended hint text',
               createFieldType('AddressUK', 'Complex', [
-                createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2),
-                createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
-                createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3)
+                newCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2).build(),
+                newCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null).build(),
+                newCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3).build()
               ]),
               null
-            )
-          ]), 'COMPLEX'),
-        createCaseField('testField2', 'Test field 2', '', textFieldType(), null, 4)
+            ).build()
+          ]), 'COMPLEX').build(),
+        newCaseField('testField2', 'Test field 2', '', textFieldType(), null, 4).build()
       ];
 
       let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS_WITH_COMPLEX_TYPE);
@@ -153,22 +154,22 @@ describe('OrderService', () => {
 
     it('should sort Collection type containing Complex type', () => {
       const CASE_FIELDS_WITH_COMPLEX_TYPE_IN_COLLECTION = [
-        createCaseField('debtorName', 'Debtor name', '', textFieldType(), null, 1),
-        createCaseField('interimReturns', 'Interim returns', '',
+        newCaseField('debtorName', 'Debtor name', '', textFieldType(), null, 1).build(),
+        newCaseField('interimReturns', 'Interim returns', '',
           createFieldType('interimReturns', 'Collection', [],
             createFieldType('Return', 'Complex', [
-              createCaseField('addressAttended',
+              newCaseField('addressAttended',
                 'Address Attended',
                 'Address Attended hint text',
                 createFieldType('AddressUK', 'Complex', [
-                  createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2),
-                  createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
-                  createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3)
+                  newCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2).build(),
+                  newCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null).build(),
+                  newCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3).build()
                 ]),
                 null
-              )
+              ).build()
             ])
-          ), 'COMPLEX')
+          ), 'COMPLEX').build()
       ];
 
       let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS_WITH_COMPLEX_TYPE_IN_COLLECTION);

@@ -8,6 +8,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor/label-substitutor.directive';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
+import { newCaseField } from '../../../fixture';
 
 describe('LabelFieldComponent', () => {
 
@@ -17,27 +18,12 @@ describe('LabelFieldComponent', () => {
     id: 'Label',
     type: 'Label'
   };
-  const CASE_FIELD_WITH_NO_VALUE: CaseField = {
-    id: 'label',
-    label: 'Label Field Label',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-  };
-  const CASE_FIELD: CaseField = {
-    id: 'label',
-    label: 'Label Field Label',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: 'Label Field Value'
-  };
+  const CASE_FIELD_WITH_NO_VALUE: CaseField = newCaseField('label', 'Label Field Label', null, FIELD_TYPE, 'OPTIONAL').build();
+  const CASE_FIELD: CaseField = newCaseField('label', 'Label Field Label', null, FIELD_TYPE, 'OPTIONAL')
+    .withValue('Label Field Value').build();
 
-  const LABEL_CASE_FIELD: CaseField = {
-    id: 'field',
-    label: '${label}',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: 'Label Field Value'
-  };
+  const LABEL_CASE_FIELD: CaseField = newCaseField('field', '${label}', null, FIELD_TYPE, 'OPTIONAL')
+    .withValue('Label Field Value').build();
 
   const EVENT_CASE_FIELDS: CaseField[] = [
     CASE_FIELD

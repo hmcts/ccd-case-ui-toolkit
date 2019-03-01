@@ -1,20 +1,12 @@
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { newCaseField, createFieldType } from '../../../fixture';
 
 describe('FieldsFilterPipe', () => {
 
   const caseBuilder = (fields: CaseField[], value?: any): CaseField => {
-    return {
-      id: 'Applicant',
-      label: 'Applicant',
-      display_context: 'OPTIONAL',
-      field_type: {
-        id: 'ApplicantType',
-        type: 'Complex',
-        complex_fields: fields
-      },
-      value: value
-    };
+    return newCaseField('Applicant', 'Applicant', null,
+      createFieldType('ApplicantType', 'Complex', fields), 'OPTIONAL') .withValue(value).build();
   };
 
   let fieldsFilter: FieldsFilterPipe;
@@ -30,84 +22,24 @@ describe('FieldsFilterPipe', () => {
 
   describe('with value embedded in fields', () => {
     const FIELDS_WITH_VALUES: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        value: 'John',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build()
     ];
 
     const FIELDS_WITH_VALUES_AND_MISSING: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        value: 'John',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build()
     ];
 
     const FIELDS_WITH_VALUES_AND_FALSE: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        value: 'John',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      },
-      {
-        id: 'PersonGender',
-        label: 'Gender',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'YesOrNo',
-          type: 'YesOrNo'
-        },
-        value: false
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
+      newCaseField('PersonGender', 'Gender', null,
+        createFieldType('YesOrNo', 'YesOrNo'), 'OPTIONAL').withValue(false).build(),
     ];
 
     const FIELDS_WITH_VALUES_AND_ZERO: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        value: 'John',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      },
-      {
-        id: 'PersonChildren',
-        label: 'Children',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Number',
-          type: 'Number'
-        },
-        value: 0
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
+      newCaseField('PersonChildren', 'Children', null,
+        createFieldType('Number', 'Number'), 'OPTIONAL').withValue(0).build(),
     ];
 
     it('should return fields with embedded value as is', () => {
@@ -155,60 +87,17 @@ describe('FieldsFilterPipe', () => {
 
   describe('with value outside of fields', () => {
     const EXPECTED_FILTERED_FIELDS: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        },
-        value: 'John'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
     ];
 
     const FIELDS_WITHOUT_VALUES: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build()
     ];
 
     const FIELDS_WITH_VALUES: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        },
-        value: 'John'
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        },
-        value: 'Doe'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').withValue('Doe').build()
     ];
 
     const VALUES_ALL = {
@@ -273,115 +162,34 @@ describe('FieldsFilterPipe', () => {
 
   describe('with complex type in fields', () => {
     const COMPLEX_WITH_CHILDREN: CaseField[] = [
-      {
-        id: 'Person',
-        label: 'Person',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Person',
-          type: 'Complex',
-          complex_fields: [
-            {
-              id: 'PersonFirstName',
-              label: 'First name',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'Text',
-                type: 'Text'
-              },
-              value: 'John'
-            }
-          ]
-        }
-      }
+      newCaseField('Person', 'Person', null,
+        createFieldType('Person', 'Complex', [
+          newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
+        ]), 'OPTIONAL').build(),
     ];
 
     const COMPLEX_WITHOUT_CHILDREN: CaseField[] = [
-      {
-        id: 'Person',
-        label: 'Person',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Person',
-          type: 'Complex',
-          complex_fields: []
-        }
-      }
+      newCaseField('Person', 'Person', null,
+        createFieldType('Person', 'Complex', []), 'OPTIONAL').build(),
     ];
 
     const COMPLEX_WITH_EMPTY_CHILDREN: CaseField[] = [
-      {
-        id: 'Person',
-        label: 'Person',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Person',
-          type: 'Complex',
-          complex_fields: [
-            {
-              id: 'FirstName',
-              label: 'First name',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'Text',
-                type: 'Text'
-              },
-              value: ''
-            }
-          ]
-        }
-      }
+      newCaseField('Person', 'Person', null,
+        createFieldType('Person', 'Complex', [
+          newCaseField('FirstName', 'First name', null, null, 'OPTIONAL').withValue('').build(),
+        ]), 'OPTIONAL').build(),
     ];
 
-    const COMPLEX_WITH_EXTERNAL_VALUES: CaseField = {
-        id: 'Person',
-        label: 'Person',
-      display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Person',
-          type: 'Complex',
-          complex_fields: [
-            {
-              id: 'FirstNameContainerContainer',
-              label: 'First name container container',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'Complex',
-                type: 'Complex',
-                complex_fields: [
-                  {
-                    id: 'FirstNameContainer',
-                    label: 'First name container',
-                    display_context: 'OPTIONAL',
-                    field_type: {
-                      id: 'Complex',
-                      type: 'Complex',
-                      complex_fields: [
-                        {
-                          id: 'FirstName',
-                          label: 'First name',
-                          display_context: 'OPTIONAL',
-                          field_type: {
-                            id: 'Text',
-                            type: 'Text'
-                          }
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        value: {
-          'FirstNameContainerContainer': {
-            'FirstNameContainer': {
-              'FirstName': 'Doe'
-            }
-          }
-        }
-      };
+    const COMPLEX_WITH_EXTERNAL_VALUES: CaseField = newCaseField('Person', 'Person', null,
+      createFieldType('Person', 'Complex', [
+        newCaseField('FirstNameContainerContainer', 'First name container container', null,
+          createFieldType('Complex', 'Complex', [
+            newCaseField('FirstNameContainer', 'First name container', null,
+              createFieldType('Complex', 'Complex', [
+                newCaseField('FirstName', 'First name', null, null, 'OPTIONAL').withValue('Doe').build()
+              ]), 'OPTIONAL').build()
+          ]), 'OPTIONAL').withValue('').build(),
+      ]), 'OPTIONAL').build();
 
     it('should NOT filter out Complex, even though Complex value itself is undefined but children have values', () => {
       let filteredFields = fieldsFilter.transform(caseBuilder(COMPLEX_WITH_CHILDREN));
@@ -410,25 +218,8 @@ describe('FieldsFilterPipe', () => {
 
   describe('option to keep empty fields', () => {
     const FIELDS_WITH_VALUES_AND_MISSING: CaseField[] = [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        value: 'John',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'Text',
-          type: 'Text'
-        }
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').withValue('John').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build()
     ];
 
     it('should not filter out fields with embedded value empty', () => {

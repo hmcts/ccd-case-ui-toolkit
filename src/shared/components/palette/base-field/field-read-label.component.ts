@@ -21,7 +21,7 @@ export class FieldReadLabelComponent {
   }
 
   public isComplex(): boolean {
-    return this.caseField.field_type.type === 'Complex';
+    return this.caseField.isComplex();
   }
 
 }

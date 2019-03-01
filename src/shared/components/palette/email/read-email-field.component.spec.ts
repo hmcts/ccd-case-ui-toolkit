@@ -4,6 +4,7 @@ import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { text } from '../../../test/helpers';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadEmailFieldComponent', () => {
 
@@ -12,13 +13,7 @@ describe('ReadEmailFieldComponent', () => {
     type: 'Email'
   };
   const VALUE = 'ccd@hmcts.net';
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'x', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
   const EMPTY = '';
 
   let fixture: ComponentFixture<ReadEmailFieldComponent>;

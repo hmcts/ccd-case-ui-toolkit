@@ -12,7 +12,6 @@ import { FormErrorService } from '../../../services/form/form-error.service';
 import { PageValidationService } from '../services/page-validation.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -22,6 +21,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import createSpyObj = jasmine.createSpyObj;
+import { newCaseField } from '../../../fixture/case-field.test.fixture';
 
 describe('CaseEditPageComponent', () => {
 
@@ -289,7 +289,7 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should allow empty values when field is OPTIONAL', () => {
-      wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Text', 'OPTIONAL', null));
+      wizardPage.case_fields.push(newCaseField('fieldX', 'fieldX', null, null, 'OPTIONAL', null).build());
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       fixture.detectChanges();

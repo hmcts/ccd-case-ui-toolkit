@@ -1,8 +1,7 @@
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
-import { CaseEventTrigger } from '../../../domain';
+import { CaseEventTrigger, CaseField } from '../../../domain';
 import {
   createCaseEventTrigger,
-  createCaseField,
   createComplexFieldOverride,
   createFieldType,
   createHiddenComplexFieldOverride,
@@ -11,27 +10,28 @@ import {
   textFieldType
 } from '../../../fixture/shared.test.fixture';
 import { ShowCondition } from '../../../directives/conditional-show/domain';
+import { newCaseField } from '../../../fixture';
 
 describe('WizardPageFieldToCaseFieldMapper', () => {
 
   let wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper;
 
-  const CASE_FIELDS = [
-    createCaseField('debtorName', 'Debtor name', '', textFieldType(), null),
-    createCaseField('finalReturn', 'Final return', '',
+  const CASE_FIELDS: CaseField[] = [
+    newCaseField('debtorName', 'Debtor name', '', textFieldType(), null).build(),
+    newCaseField('finalReturn', 'Final return', '',
       createFieldType('Return', 'Complex', [
-        createCaseField('addressAttended',
+        newCaseField('addressAttended',
           'Address Attended',
           'Address Attended hint text',
           createFieldType('AddressUK', 'Complex', [
-            createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null),
-            createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
-            createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null)
+            newCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null).build(),
+            newCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null).build(),
+            newCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null).build()
           ]),
           null
-        )
+        ).build()
       ]),
-      'COMPLEX')
+      'COMPLEX').build()
   ];
 
   const WIZARD_PAGE = createWizardPage('FinalReturnfinalReturn', 'Final Return', 1,

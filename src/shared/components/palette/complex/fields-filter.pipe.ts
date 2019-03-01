@@ -82,7 +82,7 @@ export class FieldsFilterPipe implements PipeTransform {
 
     return fields
       .map(f => {
-        let clone = { ...f };
+        let clone = Object.assign(new CaseField(), f);
 
         let value = FieldsFilterPipe.getValue(f, values);
 

@@ -7,6 +7,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDateFieldComponent } from './write-date-field.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FormModule } from '../../../../components/form/form.module';
+import { newCaseField } from '../../../fixture';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -14,13 +15,7 @@ const FIELD_TYPE: FieldType = {
   type: 'Date'
 };
 const VALUE = '2017-07-26';
-const CASE_FIELD: CaseField = {
-  id: FIELD_ID,
-  label: 'X',
-  display_context: 'OPTIONAL',
-  field_type: FIELD_TYPE,
-  value: VALUE
-};
+const CASE_FIELD: CaseField = newCaseField(FIELD_ID, 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {

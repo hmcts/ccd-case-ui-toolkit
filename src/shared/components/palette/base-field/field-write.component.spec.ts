@@ -7,6 +7,7 @@ import { FieldWriteComponent } from './field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import createSpyObj = jasmine.createSpyObj;
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { newCaseField } from '../../../fixture';
 
 const CLASS = 'person-first-name-cls';
 
@@ -19,15 +20,7 @@ class FieldTestComponent {}
 
 describe('FieldWriteComponent', () => {
 
-  const CASE_FIELD: CaseField = {
-    id: 'PersonFirstName',
-    field_type: {
-      id: 'Text',
-      type: 'Text'
-    },
-    display_context: 'OPTIONAL',
-    label: 'First name'
-  };
+  const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').build();
 
   let fixture: ComponentFixture<FieldWriteComponent>;
   let component: FieldWriteComponent;

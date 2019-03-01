@@ -1,7 +1,7 @@
 import { FormValidatorsService } from './form-validators.service';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FormControl } from '@angular/forms';
-import { aCaseField } from '../../fixture/shared.test.fixture';
+import { newCaseField } from '../../fixture';
 
 describe('FormValidatorsService', () => {
 
@@ -9,7 +9,7 @@ describe('FormValidatorsService', () => {
 
   it('should not add REQUIRED validator for OPTIONAL fields', () => {
     let formControl: FormControl = new FormControl();
-    let caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
+    let caseField: CaseField = newCaseField('id', 'label', null, null, 'OPTIONAL', null).build();
     let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
     result.markAsTouched();
     result.updateValueAndValidity();
@@ -18,7 +18,7 @@ describe('FormValidatorsService', () => {
 
   it('should return add REQUIRED validator for MANDATORY fields', () => {
     let formControl: FormControl = new FormControl();
-    let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
+    let caseField: CaseField = newCaseField('id', 'label', null, null, 'MANDATORY', null).build();
     let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
     result.markAsTouched();
     result.updateValueAndValidity();

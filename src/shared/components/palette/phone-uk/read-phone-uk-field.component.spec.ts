@@ -3,6 +3,7 @@ import { ReadPhoneUKFieldComponent } from './read-phone-uk-field.component';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadPhoneUKFieldComponent', () => {
 
@@ -12,13 +13,7 @@ describe('ReadPhoneUKFieldComponent', () => {
   };
   const VALUE = '07123456789';
   const EMPTY = '';
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
 
   let fixture: ComponentFixture<ReadPhoneUKFieldComponent>;
   let component: ReadPhoneUKFieldComponent;

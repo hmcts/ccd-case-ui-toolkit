@@ -9,6 +9,7 @@ import { text } from '../../../test/helpers';
 import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MoneyGbpModule } from '../money-gbp/money-gbp.module';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadOrderSummaryFieldComponent', () => {
 
@@ -42,27 +43,9 @@ describe('ReadOrderSummaryFieldComponent', () => {
 
   const EXPECTED_FEE_AMOUNTS = ['£45.45', '£4.55'];
   const EXPECTED_PAYMENT_TOTAL = '£50.00';
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'READONLY',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
-  const UNDEFINED_CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'READONLY',
-    field_type: FIELD_TYPE,
-    value: undefined
-  };
-  const NULL_CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'READONLY',
-    field_type: FIELD_TYPE,
-    value: null
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'READONLY').withValue(VALUE).build();
+  const UNDEFINED_CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'READONLY').withValue(undefined).build();
+  const NULL_CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'READONLY').withValue(null).build();
 
   const $HEAD_ROW = By.css('table>thead>tr');
   const $BODY = By.css('table>tbody');

@@ -1,21 +1,20 @@
 import { CaseTab, CaseView } from '../../domain/case-view';
 import { FieldsUtils } from './fields.utils';
 import { CaseField } from '../../domain/definition';
-import { aCaseField } from '../../index';
+import { newCaseField, createFieldType } from '../../fixture';
 
 describe('FieldsUtils', () => {
   let fieldUtils = new FieldsUtils();
 
-  let textField: CaseField =
-    aCaseField('textField', 'Some text', 'Text', 'OPTIONAL', null);
-  let caseCreationDate: CaseField =
-    aCaseField('caseCreationDate', 'Creation date', 'Date', 'OPTIONAL', null);
-  let caseAmountToPay: CaseField =
-    aCaseField('caseAmountToPay', 'Amount to pay', 'MoneyGBP', 'OPTIONAL', null);
-  let complexFieldWithDateAndMoney: CaseField =
-    aCaseField('claimDetails', 'Claima details', 'Complex', 'OPTIONAL', null, [caseCreationDate, caseAmountToPay]);
-  let complexFieldWithAnotherComplexField: CaseField =
-    aCaseField('details', 'Details', 'Complex', 'OPTIONAL', null, [complexFieldWithDateAndMoney]);
+  let textField: CaseField = newCaseField('textField', 'Some text', null, null, 'OPTIONAL', null).build();
+  let caseCreationDate: CaseField = newCaseField('caseCreationDate', 'Creation date', null,
+    createFieldType('Date', 'Date'), 'OPTIONAL', null).build();
+  let caseAmountToPay: CaseField = newCaseField('caseAmountToPay', 'Amount to pay', null,
+    createFieldType('MoneyGBP', 'MoneyGBP'), 'OPTIONAL', null).build();
+  let complexFieldWithDateAndMoney: CaseField = newCaseField('claimDetails', 'Claima details', null,
+    createFieldType('Complex', 'Complex', [caseCreationDate, caseAmountToPay]), 'OPTIONAL', null).build();
+  let complexFieldWithAnotherComplexField: CaseField = newCaseField('details', 'Details', null,
+      createFieldType('Complex', 'Complex', [complexFieldWithDateAndMoney]), 'OPTIONAL', null).build();
 
   describe('getCaseFields', () => {
     let caseField1 = new CaseField();

@@ -9,6 +9,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
 import { ActivatedRoute } from '@angular/router';
+import { newCaseField } from '../../../fixture';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -41,15 +42,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   buildCaseField(item, index: number): CaseField {
-    return {
-      id: index.toString(),
-      field_type: this.caseField.field_type.collection_field_type,
-      display_context: this.caseField.display_context,
-      hidden: this.caseField.hidden,
-      value: item.value,
-      label: null,
-      acls: this.caseField.acls
-    };
+    return newCaseField(index.toString(), null, null, this.caseField.field_type.collection_field_type, this.caseField.display_context)
+      .withValue(item.value)
+      .withHidden(this.caseField.hidden)
+      .withACLs(this.caseField.acls).build();
   }
 
   buildControlRegistrer(id: string, index: number): (control: FormControl) => AbstractControl {

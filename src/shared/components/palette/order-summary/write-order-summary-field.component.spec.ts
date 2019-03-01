@@ -10,6 +10,7 @@ import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component
 import { ReactiveFormsModule, FormControl, AbstractControl, FormGroup } from '@angular/forms';
 import { MoneyGbpModule } from '../money-gbp/money-gbp.module';
 import { WriteOrderSummaryFieldComponent } from './write-order-summary-field.component';
+import { newCaseField } from '../../../fixture';
 
 describe('WriteOrderSummaryFieldComponent', () => {
 
@@ -44,28 +45,9 @@ describe('WriteOrderSummaryFieldComponent', () => {
   const EXPECTED_FEE_AMOUNTS = ['£45.45', '£4.55'];
   const EXPECTED_PAYMENT_TOTAL = '£50.00';
   const ID = 'PersonOrderSummary';
-  const CASE_FIELD: CaseField = {
-    id: ID,
-    label: 'X',
-    display_context: 'MANDATORY',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
-  const UNDEFINED_CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'MANDATORY',
-    field_type: FIELD_TYPE,
-    value: undefined
-  };
-  const NULL_CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'MANDATORY',
-    field_type: FIELD_TYPE,
-    value: null
-  };
-
+  const CASE_FIELD: CaseField = newCaseField(ID, 'X', null, FIELD_TYPE, 'MANDATORY').withValue(VALUE).build();
+  const UNDEFINED_CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'MANDATORY').withValue(undefined).build();
+  const NULL_CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'MANDATORY').withValue(null).build();
   const $HEAD_ROW = By.css('table>thead>tr');
   const $BODY = By.css('table>tbody');
 

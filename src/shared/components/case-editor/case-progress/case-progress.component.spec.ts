@@ -10,6 +10,7 @@ import { of, Observable, throwError } from 'rxjs';
 import { HttpError } from '../../../domain/http';
 import { MockComponent } from 'ng2-mock-component';
 import { EventTriggerService } from '../services/event-trigger.service';
+import { newCaseField } from '../../../fixture/case-field.test.fixture';
 
 let CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
@@ -51,18 +52,8 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
     undefined,
     false,
     [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        field_type: null,
-        display_context: 'READONLY'
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        field_type: null,
-        display_context: 'OPTIONAL'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build()
     ],
     [],
     true

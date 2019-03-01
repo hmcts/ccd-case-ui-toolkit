@@ -25,4 +25,12 @@ export class CaseField implements Orderable {
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
+
+  isCollection(): boolean {
+    return this.field_type && this.field_type.type === 'Collection';
+  }
+
+  isComplex(): boolean {
+    return this.field_type && this.field_type.type === 'Complex';
+  }
 }

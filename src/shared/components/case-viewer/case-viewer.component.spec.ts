@@ -25,6 +25,8 @@ import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material';
 import { CaseService } from '../case-editor';
+import { newCaseField } from '../../fixture';
+import { createFieldType } from '../../fixture';
 
 @Component({
   // tslint:disable-next-line
@@ -144,138 +146,18 @@ describe('CaseViewerComponent', () => {
   ];
 
   const METADATA: CaseField[] = [
-    {
-      id: '[CASE_REFERENCE]',
-      label: 'Case Reference',
-      value: 1533032330714079,
-      hint_text: null,
-      field_type: {
-        id: 'Number',
-        type: 'Number',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    },
-    {
-      id: '[CASE_TYPE]',
-      label: 'Case Type',
-      value: 'DIVORCE',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    },
-    {
-      id: '[CREATED_DATE]',
-      label: 'Created Date',
-      value: '2018-07-31T10:18:50.737',
-      hint_text: null,
-      field_type: {
-        id: 'Date',
-        type: 'Date',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    },
-    {
-      id: '[JURISDICTION]',
-      label: 'Jurisdiction',
-      value: 'DIVORCE',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    },
-    {
-      id: '[LAST_MODIFIED_DATE]',
-      label: 'Last Modified Date',
-      value: '2018-07-31T10:18:50.737',
-      hint_text: null,
-      field_type: {
-        id: 'Date',
-        type: 'Date',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    },
-    {
-      id: '[SECURITY_CLASSIFICATION]',
-      label: 'Security Classification',
-      value: 'PUBLIC',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }
+    newCaseField('[CASE_REFERENCE]', 'Case Reference', null, createFieldType('Number', 'Number'), null)
+      .withValue(1533032330714079).withSecurityLabel('PUBLIC').build(),
+    newCaseField('[CASE_TYPE]', 'Case Type', null, createFieldType('Text', 'Text'), null)
+      .withValue('DIVORCE').withSecurityLabel('PUBLIC').build(),
+    newCaseField('[CREATED_DATE]', 'Created Date', null, createFieldType('Date', 'Date'), null)
+      .withValue('2018-07-31T10:18:50.737').withSecurityLabel('PUBLIC').build(),
+    newCaseField('[JURISDICTION]', 'Jurisdiction', null, createFieldType('Text', 'Text'), null)
+      .withValue('DIVORCE').withSecurityLabel('PUBLIC').build(),
+    newCaseField('[LAST_MODIFIED_DATE]', 'Last Modified Date', null, createFieldType('Date', 'Date'), null)
+      .withValue('2018-07-31T10:18:50.737').withSecurityLabel('PUBLIC').build(),
+    newCaseField('[SECURITY_CLASSIFICATION]', 'Security Classification', null, createFieldType('Text', 'Text'), null)
+      .withValue('PUBLIC').withSecurityLabel('PUBLIC').build(),
   ];
 
   const JID = 'TEST';
@@ -309,45 +191,12 @@ describe('CaseViewerComponent', () => {
         label: 'Name',
         order: 1,
         fields: [
-          {
-            id: 'PersonFirstName',
-            label: 'First name',
-            display_context: 'OPTIONAL',
-            field_type: {
-              id: 'Text',
-              type: 'Text'
-            },
-            order: 2,
-            value: 'Janet',
-            show_condition: '',
-            hint_text: ''
-          },
-          {
-            id: 'PersonLastName',
-            label: 'Last name',
-            display_context: 'OPTIONAL',
-            field_type: {
-              id: 'Text',
-              type: 'Text'
-            },
-            order: 1,
-            value: 'Parker',
-            show_condition: 'PersonFirstName="Jane*"',
-            hint_text: ''
-          },
-          {
-            id: 'PersonComplex',
-            label: 'Complex field',
-            display_context: 'OPTIONAL',
-            field_type: {
-              id: 'Complex',
-              type: 'Complex',
-              complex_fields: []
-            },
-            order: 3,
-            show_condition: 'PersonFirstName="Park"',
-            hint_text: ''
-          }
+          newCaseField('PersonFirstName', 'First name', '', createFieldType('Text', 'Text'), 'OPTIONAL', 2)
+            .withValue('Janet').withShowCondition('').build(),
+          newCaseField('PersonLastName', 'Last name', '', createFieldType('Text', 'Text'), 'OPTIONAL', 1)
+            .withValue('Parker').withShowCondition('PersonFirstName="Jane*"').build(),
+          newCaseField('PersonComplex', 'Complex field', '', createFieldType('Complex', 'Complex'), 'OPTIONAL', 3)
+            .withValue('Parker').withShowCondition('PersonFirstName="Park"').build(),
         ],
         show_condition: 'PersonFirstName="Janet"'
       },

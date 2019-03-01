@@ -6,6 +6,7 @@ import { ReadCollectionFieldComponent } from './read-collection-field.component'
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { PaletteContext } from '../base-field/palette-context.enum';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadCollectionFieldComponent', () => {
 
@@ -31,14 +32,8 @@ describe('ReadCollectionFieldComponent', () => {
       value: 'Jacques',
     }
   ];
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    field_type: FIELD_TYPE,
-    display_context: 'OPTIONAL',
-    value: VALUES,
-    hidden: false
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL')
+    .withValue(VALUES).withHidden(false).build();
 
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',

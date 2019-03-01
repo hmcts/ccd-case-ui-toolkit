@@ -7,6 +7,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
 import { WritePhoneUKFieldComponent } from './write-phone-uk-field.component';
+import { newCaseField } from '../../../fixture';
 
 const FIELD_ID = 'PersonPhoneNumber';
 const FIELD_TYPE: FieldType = {
@@ -14,13 +15,7 @@ const FIELD_TYPE: FieldType = {
   type: 'PhoneUK'
 };
 const VALUE = '07123456789';
-const CASE_FIELD: CaseField = {
-  id: FIELD_ID,
-  label: 'X',
-  display_context: 'OPTIONAL',
-  field_type: FIELD_TYPE,
-  value: VALUE
-};
+const CASE_FIELD: CaseField = newCaseField(FIELD_ID, 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {

@@ -14,6 +14,7 @@ import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { newCaseField } from '../../../fixture';
 
 describe('WriteDocumentFieldComponent', () => {
 
@@ -26,13 +27,7 @@ describe('WriteDocumentFieldComponent', () => {
     'document_binary_url': 'https://www.example.com/binary',
     'document_filename': 'evidence_document.evd'
   };
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
   const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
   const RESPONSE_FIRST_DOCUMENT: DocumentData = {
     _embedded: {

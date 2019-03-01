@@ -19,6 +19,7 @@ import { WizardPageField } from '../domain/wizard-page-field.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Wizard } from '../domain/wizard.model';
 import { WizardPage } from '../domain/wizard-page.model';
+import { newCaseField } from '../../../fixture';
 
 describe('CaseEditComponent', () => {
 
@@ -28,18 +29,8 @@ describe('CaseEditComponent', () => {
     'caseId',
     false,
     [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        field_type: null,
-        display_context: 'READONLY'
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        field_type: null,
-        display_context: 'OPTIONAL'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build(),
     ]
   );
 
@@ -59,34 +50,11 @@ describe('CaseEditComponent', () => {
     case_field_id: 'Address'
   };
 
-  const CASE_FIELD_WITH_SHOW_CONDITION: CaseField = {
-    id: 'PersonFirstName',
-    label: 'First name',
-    field_type: null,
-    display_context: 'READONLY',
-    show_condition: 'PersonLastName=\"Smith\"'
-  };
-
-  const CASE_FIELD_1: CaseField = {
-    id: 'PersonFirstName',
-    label: 'First name',
-    field_type: null,
-    display_context: 'READONLY'
-  };
-
-  const CASE_FIELD_2: CaseField = {
-    id: 'PersonLastName',
-    label: 'First name',
-    field_type: null,
-    display_context: 'READONLY'
-  };
-
-  const CASE_FIELD_3: CaseField = {
-    id: 'Address',
-    label: 'Address',
-    field_type: null,
-    display_context: 'READONLY'
-  };
+  const CASE_FIELD_WITH_SHOW_CONDITION: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'READONLY')
+    .withShowCondition('PersonLastName=\"Smith\"').build();
+  const CASE_FIELD_1: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').build();
+  const CASE_FIELD_2: CaseField = newCaseField('PersonLastName', 'First name', null, null, 'READONLY').build();
+  const CASE_FIELD_3: CaseField = newCaseField('Address', 'Address', null, null, 'READONLY').build();
 
   let fixture: ComponentFixture<CaseEditComponent>;
   let component: CaseEditComponent;

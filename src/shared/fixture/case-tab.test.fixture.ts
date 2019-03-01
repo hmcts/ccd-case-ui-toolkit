@@ -1,4 +1,6 @@
-import { CaseTab } from '../domain';
+import { CaseTab, FieldType } from '../domain';
+import { newCaseField } from './case-field.test.fixture';
+import { createFieldType } from './shared.test.fixture';
 
 export let createCaseTabArray = () => {
   const tab1 = new CaseTab();
@@ -15,42 +17,13 @@ export let createCaseTabArray = () => {
   tab2.label = 'Name';
   tab2.order = 1;
   tab2.fields = [
-    {
-      id: 'PersonFirstName',
-      label: 'First name',
-      display_context: 'OPTIONAL',
-      field_type: {
-        id: 'Text',
-        type: 'Text'
-      },
-      order: 2,
-      value: 'Janet',
-      show_condition: ''
-    },
-    {
-      id: 'PersonLastName',
-      label: 'Last name',
-      display_context: 'OPTIONAL',
-      field_type: {
-        id: 'Text',
-        type: 'Text'
-      },
-      order: 1,
-      value: 'Parker',
-      show_condition: 'PersonFirstName="Jane*"'
-    },
-    {
-      id: 'PersonComplex',
-      label: 'Complex field',
-      display_context: 'OPTIONAL',
-      field_type: {
-        id: 'Complex',
-        type: 'Complex',
-        complex_fields: []
-      },
-      order: 3,
-      show_condition: 'PersonFirstName="Park"'
-    }
+    newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL', 2)
+      .withValue('Janet').withShowCondition('').build(),
+    newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL', 1)
+      .withValue('Parker').withShowCondition('PersonFirstName="Jane*"').build(),
+    newCaseField('PersonComplex', 'Complex field', null,
+      createFieldType('Complex', 'Complex', [], new FieldType()), 'OPTIONAL', 3)
+      .withValue('Janet').withShowCondition('PersonFirstName="Park"').build(),
   ];
   tab2.show_condition = 'PersonFirstName="Janet"';
 

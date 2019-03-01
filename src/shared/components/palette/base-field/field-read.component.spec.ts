@@ -8,20 +8,12 @@ import { CaseField } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
 import { PaletteContext } from './palette-context.enum';
+import { newCaseField } from '../../../fixture';
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
 const $FIELD_TEST = By.css('ccd-field-read-label span.text-cls');
 
-const CASE_FIELD: CaseField = {
-  id: 'PersonFirstName',
-  label: 'First name',
-  field_type: {
-    id: 'Text',
-    type: 'Text'
-  },
-  value: 'Johnny',
-  display_context: 'READONLY'
-};
+const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').withValue('Johnny').build();
 const CLASS = 'text-cls';
 
 @Component({

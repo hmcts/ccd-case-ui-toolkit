@@ -5,6 +5,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { By } from '@angular/platform-browser';
 import { text } from '../../../test/helpers';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadTextAreaFieldComponent', () => {
 
@@ -15,13 +16,7 @@ describe('ReadTextAreaFieldComponent', () => {
     type: 'Text'
   };
   const VALUE = 'Hello world';
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
 
   let fixture: ComponentFixture<ReadTextAreaFieldComponent>;
   let component: ReadTextAreaFieldComponent;

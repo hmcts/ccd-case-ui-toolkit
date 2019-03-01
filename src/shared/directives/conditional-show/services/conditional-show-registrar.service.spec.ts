@@ -3,7 +3,7 @@ import { ConditionalShowRegistrarService } from './conditional-show-registrar.se
 import { async } from '@angular/core/testing';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
+import { newCaseField, createFieldType } from '../../../fixture';
 
 let registrarService: ConditionalShowRegistrarService;
 let conditionalShowDirective1: any;
@@ -15,8 +15,8 @@ describe('ConditionalShowRegistrarService', () => {
     registrarService = new ConditionalShowRegistrarService();
     conditionalShowDirective1 = createSpyObj<ConditionalShowDirective>('conditionalShowDirective1', ['refreshVisibility']);
     conditionalShowDirective2 = createSpyObj<ConditionalShowDirective>('conditionalShowDirective2', ['refreshVisibility']);
-    let caseField1: CaseField = aCaseField('id1', 'label', 'Text', 'OPTIONAL', null);
-    let caseField2: CaseField = aCaseField('id2', 'label', 'Text', 'OPTIONAL', null);
+    let caseField1: CaseField = newCaseField('id1', 'label', null, createFieldType('Text', 'Text'), 'OPTIONAL', null).build();
+    let caseField2: CaseField = newCaseField('id2', 'label', null, createFieldType('Text', 'Text'), 'OPTIONAL', null).build();
     conditionalShowDirective1.caseField = caseField1;
     conditionalShowDirective2.caseField = caseField2;
   }));

@@ -7,6 +7,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
 import { WriteFixedListFieldComponent } from './write-fixed-list-field.component';
 import { attr, text } from '../../../test/helpers';
+import { newCaseField } from '../../../fixture';
 
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
@@ -29,13 +30,7 @@ const FIELD_TYPE: FieldType = {
     }
   ]
 };
-const CASE_FIELD: CaseField = {
-  id: FIELD_ID,
-  label: 'X',
-  display_context: 'OPTIONAL',
-  field_type: FIELD_TYPE,
-  value: VALUE
-};
+const CASE_FIELD: CaseField = newCaseField(FIELD_ID, 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {

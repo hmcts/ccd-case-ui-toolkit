@@ -10,6 +10,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { text } from '../../../test/helpers';
+import { newCaseField } from '../../../fixture';
 
 const initTests = (caseField, mocks) => {
   let fixture: ComponentFixture<ReadComplexFieldRawComponent>;
@@ -85,48 +86,16 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: 'Flat 9'
-        },
-        {
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: '111 East India road'
-        },
-        {
-          id: 'AddressLine3',
-          label: 'Line 3',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: 'Poplar'
-        },
+        newCaseField('AddressLine1', 'Line 1', null, null, 'OPTIONAL').withValue('Flat 9').build(),
+        newCaseField('AddressLine2', 'Line 2', null, null, 'OPTIONAL').withValue('111 East India road').build(),
+        newCaseField('AddressLine3', 'Line 3', null, null, 'OPTIONAL').withValue('Poplar').build()
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
-        id: '',
-        label: 'Complex Field',
-        display_context: 'OPTIONAL',
-        field_type: FIELD_TYPE_WITH_VALUES
-      };
+      caseField = newCaseField('', 'Complex Field', null, FIELD_TYPE_WITH_VALUES, 'OPTIONAL').build();
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -181,48 +150,16 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: 'Flat 9'
-        },
-        {
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: ''
-        },
-        {
-          id: 'AddressLine3',
-          label: 'Line 3',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: 'Poplar'
-        },
+        newCaseField('AddressLine1', 'Line 1', null, null, 'OPTIONAL').withValue('Flat 9').build(),
+        newCaseField('AddressLine2', 'Line 2', null, null, 'OPTIONAL').withValue('').build(),
+        newCaseField('AddressLine3', 'Line 3', null, null, 'OPTIONAL').withValue('Poplar').build()
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
-        id: '',
-        label: 'Complex Field',
-        display_context: 'OPTIONAL',
-        field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      };
+      caseField = newCaseField('', 'Complex Field', null, FIELD_TYPE_WITH_MISSING_VALUE, 'OPTIONAL').build();
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -247,50 +184,21 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-        },
-        {
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-        },
-        {
-          id: 'AddressLine3',
-          label: 'Line 3',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-        },
+        newCaseField('AddressLine1', 'Line 1', null, null, 'OPTIONAL').build(),
+        newCaseField('AddressLine2', 'Line 2', null, null, 'OPTIONAL').build(),
+        newCaseField('AddressLine3', 'Line 3', null, null, 'OPTIONAL').build()
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
-        id: '',
-        label: 'Complex Field',
-        display_context: 'OPTIONAL',
-        field_type: FIELD_TYPE_WITHOUT_VALUES,
-        value: {
+      caseField = newCaseField('', 'Complex Field', null, FIELD_TYPE_WITHOUT_VALUES, 'OPTIONAL')
+        .withValue({
           'AddressLine1': 'Flat 9',
           'AddressLine2': '111 East India road',
           'AddressLine3': 'Poplar',
-        }
-      };
+        }).build();
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -305,21 +213,21 @@ describe('ReadComplexFieldRawComponent', () => {
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITHOUT_VALUES.complex_fields.length);
       expectCaseField(complexListValues[0], Object.assign(
-        {},
+        new CaseField(),
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[0],
         {
           value: caseField.value['AddressLine1']
         }
       ));
       expectCaseField(complexListValues[1], Object.assign(
-        {},
+        new CaseField(),
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[1],
         {
           value: caseField.value['AddressLine2']
         }
       ));
       expectCaseField(complexListValues[2], Object.assign(
-        {},
+        new CaseField(),
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[2],
         {
           value: caseField.value['AddressLine3']
@@ -334,49 +242,20 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-        },
-        {
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-        },
-        {
-          id: 'AddressLine3',
-          label: 'Line 3',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-        },
+        newCaseField('AddressLine1', 'Line 1', null, null, 'OPTIONAL').build(),
+        newCaseField('AddressLine2', 'Line 2', null, null, 'OPTIONAL').build(),
+        newCaseField('AddressLine3', 'Line 3', null, null, 'OPTIONAL').build()
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
-        id: '',
-        label: 'Complex Field',
-        display_context: 'OPTIONAL',
-        field_type: FIELD_TYPE_WITHOUT_VALUES,
-        value: {
+      caseField = newCaseField('', 'Complex Field', null, FIELD_TYPE_WITHOUT_VALUES, 'OPTIONAL')
+        .withValue({
           'AddressLine1': 'Flat 9',
           'AddressLine3': 'Poplar',
-        }
-      };
+        }).build();
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -391,14 +270,14 @@ describe('ReadComplexFieldRawComponent', () => {
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITHOUT_VALUES.complex_fields.length - 1);
       expectCaseField(complexListValues[0], Object.assign(
-        {},
+        new CaseField(),
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[0],
         {
           value: caseField.value['AddressLine1']
         }
       ));
       expectCaseField(complexListValues[1], Object.assign(
-        {},
+        new CaseField(),
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[2],
         {
           value: caseField.value['AddressLine3']

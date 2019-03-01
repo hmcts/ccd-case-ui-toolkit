@@ -3,6 +3,7 @@ import { ReadTextFieldComponent } from './read-text-field.component';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadTextFieldComponent', () => {
 
@@ -11,13 +12,7 @@ describe('ReadTextFieldComponent', () => {
     type: 'Text'
   };
   const VALUE = 'Hello world';
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    field_type: FIELD_TYPE,
-    value: VALUE,
-    display_context: 'READONLY'
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'READONLY').withValue(VALUE).build();
 
   let fixture: ComponentFixture<ReadTextFieldComponent>;
   let component: ReadTextFieldComponent;

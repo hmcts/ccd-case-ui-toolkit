@@ -106,6 +106,7 @@ export { PaletteModule,
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
 export { createCaseEventTrigger,
-         aCaseField,
          createCaseView,
+         newCaseField,
+         CaseFieldBuilder,
          createCaseTabArray } from './shared/fixture/';

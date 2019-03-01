@@ -15,6 +15,7 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { ActivatedRoute } from '@angular/router';
+import { newCaseField } from '../../../fixture';
 
 const FIELD_ID = 'Values';
 const SIMPLE_FIELD_TYPE: FieldType = {
@@ -83,22 +84,16 @@ describe('WriteCollectionFieldComponent', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {
-      id: FIELD_ID,
-      label: 'X',
-      field_type: SIMPLE_FIELD_TYPE,
-      display_context: 'OPTIONAL',
-      value: VALUES.slice(0),
-      acls: [
+    caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
+      .withValue(VALUES.slice())
+      .withACLs([
         {
           role: 'caseworker-divorce',
           create: true,
           read: true,
           update: true,
           delete: true
-        }
-      ]
-    };
+        }]).build();
     route = {
       parent: {
         parent: {
@@ -343,22 +338,16 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {
-      id: FIELD_ID,
-      label: 'X',
-      field_type: SIMPLE_FIELD_TYPE,
-      display_context: 'OPTIONAL',
-      value: collectionValues.slice(),
-      acls: [
+    caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
+      .withValue(collectionValues.slice())
+      .withACLs([
         {
           role: 'caseworker-divorce',
           create: false,
           read: true,
           update: true,
           delete: false
-        }
-      ]
-    };
+        }]).build();
     route = {
       parent: {
         parent: {
@@ -470,22 +459,16 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {
-      id: FIELD_ID,
-      label: 'X',
-      field_type: SIMPLE_FIELD_TYPE,
-      display_context: 'OPTIONAL',
-      value: collectionValues.slice(),
-      acls: [
+    caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
+      .withValue(collectionValues.slice())
+      .withACLs([
         {
           role: 'caseworker-divorce',
           create: false,
           read: true,
           update: false,
           delete: false
-        }
-      ]
-    };
+        }]).build();
     route = {
       parent: {
         parent: {

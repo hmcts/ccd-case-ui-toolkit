@@ -83,6 +83,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private isCollectionOfComplex(case_field: CaseField) {
-    return case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex';
+    return case_field.isCollection() && case_field.field_type.collection_field_type.type === 'Complex';
   }
 }

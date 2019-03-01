@@ -7,7 +7,6 @@ import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
@@ -22,6 +21,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
+import { newCaseField } from '../../../fixture/case-field.test.fixture';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -45,12 +45,11 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifier;
   let profileNotifierSpy;
   let casesReferencePipe: any;
-  let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 3);
-  let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 2);
-  let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 1);
+  let caseField1: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL').withShowSummaryContentOption(3).build();
+  let caseField2: CaseField = newCaseField('field2', 'field2', null, null, 'OPTIONAL').withShowSummaryContentOption(2).build();
+  let caseField3: CaseField = newCaseField('field3', 'field3', null, null, 'OPTIONAL').withShowSummaryContentOption(1).build();
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
-  let snapshot: any;
 
   let USER = {
     idam: {
@@ -182,24 +181,24 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should not allow changes for READONLY fields', () => {
-      let changeAllowed = comp.isChangeAllowed(aCaseField('field1', 'field1', 'Text', 'READONLY', null));
+      let changeAllowed = comp.isChangeAllowed(newCaseField('field1', 'field1', null, null, 'READONLY', null).build());
       expect(changeAllowed).toBeFalsy();
     });
 
     it('should allow changes for non READONLY fields', () => {
-      let changeAllowed = comp.isChangeAllowed(aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null));
+      let changeAllowed = comp.isChangeAllowed(newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build());
       expect(changeAllowed).toBeTruthy();
     });
 
     it('should return TRUE for canShowFieldInCYA when caseField show_summary_change_option is TRUE', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      let caseField: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
       caseField.show_summary_change_option = true;
       let canShow = comp.canShowFieldInCYA(caseField);
       expect(canShow).toBeTruthy();
     });
 
     it('should return FALSE for canShowFieldInCYA when caseField show_summary_change_option is FALSE', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      let caseField: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
       caseField.show_summary_change_option = false;
       let canShow = comp.canShowFieldInCYA(caseField);
       expect(canShow).toBeFalsy();
@@ -221,7 +220,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should return true when no Fields to Display exists and checkYourAnswerFieldsToDisplayExists is called', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      let caseField: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
       caseField.show_summary_change_option = true;
       comp.wizard.pages[0].case_fields = [caseField];
       comp.eventTrigger.show_summary = true;
@@ -240,7 +239,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should return true when no Fields to Display exists and readOnlySummaryFieldsToDisplayExists is called', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      let caseField: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
       caseField.show_summary_content_option = 3;
       comp.eventTrigger.case_fields = [caseField];
 
@@ -303,7 +302,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should return true when no Fields to Display exists and readOnlySummaryFieldsToDisplayExists is called', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      let caseField: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
       caseField.show_summary_content_option = 3;
       comp.eventTrigger.case_fields = [caseField];
 

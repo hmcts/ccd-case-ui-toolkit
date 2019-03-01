@@ -5,6 +5,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { By } from '@angular/platform-browser';
+import { newCaseField } from '../../../fixture';
 
 const $LINK = By.css('a');
 const CASE_REFERENCE_RAW = '1234123412341238';
@@ -19,13 +20,7 @@ describe('ReadCaseLinkFieldComponent', () => {
   const VALUE = {
     CaseReference: CASE_REFERENCE_RAW
   };
-  const CASE_FIELD: CaseField = {
-    id: 'aCaseLink',
-    label: 'A case link',
-    field_type: FIELD_TYPE,
-    value: VALUE,
-    display_context: 'READONLY'
-  };
+  const CASE_FIELD: CaseField = newCaseField( 'aCaseLink', 'A case link', null,  FIELD_TYPE, 'READONLY').withValue(VALUE).build();
 
   let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
   let component: ReadCaseLinkFieldComponent;

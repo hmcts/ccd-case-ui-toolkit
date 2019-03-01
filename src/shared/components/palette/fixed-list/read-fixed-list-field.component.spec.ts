@@ -4,6 +4,7 @@ import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FixedListPipe } from './fixed-list.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadFixedListFieldComponent', () => {
 
@@ -27,13 +28,7 @@ describe('ReadFixedListFieldComponent', () => {
       }
     ]
   };
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
   const EMPTY = '';
 
   let fixture: ComponentFixture<ReadFixedListFieldComponent>;

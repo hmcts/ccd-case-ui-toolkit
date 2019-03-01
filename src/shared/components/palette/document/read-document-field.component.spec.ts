@@ -8,6 +8,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { By } from '@angular/platform-browser';
 import { DocumentUrlPipe } from './document-url.pipe';
 import { AbstractAppConfig } from '../../../../app.config';
+import { newCaseField } from '../../../fixture';
 
 describe('ReadDocumentFieldComponent', () => {
 
@@ -20,13 +21,7 @@ describe('ReadDocumentFieldComponent', () => {
     'document_binary_url': 'https://www.example.com/binary',
     'document_filename': 'evidence_document.evd'
   };
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
+  const CASE_FIELD: CaseField = newCaseField('x', 'x', null, FIELD_TYPE, 'OPTIONAL').withValue(VALUE).build();
   const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 
   let fixture: ComponentFixture<ReadDocumentFieldComponent>;

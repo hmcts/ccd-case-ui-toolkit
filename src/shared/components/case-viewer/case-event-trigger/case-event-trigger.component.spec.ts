@@ -11,6 +11,7 @@ import { createCaseEventTrigger } from '../../../fixture';
 import { CasesService, CaseService } from '../../case-editor';
 import { CaseReferencePipe } from '../../../pipes';
 import { AlertService, ActivityPollingService } from '../../../services';
+import { newCaseField } from '../../../fixture';
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -33,18 +34,8 @@ describe('CaseEventTriggerComponent', () => {
     '3',
     true,
     [
-      {
-        id: 'PersonFirstName',
-        label: 'First name',
-        field_type: null,
-        display_context: 'READONLY'
-      },
-      {
-        id: 'PersonLastName',
-        label: 'Last name',
-        field_type: null,
-        display_context: 'OPTIONAL'
-      }
+      newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').build(),
+      newCaseField('PersonLastName', 'Last name', null, null, 'OPTIONAL').build()
     ]
   );
 
