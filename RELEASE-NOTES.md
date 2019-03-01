@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.29.0 - February 28 2019
+**RDM-3916** - Move create case filters to toolkit and implement new contract
+
 ### Version 2.27.1 - February 22 2019
 **RDM-3430** - Run polling outside angular zone
 
