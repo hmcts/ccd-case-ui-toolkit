@@ -41,7 +41,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
       // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
-      this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
+      this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && this.greyBarService.wasShownFromParentPage(this.caseField.id)) {
         this.greyBarService.showGreyBar(this.caseField, this.el);
       }
@@ -52,7 +52,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   refreshVisibility() {
     // console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
-    this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues(), true);
+    this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues(), true);
     this.subscribeToFormChanges();
   }
 
@@ -65,7 +65,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
       // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
-      let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
+      let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && shown !== undefined) {
         if (shown) {
           this.greyBarService.addShownFromParentPage(this.caseField.id);
@@ -134,7 +134,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     return this.isHidden() && this.condition.match(fields);
   }
 
-  private getCurrentPagesReadOnlyAndFormFieldsValues() {
+  private getCurrentPagesReadOnlyAndFormFieldValues() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
     return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);

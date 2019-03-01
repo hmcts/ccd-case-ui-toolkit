@@ -9,6 +9,7 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import createSpyObj = jasmine.createSpyObj;
 import { FieldType } from '../../domain/definition';
+import { GreyBarService } from './services/grey-bar.service';
 
 @Component({
     template: `
@@ -50,6 +51,7 @@ describe('ConditionalShowDirective', () => {
             declarations: [ ConditionalShowDirective, TestHostComponent ],
             providers:    [
               FieldsUtils,
+              GreyBarService,
               { provide: ConditionalShowRegistrarService, useValue: mockRegistrar }
             ]
         }).compileComponents();
