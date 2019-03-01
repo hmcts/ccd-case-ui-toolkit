@@ -1,5 +1,5 @@
 import { SearchService } from './search.service';
-import { Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
+import { Headers, Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { SearchInput } from '../../components/search-filters';
@@ -15,7 +15,7 @@ describe('SearchService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   const DATA_URL = 'http://data.ccd.reform';
   const SEARCH_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases`;
-  const SEARCH_INPUT_URL = API_URL + '/caseworkers/:uid/jurisdictions/0/case-types/0/inputs';
+  const SEARCH_INPUT_URL = DATA_URL + '/internal/case-types/0/search-inputs';
 
   const SEARCH_VIEW = {
     columns: [],
@@ -206,7 +206,12 @@ describe('SearchService', () => {
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL);
+      expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {
+        headers: new Headers({
+          'Accept': SearchService.V2_MEDIATYPE_SEARCH_INPUTS,
+          'experimental': 'true',
+        })
+      });
     });
 
     it('should return search input results', () => {
