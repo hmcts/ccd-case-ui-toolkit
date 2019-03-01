@@ -3,7 +3,8 @@ import { Jurisdiction, CreateCaseFiltersSelection, HttpError } from '@hmcts/ccd-
 
 @Component({
     selector: 'case-create-consumer',
-    templateUrl: 'create-case-filters-consumer.component.html'
+    templateUrl: 'create-case-filters-consumer.component.html',
+    styleUrls: ['./elements-documentation.scss']
 })
 export class CreateCaseFiltersConsumerComponent implements OnInit {
 
