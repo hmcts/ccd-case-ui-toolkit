@@ -1,56 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { Router } from '@angular/router';
-import { CallbackErrorsContext, AlertService, HttpError, Jurisdiction, CreateCaseFiltersSelection } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction, CreateCaseFiltersSelection, HttpError } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
     selector: 'case-create-consumer',
-    template: `<div class="container-fluid">
-                <div *ngIf="error" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-                <h3 class="heading-medium error-summary-heading" id="edit-case-event_error-summary-heading">
-                    The callback data failed validation
-                </h3>
-                <p>{{error.message}}</p>
-                <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-                    <li *ngFor="let fieldError of error.details.field_errors">
-                    {{fieldError.message}}
-                    </li>
-                </ul>
-                </div>
-                <ccd-callback-errors
-                    [triggerTextContinue]="triggerTextStart"
-                    [triggerTextIgnore]="triggerTextIgnoreWarnings"
-                    [callbackErrorsSubject]="callbackErrorsSubject"
-                    (callbackErrorsContext)="callbackErrorsNotify($event)">
-                </ccd-callback-errors>
-                <ccd-create-case-filters
-                    [jurisdictions]="jurisdictions"
-                    [isDisabled]="hasErrors()"
-                    [startButtonText]="startButtonText"
-                    (selectionSubmitted)="apply($event)"
-                    (selectionChanged)="resetErrors()"
-                ></ccd-create-case-filters>
-             </div>`
+    templateUrl: 'create-case-filters-consumer.component.html'
 })
 export class CreateCaseFiltersConsumerComponent implements OnInit {
-    static readonly TRIGGER_TEXT_START = 'Start';
-    static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Start';
 
     jurisdictions: Jurisdiction[];
-    callbackErrorsSubject: Subject<any> = new Subject();
-
-    triggerTextStart = CreateCaseFiltersConsumerComponent.TRIGGER_TEXT_START;
-    triggerTextIgnoreWarnings = CreateCaseFiltersConsumerComponent.TRIGGER_TEXT_CONTINUE;
-    startButtonText = CreateCaseFiltersConsumerComponent.TRIGGER_TEXT_START;
-    ignoreWarning = false;
     error: HttpError;
+    startButtonText:  string;
 
-    constructor(
-        private router: Router,
-        private alertService: AlertService) {
+    constructor() {
     }
 
     ngOnInit(): void {
+        this.startButtonText = 'Start';
         setTimeout(() => {
             this.jurisdictions = [
                 {
@@ -124,31 +89,19 @@ export class CreateCaseFiltersConsumerComponent implements OnInit {
     }
 
     apply(selected: CreateCaseFiltersSelection) {
-        let queryParams = {};
-        if (this.ignoreWarning) {
-            queryParams['ignoreWarning'] = this.ignoreWarning;
-        }
-        return this.router.navigate(['/create/case', selected.jurisdictionId, selected.caseTypeId, selected.eventId], {
-            queryParams
-        }).catch(error => {
-            this.error = error;
-            this.callbackErrorsSubject.next(error);
-        });
-    }
+        console.log(selected);
 
-    callbackErrorsNotify(errorContext: CallbackErrorsContext) {
-        this.ignoreWarning = errorContext.ignore_warning;
-        this.startButtonText = errorContext.trigger_text;
+        if (selected.eventId === 'create3') { // to sample failed callback
+            this.error = new HttpError;
+            this.error.error = 'error';
+        }
     }
 
     resetErrors(): void {
         this.error = null;
-        this.ignoreWarning = false;
-        this.callbackErrorsSubject.next(null);
-        this.alertService.clear();
     }
 
-    private hasErrors() {
+    hasErrors() {
       return this.error;
     }
 

@@ -1,0 +1,29 @@
+<div class="container-fluid">
+
+    <p>1. Have the CaseUIToolkitModule imported and SearchService plus RequestOptionsBuilder services provided in
+        \`app.module\`:</p>
+    <pre>
+        <code>
+        </code>
+    </pre>
+    <p>2. Create a consumer component that will have the \`ccd-case-view\` component embedded:</p>
+    <pre>
+        <code>
+        </code>
+    </pre>
+    <p>3. Start using the component via either app routing or directly embedding it on a parent template.</p>
+    <pre>
+        <code>
+            &lt;ccd-create-case-filters
+                [jurisdictions]="jurisdictions"
+                [isDisabled]="hasErrors()"
+                [startButtonText]="startButtonText"
+                (selectionSubmitted)="apply($event)"
+                (selectionChanged)="resetErrors()"
+            &gt;&lt;/ccd-create-case-filters&gt;
+        </code>
+    </pre>
+    <ccd-create-case-filters [jurisdictions]="jurisdictions" [isDisabled]="hasErrors()"
+        [startButtonText]="startButtonText" (selectionSubmitted)="apply($event)" (selectionChanged)="resetErrors()">
+    </ccd-create-case-filters>
+</div>
