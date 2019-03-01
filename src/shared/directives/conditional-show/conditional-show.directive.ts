@@ -11,15 +11,15 @@ import { GreyBarService } from './services/grey-bar.service';
 /** Hides and shows the host element based on the show condition if the condition is not empty. Works on read only fields and form fields.
  *  The show condition is evaluated on all the fields of the page. i.e. read only and form fields. When a form field is hidden, if its
  *  initial value was changed then the field is cleared. Otherwise the original value is kept and will display next time the field is
- *  shown. Evaluation of the show condition includes disabled fields, which can be on their initial value or empty. And executes on the
- *  host field initialization and when any field of the form changes.
+ *  shown. Evaluation of the show condition includes disabled fields, which can be on their initial value or empty. Executes on the
+ *  host field initialization and when any field of the form changes. Collaborates with the GreyBarService to show a vertical grey bar
+ *  when a field is shown as a result of a change on the current page (parent page). If on initial page load the field renders as initially
+ *  shown because of a condition matching values from previous pages, then the grey bar is not shown
  */
 export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() eventFields: CaseField[] = [];
-  // when set, the grey bar is displayed only if the show condition contains any page field
-  @Input() pageFields: CaseField[];
   @Input() formGroup: FormGroup;
   @Input() greyBarEnabled = false;
 
@@ -31,7 +31,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
               private fieldsUtils: FieldsUtils,
               private registry: ConditionalShowRegistrarService,
               private renderer: Renderer2,
-              private greyBarManager: GreyBarService) {
+              private greyBarService: GreyBarService) {
   }
 
   ngAfterViewInit() {
@@ -41,8 +41,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
       this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
-      if (this.greyBarEnabled && this.greyBarManager.isShownFromParentPage(this.caseField.id)) {
-        this.greyBarManager.showGreyBar(this.caseField, this.el);
+      if (this.greyBarEnabled && this.greyBarService.isShownFromParentPage(this.caseField.id)) {
+        this.greyBarService.showGreyBar(this.caseField, this.el);
       }
       this.subscribeToFormChanges();
       this.registry.register(this);
@@ -64,15 +64,21 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
       let show = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
-      if (this.greyBarEnabled && show) {
-        this.greyBarManager.addShownFromParentPage(this.caseField.id);
-        this.greyBarManager.showGreyBar(this.caseField, this.el);
-      } else if (this.greyBarEnabled && !show && !this.greyBarManager.isShownFromParentPage(this.caseField.id)) {
-        this.greyBarManager.removeShownFromParentPage(this.caseField.id);
+      if (this.greyBarEnabled && show !== undefined) {
+        if (show) {
+          this.greyBarService.addShownFromParentPage(this.caseField.id);
+          this.greyBarService.showGreyBar(this.caseField, this.el);
+        } else {
+          this.greyBarService.removeShownFromParentPage(this.caseField.id);
+          this.greyBarService.removeGreyBar(this.el);
+        }
       }
     });
   }
 
+  /**
+   * returns whether the field visibility has changed, or undefined if not
+  */
   private updateVisibility(fields, forced = false): boolean {
     // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {
@@ -94,7 +100,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.subscribeToFormChanges();
     }
     this.hideField();
-    this.greyBarManager.removeGreyBar(this.el);
+    this.greyBarService.removeGreyBar(this.el);
   }
 
   private onShow() {
