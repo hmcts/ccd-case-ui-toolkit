@@ -23,8 +23,11 @@ yarn build:esm:watch
 # Install all dependencies
 yarn install
 
+# Build demo app
+yarn build
+
 # Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the gulp watch task registers two changes: copy inited and copy finished; also notice this spins up stubs api in the same process - see server.js)
-yarn start:watch
+yarn start
 
 # To verify the demo app is working go to http://localhost:8080
 ```
