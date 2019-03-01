@@ -21,7 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CallbackErrorsComponent } from '../../components/error';
 import { PaletteModule } from '../palette';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
-import { ConditionalShowModule } from '../../directives/conditional-show';
+import { ConditionalShowModule, GreyBarService } from '../../directives/conditional-show';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { EventTriggerService } from './services/event-trigger.service';
@@ -69,6 +69,7 @@ import { ErrorsModule } from '../error/errors.module';
         FieldsUtils,
         FieldsPurger,
         ConditionalShowRegistrarService,
+        GreyBarService,
         WizardFactoryService,
         FormValueService,
         FormErrorService,

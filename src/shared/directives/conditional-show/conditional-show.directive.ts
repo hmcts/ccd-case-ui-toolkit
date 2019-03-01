@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ShowCondition } from './domain/conditional-show.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
+import { GreyBarService } from './services/grey-bar.service';
 
 @Directive({ selector: '[ccdConditionalShow]' })
 /** Hides and shows the host element based on the show condition if the condition is not empty. Works on read only fields and form fields.
@@ -29,7 +30,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   constructor(private el: ElementRef,
               private fieldsUtils: FieldsUtils,
               private registry: ConditionalShowRegistrarService,
-              private renderer: Renderer2) {}
+              private renderer: Renderer2,
+              private greyBarManager: GreyBarService) {
+  }
 
   ngAfterViewInit() {
     if (this.caseField.show_condition) {
@@ -37,10 +40,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
-      // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
-      if (this.greyBarEnabled && this.fieldIsShownWithoutGreyBar()) {
-        this.showGreyBar();
+      if (this.greyBarEnabled && this.greyBarManager.isShownFromParentPage(this.caseField.id)) {
+        this.greyBarManager.showGreyBar(this.caseField, this.el);
       }
       this.subscribeToFormChanges();
       this.registry.register(this);
@@ -61,19 +63,24 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     this.unsubscribeFromFormChanges();
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
-      this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
+      let show = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
+      if (this.greyBarEnabled && show) {
+        this.greyBarManager.addShownFromParentPage(this.caseField.id);
+        this.greyBarManager.showGreyBar(this.caseField, this.el);
+      } else if (this.greyBarEnabled && !show && !this.greyBarManager.isShownFromParentPage(this.caseField.id)) {
+        this.greyBarManager.removeShownFromParentPage(this.caseField.id);
+      }
     });
   }
 
-  private updateVisibility(fields, forced = false) {
-    console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
+  private updateVisibility(fields, forced = false): boolean {
+    // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {
-      // console.log('should toggle to hide');
       this.onHide();
+      return false;
     } else if (this.shouldToggleToShow(fields)) {
-      // console.log('should toggle to show');
       this.onShow();
+      return true;
     }
   }
 
@@ -87,11 +94,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.subscribeToFormChanges();
     }
     this.hideField();
-    this.removeGreyBar();
+    this.greyBarManager.removeGreyBar(this.el);
   }
 
   private onShow() {
-    // console.log('showing');
     if (this.formField) {
       this.unsubscribeFromFormChanges();
       // console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
@@ -99,7 +105,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.subscribeToFormChanges();
     }
     this.showField();
-    this.showGreyBar();
     if (this.formField) {
       this.checkHideShowCondition(this.caseField.id, this.formField);
     }
@@ -113,65 +118,18 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     this.el.nativeElement.hidden = false;
   }
 
-  private showGreyBar() {
-    if (!this.greyBarEnabled) {
-      return;
-    }
-    if (this.pageFields) {
-      this.displayGreyBarOnlyIfShowConditionContainsAPageField();
-    } else {
-      this.addGreyBar();
-    }
-  }
-
-  private displayGreyBarOnlyIfShowConditionContainsAPageField() {
-    let showConditionFields = this.condition.getShowConditionFields();
-    // console.log('show condition fields:' + showConditionFields);
-    let samePage = (fieldId: string) => this.pageFields.some(pageField => pageField.id === fieldId);
-
-    // console.log('page fields: ' + JSON.stringify(this.pageFields));
-    // console.log('show condition has a current page field: ' + showConditionFields.some(samePage));
-    if (showConditionFields.some(samePage)) {
-      this.addGreyBar();
-    }
-  }
-
-  private addGreyBar() {
-    if (this.caseField.field_type.type !== 'Collection') {
-      let divSelector = this.el.nativeElement.querySelector('div')
-      if (divSelector) {
-        this.renderer.addClass(divSelector, 'show-condition-grey-bar');
-      }
-    }
-  }
-
-  private removeGreyBar() {
-    // console.log('remove grey bar');
-    if (this.caseField.field_type.type !== 'Collection') {
-      let divSelector = this.el.nativeElement.querySelector('div')
-      if (divSelector) {
-        this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
-      }
-    }
-  }
-
   private shouldToggleToHide(fields, forced) {
     return (!this.isHidden() || forced) && !this.condition.match(fields);
   }
 
   private shouldToggleToShow(fields) {
-    console.log('this.isHidden(): ' + this.isHidden());
-    console.log('this.condition.match(fields): ' + this.condition.match(fields));
     return this.isHidden() && this.condition.match(fields);
   }
 
   private getCurrentPagesReadOnlyAndFormFieldsValues() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
-
-    let pageFields = this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
-    // console.log('pageFields:' + JSON.stringify(pageFields));
-    return pageFields;
+    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
   }
 
   private getFormFieldsValuesIncludingDisabled() {
@@ -186,10 +144,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     if (this.formChangesSubscription) {
       this.formChangesSubscription.unsubscribe();
     }
-  }
-
-  private fieldIsShownWithoutGreyBar() {
-    return !this.isHidden() && !this.el.nativeElement.classList.contains('show-condition-grey-bar')
   }
 
   // TODO This must be extracted to a generic service for traversing see RDM-2233
