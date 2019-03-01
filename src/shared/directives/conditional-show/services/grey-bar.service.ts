@@ -29,12 +29,10 @@ export class GreyBarService {
   }
 
   public removeGreyBar(el: ElementRef) {
-    // if (this.caseField.field_type.type !== 'Collection') {
-      let divSelector = el.nativeElement.querySelector('div')
-      if (divSelector) {
-        this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
-      }
-    // }
+    let divSelector = el.nativeElement.querySelector('div')
+    if (divSelector) {
+      this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
+    }
   }
 
   addShownFromParentPage(fieldId: string) {
@@ -45,7 +43,7 @@ export class GreyBarService {
     this.fieldsShownOnParentPage = this.fieldsShownOnParentPage.filter(id => id !== fieldId);
   }
 
-  isShownFromParentPage(fieldId: string): boolean {
+  wasShownFromParentPage(fieldId: string): boolean {
     return this.fieldsShownOnParentPage.find(id => id === fieldId) !== undefined;
   }
 

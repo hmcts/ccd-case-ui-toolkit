@@ -6,11 +6,8 @@ export class ShowCondition {
   private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
   private static readonly CONTAINS = 'CONTAINS';
 
-  private conditionFields: string[] = []
-
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
-    this.conditionFields = this.parseShowCondition([], condition);
   }
 
   match(fields): boolean {
@@ -18,10 +15,6 @@ export class ShowCondition {
       return true;
     }
     return this.matchAndConditions(fields, this.condition);
-  }
-
-  getShowConditionFields(): string[] {
-    return this.conditionFields;
   }
 
   private matchAndConditions(fields: any, condition: string): boolean {
@@ -85,27 +78,6 @@ export class ShowCondition {
 
   private okIfBothEmpty(right: string, value: any) {
     return value === null && (right === '');
-  }
-
-  private parseShowCondition(total: string[], condition: string): string[] {
-    if (!condition) {
-      return [];
-    }
-    if (condition.indexOf('AND') !== -1) {
-      let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-      return andConditions.reduce(this.parseShowCondition, []);
-    }
-    if (condition.search(ShowCondition.CONTAINS) === -1) {
-      let field = condition.split('=')[0];
-      const [head, ...tail] = field.split('.');
-      total.push(head);
-      return total;
-    } else {
-      let field = condition.split(ShowCondition.CONTAINS)[0];
-      const [head, ...tail] = field.split('.');
-      total.push(head);
-      return total;
-    }
   }
 
 }

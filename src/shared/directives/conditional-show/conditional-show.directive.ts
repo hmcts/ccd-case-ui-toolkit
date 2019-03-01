@@ -40,8 +40,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.formField = this.formGroup.get(this.caseField.id);
+      // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
-      if (this.greyBarEnabled && this.greyBarService.isShownFromParentPage(this.caseField.id)) {
+      if (this.greyBarEnabled && this.greyBarService.wasShownFromParentPage(this.caseField.id)) {
         this.greyBarService.showGreyBar(this.caseField, this.el);
       }
       this.subscribeToFormChanges();
@@ -63,9 +64,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     this.unsubscribeFromFormChanges();
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      let show = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
-      if (this.greyBarEnabled && show !== undefined) {
-        if (show) {
+      // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
+      let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldsValues());
+      if (this.greyBarEnabled && shown !== undefined) {
+        if (shown) {
           this.greyBarService.addShownFromParentPage(this.caseField.id);
           this.greyBarService.showGreyBar(this.caseField, this.el);
         } else {

@@ -3,8 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValueService } from '../../../services/form/form-value.service';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { CaseEditPageComponent } from '../case-edit-page';
 
 @Component({
   selector: 'ccd-case-edit-form',
@@ -27,7 +25,7 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   pageChangeSubscription: Subscription;
   formGroupChangeSubscription: Subscription;
 
-  constructor(private formValueService: FormValueService, private caseEditPageComponent: CaseEditPageComponent) {}
+  constructor(private formValueService: FormValueService) {}
 
   ngOnDestroy() {
     this.pageChangeSubscription.unsubscribe();
@@ -60,9 +58,5 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   detectChangesAndEmit(changes) {
     const current = JSON.stringify(this.formValueService.sanitise(changes));
     this.initial !== current ? this.valuesChanged.emit(true) : this.valuesChanged.emit(false);
-  }
-
-  getPageFields(): CaseField[] {
-    return this.caseEditPageComponent.currentPage.case_fields;
   }
 }
