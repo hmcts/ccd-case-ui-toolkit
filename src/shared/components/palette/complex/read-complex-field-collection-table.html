@@ -33,17 +33,17 @@
             </ng-container>
               <td>
                 <div style="float: right;">
-                  <img src="{{ getImage(i) }}" class="accordion-image"/>
+                  <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
                 </div>
                </td>
           </tr>
-          <tr>
+          <tr [hidden]="isHidden[i]">
             <td [colSpan]="columns.length +1">
               <table class="complex-panel-table">
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
                   <ng-container  *ngFor="let name of item | keyvalue">
-                    <tr *ngIf="vLabel.key == name.key"  class="complex-panel-simple-field accordion-body" [hidden]="isHidden[i]" [class.last-accordion]="lastAccordion">
+                    <tr *ngIf="vLabel.key == name.key"  class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion">
                       <th ><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td class="text-16">
                         <ccd-field-read [caseField]="{

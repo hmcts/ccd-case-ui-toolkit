@@ -82,8 +82,23 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     if (this.isHidden[row]) {
       return 'img/accordion-plus.png';
     } else {
-      return 'img/accordion-minus.png';
+      if(this.isVerticleDataNotEmpty(row)){
+        return 'img/accordion-minus.png';
+      } else {
+        this.isHidden[row] = true;
+        return 'img/accordion-plus.png';
+      }
     }
+  }
+
+  private isVerticleDataNotEmpty(row){
+    let result = false
+    for(let key in this.columnsVerticalLabel){
+      if(this.rows[row][key]) {
+        result = true;
+      }
+    }
+    return result;
   }
 
   sortRowsByColumns(column) {
