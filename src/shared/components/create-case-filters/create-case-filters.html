@@ -1,20 +1,3 @@
-<div *ngIf="error" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h3 class="heading-medium error-summary-heading" id="edit-case-event_error-summary-heading">
-    The callback data failed validation
-  </h3>
-  <p>{{error.message}}</p>
-  <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-    <li *ngFor="let fieldError of error.details.field_errors">
-      {{fieldError.message}}
-    </li>
-  </ul>
-</div>
-<ccd-callback-errors
-  [triggerTextContinue]="triggerTextStart"
-  [triggerTextIgnore]="triggerTextIgnoreWarnings"
-  [callbackErrorsSubject]="callbackErrorsSubject"
-  (callbackErrorsContext)="callbackErrorsNotify($event)">
-</ccd-callback-errors>
 <form  (ngSubmit)="apply()">
   <div class="form-group">
     <label class="form-label" for="cc-jurisdiction">Jurisdiction</label>
@@ -40,5 +23,5 @@
     </select>
   </div>
 
-  <button type="submit" class="button" [disabled]="!isCreatable()">{{triggerText}}</button>
+  <button type="submit" class="button" [disabled]="!isCreatable()">{{startButtonText}}</button>
 </form>
