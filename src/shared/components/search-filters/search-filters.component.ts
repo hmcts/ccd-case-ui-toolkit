@@ -90,6 +90,7 @@ export class SearchFiltersComponent implements OnInit {
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
     this.populateValuesInLocalStorage();
+    console.log('selected=', this.selected);
     this.onApply.emit(this.selected);
   }
 
