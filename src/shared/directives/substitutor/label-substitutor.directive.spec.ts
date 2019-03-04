@@ -11,7 +11,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [caseFields]="caseFields"
+    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [contextFields]="caseFields"
         [elementsToSubstitute]="elementsToSubstitute">
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>

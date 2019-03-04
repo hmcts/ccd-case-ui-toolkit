@@ -54,7 +54,7 @@ describe('conditional-show', () => {
     debtorSurname: 'Snow'
   };
 
-  let caseFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
+  let contextFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
 
   describe('matches when', () => {
     it('empty condition', () => {
@@ -169,7 +169,7 @@ describe('conditional-show', () => {
 
   });
 
-  describe('matchByCaseFields when', () => {
+  describe('matchByContextFields when', () => {
     beforeEach(async(() => {
       caseField1.value = 's1';
       caseField2.value = 3;
@@ -188,7 +188,7 @@ describe('conditional-show', () => {
 
     it('empty condition', () => {
       let sc = new ShowCondition('');
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -196,20 +196,20 @@ describe('conditional-show', () => {
     it('field has expected value', () => {
       let sc = new ShowCondition('field1="s1"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('field has expected value and is a number', () => {
       let sc = new ShowCondition('field2="3"');
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
       expect(matched).toBe(true);
     });
 
     it('field starts with a string', () => {
       let sc = new ShowCondition('field3="te*"');
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -218,7 +218,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s1', 's2'];
       let sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -227,7 +227,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s2' , 's1'];
       let sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -235,7 +235,7 @@ describe('conditional-show', () => {
     it('should return true when complex values match exactly', () => {
       let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -390,7 +390,7 @@ describe('conditional-show', () => {
 
   });
 
-  describe('not matches ByCaseFields when', () => {
+  describe('not matches ByContextFields when', () => {
     beforeEach(async(() => {
       caseField1.value = 's1';
       caseField2.value = 3;
@@ -409,7 +409,7 @@ describe('conditional-show', () => {
 
     it('field value is not equal to condition', () => {
       let sc = new ShowCondition('field1="test"');
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -417,7 +417,7 @@ describe('conditional-show', () => {
     it('field value does not start with ' +
       'the condition string', () => {
       let sc = new ShowCondition('field1="te*"');
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -426,7 +426,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s2', 's1', 's3'];
       let sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -435,14 +435,14 @@ describe('conditional-show', () => {
       caseField1.value = undefined;
       let sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
     it('should return true when complex values match exactly', () => {
       let sc = new ShowCondition('claimantDetails.AddressUKCode="London"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -469,14 +469,14 @@ describe('conditional-show', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return false when any condition is false', () => {
       let sc = new ShowCondition('field1="s1" AND field2=3 AND field3="no-match"');
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -484,7 +484,7 @@ describe('conditional-show', () => {
     it('should evaluate AND conditions correctly when AND keyword is present in the value being matched', () => {
       let sc = new ShowCondition('field4="s1 AND s2" AND field2=3');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -493,7 +493,7 @@ describe('conditional-show', () => {
       caseField2.value = ['s4', 's2', 's3'];
       let sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINSs3,s4');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -503,7 +503,7 @@ describe('conditional-show', () => {
       let sc = new ShowCondition(
         'field1CONTAINS"s3,s2" AND claimantDetails.AddressUKCode.PostTown="London" AND claimantDetails.AddressUKCode.Country="UK"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -520,7 +520,7 @@ describe('conditional-show', () => {
     it('should return true when single value matches ', () => {
       let sc = new ShowCondition('field1CONTAINS"s1"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -529,7 +529,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s1,s3"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -538,7 +538,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s3', 's1', 's2'];
       let sc = new ShowCondition('field1CONTAINS"s2,s1"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -547,7 +547,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s1,s4"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -556,7 +556,7 @@ describe('conditional-show', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s3"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -564,7 +564,7 @@ describe('conditional-show', () => {
     it('should return false for non multi select fields', () => {
       let sc = new ShowCondition('field3CONTAINS"temmy"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -573,7 +573,7 @@ describe('conditional-show', () => {
       caseField1.value = undefined;
       let sc = new ShowCondition('field1CONTAINS"s1,s4"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -584,7 +584,7 @@ describe('conditional-show', () => {
       };
       let sc = new ShowCondition('claimantDetails.AddressUKCode.CountyCONTAINS"London"');
 
-      let matched = sc.matchByCaseFields(caseFields);
+      let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });

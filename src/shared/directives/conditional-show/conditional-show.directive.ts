@@ -18,7 +18,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
   @Input() idPrefix: string;
-  @Input() caseFields: CaseField[] = [];
+  @Input() contextFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
 
   condition: ShowCondition;
@@ -120,7 +120,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
-    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.caseFields, formFields);
+    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
   }
 
   private getFormFieldsValuesIncludingDisabled() {

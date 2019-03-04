@@ -103,8 +103,8 @@ export class ShowCondition {
     return s.substring(0, s.length - 1);
   }
 
-  matchByCaseFields(caseFields: CaseField[]): boolean {
-    return this.match(FieldsUtils.toValuesMap(caseFields));
+  matchByContextFields(contextFields: CaseField[]): boolean {
+    return this.match(FieldsUtils.toValuesMap(contextFields));
   }
 
   private okIfBothEmpty(right: string, value: any) {
