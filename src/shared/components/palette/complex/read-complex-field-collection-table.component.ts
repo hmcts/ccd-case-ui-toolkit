@@ -23,7 +23,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
   ngOnInit(): void {
     if (this.caseField.display_context_parameter
-        && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
+      && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
 
       this.isDisplayContextParameterAvailable = true;
       let displayContextParamter = this.caseField.display_context_parameter.trim();
@@ -59,9 +59,9 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
   private populateLabels(labelsVertical: { [p: string]: any }, allLabels: { [p: string]: any }) {
     for (let obj of this.caseField.field_type.complex_fields) {
-      if(obj.field_type.type === 'FixedList' ||
+      if (obj.field_type.type === 'FixedList' ||
         obj.field_type.type === 'MultiSelectList' ||
-        obj.field_type.type === 'FixedRadioList'){
+        obj.field_type.type === 'FixedRadioList') {
         labelsVertical[obj.id] = {label: obj.label, type: obj.field_type};
         allLabels[obj.id] = {label: obj.label, type: obj.field_type};
       } else {
@@ -82,7 +82,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     if (this.isHidden[row]) {
       return 'img/accordion-plus.png';
     } else {
-      if(this.isVerticleDataNotEmpty(row)){
+      if (this.isVerticleDataNotEmpty(row)) {
         return 'img/accordion-minus.png';
       } else {
         this.isHidden[row] = true;
@@ -91,10 +91,10 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     }
   }
 
-  private isVerticleDataNotEmpty(row){
+  private isVerticleDataNotEmpty(row) {
     let result = false
-    for(let key in this.columnsVerticalLabel){
-      if(this.rows[row][key]) {
+    for (let key in this.columnsVerticalLabel) {
+      if (this.rows[row][key]) {
         result = true;
       }
     }
@@ -103,7 +103,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
   sortRowsByColumns(column) {
     let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
-                                    || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
+      || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
 
     switch (this.columnsHorizontalLabel[column].type.type) {
       case 'Number':
@@ -135,7 +135,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
           this.columnsHorizontalLabel[column].sortOrder = SortOrder.DESCENDING;
         }
       }
-          break;
+        break;
     }
   }
 
