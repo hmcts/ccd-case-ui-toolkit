@@ -16,7 +16,7 @@ Demo-project is created as an alternative to `npm link` command. You may simply 
 yarn install
 
 # Start build of ccd-case-ui-toolkit in esm watch mode
-yarn build:esm:watch
+yarn build:esm
 
 # Open second terminal and assuming that you are already in case-ui-toolkit/demo folder
 
@@ -26,7 +26,7 @@ yarn install
 # Build demo app
 yarn build
 
-# Start watching library dist folder and do project build in watch mode. (notice it will reload twice as the gulp watch task registers two changes: copy inited and copy finished; also notice this spins up stubs api in the same process - see server.js)
+# Notice this spins up stubs api in the same process - see server.js)
 yarn start
 
 # To verify the demo app is working go to http://localhost:8080
