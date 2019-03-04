@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CreateCaseFiltersComponent } from './create-case-filters.component';
-import { DefinitionsService } from '../../services/definitions/definitions.service';
 import { CommonModule } from '@angular/common';
 import { ErrorsModule } from '../error/errors.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -17,9 +16,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     ],
     exports: [
         CreateCaseFiltersComponent
-    ],
-    providers: [
-        DefinitionsService
     ]
 })
 
