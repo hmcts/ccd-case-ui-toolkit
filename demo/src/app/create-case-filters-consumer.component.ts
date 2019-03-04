@@ -21,6 +21,43 @@ export class CreateCaseFiltersConsumerComponent implements OnInit {
         (selectionChanged)="resetErrors()"
     ></ccd-create-case-filters>`;
 
+    jurisdictionsSample = `
+    [
+        {
+            id: 'FR',
+            name: 'Financial Remedy',
+            description: 'Financial Remedy: remedy',
+            caseTypes: [{
+                id: 'FR',
+                description: 'Handling of the financial remedy',
+                name: 'FR case - v108.10',
+                states: null,
+                events: [{
+                    id: 'create',
+                    name: 'Apply for a financial remedy',
+                    description: 'Apply for a financial remedy',
+                    pre_states: [],
+                    post_state: null,
+                    case_fields: []
+                }, {
+                    id: 'create2',
+                    name: 'Apply for a financial remedy 2',
+                    description: 'Apply for a financial remedy 2',
+                    pre_states: [],
+                    post_state: null,
+                    case_fields: []
+                }, {
+                    id: 'create3',
+                    name: 'Apply for a financial remedy 3',
+                    description: 'Apply for a financial remedy 3',
+                    pre_states: [],
+                    post_state: null,
+                    case_fields: []
+                }]
+            }]
+        }
+    ]`;
+
     constructor() {
     }
 
@@ -29,68 +66,68 @@ export class CreateCaseFiltersConsumerComponent implements OnInit {
         setTimeout(() => {
             this.jurisdictions = [
                 {
-                    'id': 'FR',
-                    'name': 'Financial Remedy',
-                    'description': 'Financial Remedy: remedy',
-                    'caseTypes': [{
-                        'id': 'FR',
-                        'description': 'Handling of the financial remedy',
-                        'name': 'FR case - v108.10',
-                        'states': null,
-                        'events': [{
-                            'id': 'create',
-                            'name': 'Apply for a financial remedy',
-                            'description': 'Apply for a financial remedy',
-                            'pre_states': [],
-                            'post_state': null,
-                            'case_fields': []
+                    id: 'FR',
+                    name: 'Financial Remedy',
+                    description: 'Financial Remedy: remedy',
+                    caseTypes: [{
+                        id: 'FR',
+                        description: 'Handling of the financial remedy',
+                        name: 'FR case - v108.10',
+                        states: null,
+                        events: [{
+                            id: 'create',
+                            name: 'Apply for a financial remedy',
+                            description: 'Apply for a financial remedy',
+                            pre_states: [],
+                            post_state: null,
+                            case_fields: []
                         }, {
-                            'id': 'create2',
-                            'name': 'Apply for a financial remedy 2',
-                            'description': 'Apply for a financial remedy 2',
-                            'pre_states': [],
-                            'post_state': null,
-                            'case_fields': []
+                            id: 'create2',
+                            name: 'Apply for a financial remedy 2',
+                            description: 'Apply for a financial remedy 2',
+                            pre_states: [],
+                            post_state: null,
+                            case_fields: []
                         }, {
-                            'id': 'create3',
-                            'name': 'Apply for a financial remedy 3',
-                            'description': 'Apply for a financial remedy 3',
-                            'pre_states': [],
-                            'post_state': null,
-                            'case_fields': []
+                            id: 'create3',
+                            name: 'Apply for a financial remedy 3',
+                            description: 'Apply for a financial remedy 3',
+                            pre_states: [],
+                            post_state: null,
+                            case_fields: []
                         }]
                     }]
                 },
                 {
-                    'id': 'DIVORCE',
-                    'name': 'Family Divorce',
-                    'description': 'Family Divorce: dissolution of marriage',
-                    'caseTypes': [{
-                        'id': 'DIVORCE',
-                        'description': 'Handling of the dissolution of marriage',
-                        'name': 'Divorce case - v108.10',
-                        'states': null,
-                        'events': [{
-                            'id': 'create',
-                            'name': 'Apply for a divorce',
-                            'description': 'Apply for a divorce',
-                            'pre_states': [],
-                            'post_state': null,
-                            'case_fields': []
+                    id: 'DIVORCE',
+                    name: 'Family Divorce',
+                    description: 'Family Divorce: dissolution of marriage',
+                    caseTypes: [{
+                        id: 'DIVORCE',
+                        description: 'Handling of the dissolution of marriage',
+                        name: 'Divorce case - v108.10',
+                        states: null,
+                        events: [{
+                            id: 'create',
+                            name: 'Apply for a divorce',
+                            description: 'Apply for a divorce',
+                            pre_states: [],
+                            post_state: null,
+                            case_fields: []
                         }, {
-                            'id': 'create2',
-                            'name': 'Apply for a divorce 2',
-                            'description': 'Apply for a divorce 2',
-                            'pre_states': [],
-                            'post_state': null,
-                            'case_fields': []
+                            id: 'create2',
+                            name: 'Apply for a divorce 2',
+                            description: 'Apply for a divorce 2',
+                            pre_states: [],
+                            post_state: null,
+                            case_fields: []
                         }, {
-                            'id': 'create3',
-                            'name': 'Apply for a divorce 3',
-                            'description': 'Apply for a divorce 3',
-                            'pre_states': [],
-                            'post_state': null,
-                            'case_fields': []
+                            id: 'create3',
+                            name: 'Apply for a divorce 3',
+                            description: 'Apply for a divorce 3',
+                            pre_states: [],
+                            post_state: null,
+                            case_fields: []
                         }]
                     }]
                 }
