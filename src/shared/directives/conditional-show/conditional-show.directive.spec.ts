@@ -13,13 +13,28 @@ import { GreyBarService } from './services/grey-bar.service';
 
 @Component({
     template: `
-      <tr ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields"></tr>`
+      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields" [greyBarEnabled]="true">
+        <div>text field</div>
+      </div>`
 })
 class TestHostComponent {
 
     @Input() caseField: CaseField;
     @Input() eventFields: CaseField[];
     @Input() formGroup: FormGroup;
+}
+
+@Component({
+  template: `
+    <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields">
+      <div>text field</div>
+    </div>`
+})
+class TestHostGreyBarDisabledComponent {
+
+  @Input() caseField: CaseField;
+  @Input() eventFields: CaseField[];
+  @Input() formGroup: FormGroup;
 }
 
 let field = (id, value, showCondition?) => {
@@ -47,15 +62,15 @@ describe('ConditionalShowDirective', () => {
     );
 
     beforeEach( async(() => {
-        TestBed.configureTestingModule({
-            declarations: [ ConditionalShowDirective, TestHostComponent ],
-            providers:    [
-              FieldsUtils,
-              GreyBarService,
-              { provide: ConditionalShowRegistrarService, useValue: mockRegistrar }
-            ]
-        }).compileComponents();
-        }));
+      TestBed.configureTestingModule({
+          declarations: [ ConditionalShowDirective, TestHostComponent, TestHostGreyBarDisabledComponent ],
+          providers:    [
+            FieldsUtils,
+            GreyBarService,
+            { provide: ConditionalShowRegistrarService, useValue: mockRegistrar }
+          ]
+      }).compileComponents();
+    }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TestHostComponent);
@@ -73,7 +88,32 @@ describe('ConditionalShowDirective', () => {
         expect(conditionalShow.condition).toBeUndefined();
     });
 
-    it('should display grey bar on show', () => {
+    it('should display not grey bar when toggled to show if grey bar disabled', () => {
+      fixture = TestBed.createComponent(TestHostGreyBarDisabledComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement.query(By.directive(ConditionalShowDirective));
+      el = de.nativeElement;
+      conditionalShow = de.injector.get(ConditionalShowDirective) as ConditionalShowDirective;
+      comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
+      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+                          field('PersonFirstName', 'Mario', '')];
+      comp.formGroup = new FormGroup({
+          PersonLastName: new FormControl('Hollis'),
+          PersonHasSecondAddress: new FormControl('No')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+
+      comp.formGroup.patchValue({PersonHasSecondAddress: 'Yes'});
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+      de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
+      expect(de).toBeFalsy();
+    });
+
+    it('should not display grey bar if field is initially shown on the page', () => {
       comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
       let fieldType = new FieldType();
       fieldType.id = 'fieldId';
@@ -84,7 +124,52 @@ describe('ConditionalShowDirective', () => {
 
       expect(el.hidden).toBe(false);
       de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
-      expect(de).toBeDefined();
+      expect(de).toBeFalsy();
+    });
+
+    it('should display grey bar when toggled to show', () => {
+      comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
+      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+                          field('PersonFirstName', 'Mario', '')];
+      comp.formGroup = new FormGroup({
+          PersonLastName: new FormControl('Hollis'),
+          PersonHasSecondAddress: new FormControl('No')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+
+      comp.formGroup.patchValue({PersonHasSecondAddress: 'Yes'});
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+      de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
+      expect(de).toBeTruthy();
+    });
+
+    it('should remove grey bar when toggled to hide', () => {
+      comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
+      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+                          field('PersonFirstName', 'Mario', '')];
+      comp.formGroup = new FormGroup({
+          PersonLastName: new FormControl('Hollis'),
+          PersonHasSecondAddress: new FormControl('No')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+
+      comp.formGroup.patchValue({PersonHasSecondAddress: 'Yes'});
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+
+      comp.formGroup.patchValue({PersonHasSecondAddress: 'No'});
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+      de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
+      expect(de).toBeFalsy();
     });
 
     it('should not display grey bar if field is hidden', () => {
@@ -98,21 +183,31 @@ describe('ConditionalShowDirective', () => {
 
       expect(el.hidden).toBe(true);
       de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
-      expect(de).toBeNull();
+      expect(de).toBeFalsy();
     });
 
-    it('should not display grey bar on show for Collection fields', () => {
-      comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
+    it('should not display grey bar when toggled to show if Collection', () => {
+      comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
       let fieldType = new FieldType();
       fieldType.id = 'fieldId';
       fieldType.type = 'Collection';
       comp.caseField.field_type = fieldType;
-      comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
+      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+                          field('PersonFirstName', 'Mario', '')];
+      comp.formGroup = new FormGroup({
+          PersonLastName: new FormControl('Hollis'),
+          PersonHasSecondAddress: new FormControl('No')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+
+      comp.formGroup.patchValue({PersonHasSecondAddress: 'Yes'});
       fixture.detectChanges();
 
       expect(el.hidden).toBe(false);
       de = fixture.debugElement.query(By.css('.show-condition-grey-bar'));
-      expect(de).toBeNull();
+      expect(de).toBeFalsy();
     });
 
     it('should display when condition matches a read only field. No form fields', () => {
@@ -194,11 +289,11 @@ describe('ConditionalShowDirective', () => {
     });
 
     it('should display when condition matches after field change', () => {
-        comp.caseField = field('PersonLastName', 'Paniccia', 'PersonHasSecondAddress="Yes"');
+        comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
         comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                             field('PersonFirstName', 'Mario', '')];
         comp.formGroup = new FormGroup({
-            PersonLastName: new FormControl('Paniccia'),
+            PersonLastName: new FormControl('Hollis'),
             PersonHasSecondAddress: new FormControl('No')
         });
         fixture.detectChanges();
@@ -213,17 +308,17 @@ describe('ConditionalShowDirective', () => {
     });
 
     it('should disable a form field when hiding and keep its value', () => {
-        comp.caseField = field('PersonLastName', 'Paniccia', 'PersonHasSecondAddress="Yes"');
+        comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
         comp.eventFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
-            PersonLastName: new FormControl('Paniccia'),
+            PersonLastName: new FormControl('Hollis'),
             PersonHasSecondAddress: new FormControl('Yes')
         });
         fixture.detectChanges();
 
         expect(el.hidden).toBe(false);
-        expect(conditionalShow.formField.value).toBe('Paniccia');
+        expect(conditionalShow.formField.value).toBe('Hollis');
 
         conditionalShow.formGroup.patchValue({PersonLastName: 'Doe'});
         conditionalShow.formField.markAsDirty();
@@ -246,23 +341,23 @@ describe('ConditionalShowDirective', () => {
     });
 
     it('should not clear a form field on hide if not dirty', () => {
-        comp.caseField = field('PersonLastName', 'Paniccia', 'PersonHasSecondAddress="Yes"');
+        comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
         comp.eventFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
-            PersonLastName: new FormControl('Paniccia'),
+            PersonLastName: new FormControl('Hollis'),
             PersonHasSecondAddress: new FormControl('Yes')
         });
         fixture.detectChanges();
 
         expect(el.hidden).toBe(false);
-        expect(conditionalShow.formField.value).toBe('Paniccia');
+        expect(conditionalShow.formField.value).toBe('Hollis');
 
         conditionalShow.formGroup.patchValue({PersonHasSecondAddress: 'No'});
         fixture.detectChanges();
 
         expect(el.hidden).toBe(true);
         expect(conditionalShow.formField.status).toBe('DISABLED');
-        expect(conditionalShow.formField.value).toBe('Paniccia');
+        expect(conditionalShow.formField.value).toBe('Hollis');
     });
 });

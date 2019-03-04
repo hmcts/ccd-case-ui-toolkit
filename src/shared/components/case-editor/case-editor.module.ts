@@ -69,7 +69,6 @@ import { ErrorsModule } from '../error/errors.module';
         FieldsUtils,
         FieldsPurger,
         ConditionalShowRegistrarService,
-        GreyBarService,
         WizardFactoryService,
         FormValueService,
         FormErrorService,
