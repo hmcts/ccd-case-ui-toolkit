@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.31.0 - March 4 2019
+**RDM-3972** - Case list and seach in CCD does not show the case reference number with hyphen
+**RDM-3936** - Update Court staff footer to provide seperate info for each service
+
 ### Version 2.30.0 - March 1 2019
 **RDM-RDM-4009** - New Search API V2 endpoint
 
