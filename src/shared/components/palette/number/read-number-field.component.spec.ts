@@ -3,7 +3,7 @@ import { ReadNumberFieldComponent } from './read-number-field.component';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import {CaseReferencePipe} from '../../../pipes/case-reference';
+import { CaseReferencePipe } from '../../../pipes/case-reference';
 
 describe('ReadNumberFieldComponent', () => {
 
