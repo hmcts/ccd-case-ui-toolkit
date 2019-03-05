@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs';
 import { Profile } from '../../domain';
 
 @Injectable()
 export class ProfileNotifier {
 
-  profileSource = new Subject<Profile>();
+  profileSource;
 
   announceProfile(profile: Profile) {
-    this.profileSource.next(profile);
+    this.profileSource = new BehaviorSubject<Profile>(profile);
   }
 
 }

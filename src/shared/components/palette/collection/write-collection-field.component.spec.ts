@@ -14,7 +14,9 @@ import { of } from 'rxjs';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { ActivatedRoute } from '@angular/router';
+import { ProfileNotifier } from '../../../services';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { BehaviorSubject } from 'rxjs';
 
 const FIELD_ID = 'Values';
 const SIMPLE_FIELD_TYPE: FieldType = {
@@ -72,7 +74,7 @@ describe('WriteCollectionFieldComponent', () => {
   let dialog: any;
   let dialogRef: any;
   let scrollToService: any;
-  let route: any;
+  let profileNotifier: any;
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -99,25 +101,8 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     };
-    route = {
-      parent: {
-        parent: {
-          parent: {
-            snapshot: {
-              data: {
-                profile: {
-                  user: {
-                    idam: {
-                      roles: ['caseworker-divorce']
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    };
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profileSource = new BehaviorSubject(createAProfile());
 
     TestBed
       .configureTestingModule({
@@ -135,7 +120,7 @@ describe('WriteCollectionFieldComponent', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
-          { provide: ActivatedRoute, useValue: route },
+          { provide: ProfileNotifier, useValue: profileNotifier },
           RemoveDialogComponent
         ]
       })
@@ -332,7 +317,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let dialog: any;
   let dialogRef: any;
   let scrollToService: any;
-  let route: any;
+  let profileNotifier: any;
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -359,25 +344,8 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         }
       ]
     };
-    route = {
-      parent: {
-        parent: {
-          parent: {
-            snapshot: {
-              data: {
-                profile: {
-                  user: {
-                    idam: {
-                      roles: ['caseworker-divorce']
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    };
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profileSource = new BehaviorSubject(createAProfile());
 
     TestBed
       .configureTestingModule({
@@ -395,7 +363,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
-          { provide: ActivatedRoute, useValue: route },
+          { provide: ProfileNotifier, useValue: profileNotifier },
           RemoveDialogComponent
         ]
       })
@@ -459,7 +427,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let dialog: any;
   let dialogRef: any;
   let scrollToService: any;
-  let route: any;
+  let profileNotifier: any;
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -486,25 +454,8 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         }
       ]
     };
-    route = {
-      parent: {
-        parent: {
-          parent: {
-            snapshot: {
-              data: {
-                profile: {
-                  user: {
-                    idam: {
-                      roles: ['caseworker-divorce']
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    };
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profileSource = new BehaviorSubject(createAProfile());
 
     TestBed
       .configureTestingModule({
@@ -522,7 +473,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
-          { provide: ActivatedRoute, useValue: route },
+          { provide: ProfileNotifier, useValue: profileNotifier },
           RemoveDialogComponent
         ]
       })

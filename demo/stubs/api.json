@@ -918,6 +918,14 @@
             "collection_field_type": null
           }
         },
+        "acls": [
+          {
+            "role": "caseworker-probate-public",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          }],
         "validation_expr": null,
         "security_label": "PRIVATE",
         "order": null,
@@ -1042,7 +1050,8 @@
           {
             "case_field_id": "HasOtherInfo",
             "order": 1,
-            "page_column_no": 1
+            "page_column_no": 1,
+            "display_context": "OPTIONAL"
           }
         ]
       },
@@ -1055,92 +1064,110 @@
           {
             "case_field_id": "PersonFirstName",
             "order": 1,
-            "page_column_no": 1
+            "page_column_no": 1,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "PetitionerCurrentAddressLabel",
             "order": 2,
-            "page_column_no": 1
+            "page_column_no": 1,
+            "display_context": "READONLY"
           },
           {
             "case_field_id": "HouseFlatNumber",
             "order": 3,
-            "page_column_no": 1
+            "page_column_no": 1,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "PersonLastNameWithValidation",
             "order": 4,
-            "page_column_no": 1
+            "page_column_no": 1,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "HouseFlatPostcode",
             "order": 5,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "IsAddressForService",
             "order": 6,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "PetitionerServiceAddress",
             "order": 7,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "DateOfBirth",
             "order": 8,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "MarritalStatus",
             "order": 9,
-            "page_column_no": 2
+            "page_column_no": 2,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "ContactEmail",
             "order": 9,
-            "page_column_no": 2
+            "page_column_no": 2,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "WhatIsYourAge",
             "order": 10,
-            "page_column_no": 2
+            "page_column_no": 2,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "YourPhoneUk",
             "order": 11,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "TotalMonthlyIncome",
             "order": 12,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "DocumentUpload",
             "order": 12,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "CantProvideNationalInsuranceNumber",
             "order": 13,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "WhatNationality",
             "order": 14,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "ExamplesCollection",
             "order": 15,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           },
           {
             "case_field_id": "PersonOrderSummary",
             "order": 16,
-            "page_column_no": null
+            "page_column_no": null,
+            "display_context": "OPTIONAL"
           }
         ]
       },
@@ -1153,7 +1180,8 @@
           {
             "case_field_id": "ContactEmail",
             "order": 1,
-            "page_column_no": 1
+            "page_column_no": 1,
+            "display_context": "OPTIONAL"
           }
         ]
       }
