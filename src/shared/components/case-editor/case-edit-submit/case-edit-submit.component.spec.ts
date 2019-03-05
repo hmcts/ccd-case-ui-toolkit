@@ -24,7 +24,7 @@ import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 
-fdescribe('CaseEditSubmitComponent', () => {
+describe('CaseEditSubmitComponent', () => {
 
   let comp: CaseEditSubmitComponent;
   let fixture: ComponentFixture<CaseEditSubmitComponent>;
