@@ -1,0 +1,79 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Case Create component</h1>
+
+        <div class="text">
+            <p> This component is used to create a case. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>jurisdiction - an id of a jurisdiction (e.g. DIVORCE)</li>
+                        <li>caseType - an id of a case type (e.g. DIVORCE)</li>
+                        <li>event - an id of an event (e.g. Create)</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>cancelled - a notification event about an event creation being cancelled. In case drafts logic is enabled via case definition additional event context object is present containing:
+                            <ul class="list list-bullet text">
+                                <li>status:
+                                    <ul class="list list-bullet text">
+                                        <li>NEW_FORM_DISCARD - cancelled during new case creation and no form data entered yet</li>
+                                        <li>NEW_FORM_CHANGED_SAVE - cancelled during new case creation and form data already entered</li>
+                                        <li>RESUMED_FORM_DISCARD - cancelled during resuming case creation from draft and form data not changed</li>
+                                        <li>RESUMED_FORM_SAVE - cancelled during resuming case creation from draft and form data changed</li>
+                                    </ul>
+                                </li>  
+                            </ul>
+                            <ul class="list list-bullet text">
+                                <li>data: in case of the two statuses from above: NEW_FORM_CHANGED_SAVE and RESUMED_FORM_SAVE there is a data object containing:
+                                    <ul class="list list-bullet text">
+                                        <li>data - populated form data</li>
+                                        <li>event - event object containing 
+                                            <pre class="language-markup">
+                                                <code class="language-markup">{{event}}</code>
+                                            </pre>
+                                            where:
+                                            <ul class="list list-bullet text">
+                                                <li>description - descrption of an event</li>
+                                                <li>id - id of an event</li>
+                                                <li>summary - summary of an event</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>    
+                            </ul>
+                        </li>
+                        <li>submitted - a notification event about an event creation being submitted containing an event with:
+                            <ul class="list list-bullet text">
+                                <li>caseId - id of the created case</li>
+                                <li>status - case creation status:
+                                    <ul class="list list-bullet text">
+                                        <li>CALLBACK_COMPLETED - if configured after submit callback successful and a confirmation pop up confirmed</li>
+                                        <li>INCOMPLETE_DELETE_DRAFT - if configured after submit callback failed and the deletion of draft (if drafts logic is enabled) has failed</li>
+                                        <li>DELETE_DRAFT_COMPLETED - if configured after submit callback failed but draft deletion was successful (if drafts logic is enabled)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-case-create [jurisdiction]="jurisdictionId"
+                [caseType]="caseTypeId"
+                [event]="eventTriggerId"
+                (cancelled)="cancel($event)"
+                (submitted)="submit($event)">
+            </ccd-case-create>
+        </div>
+    </main>
+</div>

@@ -16,6 +16,8 @@ describe('ActivityPollingService', () => {
 
   beforeEach(() => {
     ngZone = jasmine.createSpyObj<NgZone>('ngZone', ['run', 'runOutsideAngular']);
+    ngZone.runOutsideAngular.and.callFake((fn: Function) => fn());
+
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['getActivities', 'postActivity']);
     activityService.getActivities.and.returnValue(Observable.of());
     activityService.isEnabled = true;

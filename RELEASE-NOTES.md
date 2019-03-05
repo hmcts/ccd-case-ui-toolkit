@@ -1,5 +1,18 @@
 ## RELEASE NOTES
 
+### Version 2.31.0 - March 4 2019
+**RDM-3972** - Case list and seach in CCD does not show the case reference number with hyphen
+**RDM-3936** - Update Court staff footer to provide seperate info for each service
+
+### Version 2.30.0 - March 1 2019
+**RDM-RDM-4009** - New Search API V2 endpoint
+
+### Version 2.29.0 - February 28 2019
+**RDM-3916** - Move create case filters to toolkit and implement new contract
+
+### Version 2.27.1 - February 22 2019
+**RDM-3430** - Run polling outside angular zone
+
 ### Version 2.27.0 - February 21 2019
 **RDM-2986** - New ComplexType to Events mapping
 
