@@ -34,7 +34,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
-        this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+        this.caseService.caseView.subscribe(caseDetails => {
           this.caseDetails = caseDetails;
         });
     }

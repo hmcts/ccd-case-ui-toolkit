@@ -78,8 +78,6 @@ describe('CaseEditSubmitComponent', () => {
     'isCourtAdmin': FUNC,
   };
 
-  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
-
   let mockRoute: any = {
     snapshot: {
       data: {},
@@ -130,7 +128,7 @@ describe('CaseEditSubmitComponent', () => {
 
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileNotifier = new ProfileNotifier();
-      profileNotifier.profileSource = new BehaviorSubject(createAProfile());
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({
@@ -363,6 +361,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     let mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -392,7 +391,7 @@ describe('CaseEditSubmitComponent', () => {
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
-      profileNotifier.profileSource = new BehaviorSubject(createAProfile());
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({

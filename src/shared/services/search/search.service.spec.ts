@@ -35,7 +35,7 @@ describe('SearchService', () => {
   const TEST_FIELD_ID = 'PersonFirstName';
   const TEST_FIELD: Field = new Field(TEST_FIELD_ID, TEST_FIELD_TYPE);
   const SEARCH_INPUT: SearchInput = new SearchInput(SEARCH_INPUT_LABEL, SEARCH_INPUT_ORDER, TEST_FIELD);
-  const SEARCH_INPUTS: SearchInput[] = [SEARCH_INPUT];
+  const SEARCH_INPUTS = { searchInputs: [SEARCH_INPUT]};
 
   let params: URLSearchParams;
   let appConfig: any;

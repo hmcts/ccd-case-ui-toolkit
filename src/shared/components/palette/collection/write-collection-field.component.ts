@@ -34,7 +34,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   ngOnInit(): void {
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
-      this.profileNotifier.profileSource.asObservable().subscribe(_ => this.profile = _);
+      this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
 

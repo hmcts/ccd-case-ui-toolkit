@@ -4,9 +4,10 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class CaseService {
-    caseViewSource;
+    private caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
+    caseView = this.caseViewSource.asObservable();
 
     announceCase(caseView: CaseView) {
-        this.caseViewSource = new BehaviorSubject<CaseView>(caseView);
+        this.caseViewSource.next(caseView);
     }
 }

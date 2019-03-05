@@ -102,7 +102,7 @@ describe('WriteCollectionFieldComponent', () => {
       ]
     };
     profileNotifier = new ProfileNotifier();
-    profileNotifier.profileSource = new BehaviorSubject(createAProfile());
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
     TestBed
       .configureTestingModule({
@@ -345,7 +345,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
       ]
     };
     profileNotifier = new ProfileNotifier();
-    profileNotifier.profileSource = new BehaviorSubject(createAProfile());
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
     TestBed
       .configureTestingModule({
@@ -455,7 +455,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
       ]
     };
     profileNotifier = new ProfileNotifier();
-    profileNotifier.profileSource = new BehaviorSubject(createAProfile());
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
     TestBed
       .configureTestingModule({

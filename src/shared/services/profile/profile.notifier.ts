@@ -5,10 +5,11 @@ import { Profile } from '../../domain';
 @Injectable()
 export class ProfileNotifier {
 
-  profileSource;
+  private profileSource: BehaviorSubject<Profile> = new BehaviorSubject<Profile>(new Profile());
+  profile = this.profileSource.asObservable();
 
   announceProfile(profile: Profile) {
-    this.profileSource = new BehaviorSubject<Profile>(profile);
+    this.profileSource.next(profile);
   }
 
 }
