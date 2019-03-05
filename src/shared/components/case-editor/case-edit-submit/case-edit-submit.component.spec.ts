@@ -74,6 +74,7 @@ describe('CaseEditSubmitComponent', () => {
     },
     user: USER,
     'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC,
   };
 
   let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
