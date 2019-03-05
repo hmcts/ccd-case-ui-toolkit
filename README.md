@@ -68,7 +68,7 @@ yarn build:esm
 yarn build:demo
 
 # start demo app and stub server in same process
-yarn start:demo
+yarn start
 # Go to http://localhost:8080
 ```
 
