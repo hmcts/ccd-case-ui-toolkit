@@ -29,4 +29,8 @@ export class Profile {
   isSolicitor(): boolean {
     return this.user.idam.roles.find(r => r.endsWith('-solicitor')) !== undefined;
   }
+
+  isCourtAdmin(): boolean {
+    return this.user.idam.roles.find(r => r.endsWith('-courtadmin')) !== undefined;
+  }
 }

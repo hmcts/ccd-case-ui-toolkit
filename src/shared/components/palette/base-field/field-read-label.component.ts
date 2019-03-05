@@ -17,11 +17,11 @@ export class FieldReadLabelComponent {
   withLabel: boolean;
 
   public isLabel(): boolean {
-    return this.caseField.field_type.type === 'Label';
+    return this.caseField.field_type && this.caseField.field_type.type === 'Label';
   }
 
   public isComplex(): boolean {
-    return this.caseField.field_type.type === 'Complex';
+    return this.caseField.field_type && this.caseField.field_type.type === 'Complex';
   }
 
 }
