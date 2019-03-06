@@ -1,0 +1,24 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Case View component</h1>
+
+        <div class="text">
+            <p> This component is used to view a case. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>case - an id of a case (e.g. 1111222233334444)</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-case-view [case]="caseId"></ccd-case-view>
+        </div>
+    </main>
+</div>
