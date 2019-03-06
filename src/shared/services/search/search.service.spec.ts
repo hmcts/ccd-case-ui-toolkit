@@ -222,7 +222,6 @@ describe('SearchService', () => {
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe(resultInputModel => {
-          console.log('resultInputModel', resultInputModel);
           expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS.searchInputs[0].field.id);
         });
     });
