@@ -1,0 +1,66 @@
+ <div class="complex-panel">
+      <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
+      <table class="complex-panel-table">
+        <tbody>
+        <tr>
+          <ng-container *ngFor="let heading of columns">
+            <ng-container *ngFor="let name of columnsAllLabels | keyvalue">
+              <th *ngIf="heading.trim() == name.key">
+                <span class="text-16">{{name.value.label}}</span>
+                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value  )"></a>
+              </th>
+            </ng-container>
+          </ng-container>
+          <th></th>
+        </tr>
+        <ng-container *ngFor="let item of rows;  let i = index;trackBy:trackByIndex;" >
+          <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
+            <ng-container *ngFor="let heading of columns">
+              <ng-container  *ngFor="let name of item | keyvalue">
+                <td *ngIf="heading.trim() == name.key" class="text-16">
+                  <div *ngIf="name.value;else showEmptyTd">
+                  <ccd-field-read [caseField]="{
+                        id: name.key,
+                        label: name.value.label,
+                        field_type: columnsHorizontalLabel[heading.trim()].type,
+                        value: name.value
+                      }" [context]="context"></ccd-field-read>
+                  </div>
+                  <ng-template #showEmptyTd><div>&nbsp;</div></ng-template>
+                </td>
+
+              </ng-container>
+            </ng-container>
+              <td>
+                <div style="float: right;">
+                  <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
+                </div>
+               </td>
+          </tr>
+          <tr [hidden]="isHidden[i]">
+            <td [colSpan]="columns.length +1">
+              <table class="complex-panel-table">
+                <tbody>
+                <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
+                  <ng-container  *ngFor="let name of item | keyvalue">
+                    <tr *ngIf="vLabel.key == name.key"  class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion">
+                      <th ><span class="text-16">{{vLabel.value.label}}</span></th>
+                      <td class="text-16">
+                        <ccd-field-read [caseField]="{
+                              id: name.key,
+                              label: vLabel.value.label,
+                               field_type:  vLabel.value.type,
+                              value: name.value
+                            }" [context]="context"></ccd-field-read>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
