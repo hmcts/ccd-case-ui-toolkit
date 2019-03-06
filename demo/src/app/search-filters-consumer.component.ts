@@ -3,13 +3,8 @@ import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
 
  @Component({
   selector: 'search-filters-consumer',
-  template: `<div class="container-fluid">
-                <ccd-search-filters [jurisdictions]="jurisdictions"
-                                    [autoApply]="true"
-                                    (onApply)="applied($event)"
-                                    (onReset)="reset()"
-                                    (onJuridiction)="jurisdictionSelected($event)"></ccd-search-filters>
-             </div>`
+  templateUrl: './search-filters-consumer.component.html',
+  styleUrls: ['./elements-documentation.scss']
 })
 export class SearchFiltersConsumerComponent implements OnInit {
 
@@ -58,6 +53,30 @@ export class SearchFiltersConsumerComponent implements OnInit {
       };
 
      jurisdictions: Jurisdiction[];
+
+     code = `
+     <ccd-search-filters [jurisdictions]="jurisdictions"
+                         [autoApply]="true"
+                         (onApply)="applied($event)"
+                         (onReset)="reset()"
+                         (onJuridiction)="jurisdictionSelected($event)">
+      </ccd-search-filters>`;
+     selected = `
+     {
+      caseType: {...},
+      formGroup: angular FormGroup,
+      jurisdiction: {...},
+      metadataFields: [
+         "[CASE_REFERENCE]",
+         "[CREATED_DATE]",
+         "[LAST_MODIFIED_DATE]",
+         "[STATE]",
+         "[SECURITY_CLASSIFICATION]",
+         "[JURISDICTION]"
+         "[CASE_TYPE]"
+      ],
+      page: 1
+     }`;
 
      ngOnInit() {
         this.jurisdictions = [this.JURISDICTION_1, this.JURISDICTION_2];
