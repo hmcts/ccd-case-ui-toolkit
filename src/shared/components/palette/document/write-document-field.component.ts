@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
@@ -14,7 +14,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private uploadedDocument: FormGroup;
   private selectedFile: File;
   private dialogConfig: MatDialogConfig;
-
+  private MANDATORY: string = 'MANDATORY';
   @ViewChild('fileInput') fileInput: ElementRef;
 
   valid = true;
@@ -43,6 +43,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
+    console.log('this.caseField', this.caseField);
+    if (this.caseField.display_context && this.caseField.display_context === this.MANDATORY) {
+      this.valid = false;
+      this.uploadError = 'Document required';
+    }
+
     if (document) {
       this.createDocumentGroup(
         document.document_url,
@@ -50,9 +56,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document.document_filename,
       );
     }
-/*  else {
-      this.createDocumentGroup();
-    } */
+    /*  else {
+          this.createDocumentGroup();
+        } */
   }
 
   fileChangeEvent(fileInput: any) {
