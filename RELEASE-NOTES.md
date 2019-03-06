@@ -1,4 +1,11 @@
 ## RELEASE NOTES
+
+### Version 2.30.0 - March 1 2019
+**RDM-RDM-4009** - New Search API V2 endpoint
+
+### Version 2.29.0 - February 28 2019
+**RDM-3916** - Move create case filters to toolkit and implement new contract
+
 ### Version 2.27.1 - February 22 2019
 **RDM-3430** - Run polling outside angular zone
 

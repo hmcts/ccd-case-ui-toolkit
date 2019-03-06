@@ -2,18 +2,26 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'case-create-consumer',
-  template: `<div class="container-fluid">
-                <ccd-case-create [jurisdiction]="jurisdictionId"
-                              [caseType]="caseTypeId"
-                              [event]="eventTriggerId"
-                              (cancelled)="cancel($event)"
-                              (submitted)="submit($event)"></ccd-case-create>
-             </div>`
+  templateUrl: './case-create-consumer.component.html',
+  styleUrls: ['./elements-documentation.scss']
 })
 export class CaseCreateConsumerComponent {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
+  code = `
+<ccd-case-create [jurisdiction]="jurisdictionId"
+                 [caseType]="caseTypeId"
+                 [event]="eventTriggerId"
+                 (cancelled)="cancel($event)"
+                 (submitted)="submit($event)">
+</ccd-case-create>`;
+  event = `
+{
+  description: "Apply for a divorce",
+  id: "create",
+  summary: "Apply for a divorce"
+}`;
 
   submit(event: any): void {
     console.log('CaseCreateConsumerComponent submit event=', event);
