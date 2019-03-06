@@ -347,7 +347,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   });
 
   it('should be invalid if no document specified for upload', () => {
-    console.log('component.caseField', component.caseField);
     expect(component.valid).toBeFalsy();
     expect(component.uploadError).toEqual('Document required');
   });

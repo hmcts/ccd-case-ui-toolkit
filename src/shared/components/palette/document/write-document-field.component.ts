@@ -43,7 +43,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
-    console.log('this.caseField', this.caseField);
     if (this.caseField.display_context && this.caseField.display_context === this.MANDATORY) {
       this.valid = false;
       this.uploadError = 'Document required';
