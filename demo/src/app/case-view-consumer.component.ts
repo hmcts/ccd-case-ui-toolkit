@@ -3,12 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'case-create-consumer',
-  template: `<div class="container-fluid">
-                <ccd-case-view [case]="caseId"></ccd-case-view>
-             </div>`
+  templateUrl: './case-view-consumer.component.html',
+  styleUrls: ['./elements-documentation.scss']
 })
 export class CaseViewConsumerComponent implements OnInit {
     caseId: string;
+    code = `
+    <ccd-case-view [case]="caseId"></ccd-case-view>`;
 
     constructor(
         private route: ActivatedRoute
