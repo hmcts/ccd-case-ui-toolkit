@@ -14,7 +14,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private uploadedDocument: FormGroup;
   private selectedFile: File;
   private dialogConfig: MatDialogConfig;
-  private MANDATORY: string = 'MANDATORY';
+  private MANDATORY = 'MANDATORY';
   @ViewChild('fileInput') fileInput: ElementRef;
 
   valid = true;
