@@ -1,7 +1,5 @@
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
-import { CaseEventTrigger } from '../../../domain';
 import {
-  createCaseEventTrigger,
   createCaseField,
   createComplexFieldOverride,
   createFieldType,
@@ -29,7 +27,10 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
             createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null)
           ]),
           null
-        )
+        ),
+        createCaseField('testCaseLink', 'Case Link test', '', createFieldType('CaseLink', 'Complex', [
+          createCaseField('CaseReference', 'Case Reference', null, createFieldType('TextCaseReference', 'Text', []), null)
+        ]), null),
       ]),
       'COMPLEX')
   ];
@@ -55,13 +56,14 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
       ],
       [], null, new ShowCondition(null));
 
-  const EVENT_TRIGGER_RESPONSE: CaseEventTrigger = createCaseEventTrigger('FinalReturn',
-    'Final Return',
-    '1547555344187688',
-    false,
-    CASE_FIELDS,
-    [WIZARD_PAGE]
-  );
+  const WIZARD_PAGE_WITH_HIDDEN_CASE_LINK = createWizardPage('FinalReturnfinalReturn', 'Final Return', 1,
+      [
+        createWizardPageField('debtorName', 2, null, 'MANDATORY', []),
+        createWizardPageField('finalReturn', 1, null, 'COMPLEX', [
+          createHiddenComplexFieldOverride('finalReturn.testCaseLink.CaseReference')
+        ])
+      ],
+      [], null, new ShowCondition(null));
 
   beforeEach(() => {
     wizardPageFieldToCaseFieldMapper = new WizardPageFieldToCaseFieldMapper();
@@ -70,7 +72,6 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
   it('should map wizardPageFields using complex_field_overrides data', () => {
 
     let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
-    console.log(JSON.stringify(caseFields, null, 2));
 
     let debtorName = caseFields[0];
 
@@ -83,6 +84,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     let finalReturn = caseFields[1];
     expect(finalReturn.order).toEqual(1);
 
+    expect(finalReturn.field_type.complex_fields.length).toBe(2);
     let addressUK = finalReturn.field_type.complex_fields[0];
     let addressLine1 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine1');
     let addressLine2 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine2');
@@ -103,5 +105,24 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(postCode.hint_text).toEqual('Enter the postcode');
     expect(postCode.order).toEqual(1);
     expect(postCode.show_condition).toEqual('debtorName="Some name"');
+
+    let caseLink = finalReturn.field_type.complex_fields[1];
+    expect(caseLink.hidden).toBeFalsy('caseLink.hidden should be undefined');
+    expect(caseLink.display_context).toEqual('OPTIONAL');
+    expect(caseLink.label).toEqual('Case Link test');
+    expect(caseLink.hint_text).toEqual('First name hint text');
+    expect(caseLink.order).toBeUndefined('caseLink.order should be undefined');
+    expect(caseLink.show_condition).toBeUndefined('caseLink.show_condition should be undefined');
+  });
+
+  it('should hide caseLink both parent and child', () => {
+
+    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
+
+    let finalReturn = caseFields[1];
+    let caseLink = finalReturn.field_type.complex_fields[1];
+    expect(caseLink.hidden).toBe(true, 'finalReturn.testCaseLink.hidden should be true');
+    const caseReference = caseLink.field_type.complex_fields[0];
+    expect(caseReference.hidden).toBe(true, 'finalReturn.testCaseLink.CaseReference.hidden should be true');
   });
 });

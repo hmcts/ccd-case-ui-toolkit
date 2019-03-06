@@ -17,7 +17,6 @@ export class WizardPageFieldToCaseFieldMapper {
   private map(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
 
     let caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
-    caseField.id = wizardPageField.case_field_id;
     caseField.wizardProps = wizardPageField;
     caseField.display_context = wizardPageField.display_context;
     caseField.order = wizardPageField.order;
@@ -28,16 +27,19 @@ export class WizardPageFieldToCaseFieldMapper {
       });
     }
 
+    // this will fix the CaseLink type as we exclude it in ccdFieldsFilter directive
+    this.hideParentIfAllChildrenHidden(caseField);
+
     return caseField;
   }
 
-  private processComplexFieldOverride(override: ComplexFieldOverride, case_field: CaseField, caseFields: CaseField[]) {
+  private processComplexFieldOverride(override: ComplexFieldOverride, caseField: CaseField, caseFields: CaseField[]) {
     const caseFieldIds = override.complex_field_element_id.split('.');
     let case_field_leaf: CaseField;
 
-    if (this.isCollectionOfComplex(case_field)) {
+    if (this.isCollectionOfComplex(caseField)) {
       const [_, ...tail] = caseFieldIds;
-      case_field_leaf = this.getCaseFieldLeaf(tail, case_field.field_type.collection_field_type.complex_fields);
+      case_field_leaf = this.getCaseFieldLeaf(tail, caseField.field_type.collection_field_type.complex_fields);
     } else {
       case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, caseFields);
     }
@@ -82,7 +84,34 @@ export class WizardPageFieldToCaseFieldMapper {
     }
   }
 
+  private hideParentIfAllChildrenHidden(caseField: CaseField) {
+    let children = [];
+    if (this.isCollection(caseField)) {
+      children = caseField.field_type.collection_field_type.complex_fields || [];
+    } else if (this.isComplex(caseField)) {
+      children = caseField.field_type.complex_fields || [];
+    }
+
+    children.forEach(e => this.hideParentIfAllChildrenHidden(e));
+
+    if (children.length > 0 && this.allCaseFieldsHidden(children)) {
+      caseField.hidden = true;
+    }
+  }
+
+  private allCaseFieldsHidden(children: CaseField[]): boolean {
+    return !children.some(e => e.hidden !== true);
+  }
+
   private isCollectionOfComplex(case_field: CaseField) {
     return case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex';
+  }
+
+  private isComplex(case_field: CaseField) {
+    return case_field.field_type.type === 'Complex';
+  }
+
+  private isCollection(case_field: CaseField) {
+    return case_field.field_type.type === 'Collection';
   }
 }
