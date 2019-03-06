@@ -1,16 +1,14 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
 import { CaseViewTrigger, HttpError } from '../../domain';
-import { OrderService, AlertService } from '../../services';
+import { OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-event-trigger',
-  templateUrl: './event-trigger.html',
-  styleUrls: ['./event-trigger.scss']
+  templateUrl: './event-trigger.component.html',
+  styleUrls: ['./event-trigger.component.scss']
 })
-export class EventTriggerComponent implements OnInit, OnDestroy {
+export class EventTriggerComponent implements OnChanges {
 
   @Input()
   triggers: CaseViewTrigger[];
@@ -19,66 +17,44 @@ export class EventTriggerComponent implements OnInit, OnDestroy {
   triggerText: string;
 
   @Input()
-  callbackErrorsSubject: Subject<any> = new Subject();
+  isDisabled: boolean;
 
   @Output()
-  onTrigger = new EventEmitter<CaseViewTrigger>();
+  onTriggerSubmit: EventEmitter<CaseViewTrigger> = new EventEmitter();
+
+  @Output()
+  onTriggerChange: EventEmitter<any> = new EventEmitter();
 
   error: HttpError;
 
   triggerForm: FormGroup;
 
-  private changeSubscription: Subscription;
+  constructor(private fb: FormBuilder, private orderService: OrderService) {}
 
-  constructor(private fb: FormBuilder, private orderService: OrderService, private alertService: AlertService) {}
+  ngOnChanges(changes?: SimpleChanges): void {
+    if (changes.triggers) {
+      this.triggers = this.orderService.sort(this.triggers);
 
-  ngOnInit(): void {
-    this.triggers = this.orderService.sort(this.triggers);
-
-    this.triggerForm = this.fb.group({
-      'trigger': [this.getDefault(), Validators.required]
-    });
-
-    this.changeSubscription = this.triggerForm
-      .valueChanges
-      .subscribe(() => {
-        this.resetErrors();
+      this.triggerForm = this.fb.group({
+        'trigger': [this.getDefault(), Validators.required]
       });
-    this.callbackErrorsSubject.subscribe(errorEvent => {
-      this.error = errorEvent;
-    });
+    }
   }
 
-  ngOnDestroy(): void {
-    this.changeSubscription.unsubscribe();
-    this.callbackErrorsSubject.unsubscribe();
-  }
-
-  isDisabled(): boolean {
-    return !this.triggerForm.valid || this.hasErrors() || this.hasInvalidData();
+  isButtonDisabled(): boolean {
+    return !this.triggerForm.valid || this.isDisabled;
   }
 
   private getDefault(): any {
     return this.triggers.length === 1 ? this.triggers[0] : '';
   }
 
-  private resetErrors(): void {
-    this.error = null;
-    this.callbackErrorsSubject.next(null);
-    this.alertService.clear();
+  triggerSubmit() {
+    this.onTriggerSubmit.emit(this.triggerForm.value['trigger']);
   }
 
-  private hasErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
-  private hasInvalidData(): boolean {
-    return this.error
-      && this.error.details
-      && this.error.details.field_errors
-      && this.error.details.field_errors.length;
+  triggerChange() {
+    this.onTriggerChange.next(null);
   }
 
 }
