@@ -8,7 +8,7 @@ import { FieldTypeEnum } from '../../../domain/definition/field-type-enum.model'
 export class IsCompoundPipe implements PipeTransform {
 
   private static readonly COMPOUND_TYPES: FieldTypeEnum[] = [
-    'Complex', 'Label', 'AddressGlobal', 'AddressUK', 'AddressGlobalUK'
+    'Complex', 'Label', 'AddressGlobal', 'AddressUK', 'AddressGlobalUK', 'CasePaymentHistoryViewer', 'CaseHistoryViewer'
   ];
 
   private static readonly EXCLUDE: String[] = [

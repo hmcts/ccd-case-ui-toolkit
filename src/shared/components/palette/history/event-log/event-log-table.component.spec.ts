@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CaseViewEvent } from '../../../domain';
-import { DatePipe } from '../../palette';
+import { CaseViewEvent } from '../../../../domain/case-view';
+import { DatePipe } from '../../utils';
 
 describe('EventLogTableComponent', () => {
 
