@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CaseViewTrigger, HttpError } from '../../domain';
+import { CaseViewTrigger } from '../../domain';
 import { OrderService } from '../../services';
 
 @Component({
@@ -24,8 +24,6 @@ export class EventTriggerComponent implements OnChanges {
 
   @Output()
   onTriggerChange: EventEmitter<any> = new EventEmitter();
-
-  error: HttpError;
 
   triggerForm: FormGroup;
 

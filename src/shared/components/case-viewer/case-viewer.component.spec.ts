@@ -54,10 +54,13 @@ describe('CaseViewerComponent', () => {
     triggerText: string;
 
     @Input()
-    callbackErrorsSubject: Subject<any> = new Subject();
+    isDisabled: boolean;
 
     @Output()
-    onTrigger = new EventEmitter<CaseViewTrigger>();
+    onTriggerSubmit: EventEmitter<CaseViewTrigger> = new EventEmitter();
+
+    @Output()
+    onTriggerChange: EventEmitter<any> = new EventEmitter();
   }
 
   @Component({
@@ -397,6 +400,7 @@ describe('CaseViewerComponent', () => {
 
   const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+  const $SUBMIT_BUTTON = By.css('form.event-trigger button[type=submit]');
   const DIALOG_CONFIG = new MatDialogConfig();
 
   let CaseActivityComponent: any = MockComponent({
@@ -426,7 +430,7 @@ describe('CaseViewerComponent', () => {
 
     caseService = createSpyObj('caseService', ['announceCase']);
 
-    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning']);
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
     alertService.success.and.returnValue(Observable.of({}));
     alertService.warning.and.returnValue(Observable.of({}));
@@ -439,7 +443,7 @@ describe('CaseViewerComponent', () => {
 
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));
-    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next']);
+    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
     TestBed
       .configureTestingModule({
@@ -625,7 +629,7 @@ describe('CaseViewerComponent', () => {
     let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     let eventTrigger = eventTriggerElement.componentInstance;
 
-    eventTrigger.onTrigger.emit(TRIGGERS[0]);
+    eventTrigger.onTriggerSubmit.emit(TRIGGERS[0]);
 
     expect(component.applyTrigger).toHaveBeenCalledWith(TRIGGERS[0]);
     expect(component.applyTrigger).toHaveBeenCalledTimes(1);
@@ -683,7 +687,7 @@ describe('CaseViewerComponent', () => {
 
     let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     let eventTrigger = eventTriggerElement.componentInstance;
-    eventTrigger.onTrigger.emit(TRIGGERS[0]);
+    eventTrigger.onTriggerSubmit.emit(TRIGGERS[0]);
 
     expect(router.navigate).toHaveBeenCalledWith(['trigger', TRIGGERS[0].id], {
       queryParams: {},
@@ -752,5 +756,43 @@ describe('CaseViewerComponent', () => {
     let printLink = de.query($PRINT_LINK);
 
     expect(printLink).toBeFalsy();
+  });
+
+  it('should pass flag to disable button when form valid but callback errors exist', () => {
+    component.error = HttpError.from({});
+    fixture.detectChanges();
+
+    expect(component.isTriggerButtonDisabled()).toBeFalsy();
+    let error = HttpError.from({});
+    error.callbackErrors = ['anErrors'];
+    component.error = error;
+    fixture.detectChanges();
+
+    expect(component.isTriggerButtonDisabled()).toBeTruthy();
+  });
+
+  it('should clear alerts and errors when selected trigger changed', () => {
+    const FIELD_ERRORS = [
+      {
+        x: ''
+      }
+    ];
+    const VALID_ERROR = {
+      details: {
+        field_errors: FIELD_ERRORS
+      }
+    };
+    let httpError = HttpError.from(VALID_ERROR);
+    component.error = httpError;
+
+    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    let eventTrigger = eventTriggerElement.componentInstance;
+
+    eventTrigger.onTriggerChange.next(null);
+    fixture.detectChanges();
+
+    expect(alertService.clear).toHaveBeenCalled();
+    expect(component.error).toEqual(null);
+    expect(mockCallbackErrorSubject.next).toHaveBeenCalled();
   });
 });

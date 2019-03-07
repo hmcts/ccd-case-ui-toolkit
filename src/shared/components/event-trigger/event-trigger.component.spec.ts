@@ -25,6 +25,18 @@ describe('EventTriggerComponent', () => {
       order: 2
     }
   ];
+
+  const trigersChangeDummy = (triggers) => {
+    return {
+      triggers: {
+        isFirstChange: () => true,
+        previousValue: null,
+        firstChange: true,
+        currentValue: triggers
+      }
+    };
+  }
+
   const SORTED_TRIGGERS: CaseViewTrigger[] = [...TRIGGERS];
 
   const $SELECT_DEFAULT = By.css('form select>option[data-default]');
@@ -33,8 +45,6 @@ describe('EventTriggerComponent', () => {
   const $EVENT_TRIGGER_FORM = By.css('.EventTrigger');
 
   let orderService: any;
-  let alertService: any;
-  let callbackErrorsSubject: any;
 
   let fixture: ComponentFixture<EventTriggerComponent>;
   let component: EventTriggerComponent;
@@ -45,9 +55,6 @@ describe('EventTriggerComponent', () => {
       orderService = createSpyObj<OrderService>('orderService', ['sort']);
       orderService.sort.and.returnValue(SORTED_TRIGGERS);
 
-      alertService = createSpyObj<AlertService>('alertService', ['clear']);
-      callbackErrorsSubject = new Subject();
-
       TestBed
         .configureTestingModule({
           imports: [
@@ -57,8 +64,7 @@ describe('EventTriggerComponent', () => {
             EventTriggerComponent
           ],
           providers: [
-            {provide: OrderService, useValue: orderService},
-            {provide: AlertService, useValue: alertService}
+            {provide: OrderService, useValue: orderService}
           ]
         })
         .compileComponents();
@@ -67,10 +73,10 @@ describe('EventTriggerComponent', () => {
       component = fixture.componentInstance;
 
       component.triggers = TRIGGERS;
-      spyOn(component.onTrigger, 'emit');
-      component.callbackErrorsSubject = callbackErrorsSubject;
+      spyOn(component.onTriggerSubmit, 'emit');
 
       de = fixture.debugElement;
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
       fixture.detectChanges();
     }));
 
@@ -127,7 +133,7 @@ describe('EventTriggerComponent', () => {
 
       button.nativeElement.click();
 
-      expect(component.onTrigger.emit).toHaveBeenCalledWith(TRIGGERS[1]);
+      expect(component.onTriggerSubmit.emit).toHaveBeenCalledWith(TRIGGERS[1]);
     });
 
     it('should disable button when form is not valid', () => {
@@ -147,93 +153,25 @@ describe('EventTriggerComponent', () => {
       expect(attr(button, 'disabled')).toEqual(null);
     });
 
-    it('should disable button when form valid but callback validation error exists', () => {
+    it('should disable button when form valid but consumer component error exists', () => {
       component.triggerForm.controls['trigger'].setValue(TRIGGERS[0]);
       fixture.detectChanges();
 
       let button = de.query($SUBMIT_BUTTON);
       expect(attr(button, 'disabled')).toEqual(null);
-      const FIELD_ERRORS = [
-        {
-          x: ''
-        }
-      ];
-      const VALID_ERROR = {
-        details: {
-          field_errors: FIELD_ERRORS
-        }
-      };
-      let error = HttpError.from(VALID_ERROR);
-      component.error = error;
+
+      component.isDisabled = true;
       fixture.detectChanges();
 
       expect(attr(button, 'disabled')).toEqual('');
     });
 
-    it('should disable button when form valid but callback errors exist', () => {
-      component.triggerForm.controls['trigger'].setValue(TRIGGERS[0]);
-      component.error = HttpError.from({});
-      fixture.detectChanges();
-
-      let button = de.query($SUBMIT_BUTTON);
-      expect(attr(button, 'disabled')).toEqual(null);
-      let error = HttpError.from({});
-      error.callbackErrors = ['anErrors'];
-      component.error = error;
-      fixture.detectChanges();
-
-      expect(attr(button, 'disabled')).toEqual('');
-    });
-
-    it('should set error if notified about errors', () => {
-      const FIELD_ERRORS = [
-        {
-          x: ''
-        }
-      ];
-      const VALID_ERROR = {
-        details: {
-          field_errors: FIELD_ERRORS
-        }
-      };
-      let httpError = HttpError.from(VALID_ERROR);
-      callbackErrorsSubject.next(httpError);
-
-      expect(component.error).toEqual(httpError);
-    });
-
-    it('should clear alerts and errors when selected trigger changed', () => {
-      spyOn(component.callbackErrorsSubject, 'next');
-      expect(alertService.clear).not.toHaveBeenCalled();
-      expect(callbackErrorsSubject.next).not.toHaveBeenCalled();
-      const FIELD_ERRORS = [
-        {
-          x: ''
-        }
-      ];
-      const VALID_ERROR = {
-        details: {
-          field_errors: FIELD_ERRORS
-        }
-      };
-      let httpError = HttpError.from(VALID_ERROR);
-      component.error = httpError;
-
-      component.triggerForm.controls['trigger'].setValue(TRIGGERS[1]);
-      fixture.detectChanges();
-
-      expect(alertService.clear).toHaveBeenCalled();
-      expect(component.error).toEqual(null);
-      expect(callbackErrorsSubject.next).toHaveBeenCalled();
-    });
   });
 
   describe('with a single trigger', () => {
     beforeEach(async(() => {
       orderService = createSpyObj<OrderService>('orderService', ['sort']);
       orderService.sort.and.returnValue([ TRIGGERS[0] ]);
-
-      alertService = createSpyObj<AlertService>('alertService', ['clear']);
 
       TestBed
         .configureTestingModule({
@@ -244,8 +182,7 @@ describe('EventTriggerComponent', () => {
             EventTriggerComponent
           ],
           providers: [
-            {provide: OrderService, useValue: orderService},
-            {provide: AlertService, useValue: alertService}
+            {provide: OrderService, useValue: orderService}
           ]
         })
         .compileComponents();
@@ -256,6 +193,7 @@ describe('EventTriggerComponent', () => {
       component.triggers = [ TRIGGERS[0] ];
 
       de = fixture.debugElement;
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
       fixture.detectChanges();
     }));
 
