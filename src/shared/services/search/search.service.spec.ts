@@ -1,7 +1,7 @@
 import { SearchService } from './search.service';
 import { Headers, Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { SearchInput } from '../../components/search-filters';
 import { FieldType, Field } from '../../domain';
 import { RequestOptionsBuilder } from '../request';
@@ -198,7 +198,7 @@ describe('SearchService', () => {
     });
 
     it('should call backend with right URL, authorization and method for search input', () => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
         body: JSON.stringify(SEARCH_INPUTS)
       }))));
 
@@ -215,7 +215,7 @@ describe('SearchService', () => {
     });
 
     it('should return search input results', () => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
         body: JSON.stringify(SEARCH_INPUTS)
       }))));
 

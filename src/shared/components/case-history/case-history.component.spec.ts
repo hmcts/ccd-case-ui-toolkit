@@ -94,7 +94,7 @@ describe('CaseHistoryComponent', () => {
     spyOn(orderService, 'sort').and.callThrough();
 
     caseService = new CaseService();
-    caseService.caseViewSource = new BehaviorSubject(CASE_VIEW);
+    caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));
     caseHistoryService = createSpyObj<CaseHistoryService>('caseHistoryService', ['get']);

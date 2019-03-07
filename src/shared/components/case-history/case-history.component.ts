@@ -30,7 +30,7 @@ export class CaseHistoryComponent implements OnInit {
     private caseHistoryService: CaseHistoryService) { }
 
   ngOnInit() {
-    this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+    this.caseService.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
       this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID);
       this.caseHistoryService
