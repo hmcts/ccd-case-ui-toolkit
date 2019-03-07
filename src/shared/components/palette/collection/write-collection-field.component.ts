@@ -9,6 +9,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
 import { ActivatedRoute } from '@angular/router';
+import { ProfileNotifier } from '../../../services';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -26,14 +27,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   constructor(private formValidatorsService: FormValidatorsService,
               private dialog: MatDialog,
               private scrollToService: ScrollToService,
-              private route: ActivatedRoute,
+              private profileNotifier: ProfileNotifier,
   ) {
     super();
   }
 
   ngOnInit(): void {
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
-      this.profile = this.route.parent.parent.parent.snapshot.data.profile;
+      this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
 
@@ -45,6 +46,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       id: index.toString(),
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,
+      hidden: this.caseField.hidden,
       value: item.value,
       label: null,
       acls: this.caseField.acls

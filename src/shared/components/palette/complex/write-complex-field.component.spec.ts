@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
-import { DebugElement } from '@angular/core';
+import { DebugElement, Pipe, PipeTransform } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { By } from '@angular/platform-browser';
 import { FieldsFilterPipe } from './fields-filter.pipe';
@@ -11,10 +11,10 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { IsReadOnlyPipe } from '../utils';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('WriteComplexFieldComponent', () => {
-
   const $COMPLEX_PANEL = By.css('.form-group');
   const $COMPLEX_PANEL_TITLE = By.css('h3');
   const $COMPLEX_PANEL_VALUES = By.css('ccd-field-write');
@@ -23,6 +23,21 @@ describe('WriteComplexFieldComponent', () => {
     selector: 'ccd-field-write',
     inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded']
   });
+
+  let FieldReadComponent = MockComponent({
+    selector: 'ccd-field-read',
+    inputs: ['caseField', 'withLabel']
+  });
+
+  @Pipe({name: 'ccdIsReadOnly'})
+  class MockIsReadOnlyPipe implements PipeTransform {
+    transform(field: CaseField): boolean {
+      if (!field || !field.display_context) {
+        return false;
+      }
+      return field.display_context.toUpperCase() === 'READONLY';
+    }
+  }
 
   let fixture: ComponentFixture<WriteComplexFieldComponent>;
   let component: WriteComplexFieldComponent;
@@ -147,9 +162,12 @@ describe('WriteComplexFieldComponent', () => {
 
             // Mock
             FieldWriteComponent,
+            FieldReadComponent,
+            MockIsReadOnlyPipe
           ],
           providers: [
             IsCompoundPipe,
+            IsReadOnlyPipe,
             { provide: FormValidatorsService, useValue: formValidatorService }
           ]
         })
@@ -335,9 +353,12 @@ describe('WriteComplexFieldComponent', () => {
 
             // Mock
             FieldWriteComponent,
+            FieldReadComponent,
+            MockIsReadOnlyPipe
           ],
           providers: [
             IsCompoundPipe,
+            IsReadOnlyPipe,
             { provide: FormValidatorsService, useValue: formValidatorService }
           ]
         })
@@ -489,9 +510,12 @@ describe('WriteComplexFieldComponent', () => {
 
             // Mock
             FieldWriteComponent,
+            FieldReadComponent,
+            MockIsReadOnlyPipe
           ],
           providers: [
             IsCompoundPipe,
+            IsReadOnlyPipe,
             { provide: FormValidatorsService, useValue: formValidatorService }
           ]
         })

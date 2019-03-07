@@ -6,6 +6,7 @@ import { DisplayMode, CaseEventTrigger, CaseView, Activity, CaseEventData } from
 import { CaseService, CasesService } from '../../case-editor';
 import { AlertService, ActivityPollingService, EventStatusService } from '../../../services';
 import { CaseReferencePipe } from '../../../pipes';
+import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -19,6 +20,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   parentUrl: string;
 
   constructor(
+    private ngZone: NgZone,
     private casesService: CasesService,
     private caseService: CaseService,
     private router: Router,
@@ -32,14 +34,16 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
-        this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+        this.caseService.caseView.subscribe(caseDetails => {
           this.caseDetails = caseDetails;
         });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
-      this.subscription = this.postEditActivity().subscribe((_resolved) => {
-        // console.log('Posted EDIT activity and result is: ' + JSON.stringify(resolved));
+      this.ngZone.runOutsideAngular( () => {
+        this.subscription = this.postEditActivity().subscribe((_resolved) => {
+          // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
+        });
       });
     }
     this.route.parent.url.subscribe(path => {

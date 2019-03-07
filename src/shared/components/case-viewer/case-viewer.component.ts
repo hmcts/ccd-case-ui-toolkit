@@ -19,6 +19,7 @@ import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseService } from '../case-editor';
+import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -46,6 +47,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   callbackErrorsSubject: Subject<any> = new Subject();
 
   constructor(
+    private ngZone: NgZone,
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
@@ -59,7 +61,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
-      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+      this.caseService.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.init();
       });
@@ -88,8 +90,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
 
     if (this.activityPollingService.isEnabled) {
-      this.subscription = this.postViewActivity().subscribe((_resolved) => {
-        // console.log('Posted VIEW activity and result is: ' + JSON.stringify(resolved));
+      this.ngZone.runOutsideAngular( () => {
+        this.subscription = this.postViewActivity().subscribe((_resolved) => {
+          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
+        });
       });
     }
   }

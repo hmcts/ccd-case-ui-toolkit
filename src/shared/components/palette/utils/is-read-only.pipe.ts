@@ -7,7 +7,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 })
 export class IsReadOnlyPipe implements PipeTransform {
 
-  constructor(private  caseFieldService: CaseFieldService) {};
+  constructor(private caseFieldService: CaseFieldService) {};
 
   transform(field: CaseField): boolean {
     return this.caseFieldService.isReadOnly(field);

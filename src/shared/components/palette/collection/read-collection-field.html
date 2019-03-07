@@ -1,14 +1,31 @@
-<table *ngIf="caseField.value && caseField.value.length" class="collection-field-table">
-  <tbody>
+<table *ngIf="caseField.value && caseField.value.length " class="collection-field-table">
+  <ng-container [ngSwitch]="isDisplayContextParameterAvailable">
+    <tbody *ngSwitchCase="true">
+    <tr>
+      <td>
+        <ccd-field-read [caseField]="{
+                id: caseField.label,
+                label: caseField.label,
+                field_type: caseField.field_type.collection_field_type,
+                display_context_parameter: caseField.display_context_parameter,
+                value: caseField.value,
+                hidden: caseField.hidden
+              }" [context]="context"></ccd-field-read>
+      </td>
+    </tr>
+    </tbody>
+    <tbody *ngSwitchCase="false">
     <tr *ngFor="let item of caseField.value; let i = index">
       <td>
         <ccd-field-read [caseField]="{
-          id: i,
-          label: caseField.label + ' ' + (i + 1),
-          field_type: caseField.field_type.collection_field_type,
-          value: item.value
-        }" [context]="context"></ccd-field-read>
+            id: i,
+            label: caseField.label + ' ' + (i + 1),
+              field_type: caseField.field_type.collection_field_type,
+              value: item.value,
+              hidden: caseField.hidden
+          }" [context]="context"></ccd-field-read>
       </td>
     </tr>
-  </tbody>
+    </tbody>
+  </ng-container>
 </table>

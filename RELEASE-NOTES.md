@@ -1,5 +1,33 @@
 ## RELEASE NOTES
 
+### Version 2.33.0 - March 7 2019
+**RDM-4233** - demo case progression fix
+**RDM-4109** - flexible case history tab component
+
+### Version 2.32.0 - March 6 2019
+**RDM-3471** - As a user I am able to view collections in table (columns) without accordions
+**RDM-3472** - As a user I can expand/collapse collection table rows - case details
+**RDM-3473** - As a user viewing collection table on case details I can sort
+
+### Version 2.31.0 - March 4 2019
+**RDM-3972** - Case list and seach in CCD does not show the case reference number with hyphen
+**RDM-3936** - Update Court staff footer to provide seperate info for each service
+
+### Version 2.30.0 - March 1 2019
+**RDM-RDM-4009** - New Search API V2 endpoint
+
+### Version 2.29.0 - February 28 2019
+**RDM-3916** - Move create case filters to toolkit and implement new contract
+
+### Version 2.27.1 - February 22 2019
+**RDM-3430** - Run polling outside angular zone
+
+### Version 2.28.0 - February 27 2019
+**RDM-4109** - Management web consuming the new case history base type
+
+### Version 2.27.0 - February 21 2019
+**RDM-2986** - New ComplexType to Events mapping
+
 ### Version 2.26.0 - February 19 2019
 **RDM-3915** - Extract Case Create filters component as is
 

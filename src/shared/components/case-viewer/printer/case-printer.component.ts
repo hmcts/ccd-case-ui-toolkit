@@ -22,7 +22,7 @@ export class CasePrinterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+    this.caseService.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
       this.casesService
         .getPrintDocuments(this.caseDetails.case_type.jurisdiction.id,
