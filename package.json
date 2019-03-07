@@ -128,7 +128,7 @@
     "raw-loader": "^0.5.1",
     "reflect-metadata": "^0.1.12",
     "rimraf": "2.6.2",
-    "rollup": "^0.66.2",
+    "rollup": "^1.4.2",
     "rollup-plugin-angular": "^0.5.3",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.0.0",
