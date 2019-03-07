@@ -11,6 +11,7 @@ import { CaseView } from '../../../domain/case-view/case-view.model';
 import { Wizard } from '../domain/wizard.model';
 import { Confirmation } from '../domain/confirmation.model';
 import { WizardPage } from '../domain/wizard-page.model';
+import { ProfileService, ProfileNotifier } from '../../../services';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -58,6 +59,8 @@ export class CaseEditComponent implements OnInit {
     private fieldsPurger: FieldsPurger,
     private registrarService: ConditionalShowRegistrarService,
     private wizardFactory: WizardFactoryService,
+    private profileService: ProfileService,
+    private profileNotifier: ProfileNotifier,
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +78,7 @@ export class CaseEditComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
+    this.announceProfile(this.route);
   }
 
   getPage(pageId: string): WizardPage {
@@ -128,4 +132,9 @@ export class CaseEditComponent implements OnInit {
     return this.router.navigate(['confirm'], {relativeTo: this.route});
   }
 
+  private announceProfile(route: ActivatedRoute): void {
+    route.snapshot.pathFromRoot[1].data.profile ?
+      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
+    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
+  }
 }
