@@ -6,16 +6,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DebugElement } from '@angular/core';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { attr } from '../../../test/helpers';
-import { CaseHistory } from '../domain';
-import { HttpError, CaseView } from '../../../domain';
-import { OrderService, FieldsUtils, AlertService } from '../../../services';
-import { PaletteUtilsModule } from '../../palette';
-import { LabelSubstitutorDirective, PlaceholderService } from '../../../directives';
-import { CaseReferencePipe } from '../../../pipes';
-import { createCaseHistory } from '../../../fixture';
-import { CaseService } from '../../case-editor';
-import { CaseHistoryService } from '../services';
+import { attr } from '../../test/helpers';
+import { CaseHistory } from './domain';
+import { HttpError, CaseView } from '../../domain';
+import { OrderService, FieldsUtils, AlertService } from '../../services';
+import { PaletteUtilsModule } from '../palette';
+import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
+import { CaseReferencePipe } from '../../pipes';
+import { createCaseHistory } from '../../fixture';
+import { CaseService } from '../case-editor';
+import { CaseHistoryService } from './services';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 describe('CaseHistoryComponent', () => {

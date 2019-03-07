@@ -19,4 +19,5 @@ export type FieldTypeEnum =
   | 'AddressGlobal'
   | 'AddressGlobalUK'
   | 'AddressUK'
-  | 'CasePaymentHistoryViewer';
+  | 'CasePaymentHistoryViewer'
+  | 'CaseHistoryViewer';
