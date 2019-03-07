@@ -35,7 +35,7 @@ describe('SearchService', () => {
   const TEST_FIELD_ID = 'PersonFirstName';
   const TEST_FIELD: Field = new Field(TEST_FIELD_ID, TEST_FIELD_TYPE);
   const SEARCH_INPUT: SearchInput = new SearchInput(SEARCH_INPUT_LABEL, SEARCH_INPUT_ORDER, TEST_FIELD);
-  const SEARCH_INPUTS: SearchInput[] = [SEARCH_INPUT];
+  const SEARCH_INPUTS = { searchInputs: [SEARCH_INPUT]};
 
   let params: URLSearchParams;
   let appConfig: any;
@@ -222,7 +222,7 @@ describe('SearchService', () => {
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe(resultInputModel => {
-          expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS[0].field.id);
+          expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS.searchInputs[0].field.id);
         });
     });
 

@@ -18,6 +18,9 @@
 ### Version 2.27.1 - February 22 2019
 **RDM-3430** - Run polling outside angular zone
 
+### Version 2.28.0 - February 27 2019
+**RDM-4109** - Management web consuming the new case history base type
+
 ### Version 2.27.0 - February 21 2019
 **RDM-2986** - New ComplexType to Events mapping
 
