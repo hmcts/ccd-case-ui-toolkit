@@ -77,8 +77,8 @@ describe('CaseViewerComponent', () => {
 
   }
 
-  const EventLogComponent: any = MockComponent({
-    selector: 'ccd-event-log',
+  const CaseTimelineComponent: any = MockComponent({
+    selector: 'ccd-case-timeline',
     inputs: ['events']
   });
 
@@ -453,7 +453,7 @@ describe('CaseViewerComponent', () => {
           // Mock
           CaseActivityComponent,
           FieldReadComponent,
-          EventLogComponent,
+          CaseTimelineComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
@@ -603,7 +603,7 @@ describe('CaseViewerComponent', () => {
   it('should render the event log component in the event log tab', () => {
     let eventLogElement = de
       .query($EVENT_TAB_CONTENT)
-      .query(By.directive(EventLogComponent));
+      .query(By.directive(CaseTimelineComponent));
     let eventLog = eventLogElement.componentInstance;
 
     expect(eventLog.events).toEqual(EVENTS);
