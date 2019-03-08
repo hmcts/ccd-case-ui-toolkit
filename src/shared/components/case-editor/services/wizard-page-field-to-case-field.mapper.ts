@@ -21,6 +21,8 @@ export class WizardPageFieldToCaseFieldMapper {
     caseField.display_context = wizardPageField.display_context;
     caseField.order = wizardPageField.order;
 
+    this.fixShowConditionPath(caseField, '');
+
     if (wizardPageField.complex_field_overrides && wizardPageField.complex_field_overrides.length > 0) {
       wizardPageField.complex_field_overrides.forEach((override: ComplexFieldOverride) => {
         this.processComplexFieldOverride(override, caseField, caseFields);
@@ -62,6 +64,33 @@ export class WizardPageFieldToCaseFieldMapper {
     } else {
       case_field_leaf.hidden = true;
     }
+  }
+
+  private fixShowConditionPath(caseField: CaseField, pathPrefix: string) {
+    if (caseField.show_condition && pathPrefix.length > 0 && !caseField.show_condition.startsWith(pathPrefix)) {
+      caseField.show_condition = pathPrefix.length > 0 ? pathPrefix + '.' + caseField.show_condition : caseField.show_condition;
+    }
+
+    let childrenCaseFields = [];
+    if (this.isCollection(caseField)) {
+      childrenCaseFields = caseField.field_type.collection_field_type.complex_fields || [];
+    } else if (this.isComplex(caseField)) {
+      childrenCaseFields = caseField.field_type.complex_fields || [];
+    }
+
+    childrenCaseFields.forEach(collectionCaseField => {
+      if (collectionCaseField.show_condition) {
+        console.log('showCondition before', collectionCaseField.show_condition);
+      }
+      this.fixShowConditionPath(collectionCaseField, this.preparePathPrefix(pathPrefix, caseField.id));
+      if (collectionCaseField.show_condition) {
+        console.log('showCondition after', collectionCaseField.show_condition);
+      }
+    });
+  }
+
+  private preparePathPrefix(pathPrefix: string, caseField: string) {
+    return pathPrefix.length === 0 ? caseField : pathPrefix + '.' + caseField;
   }
 
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {

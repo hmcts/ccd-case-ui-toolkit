@@ -13,6 +13,7 @@ import { ShowCondition } from '../../../directives/conditional-show/domain';
 describe('WizardPageFieldToCaseFieldMapper', () => {
 
   let wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper;
+  const INCOMPLETE_SHOW_CONDITION = 'AddressLine2="test"';
 
   const CASE_FIELDS = [
     createCaseField('debtorName', 'Debtor name', '', textFieldType(), null),
@@ -22,7 +23,9 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
           'Address Attended',
           'Address Attended hint text',
           createFieldType('AddressUK', 'Complex', [
-            createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null),
+            createCaseField('AddressLine1', 'Building and Street', 'hint 1',
+              createFieldType('TextMax150', 'Text', []),
+              null, 1, INCOMPLETE_SHOW_CONDITION),
             createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
             createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null)
           ]),
@@ -115,7 +118,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(caseLink.show_condition).toBeUndefined('caseLink.show_condition should be undefined');
   });
 
-  it('should hide caseLink both parent and child', () => {
+  it('should hide caseLink both parent and a child', () => {
 
     let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
 
@@ -124,5 +127,16 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(caseLink.hidden).toBe(true, 'finalReturn.testCaseLink.hidden should be true');
     const caseReference = caseLink.field_type.complex_fields[0];
     expect(caseReference.hidden).toBe(true, 'finalReturn.testCaseLink.CaseReference.hidden should be true');
+  });
+
+  it('should fix INCOMPLETE_SHOW_CONDITION path for complex fields caseField', () => {
+
+    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
+
+    let finalReturn = caseFields[1];
+    let addressUK = finalReturn.field_type.complex_fields[0];
+    let addressLine1 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+
+    expect(addressLine1.show_condition).toBe('finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION)
   });
 });

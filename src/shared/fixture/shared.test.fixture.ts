@@ -100,7 +100,8 @@ export let createCaseField = (id: string,
                               hint: string,
                               fieldType: FieldType,
                               display_context: string,
-                              order = undefined): CaseField => {
+                              order = undefined,
+                              show_condition = undefined): CaseField => {
   return {
     id: id || 'personFirstName',
     field_type: fieldType || textFieldType(),
@@ -108,7 +109,8 @@ export let createCaseField = (id: string,
     label: label || 'First name',
     hint_text: hint || 'First name hint text',
     show_summary_content_option: 0,
-    order: order
+    order: order,
+    show_condition: show_condition || undefined
   };
 };
 
