@@ -17,7 +17,7 @@ import { EventTriggerResolver, CaseResolver } from './services';
 import { CaseEditorModule, CaseService } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
-import { EventLogModule } from '../palette/history/event-log';
+import { CaseTimelineModule } from '../case-timeline';
 
 @NgModule({
     imports: [
@@ -27,7 +27,6 @@ import { EventLogModule } from '../palette/history/event-log';
         ActivityModule,
         CaseHeaderModule,
         EventTriggerModule,
-        EventLogModule,
         TabsModule,
         PaletteModule,
         LabelSubstitutorModule,
@@ -35,6 +34,7 @@ import { EventLogModule } from '../palette/history/event-log';
         PipesModule,
         ConditionalShowModule,
         CaseHistoryModule,
+        CaseTimelineModule,
     ],
     declarations: [
         CaseEventTriggerComponent,
