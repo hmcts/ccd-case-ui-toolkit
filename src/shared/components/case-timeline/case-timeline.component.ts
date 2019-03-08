@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CaseViewEvent, HttpError } from '../../domain';
-import { CasesService } from '../case-editor';
+import { CasesService, CaseService } from '../case-editor';
 import { AlertService } from '../../services';
 import { map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -15,8 +15,12 @@ export class CaseTimelineComponent implements OnInit {
   case: string;
 
   events: CaseViewEvent[];
+  selectedEventId: string;
+  dspMode = CaseTimelineDisplayMode;
+  displayMode: CaseTimelineDisplayMode = CaseTimelineDisplayMode.TIMELINE;
 
   constructor(
+    private caseService: CaseService,
     private casesService: CasesService,
     private alertService: AlertService,
   ) {}
@@ -27,6 +31,7 @@ export class CaseTimelineComponent implements OnInit {
       .pipe(
         map(caseView => {
           this.events = caseView.events;
+          this.caseService.announceCase(caseView);
         })
       )
       .toPromise()
@@ -40,4 +45,17 @@ export class CaseTimelineComponent implements OnInit {
     return this.events ? true : false;
   }
 
+  caseHistoryClicked(eventId: string) {
+    this.displayMode = CaseTimelineDisplayMode.DETAILS;
+    this.selectedEventId = eventId;
+  }
+
+  public goToCaseTimeline(): void {
+    this.displayMode = CaseTimelineDisplayMode.TIMELINE;
+  }
+}
+
+export enum CaseTimelineDisplayMode {
+  TIMELINE,
+  DETAILS
 }
