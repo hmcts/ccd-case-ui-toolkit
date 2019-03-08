@@ -34,11 +34,11 @@ app.use(function (req, res) {
         response = db.get('case').value();
       } else if (req.url.indexOf('/documents') !== -1) {
         response = db.get('documents').value();
-      } else if (req.url.indexOf('CT0/inputs') !== -1) {
+      } else if (req.url.indexOf('CT0/search-inputs') !== -1) {
         response = db.get('CT0inputs').value();
-      } else if (req.url.indexOf('CT2/inputs') !== -1) {
+      } else if (req.url.indexOf('CT2/search-inputs') !== -1) {
         response = db.get('CT2inputs').value();
-      } else if (req.url.indexOf('CT3/inputs') !== -1) {
+      } else if (req.url.indexOf('CT3/search-inputs') !== -1) {
         response = db.get('CT3inputs').value();
       }
     }

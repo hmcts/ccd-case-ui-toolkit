@@ -1,7 +1,7 @@
 import { SearchService } from './search.service';
 import { Headers, Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { SearchInput } from '../../components/search-filters';
 import { FieldType, Field } from '../../domain';
 import { RequestOptionsBuilder } from '../request';
@@ -35,7 +35,7 @@ describe('SearchService', () => {
   const TEST_FIELD_ID = 'PersonFirstName';
   const TEST_FIELD: Field = new Field(TEST_FIELD_ID, TEST_FIELD_TYPE);
   const SEARCH_INPUT: SearchInput = new SearchInput(SEARCH_INPUT_LABEL, SEARCH_INPUT_ORDER, TEST_FIELD);
-  const SEARCH_INPUTS: SearchInput[] = [SEARCH_INPUT];
+  const SEARCH_INPUTS = { searchInputs: [SEARCH_INPUT]};
 
   let params: URLSearchParams;
   let appConfig: any;
@@ -198,7 +198,7 @@ describe('SearchService', () => {
     });
 
     it('should call backend with right URL, authorization and method for search input', () => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
         body: JSON.stringify(SEARCH_INPUTS)
       }))));
 
@@ -215,14 +215,14 @@ describe('SearchService', () => {
     });
 
     it('should return search input results', () => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
         body: JSON.stringify(SEARCH_INPUTS)
       }))));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe(resultInputModel => {
-          expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS[0].field.id);
+          expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS.searchInputs[0].field.id);
         });
     });
 
