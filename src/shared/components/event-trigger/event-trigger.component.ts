@@ -52,7 +52,7 @@ export class EventTriggerComponent implements OnChanges {
   }
 
   triggerChange() {
-    this.onTriggerChange.next(null);
+    this.onTriggerChange.emit(null);
   }
 
 }

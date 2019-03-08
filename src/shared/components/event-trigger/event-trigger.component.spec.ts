@@ -41,6 +41,7 @@ describe('EventTriggerComponent', () => {
 
   const $SELECT_DEFAULT = By.css('form select>option[data-default]');
   const $SELECT_OPTIONS = By.css('form select>option:not([data-default])');
+  const $SELECT_BOX = By.css('form select');
   const $SUBMIT_BUTTON = By.css('form button[type=submit]');
   const $EVENT_TRIGGER_FORM = By.css('.EventTrigger');
 
@@ -74,6 +75,7 @@ describe('EventTriggerComponent', () => {
 
       component.triggers = TRIGGERS;
       spyOn(component.onTriggerSubmit, 'emit');
+      spyOn(component.onTriggerChange, 'emit');
 
       de = fixture.debugElement;
       component.ngOnChanges(trigersChangeDummy(TRIGGERS));
@@ -124,7 +126,7 @@ describe('EventTriggerComponent', () => {
       expect(component.triggerForm.valid).toBeFalsy();
     });
 
-    it('should output an `onTrigger` event when form is submitted', () => {
+    it('should output an `onTriggerSubmit` event when form is submitted', () => {
       component.triggerForm.controls['trigger'].setValue(TRIGGERS[1]);
       fixture.detectChanges();
 
@@ -134,6 +136,16 @@ describe('EventTriggerComponent', () => {
       button.nativeElement.click();
 
       expect(component.onTriggerSubmit.emit).toHaveBeenCalledWith(TRIGGERS[1]);
+    });
+
+    it('should output an `onTriggerChange` event when selection is changed', () => {
+      let dropdown = de.query($SELECT_BOX);
+      expect(dropdown).toBeTruthy();
+
+      dropdown.nativeElement.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+
+      expect(component.onTriggerChange.emit).toHaveBeenCalled();
     });
 
     it('should disable button when form is not valid', () => {
