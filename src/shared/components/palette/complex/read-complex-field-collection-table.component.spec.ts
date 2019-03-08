@@ -10,7 +10,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 
-describe('ReadComplexFieldCollectionTableComponent', () => {
+fdescribe('ReadComplexFieldCollectionTableComponent', () => {
 
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
@@ -95,8 +95,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           label: 'Post code',
           display_context: 'OPTIONAL',
           field_type: {
-            id: 'Text',
-            type: 'Text'
+            id: 'Complex',
+            type: 'Complex'
           },
           value: 'tw45ed'
         }
@@ -113,16 +113,20 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             label: 'SomeLabel',
             AddressLine1: 'Flat 9',
             AddressLine2: 222,
-​​​            AddressPostcode: 'TE45ED'
+​​​            AddressPostcode: {
+              postcode:'TE45ED'
+            }
           }
         }, {
           value: {
             label: 'Label 1',
               AddressLine1: 'AAFlat 10',
               AddressLine2: 111,
-    ​​​          AddressPostcode: 'TE45ED'
+    ​​​           AddressPostcode: {
+                postcode:'TE45ED'
+              }
+            }
           }
-        }
   ],
     display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
       field_type
@@ -196,6 +200,15 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
 
       expect(simpleRowsHeadersClickers[0].properties.innerHTML).toEqual(UNORDERED);
       expect(simpleRowsHeadersClickers[1].properties.innerHTML).toEqual(UNORDERED);
+      expect(component.columnsVerticalLabel['AddressPostcode'].label).toEqual('Post code')
+      expect(component.columnsVerticalLabel['AddressPostcode'].type).toEqual('Complex');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField).toEqual(
+        {id: 'AddressPostcode',
+        label: 'Post code', display_context: 'OPTIONAL',
+        field_type: {id: 'Complex', type: 'Complex'}, value: {postcode: 'TE45ED'}}
+        );
+
+      console.log('component.columnsVerticalLabel',component.columnsVerticalLabel['AddressPostcode'].caseField);
 
     });
 
