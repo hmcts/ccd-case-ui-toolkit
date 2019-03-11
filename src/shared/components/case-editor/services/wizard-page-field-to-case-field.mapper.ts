@@ -68,15 +68,10 @@ export class WizardPageFieldToCaseFieldMapper {
 
   private fixShowConditionPath(caseField: CaseField, pathPrefix: string) {
     if (caseField.show_condition && pathPrefix.length > 0 && !caseField.show_condition.startsWith(pathPrefix)) {
-      caseField.show_condition = pathPrefix.length > 0 ? pathPrefix + '.' + caseField.show_condition : caseField.show_condition;
+      caseField.show_condition = pathPrefix + '.' + caseField.show_condition;
     }
 
-    let childrenCaseFields = [];
-    if (this.isCollection(caseField)) {
-      childrenCaseFields = caseField.field_type.collection_field_type.complex_fields || [];
-    } else if (this.isComplex(caseField)) {
-      childrenCaseFields = caseField.field_type.complex_fields || [];
-    }
+    let childrenCaseFields = this.getCaseFieldChildren(caseField);
 
     childrenCaseFields.forEach(collectionCaseField => {
       if (collectionCaseField.show_condition) {
@@ -114,18 +109,24 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private hideParentIfAllChildrenHidden(caseField: CaseField) {
-    let children = [];
-    if (this.isCollection(caseField)) {
-      children = caseField.field_type.collection_field_type.complex_fields || [];
-    } else if (this.isComplex(caseField)) {
-      children = caseField.field_type.complex_fields || [];
-    }
 
-    children.forEach(e => this.hideParentIfAllChildrenHidden(e));
+    let childrenCaseFields = this.getCaseFieldChildren(caseField);
 
-    if (children.length > 0 && this.allCaseFieldsHidden(children)) {
+    childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));
+
+    if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
       caseField.hidden = true;
     }
+  }
+
+  private getCaseFieldChildren(caseField: CaseField) {
+    let childrenCaseFields = [];
+    if (this.isCollection(caseField)) {
+      childrenCaseFields = caseField.field_type.collection_field_type.complex_fields || [];
+    } else if (this.isComplex(caseField)) {
+      childrenCaseFields = caseField.field_type.complex_fields || [];
+    }
+    return childrenCaseFields;
   }
 
   private allCaseFieldsHidden(children: CaseField[]): boolean {
