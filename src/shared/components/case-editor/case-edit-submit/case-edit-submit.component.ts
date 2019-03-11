@@ -69,7 +69,7 @@ export class CaseEditSubmitComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.profileNotifier.profileSource.asObservable().first().subscribe(_ => this.profile = _);
+    this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;

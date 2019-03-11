@@ -35,6 +35,7 @@ import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-h
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
+import { CaseHistoryViewerFieldComponent } from './history';
 
 @Injectable()
 export class PaletteService {
@@ -85,6 +86,8 @@ export class PaletteService {
         return LabelFieldComponent;
       case 'CasePaymentHistoryViewer':
         return CasePaymentHistoryViewerFieldComponent;
+      case 'CaseHistoryViewer':
+        return CaseHistoryViewerFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

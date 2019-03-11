@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseHistory } from '../domain';
-import { CaseTab, CaseView, HttpError } from '../../../domain';
-import { OrderService, AlertService } from '../../../services';
-import { ShowCondition } from '../../../directives';
-import { CaseService } from '../../case-editor';
+import { CaseHistory } from './domain';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { CaseHistoryService } from '../services';
+import { CaseView, CaseTab, HttpError } from '../../domain';
+import { AlertService, OrderService } from '../../services';
+import { CaseHistoryService } from './services/case-history.service';
+import { CaseService } from '../case-editor';
+import { ShowCondition } from '../../directives';
 
 @Component({
   templateUrl: './case-history.component.html',
@@ -30,7 +30,7 @@ export class CaseHistoryComponent implements OnInit {
     private caseHistoryService: CaseHistoryService) { }
 
   ngOnInit() {
-    this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+    this.caseService.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
       this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID);
       this.caseHistoryService

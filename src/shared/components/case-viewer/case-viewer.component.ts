@@ -61,7 +61,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
-      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+      this.caseService.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.init();
       });
