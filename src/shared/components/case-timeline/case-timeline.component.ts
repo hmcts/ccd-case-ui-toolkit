@@ -40,12 +40,4 @@ export class CaseTimelineComponent implements OnInit {
     return this.events ? true : false;
   }
 
-  private checkAuthorizationError(error: any) {
-    // TODO Should be logged to remote logging infrastructure
-    console.error(error);
-    if (error.status !== 401 && error.status !== 403) {
-      this.alertService.error(error.message);
-    }
-    return throwError(error);
-  }
 }
