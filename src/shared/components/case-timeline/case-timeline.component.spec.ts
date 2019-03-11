@@ -49,8 +49,9 @@ describe('CaseTimelineComponent', () => {
       }
     }
   ];
+  const CASE_REFERENCE = '1234123412341234';
   const CASE_VIEW: CaseView = {
-    case_id: '1',
+    case_id: CASE_REFERENCE,
     case_type: {
       id: 'TestAddressBookCase',
       name: 'Test Address Book Case',
@@ -109,16 +110,18 @@ describe('CaseTimelineComponent', () => {
 
       fixture = TestBed.createComponent(CaseTimelineComponent);
       component = fixture.componentInstance;
+      component.case = CASE_REFERENCE;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
     it('should render case history component', () => {
+      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
+
       let eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeDefined();
-
       let eventLogComponent = eventLogDe.componentInstance;
       expect(eventLogComponent.events).toEqual(CASE_EVENTS);
       expect(component.events).toEqual(CASE_EVENTS);
@@ -160,12 +163,14 @@ describe('CaseTimelineComponent', () => {
 
       fixture = TestBed.createComponent(CaseTimelineComponent);
       component = fixture.componentInstance;
+      component.case = CASE_REFERENCE;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
     it('should call alert service and not render event log component', () => {
+      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
       let eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeNull();

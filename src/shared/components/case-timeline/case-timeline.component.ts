@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CaseViewEvent, HttpError } from '../../domain';
 import { CasesService } from '../case-editor';
 import { AlertService } from '../../services';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Component({
