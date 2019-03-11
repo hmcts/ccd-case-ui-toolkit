@@ -43,6 +43,9 @@ class FieldReadLabelComponent {
 
   @Input()
   withLabel: boolean;
+
+  @Input()
+  greyBarEnabled = false;
 }
 
 describe('FieldReadComponent', () => {
