@@ -1,13 +1,51 @@
-import { Component, Input } from '@angular/core';
-import { CaseViewEvent } from '../../domain';
+import { Component, Input, OnInit } from '@angular/core';
+import { CaseViewEvent, HttpError } from '../../domain';
+import { CasesService } from '../case-editor';
+import { AlertService } from '../../services';
+import { map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'ccd-case-timeline',
   templateUrl: './case-timeline.component.html'
 })
-export class CaseTimelineComponent {
+export class CaseTimelineComponent implements OnInit {
 
   @Input()
+  case: string;
+
   events: CaseViewEvent[];
 
+  constructor(
+    private casesService: CasesService,
+    private alertService: AlertService,
+  ) {}
+
+  ngOnInit() {
+    this.casesService
+      .getCaseViewV2(this.case)
+      .pipe(
+        map(caseView => {
+          this.events = caseView.events;
+        })
+      )
+      .toPromise()
+      .catch((error: HttpError) => {
+        this.alertService.error(error.message);
+        return throwError(error);
+      });
+  }
+
+  isDataLoaded(): boolean {
+    return this.events ? true : false;
+  }
+
+  private checkAuthorizationError(error: any) {
+    // TODO Should be logged to remote logging infrastructure
+    console.error(error);
+    if (error.status !== 401 && error.status !== 403) {
+      this.alertService.error(error.message);
+    }
+    return throwError(error);
+  }
 }

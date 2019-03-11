@@ -9,7 +9,7 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { EventTriggerModule } from '../event-trigger/event-trigger.module';
 import { TabsModule } from '../../../components/tabs';
-import { PaletteModule } from '../palette';
+import { PaletteModule, EventLogModule } from '../palette';
 import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -17,7 +17,6 @@ import { EventTriggerResolver, CaseResolver } from './services';
 import { CaseEditorModule, CaseService } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
-import { CaseTimelineModule } from '../case-timeline';
 
 @NgModule({
     imports: [
@@ -34,7 +33,7 @@ import { CaseTimelineModule } from '../case-timeline';
         PipesModule,
         ConditionalShowModule,
         CaseHistoryModule,
-        CaseTimelineModule,
+        EventLogModule,
     ],
     declarations: [
         CaseEventTriggerComponent,

@@ -1,1 +1,3 @@
-<ccd-event-log [events]="events"></ccd-event-log>
+<div *ngIf="isDataLoaded()">
+    <ccd-event-log [events]="events"></ccd-event-log>
+</div>
