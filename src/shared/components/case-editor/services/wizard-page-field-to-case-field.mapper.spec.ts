@@ -98,7 +98,6 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(addressLine1.label).toEqual('House number attended altered');
     expect(addressLine1.hint_text).toEqual('Altered hint text');
     expect(addressLine1.order).toEqual(3);
-    expect(addressLine1.show_condition).toBeUndefined('addressLine1.show_condition should be undefined');
 
     expect(addressLine2.hidden).toEqual(true);
 
