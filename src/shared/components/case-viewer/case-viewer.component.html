@@ -32,7 +32,7 @@
     <div class="column-full">
       <cut-tabs>
         <cut-tab [id]="'History'" [title]="'History'">
-          <ccd-event-log [events]="caseDetails.events"></ccd-event-log>
+          <ccd-case-timeline [case]="caseDetails.case_id"></ccd-case-timeline>
         </cut-tab>
         <cut-tab *ngFor="let tab of sortedTabs" [id]="tab.id" [title]="tab.label">
           <table [class]="tab.id">
