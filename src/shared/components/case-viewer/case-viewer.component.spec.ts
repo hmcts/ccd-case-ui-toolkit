@@ -400,7 +400,6 @@ describe('CaseViewerComponent', () => {
 
   const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
-  const $SUBMIT_BUTTON = By.css('form.event-trigger button[type=submit]');
   const DIALOG_CONFIG = new MatDialogConfig();
 
   let CaseActivityComponent: any = MockComponent({
