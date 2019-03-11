@@ -19,7 +19,7 @@ export class FormValidatorsService {
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
         } else {
-          validators.push(Validators.pattern(FormValidatorsService.REGEX_WHITESPACES));   // no only whitespaces & leading/trailing spaces
+          validators.push(Validators.pattern(FormValidatorsService.REGEX_WHITESPACES));
         }
         if (caseField.field_type.min) {
           validators.push(Validators.minLength(caseField.field_type.min));
