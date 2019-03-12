@@ -20,7 +20,7 @@
   <div class="grid-row">
     <div class="column-one-half">
       <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
-      <div class="case-viewer-controls" *ngIf="!isDraft()">
+      <div class="case-viewer-controls" *ngIf="!isDraft() && hasPrintableDocumentUrl()">
         <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">Print</a>
       </div>
     </div>

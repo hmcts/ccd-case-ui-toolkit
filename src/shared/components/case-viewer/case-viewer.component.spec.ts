@@ -289,7 +289,8 @@ describe('CaseViewerComponent', () => {
       jurisdiction: {
         id: JID,
         name: 'Test',
-      }
+      },
+      printableDocumentUrl: 'print-url'
     },
     channels: [],
     state: {
@@ -751,6 +752,14 @@ describe('CaseViewerComponent', () => {
     fixture.detectChanges();
     let printLink = de.query($PRINT_LINK);
 
+    expect(printLink).toBeFalsy();
+  });
+
+  it('should not contain a print link if printableDocumentUrl not configured', () => {
+    component.caseDetails.case_type.printableDocumentUrl = null;
+    fixture.detectChanges();
+    let printLink = de.query($PRINT_LINK);
+    expect(component.hasPrintableDocumentUrl()).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
 });

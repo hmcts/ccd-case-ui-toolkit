@@ -44,7 +44,8 @@ describe('CaseHistoryComponent', () => {
       jurisdiction: {
         id: 'TEST',
         name: 'Test',
-      }
+      },
+      printableDocumentUrl: 'print-url'
     },
     channels: [],
     state: {

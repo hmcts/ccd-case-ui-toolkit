@@ -34,7 +34,8 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
         id: JID,
         name: 'TEST',
         description: 'some jurisdiction description'
-      }
+      },
+      printableDocumentUrl: 'print-url'
     },
     state: null,
     channels: [],
@@ -201,7 +202,8 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
         id: JID,
         name: 'TEST',
         description: 'some jurisdiction description'
-      }
+      },
+      printableDocumentUrl: 'print-url'
     },
     state: null,
     channels: [],

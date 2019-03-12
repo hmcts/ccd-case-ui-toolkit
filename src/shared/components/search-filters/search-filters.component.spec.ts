@@ -24,7 +24,8 @@ const CASE_TYPE_1: CaseType = {
   states: [],
   events: [],
   case_fields: [],
-  jurisdiction: null
+  jurisdiction: null,
+  printableDocumentUrl: 'print-url'
 };
 
 const CASE_TYPE_2: CaseType = {
@@ -34,7 +35,8 @@ const CASE_TYPE_2: CaseType = {
   states: [],
   events: [],
   case_fields: [],
-  jurisdiction: null
+  jurisdiction: null,
+  printableDocumentUrl: 'print-url'
 };
 
 const JURISDICTION_2: Jurisdiction = {
@@ -59,7 +61,8 @@ const CASE_TYPES_2: CaseType[] = [
     states: [],
     events: [],
     case_fields: [],
-    jurisdiction: null
+    jurisdiction: null,
+    printableDocumentUrl: 'print-url'
   },
   {
     id: 'CT2',
@@ -79,7 +82,8 @@ const CASE_TYPES_2: CaseType[] = [
     ],
     events: [],
     case_fields: [],
-    jurisdiction: null
+    jurisdiction: null,
+    printableDocumentUrl: 'print-url'
   },
   {
     id: 'CT3',
@@ -88,7 +92,8 @@ const CASE_TYPES_2: CaseType[] = [
     states: [],
     events: [],
     case_fields: [],
-    jurisdiction: null
+    jurisdiction: null,
+    printableDocumentUrl: 'print-url'
   },
   CASE_TYPE_2
 ];
@@ -101,7 +106,8 @@ const CRUD_FILTERED_CASE_TYPES: CaseType[] = [
     states: [],
     events: [],
     case_fields: [],
-    jurisdiction: null
+    jurisdiction: null,
+    printableDocumentUrl: 'print-url'
   },
   CASE_TYPE_2,
   {
@@ -111,7 +117,8 @@ const CRUD_FILTERED_CASE_TYPES: CaseType[] = [
     states: [],
     events: [],
     case_fields: [],
-    jurisdiction: null
+    jurisdiction: null,
+    printableDocumentUrl: 'print-url'
   }
 ];
 

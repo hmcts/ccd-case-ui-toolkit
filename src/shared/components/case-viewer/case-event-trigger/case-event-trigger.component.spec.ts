@@ -22,7 +22,8 @@ describe('CaseEventTriggerComponent', () => {
     jurisdiction: {
       id: 'TEST',
       name: 'Test'
-    }
+    },
+    printableDocumentUrl: 'print-url'
   };
   CASE_DETAILS.case_type.id = 'TEST_CASE_TYPE';
   CASE_DETAILS.case_type.jurisdiction.id = 'TEST';

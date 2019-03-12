@@ -10,7 +10,8 @@ export let createCaseView = () => {
     jurisdiction: {
       id: 'TEST',
       name: 'Test',
-    }
+    },
+    printableDocumentUrl: 'test-url'
   };
   caseView.state = {
     id: 'CaseCreated',
