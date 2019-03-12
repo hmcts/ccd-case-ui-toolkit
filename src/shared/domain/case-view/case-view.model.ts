@@ -14,7 +14,7 @@ export class CaseView {
       name: string,
       description?: string
     },
-    printableDocumentUrl: string
+    printableDocumentUrl?: string
   };
   state: {
     id: string,
