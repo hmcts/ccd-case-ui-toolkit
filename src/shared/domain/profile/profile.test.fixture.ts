@@ -8,7 +8,7 @@ export let createAProfile = () => {
       email: 'user@test.com',
       forename: 'Test',
       surname: 'User',
-      roles: []
+      roles: ['caseworker-divorce']
     }
   };
 

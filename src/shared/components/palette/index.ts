@@ -9,6 +9,7 @@ export * from './date';
 export * from './document';
 export * from './email';
 export * from './fixed-list';
+export * from './history';
 export * from './label';
 export * from './money-gbp';
 export * from './multi-select-list';

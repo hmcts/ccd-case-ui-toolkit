@@ -42,6 +42,7 @@ import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { FixedRadioListModule } from './fixed-radio-list';
+import { CaseHistoryViewerModule } from './history';
 
 @NgModule({
   imports: [
@@ -60,6 +61,7 @@ import { FixedRadioListModule } from './fixed-radio-list';
     MarkdownModule,
     OrderSummaryModule,
     CasePaymentHistoryViewerModule,
+    CaseHistoryViewerModule,
     PipesModule,
     BannersModule,
     HeadersModule,

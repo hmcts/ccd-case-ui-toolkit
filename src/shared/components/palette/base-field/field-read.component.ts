@@ -19,6 +19,9 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   @Input()
   withLabel = false;
 
+  @Input()
+  greyBarEnabled = false;
+
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
 
