@@ -3,6 +3,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'ccd-read-fixed-radio-list-field',
-  template: '{{caseField.value | ccdFixedRadioList:caseField.field_type.fixed_list_items}}',
+  template: '<span class="text-16">{{caseField.value | ccdFixedRadioList:caseField.field_type.fixed_list_items}}</span>',
 })
 export class ReadFixedRadioListFieldComponent extends AbstractFieldReadComponent { }
