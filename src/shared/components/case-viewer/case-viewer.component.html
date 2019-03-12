@@ -1,8 +1,8 @@
 <div *ngIf="isDataLoaded()">
   <div *ngIf="error" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-    <h3 class="heading-medium error-summary-heading" id="edit-case-event_error-summary-heading">
+    <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
       The callback data failed validation
-    </h3>
+    </h2>
     <p>{{error.message}}</p>
     <ul *ngIf="error.details?.field_errors" class="error-summary-list">
       <li *ngFor="let fieldError of error.details.field_errors">
