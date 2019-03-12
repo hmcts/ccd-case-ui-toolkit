@@ -15,7 +15,8 @@ export class SearchFiltersConsumerComponent implements OnInit {
       states: [],
       events: [],
       case_fields: [],
-      jurisdiction: null
+      jurisdiction: null,
+     printableDocumentUrl: 'print-url'
    };
 
    readonly CASE_TYPE_2: CaseType = {
@@ -25,7 +26,8 @@ export class SearchFiltersConsumerComponent implements OnInit {
       states: [],
       events: [],
       case_fields: [],
-      jurisdiction: null
+      jurisdiction: null,
+     printableDocumentUrl: 'print-url'
    };
 
    readonly CASE_TYPE_3: CaseType = {
@@ -35,7 +37,8 @@ export class SearchFiltersConsumerComponent implements OnInit {
       states: [],
       events: [],
       case_fields: [],
-      jurisdiction: null
+      jurisdiction: null,
+     printableDocumentUrl: 'print-url'
    };
 
    readonly JURISDICTION_1: Jurisdiction = {
