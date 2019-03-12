@@ -104,6 +104,7 @@ export { PaletteModule,
          viewerRouting,
          editorRouting,
          CreateCaseFiltersModule,
+         CaseTimelineModule,
          CreateCaseFiltersSelection } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
