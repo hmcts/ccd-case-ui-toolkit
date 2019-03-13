@@ -6,6 +6,7 @@ import { CoreComponent } from './core.component';
 import { CaseViewConsumerComponent } from './case-view-consumer.component';
 import { SearchFiltersConsumerComponent } from './search-filters-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
+import { EventTriggerConsumerComponent } from './event-trigger-consumer.component';
 
 export const routing = RouterModule.forRoot([
   {
@@ -32,6 +33,10 @@ export const routing = RouterModule.forRoot([
       },
       { path: 'case/create-filters',
         component: CreateCaseFiltersConsumerComponent
+      },
+      {
+        path: 'case/view/event-trigger',
+        component: EventTriggerConsumerComponent
       }
     ]
   }

@@ -1,0 +1,57 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Event Trigger component</h1>
+
+        <div class="text">
+            <p> This component is used to trigger a case event. The
+                elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>triggers - a collection of case view triggers
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/case-view/case-view-trigger.model.ts"
+                                    target="_blank">case view trigger model</a></p>
+                            <p>Collection:</p>
+                            <pre class="language-markup">
+                                <code class="language-markup">{{triggersSample}}</code>
+                            </pre>
+                        </li>
+                        <li>isDisabled - boolean which controls the `disable` state of the button</li>
+                        <li>triggerText - label of the button</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>onTriggerSubmit - a notification event about a CaseViewTrigger being submitted
+                            containing an event with:
+                            <ul class="list list-bullet text">
+                                <li>id: string</li>
+                                <li>name: string</li>
+                                <li>description: string</li>
+                            </ul>
+                        </li>
+                        <li>onTriggerChange - a notification event about selection change on the dropdown
+
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-event-trigger
+                [isDisabled]="isTriggerButtonDisabled()"
+                [triggers]="triggers"
+                [triggerText]="triggerText"
+                (onTriggerChange)="clearErrorsAndWarnings()"
+                (onTriggerSubmit)="applyTrigger($event)"
+            ></ccd-event-trigger>
+        </div>
+    </main>
+</div>
