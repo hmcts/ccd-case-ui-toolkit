@@ -1,4 +1,12 @@
 ## RELEASE NOTES
+### Version 2.36.0 - March 14 2019
+**RDM-4177** - New Event Selector contract
+
+### Version 2.35.0 - March 12 2019
+**RDM-4187** - Add new Case Timeline Component
+
+### Version 2.34.0 - March 11 2019
+**RDM-3699** - Font size inconsistencies throughout CCD
 
 ### Version 2.33.0 - March 7 2019
 **RDM-4233** - demo case progression fix
