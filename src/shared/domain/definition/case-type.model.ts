@@ -11,5 +11,5 @@ export class CaseType {
   case_fields: CaseField[];
   description: string;
   jurisdiction: Jurisdiction;
-  printableDocumentUrl?: string;
+  printableDocumentsUrl?: string;
 }

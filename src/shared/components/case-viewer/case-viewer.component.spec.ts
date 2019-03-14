@@ -293,7 +293,7 @@ describe('CaseViewerComponent', () => {
         id: JID,
         name: 'Test',
       },
-      printableDocumentUrl: 'print-url'
+      printableDocumentsUrl: 'http://betaProdprobateApp01.reform.hmcts.net:4104/template/documents'
     },
     channels: [],
     state: {
@@ -758,11 +758,11 @@ describe('CaseViewerComponent', () => {
     expect(printLink).toBeFalsy();
   });
 
-  it('should not contain a print link if printableDocumentUrl not configured', () => {
-    component.caseDetails.case_type.printableDocumentUrl = null;
+  it('should not contain a print link if printableDocumentsUrl not configured', () => {
+    component.caseDetails.case_type.printableDocumentsUrl = null;
     fixture.detectChanges();
     let printLink = de.query($PRINT_LINK);
-    expect(component.hasPrintableDocumentUrl()).toBeFalsy();
+    expect(component.hasPrintableDocumentsUrl()).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
 
