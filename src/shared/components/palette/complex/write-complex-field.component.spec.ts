@@ -26,7 +26,7 @@ describe('WriteComplexFieldComponent', () => {
 
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'withLabel', 'greyBarEnabled']
+    inputs: ['caseField', 'withLabel']
   });
 
   @Pipe({name: 'ccdIsReadOnly'})

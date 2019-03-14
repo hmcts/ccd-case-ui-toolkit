@@ -5,7 +5,6 @@
     <ng-container [ngSwitch]="field | ccdIsReadOnly">
       <ccd-field-read *ngSwitchCase="true"
                       [caseField]="field"
-                      [greyBarEnabled]="true"
                       [withLabel]="true">
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
