@@ -27,6 +27,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
               createFieldType('TextMax150', 'Text', []),
               null, 1, INCOMPLETE_SHOW_CONDITION),
             createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
+            createCaseField('AddressLine3', '', 'hint 3', createFieldType('TextMax50', 'Text', []), null),
             createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null)
           ]),
           null
@@ -49,6 +50,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
             'Altered hint text',
             ''),
           createHiddenComplexFieldOverride('finalReturn.addressAttended.AddressLine2'),
+          createHiddenComplexFieldOverride('finalReturn.addressAttended.AddressLine3'),
           createComplexFieldOverride('finalReturn.addressAttended.PostCode',
             1,
             'OPTIONAL',
@@ -81,31 +83,29 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(debtorName.hidden).toBeFalsy('debtorName.hidden should be undefined');
     expect(debtorName.display_context).toEqual('MANDATORY');
     expect(debtorName.id).toEqual('debtorName');
-    expect(debtorName.order).toEqual(2);
     expect(debtorName.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
 
     let finalReturn = caseFields[1];
-    expect(finalReturn.order).toEqual(1);
 
     expect(finalReturn.field_type.complex_fields.length).toBe(2);
-    let addressUK = finalReturn.field_type.complex_fields[0];
-    let addressLine1 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine1');
-    let addressLine2 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine2');
-    let postCode = addressUK.field_type.complex_fields.find(e => e.id === 'PostCode');
+    let addressAttended = finalReturn.field_type.complex_fields[0];
+    let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+    let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
+    let addressLine3 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine3');
+    let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
 
     expect(addressLine1.hidden).toBeFalsy('addressLine1.hidden should be undefined');
     expect(addressLine1.display_context).toEqual('MANDATORY');
     expect(addressLine1.label).toEqual('House number attended altered');
     expect(addressLine1.hint_text).toEqual('Altered hint text');
-    expect(addressLine1.order).toEqual(3);
 
     expect(addressLine2.hidden).toEqual(true);
+    expect(addressLine3.hidden).toEqual(true);
 
     expect(postCode.hidden).toBeFalsy('postCode.hidden should be undefined');
     expect(postCode.display_context).toEqual('OPTIONAL');
     expect(postCode.label).toEqual('Postcode attended');
     expect(postCode.hint_text).toEqual('Enter the postcode');
-    expect(postCode.order).toEqual(1);
     expect(postCode.show_condition).toEqual('debtorName="Some name"');
 
     let caseLink = finalReturn.field_type.complex_fields[1];
@@ -113,8 +113,32 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(caseLink.display_context).toEqual('OPTIONAL');
     expect(caseLink.label).toEqual('Case Link test');
     expect(caseLink.hint_text).toEqual('First name hint text');
-    expect(caseLink.order).toBeUndefined('caseLink.order should be undefined');
     expect(caseLink.show_condition).toBeUndefined('caseLink.show_condition should be undefined');
+  });
+
+  it('should set order on all caseFields', () => {
+    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
+
+    let debtorName = caseFields.find(e => e.id === 'debtorName');
+    let finalReturn = caseFields.find(e => e.id === 'finalReturn');
+    let addressAttended = finalReturn.field_type.complex_fields.find(e => e.id === 'addressAttended');
+    let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+    let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
+    let addressLine3 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine3');
+    let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
+    let caseLink = finalReturn.field_type.complex_fields.find(e => e.id === 'testCaseLink');
+
+    expect(finalReturn.order).toEqual(1); // overridden from 2
+    expect(debtorName.order).toEqual(2); // overridden from 1
+
+    expect(addressAttended.order).toEqual(1);
+
+    expect(addressLine1.order).toEqual(3); // overridden from 1
+    expect(addressLine2.order).toEqual(2);
+    expect(addressLine3.order).toEqual(3);
+    expect(postCode.order).toEqual(1); // overridden from 3
+
+    expect(caseLink.order).toEqual(2);
   });
 
   it('should hide caseLink both parent and a child', () => {
@@ -133,8 +157,8 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
 
     let finalReturn = caseFields[1];
-    let addressUK = finalReturn.field_type.complex_fields[0];
-    let addressLine1 = addressUK.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+    let addressAttended = finalReturn.field_type.complex_fields[0];
+    let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
 
     expect(addressLine1.show_condition).toBe('finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION)
   });
