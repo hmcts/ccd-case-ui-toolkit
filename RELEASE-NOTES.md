@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.36.0 - March 14 2019
+**RDM-4177** - New Event Selector contract
 
 ### Version 2.35.0 - March 12 2019
 **RDM-4187** - Add new Case Timeline Component
