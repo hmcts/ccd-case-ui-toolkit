@@ -37,8 +37,7 @@ describe('CasesService', () => {
       jurisdiction: {
         id: 'TEST',
         name: 'Test',
-      },
-      printableDocumentUrl: 'print-url'
+      }
     },
     channels: [],
     state: {
@@ -248,8 +247,7 @@ describe('CasesService', () => {
         jurisdiction: {
           id: JID,
           name: 'Test',
-        },
-        printableDocumentUrl: 'print-url'
+        }
       },
       channels: [],
       state: {
@@ -333,8 +331,7 @@ describe('CasesService', () => {
         jurisdiction: {
           id: JID,
           name: 'Test',
-        },
-        printableDocumentUrl: 'print-url'
+        }
       },
       channels: [],
       state: {

@@ -134,8 +134,7 @@ describe('Drafts Service', () => {
           id: 'TEST',
           name: 'TEST',
           description: 'some jurisdiction description'
-        },
-        printableDocumentUrl: 'print-url'
+        }
       },
       state: null,
       channels: [],
