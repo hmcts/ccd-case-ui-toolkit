@@ -2,21 +2,21 @@
 
   <div class="panel panel-border-wide">
 
-    <h3 class="heading-small heading-17">
+    <h2 class="heading-h2">
       {{caseField | ccdFieldLabel}}
-    </h3>
+    </h2>
     <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate()">Add new</button>
-    <h3 class="heading-medium error-spacing">
+    <h2 class="heading-h2 error-spacing">
       <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
       <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError}}</span>
-    </h3>
+    </h2>
 
     <div class="form-group" *ngIf="caseField.value && caseField.value.length">
 
       <div class="form-group" *ngFor="let item of caseField.value; let i = index" #collectionItem>
         <div class="collection-title">
           <div class="float-left">
-            <label class="form-label" [for]="buildIdPrefix(i) + i">{{itemLabel(i)}}</label>
+            <label [for]="buildIdPrefix(i) + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
           </div>
           <div class="float-right">
             <button class="button button-secondary" type="button" (click)="openModal(i)" [disabled]="isNotAuthorisedToDelete(i)">Remove</button>

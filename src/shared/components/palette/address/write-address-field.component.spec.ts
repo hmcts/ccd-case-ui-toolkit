@@ -14,7 +14,7 @@ import { IsCompoundPipe } from '../utils/is-compound.pipe';
 describe('WriteAddressFieldComponent', () => {
 
   const CASE_FIELD_LABEL = 'Case Field Label';
-  const $TITLE = By.css('h3');
+  const $TITLE = By.css('h2');
 
   const $POSTCODE_LOOKUP = By.css('#postcodeLookup');
   const $POSTCODE_LOOKUP_INPUT = By.css('#postcodeInput');
