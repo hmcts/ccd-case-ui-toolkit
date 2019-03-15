@@ -4,6 +4,7 @@ import { FieldType, FieldTypeEnum } from '../domain';
 import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-page-field-complex-override.model';
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ShowCondition } from '../directives/conditional-show/domain';
+import { FixedListItem } from '../domain/definition';
 
 export let createCaseEventTrigger = (id: string,
                                       name: string,
@@ -123,6 +124,15 @@ export let createFieldType = (typeId: string,
     type: type || 'Text',
     complex_fields: complex_fields || [],
     collection_field_type: collection_field_type || undefined
+  };
+};
+
+export let createFixedListFieldType = (typeId: string,
+                                       fixedListItems: FixedListItem[] = []): FieldType => {
+  return {
+    id: 'FixedList-' + typeId,
+    type: 'FixedList',
+    fixed_list_items: fixedListItems || []
   };
 };
 

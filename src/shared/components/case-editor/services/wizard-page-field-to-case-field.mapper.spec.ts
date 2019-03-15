@@ -3,6 +3,7 @@ import {
   createCaseField,
   createComplexFieldOverride,
   createFieldType,
+  createFixedListFieldType,
   createHiddenComplexFieldOverride,
   createWizardPage,
   createWizardPageField,
@@ -161,5 +162,85 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
 
     expect(addressLine1.show_condition).toBe('finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION)
+  });
+});
+
+describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection type', () => {
+
+  let wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper;
+
+  const DATE_TEXT_FIELD = createCaseField('date', 'Date', '', textFieldType(), null);
+  const DESCRIPTION_TEXT_FIELD = createCaseField('description', 'Description', '', textFieldType(), null);
+  const TIMELINE_EVENT_COMPLEX = createFieldType('TimelineEvent', 'Complex', [DATE_TEXT_FIELD, DESCRIPTION_TEXT_FIELD]);
+  const TIMELINE_EVENTS_COLLECTION = createCaseField('defendantTimeLineEvents', 'Timeline Events', '',
+    createFieldType('defendantTimeLineEvents-acd64b3a', 'Collection', [], TIMELINE_EVENT_COMPLEX), null);
+  const RESPONSE_SUBJECT_LIST_ITEM = createCaseField('responseSubject', 'Who is this response from?', '',
+    createFixedListFieldType('ResponseSubject',
+      [{code: 'Res_CLAIMANT', label: 'Claimant response'}, {code: 'Res_DEFENDANT', label: 'Defendant response'}]),
+    null);
+  const PARTY_NAME_TEXT_FIELD = createCaseField('partyName', 'Defendant Name', '', textFieldType(), null);
+  const RESPONDENT_COMPLEX_FIELD_TYPE = createFieldType('Respondent', 'Complex',
+    [PARTY_NAME_TEXT_FIELD, RESPONSE_SUBJECT_LIST_ITEM, TIMELINE_EVENTS_COLLECTION]);
+
+  const CASE_FIELDS = [
+    createCaseField('reason', 'Reason', '', textFieldType(), null),
+    createCaseField('respondents', 'Defendants', '',
+      createFieldType('respondents-33e0ff77', 'Collection', [], RESPONDENT_COMPLEX_FIELD_TYPE), 'COMPLEX')];
+
+  const WIZARD_PAGE = createWizardPage('AdmitAllPaper1', '', 1,
+    [
+      createWizardPageField('reason', 1, null, 'MANDATORY', []),
+      createWizardPageField('respondents', 1, null, 'COMPLEX', [
+        createComplexFieldOverride('respondents.responseSubject',
+          1,
+          'OPTIONAL',
+          'Subject',
+          'Altered hint text',
+          ''),
+        createHiddenComplexFieldOverride('respondents.partyName'),
+        createHiddenComplexFieldOverride('respondents.defendantTimeLineEvents.date'),
+        createHiddenComplexFieldOverride('respondents.defendantTimeLineEvents.description')
+      ])
+    ],
+    [], null, new ShowCondition(null));
+
+  beforeEach(() => {
+    wizardPageFieldToCaseFieldMapper = new WizardPageFieldToCaseFieldMapper();
+  });
+
+  it('should map wizardPageFields using complex_field_overrides data', () => {
+
+    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
+
+    let reason = caseFields[0];
+
+    expect(reason.hidden).toBeFalsy('debtorName.hidden should be undefined');
+    expect(reason.display_context).toEqual('MANDATORY');
+    expect(reason.id).toEqual('reason');
+    expect(reason.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
+
+    let respondents = caseFields[1];
+
+    expect(respondents.field_type.collection_field_type.complex_fields.length).toBe(3);
+
+    let responseSubject = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'responseSubject');
+    let partyName = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'partyName');
+    let defendantTimeLineEvents = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'defendantTimeLineEvents');
+
+    expect(responseSubject.hidden).toBeFalsy('responseSubject.hidden should be undefined');
+    expect(responseSubject.order).toEqual(1);
+    expect(responseSubject.display_context).toEqual('OPTIONAL');
+    expect(responseSubject.label).toEqual('Subject');
+    expect(responseSubject.hint_text).toEqual('Altered hint text');
+
+    expect(partyName.hidden).toEqual(true);
+    expect(defendantTimeLineEvents.hidden).toEqual(true);
+
+    let timelineEventDate = defendantTimeLineEvents.field_type.collection_field_type.complex_fields.find(e => e.id === 'date');
+    let timelineEventDescription = defendantTimeLineEvents
+      .field_type.collection_field_type.complex_fields.find(e => e.id === 'description');
+
+    expect(timelineEventDate.hidden).toEqual(true);
+    expect(timelineEventDescription.hidden).toEqual(true);
   });
 });
