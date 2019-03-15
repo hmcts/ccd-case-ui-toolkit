@@ -43,7 +43,7 @@ describe('EventTriggerComponent', () => {
   const $SELECT_OPTIONS = By.css('form select>option:not([data-default])');
   const $SELECT_BOX = By.css('form select');
   const $SUBMIT_BUTTON = By.css('form button[type=submit]');
-  const $EVENT_TRIGGER_FORM = By.css('.EventTrigger');
+  const $EVENT_TRIGGER_FORM = By.css('.event-trigger');
 
   let orderService: any;
 
