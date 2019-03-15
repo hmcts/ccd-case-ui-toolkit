@@ -61,7 +61,8 @@ export { ShowCondition,
          PlaceholderService,
          LabelSubstitutorDirective,
          LabelSubstitutorModule,
-         ConditionalShowRegistrarService } from './shared/directives';
+         ConditionalShowRegistrarService,
+         GreyBarService } from './shared/directives';
 export { PaletteModule,
          PaletteUtilsModule,
          MarkdownModule,

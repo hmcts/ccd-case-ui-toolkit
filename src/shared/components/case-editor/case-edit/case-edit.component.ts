@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { FieldsUtils, FieldsPurger } from '../../../services/fields';
-import { ConditionalShowRegistrarService } from '../../../directives';
+import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { Draft } from '../../../domain/draft.model';
@@ -17,6 +17,7 @@ import { ProfileService, ProfileNotifier } from '../../../services';
   selector: 'ccd-case-edit',
   templateUrl: 'case-edit.component.html',
   styleUrls: ['../case-edit.scss'],
+  providers: [GreyBarService]
 })
 export class CaseEditComponent implements OnInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
