@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.36.1 - March 15 2019
+**RDM-4177** - Event Selector fix
+
 ### Version 2.36.0 - March 14 2019
 **RDM-4177** - New Event Selector contract
 
