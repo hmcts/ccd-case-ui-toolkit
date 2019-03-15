@@ -10,6 +10,7 @@
       <ccd-field-write *ngSwitchCase="false"
                        ccdConditionalShow
                        ccdLabelSubstitutor
+                       [greyBarEnabled]="true"
                        [caseField]="field"
                        [eventFields]="[caseField]"
                        [formGroup]="complexGroup"
