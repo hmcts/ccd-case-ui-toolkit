@@ -20,21 +20,21 @@
   <div class="grid-row">
     <div class="column-one-half">
       <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
-      <div class="case-viewer-controls" *ngIf="!isDraft()">
+      <div class="case-viewer-controls" *ngIf="hasPrint && !isDraft()">
         <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">Print</a>
       </div>
     </div>
-    <div class="column-one-half">
+    <div *ngIf="hasEventSelector" class="column-one-half">
       <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers" [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()" (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
     </div>
   </div>
   <div class="grid-row">
     <div class="column-full">
       <cut-tabs>
-        <cut-tab [id]="'History'" [title]="'History'">
+        <cut-tab *ngIf="hasCaseHistory" [id]="'History'" [title]="'History'" [selected]="true">
           <ccd-event-log [events]="caseDetails.events"></ccd-event-log>
         </cut-tab>
-        <cut-tab *ngFor="let tab of sortedTabs" [id]="tab.id" [title]="tab.label">
+        <cut-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [title]="tab.label" [selected]="!hasCaseHistory && curIdx==0">
           <table [class]="tab.id">
             <tbody>
             <ng-container *ngFor="let field of tab.fields">

@@ -1,3 +1,5 @@
 <div *ngIf="isDataLoaded()">
-    <router-outlet></router-outlet>
+    <ccd-case-viewer [hasPrint]="hasPrint"
+                     [hasCaseHistory]="hasCaseHistory"
+                     [hasEventSelector]="hasEvent"></ccd-case-viewer>
 </div>

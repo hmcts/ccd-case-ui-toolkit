@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
@@ -30,6 +30,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
+
+  @Input()
+  hasPrint = true;
+  @Input()
+  hasCaseHistory = true;
+  @Input()
+  hasEventSelector = true;
 
   BANNER = DisplayMode.BANNER;
 

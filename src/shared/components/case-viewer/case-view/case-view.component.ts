@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { AlertService } from '../../../services/alert';
 import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseService } from '../../case-editor';
@@ -14,7 +14,16 @@ export class CaseViewComponent implements OnInit {
 
   @Input()
   case: string;
+  @Input()
+  hasPrint = true;
+  @Input()
+  hasCaseHistory = true;
+  @Input()
+  hasEvent = true;
 
+  isPrintPartOfCaseView = false;
+  isCaseHistoryPartOfCaseView = false;
+  isEventSelectorPartOfCaseView = false;
   caseDetails: CaseView;
 
   constructor(
