@@ -19,7 +19,7 @@ export class CaseViewComponent implements OnInit {
   @Input()
   hasCaseHistory = true;
   @Input()
-  hasEvent = true;
+  hasEventSelector = true;
 
   isPrintPartOfCaseView = false;
   isCaseHistoryPartOfCaseView = false;

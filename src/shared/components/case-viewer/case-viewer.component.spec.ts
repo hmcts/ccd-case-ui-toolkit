@@ -38,7 +38,11 @@ class TabsComponent { }
   selector: 'cut-tab',
   template: '<ng-content></ng-content>'
 })
-class TabComponent { }
+class TabComponent {
+
+  @Input()
+  selected: boolean;
+}
 
 describe('CaseViewerComponent', () => {
 
