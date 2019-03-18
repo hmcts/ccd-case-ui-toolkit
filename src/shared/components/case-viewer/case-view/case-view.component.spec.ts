@@ -161,7 +161,7 @@ describe('CaseViewComponent', () => {
             declarations: [
                 CaseViewComponent,
 
-                //mock
+                // mock
                 CaseViewerComponent,
             ],
             providers: [
