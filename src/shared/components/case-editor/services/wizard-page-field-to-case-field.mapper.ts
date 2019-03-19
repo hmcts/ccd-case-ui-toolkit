@@ -141,10 +141,6 @@ export class WizardPageFieldToCaseFieldMapper {
     return !children.some(e => e.hidden !== true);
   }
 
-  private isCollectionOfComplex(case_field: CaseField) {
-    return case_field.field_type.type === 'Collection' && case_field.field_type.collection_field_type.type === 'Complex';
-  }
-
   private isComplex(case_field: CaseField) {
     return case_field.field_type.type === 'Complex';
   }
