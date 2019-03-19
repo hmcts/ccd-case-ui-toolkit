@@ -54,7 +54,11 @@ export { DocumentData,
          SearchResultView,
          SearchResultViewColumn,
          SearchResultViewItem,
-         Field } from './shared/domain';
+         Field,
+         PaginationMetadata,
+         SortOrder,
+         SortParameters,
+         SearchResultViewItemComparator } from './shared/domain';
 export { ShowCondition,
          ConditionalShowDirective,
          ConditionalShowModule,
