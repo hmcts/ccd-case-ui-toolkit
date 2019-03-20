@@ -21,9 +21,6 @@ export class CaseViewComponent implements OnInit {
   @Input()
   hasEventSelector = true;
 
-  isPrintPartOfCaseView = false;
-  isCaseHistoryPartOfCaseView = false;
-  isEventSelectorPartOfCaseView = false;
   caseDetails: CaseView;
 
   constructor(
