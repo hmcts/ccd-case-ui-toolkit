@@ -21,7 +21,8 @@ export { FormValueService,
          RequestOptionsBuilder,
          SearchService,
          WindowService,
-         JurisdictionService } from './shared/services';
+         JurisdictionService,
+         SearchResultViewItemComparatorFactory } from './shared/services';
 export { DocumentData,
          AddressModel,
          CaseEventData,
@@ -111,7 +112,8 @@ export { PaletteModule,
          CaseTimelineModule,
          CreateCaseFiltersSelection } from './shared/components';
 export { CaseReferencePipe,
-         PipesModule } from './shared/pipes';
+         PipesModule,
+         SortSearchResultPipe } from './shared/pipes';
 export { createCaseEventTrigger,
          aCaseField,
          createCaseView,
