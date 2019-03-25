@@ -114,19 +114,24 @@ fdescribe('ReadComplexFieldCollectionTableComponent', () => {
             AddressLine1: 'Flat 9',
             AddressLine2: 222,
 ​​​            AddressPostcode: {
-              postcode:'TE45ED'
-            }
-          }
-        }, {
-          value: {
-            label: 'Label 1',
-              AddressLine1: 'AAFlat 10',
-              AddressLine2: 111,
+      postcode:'TE45ED'
+    }
+  }
+  },
+    {
+      value: {
+        label: 'Label 1',
+          AddressLine1
+      :
+        'AAFlat 10',
+          AddressLine2
+      :
+        111,
     ​​​           AddressPostcode: {
-                postcode:'TE45ED'
-              }
-            }
-          }
+          postcode:'TE45ED'
+        }
+      }
+    }
   ],
     display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
       field_type
@@ -203,13 +208,12 @@ fdescribe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.columnsVerticalLabel['AddressPostcode'].label).toEqual('Post code')
       expect(component.columnsVerticalLabel['AddressPostcode'].type).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField).toEqual(
-        {id: 'AddressPostcode',
-        label: 'Post code', display_context: 'OPTIONAL',
-        field_type: {id: 'Complex', type: 'Complex'}, value: {postcode: 'TE45ED'}}
-        );
-
-      console.log('component.columnsVerticalLabel',component.columnsVerticalLabel['AddressPostcode'].caseField);
-
+        {
+          id: 'AddressPostcode',
+          label: 'Post code', display_context: 'OPTIONAL',
+          field_type: {id: 'Complex', type: 'Complex'}, value: {postcode: 'TE45ED'}
+        }
+      );
     });
 
     it('should sort rows based on column name', () => {
