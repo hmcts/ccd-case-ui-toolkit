@@ -110,7 +110,8 @@ export { PaletteModule,
          editorRouting,
          CreateCaseFiltersModule,
          CaseTimelineModule,
-         CreateCaseFiltersSelection } from './shared/components';
+         CreateCaseFiltersSelection,
+         SearchResultModule } from './shared/components';
 export { CaseReferencePipe,
          PipesModule,
          SortSearchResultPipe } from './shared/pipes';
