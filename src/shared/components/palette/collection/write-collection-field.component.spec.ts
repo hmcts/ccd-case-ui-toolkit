@@ -14,6 +14,9 @@ import { of } from 'rxjs';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { ProfileNotifier } from '../../../services';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { BehaviorSubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { newCaseField } from '../../../fixture';
 
@@ -74,6 +77,7 @@ describe('WriteCollectionFieldComponent', () => {
   let dialogRef: any;
   let scrollToService: any;
   let route: any;
+  let profileNotifier: any;
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -113,6 +117,8 @@ describe('WriteCollectionFieldComponent', () => {
         }
       }
     };
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
     TestBed
       .configureTestingModule({
@@ -130,7 +136,7 @@ describe('WriteCollectionFieldComponent', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
-          { provide: ActivatedRoute, useValue: route },
+          { provide: ProfileNotifier, useValue: profileNotifier },
           RemoveDialogComponent
         ]
       })
@@ -328,6 +334,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let dialogRef: any;
   let scrollToService: any;
   let route: any;
+  let profileNotifier: any;
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -367,6 +374,8 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         }
       }
     };
+  profileNotifier = new ProfileNotifier();
+  profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
     TestBed
       .configureTestingModule({
@@ -384,7 +393,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
-          { provide: ActivatedRoute, useValue: route },
+          { provide: ProfileNotifier, useValue: profileNotifier },
           RemoveDialogComponent
         ]
       })
@@ -449,6 +458,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let dialogRef: any;
   let scrollToService: any;
   let route: any;
+  let profileNotifier: any;
   let caseField: CaseField;
 
   beforeEach(async(() => {
@@ -488,6 +498,8 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         }
       }
     };
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
     TestBed
       .configureTestingModule({
@@ -505,7 +517,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
-          { provide: ActivatedRoute, useValue: route },
+          { provide: ProfileNotifier, useValue: profileNotifier },
           RemoveDialogComponent
         ]
       })

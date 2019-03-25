@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of, Observable } from 'rxjs';
+import { of, Observable, BehaviorSubject } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
@@ -21,7 +21,8 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
-import { newCaseField } from '../../../fixture/case-field.test.fixture';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { newCaseField } from '../../../fixture';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -73,9 +74,8 @@ describe('CaseEditSubmitComponent', () => {
     },
     user: USER,
     'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC,
   };
-
-  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
 
   let mockRoute: any = {
     snapshot: {
@@ -127,6 +127,7 @@ describe('CaseEditSubmitComponent', () => {
 
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({
@@ -359,6 +360,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     let mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -388,6 +390,7 @@ describe('CaseEditSubmitComponent', () => {
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({

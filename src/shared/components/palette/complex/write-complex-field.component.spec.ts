@@ -17,7 +17,7 @@ import { newCaseField, createFieldType } from '../../../fixture';
 
 describe('WriteComplexFieldComponent', () => {
   const $COMPLEX_PANEL = By.css('.form-group');
-  const $COMPLEX_PANEL_TITLE = By.css('h3');
+  const $COMPLEX_PANEL_TITLE = By.css('h2');
   const $COMPLEX_PANEL_VALUES = By.css('ccd-field-write');
 
   let FieldWriteComponent = MockComponent({

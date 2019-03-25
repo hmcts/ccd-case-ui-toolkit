@@ -4,7 +4,7 @@ import { YesNoService } from './yes-no.service';
 
 @Component({
   selector: 'ccd-read-yes-no-field',
-  template: `{{formattedValue}}`
+  template: `<span class="text-16">{{formattedValue}}</span>`
 })
 export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

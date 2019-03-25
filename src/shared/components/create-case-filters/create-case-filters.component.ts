@@ -8,7 +8,7 @@ import { CreateCaseFiltersSelection } from './create-case-filters-selection.mode
 
 @Component({
   selector: 'ccd-create-case-filters',
-  templateUrl: './create-case-filters.html'
+  templateUrl: './create-case-filters.component.html'
 })
 export class CreateCaseFiltersComponent implements OnChanges {
 

@@ -13,11 +13,7 @@ a {
   color: $white;
   text-decoration: none;
   padding-right: 10px;
-  @include core-14pt;
-
-  @include media(desktop) {
-    @include core-14pt;
-  }
+  font-size: 18px;
 
   &.active {
     color: $menu-active-nav;
@@ -34,5 +30,6 @@ input {
 }
 
 .item-bold {
-  @include bold-14pt;
+  font-size: 18px;
+  font-weight: bold;
 }

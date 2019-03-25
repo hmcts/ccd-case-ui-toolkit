@@ -1,0 +1,51 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Search Filters component</h1>
+
+        <div class="text">
+            <p> This component is used to trigger searches of cases. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events</li>
+                        <li>autoApply - a flag indicating a search should happen as part of the loading of the component</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>onApply - a notification event about an apply button being clicked containing
+                                <pre class="language-markup">
+                                        <code class="language-markup">{{selected}}</code>
+                                    </pre>
+                                    where:
+                                    <ul class="list list-bullet text">
+                                        <li>caseType - the selected <a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-type.model.ts" target="_blank">case type</a></li>
+                                        <li>formGroup - angular form group containing all configured search input fields</li>
+                                        <li>jurisdiction - the selected <a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/jurisdiction.model.ts" target="_blank">jurisdiction</a></li>
+                                        <li>metadataFields - an array containing all configured the metadata fields</li>
+                                        <li>page - the number of the page in search results</li>
+                                    </ul>
+                        </li>
+                        <li>onReset - a notification event about a reset button being clicked</li>
+                        <li>onJuridiction - a notification event with selected jurisdiction object</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-search-filters [jurisdictions]="jurisdictions"
+                                [autoApply]="true"
+                                (onApply)="applied($event)"
+                                (onReset)="reset()"
+                                (onJuridiction)="jurisdictionSelected($event)">
+            </ccd-search-filters>
+        </div>
+    </main>
+</div>

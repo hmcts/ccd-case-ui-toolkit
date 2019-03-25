@@ -61,7 +61,8 @@ export { ShowCondition,
          PlaceholderService,
          LabelSubstitutorDirective,
          LabelSubstitutorModule,
-         ConditionalShowRegistrarService } from './shared/directives';
+         ConditionalShowRegistrarService,
+         GreyBarService } from './shared/directives';
 export { PaletteModule,
          PaletteUtilsModule,
          MarkdownModule,
@@ -103,6 +104,7 @@ export { PaletteModule,
          viewerRouting,
          editorRouting,
          CreateCaseFiltersModule,
+         CaseTimelineModule,
          CreateCaseFiltersSelection } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';

@@ -126,3 +126,70 @@ describe('ReadCollectionFieldComponent', () => {
     }
   });
 });
+
+describe('ReadCollectionFieldComponent with display_context_parameter', () => {
+
+  const $CHILD_FIELDS = By.css('table>tbody>tr>td>ccd-field-read');
+
+  const NESTED_FIELD_TYPE: FieldType = {
+    id: 'Text',
+    type: 'Text'
+  };
+  const FIELD_TYPE: FieldType = {
+    id: 'Collection',
+    type: 'Collection',
+    collection_field_type: NESTED_FIELD_TYPE
+  };
+  const VALUES = [
+    {
+      value: 'Pierre',
+    },
+    {
+      value: 'Paul',
+    },
+    {
+      value: 'Jacques',
+    }
+  ];
+
+  const CASE_FIELD_WITH_DISPLAY_CONTEXT: CaseField = newCaseField('x', 'X', null, FIELD_TYPE, 'OPTIONAL')
+    .withValue(VALUES).withDisplayContextParameter('#TABLE(Title,FIRSTNAME)').build();
+  let FieldReadComponent = MockComponent({
+    selector: 'ccd-field-read',
+    inputs: ['caseField', 'context']
+  });
+
+  let fixture: ComponentFixture<ReadCollectionFieldComponent>;
+  let component: ReadCollectionFieldComponent;
+  let de: DebugElement;
+
+  beforeEach(async(() => {
+    TestBed
+      .configureTestingModule({
+        imports: [],
+        declarations: [
+          ReadCollectionFieldComponent,
+          // Mock
+          FieldReadComponent
+        ],
+        providers: []
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(ReadCollectionFieldComponent);
+    component = fixture.componentInstance;
+
+    component.caseField = CASE_FIELD_WITH_DISPLAY_CONTEXT;
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  it('render as a table with one row and one cell to be passed down the chain', () => {
+    component.caseField.value = VALUES;
+    fixture.detectChanges();
+    let cell = de.queryAll($CHILD_FIELDS);
+    expect(cell[0].name).toEqual('ccd-field-read');
+  });
+});

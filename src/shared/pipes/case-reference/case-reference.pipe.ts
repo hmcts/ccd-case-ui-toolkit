@@ -7,6 +7,9 @@ import { Draft, DRAFT_PREFIX } from '../../domain/draft.model';
 export class CaseReferencePipe implements PipeTransform {
 
   transform(caseReference: string): string {
+    if (!caseReference) {
+      return '';
+    }
     if (Draft.isDraft(caseReference)) {
       return DRAFT_PREFIX;
     } else {

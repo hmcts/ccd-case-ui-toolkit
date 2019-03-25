@@ -28,6 +28,11 @@ export class CaseFieldBuilder {
     return this;
   }
 
+  public withDisplayContextParameter(display_context_parameter: string): CaseFieldBuilder {
+    this.caseField.display_context_parameter = display_context_parameter;
+    return this;
+  }
+
   public withHidden(hidden: boolean): CaseFieldBuilder {
     this.caseField.hidden = hidden;
     return this;
