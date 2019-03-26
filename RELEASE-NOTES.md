@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.38.0 - March 26 2019
+**RDM-4190** - Case Timeline integrated with Demo app
+
 ### Version 2.37.0 - March 15 2019
 **RDM-2348** - Grey bar for on same page hide and show of fields
 
