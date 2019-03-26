@@ -3,16 +3,14 @@ import { SearchResultComponent } from './search-result.component';
 import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { SortSearchResultPipe } from './sorting/sort-search-result.pipe';
-import { SearchResultViewItemComparatorFactory } from './sorting/search-result-view-item-comparator-factory';
 import { MockComponent } from 'ng2-mock-component';
-import { PaginationMetadata } from './pagination-metadata.model';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
-import { AppConfig } from '../../app.config';
 import { FormGroup } from '@angular/forms';
-import { CaseReferencePipe, CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, ActivityService, SearchResultView,
-  SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 import createSpyObj = jasmine.createSpyObj;
+import { Jurisdiction, CaseType, CaseState, PaginationMetadata, SearchResultView, DRAFT_PREFIX, SearchResultViewItem } from '../../domain';
+import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
+import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
+import { AbstractAppConfig as AppConfig } from '../../../app.config';
 
 @Component({
   selector: 'ccd-field-read',
