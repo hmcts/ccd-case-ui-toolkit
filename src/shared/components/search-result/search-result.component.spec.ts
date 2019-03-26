@@ -180,7 +180,6 @@ describe('SearchResultComponent', () => {
       component.resultView = RESULT_VIEW;
       component.caseState = CASE_STATE;
       component.paginationMetadata = PAGINATION_METADATA;
-      component.caseFilterFG = new FormGroup({});
       component.metadataFields = METADATA_FIELDS;
       component.ngOnChanges({ resultView: new SimpleChange(null, RESULT_VIEW, true) });
 

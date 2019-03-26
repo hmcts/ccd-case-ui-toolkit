@@ -30,9 +30,6 @@ export class SearchResultComponent implements OnChanges {
   caseState: CaseState;
 
   @Input()
-  caseFilterFG: FormGroup;
-
-  @Input()
   resultView: SearchResultView;
 
   @Input()
@@ -137,7 +134,6 @@ export class SearchResultComponent implements OnChanges {
     this.selected.jurisdiction = this.jurisdiction;
     this.selected.caseType = this.caseType;
     this.selected.caseState = this.caseState;
-    this.selected.formGroup = this.caseFilterFG;
     this.selected.metadataFields = this.metadataFields;
     this.selected.page = page;
     // Apply filters
