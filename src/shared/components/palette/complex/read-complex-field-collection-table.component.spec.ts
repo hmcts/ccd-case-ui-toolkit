@@ -10,7 +10,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 
-fdescribe('ReadComplexFieldCollectionTableComponent', () => {
+describe('ReadComplexFieldCollectionTableComponent', () => {
 
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
@@ -113,32 +113,21 @@ fdescribe('ReadComplexFieldCollectionTableComponent', () => {
             label: 'SomeLabel',
             AddressLine1: 'Flat 9',
             AddressLine2: 222,
-​​​            AddressPostcode: {
-      postcode:'TE45ED'
-    }
-  }
-  },
-    {
-      value: {
-        label: 'Label 1',
-          AddressLine1
-      :
-        'AAFlat 10',
-          AddressLine2
-      :
-        111,
-    ​​​           AddressPostcode: {
-          postcode:'TE45ED'
+​​​            AddressPostcode: { postcode: 'TE45ED' }
+          }
+        },
+        {
+          value: {
+              label: 'Label 1',
+              AddressLine1: 'AAFlat 10',
+              AddressLine2: 111,
+        ​​​      AddressPostcode: { postcode: 'TE45ED' }
+          }
         }
-      }
-    }
-  ],
-    display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
-      field_type
-  :
-    FIELD_TYPE_WITH_VALUES
-  }
-    ;
+      ],
+        display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
+        field_type: FIELD_TYPE_WITH_VALUES
+      };
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -231,7 +220,6 @@ fdescribe('ReadComplexFieldCollectionTableComponent', () => {
       component.sortRowsByColumns('AddressLine2');
       expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
     });
-
   });
 
 });
