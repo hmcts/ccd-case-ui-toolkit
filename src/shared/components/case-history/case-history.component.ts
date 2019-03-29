@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseHistory } from './domain';
 import { catchError, map } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { CaseService } from '../case-editor';
 import { ShowCondition } from '../../directives';
 
 @Component({
+  selector: 'ccd-case-history',
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss']
 })
@@ -17,6 +18,9 @@ export class CaseHistoryComponent implements OnInit {
 
   private static readonly ERROR_MESSAGE = 'No case history to show';
   public static readonly PARAM_EVENT_ID = 'eid';
+
+  @Input()
+  event: string;
 
   caseHistory: CaseHistory;
   caseDetails: CaseView;
@@ -32,9 +36,9 @@ export class CaseHistoryComponent implements OnInit {
   ngOnInit() {
     this.caseService.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
-      this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID);
+      let eventId = this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID) || this.event;
       this.caseHistoryService
-        .get(this.caseDetails.case_id, this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID))
+        .get(this.caseDetails.case_id, eventId)
         .pipe(
           map(caseHistory => {
             if (!caseHistory) {

@@ -1,0 +1,26 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Case Timeline component</h1>
+
+        <div class="text">
+            <p> This component is used to view case timeline. It consists of 2 screens:</p>
+            <ul class="list list-bullet text">
+                <li>log event table and small details section containing all triggered events since case was created and their corresponding metadata</li>
+                <li>case history details screen containing the actual case details data after the event was triggered</li>
+            </ul>   
+            <p> The elements of the contract are:</p>
+            <p>Input fields:</p>
+                <ul class="list list-bullet text">
+                    <li>case - id of a case (e.g. 1111222233334444)</li>
+                </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-case-timeline [case]="caseId"></ccd-case-timeline>
+        </div>
+    </main>
+</div>
