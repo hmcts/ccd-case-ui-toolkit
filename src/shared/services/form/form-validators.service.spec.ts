@@ -24,4 +24,23 @@ describe('FormValidatorsService', () => {
     result.updateValueAndValidity();
     expect(result.invalid).toBeTruthy();
   });
+
+  it('should validate text field for MANDATORY with regular expression', () => {
+    let formControl: FormControl = new FormControl();
+    let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
+    caseField.field_type.regular_expression = '^(Test)$';
+    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('Test');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.invalid).toBeFalsy();
+    result.setValue(' ');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.invalid).toBeTruthy();
+    result.setValue(' Invalid  ');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.invalid).toBeTruthy();
+  });
 });

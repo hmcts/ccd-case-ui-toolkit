@@ -4,7 +4,7 @@ import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseService } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-view',
