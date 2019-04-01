@@ -4,7 +4,7 @@ import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { editorRouting } from '../case-editor';
-import { CaseHistoryComponent } from './case-history/case-history.component';
+import { CaseHistoryComponent } from '../case-history';
 
 export const viewerRouting: Routes = [
     {

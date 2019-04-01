@@ -4,7 +4,7 @@ import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseService } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-view',
@@ -31,7 +31,9 @@ export class CaseViewComponent implements OnInit {
           this.caseDetails = caseView;
           this.caseService.announceCase(caseView);
         })
-      ).toPromise();
+      )
+      .toPromise()
+      .catch(error => this.checkAuthorizationError(error));
   }
 
   isDataLoaded(): boolean {
@@ -43,19 +45,13 @@ export class CaseViewComponent implements OnInit {
       return this.getDraft(cid);
     } else {
     return this.casesService
-          .getCaseViewV2(cid)
-          .pipe(
-            catchError(error => this.checkAuthorizationError(error))
-          );
+          .getCaseViewV2(cid);
     }
   }
 
   private getDraft(cid): Observable<CaseView> {
     return this.draftService
-      .getDraft(cid)
-      .pipe(
-        catchError((error: Response | any) => this.checkAuthorizationError(error))
-      );
+      .getDraft(cid);
   }
 
   private checkAuthorizationError(error: any) {

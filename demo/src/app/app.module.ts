@@ -14,18 +14,19 @@ import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthServi
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
   PlaceholderService, DocumentManagementService, PageValidationService, SearchService,
   RequestOptionsBuilder,
-  CreateCaseFiltersModule} from '@hmcts/ccd-case-ui-toolkit';
+  CreateCaseFiltersModule,
+  CaseTimelineModule} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
 import { CaseViewConsumerComponent } from './case-view-consumer.component';
 import { SearchFiltersConsumerComponent } from './search-filters-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
+import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
 
 @NgModule({
   imports: [
     BrowserModule.withServerTransition({ appId: 'my-app' }),
-    routing,
     CaseUIToolkitModule,
     RouterModule,
     CommonModule,
@@ -35,6 +36,8 @@ import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consum
     BrowserAnimationsModule,
     HttpModule,
     CreateCaseFiltersModule,
+    CaseTimelineModule,
+    routing,
   ],
   declarations: [
     AppComponent,
@@ -43,7 +46,8 @@ import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consum
     CaseProgressConsumerComponent,
     CaseViewConsumerComponent,
     SearchFiltersConsumerComponent,
-    CreateCaseFiltersConsumerComponent
+    CreateCaseFiltersConsumerComponent,
+    CaseTimelineConsumerComponent,
   ],
   providers: [
     CasesService,

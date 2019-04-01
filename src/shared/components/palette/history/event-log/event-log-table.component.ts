@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CaseViewEvent } from '../../../domain';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { CaseViewEvent } from '../../../../domain';
 
 @Component({
   selector: 'ccd-event-log-table',
-  templateUrl: './event-log-table.html',
+  templateUrl: './event-log-table.component.html',
   styleUrls: ['./event-log-table.scss']
 })
-export class EventLogTableComponent {
+export class EventLogTableComponent implements OnInit {
 
   @Input()
   events: CaseViewEvent[];
@@ -16,6 +16,15 @@ export class EventLogTableComponent {
 
   @Output()
   onSelect = new EventEmitter<CaseViewEvent>();
+
+  @Output()
+  onCaseHistory = new EventEmitter<string>();
+
+  isPartOfCaseTimeline = false;
+
+  ngOnInit() {
+    this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
+  }
 
   select(event: CaseViewEvent): void {
     this.selected = event;
@@ -39,5 +48,9 @@ export class EventLogTableComponent {
     if (event.significant_item) {
       return event.significant_item.description;
     }
+  }
+
+  caseHistoryClicked(eventId: string) {
+    this.onCaseHistory.emit(eventId);
   }
 }
