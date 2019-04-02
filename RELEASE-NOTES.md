@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.39.0 - March 27 2019
+**RDM-3325** - CCD does not apply validation rules to text fields containing only whitespace characters
+
 ### Version 2.38.0 - March 26 2019
 **RDM-4190** - Case Timeline integrated with Demo app
 
