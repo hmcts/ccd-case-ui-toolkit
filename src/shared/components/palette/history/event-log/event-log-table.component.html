@@ -10,9 +10,17 @@
   <tbody>
   <tr *ngFor="let event of events" (click)="select(event)" [ngClass]="{'EventLogTable-Selected': selected === event}">
     <td>
-      <a [routerLink]="['./', 'event', event.id, 'history']"
-           [target]="'_blank'"
-           *ngIf="event.state_id !== 'Draft'" class="text-16 event-link">{{event.event_name}}</a>
+      <ng-container [ngSwitch]="isPartOfCaseTimeline">
+        <div id="case-timeline" *ngSwitchCase="true">
+          <a (click)="caseHistoryClicked(event.id)"
+            *ngIf="event.state_id !== 'Draft'" class="text-16 event-link">{{event.event_name}}</a>
+        </div>
+        <div *ngSwitchCase="false">
+          <a [routerLink]="['./', 'event', event.id, 'history']"
+              [target]="'_blank'"
+              *ngIf="event.state_id !== 'Draft'" class="text-16 event-link">{{event.event_name}}</a>
+        </div>
+      </ng-container>
       <span *ngIf="event.state_id === 'Draft'">{{event.event_name}}</span>
       <div class="tooltip" *ngIf="significantItemExist(event)">
         <a href="{{getSignificantItemUrl(event)}}" target="_blank">
