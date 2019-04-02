@@ -330,6 +330,23 @@ describe('CaseEditSubmitComponent', () => {
       let result = comp.getCancelText();
       expect(result).toBe('Cancel');
     });
+
+    it('should disable submit button when isSubmitting is set to true', () => {
+      comp.isSubmitting = true;
+      fixture.detectChanges();
+
+      let button = de.query(By.css('button[type=submit]'));
+      expect(button.nativeElement.disabled).toBeTruthy();
+    });
+
+    it('should enable submit button when isSubmitting is set to false', () => {
+      comp.isSubmitting = false;
+      fixture.detectChanges();
+
+      let button = de.query(By.css('button[type=submit]'));
+      expect(button.nativeElement.disabled).toBeFalsy();
+    });
+
   });
 
   describe('CaseEditSubmitComponent without custom end button label and with Save and Resume enabled', () => {
