@@ -5,7 +5,8 @@
     <ng-container [ngSwitch]="field | ccdIsReadOnly">
       <ccd-field-read *ngSwitchCase="true"
                       [caseField]="field"
-                      [withLabel]="true">
+                      [withLabel]="true"
+                      [registerControl]="buildControlRegistrer(field)">
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
                        ccdConditionalShow
