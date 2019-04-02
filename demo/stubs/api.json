@@ -920,7 +920,7 @@
         },
         "acls": [
           {
-            "role": "caseworker-probate-public",
+            "role": "case-worker",
             "create": true,
             "read": true,
             "update": true,
@@ -930,8 +930,10 @@
         "security_label": "PRIVATE",
         "order": null,
         "display_context": "OPTIONAL",
+        "display_context_parameter": null,
         "show_condition": null,
-        "show_summary_change_option": true
+        "show_summary_change_option": true,
+        "show_summary_content_option:": null
       },
       {
         "id": "PersonOrderSummary",

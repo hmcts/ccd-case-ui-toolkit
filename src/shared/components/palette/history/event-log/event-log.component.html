@@ -1,0 +1,13 @@
+<div class="grid-row">
+  <div class="column-one-half">
+    <ng-container [ngSwitch]="isPartOfCaseTimeline">
+      <ccd-event-log-table *ngSwitchCase="true" [events]="events" [selected]="selected" (onSelect)="select($event)" (onCaseHistory)="caseHistoryClicked($event)"></ccd-event-log-table>
+      <ccd-event-log-table *ngSwitchCase="false" [events]="events" [selected]="selected" (onSelect)="select($event)"></ccd-event-log-table>
+    </ng-container>
+  </div>
+  <div class="column-one-half">
+    <div class="EventLog-DetailsPanel">
+      <ccd-event-log-details *ngIf="selected" [event]="selected"></ccd-event-log-details>
+    </div>
+  </div>
+</div>

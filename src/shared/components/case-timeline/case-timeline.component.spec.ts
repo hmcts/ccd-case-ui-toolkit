@@ -3,9 +3,9 @@ import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent, CaseView, HttpError } from '../../domain';
-import { CaseTimelineComponent } from './case-timeline.component';
-import { Observable, throwError } from 'rxjs';
-import { CasesService } from '../case-editor';
+import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { CasesService, CaseService } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import { AlertService } from '../../services';
 
@@ -72,6 +72,8 @@ describe('CaseTimelineComponent', () => {
   const CASE_VIEW_OBS: Observable<CaseView> = Observable.of(CASE_VIEW);
 
   let EventLogComponent;
+  let CaseHistoryComponent;
+  let caseService;
   let casesService;
   let alertService: any;
 
@@ -79,18 +81,28 @@ describe('CaseTimelineComponent', () => {
   let component: CaseTimelineComponent;
   let de: DebugElement;
 
-  describe('CaseTimelineComponent successfully resolves case view', () => {
-    beforeEach(async(() => {
+  EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
+    'events'
+  ]});
 
-      EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
-        'events'
-      ]});
+  CaseHistoryComponent = MockComponent({ selector: 'ccd-case-history', inputs: [
+    'event'
+  ]});
+
+  describe('CaseTimelineComponent successfully resolves case view', () => {
+
+    const $BACK_TO_TIMELINE_LINK = By.css('div>div>ol>li>a');
+
+    beforeEach(async(() => {
 
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
 
       alertService = createSpyObj('alertService', ['error']);
       alertService.error.and.returnValue(Observable.of({}));
+
+      caseService = new CaseService();
+      caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
       TestBed
         .configureTestingModule({
@@ -99,9 +111,11 @@ describe('CaseTimelineComponent', () => {
             CaseTimelineComponent,
 
             // Mocks
-            EventLogComponent
+            EventLogComponent,
+            CaseHistoryComponent,
           ],
           providers: [
+            { provide: CaseService, useValue: caseService },
             { provide: CasesService, useValue: casesService },
             { provide: AlertService, useValue: alertService },
           ]
@@ -116,15 +130,58 @@ describe('CaseTimelineComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('should render case history component', () => {
+    it('should render in case timeline view mode as default', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
+      expect(component.events).toEqual(CASE_EVENTS);
+      expect(component.displayMode).toEqual(CaseTimelineDisplayMode.TIMELINE);
 
       let eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeDefined();
       let eventLogComponent = eventLogDe.componentInstance;
       expect(eventLogComponent.events).toEqual(CASE_EVENTS);
-      expect(component.events).toEqual(CASE_EVENTS);
+
+      let caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
+
+      expect(caseHistoryDetailsDe).toBeNull();
+    });
+
+    it('should change view mode to case history details', () => {
+      expect(component.displayMode).toEqual(CaseTimelineDisplayMode.TIMELINE);
+      component.caseHistoryClicked('5');
+      expect(component.displayMode).toEqual(CaseTimelineDisplayMode.DETAILS);
+      expect(component.selectedEventId).toEqual('5');
+
+      fixture.detectChanges();
+
+      let link = de.query($BACK_TO_TIMELINE_LINK);
+      expect(link.nativeElement.textContent).toBe('Back to case timeline');
+
+      let caseHistoryDe = de.query(By.directive(CaseHistoryComponent));
+      expect(caseHistoryDe).toBeDefined();
+      let caseHistoryComponent = caseHistoryDe.componentInstance;
+      expect(caseHistoryComponent.event).toEqual('5');
+
+      let eventLogDe = de.query(By.directive(EventLogComponent));
+      expect(eventLogDe).toBeNull();
+    });
+
+    it('should change view mode to case timeline if on case details and back to timeline button clicked', () => {
+      component.caseHistoryClicked('5');
+      expect(component.displayMode).toEqual(CaseTimelineDisplayMode.DETAILS);
+      expect(component.selectedEventId).toEqual('5');
+      fixture.detectChanges();
+
+      component.goToCaseTimeline();
+      fixture.detectChanges();
+
+      let caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
+      expect(caseHistoryDetailsDe).toBeNull();
+
+      let eventLogDe = de.query(By.directive(EventLogComponent));
+      expect(eventLogDe).toBeDefined();
+      let eventLogComponent = eventLogDe.componentInstance;
+      expect(eventLogComponent.events).toEqual(CASE_EVENTS);
     });
   });
 
@@ -152,9 +209,11 @@ describe('CaseTimelineComponent', () => {
             CaseTimelineComponent,
 
             // Mocks
-            EventLogComponent
+            EventLogComponent,
+            CaseHistoryComponent,
           ],
           providers: [
+            { provide: CaseService, useValue: caseService },
             { provide: CasesService, useValue: casesService },
             { provide: AlertService, useValue: alertService },
           ]
