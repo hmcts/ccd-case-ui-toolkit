@@ -10,7 +10,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 
-fdescribe('ReadComplexFieldCollectionTableComponent', () => {
+describe('ReadComplexFieldCollectionTableComponent', () => {
 
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');

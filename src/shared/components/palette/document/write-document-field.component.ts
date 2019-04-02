@@ -5,6 +5,7 @@ import { DocumentManagementService } from '../../../services/document-management
 import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { Constants } from '../../../commons/constants'
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -14,7 +15,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private uploadedDocument: FormGroup;
   private selectedFile: File;
   private dialogConfig: MatDialogConfig;
-  private MANDATORY = 'MANDATORY';
   @ViewChild('fileInput') fileInput: ElementRef;
 
   valid = true;
@@ -43,7 +43,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
-    if (this.caseField.display_context && this.caseField.display_context === this.MANDATORY) {
+    if (this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY) {
       this.valid = false;
       this.uploadError = 'Document required';
     }
