@@ -4,6 +4,7 @@ import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/c
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { DatePipe } from '../../utils';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('EventLogComponent', () => {
 
@@ -20,6 +21,9 @@ describe('EventLogComponent', () => {
 
     @Output()
     onSelect = new EventEmitter<CaseViewEvent>();
+
+    @Output()
+    onCaseHistory = new EventEmitter<string>();
   }
 
   @Component({
@@ -76,69 +80,124 @@ describe('EventLogComponent', () => {
   let component: EventLogComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed
-      .configureTestingModule({
-        imports: [],
-        declarations: [
-          EventLogComponent,
-          // Mock
-          EventLogTableComponent,
-          EventLogDetailsComponent,
-          DatePipe
-        ],
-        providers: []
-      })
-      .compileComponents();
+  describe('Standalone use', () => {
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            EventLogComponent,
+            // Mock
+            EventLogTableComponent,
+            EventLogDetailsComponent,
+            DatePipe
+          ],
+          providers: []
+        })
+        .compileComponents();
 
-    fixture = TestBed.createComponent(EventLogComponent);
-    component = fixture.componentInstance;
+      fixture = TestBed.createComponent(EventLogComponent);
+      component = fixture.componentInstance;
+      component.isPartOfCaseTimeline = true;
 
-    component.events = EVENTS;
+      component.events = EVENTS;
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
 
-  it('should render an event log table', () => {
-    let logTableElement = de.query(By.directive(EventLogTableComponent));
+    it('should render an event log table', () => {
+      let logTableElement = de.query(By.directive(EventLogTableComponent));
 
-    expect(logTableElement).toBeTruthy();
+      expect(logTableElement).toBeTruthy();
 
-    let logTable = logTableElement.componentInstance;
+      let logTable = logTableElement.componentInstance;
 
-    expect(logTable.events).toEqual(EVENTS);
+      expect(logTable.events).toEqual(EVENTS);
+    });
+
+    it('should have log table with no historyDetails subscribers', () => {
+      let logTableElement = de.query(By.directive(EventLogTableComponent));
+      let logTable = logTableElement.componentInstance;
+
+      expect(logTable.onCaseHistory.observers.length).toBe(0);
+    });
+
+    it('should select the first event by default', () => {
+      expect(component.selected).toBe(SELECTED_EVENT);
+
+      let logTableElement = de.query(By.directive(EventLogTableComponent));
+      let logTable = logTableElement.componentInstance;
+
+      expect(logTable.selected).toEqual(SELECTED_EVENT);
+    });
+
+    it('should emit selected event on selection change', () => {
+      spyOn(component, 'select').and.callThrough();
+
+      let logTableElement = de.query(By.directive(EventLogTableComponent));
+      let logTable = logTableElement.componentInstance;
+
+      logTable.onSelect.emit(NEWLY_SELECTED_EVENT);
+
+      expect(component.select).toHaveBeenCalledWith(NEWLY_SELECTED_EVENT);
+      expect(component.select).toHaveBeenCalledTimes(1);
+      expect(component.selected).toEqual(NEWLY_SELECTED_EVENT);
+    });
+
+    it('should render an event log details', () => {
+      let logDetailsElement = de.query(By.directive(EventLogDetailsComponent));
+
+      expect(logDetailsElement).toBeTruthy();
+
+      let logTable = logDetailsElement.componentInstance;
+
+      expect(logTable.event).toEqual(SELECTED_EVENT);
+    });
   });
 
-  it('should select the first event by default', () => {
-    expect(component.selected).toBe(SELECTED_EVENT);
+  describe('Case timeline use', () => {
 
-    let logTableElement = de.query(By.directive(EventLogTableComponent));
-    let logTable = logTableElement.componentInstance;
+    let caseHistoryHandler;
+    beforeEach(async(() => {
 
-    expect(logTable.selected).toEqual(SELECTED_EVENT);
-  });
+      caseHistoryHandler = createSpyObj('caseHistoryHandler', ['apply']);
 
-  it('should emit selected event on selection change', () => {
-    spyOn(component, 'select').and.callThrough();
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            EventLogComponent,
+            // Mock
+            EventLogTableComponent,
+            EventLogDetailsComponent,
+            DatePipe
+          ],
+          providers: []
+        })
+        .compileComponents();
 
-    let logTableElement = de.query(By.directive(EventLogTableComponent));
-    let logTable = logTableElement.componentInstance;
+      fixture = TestBed.createComponent(EventLogComponent);
+      component = fixture.componentInstance;
+      component.events = EVENTS;
+      component.isPartOfCaseTimeline = true;
+      component.onCaseHistory.subscribe(caseHistoryHandler.apply);
 
-    logTable.onSelect.emit(NEWLY_SELECTED_EVENT);
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
 
-    expect(component.select).toHaveBeenCalledWith(NEWLY_SELECTED_EVENT);
-    expect(component.select).toHaveBeenCalledTimes(1);
-    expect(component.selected).toEqual(NEWLY_SELECTED_EVENT);
-  });
+    it('should have log table with one historyDetails subscriber', () => {
+      let logTableElement = de.query(By.directive(EventLogTableComponent));
+      let logTable = logTableElement.componentInstance;
 
-  it('should render an event log details', () => {
-    let logDetailsElement = de.query(By.directive(EventLogDetailsComponent));
+      expect(logTable.onCaseHistory.observers.length).toBe(1);
+    });
 
-    expect(logDetailsElement).toBeTruthy();
+    it('should emit event if hyperlink clicked', () => {
+      component.caseHistoryClicked('4');
 
-    let logTable = logDetailsElement.componentInstance;
-
-    expect(logTable.event).toEqual(SELECTED_EVENT);
+      expect(caseHistoryHandler.apply).toHaveBeenCalledWith('4');
+    });
   });
 });

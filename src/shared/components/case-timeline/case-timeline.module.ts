@@ -4,6 +4,7 @@ import { ErrorsModule } from '../error/errors.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CaseTimelineComponent } from './case-timeline.component';
 import { EventLogModule } from '../palette';
+import { CaseHistoryModule } from '../case-history';
 
 @NgModule({
     imports: [
@@ -12,6 +13,7 @@ import { EventLogModule } from '../palette';
         FormsModule,
         ReactiveFormsModule,
         EventLogModule,
+        CaseHistoryModule,
     ],
     declarations: [
         CaseTimelineComponent
