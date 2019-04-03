@@ -7,6 +7,7 @@ import { CaseViewConsumerComponent } from './case-view-consumer.component';
 import { SearchFiltersConsumerComponent } from './search-filters-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
 import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
+import { SearchResultConsumerComponent } from './search-result-consumer.component';
 
 export const routing = RouterModule.forRoot([
   {
@@ -36,6 +37,9 @@ export const routing = RouterModule.forRoot([
       },
       { path: 'case/timeline',
         component: CaseTimelineConsumerComponent
+      },
+      { path: 'search/result',
+        component: SearchResultConsumerComponent
       }
     ]
   }
