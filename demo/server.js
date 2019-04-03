@@ -1,9 +1,13 @@
+let xFrameOptions = require('x-frame-options');
+
 //Install express server
 const express = require('express');
 const path = require('path');
 let jsonServer = require('json-server');
 let router = jsonServer.router('stubs/api.json');
 const app = express();
+
+app.use(xFrameOptions());
 
 // Serve only the static files form the dist directory
 app.use(express.static(__dirname + '/dist/browser'));

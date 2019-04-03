@@ -59,6 +59,7 @@
     "url-loader": "1.1.2",
     "webpack": "^4.20.2",
     "webpack-dev-server": "^3.1.10",
+    "x-frame-options": "^1.0.0",
     "zone.js": "^0.8.26"
   }
 }
