@@ -102,7 +102,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.caseDetails.triggers) {
+    if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
     }
   }
