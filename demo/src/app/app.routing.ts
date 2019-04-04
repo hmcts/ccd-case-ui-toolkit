@@ -40,6 +40,9 @@ export const routing = RouterModule.forRoot([
       },
       { path: 'search/result',
         component: SearchResultConsumerComponent
+      },
+      { path: 'case/FR/caseType1Id/1',
+        component: SearchResultConsumerComponent
       }
     ]
   }
