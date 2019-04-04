@@ -22,6 +22,7 @@ import { SearchFiltersConsumerComponent } from './search-filters-consumer.compon
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
 import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
 import { SearchResultConsumerComponent } from './search-result-consumer.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { SearchResultConsumerComponent } from './search-result-consumer.componen
     CaseTimelineModule,
     routing,
     SearchResultModule,
+    NgxPaginationModule
   ],
   declarations: [
     AppComponent,

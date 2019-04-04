@@ -47,6 +47,7 @@
     "json-server": "^0.12.1",
     "ncp": "2.0.0",
     "ngx-md": "~6.0.0",
+    "ngx-pagination": "^3.2.1",
     "node-sass": "4.9.3",
     "postcss": "7.0.5",
     "raw-loader": "^0.5.1",
