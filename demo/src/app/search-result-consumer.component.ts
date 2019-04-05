@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Jurisdiction, HttpError, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
     selector: 'search-result-consumer',
