@@ -33,7 +33,7 @@ export class SearchResultConsumerComponent implements OnInit {
     ngOnInit(): void {
         let resultsArr: any[] = new Array;
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 27; i++) {
             resultsArr.push({
                 case_id: '1',
                 case_fields: {
@@ -115,8 +115,8 @@ export class SearchResultConsumerComponent implements OnInit {
             };
 
             this.paginationMetadata = {
-                total_results_count: 5,
-                total_pages_count: 1
+                total_results_count: 27,
+                total_pages_count: 2
             };
 
             this.metadataFields = [];
