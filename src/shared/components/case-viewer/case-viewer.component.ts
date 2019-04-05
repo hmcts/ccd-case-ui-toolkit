@@ -114,7 +114,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   clearErrorsAndWarnings() {
-    this.error = null;
+    this.resetErrors();
     this.ignoreWarning = false;
     this.triggerText = CaseViewerComponent.TRIGGER_TEXT_START;
   }
