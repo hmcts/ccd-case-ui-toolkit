@@ -7,30 +7,38 @@
             <ul class="list list-bullet text">
                 <li>Input fields:
                     <ul class="list list-bullet text">
-                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events
+                        <li>jurisdiction
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/jurisdiction.model.ts" target="_blank">Jurisdiction model</a></p>
-                            <p>Collection:</p>
-                            <pre class="language-markup">
-                                <code class="language-markup">{{jurisdictionsSample}}</code>
-                            </pre>
                         </li>
-                        <li>isDisabled - boolean which controls the `disable` state of the button</li>
-                        <li>startButtonText - label of the button</li>
+                        <li>caseType
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-type.model.ts" target="_blank">CaseType model</a></p>
+                        </li>
+                        <li>caseState                            
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-state.model.ts" target="_blank">CaseState model</a></p>
+                        </li>
+                        <li>resultView                            
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/search/search-result-view.model.ts" target="_blank">SearchResultView model</a></p>
+                        </li>
+                        <li>paginationMetadata                            
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/pagination-metadata.model.ts" target="_blank">PaginationMetadata model</a></p>
+                        </li>
+                        <li>metadataFields - a collection of strings
+                        </li>
                     </ul>
                 </li>
             </ul>
             <ul class="list list-bullet text">
                 <li>Output fields:
                     <ul class="list list-bullet text">
-                        <li>selectionSubmitted - a notification event about a CreateCaseFiltersSelection being submitted containing an event with:
+                        <li>changePage - a notification event about paging navigation containing an values:
                             <ul class="list list-bullet text">
-                                <li>jurisdictionId: string</li>
-                                <li>caseTypeId: string</li>
-                                <li>eventId: string</li>  
+                                <li>init?: boolean</li>
+                                <li>jurisdiction?: Jurisdiction</li>
+                                <li>caseType?: CaseType</li>
+                                <li>caseState?: CaseState</li>
+                                <li>metadataFields?: string[]</li>
+                                <li>page?: number</li>
                             </ul>
-                        </li>
-                        <li>selectionChanged - a notification event about selection change on any of the dropdowns
-                            
                         </li>
                     </ul>
                 </li>
