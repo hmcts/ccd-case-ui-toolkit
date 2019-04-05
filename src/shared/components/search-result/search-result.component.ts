@@ -2,7 +2,6 @@ import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges } from
 import { DisplayMode, Jurisdiction, CaseType, CaseState, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, CaseField, DRAFT_PREFIX, PaginationMetadata, SortParameters,
   SearchResultViewItemComparator, SortOrder } from '../../domain';
-import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
@@ -53,7 +52,6 @@ export class SearchResultComponent implements OnChanges {
     jurisdiction?: Jurisdiction,
     caseType?: CaseType,
     caseState?: CaseState,
-    formGroup?: FormGroup,
     metadataFields?: string[],
     page?: number
   } = {};
