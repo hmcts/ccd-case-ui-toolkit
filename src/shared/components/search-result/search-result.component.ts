@@ -129,7 +129,6 @@ export class SearchResultComponent implements OnChanges {
   }
 
   goToPage(page): void {
-    this.hideRows = true;
     this.selected.init = false;
     this.selected.jurisdiction = this.jurisdiction;
     this.selected.caseType = this.caseType;
