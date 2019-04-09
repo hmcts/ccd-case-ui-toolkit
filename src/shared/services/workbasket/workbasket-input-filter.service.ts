@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { Headers } from '@angular/http';
 import { HttpService } from '../http/http.service';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
+import { AbstractAppConfig } from '../../../app.config';
 
 @Injectable()
 export class WorkbasketInputFilterService {
@@ -13,7 +14,7 @@ export class WorkbasketInputFilterService {
   private currentJurisdiction: string;
   private currentCaseType: string;
 
-  constructor(private httpService: HttpService, private appConfig: AppConfig) {
+  constructor(private httpService: HttpService, private appConfig: AbstractAppConfig) {
   }
 
   getWorkbasketInputUrl(caseTypeId: string): string {
