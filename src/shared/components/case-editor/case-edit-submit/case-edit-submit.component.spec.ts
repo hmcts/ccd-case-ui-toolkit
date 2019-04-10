@@ -331,20 +331,33 @@ describe('CaseEditSubmitComponent', () => {
       expect(result).toBe('Cancel');
     });
 
-    it('should disable submit button when isSubmitting is set to true', () => {
+    it('should disable submit button, previous button and cancel link when isSubmitting is set to true', () => {
       comp.isSubmitting = true;
       fixture.detectChanges();
 
-      let button = de.query(By.css('button[type=submit]'));
-      expect(button.nativeElement.disabled).toBeTruthy();
+      let submitButton = de.query(By.css('button[type=submit]'));
+      expect(submitButton.nativeElement.disabled).toBeTruthy();
+
+      let prevButton = de.query(By.css('button[type=button]'));
+      expect(prevButton.nativeElement.disabled).toBeTruthy();
+
+      let cancelLink = de.query(By.css('a[class=disabled]'));
+      console.log(cancelLink);
+      expect(cancelLink.nativeElement).toBeTruthy();
     });
 
-    it('should enable submit button when isSubmitting is set to false', () => {
+    it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
       comp.isSubmitting = false;
       fixture.detectChanges();
 
-      let button = de.query(By.css('button[type=submit]'));
-      expect(button.nativeElement.disabled).toBeFalsy();
+      let submitButton = de.query(By.css('button[type=submit]'));
+      expect(submitButton.nativeElement.disabled).toBeFalsy();
+
+      let prevButton = de.query(By.css('button[type=button]'));
+      expect(prevButton.nativeElement.disabled).toBeFalsy();
+
+      let cancelLink = de.query(By.css('a[class=disabled]'));
+      expect(cancelLink).toBeNull();
     });
 
   });
