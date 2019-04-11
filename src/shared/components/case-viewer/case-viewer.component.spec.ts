@@ -95,12 +95,8 @@ describe('CaseViewerComponent', () => {
     inputs: ['content']
   });
 
-  const STATIC_TABS_LENGTH = 1;
-
   // Page object selectors
   const $ALL_TAB_HEADERS = By.css('cut-tabs>cut-tab');
-  const $FIRST_TAB_HEADER = By.css('cut-tabs>cut-tab:first-child');
-  const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
   const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
   const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#History');
   const $PRINT_LINK = By.css('#case-viewer-control-print');
@@ -500,21 +496,14 @@ describe('CaseViewerComponent', () => {
   it('should render the correct tabs based on show_condition', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(STATIC_TABS_LENGTH + CASE_VIEW.tabs.length - 1);
-    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[1].label);
-    expect(attr(tabHeaders[2], 'title')).toBe(CASE_VIEW.tabs[2].label);
-  });
-
-  it('should render the event log tab first', () => {
-    let firstTabHeader = de.query($FIRST_TAB_HEADER);
-    expect(firstTabHeader).toBeTruthy();
-
-    expect(attr(firstTabHeader, 'title')).toBe('History');
+    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[2].label);
   });
 
   it('should render each tab defined by the Case view', () => {
     // we expect address tab not to be rendered
-    let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
+    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
     expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
@@ -535,7 +524,7 @@ describe('CaseViewerComponent', () => {
   });
 
   it('should render tabs in ascending order', () => {
-    let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
+    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
 
     expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_VIEW.tabs);
@@ -601,15 +590,6 @@ describe('CaseViewerComponent', () => {
 
     expect(headers[0].nativeElement.textContent.trim()).toBe(FIELDS[1].label);
     expect(orderService.sort).toHaveBeenCalledWith(FIELDS);
-  });
-
-  it('should render the event log component in the event log tab', () => {
-    let eventLogElement = de
-      .query($EVENT_TAB_CONTENT)
-      .query(By.directive(EventLogComponent));
-    let eventLog = eventLogElement.componentInstance;
-
-    expect(eventLog.events).toEqual(EVENTS);
   });
 
   it('should render an event trigger', () => {
