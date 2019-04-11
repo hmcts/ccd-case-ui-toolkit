@@ -3,9 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { FormGroup } from '@angular/forms';
 import 'rxjs/add/operator/do';
 import { Jurisdiction, AlertService, CaseState, CaseTypeLite, JurisdictionService,
-  WindowService, OrderService} from '../..';
-import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
-import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+  WindowService, OrderService, WorkbasketInputFilterService, WorkbasketInputModel} from '../..';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
