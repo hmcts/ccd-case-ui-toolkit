@@ -31,7 +31,7 @@
   <div class="grid-row">
     <div class="column-full">
       <cut-tabs>
-        <cut-tab *ngFor="let tab of sortedTabs" [id]="tab.id" [title]="tab.label">
+        <cut-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [title]="tab.label" [selected]="curIdx==0">
           <table [class]="tab.id">
             <tbody>
             <ng-container *ngFor="let field of tab.fields">
