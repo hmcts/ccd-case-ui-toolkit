@@ -38,9 +38,12 @@ class TabsComponent { }
   selector: 'cut-tab',
   template: '<ng-content></ng-content>'
 })
-class TabComponent { }
+class TabComponent {
+  @Input()
+  selected: boolean;
+}
 
-describe('CaseViewerComponent', () => {
+fdescribe('CaseViewerComponent', () => {
 
   @Component({
     selector: 'ccd-event-trigger',
@@ -79,11 +82,6 @@ describe('CaseViewerComponent', () => {
     callbackErrorsContext: EventEmitter<any> = new EventEmitter();
 
   }
-
-  const EventLogComponent: any = MockComponent({
-    selector: 'ccd-event-log',
-    inputs: ['events']
-  });
 
   const CaseHeaderComponent: any = MockComponent({
     selector: 'ccd-case-header',
@@ -452,7 +450,6 @@ describe('CaseViewerComponent', () => {
           // Mock
           CaseActivityComponent,
           FieldReadComponent,
-          EventLogComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
