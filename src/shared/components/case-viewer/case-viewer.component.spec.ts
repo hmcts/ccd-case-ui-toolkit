@@ -798,6 +798,15 @@ describe('CaseViewerComponent', () => {
     expect(component.error).toEqual(null);
     expect(mockCallbackErrorSubject.next).toHaveBeenCalled();
   });
+
+  it('should not clear alerts when there are no errors at init', () => {
+    component.error = null;
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(alertService.clear).not.toHaveBeenCalled();
+  });
 });
 
 describe('CaseViewerComponent - print, case history and event selector disabled', () => {
