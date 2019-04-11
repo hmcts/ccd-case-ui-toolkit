@@ -519,6 +519,14 @@ describe('CaseViewerComponent', () => {
     expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[1].label);
   });
 
+  it('should render the history tab first and select it', () => {
+    // we expect address tab not to be rendered
+    let firstTabHeader = de.query($FIRST_TAB_HEADER);
+
+    expect(firstTabHeader).toBeTruthy();
+    expect(attr(firstTabHeader, 'title')).toBe('History');
+  });
+
   it('should render each tab defined by the Case view', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
@@ -526,14 +534,6 @@ describe('CaseViewerComponent', () => {
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
     expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeTruthy('Could not find tab Some Tab');
-  });
-
-  it('should render the history tab first and select it', () => {
-    // we expect address tab not to be rendered
-    let firstTabHeader = de.query($FIRST_TAB_HEADER);
-
-    expect(firstTabHeader).toBeTruthy();
-    expect(attr(firstTabHeader, 'title')).toBe('History');
   });
 
   it('should render the field labels based on show_condition', () => {
