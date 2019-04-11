@@ -2,6 +2,7 @@ import { WizardPageField } from '../domain';
 import { CaseField } from '../../../domain';
 import { ComplexFieldOverride } from '../domain/wizard-page-field-complex-override.model';
 import { Injectable } from '@angular/core';
+import { ShowCondition } from '../../../directives/conditional-show/domain';
 
 @Injectable({
   providedIn: 'root',
@@ -70,8 +71,8 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private fixShowConditionPath(caseField: CaseField, pathPrefix: string) {
-    if (caseField.show_condition && pathPrefix.length > 0 && !caseField.show_condition.startsWith(pathPrefix)) {
-      caseField.show_condition = pathPrefix + '.' + caseField.show_condition;
+    if (caseField.show_condition) {
+      caseField.show_condition = ShowCondition.addPathPrefixToCondition(caseField.show_condition, pathPrefix);
     }
 
     let childrenCaseFields = this.getCaseFieldChildren(caseField);
