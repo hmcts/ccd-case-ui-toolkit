@@ -43,7 +43,7 @@ class TabComponent {
   selected: boolean;
 }
 
-fdescribe('CaseViewerComponent', () => {
+describe('CaseViewerComponent', () => {
 
   @Component({
     selector: 'ccd-event-trigger',
@@ -95,8 +95,10 @@ fdescribe('CaseViewerComponent', () => {
 
   // Page object selectors
   const $ALL_TAB_HEADERS = By.css('cut-tabs>cut-tab');
+  const $FIRST_TAB_HEADER = By.css('cut-tabs>cut-tab:first-child');
+  const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
   const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
-  const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#History');
+  const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#HistoryTab');
   const $PRINT_LINK = By.css('#case-viewer-control-print');
   const $ERROR_SUMMARY = By.css('.error-summary');
   const $ERROR_MESSAGE = By.css('p');
@@ -297,14 +299,14 @@ fdescribe('CaseViewerComponent', () => {
       {
         id: 'AddressTab',
         label: 'Address',
-        order: 2,
+        order: 3,
         fields: [],
         show_condition: 'PersonFirstName="Jane"'
       },
       {
         id: 'NameTab',
         label: 'Name',
-        order: 1,
+        order: 2,
         fields: [
           {
             id: 'PersonFirstName',
@@ -349,9 +351,28 @@ fdescribe('CaseViewerComponent', () => {
         show_condition: 'PersonFirstName="Janet"'
       },
       {
+        id: 'HistoryTab',
+        label: 'History',
+        order: 1,
+        fields: [{
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer'
+          },
+          order: 1,
+          value: EVENTS,
+          show_condition: '',
+          hint_text: ''
+        }],
+        show_condition: ''
+      },
+      {
         id: 'SomeTab',
         label: 'Some Tab',
-        order: 3,
+        order: 4,
         fields: [],
         show_condition: ''
       },
@@ -494,8 +515,8 @@ fdescribe('CaseViewerComponent', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
     expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
-    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[2].label);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[2].label);
+    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[1].label);
   });
 
   it('should render each tab defined by the Case view', () => {
@@ -505,6 +526,14 @@ fdescribe('CaseViewerComponent', () => {
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
     expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeTruthy('Could not find tab Some Tab');
+  });
+
+  it('should render the history tab first and select it', () => {
+    // we expect address tab not to be rendered
+    let firstTabHeader = de.query($FIRST_TAB_HEADER);
+
+    expect(firstTabHeader).toBeTruthy();
+    expect(attr(firstTabHeader, 'title')).toBe('History');
   });
 
   it('should render the field labels based on show_condition', () => {
@@ -521,7 +550,7 @@ fdescribe('CaseViewerComponent', () => {
   });
 
   it('should render tabs in ascending order', () => {
-    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+    let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
 
     expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_VIEW.tabs);
