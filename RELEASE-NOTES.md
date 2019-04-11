@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.41.0 - April 11 2019
+**RDM-3325-Firefox-Bug-Fix** - Mandatory Text field breaks the UI on Firefox
+**RDM-4521** - Confirmation green bar not displayed
+
 ### Version 2.39.0 - March 27 2019
 **RDM-3325** - CCD does not apply validation rules to text fields containing only whitespace characters
 
