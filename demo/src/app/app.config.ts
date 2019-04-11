@@ -20,7 +20,8 @@ export class AppConfig extends AbstractAppConfig {
     'activity_url': '',
     'activity_max_request_per_batch': 25,
     'print_service_url': '/print',
-    'remote_print_service_url': '/remote_print'
+    'remote_print_service_url': '/remote_print',
+    'pagination_page_size': 25
   };
 
   constructor(private http: Http) {
@@ -104,6 +105,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRemotePrintServiceUrl() {
     return this.config.remote_print_service_url;
+  }
+
+  public getPaginationPageSize() {
+    return this.config.pagination_page_size;
   }
 
 }
