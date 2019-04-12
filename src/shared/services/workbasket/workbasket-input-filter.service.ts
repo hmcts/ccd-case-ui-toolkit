@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import { Headers } from '@angular/http';
-import { HttpService, WorkbasketInputModel } from '../..';
-import { AbstractAppConfig } from '../../..';
+import { HttpService } from '../http/http.service';
+import { WorkbasketInputModel } from '../../domain';
+import { AbstractAppConfig } from '../../../app.config';
 
 @Injectable()
 export class WorkbasketInputFilterService {

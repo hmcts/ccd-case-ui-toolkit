@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import { PaletteModule } from '../palette';
-import { WorkbasketInputFilterService } from '../..';
+import { WorkbasketInputFilterService, OrderService, JurisdictionService, AlertService, WindowService } from '../../services';
 
 @NgModule({
     imports: [
@@ -20,6 +20,10 @@ import { WorkbasketInputFilterService } from '../..';
     ],
     providers: [
         WorkbasketInputFilterService,
+        OrderService,
+        JurisdictionService,
+        AlertService,
+        WindowService,
     ]
 })
 export class WorkbasketFiltersModule {}

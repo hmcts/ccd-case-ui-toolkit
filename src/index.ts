@@ -21,7 +21,8 @@ export { FormValueService,
          RequestOptionsBuilder,
          SearchService,
          WindowService,
-         JurisdictionService } from './shared/services';
+         JurisdictionService,
+         WorkbasketInputFilterService } from './shared/services';
 export { DocumentData,
          AddressModel,
          CaseEventData,

@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import 'rxjs/add/operator/do';
-import { Jurisdiction, AlertService, CaseState, CaseTypeLite, JurisdictionService,
-  WindowService, OrderService, WorkbasketInputFilterService, WorkbasketInputModel} from '../..';
+import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel } from '../../domain';
+import { JurisdictionService, AlertService, WindowService, OrderService, WorkbasketInputFilterService } from '../../services';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
@@ -50,10 +50,11 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   initialised = false;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private route: ActivatedRoute,
-    private orderService: OrderService,
     private workbasketInputFilterService: WorkbasketInputFilterService,
+    private orderService: OrderService,
     private jurisdictionService: JurisdictionService,
     private alertService: AlertService,
     private windowService: WindowService) {
