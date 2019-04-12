@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.41.1 - April 12 2019
+**RDM-3525-Bug-Fix** - Disable previous button and cancel link on click on submit
+
 ### Version 2.41.0 - April 11 2019
 **RDM-3325-Firefox-Bug-Fix** - Mandatory Text field breaks the UI on Firefox
 **RDM-4521** - Confirmation green bar not displayed
