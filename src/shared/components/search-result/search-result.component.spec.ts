@@ -321,7 +321,6 @@ describe('SearchResultComponent', () => {
         jurisdiction: JURISDICTION,
         caseType: CASE_TYPE,
         caseState: CASE_STATE,
-        formGroup: jasmine.any(Object),
         metadataFields: METADATA_FIELDS,
         page: 2
       };
