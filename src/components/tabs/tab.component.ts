@@ -15,6 +15,7 @@ export class TabComponent {
   @Input()
   public title: string;
 
-  public selected = false;
+  @Input()
+  public selected: boolean;
 
 }
