@@ -7,13 +7,6 @@
             <ul class="list list-bullet text">
                 <li>Input fields:
                     <ul class="list list-bullet text">
-                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events
-                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/jurisdiction.model.ts" target="_blank">Jurisdiction model</a></p>
-                            <p>Collection:</p>
-                            <pre class="language-markup">
-                                <code class="language-markup">{{jurisdictionsSample}}</code>
-                            </pre>
-                        </li>
                         <li>isDisabled - boolean which controls the `disable` state of the button</li>
                         <li>startButtonText - label of the button</li>
                     </ul>
@@ -43,7 +36,7 @@
 
         <div class="example">
             <ccd-create-case-filters
-                [jurisdictions]="jurisdictions"
+                *ngIf="timer"
                 [isDisabled]="hasErrors()"
                 [startButtonText]="startButtonText"
                 (selectionSubmitted)="apply($event)"
