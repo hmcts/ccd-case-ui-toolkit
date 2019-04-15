@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.42.0 - April 15 2019
+**RDM-4184** - Remove Fixed History Tab
+
 ### Version 2.41.1 - April 12 2019
 **RDM-3525-Bug-Fix** - Disable previous button and cancel link on click on submit
 
