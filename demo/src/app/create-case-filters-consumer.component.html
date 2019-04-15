@@ -36,7 +36,6 @@
 
         <div class="example">
             <ccd-create-case-filters
-                *ngIf="timer"
                 [isDisabled]="hasErrors()"
                 [startButtonText]="startButtonText"
                 (selectionSubmitted)="apply($event)"
