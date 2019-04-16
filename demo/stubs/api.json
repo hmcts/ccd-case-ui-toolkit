@@ -3683,7 +3683,7 @@
       }
     ]
   },
-  "jurisdictions": [	
+  "jurisdictions-create": [	
     {	
         "id": "FR",	
         "name": "Financial Remedy",	
