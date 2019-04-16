@@ -176,6 +176,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     return this.caseDetails ? true : false;
   }
 
+  hasTabsPresent(): boolean {
+    return this.sortedTabs.length > 0;
+  }
+
   callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext) {
     this.ignoreWarning = callbackErrorsContext.ignore_warning;
     this.triggerText = callbackErrorsContext.trigger_text;

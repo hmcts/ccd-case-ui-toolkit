@@ -82,11 +82,6 @@ class CallbackErrorsComponent {
 
 }
 
-const EventLogComponent: any = MockComponent({
-  selector: 'ccd-event-log',
-  inputs: ['events']
-});
-
 const CaseHeaderComponent: any = MockComponent({
   selector: 'ccd-case-header',
   inputs: ['caseDetails']
@@ -97,35 +92,23 @@ const MarkdownComponent: any = MockComponent({
   inputs: ['content']
 });
 
-const STATIC_TABS_LENGTH = 1;
+let CaseActivityComponent: any = MockComponent({
+  selector: 'ccd-activity',
+  inputs: ['caseId', 'displayMode']
+});
 
-// Page object selectors
-const $ALL_TAB_HEADERS = By.css('cut-tabs>cut-tab');
-const $FIRST_TAB_HEADER = By.css('cut-tabs>cut-tab:first-child');
-const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
-const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
-const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#History');
-const $PRINT_LINK = By.css('#case-viewer-control-print');
-const $ERROR_SUMMARY = By.css('.error-summary');
-const $ERROR_MESSAGE = By.css('p');
+let FieldReadComponent: any = MockComponent({
+  selector: 'ccd-field-read', inputs: [
+    'caseField',
+    'caseReference'
+  ]
+});
 
-const TRIGGERS: CaseViewTrigger[] = [
-  {
-    id: 'EDIT',
-    name: 'Edit',
-    description: 'Edit a case'
-  },
-  {
-    id: 'RESUME',
-    name: 'Resume',
-    description: 'Resume Draft'
-  },
-  {
-    id: 'DELETE',
-    name: 'Delete',
-    description: 'Delete Draft'
-  }
-];
+let LinkComponent: any = MockComponent({
+  selector: 'a', inputs: [
+    'routerLink'
+  ]
+});
 
 const EVENTS: CaseViewEvent[] = [
   {
@@ -280,6 +263,85 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
+  },
+  {
+    id: '[SECURITY_CLASSIFICATION]',
+    label: 'Security Classification',
+    value: 'PUBLIC',
+    hint_text: null,
+    field_type: {
+      id: 'Text',
+      type: 'Text',
+      min: null,
+      max: null,
+      regular_expression: null,
+      fixed_list_items: [],
+      complex_fields: [],
+      collection_field_type: null
+  }
+];
+
+const TRIGGERS: CaseViewTrigger[] = [
+  {
+    id: 'EDIT',
+    name: 'Edit',
+    description: 'Edit a case'
+  },
+  {
+    id: 'RESUME',
+    name: 'Resume',
+    description: 'Resume Draft'
+  },
+  {
+    id: 'DELETE',
+    name: 'Delete',
+    description: 'Delete Draft'
+  }
+];
+
+const JID = 'TEST';
+const CTID = 'TestAddressBookCase';
+const CID = '1234567890123456';
+
+// Page object selectors
+const $ALL_TAB_HEADERS = By.css('cut-tabs>cut-tab');
+const $FIRST_TAB_HEADER = By.css('cut-tabs>cut-tab:first-child');
+const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
+const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
+const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#HistoryTab');
+const $PRINT_LINK = By.css('#case-viewer-control-print');
+const $ERROR_SUMMARY = By.css('.error-summary');
+const $ERROR_MESSAGE = By.css('p');
+
+const CASE_VIEW: CaseView = {
+  case_id: CID,
+  case_type: {
+    id: CTID,
+    name: 'Test Address Book Case',
+    jurisdiction: {
+      id: JID,
+      name: 'Test',
+    }
+  },
+  channels: [],
+  state: {
+    id: 'CaseCreated',
+    name: 'Case created'
+  },
+  tabs: [
+    {
+      id: 'AddressTab',
+      label: 'Address',
+      order: 3,
+      fields: [],
+      show_condition: 'PersonFirstName="Jane"'
+    },
+    security_label: 'PUBLIC',
+    order: null,
+    display_context: null,
+    show_condition: null,
+    show_summary_change_option: null,
+    show_summary_content_option: null
   }
 ];
 
@@ -303,16 +365,9 @@ const CASE_VIEW: CaseView = {
   },
   tabs: [
     {
-      id: 'AddressTab',
-      label: 'Address',
-      order: 2,
-      fields: [],
-      show_condition: 'PersonFirstName="Jane"'
-    },
-    {
       id: 'NameTab',
       label: 'Name',
-      order: 1,
+      order: 2,
       fields: [
         {
           id: 'PersonFirstName',
@@ -357,6 +412,25 @@ const CASE_VIEW: CaseView = {
       show_condition: 'PersonFirstName="Janet"'
     },
     {
+      id: 'HistoryTab',
+      label: 'History',
+      order: 1,
+      fields: [{
+        id: 'CaseHistory',
+        label: 'Case History',
+        display_context: 'OPTIONAL',
+        field_type: {
+          id: 'CaseHistoryViewer',
+          type: 'CaseHistoryViewer'
+        },
+        order: 1,
+        value: EVENTS,
+        show_condition: '',
+        hint_text: ''
+      }],
+      show_condition: ''
+    },
+    {
       id: 'SomeTab',
       label: 'Some Tab',
       order: 3,
@@ -368,19 +442,6 @@ const CASE_VIEW: CaseView = {
   events: EVENTS,
   metadataFields: METADATA,
 };
-const FIELDS = CASE_VIEW.tabs[1].fields;
-const SIMPLE_FIELDS = CASE_VIEW.tabs[1].fields.slice(0, 2);
-const COMPLEX_FIELDS = CASE_VIEW.tabs[1].fields.slice(2);
-
-const ERROR: HttpError = new HttpError();
-ERROR.message = 'Critical error!';
-
-let fixture: ComponentFixture<CaseViewerComponent>;
-let fixtureDialog: ComponentFixture<DeleteOrCancelDialogComponent>;
-let componentDialog: DeleteOrCancelDialogComponent;
-let deDialog: DebugElement;
-let component: CaseViewerComponent;
-let de: DebugElement;
 
 let mockRoute: any = {
   snapshot: {
@@ -389,6 +450,17 @@ let mockRoute: any = {
     }
   }
 };
+
+const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
+const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+const DIALOG_CONFIG = new MatDialogConfig();
+
+let fixture: ComponentFixture<CaseViewerComponent>;
+let fixtureDialog: ComponentFixture<DeleteOrCancelDialogComponent>;
+let componentDialog: DeleteOrCancelDialogComponent;
+let deDialog: DebugElement;
+let component: CaseViewerComponent;
+let de: DebugElement;
 
 let orderService;
 let router: any;
@@ -400,29 +472,14 @@ let dialog: any;
 let matDialogRef: any;
 let caseService: any;
 
-const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
-const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
-const DIALOG_CONFIG = new MatDialogConfig();
-
-let CaseActivityComponent: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
-});
-
-let FieldReadComponent: any = MockComponent({
-  selector: 'ccd-field-read', inputs: [
-    'caseField',
-    'caseReference'
-  ]
-});
-
-let LinkComponent: any = MockComponent({
-  selector: 'a', inputs: [
-    'routerLink'
-  ]
-});
-
 describe('CaseViewerComponent', () => {
+
+  const FIELDS = CASE_VIEW.tabs[1].fields;
+  const SIMPLE_FIELDS = CASE_VIEW.tabs[1].fields.slice(0, 2);
+  const COMPLEX_FIELDS = CASE_VIEW.tabs[1].fields.slice(2);
+
+  const ERROR: HttpError = new HttpError();
+  ERROR.message = 'Critical error!';
 
   beforeEach(async(() => {
     orderService = new OrderService();
@@ -460,7 +517,6 @@ describe('CaseViewerComponent', () => {
           // Mock
           CaseActivityComponent,
           FieldReadComponent,
-          EventLogComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
@@ -504,21 +560,22 @@ describe('CaseViewerComponent', () => {
   it('should render the correct tabs based on show_condition', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(STATIC_TABS_LENGTH + CASE_VIEW.tabs.length - 1);
+    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[2].label);
     expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[1].label);
-    expect(attr(tabHeaders[2], 'title')).toBe(CASE_VIEW.tabs[2].label);
   });
 
-  it('should render the event log tab first', () => {
+  it('should render the history tab first and select it', () => {
+    // we expect address tab not to be rendered
     let firstTabHeader = de.query($FIRST_TAB_HEADER);
-    expect(firstTabHeader).toBeTruthy();
 
+    expect(firstTabHeader).toBeTruthy();
     expect(attr(firstTabHeader, 'title')).toBe('History');
   });
 
   it('should render each tab defined by the Case view', () => {
     // we expect address tab not to be rendered
-    let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
+    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
     expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
@@ -605,15 +662,6 @@ describe('CaseViewerComponent', () => {
 
     expect(headers[0].nativeElement.textContent.trim()).toBe(FIELDS[1].label);
     expect(orderService.sort).toHaveBeenCalledWith(FIELDS);
-  });
-
-  it('should render the event log component in the event log tab', () => {
-    let eventLogElement = de
-      .query($EVENT_TAB_CONTENT)
-      .query(By.directive(EventLogComponent));
-    let eventLog = eventLogElement.componentInstance;
-
-    expect(eventLog.events).toEqual(EVENTS);
   });
 
   it('should render an event trigger', () => {
@@ -809,7 +857,7 @@ describe('CaseViewerComponent', () => {
   });
 });
 
-describe('CaseViewerComponent - print, case history and event selector disabled', () => {
+describe('CaseViewerComponent - no tabs available', () => {
 
   beforeEach(async(() => {
     orderService = new OrderService();
@@ -835,6 +883,8 @@ describe('CaseViewerComponent - print, case history and event selector disabled'
     router.navigate.and.returnValue(new Promise(any));
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
+    CASE_VIEW.tabs = [];
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -847,7 +897,87 @@ describe('CaseViewerComponent - print, case history and event selector disabled'
           // Mock
           CaseActivityComponent,
           FieldReadComponent,
-          EventLogComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+          TabsComponent,
+          TabComponent,
+          MarkdownComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          { provide: CaseService, useValue: caseService },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: Router, useValue: router },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(CaseViewerComponent);
+    component = fixture.componentInstance;
+
+    component.callbackErrorsSubject = mockCallbackErrorSubject;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  it('should not display any tabs if unavailable', () => {
+    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+    expect(tabHeaders.length).toBe(0);
+  });
+});
+  
+  
+describe('CaseViewerComponent - print and event selector disabled', () => {
+   beforeEach(async(() => {
+    orderService = new OrderService();
+    spyOn(orderService, 'sort').and.callThrough();
+
+    draftService = createSpyObj('draftService', ['deleteDraft']);
+    draftService.deleteDraft.and.returnValue(Observable.of({}));
+
+    caseService = createSpyObj('caseService', ['announceCase']);
+
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
+    alertService.success.and.returnValue(Observable.of({}));
+    alertService.warning.and.returnValue(Observable.of({}));
+
+    dialog = createSpyObj<MatDialog>('dialog', ['open']);
+    matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
+
+    activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
+    activityService.postViewActivity.and.returnValue(Observable.of());
+
+    router = createSpyObj<Router>('router', ['navigate']);
+    router.navigate.and.returnValue(new Promise(any));
+    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
+
+    CASE_VIEW.tabs = [];
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+        ],
+        declarations: [
+          CaseViewerComponent,
+          LabelSubstitutorDirective,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          FieldReadComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
@@ -878,21 +1008,19 @@ describe('CaseViewerComponent - print, case history and event selector disabled'
     fixture = TestBed.createComponent(CaseViewerComponent);
     component = fixture.componentInstance;
     component.hasPrint = false;
-    component.hasCaseHistory = false;
     component.hasEventSelector = false;
+
     component.callbackErrorsSubject = mockCallbackErrorSubject;
     de = fixture.debugElement;
     fixture.detectChanges();
-  }));
-
-  it('should not display print, case history and event selector if disabled via inputs', () => {
+  });
+              
+  it('should not display print and event selector if disabled via inputs', () => {
     let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     let printLink = de.query($PRINT_LINK);
     let firstTabHeader = de.query($FIRST_TAB_HEADER);
 
     expect(eventTriggerElement).toBeFalsy();
     expect(printLink).toBeFalsy();
-    expect(firstTabHeader).toBeTruthy();
-    expect(attr(firstTabHeader, 'title')).toBe('Name');
   });
 });
