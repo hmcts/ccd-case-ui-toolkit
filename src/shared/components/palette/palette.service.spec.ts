@@ -7,6 +7,7 @@ import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.component';
+import { ReadDynamicListFieldComponent } from './dynamic-list/read-dynamic-list-field.component';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -16,6 +17,7 @@ import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.comp
 import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component';
 import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
+import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { WriteNumberFieldComponent } from './number/write-number-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
@@ -130,6 +132,13 @@ describe('PaletteService', () => {
 
     it('should get WriteFixedListField component class for FixedList input', () => {
       assertComponent('FixedList', true, WriteFixedListFieldComponent, 'AnID');
+    });
+    it('should get ReadDynamicListField component class for DynamicList input', () => {
+      assertComponent('DynamicList', false, ReadDynamicListFieldComponent, 'AnID');
+    });
+
+    it('should get WriteDynamicListField component class for DynamicList input', () => {
+      assertComponent('DynamicList', true, WriteDynamicListFieldComponent, 'AnID');
     });
 
     it('should get ReadMoneyGbpField component class for MoneyGBP input', () => {

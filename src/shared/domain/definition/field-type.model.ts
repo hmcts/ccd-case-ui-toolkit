@@ -1,4 +1,5 @@
 import { FixedListItem } from './fixed-list-item.model';
+import { DynamicListItem } from './dynamic-list-item.model';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { CaseField } from './case-field.model';
 import { Type } from 'class-transformer';
@@ -13,6 +14,9 @@ export class FieldType {
 
   @Type(() => FixedListItem)
   fixed_list_items?: FixedListItem[];
+
+  @Type(() => FixedListItem)
+  dynamic_list_items?: DynamicListItem[];
 
   @Type(() => CaseField)
   complex_fields?: CaseField[];

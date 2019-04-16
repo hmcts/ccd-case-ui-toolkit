@@ -36,6 +36,7 @@ import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.com
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent } from './history';
+import { ReadDynamicListFieldComponent, WriteDynamicListFieldComponent } from './dynamic-list';
 
 @Injectable()
 export class PaletteService {
@@ -62,6 +63,8 @@ export class PaletteService {
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
       case 'FixedList':
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
+      case 'DynamicList':
+        return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
       case 'FixedRadioList':
         return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':
