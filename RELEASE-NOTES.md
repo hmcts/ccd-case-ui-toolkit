@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.42.1 - April 16 2019
+**RDM-3897** - Add optional property casereference to the CaseEventData object
+
 ### Version 2.42.0 - April 15 2019
 **RDM-4184** - Remove Fixed History Tab
 
