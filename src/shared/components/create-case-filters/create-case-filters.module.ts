@@ -3,7 +3,7 @@ import { CreateCaseFiltersComponent } from './create-case-filters.component';
 import { CommonModule } from '@angular/common';
 import { ErrorsModule } from '../error/errors.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { DefinitionsServiceModule } from '../../services';
+import { DefinitionsModule } from '../../services';
 
 @NgModule({
     imports: [
@@ -11,7 +11,7 @@ import { DefinitionsServiceModule } from '../../services';
         ErrorsModule,
         FormsModule,
         ReactiveFormsModule,
-        DefinitionsServiceModule
+        DefinitionsModule
     ],
     declarations: [
         CreateCaseFiltersComponent

@@ -13,4 +13,4 @@ import { DefinitionsService } from './definitions.service';
     ]
 })
 
-export class DefinitionsServiceModule {}
+export class DefinitionsModule {}
