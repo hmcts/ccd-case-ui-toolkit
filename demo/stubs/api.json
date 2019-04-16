@@ -3682,5 +3682,42 @@
         }
       }
     ]
-  }
+  },
+  "jurisdictions-read": [
+    {
+      "id": "J1",
+      "name": "Jurisdiction 1",
+      "description": "",
+      "caseTypes": [
+        {
+          "id": "CT0",
+          "name": "Case type 0",
+          "description": "",
+          "states": [],
+          "events": []
+        },
+        {
+          "id": "CT2",
+          "name": "Case type 2",
+          "description": "",
+          "states": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "J2",
+      "name": "Jurisdiction 2",
+      "description": "",
+      "caseTypes": [
+        {
+          "id": "CT3",
+          "name": "Case type 3",
+          "description": "",
+          "states": [],
+          "events": []
+        }
+      ]
+    }
+  ]
 }
