@@ -278,6 +278,13 @@ const METADATA: CaseField[] = [
       fixed_list_items: [],
       complex_fields: [],
       collection_field_type: null
+    },
+    security_label: 'PUBLIC',
+    order: null,
+    display_context: null,
+    show_condition: null,
+    show_summary_change_option: null,
+    show_summary_content_option: null
   }
 ];
 
@@ -308,46 +315,10 @@ const $ALL_TAB_HEADERS = By.css('cut-tabs>cut-tab');
 const $FIRST_TAB_HEADER = By.css('cut-tabs>cut-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
 const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
-const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#HistoryTab');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
 const $ERROR_MESSAGE = By.css('p');
 
-const CASE_VIEW: CaseView = {
-  case_id: CID,
-  case_type: {
-    id: CTID,
-    name: 'Test Address Book Case',
-    jurisdiction: {
-      id: JID,
-      name: 'Test',
-    }
-  },
-  channels: [],
-  state: {
-    id: 'CaseCreated',
-    name: 'Case created'
-  },
-  tabs: [
-    {
-      id: 'AddressTab',
-      label: 'Address',
-      order: 3,
-      fields: [],
-      show_condition: 'PersonFirstName="Jane"'
-    },
-    security_label: 'PUBLIC',
-    order: null,
-    display_context: null,
-    show_condition: null,
-    show_summary_change_option: null,
-    show_summary_content_option: null
-  }
-];
-
-const JID = 'TEST';
-const CTID = 'TestAddressBookCase';
-const CID = '1234567890123456';
 const CASE_VIEW: CaseView = {
   case_id: CID,
   case_type: {
@@ -472,11 +443,11 @@ let dialog: any;
 let matDialogRef: any;
 let caseService: any;
 
-describe('CaseViewerComponent', () => {
+ describe('CaseViewerComponent', () => {
 
-  const FIELDS = CASE_VIEW.tabs[1].fields;
-  const SIMPLE_FIELDS = CASE_VIEW.tabs[1].fields.slice(0, 2);
-  const COMPLEX_FIELDS = CASE_VIEW.tabs[1].fields.slice(2);
+  const FIELDS = CASE_VIEW.tabs[0].fields;
+  const SIMPLE_FIELDS = CASE_VIEW.tabs[0].fields.slice(0, 2);
+  const COMPLEX_FIELDS = CASE_VIEW.tabs[0].fields.slice(2);
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -560,9 +531,9 @@ describe('CaseViewerComponent', () => {
   it('should render the correct tabs based on show_condition', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[2].label);
-    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[0].label);
   });
 
   it('should render the history tab first and select it', () => {
@@ -576,7 +547,7 @@ describe('CaseViewerComponent', () => {
   it('should render each tab defined by the Case view', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
+    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
     expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeTruthy('Could not find tab Some Tab');
@@ -598,7 +569,7 @@ describe('CaseViewerComponent', () => {
   it('should render tabs in ascending order', () => {
     let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
 
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[0].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_VIEW.tabs);
   });
 
@@ -933,13 +904,13 @@ describe('CaseViewerComponent - no tabs available', () => {
   }));
 
   it('should not display any tabs if unavailable', () => {
-    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(0);
+      let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+      expect(tabHeaders.length).toBe(0);
   });
 });
-  
-  
+
 describe('CaseViewerComponent - print and event selector disabled', () => {
+
    beforeEach(async(() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
@@ -1013,12 +984,11 @@ describe('CaseViewerComponent - print and event selector disabled', () => {
     component.callbackErrorsSubject = mockCallbackErrorSubject;
     de = fixture.debugElement;
     fixture.detectChanges();
-  });
-              
+  }));
+
   it('should not display print and event selector if disabled via inputs', () => {
     let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     let printLink = de.query($PRINT_LINK);
-    let firstTabHeader = de.query($FIRST_TAB_HEADER);
 
     expect(eventTriggerElement).toBeFalsy();
     expect(printLink).toBeFalsy();

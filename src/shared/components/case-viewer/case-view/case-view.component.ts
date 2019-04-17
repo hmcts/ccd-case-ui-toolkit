@@ -17,8 +17,6 @@ export class CaseViewComponent implements OnInit {
   @Input()
   hasPrint = true;
   @Input()
-  hasCaseHistory = true;
-  @Input()
   hasEventSelector = true;
 
   caseDetails: CaseView;

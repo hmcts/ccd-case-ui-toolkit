@@ -34,8 +34,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   @Input()
   hasPrint = true;
   @Input()
-  hasCaseHistory = true;
-  @Input()
   hasEventSelector = true;
 
   BANNER = DisplayMode.BANNER;

@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 export class CaseViewConsumerComponent implements OnInit {
     caseId: string;
     code = `
-    <ccd-case-view [case]="caseId" [hasPrint]="false" [hasCaseHistory]="false" [hasEventSelector]="false"></ccd-case-view>`;
+    <ccd-case-view [case]="caseId" [hasPrint]="false" [hasEventSelector]="false"></ccd-case-view>`;
 
     constructor(
         private route: ActivatedRoute

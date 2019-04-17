@@ -45,7 +45,7 @@ describe('CaseViewComponent', () => {
 
   let CaseViewerComponent: any = MockComponent({
     selector: 'ccd-case-viewer',
-    inputs: ['hasPrint', 'hasCaseHistory', 'hasEventSelector']
+    inputs: ['hasPrint', 'hasEventSelector']
   });
 
   describe('Case', () => {
@@ -83,7 +83,6 @@ describe('CaseViewComponent', () => {
           component = fixture.componentInstance;
           component.case = CASE_REFERENCE;
           component.hasPrint = true;
-          component.hasCaseHistory = true;
           component.hasEventSelector = true;
           de = fixture.debugElement;
           fixture.detectChanges();
