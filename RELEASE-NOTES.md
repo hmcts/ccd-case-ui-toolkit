@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.42.2 - April 17 2019
+**RDM-3325/4591** - Text field whitespaces fix
+
 ### Version 2.42.1 - April 16 2019
 **RDM-3897** - Add optional property casereference to the CaseEventData object
 
