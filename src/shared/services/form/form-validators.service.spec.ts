@@ -16,6 +16,16 @@ describe('FormValidatorsService', () => {
     expect(result.invalid).toBeFalsy();
   });
 
+  it('should validate for OPTIONAL fields', () => {
+    let formControl: FormControl = new FormControl();
+    let caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
+    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('testing-optional.valid@test.com');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.invalid).toBeFalsy();
+  });
+
   it('should return add REQUIRED validator for MANDATORY fields', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
@@ -88,5 +98,15 @@ describe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeTruthy();
+  });
+
+  it('should validate text field for MANDATORY with email', () => {
+    let formControl: FormControl = new FormControl();
+    let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
+    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('testing-mandatory.valid@test.com');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.invalid).toBeFalsy();
   });
 });
