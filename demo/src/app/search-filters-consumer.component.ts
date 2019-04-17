@@ -15,7 +15,7 @@ export class SearchFiltersConsumerComponent implements OnInit {
                         [autoApply]="true"
                         (onApply)="applied($event)"
                         (onReset)="reset()"
-                        (onJuridiction)="jurisdictionSelected($event)">
+                        (onJurisdiction)="jurisdictionSelected($event)">
    </ccd-search-filters>`;
    selected = `
    {
