@@ -3,14 +3,15 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import { By } from '@angular/platform-browser';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import createSpyObj = jasmine.createSpyObj;
-import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction, CaseType, AlertService,
-  JurisdictionService, WindowService } from '../..';
+import { FieldTypeEnum, Jurisdiction, CaseType } from '../../domain';
+import { AlertService, JurisdictionService, WindowService, OrderService, DefinitionsService } from '../../services';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-field-write',
@@ -163,7 +164,6 @@ describe('WorkbasketFiltersComponent', () => {
   let de: DebugElement;
 
   let workbasketHandler;
-  let router: any;
   let activatedRoute: any;
   let jurisdictionService: JurisdictionService;
   let workbasketInputFilterService: any;
@@ -171,13 +171,12 @@ describe('WorkbasketFiltersComponent', () => {
   let alertService: AlertService;
   let windowService;
   const TEST_FORM_GROUP = new FormGroup({});
+  let mockDefinitionsService: any;
 
   describe('Clear localStorage for workbasket filters', () => {
     let windowMockService: WindowService;
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
@@ -185,6 +184,11 @@ describe('WorkbasketFiltersComponent', () => {
       jurisdictionService = new JurisdictionService();
       windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'removeLocalStorage']);
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -204,13 +208,13 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
             { provide: WindowService, useValue: windowMockService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
@@ -218,10 +222,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
 
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
@@ -239,14 +239,12 @@ describe('WorkbasketFiltersComponent', () => {
       windowMockService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
       component.reset();
       expect(windowMockService.removeLocalStorage).toHaveBeenCalled();
-      expect(router.navigate).toHaveBeenCalled();
     }));
   });
+
   describe('with defaults', () => {
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
@@ -254,6 +252,11 @@ describe('WorkbasketFiltersComponent', () => {
       jurisdictionService = new JurisdictionService();
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -273,13 +276,13 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
             { provide: WindowService, useValue: windowService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
@@ -287,10 +290,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
 
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
@@ -589,14 +588,17 @@ describe('WorkbasketFiltersComponent', () => {
   describe('with defaults and CRUD', () => {
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       resetCaseTypes(JURISDICTION_2, CRUD_FILTERED_CASE_TYPES);
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       jurisdictionService = new JurisdictionService();
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -616,23 +618,20 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
-            { provide: WindowService, useValue: windowService }
+            { provide: WindowService, useValue: windowService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
         .then(() => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
+
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
@@ -685,15 +684,17 @@ describe('WorkbasketFiltersComponent', () => {
   describe('with defaults and CRUD and empty case types', () => {
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       resetCaseTypes(JURISDICTION_2, EMPTY_CASE_TYPES);
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       jurisdictionService = new JurisdictionService();
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -713,13 +714,13 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
-            { provide: WindowService, useValue: windowService }
+            { provide: WindowService, useValue: windowService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
@@ -727,10 +728,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
 
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
@@ -757,8 +754,6 @@ describe('WorkbasketFiltersComponent', () => {
   describe('with defaults and CRUD and type with empty case states', () => {
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       resetCaseTypes(JURISDICTION_2, CASE_TYPE_WITH_EMPTY_STATES);
       orderService = createSpyObj('orderService', ['sortAsc']);
@@ -766,6 +761,11 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       jurisdictionService = new JurisdictionService();
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -784,13 +784,13 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
-            { provide: WindowService, useValue: windowService }
+            { provide: WindowService, useValue: windowService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
@@ -798,10 +798,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
 
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
@@ -837,14 +833,17 @@ describe('WorkbasketFiltersComponent', () => {
 
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       resetCaseTypes(JURISDICTION_1, CASE_TYPES_1);
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       activatedRoute = {
         queryParams: Observable.of(QUERY_PARAMS),
         snapshot: {
@@ -863,13 +862,13 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
-            { provide: WindowService, useValue: windowService }
+            { provide: WindowService, useValue: windowService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
@@ -877,10 +876,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
 
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
@@ -906,18 +901,18 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.caseState).toBe(CASE_TYPES_1[0].states[1]);
     });
 
-    it('should save filters as query parameters when apply button is clicked', () => {
-      let button = de.query(By.css('button'));
-      button.nativeElement.click();
+    // it('should save filters as query parameters when apply button is clicked', () => {
+    //   let button = de.query(By.css('button'));
+    //   button.nativeElement.click();
 
-      expect(router.navigate).toHaveBeenCalledWith(['/list/case'], {
-        queryParams: {
-          [WorkbasketFiltersComponent.PARAM_JURISDICTION]: JURISDICTION_1.id,
-          [WorkbasketFiltersComponent.PARAM_CASE_TYPE]: CASE_TYPES_1[0].id,
-          [WorkbasketFiltersComponent.PARAM_CASE_STATE]: CASE_TYPES_1[0].states[1].id,
-        }
-      });
-    });
+    //   expect(router.navigate).toHaveBeenCalledWith(['/list/case'], {
+    //     queryParams: {
+    //       [WorkbasketFiltersComponent.PARAM_JURISDICTION]: JURISDICTION_1.id,
+    //       [WorkbasketFiltersComponent.PARAM_CASE_TYPE]: CASE_TYPES_1[0].id,
+    //       [WorkbasketFiltersComponent.PARAM_CASE_STATE]: CASE_TYPES_1[0].states[1].id,
+    //     }
+    //   });
+    // });
   });
 
   describe('with invalid query parameters: jurisdiction and empty case types', () => {
@@ -930,8 +925,6 @@ describe('WorkbasketFiltersComponent', () => {
 
     beforeEach(async(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
-      router = createSpyObj<Router>('router', ['navigate']);
-      router.navigate.and.returnValue(Promise.resolve('someResult'));
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       resetCaseTypes(JURISDICTION_2, EMPTY_CASE_TYPES);
       orderService = createSpyObj('orderService', ['sortAsc']);
@@ -939,6 +932,11 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue(JSON.stringify(QUERY_PARAMS));
+      mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
+      mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
+        JURISDICTION_1,
+        JURISDICTION_2
+      ]));
       activatedRoute = {
         queryParams: Observable.of(QUERY_PARAMS),
         snapshot: {
@@ -957,13 +955,13 @@ describe('WorkbasketFiltersComponent', () => {
             FieldWriteComponent
           ],
           providers: [
-            { provide: Router, useValue: router },
             { provide: ActivatedRoute, useValue: activatedRoute },
             { provide: OrderService, useValue: orderService },
             { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
             { provide: JurisdictionService, useValue: jurisdictionService },
             { provide: AlertService, useValue: alertService },
-            { provide: WindowService, useValue: windowService }
+            { provide: WindowService, useValue: windowService },
+            { provide: DefinitionsService, useValue: mockDefinitionsService }
           ]
         })
         .compileComponents()
@@ -971,10 +969,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture = TestBed.createComponent(WorkbasketFiltersComponent);
           component = fixture.componentInstance;
 
-          component.jurisdictions = [
-            JURISDICTION_1,
-            JURISDICTION_2
-          ];
           component.formGroup = TEST_FORM_GROUP;
           component.defaults = {
             jurisdiction_id: JURISDICTION_2.id,
