@@ -9,4 +9,5 @@ export class CaseEventData {
   event_token: string;
   ignore_warning: boolean;
   draft_id?: string;
+  case_reference?: string;
 }

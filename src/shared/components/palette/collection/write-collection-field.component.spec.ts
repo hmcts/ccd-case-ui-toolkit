@@ -58,12 +58,12 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 let FieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded'],
+  inputs: ['caseField', 'caseFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded'],
   template: '<input type="text" />',
 });
 let FieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'context']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
@@ -76,6 +76,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
+  let formGroup: FormGroup;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -101,6 +102,10 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     };
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
@@ -130,6 +135,8 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -319,6 +326,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
+  let formGroup: FormGroup;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -344,6 +352,10 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         }
       ]
     };
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
@@ -373,6 +385,8 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -429,6 +443,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
+  let formGroup: FormGroup;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -454,6 +469,10 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         }
       ]
     };
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
@@ -483,6 +502,8 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
