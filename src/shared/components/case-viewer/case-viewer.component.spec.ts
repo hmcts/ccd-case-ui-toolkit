@@ -317,14 +317,14 @@ const CASE_VIEW: CaseView = {
     {
       id: 'AddressTab',
       label: 'Address',
-      order: 2,
+      order: 3,
       fields: [],
       show_condition: 'PersonFirstName="Jane"'
     },
     {
       id: 'NameTab',
       label: 'Name',
-      order: 1,
+      order: 2,
       fields: [
         {
           id: 'PersonFirstName',
