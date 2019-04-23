@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 2.42.3 - April 23 2019
-** RDM-3940 ** Add Hide and Show support to new ComplexTypeToEvent mapping
+**RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
 
 ### Version 2.42.2 - April 17 2019
 **RDM-3325/4591** - Text field whitespaces fix
