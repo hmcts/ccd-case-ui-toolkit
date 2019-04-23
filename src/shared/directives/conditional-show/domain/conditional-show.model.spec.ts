@@ -11,7 +11,66 @@ describe('conditional-show', () => {
   let claimantDetailsField: CaseField = aCaseField('claimantDetails', 'ClaimantsDetails', 'Complex', 'OPTIONAL', null, [complexAddressUK]);
 
   let caseFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
-
+  describe('NOT EQUALS', () => {
+    it('Scenario1 show: comparator match with specific value', () => {
+      let sc = new ShowCondition('field!="MOJ"');
+      let fields = {
+        field: 'Reform'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(true);
+    });
+    it('Scenario2 show: is not blank', () => {
+      let sc = new ShowCondition('field!=""');
+      let fields = {
+        field: 'MOJ'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(true);
+    });
+    it('Scenario2 hide: is not blank', () => {
+      let sc = new ShowCondition('field!=""');
+      let fields = {
+        field: ''
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario3 hide: has any value', () => {
+      let sc = new ShowCondition('field!="*"');
+      let fields = {
+        field: 'MOJ'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario4 hide: comparator does not match value', () => {
+      let sc = new ShowCondition('field!="Reform"');
+      let fields = {
+        field: 'Reform'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    describe('OR conditional tests', () => {
+      it('Scenario1: OR condition', () => {
+        let sc = new ShowCondition('field1="s1" OR field2=3 OR field3="no-match"');
+        let matched = sc.matchByCaseFields(caseFields);
+        expect(matched).toBe(false);
+      });
+      it('Scenario2 positive: OR logic with equals', () => {
+        let sc = new ShowCondition('field1="field1Value" OR field2=3 OR field3="no-match"');
+        caseFields[1].value = 3;
+        let matched = sc.matchByCaseFields(caseFields);
+        expect(matched).toBe(true);
+      });
+      it('Scenario2 positive: OR logic with not equals', () => {
+        let sc = new ShowCondition('field1!="field1Value" OR field2=3 OR field3="no-match"');
+        let matched = sc.matchByCaseFields(caseFields);
+        expect(matched).toBe(true);
+      });
+    });
+  });
   describe('matches when', () => {
     it('empty condition', () => {
       let sc = new ShowCondition('');
