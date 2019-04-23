@@ -75,8 +75,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     });
   }
 
-  hasPrintableDocumentsUrl(): boolean {
-    return (this.caseDetails.case_type.printableDocumentsUrl) ? true : false;
+  isPrintEnabled(): boolean {
+    return this.caseDetails.case_type.printEnabled;
   }
 
   ngOnDestroy() {
