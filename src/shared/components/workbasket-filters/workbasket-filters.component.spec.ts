@@ -429,13 +429,16 @@ describe('WorkbasketFiltersComponent', () => {
     it('should submit filters when defaults could be selected, preserving the alerts', () => {
 
       expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
-        jurisdiction: JURISDICTION_2,
-        caseType: DEFAULT_CASE_TYPE,
-        caseState: DEFAULT_CASE_STATE,
-        init: false,
-        page: 1,
-        formGroup: jasmine.any(Object),
-        metadataFields: METADATA_FIELDS
+        selected: {
+          jurisdiction: JURISDICTION_2,
+          caseType: DEFAULT_CASE_TYPE,
+          caseState: DEFAULT_CASE_STATE,
+          init: false,
+          page: 1,
+          formGroup: jasmine.any(Object),
+          metadataFields: METADATA_FIELDS
+        },
+        queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
       });
 
       expect(workbasketHandler.applyFilters).toHaveBeenCalledTimes(1);
@@ -450,13 +453,16 @@ describe('WorkbasketFiltersComponent', () => {
       button.nativeElement.click();
 
       expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
-        jurisdiction: JURISDICTION_2,
-        caseType: DEFAULT_CASE_TYPE,
-        caseState: DEFAULT_CASE_STATE,
-        init: true,
-        page: 1,
-        formGroup: jasmine.any(Object),
-        metadataFields: METADATA_FIELDS
+        selected: {
+          jurisdiction: JURISDICTION_2,
+          caseType: DEFAULT_CASE_TYPE,
+          caseState: DEFAULT_CASE_STATE,
+          init: true,
+          page: 1,
+          formGroup: jasmine.any(Object),
+          metadataFields: METADATA_FIELDS
+        },
+        queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
       });
       expect(workbasketHandler.applyFilters).toHaveBeenCalledTimes(1);
       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(false);
@@ -485,7 +491,10 @@ describe('WorkbasketFiltersComponent', () => {
     it('should have form group details added when apply button is clicked ', async(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.apply(true);
-      expect(workbasketHandler.applyFilters).toHaveBeenCalledWith(component.selected);
+      expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
+        selected: component.selected,
+        queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
+      });
       expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
     }));
 
@@ -576,8 +585,11 @@ describe('WorkbasketFiltersComponent', () => {
       let button = de.query(By.css('button'));
       button.nativeElement.click();
 
-      let arg: any = workbasketHandler.applyFilters.calls.mostRecent().args[0];
-      expect(workbasketHandler.applyFilters).toHaveBeenCalledWith(component.selected);
+      let arg: any = workbasketHandler.applyFilters.calls.mostRecent().args[0].selected;
+      expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
+        selected: component.selected,
+        queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': CASE_TYPES_2[2].id, 'case-state': DEFAULT_CASE_STATE.id}
+      });
       expect(arg['jurisdiction']).toEqual(JURISDICTION_2);
       expect(arg['caseType']).toEqual(CASE_TYPES_2[2]);
       expect(arg['formGroup'].value).toEqual(formGroup.value);

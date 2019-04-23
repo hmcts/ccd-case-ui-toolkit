@@ -69,8 +69,8 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.jurisdictions = jurisdictions;
         this.route.queryParams.subscribe(params => {
           if (!this.initialised || !params || !Object.keys(params).length) {
-            this.initialised = true;
             this.initFilters();
+            this.initialised = true;
           }
         });
     });
