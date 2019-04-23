@@ -30,32 +30,31 @@
   </div>
   <div class="grid-row">
     <div class="column-full">
-      <cut-tabs>
-        <cut-tab [id]="'History'" [title]="'History'">
-          <ccd-event-log [events]="caseDetails.events"></ccd-event-log>
-        </cut-tab>
-        <cut-tab *ngFor="let tab of sortedTabs" [id]="tab.id" [title]="tab.label">
-          <table [class]="tab.id">
-            <tbody>
-            <ng-container *ngFor="let field of tab.fields">
-              <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="caseFields">
-                <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-                  <tr *ngSwitchCase="true">
-                    <th>
-                      <div class="case-viewer-label text-16">{{field.label}}</div>
-                    </th>
-                    <td><span class="text-16"><ccd-field-read [caseField]="field" [caseReference]="caseDetails.case_id"></ccd-field-read></span></td>
-                  </tr>
-                  <tr *ngSwitchCase="false" class="compound-field">
-                    <th><span class="text-16"><ccd-field-read [caseField]="field" [caseReference]="caseDetails.case_id"></ccd-field-read></span></th>
-                  </tr>
-                </ng-container>
-              </div>
-            </ng-container>
-            </tbody>
-          </table>
-        </cut-tab>
-      </cut-tabs>
+      <ng-container *ngIf="hasTabsPresent()">
+        <cut-tabs>
+          <cut-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [title]="tab.label" [selected]="curIdx==0">
+            <table [class]="tab.id">
+              <tbody>
+              <ng-container *ngFor="let field of tab.fields">
+                <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="caseFields">
+                  <ng-container [ngSwitch]="!(field | ccdIsCompound)">
+                    <tr *ngSwitchCase="true">
+                      <th>
+                        <div class="case-viewer-label text-16">{{field.label}}</div>
+                      </th>
+                      <td><span class="text-16"><ccd-field-read [caseField]="field" [caseReference]="caseDetails.case_id"></ccd-field-read></span></td>
+                    </tr>
+                    <tr *ngSwitchCase="false" class="compound-field">
+                      <th><span class="text-16"><ccd-field-read [caseField]="field" [caseReference]="caseDetails.case_id"></ccd-field-read></span></th>
+                    </tr>
+                  </ng-container>
+                </div>
+              </ng-container>
+              </tbody>
+            </table>
+          </cut-tab>
+        </cut-tabs>
+      </ng-container>
     </div>
   </div>
 </div>
