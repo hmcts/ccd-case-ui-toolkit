@@ -106,7 +106,9 @@ export { PaletteModule,
          editorRouting,
          CreateCaseFiltersModule,
          CaseTimelineModule,
-         CreateCaseFiltersSelection } from './shared/components';
+         CreateCaseFiltersSelection,
+         WorkbasketFiltersModule,
+         CaseListFiltersModule } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
 export { createCaseEventTrigger,

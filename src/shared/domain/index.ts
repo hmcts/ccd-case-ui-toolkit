@@ -12,4 +12,4 @@ export * from './predicate.model';
 export * from './draft.model';
 export * from './case-details.model';
 export * from './case-event-data.model';
-export * from './workbasket'
+export * from './workbasket';
