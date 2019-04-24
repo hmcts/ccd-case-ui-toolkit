@@ -77,6 +77,7 @@ export class SearchResultComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
     if (changes['resultView']) {
       this.hideRows = false;
 
