@@ -128,6 +128,10 @@ export class FieldsUtils {
     };
   }
 
+  public cloneObject(obj: any): any {
+    return Object.assign({}, obj);
+  }
+
   mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
     return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
   }
@@ -145,10 +149,6 @@ export class FieldsUtils {
       }
     });
     return result;
-  }
-
-  private cloneObject(obj: any): any {
-    return Object.assign({}, obj);
   }
 
 }
