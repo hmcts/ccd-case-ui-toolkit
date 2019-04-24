@@ -37,3 +37,8 @@
     border-bottom: 0px;
   }
 }
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
