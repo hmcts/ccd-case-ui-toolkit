@@ -52,6 +52,16 @@ describe('conditional-show', () => {
       let matched = sc.match(fields);
       expect(matched).toBe(false);
     });
+    it('Scenario4 hide: multi select not equals', () => {
+      let sc = new ShowCondition('field!="s1,s2"');
+      let fields = {
+        field: ['s1', 's2']
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
     describe('OR conditional tests', () => {
       it('Scenario1: OR condition', () => {
         let sc = new ShowCondition('field1="s1" OR field2=3 OR field3="no-match"');
