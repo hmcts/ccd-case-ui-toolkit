@@ -7,6 +7,8 @@ import { CaseViewConsumerComponent } from './case-view-consumer.component';
 import { SearchFiltersConsumerComponent } from './search-filters-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
 import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
+import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.component';
+import { WorkbasketFiltersConsumerComponent } from './workbasket-filters-consumer.component';
 
 export const routing = RouterModule.forRoot([
   {
@@ -36,6 +38,12 @@ export const routing = RouterModule.forRoot([
       },
       { path: 'case/timeline',
         component: CaseTimelineConsumerComponent
+      },
+      { path: 'case/workbasket-filters',
+        component: WorkbasketFiltersConsumerComponent
+      },
+      { path: 'case/case-list-filters',
+        component: CaseListFiltersConsumerComponent
       }
     ]
   }

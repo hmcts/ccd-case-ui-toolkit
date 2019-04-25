@@ -1,0 +1,42 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Case List Filters component</h1>
+
+        <div class="text">
+            <p> This component is used to set the jurisdiction, case type, state and keyword when searching cases. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>defaults - a jurisdiction</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>onApply - a notification event about search filters being submitted containing an event with:
+                            <ul class="list list-bullet text">
+                                <li>selected: Jurisdiction</li>
+                                <li>queryParams: QueryParams</li>
+                            </ul>
+                        </li>
+                        <li>onReset - a notification event about resetting search filters
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-case-list-filters
+                [defaults]="defaults"
+                (onApply)="applied($event)"
+                (onReset)="reset($event)"
+            ></ccd-case-list-filters>
+        </div>
+    </main>
+</div>

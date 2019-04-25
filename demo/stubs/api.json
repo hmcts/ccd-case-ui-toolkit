@@ -3682,5 +3682,102 @@
         }
       }
     ]
-  }
+  },
+  "workbasketInputs": {
+    "workbasketInputs": [
+      {
+        "label": "Text Field",
+        "order": 1,
+        "field": {
+          "id": "TextField",
+          "metadata": false,
+          "field_type": {
+            "id": "Text",
+            "type": "Text",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": [],
+            "complex_fields": [],
+            "collection_field_type": null
+          }
+        }
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "http://ccd-data-store-api:4452/internal/case-types/AllDataTypes2/work-basket-inputs"
+      }
+    }
+  },
+  "jurisdictions-read": [
+    {
+      "id": "J1",
+      "name": "Jurisdiction 1",
+      "description": "",
+      "caseTypes": [
+        {
+          "id": "CT0",
+          "name": "Case type 0",
+          "description": "",
+          "states": [
+            {
+              "id": "S1",
+              "name": "State 1",
+              "description": ""
+            },
+            {
+              "id": "S2",
+              "name": "State 2",
+              "description": ""
+            }
+          ],
+          "events": []
+        },
+        {
+          "id": "CT2",
+          "name": "Case type 2",
+          "description": "",
+          "states": [
+            {
+              "id": "S1",
+              "name": "State 1",
+              "description": ""
+            },
+            {
+              "id": "S2",
+              "name": "State 2",
+              "description": ""
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "J2",
+      "name": "Jurisdiction 2",
+      "description": "",
+      "caseTypes": [
+        {
+          "id": "CT3",
+          "name": "Case type 3",
+          "description": "",
+          "states": [
+            {
+              "id": "S1",
+              "name": "State 1",
+              "description": ""
+            },
+            {
+              "id": "S2",
+              "name": "State 2",
+              "description": ""
+            }
+          ],
+          "events": []
+        }
+      ]
+    }
+  ]
 }
