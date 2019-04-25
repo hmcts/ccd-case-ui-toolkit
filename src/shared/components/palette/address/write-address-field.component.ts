@@ -1,5 +1,5 @@
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressOption } from './address-option.model';
@@ -20,8 +20,10 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   addressesService: AddressesService;
 
-  formGroup = new FormGroup({});
+  @Input()
+  formGroup: FormGroup;
 
+  addressFormGroup = new FormGroup({});
   postcode: FormControl;
   addressList: FormControl;
 
@@ -35,10 +37,12 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnInit(): void {
-    this.postcode = new FormControl('');
-    this.formGroup.addControl('postcode', this.postcode);
-    this.addressList = new FormControl('');
-    this.formGroup.addControl('address', this.addressList);
+    if (!this.isComplexWithHiddenFields()) {
+      this.postcode = new FormControl('');
+      this.addressFormGroup.addControl('postcode', this.postcode);
+      this.addressList = new FormControl('');
+      this.addressFormGroup.addControl('address', this.addressList);
+    }
   }
 
   findAddress() {
@@ -81,8 +85,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   isComplexWithHiddenFields() {
-    if (this.caseField.field_type
-      && this.caseField.field_type.complex_fields
+    if (this.caseField.field_type.type === 'Complex' && this.caseField.field_type.complex_fields
       && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
       return true;
     }
@@ -122,7 +125,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   buildIdPrefix(field: CaseField): string {
-    return this.isCompoundPipe.transform(field) ? `${this.idPrefix}${field.id}_` : `${this.idPrefix}`;
+    return this.isCompoundPipe.transform(field) ? `${this.idPrefix}_` : `${this.idPrefix}`;
   }
 
   private defaultLabel(numberOfAddresses) {

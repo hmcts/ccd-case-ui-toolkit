@@ -26,11 +26,14 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   @Input()
   formGroup: FormGroup;
 
+  @Input()
+  caseFields: CaseField[] = [];
+
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
 
   private defaultControlRegistrer(formGroup: FormGroup,
-                                   caseField: CaseField): (control: FormControl) => AbstractControl {
+                                  caseField: CaseField): (control: FormControl) => AbstractControl {
     return control => {
       if (formGroup.controls[caseField.id]) {
         return formGroup.get(caseField.id);
@@ -55,6 +58,8 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
 
     // Provide component @Inputs
     component.instance['caseField'] = this.caseField;
+    component.instance['caseFields'] = this.caseFields;
+    component.instance['formGroup'] = this.formGroup;
     component.instance['registerControl'] = this.registerControl
       || this.defaultControlRegistrer(this.formGroup, this.caseField);
     component.instance['idPrefix'] = this.idPrefix;
