@@ -15,7 +15,7 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   @Input()
   formGroup: FormGroup;
   @Input()
-  eventFields: CaseField[] = [];
+  caseFields: CaseField[] = [];
   @Input()
   pageChangeSubject: Subject<boolean> = new Subject();
   @Output()

@@ -69,6 +69,6 @@ export class CaseHistoryComponent implements OnInit {
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
       .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
-      .filter(tab => new ShowCondition(tab.show_condition).matchByCaseFields(tab.fields));
+      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(tab.fields));
   }
 }

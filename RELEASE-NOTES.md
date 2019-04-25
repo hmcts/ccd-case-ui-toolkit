@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 2.42.3 - April 23 2019
+**RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
+
+### Version 2.42.2 - April 17 2019
+**RDM-3325/4591** - Text field whitespaces fix
+
+### Version 2.42.1 - April 16 2019
+**RDM-3897** - Add optional property casereference to the CaseEventData object
+
 ### Version 2.42.0 - April 15 2019
 **RDM-4184** - Remove Fixed History Tab
 

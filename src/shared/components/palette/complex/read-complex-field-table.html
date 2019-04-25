@@ -4,14 +4,14 @@
     <tbody>
       <ng-container *ngFor="let field of caseField | ccdFieldsFilter">
         <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
-          <tr class="complex-panel-compound-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="caseField | ccdFieldsFilter">
+          <tr class="complex-panel-compound-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [contextFields]="caseField | ccdFieldsFilter">
             <td colspan="2">
               <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
             </td>
           </tr>
         </ng-container>
         <ng-template #SimpleRow>
-          <tr class="complex-panel-simple-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="caseField | ccdFieldsFilter">
+          <tr class="complex-panel-simple-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [contextFields]="caseField | ccdFieldsFilter">
             <th><span class="text-16">{{field.label}}</span></th>
             <td>
                 <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>

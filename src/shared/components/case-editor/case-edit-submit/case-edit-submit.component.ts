@@ -135,13 +135,12 @@ export class CaseEditSubmitComponent implements OnInit {
   }
 
   summaryCaseField(field: CaseField): CaseField {
-    let cloneField: CaseField = Object.assign({}, field);
-
     if (null == this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
     }
 
+    let cloneField: CaseField = this.fieldsUtils.cloneObject(field);
     cloneField.value = this.editForm.get('data').get(field.id).value;
 
     return cloneField;
