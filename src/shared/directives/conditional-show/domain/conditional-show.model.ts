@@ -4,6 +4,9 @@ import { FieldsUtils } from '../../../services/fields';
 export class ShowCondition {
 
   private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
+  private static readonly OR_CONDITION_REGEXP = new RegExp('\\sOR\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
+  private static CONDITION_NOT_EQUALS = '!=';
+  private static CONDITION_EQUALS = '=';
   private static readonly CONTAINS = 'CONTAINS';
 
   static addPathPrefixToCondition(showCondition: string, pathPrefix): string {
@@ -33,18 +36,27 @@ export class ShowCondition {
   }
 
   private matchAndConditions(fields: any, condition: string, path?: string): boolean {
-    let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-    return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
+    if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
+      let orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
+      return orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition));
+    } else {
+      let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
+      return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
+    }
   }
 
   private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
     if (condition.search(ShowCondition.CONTAINS) === -1) {
-      let field = condition.split('=')[0];
+      let conditionSeparaor = ShowCondition.CONDITION_EQUALS;
+      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) !== -1) {
+        conditionSeparaor = ShowCondition.CONDITION_NOT_EQUALS;
+      }
+      let field = condition.split(conditionSeparaor)[0];
       const [head, ...tail] = field.split('.');
       let currentValue = this.findValueForComplexCondition(fields, head, tail, path);
-      let expectedValue = this.unquoted(condition.split('=')[1]);
+      let expectedValue = this.unquoted(condition.split(conditionSeparaor)[1]);
 
-      return this.checkValueEquals(expectedValue, currentValue);
+      return this.checkValueEquals(expectedValue, currentValue, conditionSeparaor);
     } else {
       let field = condition.split(ShowCondition.CONTAINS)[0];
       const [head, ...tail] = field.split('.');
@@ -55,16 +67,27 @@ export class ShowCondition {
     }
   }
 
-  private checkValueEquals(expectedValue, currentValue): boolean {
+  private checkValueEquals(expectedValue, currentValue, conditionSeparaor): boolean {
     if (expectedValue.search('[,]') > -1) { // for  multi-select list
       let expectedValues = expectedValue.split(',').sort().toString();
       let values = currentValue ? currentValue.sort().toString() : '';
-      return expectedValues === values;
-    } else if (expectedValue.endsWith('*') && currentValue) {
+      if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
+        return expectedValues !== values;
+      } else {
+        return expectedValues === values;
+      }
+    } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== ShowCondition.CONDITION_NOT_EQUALS) {
       return currentValue.startsWith(this.removeStarChar(expectedValue));
     } else {
       // changed from '===' to '==' to cover number field conditions
-      return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
+      if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
+        if ('*' === expectedValue) {
+          return false;
+        }
+        return currentValue != expectedValue; // tslint:disable-line
+      } else {
+        return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
+      }
     }
   }
 
