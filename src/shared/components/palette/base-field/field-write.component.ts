@@ -2,6 +2,7 @@ import {
   Component,
   ComponentFactoryResolver,
   Injector,
+  Input,
   OnInit,
   ViewChild,
   ViewContainerRef
@@ -21,6 +22,9 @@ import { FormValidatorsService } from '../../../services/form';
   `
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
+
+  @Input()
+  caseFields: CaseField[] = [];
 
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
@@ -43,6 +47,8 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
 
     // Provide component @Inputs
     component.instance['caseField'] = this.caseField;
+    component.instance['caseFields'] = this.caseFields;
+    component.instance['formGroup'] = this.formGroup;
     component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
     component.instance['idPrefix'] = this.idPrefix;
     if (this.caseField.field_type.id === 'AddressGlobal') {

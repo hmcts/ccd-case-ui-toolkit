@@ -55,6 +55,9 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
+  let formGroup: FormGroup;
+  let caseFields: CaseField[] = [CASE_FIELD];
+
   beforeEach(async(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
@@ -90,6 +93,8 @@ describe('FieldReadComponent', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
+    component.caseFields = caseFields;
+    component.formGroup = formGroup;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -114,6 +119,8 @@ describe('FieldReadComponent', () => {
 
     let fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toBe(CASE_FIELD);
+    expect(fieldTest.caseFields).toBe(caseFields);
+    expect(fieldTest.formGroup).toBe(formGroup);
     expect(fieldTest.registerControl).not.toBeNull();
   });
 

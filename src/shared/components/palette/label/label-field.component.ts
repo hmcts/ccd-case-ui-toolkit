@@ -10,5 +10,5 @@ export class LabelFieldComponent {
   caseField: CaseField;
 
   @Input()
-  eventFields: CaseField[] = [];
+  caseFields: CaseField[] = [];
 }

@@ -4,8 +4,14 @@
   <ng-container *ngFor="let field of caseField | ccdFieldsFilter:true">
     <ng-container [ngSwitch]="field | ccdIsReadOnly">
       <ccd-field-read *ngSwitchCase="true"
+                      ccdConditionalShow
+                      ccdLabelSubstitutor
                       [caseField]="field"
+                      [contextFields]="caseFields"
+                      [caseFields]="caseFields"
+                      [formGroup]="formGroup"
                       [withLabel]="true"
+                      [idPrefix]="buildIdPrefix(field)"
                       [registerControl]="buildControlRegistrer(field)">
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
@@ -13,8 +19,9 @@
                        ccdLabelSubstitutor
                        [greyBarEnabled]="true"
                        [caseField]="field"
-                       [eventFields]="[caseField]"
-                       [formGroup]="complexGroup"
+                       [contextFields]="caseFields"
+                       [caseFields]="caseFields"
+                       [formGroup]="formGroup"
                        [registerControl]="buildControlRegistrer(field)"
                        [idPrefix]="buildIdPrefix(field)">
       </ccd-field-write>

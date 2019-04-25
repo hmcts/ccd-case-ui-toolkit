@@ -11,6 +11,12 @@ import { FormValidatorsService } from '../../../services/form/form-validators.se
   styleUrls: ['./read-complex-field-table.scss']
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+  @Input()
+  caseFields: CaseField[] = [];
+
+  @Input()
+  formGroup: FormGroup;
+
   complexGroup: FormGroup;
 
   @Input()
