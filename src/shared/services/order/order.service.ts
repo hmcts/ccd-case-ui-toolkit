@@ -62,11 +62,11 @@ export class OrderService {
   }
 
   private isCollection(caseField: CaseField) {
-    return caseField.field_type && caseField.field_type.type === 'Collection';
+    return caseField.field_type.type === 'Collection';
   }
 
   private isComplex(caseField: CaseField) {
-    return caseField.field_type && caseField.field_type.type === 'Complex';
+    return caseField.field_type.type === 'Complex';
   }
 
   private deriveOrderFromChildComplexFields(caseField: CaseField, fieldType: FieldType) {

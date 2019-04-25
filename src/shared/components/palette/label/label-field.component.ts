@@ -8,5 +8,5 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 })
 export class LabelFieldComponent extends AbstractFieldReadComponent {
   @Input()
-  eventFields: CaseField[] = [];
+  caseFields: CaseField[] = [];
 }
