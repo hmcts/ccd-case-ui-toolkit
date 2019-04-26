@@ -11,7 +11,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields"
+    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [contextFields]="caseFields"
         [elementsToSubstitute]="elementsToSubstitute">
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>
@@ -21,7 +21,7 @@ import createSpyObj = jasmine.createSpyObj;
 class TestHostComponent {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[];
+  @Input() caseFields: CaseField[];
   @Input() formGroup: FormGroup = new FormGroup({});
   @Input() elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
 }
@@ -83,7 +83,7 @@ describe('LabelSubstitutorDirective', () => {
       let hintText = 'Label B with valueA=${LabelA} and valueA=${LabelA}:2';
       let value = 'Label B with valueA=${LabelA} and valueA=${LabelA}:3';
       comp.caseField = textField('LabelB', value, label, hintText);
-      comp.eventFields = [comp.caseField];
+      comp.caseFields = [comp.caseField];
 
       placeholderService.resolvePlaceholders.and
         .returnValues('Label B with valueA=ValueA and valueA=ValueA:1',
@@ -101,7 +101,7 @@ describe('LabelSubstitutorDirective', () => {
       let hintText = undefined;
       let value = undefined;
       comp.caseField = textField('LabelB', value, label, hintText);
-      comp.eventFields = [comp.caseField];
+      comp.caseFields = [comp.caseField];
 
       placeholderService.resolvePlaceholders.and.returnValues(label, hintText, value);
       fixture.detectChanges();
@@ -116,7 +116,7 @@ describe('LabelSubstitutorDirective', () => {
       let hintText = '';
       let value = '';
       comp.caseField = textField('LabelB', value, label, hintText);
-      comp.eventFields = [comp.caseField];
+      comp.caseFields = [comp.caseField];
 
       placeholderService.resolvePlaceholders.and.returnValues(label, hintText, value);
       fixture.detectChanges();
@@ -131,7 +131,7 @@ describe('LabelSubstitutorDirective', () => {
       let hintText = 'Some hint text';
       let value = 'Some value';
       comp.caseField = textField('LabelB', value, label, hintText);
-      comp.eventFields = [comp.caseField];
+      comp.caseFields = [comp.caseField];
       comp.elementsToSubstitute = ['value'];
 
       placeholderService.resolvePlaceholders.and.returnValues('updated value');
@@ -145,7 +145,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass case field value to substitute label when case field value but no form field value present', () => {
       let label = 'someLabel:';
       comp.caseField = textField('LabelB', undefined, label);
-      comp.eventFields = [comp.caseField, field('LabelA', 'ValueA', '')];
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueA', '')];
       fixture.detectChanges();
 
       expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: undefined, LabelA: 'ValueA'}, label);
@@ -154,7 +154,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form value to substitute label if both case field and form values exist for same field', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', 'ValueA1', '')];
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueA1', '')];
       comp.formGroup = new FormGroup({
         LabelA: new FormControl('ValueA2'),
       });
@@ -166,7 +166,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass correct values when both form field and case field values present for different fields', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, textField('LabelD', 'ValueD', '')];
+      comp.caseFields = [comp.caseField, textField('LabelD', 'ValueD', '')];
       comp.formGroup = new FormGroup({
         LabelA: new FormControl('ValueA'),
         LabelC: new FormControl('ValueC')
@@ -183,7 +183,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value when field is not read only and no case field value but form field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '', {
+      comp.caseFields = [comp.caseField, field('LabelA', '', {
         id: 'LabelA',
         type: 'FixedList',
         fixed_list_items: [
@@ -209,7 +209,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass case field value when field is read only and no form field but case field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', 'ValueC', {
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
         id: 'LabelA',
         type: 'FixedList',
         fixed_list_items: [
@@ -232,7 +232,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass field form value when field is not read only and both form and case field values present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', 'ValueC', {
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
         id: 'LabelA',
         type: 'FixedList',
         fixed_list_items: [
@@ -261,7 +261,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value when field is not read only and no case field value but form field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '', {
+      comp.caseFields = [comp.caseField, field('LabelA', '', {
         id: 'LabelA',
         type: 'MultiSelectList',
         fixed_list_items: [
@@ -291,7 +291,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass case field value when field is read only and no form field but case field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', ['ValueC', 'ValueD'], {
+      comp.caseFields = [comp.caseField, field('LabelA', ['ValueC', 'ValueD'], {
         id: 'LabelA',
         type: 'MultiSelectList',
         fixed_list_items: [
@@ -318,7 +318,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass field form value when field is not read only and both form and case field values present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', 'ValueC', {
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
         id: 'LabelA',
         type: 'MultiSelectList',
         fixed_list_items: [
@@ -351,7 +351,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass null value for null MoneyGBP', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', null, {
+      comp.caseFields = [comp.caseField, field('LabelA', null, {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
@@ -363,7 +363,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass case field value with MoneyGBP when case field value but no form field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '20055', {
+      comp.caseFields = [comp.caseField, field('LabelA', '20055', {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
@@ -375,7 +375,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with MoneyGBP when form field value but no case field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '', {
+      comp.caseFields = [comp.caseField, field('LabelA', '', {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
@@ -390,7 +390,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with MoneyGBP when both form and case field values present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '99999', {
+      comp.caseFields = [comp.caseField, field('LabelA', '99999', {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
@@ -408,7 +408,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass case field value with Date when case field value but no form field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '2018-03-07', {
+      comp.caseFields = [comp.caseField, field('LabelA', '2018-03-07', {
         id: 'LabelA',
         type: 'Date'
       }, '')];
@@ -420,7 +420,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with Date when form field value but no case field value present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '', {
+      comp.caseFields = [comp.caseField, field('LabelA', '', {
         id: 'LabelA',
         type: 'Date'
       }, '')];
@@ -435,7 +435,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with Date when both form and case field values present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '2018-03-07', {
+      comp.caseFields = [comp.caseField, field('LabelA', '2018-03-07', {
         id: 'LabelA',
         type: 'Date'
       }, '')];
@@ -450,7 +450,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with invalid date when both form and case field values present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.eventFields = [comp.caseField, field('LabelA', '2018-03', {
+      comp.caseFields = [comp.caseField, field('LabelA', '2018-03', {
         id: 'LabelA',
         type: 'Date'
       }, '')];
@@ -479,7 +479,7 @@ describe('LabelSubstitutorDirective', () => {
           value: 'Jacques',
         }
       ];
-      comp.eventFields = [comp.caseField, field('LabelA', VALUES, {
+      comp.caseFields = [comp.caseField, field('LabelA', VALUES, {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -506,7 +506,7 @@ describe('LabelSubstitutorDirective', () => {
           value: 'Jacques',
         }
       ];
-      comp.eventFields = [comp.caseField, field('LabelA', [], {
+      comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -536,7 +536,7 @@ describe('LabelSubstitutorDirective', () => {
           value: 'Jacques',
         }
       ];
-      comp.eventFields = [comp.caseField, field('LabelA', [
+      comp.caseFields = [comp.caseField, field('LabelA', [
         {
           value: 'Tom',
         },
@@ -569,7 +569,7 @@ describe('LabelSubstitutorDirective', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
-      comp.eventFields = [comp.caseField, field('LabelA', VALUES, {
+      comp.caseFields = [comp.caseField, field('LabelA', VALUES, {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -600,7 +600,7 @@ describe('LabelSubstitutorDirective', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
-      comp.eventFields = [comp.caseField, field('LabelA', [], {
+      comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -634,7 +634,7 @@ describe('LabelSubstitutorDirective', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
-      comp.eventFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
+      comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -672,7 +672,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
       const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
-      comp.eventFields = [comp.caseField, field('LabelA', RAW_VALUES, {
+      comp.caseFields = [comp.caseField, field('LabelA', RAW_VALUES, {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -690,7 +690,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
       const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
-      comp.eventFields = [comp.caseField, field('LabelA', [], {
+      comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -711,7 +711,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
       const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
-      comp.eventFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
+      comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -735,7 +735,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
       const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
-      comp.eventFields = [comp.caseField, field('LabelA', RAW_VALUES, {
+      comp.caseFields = [comp.caseField, field('LabelA', RAW_VALUES, {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -753,7 +753,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
       const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
-      comp.eventFields = [comp.caseField, field('LabelA', [], {
+      comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -774,7 +774,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
       const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
-      comp.eventFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
+      comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -53,6 +53,9 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
+  let formGroup: FormGroup;
+  let caseFields: CaseField[] = [CASE_FIELD];
+
   beforeEach(async(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
@@ -88,6 +91,8 @@ describe('FieldReadComponent', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
+    component.caseFields = caseFields;
+    component.formGroup = formGroup;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -112,6 +117,8 @@ describe('FieldReadComponent', () => {
 
     let fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toBe(CASE_FIELD);
+    expect(fieldTest.caseFields).toBe(caseFields);
+    expect(fieldTest.formGroup).toBe(formGroup);
   });
 
   it('should pass context to field instance', () => {

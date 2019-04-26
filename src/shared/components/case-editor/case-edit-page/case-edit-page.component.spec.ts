@@ -552,9 +552,12 @@ describe('CaseEditPageComponent', () => {
     it('should call validate', async () => {
       fixture.detectChanges();
 
+      expect(eventData.case_reference).toBeUndefined();
+
       comp.submit();
 
       fixture.whenStable().then(() => {
+        expect(eventData.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
         expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
         expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
         expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);

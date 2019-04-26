@@ -1,5 +1,20 @@
 ## RELEASE NOTES
 
+### Version 2.42.3 - April 23 2019
+**RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
+
+### Version 2.42.2 - April 17 2019
+**RDM-3325/4591** - Text field whitespaces fix
+
+### Version 2.42.1 - April 16 2019
+**RDM-3897** - Add optional property casereference to the CaseEventData object
+
+### Version 2.42.0 - April 15 2019
+**RDM-4184** - Remove Fixed History Tab
+
+### Version 2.41.1 - April 12 2019
+**RDM-3525-Bug-Fix** - Disable previous button and cancel link on click on submit
+
 ### Version 2.41.0 - April 11 2019
 **RDM-3325-Firefox-Bug-Fix** - Mandatory Text field breaks the UI on Firefox
 **RDM-4521** - Confirmation green bar not displayed
