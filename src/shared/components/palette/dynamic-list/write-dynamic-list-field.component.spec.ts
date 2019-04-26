@@ -5,7 +5,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
-import { WriteDynamicListFieldComponent } from './write-Dynamic-list-field.component';
+import { WriteDynamicListFieldComponent } from './write-dynamic-list-field.component';
 import { attr, text } from '../../../test/helpers';
 
 const VALUE = 'F';

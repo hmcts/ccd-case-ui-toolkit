@@ -69,6 +69,13 @@ export class FormValueService {
     Object.keys(cloneForm['data']).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
         delete cloneForm['data'][key];
+      } else{
+        caseFields.forEach(function (e) {
+          console.log(e);
+          if ( e.id === key && e.field_type.type === 'DynamicList'){
+            cloneForm['data'][key] = JSON.parse(cloneForm['data'][key]);
+          }
+        });
       }
     });
     return cloneForm;
