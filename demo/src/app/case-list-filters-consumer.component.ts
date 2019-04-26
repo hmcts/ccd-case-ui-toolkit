@@ -16,12 +16,15 @@ export class CaseListFiltersConsumerComponent implements OnInit {
          (onReset)="reset($event)"
    ></ccd-case-list-filters>`;
 
+   json: any;
+
    ngOnInit() {
       this.defaults = {
          jurisdiction_id: 'J1',
          case_type_id: 'CT1',
          state_id: 'S1'
-     }
+     };
+     this.json = JSON;
    }
 
    applied(selected) {

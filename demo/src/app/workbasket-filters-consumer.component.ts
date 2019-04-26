@@ -89,6 +89,8 @@ export class WorkbasketFiltersConsumerComponent implements OnInit {
 
    defaults: any;
 
+   json: any;
+
    code = `
    <ccd-search-filters [jurisdictions]="jurisdictions"
                         [autoApply]="true"
@@ -103,7 +105,8 @@ export class WorkbasketFiltersConsumerComponent implements OnInit {
          jurisdiction_id: 'J1',
          case_type_id: 'CT1',
          state_id: 'S1'
-     }
+      };
+      this.json = JSON;
    }
 
    applied(selected) {

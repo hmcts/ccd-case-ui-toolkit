@@ -4,13 +4,18 @@
 
         <div class="text">
             <p> This component is used to set the jurisdiction, case type, state and keyword when searching cases. The elements of the contract are:</p>
+            <p> Sibling component of <a [routerLink]="'/case/case-list-filters'">Case List Filters</a>. Has an additonal input "jurisdictions".</p>
             <ul class="list list-bullet text">
                 <li>Input fields:
                     <ul class="list list-bullet text">
-                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events
+                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and states
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/jurisdiction.model.ts" target="_blank">Jurisdiction model</a></p>
+                            <p>Collection:</p>
+                            <pre class="language-markup"><code class="language-markup">{{json.stringify(jurisdictions, null, '\t')}}</code></pre>
                         </li>
-                        <li>defaults - a jurisdiction</li>
+                        <li>defaults - an object consisiting of jurisdiction, casetype and state id's
+                            <pre class="language-markup"><code class="language-markup">{{json.stringify(defaults, null, '\t')}}</code></pre>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -20,10 +25,10 @@
                         <li>onApply - a notification event about search filters being submitted containing an event with:
                             <ul class="list list-bullet text">
                                 <li>selected: Jurisdiction</li>
-                                <li>queryParams: QueryParams</li>
+                                <li>queryParams: Object</li>
                             </ul>
                         </li>
-                        <li>onReset - a notification event about resetting search filters
+                        <li>onReset - a notification event about search filters being reset
                         </li>
                     </ul>
                 </li>
