@@ -20,7 +20,8 @@ import { GreyBarService } from './services/grey-bar.service';
 export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[] = [];
+  @Input() idPrefix: string;
+  @Input() contextFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
   @Input() greyBarEnabled = false;
 
@@ -89,7 +90,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private onHide() {
     // console.log('on hide is form field', this.formField);
-
     if (this.formField) {
       this.unsubscribeFromFormChanges();
       // console.log('FIELD ' + this.caseField.id + ' disabling form field');
@@ -122,17 +122,24 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private shouldToggleToHide(fields, forced) {
-    return (!this.isHidden() || forced) && !this.condition.match(fields);
+    return (!this.isHidden() || forced) && !this.condition.match(fields, this.buildPath());
   }
 
   private shouldToggleToShow(fields) {
-    return this.isHidden() && this.condition.match(fields);
+    return this.isHidden() && this.condition.match(fields, this.buildPath());
+  }
+
+  private buildPath() {
+    if (this.idPrefix) {
+      return this.idPrefix + this.caseField.id;
+    }
+    return this.caseField.id;
   }
 
   private getCurrentPagesReadOnlyAndFormFieldValues() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
-    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
+    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
   }
 
   private getFormFieldsValuesIncludingDisabled() {

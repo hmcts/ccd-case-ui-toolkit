@@ -6,7 +6,7 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 @Injectable()
 export class FormValidatorsService {
   static readonly MANDATORY: string = 'MANDATORY';
-  static readonly REGEX_WHITESPACES: string = '^[A-Za-z0-9]+(?:\\s+[A-Za-z0-9]+)*$';
+  static readonly REGEX_WHITESPACES: string = '^[^ ]+(?:\\s+[^ ]+)*$';
   private readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
     'Date', 'MoneyGBP'
   ];
