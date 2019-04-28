@@ -71,8 +71,7 @@ export class FormValueService {
         delete cloneForm['data'][key];
       } else{
         caseFields.forEach(function (e) {
-          console.log(e);
-          if ( e.id === key && e.field_type.type === 'DynamicList'){
+          if ( e.id === key && e.field_type && e.field_type.type === 'DynamicList'){
             cloneForm['data'][key] = JSON.parse(cloneForm['data'][key]);
           }
         });

@@ -11,6 +11,10 @@ import { attr, text } from '../../../test/helpers';
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
 const FIELD_ID = 'MarritalStatus';
+const OTHER_VALUE = '{"default":{"code":"O","label":"Other"},"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},{"code":"O","label":"Other"}]}';
+const MALE_VALUE = '{"default":{"code":"M","label":"Male"},"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},{"code":"O","label":"Other"}]}';
+const FEMALE_VALUE = '{"default":{"code":"F","label":"Female"},"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},{"code":"O","label":"Other"}]}';
+
 const FIELD_TYPE: FieldType = {
   id: 'Gender',
   type: 'DynamicList',
@@ -90,22 +94,22 @@ describe('WriteDynamicListFieldComponent', () => {
     expect(options.length).toEqual(4);
     expect(attr(options[0], 'value')).toEqual('');
     expect(text(options[0])).toEqual('--Select a value--');
-    expect(attr(options[1], 'value')).toEqual('M');
+    expect(attr(options[1], 'value')).toEqual(MALE_VALUE);
     expect(text(options[1])).toEqual('Male');
-    expect(attr(options[2], 'value')).toEqual('F');
+    expect(attr(options[2], 'value')).toEqual(FEMALE_VALUE);
     expect(text(options[2])).toEqual('Female');
-    expect(attr(options[3], 'value')).toEqual('O');
+    expect(attr(options[3], 'value')).toEqual(OTHER_VALUE);
     expect(text(options[3])).toEqual('Other');
 
   });
 
   it('should link select element to formControl', () => {
 
-    component.dynamicListControl.setValue('M');
+    component.dynamicListControl.setValue(OTHER_VALUE);
 
     let select = de.query($SELECT);
     fixture.detectChanges();
 
-    expect(select.nativeElement.value).toEqual('M');
+    expect(select.nativeElement.value).toEqual(OTHER_VALUE);
   });
 });

@@ -1,4 +1,5 @@
 import { FormValueService } from './form-value.service';
+import { CaseField, FieldType } from '../../domain/definition';
 
 describe('FormValueService', () => {
 
@@ -69,4 +70,16 @@ describe('FormValueService', () => {
       'number': '42'
     } as object);
   });
+
+  it('should fiter current page fields and process DynamicList values back to Json', () => {
+    let formFields = {data: {dynamicList: '{}', thatTimeOfTheDay: '{}'}};
+    let caseField = new CaseField();
+    let fieldType = new FieldType();
+    fieldType.type = 'DynamicList';
+    caseField.id = 'dynamicList';
+    caseField.field_type = fieldType
+    let caseFields = [caseField];
+    let results = formValueService.filterCurrentPageFields(caseFields, formFields);
+    expect(results).toEqual({data: {dynamicList: {}}} as object);
+  })
 });

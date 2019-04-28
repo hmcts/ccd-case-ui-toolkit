@@ -6,8 +6,23 @@ import { DynamicListPipe } from './dynamic-list.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
 
 describe('ReadDynamicListFieldComponent', () => {
-
-  const VALUE = 'F';
+  const VALUE = {
+    default: {code: 'F' , label: 'Female'},
+    dynamic_list_items: [
+      {
+        code: 'M',
+        label: 'Male'
+      },
+      {
+        code: 'F',
+        label: 'Female'
+      },
+      {
+        code: 'O',
+        label: 'Other'
+      }
+    ]
+  };
   const EXPECTED_LABEL = 'Female';
   const FIELD_TYPE: FieldType = {
     id: 'Gender',
@@ -18,7 +33,7 @@ describe('ReadDynamicListFieldComponent', () => {
         label: 'Male'
       },
       {
-        code: VALUE,
+        code: JSON.stringify(VALUE),
         label: EXPECTED_LABEL
       },
       {
