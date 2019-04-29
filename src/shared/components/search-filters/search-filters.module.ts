@@ -5,6 +5,7 @@ import { SearchFiltersComponent } from './search-filters.component';
 import { PaletteModule } from '../palette';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefinitionsModule } from '../../services/definitions';
+import { SearchFiltersWrapperComponent } from './search-filters-wrapper.component';
 
 @NgModule({
     imports: [
@@ -16,9 +17,11 @@ import { DefinitionsModule } from '../../services/definitions';
     ],
     declarations: [
         SearchFiltersComponent,
+        SearchFiltersWrapperComponent,
     ],
     exports: [
         SearchFiltersComponent,
+        SearchFiltersWrapperComponent,
     ],
     providers: [
         SearchService,
