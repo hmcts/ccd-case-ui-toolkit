@@ -2,6 +2,7 @@
 
 ### Version 2.43.0 - April 29 2019
 **RDM-4386** Make print, event selector and history tab optional but present by default
+**RDM-4130** Extract Results List Component to toolkit 
 
 ### Version 2.42.3 - April 23 2019
 **RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
