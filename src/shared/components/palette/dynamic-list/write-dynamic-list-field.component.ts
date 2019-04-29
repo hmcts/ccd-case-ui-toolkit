@@ -16,10 +16,10 @@ export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent 
     this.dynamicListControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null));
     this.dynamicList = [];
     this.caseField.field_type.dynamic_list_items.forEach((items) => {
-      let a : { default?: any; dynamic_list_items?:any} = {};
+      let a: { default?: any; dynamic_list_items?: any } = {};
       a.default = items;
       a.dynamic_list_items = this.caseField.field_type.dynamic_list_items;
-      this.dynamicList.push({key:  JSON.stringify(a), label: items.label});
+      this.dynamicList.push({key: JSON.stringify(a), label: items.label});
     })
   }
 }

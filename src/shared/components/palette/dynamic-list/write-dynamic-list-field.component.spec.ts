@@ -11,9 +11,15 @@ import { attr, text } from '../../../test/helpers';
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
 const FIELD_ID = 'MarritalStatus';
-const OTHER_VALUE = '{"default":{"code":"O","label":"Other"},"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},{"code":"O","label":"Other"}]}';
-const MALE_VALUE = '{"default":{"code":"M","label":"Male"},"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},{"code":"O","label":"Other"}]}';
-const FEMALE_VALUE = '{"default":{"code":"F","label":"Female"},"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},{"code":"O","label":"Other"}]}';
+const OTHER_VALUE = '{"default":{"code":"O","label":"Other"},' +
+  '"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},' +
+  '{"code":"O","label":"Other"}]}';
+const MALE_VALUE = '{"default":{"code":"M","label":"Male"},' +
+  '"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},' +
+  '{"code":"O","label":"Other"}]}';
+const FEMALE_VALUE = '{"default":{"code":"F","label":"Female"},' +
+  '"dynamic_list_items":[{"code":"M","label":"Male"},{"code":"F","label":"Female"},' +
+  '{"code":"O","label":"Other"}]}';
 
 const FIELD_TYPE: FieldType = {
   id: 'Gender',
