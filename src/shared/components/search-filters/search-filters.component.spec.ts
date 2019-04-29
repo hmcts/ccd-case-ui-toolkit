@@ -6,7 +6,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { Observable } from 'rxjs/Rx';
 import createSpyObj = jasmine.createSpyObj;
 import { createSearchInputs } from './domain/search-input.test.fixture';
-import { JurisdictionService, SearchService, OrderService, WindowService, DefinitionsService } from '../../services';
+import { JurisdictionService, SearchService, OrderService, WindowService } from '../../services';
 import { Jurisdiction, CaseType } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
@@ -138,7 +138,6 @@ let searchHandler;
 let mockSearchService;
 let orderService;
 let onJurisdictionHandler: any;
-let mockDefinitionsService: any;
 
 const TEST_FORM_GROUP = new FormGroup({});
 const METADATA_FIELDS = ['PersonLastName'];
@@ -159,11 +158,6 @@ describe('SearchFiltersComponent', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     jurisdictionService = new JurisdictionService();
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-    mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
-      JURISDICTION_1,
-      JURISDICTION_2
-    ]));
 
     onJurisdictionHandler = createSpyObj('onJurisdictionHandler', ['applyJurisdiction']);
     onJurisdictionHandler.applyJurisdiction.and.returnValue();
@@ -181,8 +175,7 @@ describe('SearchFiltersComponent', () => {
           { provide: SearchService, useValue: mockSearchService },
           { provide: OrderService, useValue: orderService },
           { provide: JurisdictionService, useValue: jurisdictionService },
-          { provide: WindowService, useValue: windowService },
-          { provide: DefinitionsService, useValue: mockDefinitionsService }
+          { provide: WindowService, useValue: windowService }
         ]
       })
       .compileComponents()
@@ -193,7 +186,10 @@ describe('SearchFiltersComponent', () => {
         component.onJurisdiction.subscribe(onJurisdictionHandler.applyJurisdiction);
 
         component.formGroup = TEST_FORM_GROUP;
-
+        component.jurisdictions = [
+          JURISDICTION_1,
+          JURISDICTION_2
+        ];
         component.onApply.subscribe(searchHandler.applyFilters);
         component.onReset.subscribe(searchHandler.resetFilters);
 
@@ -205,7 +201,7 @@ describe('SearchFiltersComponent', () => {
   it('should select the jurisdiction if there is only one jurisdiction', async(() => {
     resetCaseTypes(JURISDICTION_1, []);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    component.jurisdictions = [JURISDICTION_1];
     fixture.detectChanges();
     component.autoApply = true;
     component.ngOnInit();
@@ -219,11 +215,6 @@ describe('SearchFiltersComponent', () => {
   }));
 
   it('should emit on apply if autoApply is true', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
-      JURISDICTION_1,
-      JURISDICTION_2
-    ]));
-    fixture.detectChanges();
     component.autoApply = true;
     component.ngOnInit();
 
@@ -238,7 +229,7 @@ describe('SearchFiltersComponent', () => {
   it('should select the first caseType from LocalStorage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_3]));
+    component.jurisdictions = [JURISDICTION_3];
     windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
     fixture.detectChanges();
     component.ngOnInit();
@@ -251,7 +242,7 @@ describe('SearchFiltersComponent', () => {
   it('should select the first caseType from newly selected jurisdiction if nothing in LocalStorage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_3]));
+    component.jurisdictions = [JURISDICTION_3];
     windowService.getLocalStorage.and.returnValues(undefined, undefined);
     fixture.detectChanges();
     component.ngOnInit();
@@ -267,7 +258,7 @@ describe('SearchFiltersComponent', () => {
   it('should select the first caseType from newly selected jurisdiction if not in LocalStorage already', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_3]));
+    component.jurisdictions = [JURISDICTION_3];
     windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_1));
     fixture.detectChanges();
     component.ngOnInit();
@@ -283,7 +274,7 @@ describe('SearchFiltersComponent', () => {
   it('should select the first caseType from newly selected jurisdiction if different in LocalStorage already', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_3]));
+    component.jurisdictions = [JURISDICTION_3];
     windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
     fixture.detectChanges();
     component.ngOnInit();
@@ -299,7 +290,7 @@ describe('SearchFiltersComponent', () => {
   it('should select the caseType when no LocalStorage is present', () => {
     resetCaseTypes(JURISDICTION_1, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    component.jurisdictions = [JURISDICTION_1];
     fixture.detectChanges();
     component.ngOnInit();
     fixture.detectChanges();
@@ -312,9 +303,8 @@ describe('SearchFiltersComponent', () => {
     resetCaseTypes(JURISDICTION_1, [CASE_TYPE_1, CASE_TYPE_2]);
     component.selected.jurisdiction = JURISDICTION_1;
     component.selected.caseType = CASE_TYPE_1;
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    component.jurisdictions = [JURISDICTION_1];
     mockSearchService.getSearchInputs.and.returnValue(Observable.throw(new Error('Response expired')));
-    fixture.detectChanges();
     component.onJurisdictionIdChange();
     expect(component.searchInputsReady).toBeFalsy();
     expect(component.searchInputs.length).toBe(0);
@@ -538,13 +528,6 @@ describe('Clear localStorage', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     jurisdictionService = new JurisdictionService();
     windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
-
-    mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([
-      JURISDICTION_1,
-      JURISDICTION_2
-    ]));
-
     TestBed
       .configureTestingModule({
         imports: [
@@ -558,8 +541,7 @@ describe('Clear localStorage', () => {
           { provide: SearchService, useValue: mockSearchService },
           { provide: OrderService, useValue: orderService },
           { provide: JurisdictionService, useValue: jurisdictionService },
-          { provide: WindowService, useValue: windowService },
-          { provide: DefinitionsService, useValue: mockDefinitionsService }
+          { provide: WindowService, useValue: windowService }
         ]
       })
       .compileComponents()
@@ -568,6 +550,10 @@ describe('Clear localStorage', () => {
         component = fixture.componentInstance;
 
         component.formGroup = TEST_FORM_GROUP;
+        component.jurisdictions = [
+          JURISDICTION_1,
+          JURISDICTION_2
+        ];
         component.onReset.subscribe(searchHandler.applyReset);
 
         de = fixture.debugElement;

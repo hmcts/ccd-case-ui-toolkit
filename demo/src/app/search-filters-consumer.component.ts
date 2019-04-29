@@ -8,14 +8,58 @@ import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
 })
 export class SearchFiltersConsumerComponent implements OnInit {
 
+   readonly CASE_TYPE_1: CaseType = {
+      id: 'CT0',
+      name: 'Case type 0',
+      description: '',
+      states: [],
+      events: [],
+      case_fields: [],
+      jurisdiction: null
+   };
+
+   readonly CASE_TYPE_2: CaseType = {
+      id: 'CT2',
+      name: 'Case type 2',
+      description: '',
+      states: [],
+      events: [],
+      case_fields: [],
+      jurisdiction: null
+   };
+
+   readonly CASE_TYPE_3: CaseType = {
+      id: 'CT3',
+      name: 'Case type 3',
+      description: '',
+      states: [],
+      events: [],
+      case_fields: [],
+      jurisdiction: null
+   };
+
+   readonly JURISDICTION_1: Jurisdiction = {
+      id: 'J1',
+      name: 'Jurisdiction 1',
+      description: '',
+      caseTypes: [this.CASE_TYPE_1, this.CASE_TYPE_2]
+   };
+
+   readonly JURISDICTION_2: Jurisdiction = {
+      id: 'J2',
+      name: 'Jurisdiction 2',
+      description: '',
+      caseTypes: [this.CASE_TYPE_3]
+   };
+
    jurisdictions: Jurisdiction[];
 
    code = `
-   <ccd-search-filters
+   <ccd-search-filters [jurisdictions]="jurisdictions"
                         [autoApply]="true"
                         (onApply)="applied($event)"
                         (onReset)="reset()"
-                        (onJurisdiction)="jurisdictionSelected($event)">
+                        (onJuridiction)="jurisdictionSelected($event)">
    </ccd-search-filters>`;
    selected = `
    {
@@ -35,6 +79,7 @@ export class SearchFiltersConsumerComponent implements OnInit {
    }`;
 
    ngOnInit() {
+      this.jurisdictions = [this.JURISDICTION_1, this.JURISDICTION_2];
    }
 
    applied(selected) {

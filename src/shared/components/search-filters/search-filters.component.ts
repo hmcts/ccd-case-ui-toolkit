@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SearchInput } from './domain/search-input.model';
-import { READ_ACCESS } from '../../domain/case-view/access-types.model';
-import { SearchService, WindowService, OrderService, JurisdictionService, DefinitionsService } from '../../services';
+import { SearchService, WindowService, OrderService, JurisdictionService } from '../../services';
 import { Jurisdiction, CaseTypeLite, CaseState } from '../../domain';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
@@ -17,6 +16,9 @@ const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 export class SearchFiltersComponent implements OnInit {
 
   @Input()
+  jurisdictions: Jurisdiction[];
+
+  @Input()
   autoApply: boolean;
 
   @Output()
@@ -28,7 +30,6 @@ export class SearchFiltersComponent implements OnInit {
   @Output()
   onJurisdiction: EventEmitter<any> = new EventEmitter();
 
-  jurisdictions: Jurisdiction[];
   searchInputs: SearchInput[];
   searchInputsReady: boolean;
 
@@ -45,31 +46,23 @@ export class SearchFiltersComponent implements OnInit {
 
   formGroup: FormGroup = new FormGroup({});
 
-  constructor(
-    private searchService: SearchService,
+  constructor(private searchService: SearchService,
     private orderService: OrderService,
     private jurisdictionService: JurisdictionService,
-    private windowService: WindowService,
-    private definitionsService: DefinitionsService,
-  ) {
+    private windowService: WindowService) {
   }
 
   ngOnInit(): void {
     this.selected = {};
-
-    this.definitionsService.getJurisdictions(READ_ACCESS)
-      .subscribe(jurisdictions => {
-        this.jurisdictions = jurisdictions;
-        const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
-        if (this.jurisdictions.length === 1 || jurisdiction) {
-          this.selected.jurisdiction = this.jurisdictions[0];
-          if (jurisdiction) {
-            const localStorageJurisdiction = JSON.parse(jurisdiction);
-            this.selected.jurisdiction = this.jurisdictions.filter(j => j.id === localStorageJurisdiction.id)[0];
-          }
-          this.onJurisdictionIdChange();
-        }
-      });
+    const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
+    if (this.jurisdictions.length === 1 || jurisdiction) {
+      this.selected.jurisdiction = this.jurisdictions[0];
+      if (jurisdiction) {
+        const localStorageJurisdiction = JSON.parse(jurisdiction);
+        this.selected.jurisdiction = this.jurisdictions.filter(j => j.id === localStorageJurisdiction.id)[0];
+      }
+      this.onJurisdictionIdChange();
+    }
 
     if (this.autoApply === true) {
       this.selected.formGroup = this.formGroup;
