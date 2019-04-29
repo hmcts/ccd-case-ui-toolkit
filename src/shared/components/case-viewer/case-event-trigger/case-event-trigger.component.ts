@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { DisplayMode, CaseEventTrigger, CaseView, Activity, CaseEventData } from '../../../domain';
-import { CaseService, CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { AlertService, ActivityPollingService, EventStatusService } from '../../../services';
 import { CaseReferencePipe } from '../../../pipes';
 import { NgZone } from '@angular/core';
@@ -16,13 +16,14 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   BANNER = DisplayMode.BANNER;
   eventTrigger: CaseEventTrigger;
   caseDetails: CaseView;
-  subscription: Subscription;
+  activitySubscription: Subscription;
+  caseSubscription: Subscription;
   parentUrl: string;
 
   constructor(
     private ngZone: NgZone,
     private casesService: CasesService,
-    private caseService: CaseService,
+    private caseNotifier: CaseNotifier,
     private router: Router,
     private alertService: AlertService,
     private route: ActivatedRoute,
@@ -34,14 +35,14 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
-        this.caseService.caseView.subscribe(caseDetails => {
+        this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
           this.caseDetails = caseDetails;
         });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular( () => {
-        this.subscription = this.postEditActivity().subscribe((_resolved) => {
+        this.activitySubscription = this.postEditActivity().subscribe((_resolved) => {
           // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
         });
       });
@@ -53,7 +54,10 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
-      this.subscription.unsubscribe();
+      this.activitySubscription.unsubscribe();
+    }
+    if (!this.route.snapshot.data.case) {
+      this.caseSubscription.unsubscribe();
     }
   }
 

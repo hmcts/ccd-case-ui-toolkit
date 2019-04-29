@@ -18,20 +18,20 @@ describe('CaseResolver', () => {
     let draftService: DraftService;
 
     let casesService: any;
-    let caseService: any;
+    let caseNotifier: any;
     let alertService: AlertService;
     let route: any;
 
     let router: any;
 
     beforeEach(() => {
-      caseService = createSpyObj('caseService', ['announceCase']);
+      caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
 
       router = createSpyObj('router', ['navigate']);
       alertService = createSpyObj('alertService', ['success']);
-      caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, router, alertService);
 
       route = {
         firstChild: {
@@ -185,7 +185,7 @@ describe('CaseResolver', () => {
     let caseResolver: CaseResolver;
     let draftService: any;
 
-    let caseService: any;
+    let caseNotifier: any;
     let casesService: any;
     let alertService: AlertService;
     let route: any;
@@ -193,13 +193,13 @@ describe('CaseResolver', () => {
     let router: any;
 
     beforeEach(() => {
-      caseService = createSpyObj('caseService', ['announceCase']);
+      caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       router = createSpyObj('router', ['navigate']);
       alertService = createSpyObj('alertService', ['success']);
-      caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, router, alertService);
 
       route = {
         firstChild: {

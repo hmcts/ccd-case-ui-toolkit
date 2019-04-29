@@ -14,7 +14,7 @@ import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives'
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { EventTriggerResolver, CaseResolver } from './services';
-import { CaseEditorModule, CaseService } from '../case-editor';
+import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
 
@@ -47,7 +47,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         CaseViewComponent,
     ],
     providers: [
-        CaseService,
+        CaseNotifier,
         CaseReferencePipe,
         EventTriggerResolver,
         ActivityService,

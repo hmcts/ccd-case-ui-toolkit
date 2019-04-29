@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { CallbackErrorsComponent } from '../../error/callback-errors.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { ActivatedRoute } from '@angular/router';
@@ -29,7 +29,7 @@ import { Profile } from '../../../domain';
   templateUrl: 'case-edit-submit.html',
   styleUrls: ['../case-edit.scss']
 })
-export class CaseEditSubmitComponent implements OnInit {
+export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   eventTrigger: CaseEventTrigger;
   editForm: FormGroup;
   error: HttpError;
@@ -41,6 +41,7 @@ export class CaseEditSubmitComponent implements OnInit {
   showSummaryFields: CaseField[];
   paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
   isSubmitting: boolean;
+  profileSubscription: Subscription;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField) => {
     let aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -70,7 +71,7 @@ export class CaseEditSubmitComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.profileNotifier.profile.subscribe(_ => this.profile = _);
+    this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
@@ -78,6 +79,10 @@ export class CaseEditSubmitComponent implements OnInit {
     this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
+  }
+
+  ngOnDestroy() {
+    this.profileSubscription.unsubscribe();
   }
 
   submit(): void {

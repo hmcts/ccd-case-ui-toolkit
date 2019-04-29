@@ -1,24 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AlertService } from '../../../services/alert';
 import { CaseView, Draft } from '../../../domain';
-import { CasesService, CaseService } from '../../case-editor';
+import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService } from '../../../services';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NavigationNotifier } from '../services/navigation.notifier';
 
 @Component({
   selector: 'ccd-case-view',
   templateUrl: 'case-view.component.html'
 })
-export class CaseViewComponent implements OnInit {
+export class CaseViewComponent implements OnInit, OnDestroy {
 
   @Input()
   case: string;
+  @Output()
+  navigationTriggered: EventEmitter<any> = new EventEmitter();
 
+  navigationSubscription: Subscription;
   caseDetails: CaseView;
 
   constructor(
-    private caseService: CaseService,
+    private navigationNotifier: NavigationNotifier,
+    private caseNofitier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,
     private alertService: AlertService,
@@ -29,11 +34,18 @@ export class CaseViewComponent implements OnInit {
       .pipe(
         map(caseView => {
           this.caseDetails = caseView;
-          this.caseService.announceCase(caseView);
+          this.caseNofitier.announceCase(caseView);
         })
       )
       .toPromise()
       .catch(error => this.checkAuthorizationError(error));
+    this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
+      this.navigationTriggered.emit(navigation);
+    });
+  }
+
+  ngOnDestroy() {
+    this.navigationSubscription.unsubscribe();
   }
 
   isDataLoaded(): boolean {

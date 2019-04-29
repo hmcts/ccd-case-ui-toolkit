@@ -24,7 +24,7 @@ import { CaseReferencePipe } from '../../pipes/case-reference';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material';
-import { CaseService } from '../case-editor';
+import { CaseNotifier } from '../case-editor';
 
 @Component({
   // tslint:disable-next-line
@@ -426,7 +426,7 @@ let draftService: any;
 let alertService: any;
 let dialog: any;
 let matDialogRef: any;
-let caseService: any;
+let caseNotifier: any;
 
 describe('CaseViewerComponent', () => {
 
@@ -444,7 +444,7 @@ describe('CaseViewerComponent', () => {
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(Observable.of({}));
 
-    caseService = createSpyObj('caseService', ['announceCase']);
+    caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
@@ -485,7 +485,7 @@ describe('CaseViewerComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: CaseService, useValue: caseService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
           { provide: Router, useValue: router },
@@ -822,7 +822,7 @@ describe('CaseViewerComponent - no tabs available', () => {
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(Observable.of({}));
 
-    caseService = createSpyObj('caseService', ['announceCase']);
+    caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
@@ -865,7 +865,7 @@ describe('CaseViewerComponent - no tabs available', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: CaseService, useValue: caseService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
           { provide: Router, useValue: router },

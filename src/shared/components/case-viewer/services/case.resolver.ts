@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { CasesService, CaseService } from '../../case-editor';
+import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService, AlertService } from '../../../services';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class CaseResolver implements Resolve<CaseView> {
   // we cache the case view to avoid retrieving it for each child route
   public cachedCaseView: CaseView;
 
-  constructor(private caseService: CaseService,
+  constructor(private caseNotifier: CaseNotifier,
                private casesService: CasesService,
                private draftService: DraftService,
                private router: Router,
@@ -62,7 +62,7 @@ export class CaseResolver implements Resolve<CaseView> {
         .pipe(
           map(caseView => {
             this.cachedCaseView = caseView;
-            this.caseService.announceCase(this.cachedCaseView);
+            this.caseNotifier.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))
@@ -76,7 +76,7 @@ export class CaseResolver implements Resolve<CaseView> {
       .pipe(
         map(caseView => {
           this.cachedCaseView = caseView;
-          this.caseService.announceCase(this.cachedCaseView);
+          this.caseNotifier.announceCase(this.cachedCaseView);
           return this.cachedCaseView;
         }),
         catchError(error => this.checkAuthorizationError(error))

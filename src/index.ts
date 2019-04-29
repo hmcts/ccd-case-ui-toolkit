@@ -105,7 +105,12 @@ export { PaletteModule,
          editorRouting,
          CreateCaseFiltersModule,
          CaseTimelineModule,
-         CreateCaseFiltersSelection } from './shared/components';
+         CreateCaseFiltersSelection,
+         NavigationNotifier,
+         DRAFT_DELETED,
+         ERROR_DELETING_DRAFT,
+         DRAFT_RESUMED,
+         EVENT_TRIGGERED } from './shared/components';
 export { CaseReferencePipe,
          PipesModule } from './shared/pipes';
 export { createCaseEventTrigger,
