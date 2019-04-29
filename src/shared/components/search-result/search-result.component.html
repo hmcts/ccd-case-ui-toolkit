@@ -32,7 +32,7 @@
         <ng-container class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
           <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
                           ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
-                          [eventFields]="result.hydrated_case_fields"
+                          [contextFields]="result.hydrated_case_fields"
                           [elementsToSubstitute]="['value']"></ccd-field-read>
           <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>
         </ng-container>
@@ -40,7 +40,7 @@
       <div *ngIf="colIndex != 0" class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
         <ccd-field-read ccdLabelSubstitutor
                         [caseField]="result.columns[col.case_field_id]"
-                        [eventFields]="result.hydrated_case_fields"
+                        [contextFields]="result.hydrated_case_fields"
                         [elementsToSubstitute]="['value']"></ccd-field-read>
       </div>
     </td>
