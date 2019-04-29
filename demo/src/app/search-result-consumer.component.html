@@ -1,0 +1,57 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Search Result component</h1>
+
+        <div class="text">
+            <p> This component is used to list cases following a search action. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/jurisdiction.model.ts" target="_blank">Jurisdiction model</a></p>
+                            <p>Collection:</p>
+                            <pre class="language-markup">
+                                <code class="language-markup">{{jurisdictionsSample}}</code>
+                            </pre>
+                        </li>
+                        <li>isDisabled - boolean which controls the `disable` state of the button</li>
+                        <li>startButtonText - label of the button</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>selectionSubmitted - a notification event about a CreateCaseFiltersSelection being submitted containing an event with:
+                            <ul class="list list-bullet text">
+                                <li>jurisdictionId: string</li>
+                                <li>caseTypeId: string</li>
+                                <li>eventId: string</li>  
+                            </ul>
+                        </li>
+                        <li>selectionChanged - a notification event about selection change on any of the dropdowns
+                            
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-search-result
+                *ngIf="resultView"
+                [jurisdiction]="jurisdiction"
+                [caseType]="caseType"
+                [caseState]="caseState"
+                [resultView]="resultView"
+                [paginationMetadata]="paginationMetadata"
+                [metadataFields]="metadataFields"
+                (changePage)="apply($event)"
+            ></ccd-search-result>
+        </div>
+    </main>
+</div>
