@@ -16,6 +16,9 @@
                         <li>caseState                            
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-state.model.ts" target="_blank">CaseState model</a></p>
                         </li>
+                        <li>caseFilterFG
+                            <p><a href="https://angular.io/api/forms/FormGroup" target="_blank">FormGroup</a></p>
+                        </li>
                         <li>resultView                            
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/search/search-result-view.model.ts" target="_blank">SearchResultView model</a></p>
                         </li>
@@ -36,6 +39,7 @@
                                 <li>jurisdiction?: Jurisdiction</li>
                                 <li>caseType?: CaseType</li>
                                 <li>caseState?: CaseState</li>
+                                <li>formGroup?: FormGroup</li>
                                 <li>metadataFields?: string[]</li>
                                 <li>page?: number</li>
                             </ul>
@@ -55,6 +59,7 @@
                 [jurisdiction]="jurisdiction"
                 [caseType]="caseType"
                 [caseState]="caseState"
+                [caseFilterFG]="fg"
                 [resultView]="resultView"
                 [paginationMetadata]="paginationMetadata"
                 [metadataFields]="metadataFields"

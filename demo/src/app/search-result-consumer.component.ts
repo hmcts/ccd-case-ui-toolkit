@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'search-result-consumer',
@@ -14,6 +15,7 @@ export class SearchResultConsumerComponent implements OnInit {
     resultView: SearchResultView;
     paginationMetadata: PaginationMetadata;
     metadataFields: string[];
+    fg: FormGroup;
 
     code = `
     <ccd-search-result
@@ -21,6 +23,7 @@ export class SearchResultConsumerComponent implements OnInit {
         [jurisdiction]="jurisdiction"
         [caseType]="caseType"
         [caseState]="caseState"
+        [caseFilterFG]="fg"
         [resultView]="resultView"
         [paginationMetadata]="paginationMetadata"
         [metadataFields]="metadataFields"
