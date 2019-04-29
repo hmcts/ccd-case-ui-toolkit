@@ -45,7 +45,7 @@
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
-    "@angular/cli": "^6.0.8",
+    "@angular/cli": "^7.3.8",
     "@angular/compiler-cli": "~7.0.3",
     "enhanced-resolve": "3.3.0",
     "govuk-elements-sass": "^3.1.2",
