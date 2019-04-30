@@ -10,7 +10,7 @@ const FORM_GROUP_VALUE_LOC_STORAGE = 'search-form-group-value';
 const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 @Component({
   selector: 'ccd-search-filters',
-  templateUrl: './search-filters.html',
+  templateUrl: './search-filters.component.html',
 })
 
 export class SearchFiltersComponent implements OnInit {

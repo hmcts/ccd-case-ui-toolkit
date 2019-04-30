@@ -5,16 +5,7 @@ import { READ_ACCESS } from '../../domain/case-view/access-types.model';
 
 @Component({
     selector: 'ccd-search-filters-wrapper',
-    template: `
-        <ccd-search-filters
-            *ngIf="isVisible"
-            [jurisdictions]="jurisdictions"
-            [autoApply]="autoApply"
-            (onApply)="onWrapperApply($event)"
-            (onReset)="onWrapperReset($event)"
-            (onJuridiction)="onWrapperJurisdiction($event)"
-        ></ccd-search-filters>
-    `,
+    templateUrl: './search-filters-wrapper.component.html',
 })
 
 export class SearchFiltersWrapperComponent implements OnInit {
