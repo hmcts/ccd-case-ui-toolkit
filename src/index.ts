@@ -21,8 +21,7 @@ export { FormValueService,
          RequestOptionsBuilder,
          SearchService,
          WindowService,
-         JurisdictionService,
-         WorkbasketInputFilterService } from './shared/services';
+         WorkbasketInputFilterService,
          JurisdictionService,
          SearchResultViewItemComparatorFactory } from './shared/services';
 export { DocumentData,
@@ -114,8 +113,7 @@ export { PaletteModule,
          CaseTimelineModule,
          CreateCaseFiltersSelection,
          WorkbasketFiltersModule,
-         CaseListFiltersModule } from './shared/components';
-         CreateCaseFiltersSelection,
+         CaseListFiltersModule,
          SearchResultModule,
          SearchResultComponent } from './shared/components';
 export { CaseReferencePipe,
