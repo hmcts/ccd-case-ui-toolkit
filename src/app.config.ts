@@ -18,6 +18,7 @@ export abstract class AbstractAppConfig {
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   abstract getPrintServiceUrl(): string;
   abstract getRemotePrintServiceUrl(): string;
+  abstract getPaginationPageSize(): number;
 }
 
 export class CaseEditorConfig {
@@ -36,4 +37,5 @@ export class CaseEditorConfig {
   activity_max_request_per_batch: number;
   print_service_url: string;
   remote_print_service_url: string;
+  pagination_page_size: number;
 }
