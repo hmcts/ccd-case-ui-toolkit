@@ -122,8 +122,10 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
         ],
         schemas: [NO_ERRORS_SCHEMA],
         declarations: [
-          CaseEditComponent,
           CaseProgressComponent,
+
+          // mock
+          CaseEditComponent,
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
