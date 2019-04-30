@@ -42,7 +42,7 @@ export const routing = RouterModule.forRoot([
         component: SearchResultConsumerComponent
       },
       { path: 'case/FR/caseType1Id/1',
-        component: SearchResultConsumerComponent
+        redirectTo: 'search/result'
       }
     ]
   }
