@@ -13,3 +13,7 @@ export * from './draft.model';
 export * from './case-details.model';
 export * from './case-event-data.model';
 export * from './workbasket';
+export * from './pagination-metadata.model';
+export * from './search/sorting/sort-order';
+export * from './search/sorting/sort-parameters';
+export * from './search/sorting/search-result-view-item-comparator';
