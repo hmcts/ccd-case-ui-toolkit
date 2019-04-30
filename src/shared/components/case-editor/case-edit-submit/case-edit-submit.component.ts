@@ -40,6 +40,7 @@ export class CaseEditSubmitComponent implements OnInit {
   profile: Profile;
   showSummaryFields: CaseField[];
   paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
+  isSubmitting: boolean;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField) => {
     let aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -69,16 +70,18 @@ export class CaseEditSubmitComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.profileNotifier.profileSource.asObservable().first().subscribe(_ => this.profile = _);
+    this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
     this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
+    this.isSubmitting = false;
   }
 
   submit(): void {
+    this.isSubmitting = true;
     let caseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
@@ -99,12 +102,13 @@ export class CaseEditSubmitComponent implements OnInit {
             this.formErrorService
               .mapFieldErrors(this.error.details.field_errors, this.editForm.controls['data'] as FormGroup, 'validation');
           }
+          this.isSubmitting = false;
         }
       );
   }
 
   isDisabled(): boolean {
-    return !this.editForm.valid || this.hasErrors();
+    return this.isSubmitting || !this.editForm.valid || this.hasErrors();
   }
 
   private getStatus(response) {
@@ -136,7 +140,7 @@ export class CaseEditSubmitComponent implements OnInit {
       return field;
     }
 
-    let cloneField: CaseField = Object.assign({}, field);
+    let cloneField: CaseField = this.fieldsUtils.cloneObject(field);
     cloneField.value = this.editForm.get('data').get(field.id).value;
 
     return cloneField;

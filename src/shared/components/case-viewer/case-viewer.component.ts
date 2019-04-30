@@ -61,7 +61,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
-      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+      this.caseService.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.init();
       });
@@ -69,12 +69,17 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.caseDetails = this.route.snapshot.data.case;
       this.init();
     }
+
+    this.callbackErrorsSubject.subscribe(errorEvent => {
+      this.error = errorEvent;
+    });
   }
 
   ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
       this.subscription.unsubscribe();
     }
+    this.callbackErrorsSubject.unsubscribe();
   }
 
   postViewActivity(): Observable<Activity[]> {
@@ -96,6 +101,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         });
       });
     }
+
+    if (this.caseDetails.triggers && this.error) {
+      this.resetErrors();
+    }
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
@@ -105,7 +114,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   clearErrorsAndWarnings() {
-    this.error = null;
+    this.resetErrors();
     this.ignoreWarning = false;
     this.triggerText = CaseViewerComponent.TRIGGER_TEXT_START;
   }
@@ -160,6 +169,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     return this.caseDetails ? true : false;
   }
 
+  hasTabsPresent(): boolean {
+    return this.sortedTabs.length > 0;
+  }
+
   callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext) {
     this.ignoreWarning = callbackErrorsContext.ignore_warning;
     this.triggerText = callbackErrorsContext.trigger_text;
@@ -200,4 +213,21 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.callbackErrorsSubject.next(this.error);
     }
   }
+
+  private resetErrors(): void {
+    this.error = null;
+    this.callbackErrorsSubject.next(null);
+    this.alertService.clear();
+  }
+
+  isTriggerButtonDisabled(): boolean {
+    return (this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length)
+      || (this.error
+      && this.error.details
+      && this.error.details.field_errors
+      && this.error.details.field_errors.length);
+  }
+
 }

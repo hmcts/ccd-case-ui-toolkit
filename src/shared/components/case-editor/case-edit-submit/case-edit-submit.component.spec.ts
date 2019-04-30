@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of, Observable } from 'rxjs';
+import { of, Observable, BehaviorSubject } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import createSpyObj = jasmine.createSpyObj;
@@ -22,6 +22,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -77,8 +78,6 @@ describe('CaseEditSubmitComponent', () => {
     'isCourtAdmin': FUNC,
   };
 
-  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
-
   let mockRoute: any = {
     snapshot: {
       data: {},
@@ -129,6 +128,7 @@ describe('CaseEditSubmitComponent', () => {
 
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({
@@ -330,6 +330,36 @@ describe('CaseEditSubmitComponent', () => {
       let result = comp.getCancelText();
       expect(result).toBe('Cancel');
     });
+
+    it('should disable submit button, previous button and cancel link when isSubmitting is set to true', () => {
+      comp.isSubmitting = true;
+      fixture.detectChanges();
+
+      let submitButton = de.query(By.css('button[type=submit]'));
+      expect(submitButton.nativeElement.disabled).toBeTruthy();
+
+      let prevButton = de.query(By.css('button[type=button]'));
+      expect(prevButton.nativeElement.disabled).toBeTruthy();
+
+      let cancelLink = de.query(By.css('a[class=disabled]'));
+      console.log(cancelLink);
+      expect(cancelLink.nativeElement).toBeTruthy();
+    });
+
+    it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
+      comp.isSubmitting = false;
+      fixture.detectChanges();
+
+      let submitButton = de.query(By.css('button[type=submit]'));
+      expect(submitButton.nativeElement.disabled).toBeFalsy();
+
+      let prevButton = de.query(By.css('button[type=button]'));
+      expect(prevButton.nativeElement.disabled).toBeFalsy();
+
+      let cancelLink = de.query(By.css('a[class=disabled]'));
+      expect(cancelLink).toBeNull();
+    });
+
   });
 
   describe('CaseEditSubmitComponent without custom end button label and with Save and Resume enabled', () => {
@@ -361,6 +391,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     let mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -390,6 +421,7 @@ describe('CaseEditSubmitComponent', () => {
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({

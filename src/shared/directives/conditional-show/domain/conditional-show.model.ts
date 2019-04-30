@@ -6,6 +6,21 @@ export class ShowCondition {
   private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
   private static readonly CONTAINS = 'CONTAINS';
 
+  static addPathPrefixToCondition(showCondition: string, pathPrefix): string {
+    if (!pathPrefix || pathPrefix === '') {
+      return showCondition;
+    }
+    let andConditions = showCondition.split(ShowCondition.AND_CONDITION_REGEXP);
+    andConditions = andConditions.map(condition => {
+      if (!condition.startsWith(pathPrefix)) {
+        return pathPrefix + '.' + condition;
+      } else {
+        return condition;
+      }
+    });
+    return andConditions.join(' AND ');
+  }
+
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
   }

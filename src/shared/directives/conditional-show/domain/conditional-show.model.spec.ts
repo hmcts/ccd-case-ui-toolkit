@@ -589,4 +589,22 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
   });
+
+  describe('addPathPrefixToCondition()', () => {
+    it('should add path', () => {
+      expect(ShowCondition.addPathPrefixToCondition('field1="test"', '')).toBe('field1="test"');
+      expect(ShowCondition.addPathPrefixToCondition('field1="test"', null)).toBe('field1="test"');
+      expect(ShowCondition.addPathPrefixToCondition(null, '')).toBe(null);
+      expect(ShowCondition.addPathPrefixToCondition(null, null)).toBe(null);
+      expect(ShowCondition.addPathPrefixToCondition('', '')).toBe('');
+
+      expect(ShowCondition.addPathPrefixToCondition('field1="test"',
+        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test"');
+      expect(ShowCondition.addPathPrefixToCondition('field1CONTAINS"s1"',
+        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1CONTAINS"s1"');
+
+      expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2CONTAINS"s1"',
+        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2CONTAINS"s1"');
+    });
+  });
 });

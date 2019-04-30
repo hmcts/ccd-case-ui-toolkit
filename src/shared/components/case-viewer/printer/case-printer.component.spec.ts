@@ -75,7 +75,7 @@ describe('CasePrinterComponent', () => {
     appConfig.getRemotePrintServiceUrl.and.returnValue(REMOTE_PRINT_SERVICE_URL);
 
     caseService = new CaseService();
-    caseService.caseViewSource = new BehaviorSubject(CASE_VIEW);
+    caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     casesService = createSpyObj('CasesService', ['getPrintDocuments']);
     casesService.getPrintDocuments.and.returnValue(DOCUMENT_OBS);
     alertService = createSpyObj('AlertService', ['error']);

@@ -34,6 +34,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, SearchFiltersComponent} from './shared';
+import { CaseHistoryModule } from './shared/components/case-history';
 
 @NgModule({
     imports: [
@@ -45,6 +46,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
       TabsModule,
       CaseEditorModule,
       CaseViewerModule,
+      CaseHistoryModule,
       PaletteModule,
       DialogsModule,
       PipesModule,

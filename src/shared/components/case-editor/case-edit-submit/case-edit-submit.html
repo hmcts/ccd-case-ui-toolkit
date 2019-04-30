@@ -1,14 +1,14 @@
 <!-- Current Page && Event trigger name -->
-<h1 class="heading-medium">{{ eventTrigger.name}}</h1>
+<h1 class="heading-h1">{{ eventTrigger.name}}</h1>
 
 <!-- Case ID -->
-<h2 *ngIf="getCaseId()" class="heading-small">
+<h2 *ngIf="getCaseId()" class="heading-h2">
   #{{ getCaseId() | ccdCaseReference}}
 </h2>
 
 <div *ngIf="error" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading"
      tabindex="-1">
-  <h3 class="heading-medium error-summary-heading" id="edit-case-event_error-summary-heading">
+  <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading">
     The event could not be created
   </h3>
   <p>{{error.message}}</p>
@@ -22,7 +22,7 @@
 <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">
   <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
-    <h2 class="heading-small">Check your answers</h2>
+    <h2 class="heading-h2">Check your answers</h2>
     <span class="text-16">Check the information below carefully.</span>
 
     <table class="form-table">
@@ -90,8 +90,8 @@
     </fieldset>
   </ng-container>
   <div class="form-group form-group-related">
-    <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="previous()">Previous</button>
+    <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || isSubmitting" (click)="previous()">Previous</button>
     <button type="submit" [disabled]="isDisabled()" class="button">{{triggerText}}</button>
   </div>
-  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
+  <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="isSubmitting">{{getCancelText()}}</a></p>
 </form>
