@@ -14,7 +14,8 @@
         <tr>
           <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
           <div *ngIf="comparator(col)" class="search-result-column-sort">
-            <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
+            <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"
+               attr.aria-label="Order by {{ isSortAscending(col)? 'Ascending' : 'Descending' }} {{col.label}}"></a>
           </div>
         </tr>
       </table>
