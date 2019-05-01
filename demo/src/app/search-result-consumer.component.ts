@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
+import { AppConfig } from './app.config';
 
 @Component({
     selector: 'search-result-consumer',
@@ -17,6 +18,8 @@ export class SearchResultConsumerComponent implements OnInit {
     metadataFields: string[];
     fg: FormGroup;
 
+    resultsArr: any[] = new Array;
+
     code = `
     <ccd-search-result
         *ngIf="resultView"
@@ -30,14 +33,15 @@ export class SearchResultConsumerComponent implements OnInit {
         (changePage)="apply($event)"
     ></ccd-search-result>`;
 
-    constructor() {
+    constructor(
+        private appConfig: AppConfig
+    ) {
     }
 
     ngOnInit(): void {
-        let resultsArr: any[] = new Array;
 
         for (let i = 0; i < 27; i++) {
-            resultsArr.push({
+            this.resultsArr.push({
                 case_id: '1',
                 case_fields: {
                     TextField: 'Text field ' + (i + 1)
@@ -113,7 +117,7 @@ export class SearchResultConsumerComponent implements OnInit {
                         'collection_field_type': null
                     }
                 }],
-                results: resultsArr,
+                results: this.resultsArr.slice(0, this.appConfig.getPaginationPageSize()),
                 result_error: null
             };
 
@@ -127,6 +131,30 @@ export class SearchResultConsumerComponent implements OnInit {
     }
 
     apply(selected) {
+        const startingPoint = (selected.page - 1) * this.appConfig.getPaginationPageSize();
+        const endingPoint = startingPoint + this.appConfig.getPaginationPageSize()
+        const newArr = this.resultsArr.slice(startingPoint, endingPoint);
+
+        this.resultView = {
+            hasDrafts: () => false,
+            columns: [{
+                'label': 'Text Field',
+                'order': 1,
+                'case_field_id': 'TextField',
+                'case_field_type': {
+                    'id': 'Text',
+                    'type': 'Text',
+                    'min': null,
+                    'max': null,
+                    'regular_expression': null,
+                    'fixed_list_items': [],
+                    'complex_fields': [],
+                    'collection_field_type': null
+                }
+            }],
+            results: newArr
+        };
+
         console.log(selected);
 
     }
