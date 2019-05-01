@@ -632,6 +632,14 @@ describe('conditional-show', () => {
       let matched = sc.match(fields);
       expect(matched).toBe(false);
     });
+    it('Scenario2 hide: is not blank with null value', () => {
+      let sc = new ShowCondition('field!=""');
+      let fields = {
+        field: null
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
     it('Scenario3 hide: has any value', () => {
       let sc = new ShowCondition('field!="*"');
       let fields = {
