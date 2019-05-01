@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.44.0 - April 29 2019
+### Version 2.45.0 - April 29 2019
 **RDM-3460** Complex element *only* as list screen input
 
 ### Version 2.43.0 - April 29 2019
