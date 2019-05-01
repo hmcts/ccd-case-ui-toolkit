@@ -13,15 +13,25 @@ export class ShowCondition {
     if (!pathPrefix || pathPrefix === '') {
       return showCondition;
     }
-    let andConditions = showCondition.split(ShowCondition.AND_CONDITION_REGEXP);
-    andConditions = andConditions.map(condition => {
+    if (showCondition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
+      let orConditions = showCondition.split(ShowCondition.OR_CONDITION_REGEXP);
+      orConditions = this.extractConditions(orConditions, pathPrefix);
+      return orConditions.join(' OR ');
+    } else {
+      let andConditions = showCondition.split(ShowCondition.AND_CONDITION_REGEXP);
+      andConditions = this.extractConditions(andConditions, pathPrefix);
+      return andConditions.join(' AND ');
+    }
+  }
+  private static extractConditions(orConditions, pathPrefix) {
+    orConditions = orConditions.map(condition => {
       if (!condition.startsWith(pathPrefix)) {
         return pathPrefix + '.' + condition;
       } else {
         return condition;
       }
     });
-    return andConditions.join(' AND ');
+    return orConditions;
   }
 
   // Expects a show condition of the form: <fieldName>="string"
