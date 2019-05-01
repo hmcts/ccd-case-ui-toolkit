@@ -94,7 +94,7 @@ export class ShowCondition {
         if ('*' === expectedValue) {
           return false;
         }
-        let formatCurrentValue = currentValue ? currentValue : '';
+        let formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
         return formatCurrentValue != expectedValue; // tslint:disable-line
       } else {
         return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line

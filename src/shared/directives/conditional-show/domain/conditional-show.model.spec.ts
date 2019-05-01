@@ -627,7 +627,7 @@ describe('conditional-show', () => {
     it('Scenario2 hide: is not blank', () => {
       let sc = new ShowCondition('field!=""');
       let fields = {
-        field: ''
+        field: '    '
       };
       let matched = sc.match(fields);
       expect(matched).toBe(false);
