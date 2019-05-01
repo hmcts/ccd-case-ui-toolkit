@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.44.0 - April 29 2019
+**RDM-3460** Complex element *only* as list screen input
+
 ### Version 2.43.0 - April 29 2019
 **RDM-4386** Make print, event selector and history tab optional but present by default
 **RDM-4130** Extract Results List Component to toolkit 

@@ -483,6 +483,25 @@ describe('SearchFiltersComponent', () => {
     expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
+  it('should render a valid search input complex field component with a path defined', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[2];
+    let complexFieldSearchInput = TEST_SEARCH_INPUTS[2];
+    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom([complexFieldSearchInput]));
+
+    let expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
+
+    component.onCaseTypeIdChange();
+    fixture.detectChanges();
+
+    let dynamicFilters = de.query(By.css('#dynamicFilters'));
+    let writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+    let writeFieldInstance = writeField.componentInstance;
+
+    expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
+    expect(writeFieldInstance.formGroup).toBeTruthy();
+  });
+
   it('should submit filters when apply button is clicked', async(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyFilters.calls.reset();
