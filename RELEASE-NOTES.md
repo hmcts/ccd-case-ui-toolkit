@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.46.0 - May 1 2019
+**RDM-3496** Case View of Nested Complex Types - Collection of complex types within complex types
+
 ### Version 2.45.0 - April 29 2019
 **RDM-3460** Complex element *only* as list screen input
 
