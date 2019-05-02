@@ -21,8 +21,9 @@ export { FormValueService,
          RequestOptionsBuilder,
          SearchService,
          WindowService,
+         WorkbasketInputFilterService,
          JurisdictionService,
-         WorkbasketInputFilterService } from './shared/services';
+         SearchResultViewItemComparatorFactory } from './shared/services';
 export { DocumentData,
          AddressModel,
          CaseEventData,
@@ -55,7 +56,11 @@ export { DocumentData,
          SearchResultView,
          SearchResultViewColumn,
          SearchResultViewItem,
-         Field } from './shared/domain';
+         Field,
+         PaginationMetadata,
+         SortOrder,
+         SortParameters,
+         SearchResultViewItemComparator } from './shared/domain';
 export { ShowCondition,
          ConditionalShowDirective,
          ConditionalShowModule,
@@ -108,9 +113,12 @@ export { PaletteModule,
          CaseTimelineModule,
          CreateCaseFiltersSelection,
          WorkbasketFiltersModule,
-         CaseListFiltersModule } from './shared/components';
+         CaseListFiltersModule,
+         SearchResultModule,
+         SearchResultComponent } from './shared/components';
 export { CaseReferencePipe,
-         PipesModule } from './shared/pipes';
+         PipesModule,
+         SortSearchResultPipe } from './shared/pipes';
 export { createCaseEventTrigger,
          aCaseField,
          createCaseView,
