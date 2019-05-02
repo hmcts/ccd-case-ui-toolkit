@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService, PlaceholderService,
   DocumentManagementService, PageValidationService, SearchService, RequestOptionsBuilder, CreateCaseFiltersModule,
-  CaseTimelineModule, WorkbasketFiltersModule, CaseListFiltersModule } from '@hmcts/ccd-case-ui-toolkit';
+  CaseTimelineModule, WorkbasketFiltersModule, CaseListFiltersModule, SearchResultModule} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
@@ -23,6 +23,8 @@ import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consum
 import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
 import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.component';
 import { WorkbasketFiltersConsumerComponent } from './workbasket-filters-consumer.component';
+import { SearchResultConsumerComponent } from './search-result-consumer.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -39,7 +41,9 @@ import { WorkbasketFiltersConsumerComponent } from './workbasket-filters-consume
     CaseTimelineModule,
     routing,
     WorkbasketFiltersModule,
-    CaseListFiltersModule
+    CaseListFiltersModule,
+    SearchResultModule,
+    NgxPaginationModule
   ],
   declarations: [
     AppComponent,
@@ -52,6 +56,7 @@ import { WorkbasketFiltersConsumerComponent } from './workbasket-filters-consume
     CaseTimelineConsumerComponent,
     CaseListFiltersConsumerComponent,
     WorkbasketFiltersConsumerComponent,
+    SearchResultConsumerComponent,
   ],
   providers: [
     CasesService,
