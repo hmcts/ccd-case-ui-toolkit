@@ -92,12 +92,12 @@ export class WorkbasketFiltersConsumerComponent implements OnInit {
    json: any;
 
    code = `
-   <ccd-search-filters [jurisdictions]="jurisdictions"
-                        [autoApply]="true"
-                        (onApply)="applied($event)"
-                        (onReset)="reset()"
-                        (onJuridiction)="jurisdictionSelected($event)">
-   </ccd-search-filters>`;
+   <ccd-workbasket-filters
+         [jurisdictions]="jurisdictions"
+         [defaults]="defaults"
+         (onApply)="applied($event)"
+         (onReset)="reset($event)"
+   ></ccd-workbasket-filters>`;
 
    ngOnInit() {
       this.jurisdictions = [this.JURISDICTION_1, this.JURISDICTION_2];
