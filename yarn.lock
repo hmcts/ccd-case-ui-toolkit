@@ -7082,10 +7082,10 @@ ngx-device-detector@^1.3.0:
   resolved "https://registry.yarnpkg.com/ngx-device-detector/-/ngx-device-detector-1.3.5.tgz#febd134cc58c2a61e83bec5491d1e2f429bfde67"
   integrity sha512-u/h/HGVTqOxweLSKQmXoOLHsYldSDAQePrMC6sa3WGAECoAR6S7W1QuwdNN1cj7NBdfY0wxar9MQ3MV7DiFfkg==
 
-ngx-md@~6.0.0:
-  version "6.0.9"
-  resolved "https://registry.yarnpkg.com/ngx-md/-/ngx-md-6.0.9.tgz#0664ccf05e84e64afc1c134b89259452364ee4cb"
-  integrity sha512-NULv95Syv/vVcNpxz+wMS0xQuZZnWZ6ruBEG0jDjHZozA9VBO+f0pnKKMSdA6JifPpdk1KQUtIOb8eg1kclrdA==
+ngx-md@~7.1.3:
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/ngx-md/-/ngx-md-7.1.3.tgz#ea181235aecf14943de0924df136f5b1bbf157e5"
+  integrity sha512-sSIr1pwg4eOO4F1xk+DkofgBWShQm4cKYTwe3oYXRZxdrhHXzN+oUief+3IMSHi2syCSi791PinmrcQ8+HYy5w==
   dependencies:
     marked "^0.5.0"
     prismjs "^1.15.0"
