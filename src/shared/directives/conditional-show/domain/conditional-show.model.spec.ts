@@ -683,6 +683,26 @@ describe('conditional-show', () => {
         let matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
+      it('OR condition mixed with AND => equals condition', () => {
+        let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(false);
+      });
+      it('OR condition mixed with AND => not equals condition', () => {
+        let sc = new ShowCondition('field1!="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(true);
+      });
+      it('AND condition mixed with OR => equals condition', () => {
+        let sc = new ShowCondition('field1="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(false);
+      });
+      it('AND condition mixed with OR => not equals condition', () => {
+        let sc = new ShowCondition('field1!="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(true);
+      });
     });
   });
 });
