@@ -149,10 +149,15 @@ describe('WorkbasketFiltersComponent', () => {
     jurisdiction: null
   }];
 
-  const TEST_WORKBASKET_INPUTS: WorkbasketInputModel[] = [
-    createWBInput('Label 1', 1, 'PersonFirstName', 'Text', 'Mohammed', false),
-    createWBInput('Label 2', 2, 'PersonLastName', 'Text', 'Khatri', true)
-  ];
+  let createWorkbasketInputs = () => {
+    return [
+      createWBInput('Label 1', 1, 'PersonFirstName', 'Text', 'Text', '', 'Mohammed', false),
+      createWBInput('Label 2', 2, 'PersonLastName', 'Text', 'Text', '', 'Khatri', true),
+      createWBInput('Label 3', 3, 'PersonAddress', 'Text', 'Text', 'Country', '', false)
+    ]
+  };
+
+  const TEST_WORKBASKET_INPUTS: WorkbasketInputModel[] = createWorkbasketInputs();
 
   const METADATA_FIELDS = ['PersonLastName'];
 
@@ -552,10 +557,11 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.caseType = CASE_TYPES_2[1];
       component.selected.caseState = CASE_TYPES_2[1].states[0];
 
+      let expectedInput = TEST_WORKBASKET_INPUTS[0];
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.of([expectedInput]));
+
       component.onCaseTypeIdChange();
       fixture.detectChanges();
-
-      let firstInput = TEST_WORKBASKET_INPUTS[0];
 
       let dynamicFilters = de.query(By.css('#dynamicFilters'));
 
@@ -563,8 +569,29 @@ describe('WorkbasketFiltersComponent', () => {
 
       let writeFieldInstance = writeField.componentInstance;
 
-      expect(writeFieldInstance.caseField).toEqual(firstInput.field);
-      expect(writeFieldInstance.caseField.label).toEqual(firstInput.field.label);
+      expect(writeFieldInstance.caseField).toEqual(expectedInput.field);
+      expect(writeFieldInstance.caseField.label).toEqual(expectedInput.field.label);
+      expect(writeFieldInstance.formGroup).toBeTruthy();
+    });
+
+    it('should render a valid search input field component when path is defined', () => {
+      component.selected.jurisdiction = JURISDICTION_2;
+      component.selected.caseType = CASE_TYPES_2[1];
+      component.selected.caseState = CASE_TYPES_2[1].states[0];
+
+      let complexFieldSearchInput = TEST_WORKBASKET_INPUTS[2];
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.of([complexFieldSearchInput]));
+
+      let expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
+
+      component.onCaseTypeIdChange();
+      fixture.detectChanges();
+
+      let dynamicFilters = de.query(By.css('#dynamicFilters'));
+      let writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+      let writeFieldInstance = writeField.componentInstance;
+
+      expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
       expect(writeFieldInstance.formGroup).toBeTruthy();
     });
 
@@ -1008,17 +1035,18 @@ function createObservableFrom<T>(param: T): Observable<T> {
   });
 }
 
-function createWBInput(theLabel: string, theOrder: number, theId: string,
-  theType: FieldTypeEnum, theValue: string, theMetadata: boolean): WorkbasketInputModel {
+function createWBInput(theLabel: string, theOrder: number, theId: string, fieldTypeId: string,
+  theType: FieldTypeEnum, elementPath: string, theValue: string, theMetadata: boolean): WorkbasketInputModel {
   return {
     label: theLabel,
     order: theOrder,
     field: {
       id: theId,
       field_type: {
-        id: theType,
+        id: fieldTypeId,
         type: theType
       },
+      elementPath: elementPath,
       value: theValue,
       metadata: theMetadata
     }
