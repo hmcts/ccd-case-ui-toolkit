@@ -140,14 +140,16 @@ export class WorkbasketFiltersComponent implements OnInit {
             .sort(this.orderService.sortAsc);
           const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
 
-          for (let i = 0; i < workbasketInputs.length; i++) {
-            let item = workbasketInputs[i];
+          workbasketInputs.forEach(item => {
+            if (item.field.elementPath) {
+              item.field.id = item.field.id + '.' + item.field.elementPath;
+            }
             item.field.label = item.label;
             if (formValue) {
               const searchFormValueObject = JSON.parse(formValue);
               item.field.value = searchFormValueObject[item.field.id];
             }
-          }
+          });
 
         }, error => {
           console.log('Workbasket input fields request will be discarded reason: ', error.message);
