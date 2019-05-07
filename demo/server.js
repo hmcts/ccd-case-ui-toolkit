@@ -42,6 +42,8 @@ app.use(function (req, res) {
         response = db.get('CT3inputs').value();
       } else if (req.url.indexOf('jurisdictions?access=read') !== -1) {
         response = db.get('jurisdictions-read').value();
+      } else if (req.url.indexOf('jurisdictions?access=create') !== -1) {
+        response = db.get('jurisdictions-create').value();
       }
     }
     if (response) {

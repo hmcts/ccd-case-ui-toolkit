@@ -149,6 +149,9 @@ export class SearchFiltersComponent implements OnInit {
           formValueObject = JSON.parse(formValue);
         }
         searchInputs.forEach(item => {
+          if (item.field.elementPath) {
+            item.field.id = item.field.id + '.' + item.field.elementPath;
+          }
           item.field.label = item.label;
           if (formValueObject) {
             item.field.value = formValueObject[item.field.id];

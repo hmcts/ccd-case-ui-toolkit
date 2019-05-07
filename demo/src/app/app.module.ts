@@ -24,6 +24,8 @@ import { CaseViewConsumerComponent } from './case-view-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
 import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
 import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-consumer.component';
+import { SearchResultConsumerComponent } from './search-result-consumer.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -40,6 +42,8 @@ import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-
     CaseTimelineModule,
     routing,
     SearchFiltersModule,
+    SearchResultModule,
+    NgxPaginationModule
   ],
   declarations: [
     AppComponent,
@@ -50,6 +54,7 @@ import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-
     SearchFiltersWrapperConsumerComponent,
     CreateCaseFiltersConsumerComponent,
     CaseTimelineConsumerComponent,
+    SearchResultConsumerComponent,
   ],
   providers: [
     CasesService,
