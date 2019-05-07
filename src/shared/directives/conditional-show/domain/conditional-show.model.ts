@@ -57,16 +57,16 @@ export class ShowCondition {
 
   private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
     if (condition.search(ShowCondition.CONTAINS) === -1) {
-      let conditionSeparaor = ShowCondition.CONDITION_EQUALS;
+      let conditionSeparator = ShowCondition.CONDITION_EQUALS;
       if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) !== -1) {
-        conditionSeparaor = ShowCondition.CONDITION_NOT_EQUALS;
+        conditionSeparator = ShowCondition.CONDITION_NOT_EQUALS;
       }
-      let field = condition.split(conditionSeparaor)[0];
+      let field = condition.split(conditionSeparator)[0];
       const [head, ...tail] = field.split('.');
       let currentValue = this.findValueForComplexCondition(fields, head, tail, path);
-      let expectedValue = this.unquoted(condition.split(conditionSeparaor)[1]);
+      let expectedValue = this.unquoted(condition.split(conditionSeparator)[1]);
 
-      return this.checkValueEquals(expectedValue, currentValue, conditionSeparaor);
+      return this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
     } else {
       let field = condition.split(ShowCondition.CONTAINS)[0];
       const [head, ...tail] = field.split('.');
@@ -95,7 +95,8 @@ export class ShowCondition {
           return false;
         }
         let formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
-        return formatCurrentValue != expectedValue; // tslint:disable-line
+        let formatExpectedValue = expectedValue ? expectedValue.toString().trim() : '';
+        return formatCurrentValue != formatExpectedValue; // tslint:disable-line
       } else {
         return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
       }
