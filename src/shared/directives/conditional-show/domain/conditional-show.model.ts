@@ -91,10 +91,10 @@ export class ShowCondition {
     } else {
       // changed from '===' to '==' to cover number field conditions
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
-        if ('*' === expectedValue) {
+        let formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
+        if ('*' === expectedValue && formatCurrentValue !== '') {
           return false;
         }
-        let formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
         let formatExpectedValue = expectedValue ? expectedValue.toString().trim() : '';
         return formatCurrentValue != formatExpectedValue; // tslint:disable-line
       } else {
