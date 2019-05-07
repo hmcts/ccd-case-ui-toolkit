@@ -15,9 +15,6 @@ export class FieldType {
   @Type(() => FixedListItem)
   fixed_list_items?: FixedListItem[];
 
-  @Type(() => FixedListItem)
-  dynamic_list_items?: DynamicListItem[];
-
   @Type(() => CaseField)
   complex_fields?: CaseField[];
 
