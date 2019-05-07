@@ -2,8 +2,12 @@ language: node_js
 node_js:
   - "8.11.1"  # Highest 8.* in Azure
   - "lts/*"   # Latest Node LTS
-  - "10.6.0"  # Highest Azure 10.*
+  - "10.15.2" # Highest Azure 10.*
   - "node"    # Latest stable Node
+matrix:
+  # Allow node 12.x to fail until dependencies start working
+  allow_failures:
+    - node_js: "node"
 cache: yarn
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
