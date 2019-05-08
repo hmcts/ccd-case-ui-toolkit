@@ -12,6 +12,7 @@ export class ReadMoneyGbpFieldComponent extends AbstractFieldReadComponent imple
   value: any;
 
   ngOnInit(): void {
+    super.ngOnInit();
     if (this.amount) {
       this.value = this.amount;
     } else if (this.caseField) {
