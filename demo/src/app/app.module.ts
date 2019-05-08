@@ -16,7 +16,8 @@ import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthServi
   RequestOptionsBuilder,
   CreateCaseFiltersModule,
   CaseTimelineModule,
-  SearchFiltersModule} from '@hmcts/ccd-case-ui-toolkit';
+  SearchFiltersModule,
+  SearchResultModule} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
