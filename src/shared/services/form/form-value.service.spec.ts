@@ -72,14 +72,19 @@ describe('FormValueService', () => {
   });
 
   it('should fiter current page fields and process DynamicList values back to Json', () => {
-    let formFields = {data: {dynamicList: '{}', thatTimeOfTheDay: '{}'}};
+    let formFields = {data: {dynamicList: 'List2', thatTimeOfTheDay: {}}};
     let caseField = new CaseField();
     let fieldType = new FieldType();
     fieldType.type = 'DynamicList';
     caseField.id = 'dynamicList';
     caseField.field_type = fieldType
+    caseField.value = {
+      value: {code: 'List1', label: 'List 1'},
+      list_items: [{code: 'List1', label: 'List 1'}, {code: 'List2', label: 'List 2'}]
+    }
     let caseFields = [caseField];
-    let results = formValueService.filterCurrentPageFields(caseFields, formFields);
-    expect(results).toEqual({data: {dynamicList: {}}} as object);
+    formValueService.sanitiseDynamicLists(caseFields, formFields);
+    expect(JSON.stringify(formFields.data.dynamicList))
+      .toEqual('{"value":{"code":"List2","label":"List 2"},"list_items":[{"code":"List1","label":"List 1"},{"code":"List2","label":"List 2"}]}');
   })
 });

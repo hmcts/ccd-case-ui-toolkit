@@ -14,7 +14,6 @@ export class CaseField implements Orderable {
   @Type(() => FieldType)
   field_type: FieldType;
   value?: any;
-
   hint_text?: string;
   security_label?: string;
   display_context: string;
@@ -26,4 +25,21 @@ export class CaseField implements Orderable {
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
+
+
+  getValue?(): string {
+    if (this.field_type.type === 'DynamicList') {
+      return this.value ? this.value.value.code : '';
+    } else {
+      return this.value;
+    }
+  }
+
+  getItems?(): any {
+    if (this.field_type.type === 'DynamicList') {
+      return this.value ? this.value.list_items : [];
+    } else {
+      return this.field_type.fixed_list_items;
+    }
+  }
 }

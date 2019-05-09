@@ -69,15 +69,31 @@ export class FormValueService {
     Object.keys(cloneForm['data']).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
         delete cloneForm['data'][key];
-      } else {
-        caseFields.forEach(function (e) {
-          if (e.id === key && e.field_type && e.field_type.type === 'DynamicList') {
-            cloneForm['data'][key] = JSON.parse(cloneForm['data'][key]);
-          }
-        });
       }
     });
     return cloneForm;
+  }
+
+  sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
+    // loop thorught dynamic fields in caseFields
+    caseFields
+      .filter(caseField => caseField.field_type.type === 'DynamicList')
+      .forEach(dynamicField => {
+        // for each dynamic field find the field in editForm, if field exists in the editForm
+        // get the code (selected value from user)
+        // replace code in editForm with whole JSON for dynamic list
+        Object.keys(editForm['data']).forEach((key) => {
+          if (dynamicField.id === key) {
+            editForm['data'][key] =
+              {
+                value: dynamicField.value.list_items.filter(value => value.code === editForm['data'][key])[0],
+                list_items: dynamicField.value.list_items
+              };
+          }
+        });
+      });
+
+
   }
 
 }

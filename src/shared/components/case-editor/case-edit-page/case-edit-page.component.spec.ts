@@ -522,6 +522,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'form');
       spyOn(caseEditComponentStub, 'validate').and.returnValue(of(validateResult));
       spyOn(formValueService, 'sanitise').and.returnValue(eventData);
+      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,

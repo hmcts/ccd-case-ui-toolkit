@@ -1,5 +1,4 @@
 import { FixedListItem } from './fixed-list-item.model';
-import { DynamicListItem } from './dynamic-list-item.model';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { CaseField } from './case-field.model';
 import { Type } from 'class-transformer';
