@@ -26,7 +26,6 @@ import { CaseViewConsumerComponent } from './case-view-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
 import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
 import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.component';
-import { WorkbasketFiltersConsumerComponent } from './workbasket-filters-consumer.component';
 import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-consumer.component';
 import { SearchResultConsumerComponent } from './search-result-consumer.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -61,7 +60,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CreateCaseFiltersConsumerComponent,
     CaseTimelineConsumerComponent,
     CaseListFiltersConsumerComponent,
-    WorkbasketFiltersConsumerComponent,
     SearchResultConsumerComponent,
   ],
   providers: [
