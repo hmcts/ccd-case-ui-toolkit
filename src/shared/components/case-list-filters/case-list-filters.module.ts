@@ -5,6 +5,7 @@ import { PaletteModule } from '../palette';
 import { WorkbasketInputFilterService, OrderService, JurisdictionService, AlertService, WindowService,
     DefinitionsModule } from '../../services';
 import { CaseListFiltersComponent } from './case-list-filters.component';
+import { WorkbasketFiltersModule } from '../workbasket-filters';
 
 @NgModule({
     imports: [
@@ -12,7 +13,8 @@ import { CaseListFiltersComponent } from './case-list-filters.component';
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
-        DefinitionsModule
+        DefinitionsModule,
+        WorkbasketFiltersModule
     ],
     declarations: [
         CaseListFiltersComponent,
