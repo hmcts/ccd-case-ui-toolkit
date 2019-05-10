@@ -31,7 +31,7 @@ export class CaseListFiltersComponent implements OnInit {
 
     this.definitionsService.getJurisdictions(READ_ACCESS)
       .subscribe(jurisdictions => {
-        this.isVisible = true;
+        this.isVisible = jurisdictions.length > 0;
         this.jurisdictions = jurisdictions;
       });
   }
