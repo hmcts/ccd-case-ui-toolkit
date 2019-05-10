@@ -122,9 +122,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (!this.isSubmitting) {
       this.isSubmitting = true;
       this.error = null;
-      let currentPageFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
-      this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields,currentPageFields);
-      let caseEventData: CaseEventData = this.formValueService.sanitise(currentPageFields) as CaseEventData;
+      let pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
+      this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields, pageFormFields);
+      let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
       caseEventData.event_data = this.editForm.value.data;
@@ -212,9 +212,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (result === 'Save') {
             const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData });
+              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
             } else {
-              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData });
+              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
             }
           }
         });

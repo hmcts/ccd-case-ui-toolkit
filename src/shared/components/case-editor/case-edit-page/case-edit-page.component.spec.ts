@@ -563,6 +563,7 @@ describe('CaseEditPageComponent', () => {
         expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
         expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
+        expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
     });
 
