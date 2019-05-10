@@ -1,5 +1,40 @@
 ## RELEASE NOTES
 
+### Version 2.48.0 - May 7 2019
+**RDM-4575** search filters definition service
+
+### Version 2.47.0 - May 7 2019
+**RDM-4574** Create Case Filters componant retrieve jurisdiction internally 
+
+### Version 2.46.0 - May 1 2019
+**RDM-3496** Case View of Nested Complex Types - Collection of complex types within complex types
+
+### Version 2.45.0 - April 29 2019
+**RDM-3460** Complex element *only* as list screen input
+
+### Version 2.43.0 - April 29 2019
+**RDM-4386** Make print, event selector and history tab optional but present by default
+**RDM-4130** Extract Results List Component to toolkit 
+
+### Version 2.42.3 - April 23 2019
+**RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
+
+### Version 2.42.2 - April 17 2019
+**RDM-3325/4591** - Text field whitespaces fix
+
+### Version 2.42.1 - April 16 2019
+**RDM-3897** - Add optional property casereference to the CaseEventData object
+
+### Version 2.42.0 - April 15 2019
+**RDM-4184** - Remove Fixed History Tab
+
+### Version 2.41.1 - April 12 2019
+**RDM-3525-Bug-Fix** - Disable previous button and cancel link on click on submit
+
+### Version 2.41.0 - April 11 2019
+**RDM-3325-Firefox-Bug-Fix** - Mandatory Text field breaks the UI on Firefox
+**RDM-4521** - Confirmation green bar not displayed
+
 ### Version 2.39.0 - March 27 2019
 **RDM-3325** - CCD does not apply validation rules to text fields containing only whitespace characters
 

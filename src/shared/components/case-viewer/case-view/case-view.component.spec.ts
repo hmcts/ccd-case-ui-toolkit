@@ -7,6 +7,7 @@ import { CaseView, HttpError } from '../../../domain';
 import { CasesService, CaseService } from '../../case-editor';
 import { AlertService, DraftService } from '../../../services';
 import { RouterTestingModule } from '@angular/router/testing'
+import { MockComponent } from 'ng2-mock-component';
 
 describe('CaseViewComponent', () => {
 
@@ -42,6 +43,11 @@ describe('CaseViewComponent', () => {
   let component: CaseViewComponent;
   let de: DebugElement;
 
+  let CaseViewerComponent: any = MockComponent({
+    selector: 'ccd-case-viewer',
+    inputs: ['hasPrint', 'hasEventSelector']
+  });
+
   describe('Case', () => {
     describe('CaseViewComponent successfully resolves case view', () => {
         beforeEach(async(() => {
@@ -60,6 +66,9 @@ describe('CaseViewComponent', () => {
               imports: [ RouterTestingModule ],
               declarations: [
                 CaseViewComponent,
+
+                // mock
+                CaseViewerComponent,
               ],
               providers: [
                 { provide: CaseService, useValue: caseService },
@@ -73,6 +82,8 @@ describe('CaseViewComponent', () => {
           fixture = TestBed.createComponent(CaseViewComponent);
           component = fixture.componentInstance;
           component.case = CASE_REFERENCE;
+          component.hasPrint = true;
+          component.hasEventSelector = true;
           de = fixture.debugElement;
           fixture.detectChanges();
         }));
@@ -102,6 +113,9 @@ describe('CaseViewComponent', () => {
             imports: [ RouterTestingModule ],
             declarations: [
                 CaseViewComponent,
+
+                // mock
+                CaseViewerComponent,
             ],
             providers: [
                 { provide: CaseService, useValue: caseService },
@@ -145,6 +159,9 @@ describe('CaseViewComponent', () => {
             imports: [ RouterTestingModule ],
             declarations: [
                 CaseViewComponent,
+
+                // mock
+                CaseViewerComponent,
             ],
             providers: [
                 { provide: CaseService, useValue: caseService },
@@ -188,6 +205,9 @@ describe('CaseViewComponent', () => {
             imports: [ RouterTestingModule ],
             declarations: [
                 CaseViewComponent,
+
+                // mock
+                CaseViewerComponent
             ],
             providers: [
                 { provide: CaseService, useValue: caseService },

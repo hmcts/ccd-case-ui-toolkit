@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
@@ -30,6 +30,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
+
+  @Input()
+  hasPrint = true;
+  @Input()
+  hasEventSelector = true;
 
   BANNER = DisplayMode.BANNER;
 
@@ -102,7 +107,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.caseDetails.triggers) {
+    if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
     }
   }
@@ -110,11 +115,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
       .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
-      .filter(tab => new ShowCondition(tab.show_condition).matchByCaseFields(this.caseFields));
+      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   clearErrorsAndWarnings() {
-    this.error = null;
+    this.resetErrors();
     this.ignoreWarning = false;
     this.triggerText = CaseViewerComponent.TRIGGER_TEXT_START;
   }
@@ -167,6 +172,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   isDataLoaded(): boolean {
     return this.caseDetails ? true : false;
+  }
+
+  hasTabsPresent(): boolean {
+    return this.sortedTabs.length > 0;
   }
 
   callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext) {

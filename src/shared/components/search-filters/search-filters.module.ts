@@ -4,6 +4,8 @@ import { OrderService, SearchService, WindowService, JurisdictionService } from 
 import { SearchFiltersComponent } from './search-filters.component';
 import { PaletteModule } from '../palette';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DefinitionsModule } from '../../services/definitions';
+import { SearchFiltersWrapperComponent } from './search-filters-wrapper.component';
 
 @NgModule({
     imports: [
@@ -11,12 +13,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
+        DefinitionsModule
     ],
     declarations: [
         SearchFiltersComponent,
+        SearchFiltersWrapperComponent,
     ],
     exports: [
         SearchFiltersComponent,
+        SearchFiltersWrapperComponent,
     ],
     providers: [
         SearchService,

@@ -44,7 +44,7 @@
             <h3 class="heading-h3">{{tab.label}}</h3>
             <table class="CaseHistory" id="{{tab.id}}">
               <ng-container *ngFor="let field of tab.fields">
-                <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [eventFields]="tab.fields">
+                <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
                       <th>
