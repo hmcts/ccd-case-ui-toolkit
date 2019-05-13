@@ -7,11 +7,13 @@ import { MockComponent } from 'ng2-mock-component';
 import { ReadMultiSelectListFieldComponent } from './read-multi-select-list-field.component';
 import { text } from '../../../test/helpers';
 import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
+import { FormGroup } from '@angular/forms';
 
 describe('ReadMultiSelectListFieldComponent', () => {
 
   const $VALUES = By.css('table>tbody>tr>td');
 
+  const FIELD_ID = 'ReadOnlyFieldId';
   const FIELD_TYPE: FieldType = {
     id: 'MultiSelectList',
     type: 'MultiSelectList',
@@ -31,78 +33,135 @@ describe('ReadMultiSelectListFieldComponent', () => {
     ]
   };
   const VALUES = [ 'P', 'PA', 'J' ];
-  const CASE_FIELD = new CaseField();
-  CASE_FIELD.id = 'x';
-  CASE_FIELD.label = 'X';
-  CASE_FIELD.field_type = FIELD_TYPE;
-  CASE_FIELD.value = VALUES;
 
-  let FieldReadComponent = MockComponent({
-    selector: 'ccd-field-read',
-    inputs: ['caseField']
+  describe('Non-persistable readonly multi-select-list field', () => {
+    const CASE_FIELD = new CaseField();
+    CASE_FIELD.id = FIELD_ID;
+    CASE_FIELD.label = 'X';
+    CASE_FIELD.field_type = FIELD_TYPE;
+    CASE_FIELD.value = VALUES;
+
+    let FieldReadComponent = MockComponent({
+      selector: 'ccd-field-read',
+      inputs: ['caseField']
+    });
+
+    let fixture: ComponentFixture<ReadMultiSelectListFieldComponent>;
+    let component: ReadMultiSelectListFieldComponent;
+    let de: DebugElement;
+
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadMultiSelectListFieldComponent,
+            FixedListPipe,
+
+            // Mock
+            FieldReadComponent
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ReadMultiSelectListFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('render values as a table with one row and one cell per value', () => {
+      component.caseField.value = VALUES;
+      fixture.detectChanges();
+
+      let cells = de.queryAll($VALUES);
+
+      expect(cells.length).toEqual(VALUES.length);
+
+      for (let i = 0; i < VALUES.length; i++) {
+
+        expect(FIELD_TYPE.fixed_list_items[i].label).toEqual(text(cells[i]));
+
+      }
+    });
+
+    it('should NOT render anything when value is undefined', () => {
+      component.caseField.value = undefined;
+      fixture.detectChanges();
+
+      expect(de.children.length).toBe(0);
+    });
+
+    it('should NOT render anything when value is null', () => {
+      component.caseField.value = null;
+      fixture.detectChanges();
+
+      expect(de.children.length).toBe(0);
+    });
+
+    it('should NOT render anything when value is empty array', () => {
+      component.caseField.value = [];
+      fixture.detectChanges();
+
+      expect(de.children.length).toBe(0);
+    });
   });
 
-  let fixture: ComponentFixture<ReadMultiSelectListFieldComponent>;
-  let component: ReadMultiSelectListFieldComponent;
-  let de: DebugElement;
+  describe('Persistable readonly multi-select-list field', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+    const REGISTER_CONTROL = (control) => {
+      FORM_GROUP.addControl(FIELD_ID, control);
+      return control;
+    };
+    const CASE_FIELD = new CaseField();
+    CASE_FIELD.id = FIELD_ID;
+    CASE_FIELD.label = 'X';
+    CASE_FIELD.field_type = FIELD_TYPE;
+    CASE_FIELD.value = VALUES;
 
-  beforeEach(async(() => {
-    TestBed
-      .configureTestingModule({
-        imports: [],
-        declarations: [
-          ReadMultiSelectListFieldComponent,
-          FixedListPipe,
+    let FieldReadComponent = MockComponent({
+      selector: 'ccd-field-read',
+      inputs: ['caseField']
+    });
 
-          // Mock
-          FieldReadComponent
-        ],
-        providers: []
-      })
-      .compileComponents();
+    let fixture: ComponentFixture<ReadMultiSelectListFieldComponent>;
+    let component: ReadMultiSelectListFieldComponent;
+    let de: DebugElement;
 
-    fixture = TestBed.createComponent(ReadMultiSelectListFieldComponent);
-    component = fixture.componentInstance;
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadMultiSelectListFieldComponent,
+            FixedListPipe,
 
-    component.caseField = CASE_FIELD;
+            // Mock
+            FieldReadComponent
+          ],
+          providers: []
+        })
+        .compileComponents();
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(ReadMultiSelectListFieldComponent);
+      component = fixture.componentInstance;
 
-  it('render values as a table with one row and one cell per value', () => {
-    component.caseField.value = VALUES;
-    fixture.detectChanges();
+      component.registerControl = REGISTER_CONTROL;
+      component.caseField = CASE_FIELD;
 
-    let cells = de.queryAll($VALUES);
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
 
-    expect(cells.length).toEqual(VALUES.length);
+    it('should register readonly case field value with form group', () => {
+      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUES);
+    });
 
-    for (let i = 0; i < VALUES.length; i++) {
-
-      expect(FIELD_TYPE.fixed_list_items[i].label).toEqual(text(cells[i]));
-
-    }
   });
 
-  it('should NOT render anything when value is undefined', () => {
-    component.caseField.value = undefined;
-    fixture.detectChanges();
-
-    expect(de.children.length).toBe(0);
-  });
-
-  it('should NOT render anything when value is null', () => {
-    component.caseField.value = null;
-    fixture.detectChanges();
-
-    expect(de.children.length).toBe(0);
-  });
-
-  it('should NOT render anything when value is empty array', () => {
-    component.caseField.value = [];
-    fixture.detectChanges();
-
-    expect(de.children.length).toBe(0);
-  });
 });

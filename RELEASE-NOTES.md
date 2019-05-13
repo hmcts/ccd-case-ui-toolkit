@@ -1,5 +1,21 @@
 ## RELEASE NOTES
 
+### Version 2.48.0 - May 7 2019
+**RDM-4575** search filters definition service
+
+### Version 2.47.0 - May 7 2019
+**RDM-4574** Create Case Filters componant retrieve jurisdiction internally 
+
+### Version 2.46.0 - May 1 2019
+**RDM-3496** Case View of Nested Complex Types - Collection of complex types within complex types
+
+### Version 2.45.0 - April 29 2019
+**RDM-3460** Complex element *only* as list screen input
+
+### Version 2.43.0 - April 29 2019
+**RDM-4386** Make print, event selector and history tab optional but present by default
+**RDM-4130** Extract Results List Component to toolkit 
+
 ### Version 2.42.3 - April 23 2019
 **RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
 
