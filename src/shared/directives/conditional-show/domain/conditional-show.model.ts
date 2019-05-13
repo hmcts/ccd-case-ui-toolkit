@@ -48,7 +48,7 @@ export class ShowCondition {
   private matchAndConditions(fields: any, condition: string, path?: string): boolean {
     if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
       let orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
-      return orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition));
+      return orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition, path));
     } else {
       let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
       return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
