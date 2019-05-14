@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.49.0_prerelease - May 14 2019
+**RDM-4701** Upgrade ccpay-web-component Library Version
+
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service
 
