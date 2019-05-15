@@ -112,7 +112,7 @@ export class CasesService {
 
   createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<object> {
     const caseId = caseDetails.case_id;
-    const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}`;
+    const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
     let headers = new Headers({
       'experimental': 'true',
