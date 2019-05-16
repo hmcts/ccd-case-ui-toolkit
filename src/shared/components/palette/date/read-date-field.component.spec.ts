@@ -12,13 +12,13 @@ describe('ReadDateFieldComponent', () => {
     type: 'Date'
   };
   const VALUE = '1800-07-15';
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
   const FORMATTED_VALUE = '15 Jul 1800';
   const EMPTY = '';
 

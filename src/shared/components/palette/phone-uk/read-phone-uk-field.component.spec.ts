@@ -12,13 +12,13 @@ describe('ReadPhoneUKFieldComponent', () => {
   };
   const VALUE = '07123456789';
   const EMPTY = '';
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
 
   let fixture: ComponentFixture<ReadPhoneUKFieldComponent>;
   let component: ReadPhoneUKFieldComponent;

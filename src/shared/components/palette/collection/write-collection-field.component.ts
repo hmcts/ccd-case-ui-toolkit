@@ -48,7 +48,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   buildCaseField(item, index: number): CaseField {
-    return {
+    return Object.assign(new CaseField(),{
       id: index.toString(),
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,
@@ -56,7 +56,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       value: item.value,
       label: null,
       acls: this.caseField.acls
-    };
+    });
   }
 
   buildControlRegistrer(id: string, index: number): (control: FormControl) => AbstractControl {

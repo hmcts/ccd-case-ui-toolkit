@@ -27,13 +27,28 @@ describe('ReadFixedListFieldComponent', () => {
       }
     ]
   };
-  const CASE_FIELD: CaseField = {
+  const ITEMS = [
+    {
+      code: 'M',
+      label: 'Male'
+    },
+    {
+      code: VALUE,
+      label: EXPECTED_LABEL
+    },
+    {
+      code: 'O',
+      label: 'Other'
+    }
+  ];
+
+  const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
-    value: VALUE
-  };
+    value: VALUE,
+  });
 
   const EMPTY = '';
 
@@ -86,7 +101,7 @@ describe('ReadFixedListFieldComponent', () => {
 });
 
 describe('ReadFixedListFieldComponent for dynamiclist type', () => {
-
+  const VALUE = 'F';
   const VALUE_DYNAMIC_LIST = '{\n' +
     '            "value": {\n' +
     '              "code": "F",\n' +
@@ -104,35 +119,33 @@ describe('ReadFixedListFieldComponent for dynamiclist type', () => {
     '            ]\n' +
     '          }';
 
-  const CHANGED_VALUE_DYNAMIC_LIST = '{\n' +
-    '            "value": {\n' +
-    '              "code": "M",\n' +
-    '              "label": "Male"\n' +
-    '            },\n' +
-    '            "list_items": [\n' +
-    '              {\n' +
-    '                "code": "F",\n' +
-    '                "label": "Female"\n' +
-    '              },\n' +
-    '              {\n' +
-    '                "code": "M",\n' +
-    '                "label": "Male"\n' +
-    '              }' +
-    '            ]\n' +
-    '          }';
-  const EXPECTED_LABEL = 'Male';
+  const EXPECTED_LABEL = 'Female';
   const FIELD_TYPE_DYNAMIC_LIST: FieldType = {
     id: 'Gender',
     type: 'DynamicList',
     fixed_list_items: []
   };
-  const CASE_FIELD_DYNAMIC_LIST: CaseField = {
+  const ITEMS = [
+    {
+      code: 'M',
+      label: 'Male'
+    },
+    {
+      code: 'F',
+      label: 'Female'
+    },
+    {
+      code: 'O',
+      label: 'Other'
+    }
+  ];
+  const CASE_FIELD_DYNAMIC_LIST: CaseField = Object.assign(new CaseField(), {
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE_DYNAMIC_LIST,
-    value: JSON.parse(VALUE_DYNAMIC_LIST)
-  };
+    value: JSON.parse(VALUE_DYNAMIC_LIST),
+  });
   const EMPTY = '';
 
   let fixture: ComponentFixture<ReadFixedListFieldComponent>;
@@ -161,23 +174,7 @@ describe('ReadFixedListFieldComponent for dynamiclist type', () => {
   }));
 
   it('render label associated to the dynamic list value provided', () => {
-    component.caseField.value = JSON.parse(CHANGED_VALUE_DYNAMIC_LIST);
-    fixture.detectChanges();
-
     expect(de.nativeElement.textContent).toEqual(EXPECTED_LABEL);
   });
 
-  it('render undefined value as empty string', () => {
-    component.caseField.value = undefined;
-    fixture.detectChanges();
-
-    expect(de.nativeElement.textContent).toEqual(EMPTY);
-  });
-
-  it('render null value as empty string', () => {
-    component.caseField.value = null;
-    fixture.detectChanges();
-
-    expect(de.nativeElement.textContent).toEqual(EMPTY);
-  });
 });

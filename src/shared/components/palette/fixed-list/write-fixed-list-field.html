@@ -8,7 +8,7 @@
 
   <select class="form-control ccd-dropdown bottom-30" [id]="id()" [formControl]="fixedListControl">
     <option value="">--Select a value--</option>
-    <option value="{{type.code}}" *ngFor="let type of caseField.getItems()">
+    <option value="{{type.code}}" *ngFor="let type of caseField.items">
       {{type.label}}
     </option>
   </select>

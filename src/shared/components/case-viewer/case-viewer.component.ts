@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
@@ -8,19 +8,19 @@ import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { CaseField } from '../../domain/definition';
 import { ShowCondition } from '../../directives/conditional-show/domain';
-import { Draft } from '../../domain';
+import { Draft, DRAFT_QUERY_PARAM } from '../../domain';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { CaseView, CaseViewTrigger } from '../../domain/case-view';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { DRAFT_QUERY_PARAM } from '../../domain';
 import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseService } from '../case-editor';
-import { NgZone } from '@angular/core';
+import { Type } from 'class-transformer';
 
+// @dynamic
 @Component({
   selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html',
@@ -39,7 +39,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   BANNER = DisplayMode.BANNER;
 
   caseDetails: CaseView;
+  @Type(() => CaseTab)
   sortedTabs: CaseTab[];
+  @Type(() => CaseField)
   caseFields: CaseField[];
   error: any;
   triggerTextStart = CaseViewerComponent.TRIGGER_TEXT_START;
@@ -94,8 +96,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   private init() {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
-
-    this.caseFields = this.getTabFields();
+    let tabFields = this.getTabFields()
+    this.caseFields = this.reinstantiateCaseFields(tabFields);
 
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
 
@@ -112,9 +114,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     }
   }
 
+  private reinstantiateCaseFields(caseFields: CaseField[]): CaseField[] {
+    return caseFields.map(cf => Object.assign(new CaseField(), cf));
+  }
+
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(this.reinstantiateCaseFields(tab.fields))}))
       .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 

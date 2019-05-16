@@ -128,8 +128,8 @@ export class FieldsUtils {
     };
   }
 
-  public cloneObject(obj: any): any {
-    return Object.assign({}, obj);
+  public cloneObject(obj: any): CaseField {
+    return Object.assign(new CaseField(), obj);
   }
 
   mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
@@ -141,7 +141,7 @@ export class FieldsUtils {
   }
 
   private mergeFields(caseFields: CaseField[], formFields: any, mergeFunction: (CaseField, any) => void) {
-    let result = this.cloneObject(formFields);
+    let result = Object.assign({}, formFields);
     caseFields.forEach(field => {
       mergeFunction(field, result);
       if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {

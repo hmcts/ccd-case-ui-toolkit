@@ -1,13 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseEditComponent } from './case-edit.component';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router, ActivatedRoute } from '@angular/router';
-import createSpyObj = jasmine.createSpyObj;
-import { of, Observable } from 'rxjs';
-import { FieldsUtils, FieldsPurger, ProfileService, ProfileNotifier } from '../../../services';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
@@ -20,6 +19,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { Wizard } from '../domain/wizard.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Profile } from '../../../domain';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditComponent', () => {
 
@@ -29,18 +29,18 @@ describe('CaseEditComponent', () => {
     'caseId',
     false,
     [
-      {
+      <CaseField>({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      },
-      {
+      }),
+      <CaseField>({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      }
+      })
     ]
   );
 
@@ -60,34 +60,34 @@ describe('CaseEditComponent', () => {
     case_field_id: 'Address'
   };
 
-  const CASE_FIELD_WITH_SHOW_CONDITION: CaseField = {
+  const CASE_FIELD_WITH_SHOW_CONDITION: CaseField = <CaseField>({
     id: 'PersonFirstName',
     label: 'First name',
     field_type: null,
     display_context: 'READONLY',
     show_condition: 'PersonLastName=\"Smith\"'
-  };
+  });
 
-  const CASE_FIELD_1: CaseField = {
+  const CASE_FIELD_1: CaseField = <CaseField>({
     id: 'PersonFirstName',
     label: 'First name',
     field_type: null,
     display_context: 'READONLY'
-  };
+  });
 
-  const CASE_FIELD_2: CaseField = {
+  const CASE_FIELD_2: CaseField = <CaseField>({
     id: 'PersonLastName',
     label: 'First name',
     field_type: null,
     display_context: 'READONLY'
-  };
+  });
 
-  const CASE_FIELD_3: CaseField = {
+  const CASE_FIELD_3: CaseField = <CaseField>({
     id: 'Address',
     label: 'Address',
     field_type: null,
     display_context: 'READONLY'
-  };
+  });
 
   let fixture: ComponentFixture<CaseEditComponent>;
   let component: CaseEditComponent;

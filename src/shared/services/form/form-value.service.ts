@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
@@ -75,25 +76,7 @@ export class FormValueService {
   }
 
   sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
-    // loop thorught dynamic fields in caseFields
-    caseFields
-      .filter(caseField => caseField.field_type.type === 'DynamicList')
-      .forEach(dynamicField => {
-        // for each dynamic field find the field in editForm, if field exists in the editForm
-        // get the code (selected value from user)
-        // replace code in editForm with whole JSON for dynamic list
-        Object.keys(editForm['data']).forEach((key) => {
-          if (dynamicField.id === key) {
-            editForm['data'][key] =
-              {
-                value: dynamicField.value.list_items.filter(value => value.code === editForm['data'][key])[0],
-                list_items: dynamicField.value.list_items
-              };
-          }
-        });
-      });
-
-
+    return FieldTypeSanitiser.sanitiseLists(caseFields, editForm);
   }
 
 }

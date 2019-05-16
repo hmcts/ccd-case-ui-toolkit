@@ -12,13 +12,13 @@ describe('ReadEmailFieldComponent', () => {
     type: 'Email'
   };
   const VALUE = 'ccd@hmcts.net';
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
   const EMPTY = '';
 
   let fixture: ComponentFixture<ReadEmailFieldComponent>;

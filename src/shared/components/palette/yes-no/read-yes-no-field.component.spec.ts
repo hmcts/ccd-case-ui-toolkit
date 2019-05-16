@@ -13,13 +13,13 @@ describe('ReadYesNoFieldComponent', () => {
     type: 'YesOrNo'
   };
   const VALUE = true;
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
   const FORMATTED_VALUE = 'Yes';
 
   let fixture: ComponentFixture<ReadYesNoFieldComponent>;

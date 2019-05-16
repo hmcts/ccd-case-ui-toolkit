@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import createSpyObj = jasmine.createSpyObj;
 import { CasesService } from '../services/cases.service';
 import { CaseCreateComponent } from './case-create.component';
-import { CaseEventTrigger, DRAFT_PREFIX } from '../../../domain';
+import { CaseEventTrigger, CaseField, DRAFT_PREFIX } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { DraftService } from '../../../services/draft';
 import { AlertService } from '../../../services/alert';
-import { of, Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { HttpError } from '../../../domain/http';
 import { MockComponent } from 'ng2-mock-component';
 import { EventTriggerService } from '../services/event-trigger.service';
 import { CaseDetails } from '../../../domain/case-details.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
+import createSpyObj = jasmine.createSpyObj;
 
 let CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
@@ -30,18 +30,18 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     undefined,
     false,
     [
-      {
+      <CaseField>({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      },
-      {
+      }),
+      <CaseField>({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      }
+      })
     ],
     [],
     true
@@ -180,18 +180,18 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
     DRAFT_PREFIX + DRAFT_ID,
     false,
     [
-      {
+      <CaseField>({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      },
-      {
+      }),
+      <CaseField>({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      }
+      })
     ],
     [],
     true

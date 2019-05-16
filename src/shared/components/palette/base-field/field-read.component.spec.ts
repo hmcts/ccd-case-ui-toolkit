@@ -6,13 +6,13 @@ import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { CaseField } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
 import { PaletteContext } from './palette-context.enum';
+import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
 const $FIELD_TEST = By.css('ccd-field-read-label span.text-cls');
 
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = <CaseField>({
   id: 'PersonFirstName',
   label: 'First name',
   field_type: {
@@ -21,7 +21,7 @@ const CASE_FIELD: CaseField = {
   },
   value: 'Johnny',
   display_context: 'READONLY'
-};
+});
 const CLASS = 'text-cls';
 
 @Component({
