@@ -12,7 +12,7 @@ export class FieldTypeSanitiser {
    * @param caseFields
    * @param editForm
    */
-  public static sanitiseLists(caseFields: CaseField[], editForm: any): any {
+  public static sanitiseLists(caseFields: CaseField[], editForm: any) {
 
     this.getDynamicListsFromCaseFields(caseFields).forEach(dynamicField => {
       this.getListOfKeysFromEditForm(editForm).forEach((key) => {
