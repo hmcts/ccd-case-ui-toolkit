@@ -10,18 +10,20 @@ export class PlaceholderService {
     private static readonly OPENING_PLACEHOLDER = '{';
     private static readonly CLOSING_PLACEHOLDER = '}';
 
+    constructor(
+        private fieldsUtils: FieldsUtils
+      ) { }
+
     resolvePlaceholders(pageFormFields, stringToResolve): string {
-        console.log('[[[[[ START [[[[[');
-        console.log('resolvePlaceholders stringToResolve=', stringToResolve);
         let startSubstitutionIndex = -1;
         let fieldIdToSubstitute = '';
         let isCollecting = false;
         let originalStringToResolve = stringToResolve;
+        let numberCollectionItemsAsPlaceholder = 1;
+        let colItemIndex = 0;
+
         if (stringToResolve && typeof stringToResolve === 'string') {
-            let numberCollectionItemsAsPlacholder = this.getPlaceholdersCollectionItemsNumberIfExists(pageFormFields, stringToResolve);
-            console.log('resolvePlaceholders numberCollectionItemsAsPlacholder=', numberCollectionItemsAsPlacholder);
-            for (let colItemIndex = 0; colItemIndex < numberCollectionItemsAsPlacholder; colItemIndex++) {
-                console.log('resolvePlaceholders colItemIndex=', colItemIndex);
+            while (numberCollectionItemsAsPlaceholder-- > 0) {
 
                 for (let scanIndex = 0; scanIndex < stringToResolve.length; scanIndex++) {
                     if (this.isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollecting)) {
@@ -32,7 +34,10 @@ export class PlaceholderService {
                             if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
                                 && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, colItemIndex)) {
 
-                                stringToResolve = this.substitute(
+                                    numberCollectionItemsAsPlaceholder =
+                                        this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
+
+                                    stringToResolve = this.substitute(
                                     pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
 
                                     scanIndex = this.resetScanIndexAfterSubstitution(
@@ -46,54 +51,33 @@ export class PlaceholderService {
                     }
                 }
 
-                if (colItemIndex < numberCollectionItemsAsPlacholder - 1) {
+                if (colItemIndex < numberCollectionItemsAsPlaceholder - 1) {
                     stringToResolve += '\r\n';
                     stringToResolve += originalStringToResolve;
                 }
-                console.log('resolvePlaceholders new stringToResolve=', stringToResolve);
+                colItemIndex += 1;
             }
         }
-        console.log(']]]]] END ]]]]]');
         return stringToResolve;
     }
 
-    private getPlaceholdersCollectionItemsNumberIfExists(pageFormFields, stringToResolve) {
-        let isCollecting = false;
-        let startSubstitutionIndex = -1;
-        let fieldIdToSubstitute = '';
+    private getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute) {
+        let fieldIds = fieldIdToSubstitute.split('.');
+        let pageFormFieldsClone = this.fieldsUtils.cloneObject(pageFormFields);
+        let numberCollectionItemsAsPlaceholder = 1;
 
-        for (let scanIndex = 0; scanIndex < stringToResolve.length; scanIndex++) {
-            if (this.isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollecting)) {
-                startSubstitutionIndex = scanIndex;
-                isCollecting = true;
-            } else if (isCollecting) {
-                if (this.isClosingPlaceholder(stringToResolve, scanIndex)) {
-                    if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
-                        && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, 0)) {
-
-                        let fieldIds = fieldIdToSubstitute.split('.');
-                        for (let index = 0; index < fieldIds.length; index++) {
-                            if (this.isNonEmptyCollection(pageFormFields) && this.isLeaf(fieldIds.length, index)) {
-                                return pageFormFields.length;
-                            } else if (pageFormFields[fieldIds[index]] === undefined) {
-                                return 0;
-                            } else {
-                                pageFormFields = pageFormFields[fieldIds[index]];
-                            }
-
-                        }
-
-                        scanIndex = this.resetScanIndexAfterSubstitution(
-                            startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, 0);
-                    }
-                    isCollecting = false;
-                    fieldIdToSubstitute = '';
-                } else if (!this.isOpeningPlaceholder(stringToResolve, scanIndex)) {
-                    fieldIdToSubstitute += stringToResolve.charAt(scanIndex);
-                }
+        for (let index = 0; index < fieldIds.length; index++) {
+            if (this.isNonEmptyCollection(pageFormFieldsClone)) {
+                numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
+                break;
+            } else if (pageFormFieldsClone[fieldIds[index]] === undefined) {
+                numberCollectionItemsAsPlaceholder = 0;
+                break;
+            } else {
+                pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
             }
         }
-        return 1;
+        return numberCollectionItemsAsPlaceholder;
     }
 
     private isMatchingPlaceholderPattern(fieldIdToSubstitute) {
@@ -102,7 +86,6 @@ export class PlaceholderService {
 
     private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, collectionItemIndex) {
         let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex);
-        console.log('isFieldIdInFormFields, fieldValue=', fieldValue);
         return fieldValue ? this.isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) : fieldValue !== undefined;
     }
 
@@ -150,50 +133,34 @@ export class PlaceholderService {
     }
 
     private getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        console.log('getFieldValue fieldIdToSubstitute=', fieldIdToSubstitute);
-        console.log('getFieldValue collectionItemIndex=', collectionItemIndex);
         let fieldIds = fieldIdToSubstitute.split('.');
         for (let index = 0; index < fieldIds.length; index++) {
-            console.log('getFieldValue pageFormFields=', pageFormFields);
-            console.log('getFieldValue fieldIds[index]=', fieldIds[index]);
             if (pageFormFields !== undefined) {
-                console.log('getFieldValue pageFormFields[fieldIds[index]]=', pageFormFields[fieldIds[index]]);
             }
             if (this.isNonEmptyCollection(pageFormFields) && this.isLeaf(fieldIds.length, index)) {
-                console.log('getFieldValue isNotEmptyArray && isCollection inside isLeaf');
                 let placeholderSuffix = fieldIds[fieldIds.length - 1];
-                console.log('placeholderSuffix=', placeholderSuffix);
                 pageFormFields = pageFormFields[collectionItemIndex]['value'][placeholderSuffix];
-                console.log('returnItems=', pageFormFields);
                 return pageFormFields;
             } else {
                 if (pageFormFields !== undefined && this.isNonEmptyArray(pageFormFields[fieldIds[index]])
                     && !this.isCollection(pageFormFields[fieldIds[index]])) {
-                    console.log('getFieldValue isNotEmptyArray && isNotCollection');
                     pageFormFields = pageFormFields[fieldIds[index] + FieldsUtils.LABEL_SUFFIX];
                 } else if (this.isNonEmptyCollection(pageFormFields)) {
-                    console.log('getFieldValue isNonEmptyCollection');
                     pageFormFields = pageFormFields[collectionItemIndex]['value'][fieldIds[index]];
                 } else if (pageFormFields !== undefined  && pageFormFields[fieldIds[index]] !== undefined) {
-                    console.log('getFieldValue pageFormFields[fieldIds[index]] exists');
                     pageFormFields = pageFormFields[fieldIds[index]];
                 } else {
-                    console.log('getFieldValue undefined');
                     return undefined;
                 }
             }
         }
-        console.log('getFieldValue pageFormFields=', pageFormFields);
         if (this.isNonEmptyArray(pageFormFields) && this.isCollection(pageFormFields)) {
-            console.log('getFieldValue isNotEmptyArray && isCollection');
             pageFormFields = pageFormFields.map(fieldValue => fieldValue['value']);
         }
         return pageFormFields;
     }
 
     private isLeaf(length, currentIndex) {
-        console.log('length=', length);
-        console.log('currentIndex=', currentIndex);
         return length === currentIndex + 1;
     }
 
