@@ -32,9 +32,8 @@ export class FieldTypeSanitiser {
   }
 
   private static getMatchingCodeFromListOfItems(dynamicField, editForm: any, key) {
-    return dynamicField.items.filter(function (value) {
-      return value.code === editForm['data'][key];
-    })[0];
+    let result = dynamicField.items.filter(value => value.code === editForm['data'][key]);
+    return result.length > 0? result[0] : {};
   }
 
   private static getListOfKeysFromEditForm(editForm: any) {
