@@ -157,7 +157,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
         'value and nested value3 and tripple nested9');
     });
 
-    it('should only resolve placeholders that point to a leav value', () => {
+    it('should not resolve placeholders that do not point to a leaf value', () => {
       let pageFormFields = { 'topComplex': {
         'collection': [
         { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
@@ -229,7 +229,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       expect(actual).toBe('nested value1 and tripple nested7\r\nnested value2 and tripple nested8\r\nnested value3 and tripple nested9');
     });
 
-    it('should only resolve placeholders that point to a leav value', () => {
+    it('should not resolve placeholders that do not point to a leaf value', () => {
       let pageFormFields = { 'collection': [
         { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
         { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
