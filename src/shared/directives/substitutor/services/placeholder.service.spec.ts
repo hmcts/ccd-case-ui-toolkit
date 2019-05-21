@@ -168,7 +168,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${collection.complex} and ${collection.complex.nested2.doubleNested}');
+      expect(actual).toBe('${topComplex.collection.complex} and ${topComplex.collection.complex.nested2.doubleNested}');
     });
   });
 
