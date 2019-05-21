@@ -1,10 +1,12 @@
 import { PlaceholderService } from './placeholder.service';
+import { FieldsUtils } from '../../../services';
 
 describe('PlaceholderService', () => {
 
   let placeholderService: PlaceholderService;
+  let fieldsUtils: FieldsUtils = new FieldsUtils();
   beforeEach(() => {
-    placeholderService = new PlaceholderService();
+    placeholderService = new PlaceholderService(fieldsUtils);
   });
 
   describe('simple types', () => {
@@ -175,6 +177,35 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
       expect(actual).toBe('${_1_one} simpleValue');
+    });
+  });
+
+  describe('collection of comples types', () => {
+
+    it('should iterate collection items when resolving placeholders referring to collection items', () => {
+      let pageFormFields = { 'collection': [
+        { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
+        { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+      ]};
+      let stringToResolve = '${collection.complex.nested} and ${collection.complex.nested2.doubleNested.trippleNested}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe('nested value1 and tripple nested7\r\nnested value2 and tripple nested8\r\nnested value3 and tripple nested9');
+    });
+
+    it('should only resolve placeholders that point to a leav value', () => {
+      let pageFormFields = { 'collection': [
+        { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
+        { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+      ]};
+      let stringToResolve = '${collection.complex} and ${collection.complex.nested2.doubleNested}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe('${collection.complex} and ${collection.complex.nested2.doubleNested}');
     });
   });
 });

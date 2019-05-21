@@ -34,14 +34,16 @@ export class PlaceholderService {
                             if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
                                 && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, colItemIndex)) {
 
-                                    numberCollectionItemsAsPlaceholder =
-                                        this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
+                                    if (fieldIdToSubstitute.split('.').length > 1) {
+                                        numberCollectionItemsAsPlaceholder =
+                                            this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
+                                    }
 
                                     stringToResolve = this.substitute(
-                                    pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
+                                        pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
 
                                     scanIndex = this.resetScanIndexAfterSubstitution(
-                                    startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, colItemIndex);
+                                        startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, colItemIndex);
                             }
                             isCollecting = false;
                             fieldIdToSubstitute = '';
@@ -54,8 +56,8 @@ export class PlaceholderService {
                 if (colItemIndex < numberCollectionItemsAsPlaceholder - 1) {
                     stringToResolve += '\r\n';
                     stringToResolve += originalStringToResolve;
+                    colItemIndex += 1;
                 }
-                colItemIndex += 1;
             }
         }
         return stringToResolve;
