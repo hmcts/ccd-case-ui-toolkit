@@ -48,7 +48,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   buildCaseField(item, index: number): CaseField {
-    return Object.assign(new CaseField(),{
+    return this.newCaseField(index, item);
+  }
+
+  private newCaseField(index: number, item) {
+    return Object.assign(new CaseField(), {
       id: index.toString(),
       field_type: this.caseField.field_type.collection_field_type,
       display_context: this.caseField.display_context,

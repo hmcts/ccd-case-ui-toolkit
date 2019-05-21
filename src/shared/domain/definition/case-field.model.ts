@@ -27,7 +27,7 @@ export class CaseField implements Orderable {
   wizardProps?: WizardPageField;
 
   private _value: any;
-  private _items: any = [];
+  private _list_items: any = [];
 
   @Expose()
   get value(): any {
@@ -38,21 +38,21 @@ export class CaseField implements Orderable {
     }
   }
 
-  set value(newValue: any) {
-    this._value = newValue;
+  set value(value: any) {
+    this._value = value;
   }
 
   @Expose()
-  get items(): any {
+  get list_items(): any {
     if (this.field_type && this.field_type.type === 'DynamicList') {
-      return this._value.list_items ? this._value.list_items : this._items;
+      return this._value.list_items ? this._value.list_items : this._list_items;
     } else {
       return this.field_type.fixed_list_items;
     }
   }
 
-  set items(newItems: any) {
-    this._items = newItems;
+  set list_items(items: any) {
+    this._list_items = items;
   }
 
 }

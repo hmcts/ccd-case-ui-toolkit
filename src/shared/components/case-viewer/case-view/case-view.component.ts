@@ -5,6 +5,7 @@ import { CasesService, CaseService } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-view',

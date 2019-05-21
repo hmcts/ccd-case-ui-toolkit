@@ -1,7 +1,6 @@
 import { CaseField } from '../../domain/definition';
 import { Injectable } from '@angular/core';
 
-// @dynamic
 @Injectable()
 export class FieldTypeSanitiser {
 
@@ -12,7 +11,7 @@ export class FieldTypeSanitiser {
    * @param caseFields
    * @param editForm
    */
-  public static sanitiseLists(caseFields: CaseField[], editForm: any) {
+   sanitiseLists(caseFields: CaseField[], editForm: any) {
 
     this.getDynamicListsFromCaseFields(caseFields).forEach(dynamicField => {
       this.getListOfKeysFromEditForm(editForm).forEach((key) => {
@@ -21,26 +20,26 @@ export class FieldTypeSanitiser {
     });
   }
 
-  private static createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField, key, editForm: any) {
+  private createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField: CaseField, key, editForm: any) {
     if (dynamicField.id === key) {
       editForm['data'][key] =
         {
           value: this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
-          list_items: dynamicField.items
+          list_items: dynamicField.list_items
         };
     }
   }
 
-  private static getMatchingCodeFromListOfItems(dynamicField, editForm: any, key) {
-    let result = dynamicField.items.filter(value => value.code === editForm['data'][key]);
+  private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
+    let result = dynamicField.list_items.filter(value => value.code === editForm['data'][key]);
     return result.length > 0? result[0] : {};
   }
 
-  private static getListOfKeysFromEditForm(editForm: any) {
+  private getListOfKeysFromEditForm(editForm: any) {
     return Object.keys(editForm['data']);
   }
 
-  private static getDynamicListsFromCaseFields(caseFields: CaseField[]): CaseField[] {
+  private getDynamicListsFromCaseFields(caseFields: CaseField[]): CaseField[] {
     return caseFields
       .filter(caseField => caseField.field_type.type === 'DynamicList');
   }

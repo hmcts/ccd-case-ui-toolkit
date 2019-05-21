@@ -1,5 +1,6 @@
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import {FieldsUtils} from '../../../services/fields';
 
 describe('FieldsFilterPipe', () => {
 
@@ -20,7 +21,7 @@ describe('FieldsFilterPipe', () => {
   let fieldsFilter: FieldsFilterPipe;
 
   beforeEach(() => {
-    fieldsFilter = new FieldsFilterPipe();
+    fieldsFilter = new FieldsFilterPipe(new FieldsUtils());
   });
 
   it('should handle null or undefined fields', () => {

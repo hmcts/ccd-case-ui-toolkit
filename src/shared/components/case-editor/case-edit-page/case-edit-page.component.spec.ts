@@ -22,6 +22,8 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import createSpyObj = jasmine.createSpyObj;
+import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+
 
 describe('CaseEditPageComponent', () => {
 
@@ -32,7 +34,8 @@ describe('CaseEditPageComponent', () => {
   let fixture: ComponentFixture<CaseEditPageComponent>;
   let wizardPage = new WizardPage();
   let readOnly = new CaseField();
-  let formValueService = new FormValueService();
+  let fieldTypeSanitiser = new FieldTypeSanitiser();
+  let formValueService = new FormValueService(fieldTypeSanitiser);
   let formErrorService = new FormErrorService();
   let firstPage = new WizardPage();
   let caseFieldService = new CaseFieldService();

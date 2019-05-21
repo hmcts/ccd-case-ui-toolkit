@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseService } from '../../case-editor';
 import { DraftService, AlertService } from '../../../services';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {

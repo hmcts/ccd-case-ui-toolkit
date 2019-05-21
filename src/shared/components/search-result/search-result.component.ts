@@ -114,7 +114,7 @@ export class SearchResultComponent implements OnChanges {
 
         const field = result.case_fields[fieldId];
 
-        caseFields.push(plainToClass(CaseField, {
+        caseFields.push(Object.assign(new CaseField(), {
           id: fieldId,
           label: null,
           field_type: {},
@@ -147,7 +147,7 @@ export class SearchResultComponent implements OnChanges {
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
-    return plainToClass(CaseField, {
+    return Object.assign(new CaseField(), {
       id: col.case_field_id,
       label: col.label,
       field_type: col.case_field_type,

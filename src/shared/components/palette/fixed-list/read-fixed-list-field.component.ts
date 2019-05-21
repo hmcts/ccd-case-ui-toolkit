@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'ccd-read-fixed-list-field',
-  template: '<span class="text-16">{{caseField.value | ccdFixedList:caseField.items}}</span>',
+  template: '<span class="text-16">{{caseField.value | ccdFixedList:caseField.list_items}}</span>',
 })
 export class ReadFixedListFieldComponent extends AbstractFieldReadComponent {
 }

@@ -20,7 +20,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseService } from '../case-editor';
 import { Type } from 'class-transformer';
 
-// @dynamic
 @Component({
   selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html',
@@ -39,9 +38,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   BANNER = DisplayMode.BANNER;
 
   caseDetails: CaseView;
-  @Type(() => CaseTab)
   sortedTabs: CaseTab[];
-  @Type(() => CaseField)
   caseFields: CaseField[];
   error: any;
   triggerTextStart = CaseViewerComponent.TRIGGER_TEXT_START;

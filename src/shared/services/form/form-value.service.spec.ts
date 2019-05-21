@@ -1,12 +1,13 @@
 import { FormValueService } from './form-value.service';
 import { CaseField, FieldType } from '../../domain/definition';
+import {FieldTypeSanitiser} from './field-type-sanitiser';
 
 describe('FormValueService', () => {
 
   let formValueService: FormValueService;
 
   beforeEach(() => {
-    formValueService = new FormValueService();
+    formValueService = new FormValueService(new FieldTypeSanitiser());
   });
 
   it('should return null when given null', () => {

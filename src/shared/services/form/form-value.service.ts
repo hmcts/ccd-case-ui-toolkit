@@ -5,6 +5,8 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 @Injectable()
 export class FormValueService {
 
+  constructor(private fieldTypeSanitiser: FieldTypeSanitiser){}
+
   public sanitise(rawValue: object): object {
     return this.sanitiseObject(rawValue);
   }
@@ -76,7 +78,7 @@ export class FormValueService {
   }
 
   sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
-    return FieldTypeSanitiser.sanitiseLists(caseFields, editForm);
+    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm);
   }
 
 }

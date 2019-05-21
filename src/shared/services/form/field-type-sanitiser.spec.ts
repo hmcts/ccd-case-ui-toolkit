@@ -115,9 +115,8 @@ describe('FieldTypeSanitiser', () => {
 
   it('should enrich dynamiclist casefields values with correct format ', () => {
     expect(editForm.data.dynamicList).toEqual('M');
-    FieldTypeSanitiser.sanitiseLists(caseFields, editForm);
+    new FieldTypeSanitiser().sanitiseLists(caseFields, editForm);
     expect(editForm.data.dynamicList).toEqual(EXPECTED_VALUE_DYNAMIC_LIST);
   });
-
 
 });
