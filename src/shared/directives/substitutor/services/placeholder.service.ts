@@ -73,7 +73,6 @@ export class PlaceholderService {
                 numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
                 break;
             } else if (pageFormFieldsClone[fieldIds[index]] === undefined) {
-                numberCollectionItemsAsPlaceholder = 0;
                 break;
             } else {
                 pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];

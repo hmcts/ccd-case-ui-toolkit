@@ -138,6 +138,40 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
     });
   });
 
+  describe('complex of collection of complex types', () => {
+    it('should iterate collection items when resolving placeholders referring to collection items', () => {
+      let pageFormFields = { 'topComplex': {
+        'field': 'value',
+        'collection': [
+        { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
+        { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+      ]}};
+      let stringToResolve = '${topComplex.field} and ${topComplex.collection.complex.nested} and ' +
+        '${topComplex.collection.complex.nested2.doubleNested.trippleNested}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe('value and nested value1 and tripple nested7\r\n' +
+        'value and nested value2 and tripple nested8\r\n' +
+        'value and nested value3 and tripple nested9');
+    });
+
+    it('should only resolve placeholders that point to a leav value', () => {
+      let pageFormFields = { 'topComplex': {
+        'collection': [
+        { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
+        { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+      ]}};
+      let stringToResolve = '${topComplex.collection.complex} and ${topComplex.collection.complex.nested2.doubleNested}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe('${collection.complex} and ${collection.complex.nested2.doubleNested}');
+    });
+  });
+
   describe('collection types', () => {
 
     it('should substitute fields with text collection values', () => {
@@ -180,7 +214,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
     });
   });
 
-  describe('collection of comples types', () => {
+  describe('collection of complex types', () => {
 
     it('should iterate collection items when resolving placeholders referring to collection items', () => {
       let pageFormFields = { 'collection': [
