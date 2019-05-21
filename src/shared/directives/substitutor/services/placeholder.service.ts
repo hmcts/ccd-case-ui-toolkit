@@ -136,8 +136,6 @@ export class PlaceholderService {
     private getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
         let fieldIds = fieldIdToSubstitute.split('.');
         for (let index = 0; index < fieldIds.length; index++) {
-            if (pageFormFields !== undefined) {
-            }
             if (this.isNonEmptyCollection(pageFormFields) && this.isLeaf(fieldIds.length, index)) {
                 let placeholderSuffix = fieldIds[fieldIds.length - 1];
                 pageFormFields = pageFormFields[collectionItemIndex]['value'][placeholderSuffix];
