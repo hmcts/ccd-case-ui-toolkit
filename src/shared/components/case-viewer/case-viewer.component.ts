@@ -18,7 +18,6 @@ import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseService } from '../case-editor';
-import { Type } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -93,8 +92,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   private init() {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
-    let tabFields = this.getTabFields()
-    this.caseFields = this.reinstantiateCaseFields(tabFields);
+
+    this.caseFields = this.getTabFields();
 
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
 
@@ -117,7 +116,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(this.reinstantiateCaseFields(tab.fields))}))
+      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
       .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 

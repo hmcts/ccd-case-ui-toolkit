@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { CasesService, CaseService } from '../../case-editor';
-import { DraftService, AlertService } from '../../../services';
-import { plainToClass } from 'class-transformer';
+import { CaseService, CasesService } from '../../case-editor';
+import { AlertService, DraftService } from '../../../services';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -62,7 +62,7 @@ export class CaseResolver implements Resolve<CaseView> {
         .getCaseViewV2(cid)
         .pipe(
           map(caseView => {
-            this.cachedCaseView = caseView;
+            this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
             this.caseService.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
           }),
@@ -76,7 +76,7 @@ export class CaseResolver implements Resolve<CaseView> {
       .getDraft(cid)
       .pipe(
         map(caseView => {
-          this.cachedCaseView = caseView;
+          this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
           this.caseService.announceCase(this.cachedCaseView);
           return this.cachedCaseView;
         }),

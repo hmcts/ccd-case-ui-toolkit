@@ -45,7 +45,7 @@ export class CaseField implements Orderable {
   @Expose()
   get list_items(): any {
     if (this.field_type && this.field_type.type === 'DynamicList') {
-      return this._value.list_items ? this._value.list_items : this._list_items;
+      return this._value && this._value.list_items ? this._value.list_items : this._list_items;
     } else {
       return this.field_type.fixed_list_items;
     }
