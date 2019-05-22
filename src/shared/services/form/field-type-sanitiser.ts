@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 export class FieldTypeSanitiser {
 
   /**
-   * This method takes finds dynamiclists in a form and replaces its string value, with
+   * This method finds dynamiclists in a form and replaces its string value, with
    * following example JSON format
    * @return {value: {code:'xyz',label:'XYZ'}, list_items: [{code:'xyz',label:'XYZ'},{code:'abc',label:'ABC'}]}
    * @param caseFields
