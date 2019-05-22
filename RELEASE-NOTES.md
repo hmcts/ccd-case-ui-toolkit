@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 2.49.0_prerelease - May 14 2019
+### Version 2.49.3-prerelease - May 22 2019
 **RDM-4701** Upgrade ccpay-web-component Library Version
+
+### Version 2.49.2 - May 21 2019
+**RDM-876** Hide print button when not configured  
 
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service
