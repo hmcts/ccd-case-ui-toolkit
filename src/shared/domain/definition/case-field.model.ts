@@ -26,4 +26,5 @@ export class CaseField implements Orderable {
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
+  metadata?: boolean;
 }
