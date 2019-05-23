@@ -109,11 +109,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.resetErrors();
     }
   }
-
-  private reinstantiateCaseFields(caseFields: CaseField[]): CaseField[] {
-    return caseFields.map(cf => Object.assign(new CaseField(), cf));
-  }
-
+  
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
       .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
