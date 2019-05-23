@@ -13,17 +13,18 @@ import { GreyBarService } from './services/grey-bar.service';
 
 @Component({
     template: `
-      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup"
+      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [formSubGroup]="formSubGroup"
            [contextFields]="caseFields" [idPrefix]="idPrefix" [greyBarEnabled]="true">
         <div>text field</div>
       </div>`
 })
 class TestHostComponent {
 
-    @Input() caseField: CaseField;
-    @Input() idPrefix: string;
-    @Input() caseFields: CaseField[];
-    @Input() formGroup: FormGroup;
+  @Input() caseField: CaseField;
+  @Input() idPrefix: string;
+  @Input() caseFields: CaseField[];
+  @Input() formGroup: FormGroup;
+  @Input() formSubGroup: FormGroup;
 }
 
 @Component({
@@ -39,6 +40,7 @@ class TestHostGreyBarDisabledComponent {
   @Input() idPrefix: string;
   @Input() caseFields: CaseField[];
   @Input() formGroup: FormGroup;
+  @Input() formSubGroup: FormGroup;
 }
 
 let field = (id, value, showCondition?) => {
@@ -364,4 +366,44 @@ describe('ConditionalShowDirective', () => {
         expect(conditionalShow.formField.status).toBe('DISABLED');
         expect(conditionalShow.formField.value).toBe('Hollis');
     });
+
+  describe('conditional show hide for complex field group', () => {
+
+    beforeEach(() => {
+      comp.caseField = field('Postcode', '', 'Address.Country="UK"');
+      comp.idPrefix = 'Address_';
+      comp.caseFields = [field('PersonLastName', 'Doe', '')];
+      comp.formGroup = new FormGroup({
+        Address: new FormGroup({
+          Country: new FormControl('UK'),
+          Postcode: new FormControl('W4')
+        })
+      });
+    });
+
+    it('should display when condition matches complex subfield', () => {
+      comp.formSubGroup = new FormGroup({
+        Country: new FormControl('UK'),
+        Postcode: new FormControl('W4')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+      expect(conditionalShow.formField.disabled).toBe(false);
+      expect(conditionalShow.formField.value).toBe('W4');
+    });
+
+    it('should not display when condition does not match complex subfield', () => {
+      comp.formGroup.patchValue({Address: {Country: 'FRANCE'}});
+      comp.formSubGroup = new FormGroup({
+        Country: new FormControl('FRANCE'),
+        Postcode: new FormControl('W4')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+      expect(conditionalShow.formField.disabled).toBe(true);
+    });
+
+  });
 });
