@@ -11,4 +11,5 @@ export class CaseType {
   case_fields: CaseField[];
   description: string;
   jurisdiction: Jurisdiction;
+  printEnabled?: boolean;
 }
