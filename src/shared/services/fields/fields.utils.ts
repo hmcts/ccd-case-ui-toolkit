@@ -111,25 +111,18 @@ export class FieldsUtils {
 
   // temporary function until this can be moved to CaseView class (RDM-2681)
   public static getCaseFields(caseView: CaseView): CaseField[] {
-    if (caseView) {
-      let caseTabs = caseView.tabs;
-      let caseDataFields: any[];
-      if (caseTabs) {
-        caseDataFields = caseTabs.reduce((acc, tab) => {
-          return acc.concat(tab.fields);
-        }, []);
-      }
-      let metadataFields = caseView.metadataFields;
-      if (metadataFields) {
-        return metadataFields.concat(caseDataFields.filter(function (caseField) {
-          return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
-        }));
-      }
-    }
+    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
+      return acc.concat(tab.fields);
+    }, []);
+
+    let metadataFields = caseView.metadataFields;
+    return metadataFields.concat(caseDataFields.filter(function (caseField) {
+      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
+    }));
   }
 
-  public buildCanShowPredicate(caseView, form): Predicate<WizardPage> {
-    let currentState = this.mergeCaseFieldsAndFormFields(FieldsUtils.getCaseFields(caseView), form.controls['data'].value);
+  public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
+    let currentState = this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
     };
@@ -149,14 +142,12 @@ export class FieldsUtils {
 
   private mergeFields(caseFields: CaseField[], formFields: any, mergeFunction: (CaseField, any) => void) {
     let result = this.cloneObject(formFields);
-    if (caseFields) {
-      caseFields.forEach(field => {
-        mergeFunction(field, result);
-        if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
-          result[field.id] = this.mergeFields(field.field_type.complex_fields, result[field.id], mergeFunction);
-        }
-      });
-    }
+    caseFields.forEach(field => {
+      mergeFunction(field, result);
+      if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
+        result[field.id] = this.mergeFields(field.field_type.complex_fields, result[field.id], mergeFunction);
+      }
+    });
     return result;
   }
 

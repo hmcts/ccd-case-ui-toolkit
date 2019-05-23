@@ -82,11 +82,11 @@ export class CaseEditComponent implements OnInit {
   }
 
   getPage(pageId: string): WizardPage {
-    return this.wizard.getPage(pageId, this.fieldsUtils.buildCanShowPredicate(this.caseDetails, this.form));
+    return this.wizard.getPage(pageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
   }
 
   first(): Promise<boolean> {
-    let firstPage = this.wizard.firstPage(this.fieldsUtils.buildCanShowPredicate(this.caseDetails, this.form));
+    let firstPage = this.wizard.firstPage(this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
     return this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
   }
 
@@ -101,7 +101,7 @@ export class CaseEditComponent implements OnInit {
 
     let theQueryParams: Params = {};
     theQueryParams[CaseEditComponent.ORIGIN_QUERY_PARAM] = this.navigationOrigin;
-    let nextPage = this.wizard.nextPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.caseDetails, this.form));
+    let nextPage = this.wizard.nextPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
     return this.router.navigate([nextPage ? nextPage.id : 'submit'], { queryParams: theQueryParams, relativeTo: this.route });
   }
 
@@ -109,7 +109,7 @@ export class CaseEditComponent implements OnInit {
     this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
     this.registrarService.reset();
 
-    let previousPage = this.wizard.previousPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.caseDetails, this.form));
+    let previousPage = this.wizard.previousPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
     if (!previousPage) {
       return Promise.resolve(false);
     }
@@ -120,7 +120,7 @@ export class CaseEditComponent implements OnInit {
   }
 
   hasPrevious(currentPageId: string): boolean {
-    return this.wizard.hasPreviousPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.caseDetails, this.form));
+    return this.wizard.hasPreviousPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
   }
 
   cancel(): void {
