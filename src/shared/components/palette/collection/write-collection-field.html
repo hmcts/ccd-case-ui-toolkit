@@ -19,7 +19,9 @@
             <label [for]="buildIdPrefix(i) + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
           </div>
           <div class="float-right">
-            <button class="button button-secondary" type="button" (click)="openModal(i)" [disabled]="isNotAuthorisedToDelete(i)">Remove</button>
+            <button class="button button-secondary" type="button" (click)="openModal(i)"
+                    [disabled]="isNotAuthorisedToDelete(i)"
+                    attr.aria-label="{{ itemLabel(i) }} remove">Remove</button>
           </div>
         </div>
         <ccd-field-write [caseField]="buildCaseField(item, i)"
