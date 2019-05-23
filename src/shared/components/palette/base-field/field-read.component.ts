@@ -2,8 +2,7 @@ import {
   Component,
   ComponentFactoryResolver,
   Injector,
-  Input,
-  OnInit,
+  Input, OnInit,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -45,6 +44,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
     component.instance['formGroup'] = this.formGroup;
     component.instance['caseReference'] = this.caseReference;
     component.instance['context'] = this.context;
+    component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
 
     this.fieldContainer.insert(component.hostView);
   }

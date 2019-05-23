@@ -1,19 +1,18 @@
-import { Component, Input, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
-import { OrderService } from '../../services/order/order.service';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
+import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
+import { DefinitionsService, OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-create-case-filters',
   templateUrl: './create-case-filters.component.html'
 })
-export class CreateCaseFiltersComponent implements OnChanges {
+export class CreateCaseFiltersComponent implements OnInit {
 
-  @Input()
-  jurisdictions: Jurisdiction[];
   @Input()
   isDisabled: boolean;
   @Input()
@@ -32,6 +31,7 @@ export class CreateCaseFiltersComponent implements OnChanges {
     formGroup?: FormGroup
   };
 
+  jurisdictions: Jurisdiction[];
   selectedJurisdictionCaseTypes?: CaseTypeLite[];
   selectedCaseTypeEvents?: CaseEvent[];
 
@@ -40,22 +40,20 @@ export class CreateCaseFiltersComponent implements OnChanges {
   filterEventControl: FormControl;
 
   constructor(
-    private orderService: OrderService
-  ) {
-    this.selected = {};
-    this.selectedJurisdictionCaseTypes = [];
-    this.selectedCaseTypeEvents = [];
-    this.initControls();
-  }
+    private orderService: OrderService,
+    private definitionsService: DefinitionsService,
+  ) { }
 
-  ngOnChanges(changes?: SimpleChanges): void {
-    if (changes.jurisdictions && changes.jurisdictions.currentValue) {
-      if (this.jurisdictions.length > 0 && this.filterJurisdictionControl) {
+  ngOnInit() {
+    this.selected = {};
+    this.initControls();
+    this.definitionsService.getJurisdictions(CREATE_ACCESS)
+      .subscribe(jurisdictions => {
+        this.jurisdictions = jurisdictions;
         this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
-      }
-      if (document.getElementById('cc-jurisdiction')) {
-        document.getElementById('cc-jurisdiction').focus();
-      }
+      });
+    if (document.getElementById('cc-jurisdiction')) {
+      document.getElementById('cc-jurisdiction').focus();
     }
   }
 
