@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { FieldsUtils } from './fields.utils';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 import { WizardPage } from '../../components';
+import { CaseField } from '../../domain/definition';
 
 // @dynamic
 @Injectable()
@@ -35,10 +36,10 @@ export class FieldsPurger {
     currentPage.wizard_page_fields.forEach(wpf => {
       let case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
       if (this.hasShowConditionField(case_field, formFields)) {
-          let condition = new ShowCondition(case_field.show_condition);
-          if (this.isHidden(condition, formFields)) {
-            this.resetField(form, case_field);
-          }
+        let condition = new ShowCondition(case_field.show_condition);
+        if (this.isHidden(condition, formFields) && !(this.isReadonly(case_field))) {
+          this.resetField(form, case_field);
+        }
       }
     });
   }
@@ -88,4 +89,8 @@ export class FieldsPurger {
   private isObject(elem) {
     return this.getType(elem) === 'Object';
   };
+
+  private isReadonly(case_field: CaseField) {
+    return case_field.display_context.toUpperCase() === 'READONLY'
+  }
 }

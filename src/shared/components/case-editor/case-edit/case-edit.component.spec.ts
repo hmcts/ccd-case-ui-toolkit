@@ -312,7 +312,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -335,7 +335,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -358,7 +358,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
       });
@@ -407,7 +407,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -430,7 +430,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -453,7 +453,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
       });
