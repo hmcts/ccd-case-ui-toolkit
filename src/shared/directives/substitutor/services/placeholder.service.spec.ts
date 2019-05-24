@@ -1,7 +1,7 @@
 import { PlaceholderService } from './placeholder.service';
 import { FieldsUtils } from '../../../services';
 
-describe('PlaceholderService', () => {
+fdescribe('PlaceholderService', () => {
 
   let placeholderService: PlaceholderService;
   let fieldsUtils: FieldsUtils = new FieldsUtils();
@@ -152,9 +152,11 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('value and nested value1 and tripple nested7\r\n' +
-        'value and nested value2 and tripple nested8\r\n' +
-        'value and nested value3 and tripple nested9');
+      expect(actual).toBe(`value and nested value1 and tripple nested7
+___
+value and nested value2 and tripple nested8
+___
+value and nested value3 and tripple nested9`);
     });
 
     it('should not resolve placeholders that do not point to a leaf value', () => {
@@ -226,7 +228,11 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('nested value1 and tripple nested7\r\nnested value2 and tripple nested8\r\nnested value3 and tripple nested9');
+      expect(actual).toBe(`nested value1 and tripple nested7
+___
+nested value2 and tripple nested8
+___
+nested value3 and tripple nested9`);
     });
 
     it('should not resolve placeholders that do not point to a leaf value', () => {
