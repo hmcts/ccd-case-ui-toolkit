@@ -90,6 +90,7 @@ export class FieldsPurger {
     return this.getType(elem) === 'Object';
   };
 
+  // TODO: call isReadOnly on CaseFields once we make it available
   private isReadonly(case_field: CaseField) {
     return case_field.display_context.toUpperCase() === 'READONLY'
   }
