@@ -3,6 +3,7 @@ import { FieldType } from './field-type.model';
 import { WizardPageField } from '../../components/case-editor/domain';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
+import { _ } from 'underscore';
 
 // @dynamic
 export class CaseField implements Orderable {
@@ -57,8 +58,8 @@ export class CaseField implements Orderable {
 
   @Expose()
   public isReadonly() {
-    return  (!(typeof this.display_context === 'undefined' || this.display_context === null )
-      && this.display_context.toUpperCase() === 'READONLY');
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'READONLY';
   }
-  
+
 }
