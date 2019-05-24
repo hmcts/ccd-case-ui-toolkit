@@ -9,6 +9,9 @@ export class PlaceholderService {
     private static readonly STARTING_PLACEHOLDER = '$';
     private static readonly OPENING_PLACEHOLDER = '{';
     private static readonly CLOSING_PLACEHOLDER = '}';
+    private static readonly NEW_LINE = `\r\n
+    ___
+    \r\n`;
 
     constructor(
         private fieldsUtils: FieldsUtils
@@ -54,7 +57,7 @@ export class PlaceholderService {
                 }
 
                 if (colItemIndex < numberCollectionItemsAsPlaceholder - 1) {
-                    stringToResolve += '\r\n';
+                    stringToResolve += PlaceholderService.NEW_LINE;
                     stringToResolve += originalStringToResolve;
                     colItemIndex += 1;
                 }
