@@ -24,7 +24,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   @Input() contextFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
   @Input() greyBarEnabled = false;
-  @Input() formSubGroup: FormGroup;
+  @Input() complexFormGroup: FormGroup;
 
   condition: ShowCondition;
   private formChangesSubscription: Subscription;
@@ -42,8 +42,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.condition = new ShowCondition(this.caseField.show_condition);
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
-      this.formSubGroup = this.formSubGroup || new FormGroup({});
-      this.formField = this.formSubGroup.get(this.caseField.id) || this.formGroup.get(this.caseField.id);
+      this.complexFormGroup = this.complexFormGroup || new FormGroup({});
+      this.formField = this.complexFormGroup.get(this.caseField.id) || this.formGroup.get(this.caseField.id);
       // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && this.greyBarService.wasToggledToShow(this.caseField.id)) {

@@ -13,7 +13,7 @@ import { GreyBarService } from './services/grey-bar.service';
 
 @Component({
     template: `
-      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [formSubGroup]="formSubGroup"
+      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [complexFormGroup]="complexFormGroup"
            [contextFields]="caseFields" [idPrefix]="idPrefix" [greyBarEnabled]="true">
         <div>text field</div>
       </div>`
@@ -24,7 +24,7 @@ class TestHostComponent {
   @Input() idPrefix: string;
   @Input() caseFields: CaseField[];
   @Input() formGroup: FormGroup;
-  @Input() formSubGroup: FormGroup;
+  @Input() complexFormGroup: FormGroup;
 }
 
 @Component({
@@ -40,7 +40,7 @@ class TestHostGreyBarDisabledComponent {
   @Input() idPrefix: string;
   @Input() caseFields: CaseField[];
   @Input() formGroup: FormGroup;
-  @Input() formSubGroup: FormGroup;
+  @Input() complexFormGroup: FormGroup;
 }
 
 let field = (id, value, showCondition?) => {
@@ -382,7 +382,7 @@ describe('ConditionalShowDirective', () => {
     });
 
     it('should display when condition matches complex subfield', () => {
-      comp.formSubGroup = new FormGroup({
+      comp.complexFormGroup = new FormGroup({
         Country: new FormControl('UK'),
         Postcode: new FormControl('W4')
       });
@@ -395,7 +395,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match complex subfield', () => {
       comp.formGroup.patchValue({Address: {Country: 'FRANCE'}});
-      comp.formSubGroup = new FormGroup({
+      comp.complexFormGroup = new FormGroup({
         Country: new FormControl('FRANCE'),
         Postcode: new FormControl('W4')
       });
