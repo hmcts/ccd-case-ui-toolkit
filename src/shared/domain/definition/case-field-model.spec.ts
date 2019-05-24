@@ -37,4 +37,18 @@ describe('CaseFieldTest', () => {
     expect(component.value).toBe(VALUE);
     expect(component.list_items).toBeUndefined();
   });
+
+  it('should be able to test if the field is readonly', () => {
+    expect(component.isReadonly()).toBe(false);
+    component.display_context = null
+    expect(component.isReadonly()).toBe(false);
+    component.display_context = "Mandatory";
+    expect(component.isReadonly()).toBe(false);
+    component.display_context = "Optional";
+    expect(component.isReadonly()).toBe(false);
+    component.display_context = "REAdOnlY";
+    expect(component.isReadonly()).toBe(true);
+  });
+
+
 });

@@ -55,4 +55,10 @@ export class CaseField implements Orderable {
     this._list_items = items;
   }
 
+  @Expose()
+  public isReadonly() {
+    return  (!(typeof this.display_context === 'undefined' || this.display_context === null )
+      && this.display_context.toUpperCase() === 'READONLY');
+  }
+  
 }
