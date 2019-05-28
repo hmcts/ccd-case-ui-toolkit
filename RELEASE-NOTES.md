@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.49.3-prerelease - May 28 2019
+**RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
+
 ### Version 2.49.2 - May 21 2019
 **RDM-876** Hide print button when not configured  
 
