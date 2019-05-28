@@ -1,5 +1,7 @@
 ## RELEASE NOTES
 
+### Version 2.50.0 - May 28 2019
+**RDM-4537** Case List Filters extraction and new contract
 
 ### Version 2.49.2 - May 21 2019
 **RDM-876** Hide print button when not configured  
