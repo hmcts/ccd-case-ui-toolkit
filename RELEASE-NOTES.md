@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.51.0 - May 29 2019
+### Version 2.50.0 - May 29 2019
 **RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
 
 ### Version 2.49.2 - May 21 2019
