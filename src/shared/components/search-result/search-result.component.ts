@@ -142,14 +142,7 @@ export class SearchResultComponent implements OnChanges {
     this.selected.metadataFields = this.metadataFields;
     this.selected.page = page;
     // Apply filters
-    let queryParams = {};
-    queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
-    queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
-    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
-    this.changePage.emit({
-      selected: this.selected,
-      queryParams: queryParams
-    });
+    this.changePage.emit(this.selected);
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
