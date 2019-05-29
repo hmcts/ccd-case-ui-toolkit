@@ -143,9 +143,9 @@ export class SearchResultComponent implements OnChanges {
     this.selected.page = page;
     // Apply filters
     let queryParams = {};
-    queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
-    queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
-    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
+    queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction ? this.selected.jurisdiction.id : null;
+    queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType ? this.selected.caseType.id : null;
+    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState ? this.selected.caseState.id : null;
     this.changePage.emit({
       selected: this.selected,
       queryParams: queryParams
