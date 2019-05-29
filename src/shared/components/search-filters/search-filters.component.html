@@ -1,28 +1,31 @@
 <form>
   <div class="form-group" style="margin-top: 13px;">
-    <label class="form-label" for="s-jurisdiction">Jurisdiction*</label>
+    <label class="form-label" for="s-jurisdiction" data-selector="search-filters_jurisdiction-label">Jurisdiction*</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="s-jurisdiction"
             name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
-            (change)="onJurisdictionIdChange()">
+            (change)="onJurisdictionIdChange()" data-selector="search-filters_jurisdiction">
       <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name}}</option>
     </select>
   </div>
 
   <div class="form-group">
-    <label class="form-label" for="s-case-type">Case type*</label>
+    <label class="form-label" for="s-case-type" data-selector="search-filters_case-type-label">Case type*</label>
     <select [disabled]="isJurisdictionSelected()" class="form-control form-control-3-4 ccd-dropdown"
             id="s-case-type" name="case-type" [(ngModel)]="selected.caseType" aria-controls="search-result"
-            (change)="onCaseTypeIdChange()">
+            (change)="onCaseTypeIdChange()" data-selector="search-filters_case-type">
       <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name}}</option>
     </select>
   </div>
 
   <div id="dynamicFilters" *ngIf="isSearchableAndSearchInputsReady()">
     <div class="form-group" *ngFor="let searchInput of searchInputs">
-      <ccd-field-write [caseField]="searchInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply()"></ccd-field-write>
+      <ccd-field-write [caseField]="searchInput.field" [formGroup]="formGroup"
+                       [isExpanded]="true" (keyup.enter)="apply()" data-selector="search-filters_ccd-field-write"></ccd-field-write>
     </div>
   </div>
 
-  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" >Apply</button> &nbsp;&nbsp;&nbsp;
-  <button id="reset" type="button" (click)="reset()" class="button button-secondary">Reset</button>
+  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button"
+          (click)="apply()" (keyup.enter)="apply()" data-selector="search-filters_apply-button">Apply</button> &nbsp;&nbsp;&nbsp;
+  <button id="reset" type="button" (click)="reset()"
+          class="button button-secondary" data-selector="search-filters_reset-button">Reset</button>
 </form>
