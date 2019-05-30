@@ -1,10 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CaseField } from '../../../domain/definition/case-field.model';
-
+import { FieldsUtils } from '../../../services/fields';
 @Pipe({
   name: 'ccdFieldsFilter'
 })
 export class FieldsFilterPipe implements PipeTransform {
+
+  constructor(
+    private fieldsUtils: FieldsUtils
+  ){}
 
   private static readonly EMPTY_VALUES = [
     undefined,
@@ -82,7 +86,7 @@ export class FieldsFilterPipe implements PipeTransform {
 
     return fields
       .map(f => {
-        let clone = { ...f };
+        let clone = this.fieldsUtils.cloneObject(f);
 
         let value = FieldsFilterPipe.getValue(f, values);
 

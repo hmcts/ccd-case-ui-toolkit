@@ -1,8 +1,9 @@
 import { Orderable } from '../order';
 import { FieldType } from './field-type.model';
 import { WizardPageField } from '../../components/case-editor/domain';
-import { Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
+import { _ } from 'underscore';
 
 // @dynamic
 export class CaseField implements Orderable {
@@ -13,7 +14,7 @@ export class CaseField implements Orderable {
 
   @Type(() => FieldType)
   field_type: FieldType;
-  value?: any;
+
   hint_text?: string;
   security_label?: string;
   display_context: string;
@@ -26,20 +27,39 @@ export class CaseField implements Orderable {
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
 
+  private _value: any;
+  private _list_items: any = [];
 
-  getValue?(): string {
-    if (this.field_type.type === 'DynamicList') {
-      return this.value ? this.value.value.code : '';
+  @Expose()
+  get value(): any {
+    if (this.field_type && this.field_type.type === 'DynamicList') {
+      return this._value && this._value.value ? this._value.value.code : this._value;
     } else {
-      return this.value;
+      return this._value;
     }
   }
 
-  getItems?(): any {
-    if (this.field_type.type === 'DynamicList') {
-      return this.value ? this.value.list_items : [];
+  set value(value: any) {
+    this._value = value;
+  }
+
+  @Expose()
+  get list_items(): any {
+    if (this.field_type && this.field_type.type === 'DynamicList') {
+      return this._value && this._value.list_items ? this._value.list_items : this._list_items;
     } else {
       return this.field_type.fixed_list_items;
     }
   }
+
+  set list_items(items: any) {
+    this._list_items = items;
+  }
+
+  @Expose()
+  public isReadonly() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'READONLY';
+  }
+
 }

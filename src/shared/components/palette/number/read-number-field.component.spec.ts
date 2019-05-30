@@ -12,13 +12,13 @@ describe('ReadNumberFieldComponent', () => {
     type: 'Number'
   };
   const VALUE = 42;
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
 
   let fixture: ComponentFixture<ReadNumberFieldComponent>;
   let component: ReadNumberFieldComponent;

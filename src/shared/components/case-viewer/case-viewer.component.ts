@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
@@ -8,18 +8,16 @@ import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { CaseField } from '../../domain/definition';
 import { ShowCondition } from '../../directives/conditional-show/domain';
-import { Draft } from '../../domain';
+import { Draft, DRAFT_QUERY_PARAM } from '../../domain';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { CaseView, CaseViewTrigger } from '../../domain/case-view';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { DRAFT_QUERY_PARAM } from '../../domain';
 import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseService } from '../case-editor';
-import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -111,10 +109,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.resetErrors();
     }
   }
-
+  
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
       .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 

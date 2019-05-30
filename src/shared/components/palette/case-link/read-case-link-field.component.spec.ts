@@ -19,13 +19,13 @@ describe('ReadCaseLinkFieldComponent', () => {
   const VALUE = {
     CaseReference: CASE_REFERENCE_RAW
   };
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'aCaseLink',
     label: 'A case link',
     field_type: FIELD_TYPE,
     value: VALUE,
     display_context: 'READONLY'
-  };
+  });
 
   let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
   let component: ReadCaseLinkFieldComponent;

@@ -20,13 +20,13 @@ describe('ReadDocumentFieldComponent', () => {
     'document_binary_url': 'https://www.example.com/binary',
     'document_filename': 'evidence_document.evd'
   };
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
   const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 
   let fixture: ComponentFixture<ReadDocumentFieldComponent>;

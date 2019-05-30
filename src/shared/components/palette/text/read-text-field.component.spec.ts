@@ -11,13 +11,13 @@ describe('ReadTextFieldComponent', () => {
     type: 'Text'
   };
   const VALUE = 'Hello world';
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     field_type: FIELD_TYPE,
     value: VALUE,
     display_context: 'READONLY'
-  };
+  });
 
   let fixture: ComponentFixture<ReadTextFieldComponent>;
   let component: ReadTextFieldComponent;
