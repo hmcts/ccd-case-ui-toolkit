@@ -382,7 +382,55 @@ describe('FieldsFilterPipe', () => {
           }
         }
       };
-
+    const COMPLEX_WITH_EXTERNAL_VALUES_FOR_COLLECTIONS_TABLE: CaseField = {
+      id: 'Person',
+      label: 'Person',
+      display_context: 'OPTIONAL',
+      field_type: {
+        id: 'Person',
+        type: 'Complex',
+        complex_fields: [
+          {
+            id: 'FirstNameContainerContainer',
+            label: 'First name container container',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Complex',
+              type: 'Complex',
+              complex_fields: [
+                {
+                  id: 'FirstNameContainer',
+                  label: 'First name container',
+                  display_context: 'OPTIONAL',
+                  field_type: {
+                    id: 'Complex',
+                    type: 'Complex',
+                    complex_fields: [
+                      {
+                        id: 'FirstName',
+                        label: 'First name',
+                        display_context: 'OPTIONAL',
+                        field_type: {
+                          id: 'Text',
+                          type: 'Text'
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      value: [{value: {
+        'FirstNameContainerContainer': {
+          'FirstNameContainer': {
+            'FirstName': 'Doe'
+          }
+        }
+      }}]
+    };
     it('should NOT filter out Complex, even though Complex value itself is undefined but children have values', () => {
       let filteredFields = fieldsFilter.transform(caseBuilder(COMPLEX_WITH_CHILDREN));
 
@@ -403,6 +451,12 @@ describe('FieldsFilterPipe', () => {
 
     it('should NOT filter out Complex which has a great-grand-child with value', () => {
       let filteredFields = fieldsFilter.transform(COMPLEX_WITH_EXTERNAL_VALUES);
+
+      expect(filteredFields.length).toEqual(1);
+    });
+
+    it('should deal with Array based values', () => {
+      let filteredFields = fieldsFilter.transform(COMPLEX_WITH_EXTERNAL_VALUES_FOR_COLLECTIONS_TABLE, false , 0);
 
       expect(filteredFields.length).toEqual(1);
     });
@@ -434,7 +488,7 @@ describe('FieldsFilterPipe', () => {
     it('should not filter out fields with embedded value empty', () => {
       FIELDS_WITH_VALUES_AND_MISSING[1].value = '';
 
-      let filteredFields = fieldsFilter.transform(caseBuilder(FIELDS_WITH_VALUES_AND_MISSING), true);
+      let filteredFields = fieldsFilter.transform(caseBuilder(FIELDS_WITH_VALUES_AND_MISSING), true, undefined);
 
       expect(filteredFields).toEqual(FIELDS_WITH_VALUES_AND_MISSING);
     });

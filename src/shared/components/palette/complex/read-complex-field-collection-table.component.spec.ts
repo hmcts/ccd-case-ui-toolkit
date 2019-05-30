@@ -96,7 +96,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Complex',
-            type: 'Complex'
+            type: 'Complex',
+            complex_fields: []
           },
           value: 'tw45ed'
         }
@@ -200,7 +201,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
         {
           id: 'AddressPostcode',
           label: 'Post code', display_context: 'OPTIONAL',
-          field_type: {id: 'Complex', type: 'Complex'}, value: {postcode: 'TE45ED'}
+          field_type: {id: 'Complex', type: 'Complex', complex_fields: []}, value: {postcode: 'TE45ED'}
         }
       );
     });

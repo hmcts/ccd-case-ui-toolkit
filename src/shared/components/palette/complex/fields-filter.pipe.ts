@@ -61,8 +61,14 @@ export class FieldsFilterPipe implements PipeTransform {
               || !FieldsFilterPipe.isEmpty(value[field.id]);
   }
 
-  private static getValue(field: CaseField, values: any): any {
-    return FieldsFilterPipe.isEmpty(field.value) ? values[field.id] : field.value;
+  private static getValue(field: CaseField, values: any, index?: number): any {
+    let value:any;
+    if (index >= 0 ) {
+      value = values[index].value[field.id]
+    } else {
+      value = values[field.id]
+    }
+    return FieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
 
   /**
@@ -72,7 +78,7 @@ export class FieldsFilterPipe implements PipeTransform {
    * @param keepEmpty
    * @returns {any}
    */
-  transform(complexField: CaseField, keepEmpty?: boolean): CaseField[] {
+  transform(complexField: CaseField, keepEmpty?: boolean, index?: number): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }
@@ -84,7 +90,7 @@ export class FieldsFilterPipe implements PipeTransform {
       .map(f => {
         let clone = { ...f };
 
-        let value = FieldsFilterPipe.getValue(f, values);
+        let value = FieldsFilterPipe.getValue(f, values, index);
 
         if (!FieldsFilterPipe.isEmpty(value)) {
           clone.value = value;
