@@ -6,12 +6,11 @@
   </label>
 
   <div>
-    <!--<span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>-->
     <ccd-read-document-field *ngIf="caseField" [caseField]="caseField"></ccd-read-document-field>
   </div>
 
   <div style='position:relative'>
-    <div id='fileInputWrapper' (click)="fileSelectEvent()"></div>
+    <div class='fileInputWrapper' (click)="fileSelectEvent()"></div>
     <input class="form-control bottom-30" [id]="id()" type="file" (change)="fileChangeEvent($event)" #fileInput/>
   </div>
 </div>
