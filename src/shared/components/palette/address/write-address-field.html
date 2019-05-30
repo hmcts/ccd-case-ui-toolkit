@@ -4,11 +4,11 @@
     <h2 class="heading-h2">{{caseField | ccdFieldLabel }}</h2>
 
     <div class="form-group bottom-30" id="postcodeLookup" [ngClass]="{'form-group-error': missingPostcode}" *ngIf="!isExpanded">
-      <label for="postcodeInput">
+      <label [for]="id()">
         <span class="form-label">Enter a UK postcode</span>
       </label>
-        <span class="error-message" *ngIf="missingPostcode">Enter the Postcode</span>
-        <input type="text" id="postcodeInput" name="postcode" class="form-control postcodeinput" [formControl]="postcode">
+      <span class="error-message" *ngIf="missingPostcode">Enter the Postcode</span>
+      <input type="text" [id]="id()" name="postcode" class="form-control postcodeinput" [formControl]="postcode">
       <button type="button" class="button button-30" (click)="findAddress()">Find address</button>
     </div>
 

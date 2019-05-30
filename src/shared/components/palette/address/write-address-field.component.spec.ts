@@ -17,7 +17,7 @@ describe('WriteAddressFieldComponent', () => {
   const $TITLE = By.css('h2');
 
   const $POSTCODE_LOOKUP = By.css('#postcodeLookup');
-  const $POSTCODE_LOOKUP_INPUT = By.css('#postcodeInput');
+  const $POSTCODE_LOOKUP_INPUT = By.css('.postcodeinput');
   const $POSTCODE_LOOKUP_FIND = By.css('#postcodeLookup > button');
   const $POSTCODE_LOOKUP_ERROR_MESSAGE = By.css('.error-message');
 
