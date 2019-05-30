@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+
+### Version 2.51.0 - May 29 2019
+**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+
 ### Version 2.50.1 - May 29 2019
 **RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
 
