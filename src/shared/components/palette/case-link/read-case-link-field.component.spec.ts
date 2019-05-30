@@ -88,13 +88,13 @@ describe('ReadCaseLinkFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'A case link',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    };
+    });
 
     let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
     let component: ReadCaseLinkFieldComponent;

@@ -76,13 +76,13 @@ describe('ReadTextFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    };
+    });
 
     let fixture: ComponentFixture<ReadTextFieldComponent>;
     let component: ReadTextFieldComponent;

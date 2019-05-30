@@ -102,10 +102,7 @@ describe('ReadFixedListFieldComponent', () => {
       expect(de.nativeElement.textContent).toEqual(EMPTY);
     });
   });
-    expect(de.nativeElement.textContent).toEqual(EMPTY);
-  });
 
-});
 
 describe('ReadFixedListFieldComponent for dynamiclist type', () => {
   const VALUE = 'F';
@@ -186,19 +183,19 @@ describe('ReadFixedListFieldComponent for dynamiclist type', () => {
 
 });
 
-  describe('Persistable readonly fixed list field', () => {
+describe('Persistable readonly fixed list field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
     const REGISTER_CONTROL = (control) => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadFixedListFieldComponent>;
     let component: ReadFixedListFieldComponent;

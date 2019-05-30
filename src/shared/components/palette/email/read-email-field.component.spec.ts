@@ -77,13 +77,13 @@ describe('ReadEmailFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadEmailFieldComponent>;
     let component: ReadEmailFieldComponent;

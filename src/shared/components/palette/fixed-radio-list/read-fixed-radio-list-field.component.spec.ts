@@ -93,13 +93,13 @@ describe('ReadFixedRadioListFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadFixedRadioListFieldComponent>;
     let component: ReadFixedRadioListFieldComponent;
