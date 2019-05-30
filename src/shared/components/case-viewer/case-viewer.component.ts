@@ -78,6 +78,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     });
   }
 
+  isPrintEnabled(): boolean {
+    return this.caseDetails.case_type.printEnabled;
+  }
+
   ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
       this.subscription.unsubscribe();

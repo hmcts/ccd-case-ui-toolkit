@@ -3,14 +3,18 @@ import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FormGroup } from '@angular/forms';
 
 describe('ReadMoneyGBPFieldComponent', () => {
 
-    const FIELD_TYPE: FieldType = {
-      id: 'MoneyGBP',
-      type: 'MoneyGBP'
-    };
-    const VALUE = 4220;
+  const FIELD_ID = 'ReadOnlyFieldId';
+  const FIELD_TYPE: FieldType = {
+    id: 'MoneyGBP',
+    type: 'MoneyGBP'
+  };
+  const VALUE = 4220;
+
+  describe('Non-persistable readonly textarea field', () => {
     const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
@@ -92,9 +96,9 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
         expect(de.nativeElement.textContent).toEqual('');
       });
-  });
+    });
 
-  describe('from template value', () => {
+    describe('from template value', () => {
       it('should render provided value as GBP currency', () => {
         component.amount = VALUE;
         component.ngOnInit();
@@ -142,6 +146,54 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
         expect(de.nativeElement.textContent).toEqual('');
       });
+    });
+  });
+
+  describe('Persistable readonly textarea field', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+    const REGISTER_CONTROL = (control) => {
+      FORM_GROUP.addControl(FIELD_ID, control);
+      return control;
+    };
+    const CASE_FIELD: CaseField = {
+      id: 'x',
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: VALUE
+    };
+
+    let fixture: ComponentFixture<ReadMoneyGbpFieldComponent>;
+    let component: ReadMoneyGbpFieldComponent;
+    let de: DebugElement;
+
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadMoneyGbpFieldComponent
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ReadMoneyGbpFieldComponent);
+      component = fixture.componentInstance;
+
+      component.registerControl = REGISTER_CONTROL;
+      component.amount = undefined;
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should register readonly case field value with form group', () => {
+      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+    });
+
   });
 
 });

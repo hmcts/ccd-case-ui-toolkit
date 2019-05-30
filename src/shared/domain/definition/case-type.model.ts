@@ -16,4 +16,5 @@ export class CaseType {
 
   description: string;
   jurisdiction: Jurisdiction;
+  printEnabled?: boolean;
 }

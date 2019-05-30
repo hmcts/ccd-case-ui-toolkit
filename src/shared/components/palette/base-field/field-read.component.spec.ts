@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -23,6 +23,8 @@ const CASE_FIELD: CaseField = <CaseField>({
   display_context: 'READONLY'
 });
 const CLASS = 'text-cls';
+
+const FORM_GROUP: FormGroup = new FormGroup({});
 
 @Component({
   template: `
@@ -119,6 +121,7 @@ describe('FieldReadComponent', () => {
     expect(fieldTest.caseField).toBe(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
+    expect(fieldTest.registerControl).not.toBeNull();
   });
 
   it('should pass context to field instance', () => {

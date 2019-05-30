@@ -3,6 +3,7 @@ import { ReadTextFieldComponent } from './read-text-field.component';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FormGroup } from '@angular/forms';
 
 describe('ReadTextFieldComponent', () => {
 
@@ -11,56 +12,108 @@ describe('ReadTextFieldComponent', () => {
     type: 'Text'
   };
   const VALUE = 'Hello world';
-  const CASE_FIELD: CaseField = <CaseField>({
-    id: 'x',
-    label: 'X',
-    field_type: FIELD_TYPE,
-    value: VALUE,
-    display_context: 'READONLY'
+  const FIELD_ID = 'ReadOnlyFieldId';
+
+  describe('Non-persistable readonly text field', () => {
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'x',
+      label: 'X',
+      field_type: FIELD_TYPE,
+      value: VALUE,
+      display_context: 'READONLY'
+    });
+
+    let fixture: ComponentFixture<ReadTextFieldComponent>;
+    let component: ReadTextFieldComponent;
+    let de: DebugElement;
+
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadTextFieldComponent
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ReadTextFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('render provided value as text', () => {
+      component.caseField.value = VALUE;
+      fixture.detectChanges();
+
+      expect(de.nativeElement.textContent).toEqual(VALUE.toString());
+    });
+
+    it('render undefined value as empty string', () => {
+      component.caseField.value = undefined;
+      fixture.detectChanges();
+
+      expect(de.nativeElement.textContent).toEqual('');
+    });
+
+    it('render null value as empty string', () => {
+      component.caseField.value = null;
+      fixture.detectChanges();
+
+      expect(de.nativeElement.textContent).toEqual('');
+    });
+
   });
 
-  let fixture: ComponentFixture<ReadTextFieldComponent>;
-  let component: ReadTextFieldComponent;
-  let de: DebugElement;
+  describe('Persistable readonly text field', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+    const REGISTER_CONTROL = (control) => {
+      FORM_GROUP.addControl(FIELD_ID, control);
+      return control;
+    };
+    const CASE_FIELD: CaseField = {
+      id: FIELD_ID,
+      label: 'X',
+      field_type: FIELD_TYPE,
+      value: VALUE,
+      display_context: 'READONLY'
+    };
 
-  beforeEach(async(() => {
-    TestBed
-      .configureTestingModule({
-        imports: [],
-        declarations: [
-          ReadTextFieldComponent
-        ],
-        providers: []
-      })
-      .compileComponents();
+    let fixture: ComponentFixture<ReadTextFieldComponent>;
+    let component: ReadTextFieldComponent;
+    let de: DebugElement;
 
-    fixture = TestBed.createComponent(ReadTextFieldComponent);
-    component = fixture.componentInstance;
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadTextFieldComponent
+          ],
+          providers: []
+        })
+        .compileComponents();
 
-    component.caseField = CASE_FIELD;
+      fixture = TestBed.createComponent(ReadTextFieldComponent);
+      component = fixture.componentInstance;
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
+      component.registerControl = REGISTER_CONTROL;
+      component.caseField = CASE_FIELD;
 
-  it('render provided value as text', () => {
-    component.caseField.value = VALUE;
-    fixture.detectChanges();
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
 
-    expect(de.nativeElement.textContent).toEqual(VALUE.toString());
+    it('should register readonly case field value with form group', () => {
+      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+    });
+
   });
 
-  it('render undefined value as empty string', () => {
-    component.caseField.value = undefined;
-    fixture.detectChanges();
-
-    expect(de.nativeElement.textContent).toEqual('');
-  });
-
-  it('render null value as empty string', () => {
-    component.caseField.value = null;
-    fixture.detectChanges();
-
-    expect(de.nativeElement.textContent).toEqual('');
-  });
 });

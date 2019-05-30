@@ -15,6 +15,7 @@ export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implemen
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.formattedValue = this.yesNoService.format(this.caseField.value);
   }
 

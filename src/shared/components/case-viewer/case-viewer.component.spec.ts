@@ -327,7 +327,8 @@ const CASE_VIEW: CaseView = {
     jurisdiction: {
       id: JID,
       name: 'Test',
-    }
+    },
+    printEnabled: true
   },
   channels: [],
   state: {
@@ -777,6 +778,14 @@ let caseService: any;
     fixture.detectChanges();
     let printLink = de.query($PRINT_LINK);
 
+    expect(printLink).toBeFalsy();
+  });
+
+  it('should not contain a print link if printableDocumentsUrl not configured', () => {
+    component.caseDetails.case_type.printEnabled = null;
+    fixture.detectChanges();
+    let printLink = de.query($PRINT_LINK);
+    expect(component.isPrintEnabled()).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
 
