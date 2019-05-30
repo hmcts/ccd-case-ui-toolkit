@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.50.1 - May 29 2019
+**RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
+
+### Version 2.49.2 - May 21 2019
+**RDM-876** Hide print button when not configured  
+
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service
 

@@ -13,7 +13,8 @@ export class CaseView {
       id: string,
       name: string,
       description?: string
-    }
+    },
+    printEnabled?: boolean
   };
   state: {
     id: string,
