@@ -1,6 +1,6 @@
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import {FieldsUtils} from '../../../services/fields';
+import { FieldsUtils } from '../../../services/fields';
 
 describe('FieldsFilterPipe', () => {
 

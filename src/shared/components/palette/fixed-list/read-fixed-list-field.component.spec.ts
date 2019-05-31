@@ -103,7 +103,6 @@ describe('ReadFixedListFieldComponent', () => {
     });
   });
 
-
   describe('ReadFixedListFieldComponent for dynamiclist type', () => {
     const VALUE_DYNAMIC_LIST = '{\n' +
       '            "value": {\n' +

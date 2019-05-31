@@ -68,7 +68,7 @@ export class FieldsFilterPipe implements PipeTransform {
 
   constructor(
     private fieldsUtils: FieldsUtils
-  ){}
+  ) {}
 
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.
