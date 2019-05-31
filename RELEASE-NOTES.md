@@ -1,8 +1,7 @@
 ## RELEASE NOTES
 
-
-### Version 2.51.0 - May 29 2019
-**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+### Version 2.50.2 - May 29 2019
+**RDM-4687** Continue button is not enabled for a mandatory collection field that includes show/hide conditions inside complex fields
 
 ### Version 2.50.1 - May 29 2019
 **RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
