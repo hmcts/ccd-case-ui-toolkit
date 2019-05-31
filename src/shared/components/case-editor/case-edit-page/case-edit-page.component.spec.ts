@@ -21,9 +21,8 @@ import { Draft } from '../../../domain/draft.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
-import createSpyObj = jasmine.createSpyObj;
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
-
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
 

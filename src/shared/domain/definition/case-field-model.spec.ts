@@ -2,10 +2,13 @@ import { CaseField } from './case-field.model';
 import { async } from '@angular/core/testing';
 import { FieldType } from './field-type.model';
 
-describe('CaseFieldTest', () => {
+describe('CaseField', () => {
 
   let component: CaseField;
-  const VALUE: any = { value: {code: 'Code1', label:'Label 1'}, list_items: [{code: 'Code1', label:'Label 1'}, {code: 'Code2', label:'Label 2'}]};
+  const VALUE: any = {
+    value: {code: 'Code1', label: 'Label 1'}, list_items: [{code: 'Code1', label: 'Label 1'},
+      {code: 'Code2', label: 'Label 2'}]
+  };
   beforeEach(async(() => {
     component = new CaseField();
   }));
@@ -42,13 +45,12 @@ describe('CaseFieldTest', () => {
     expect(component.isReadonly()).toBe(false);
     component.display_context = null
     expect(component.isReadonly()).toBe(false);
-    component.display_context = "Mandatory";
+    component.display_context = 'Mandatory';
     expect(component.isReadonly()).toBe(false);
-    component.display_context = "Optional";
+    component.display_context = 'Optional';
     expect(component.isReadonly()).toBe(false);
-    component.display_context = "REAdOnlY";
+    component.display_context = 'REAdOnlY';
     expect(component.isReadonly()).toBe(true);
   });
-
 
 });

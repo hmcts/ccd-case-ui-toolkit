@@ -25,7 +25,7 @@ export class CaseView {
     title_display?: string
   };
   channels: string[];
-  @Type(()=> CaseTab)
+  @Type(() => CaseTab)
   tabs: CaseTab[];
   triggers: CaseViewTrigger[];
   events: CaseViewEvent[];

@@ -5,10 +5,34 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 @Injectable()
 export class FormValueService {
 
-  constructor(private fieldTypeSanitiser: FieldTypeSanitiser){}
+  constructor(private fieldTypeSanitiser: FieldTypeSanitiser) {
+  }
 
   public sanitise(rawValue: object): object {
     return this.sanitiseObject(rawValue);
+  }
+
+  public sanitiseCaseReference(reference: string): string {
+    // strip non digits
+    const s: string = reference.replace(/[\D]/g, '');
+    if (s.length > 16) {
+      return s.substr(s.length - 16, 16);
+    }
+    return s;
+  }
+
+  filterCurrentPageFields(caseFields: CaseField[], editFrom: any): any {
+    let cloneForm = JSON.parse(JSON.stringify(editFrom));
+    Object.keys(cloneForm['data']).forEach((key) => {
+      if (caseFields.findIndex((element) => element.id === key) < 0) {
+        delete cloneForm['data'][key];
+      }
+    });
+    return cloneForm;
+  }
+
+  sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
+    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm);
   }
 
   private sanitiseObject(rawObject: object): object {
@@ -25,15 +49,6 @@ export class FormValueService {
       }
     });
     return sanitisedObject;
-  }
-
-  public sanitiseCaseReference(reference: string): string {
-    // strip non digits
-    const s: string = reference.replace(/[\D]/g, '');
-    if (s.length > 16) {
-      return s.substr(s.length - 16, 16);
-    }
-    return s;
   }
 
   private sanitiseArray(rawArray: any[]): any[] {
@@ -65,20 +80,6 @@ export class FormValueService {
       default:
         return rawValue;
     }
-  }
-
-  filterCurrentPageFields(caseFields: CaseField[], editFrom: any): any {
-    let cloneForm = JSON.parse(JSON.stringify(editFrom));
-    Object.keys(cloneForm['data']).forEach((key) => {
-      if (caseFields.findIndex((element) => element.id === key) < 0) {
-        delete cloneForm['data'][key];
-      }
-    });
-    return cloneForm;
-  }
-
-  sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
-    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm);
   }
 
 }

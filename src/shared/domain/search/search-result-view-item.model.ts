@@ -5,7 +5,7 @@ import { Type } from 'class-transformer';
 export class SearchResultViewItem {
   case_id: string;
   case_fields: object;
-  @Type(()=> CaseField)
+  @Type(() => CaseField)
   hydrated_case_fields?: CaseField[];
   columns?: object;
 }

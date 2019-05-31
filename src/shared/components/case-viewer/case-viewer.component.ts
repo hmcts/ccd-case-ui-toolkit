@@ -59,7 +59,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private draftService: DraftService,
     private caseService: CaseService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.initDialog();
@@ -91,33 +92,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
-  }
-
-  private init() {
-    // Clone and sort tabs array
-    this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
-
-    this.caseFields = this.getTabFields();
-
-    this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
-
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
-        this.subscription = this.postViewActivity().subscribe((_resolved) => {
-          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
-        });
-      });
-    }
-
-    if (this.caseDetails.triggers && this.error) {
-      this.resetErrors();
-    }
-  }
-  
-  private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
-      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   clearErrorsAndWarnings() {
@@ -159,7 +133,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         ['create/case',
           this.caseDetails.case_type.jurisdiction.id,
           this.caseDetails.case_type.id,
-          trigger.id], { queryParams: theQueryParams } ).catch(error => {
+          trigger.id], {queryParams: theQueryParams}).catch(error => {
         this.handleError(error, trigger)
       });
     } else {
@@ -185,16 +159,53 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.triggerText = callbackErrorsContext.trigger_text;
   }
 
+  isDraft(): boolean {
+    return Draft.isDraft(this.caseDetails.case_id);
+  }
+
+  isTriggerButtonDisabled(): boolean {
+    return (this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length)
+      || (this.error
+        && this.error.details
+        && this.error.details.field_errors
+        && this.error.details.field_errors.length);
+  }
+
+  private init() {
+    // Clone and sort tabs array
+    this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
+
+    this.caseFields = this.getTabFields();
+
+    this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
+
+    if (this.activityPollingService.isEnabled) {
+      this.ngZone.runOutsideAngular(() => {
+        this.subscription = this.postViewActivity().subscribe((_resolved) => {
+          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
+        });
+      });
+    }
+
+    if (this.caseDetails.triggers && this.error) {
+      this.resetErrors();
+    }
+  }
+
+  private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
+    return tabs
+      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
+  }
+
   private getTabFields(): CaseField[] {
     const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
       return acc.concat(tab.fields);
     }, []);
 
     return caseDataFields.concat(this.caseDetails.metadataFields);
-  }
-
-  isDraft(): boolean {
-    return Draft.isDraft(this.caseDetails.case_id);
   }
 
   private initDialog() {
@@ -225,16 +236,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
-  }
-
-  isTriggerButtonDisabled(): boolean {
-    return (this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length)
-      || (this.error
-      && this.error.details
-      && this.error.details.field_errors
-      && this.error.details.field_errors.length);
   }
 
 }

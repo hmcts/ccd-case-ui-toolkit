@@ -1,14 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields';
+
 @Pipe({
   name: 'ccdFieldsFilter'
 })
 export class FieldsFilterPipe implements PipeTransform {
-
-  constructor(
-    private fieldsUtils: FieldsUtils
-  ){}
 
   private static readonly EMPTY_VALUES = [
     undefined,
@@ -68,6 +65,10 @@ export class FieldsFilterPipe implements PipeTransform {
   private static getValue(field: CaseField, values: any): any {
     return FieldsFilterPipe.isEmpty(field.value) ? values[field.id] : field.value;
   }
+
+  constructor(
+    private fieldsUtils: FieldsUtils
+  ){}
 
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.

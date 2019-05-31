@@ -43,7 +43,6 @@ describe('FieldTypeSanitiser', () => {
     }
   }
 
-
   const caseFields: CaseField[] = [
     Object.assign(new CaseField(), {
       id: '[CASE_REFERENCE]',

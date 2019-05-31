@@ -22,8 +22,7 @@ export class FieldTypeSanitiser {
 
   private createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField: CaseField, key, editForm: any) {
     if (dynamicField.id === key) {
-      editForm['data'][key] =
-        {
+      editForm['data'][key] = {
           value: this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
           list_items: dynamicField.list_items
         };
@@ -32,7 +31,7 @@ export class FieldTypeSanitiser {
 
   private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
     let result = dynamicField.list_items.filter(value => value.code === editForm['data'][key]);
-    return result.length > 0? result[0] : {};
+    return result.length > 0 ? result[0] : {};
   }
 
   private getListOfKeysFromEditForm(editForm: any) {
