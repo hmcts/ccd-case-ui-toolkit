@@ -13,18 +13,23 @@ export class FieldsPurger {
     private fieldsUtils: FieldsUtils,
   ) {}
 
-  clearHiddenFields(form, wizard, eventTrigger, currentPageId) {
+  clearHiddenFields(form, wizard, eventTrigger, currentPageId, operation) {
     this.clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger);
-    this.clearHiddenFieldForPageShowCondition(form, wizard);
+    this.clearHiddenFieldForPageShowCondition(currentPageId, form, wizard, operation);
   }
 
-  private clearHiddenFieldForPageShowCondition(form, wizard) {
+  private clearHiddenFieldForPageShowCondition(currentPageId, form, wizard, operation) {
     let formFields = form.getRawValue();
+    let currentPageIndex = this.findIndex(currentPageId, wizard);
+    let isEligibleToResetPage = true;
     wizard.pages.forEach(wp => {
       if (this.hasShowConditionPage(wp, formFields)) {
           let condition = new ShowCondition(wp.show_condition);
-          if (this.isHidden(condition, formFields)) {
+          let wizardPageIndex = this.findIndex(wp.id, wizard);
+          if (isEligibleToResetPage && this.isHidden(condition, formFields)) {
             this.resetPage(form, wp);
+          } else if (operation === 'next' && wizardPageIndex > currentPageIndex) {
+            isEligibleToResetPage = false;
           }
       }
     });
@@ -93,5 +98,9 @@ export class FieldsPurger {
   // TODO: call isReadOnly on CaseFields once we make it available
   private isReadonly(case_field: CaseField) {
     return case_field.display_context.toUpperCase() === 'READONLY'
+  }
+
+  private findIndex(wizardPageId, wizard) {
+    return wizard.pages.findIndex(page => wizardPageId === page.id);
   }
 }
