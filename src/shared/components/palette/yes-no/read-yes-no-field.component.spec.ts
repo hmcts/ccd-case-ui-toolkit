@@ -5,6 +5,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import createSpyObj = jasmine.createSpyObj;
 import { YesNoService } from './yes-no.service';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FormGroup } from '@angular/forms';
 
 describe('ReadYesNoFieldComponent', () => {
 
@@ -13,49 +14,104 @@ describe('ReadYesNoFieldComponent', () => {
     type: 'YesOrNo'
   };
   const VALUE = true;
-  const CASE_FIELD: CaseField = {
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  };
-  const FORMATTED_VALUE = 'Yes';
+  const FIELD_ID = 'ReadOnlyFieldId';
 
-  let fixture: ComponentFixture<ReadYesNoFieldComponent>;
-  let component: ReadYesNoFieldComponent;
-  let de: DebugElement;
+  describe('Non-persistable readonly yes/no field', () => {
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'x',
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: VALUE
+    });
+    const FORMATTED_VALUE = 'Yes';
 
-  let yesNoService: any;
+    let fixture: ComponentFixture<ReadYesNoFieldComponent>;
+    let component: ReadYesNoFieldComponent;
+    let de: DebugElement;
 
-  beforeEach(async(() => {
-    yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
-    yesNoService.format.and.returnValue(FORMATTED_VALUE);
+    let yesNoService: any;
 
-    TestBed
-      .configureTestingModule({
-        imports: [],
-        declarations: [
-          ReadYesNoFieldComponent
-        ],
-        providers: [
-          { provide: YesNoService, useValue: yesNoService }
-        ]
-      })
-      .compileComponents();
+    beforeEach(async(() => {
+      yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
+      yesNoService.format.and.returnValue(FORMATTED_VALUE);
 
-    fixture = TestBed.createComponent(ReadYesNoFieldComponent);
-    component = fixture.componentInstance;
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadYesNoFieldComponent
+          ],
+          providers: [
+            {provide: YesNoService, useValue: yesNoService}
+          ]
+        })
+        .compileComponents();
 
-    component.caseField = CASE_FIELD;
+      fixture = TestBed.createComponent(ReadYesNoFieldComponent);
+      component = fixture.componentInstance;
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
+      component.caseField = CASE_FIELD;
 
-  it('should render output of YesNoService::format method', () => {
-    expect(yesNoService.format).toHaveBeenCalledWith(VALUE);
-    expect(yesNoService.format).toHaveBeenCalledTimes(1);
-    expect(de.nativeElement.textContent).toEqual(FORMATTED_VALUE);
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should render output of YesNoService::format method', () => {
+      expect(yesNoService.format).toHaveBeenCalledWith(VALUE);
+      expect(yesNoService.format).toHaveBeenCalledTimes(1);
+      expect(de.nativeElement.textContent).toEqual(FORMATTED_VALUE);
+    });
   });
+
+  describe('Persistable readonly yes/no field', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+    const REGISTER_CONTROL = (control) => {
+      FORM_GROUP.addControl(FIELD_ID, control);
+      return control;
+    };
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: VALUE
+    });
+
+    let fixture: ComponentFixture<ReadYesNoFieldComponent>;
+    let component: ReadYesNoFieldComponent;
+    let de: DebugElement;
+    let yesNoService: any;
+
+    beforeEach(async(() => {
+      yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
+
+      TestBed
+        .configureTestingModule({
+          imports: [],
+          declarations: [
+            ReadYesNoFieldComponent
+          ],
+          providers: [
+            {provide: YesNoService, useValue: yesNoService}
+          ]
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ReadYesNoFieldComponent);
+      component = fixture.componentInstance;
+
+      component.registerControl = REGISTER_CONTROL;
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should register readonly case field value with form group', () => {
+      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+    });
+  });
+
 });

@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { text } from '../../../test/helpers';
 import { FieldReadLabelComponent } from './field-read-label.component';
 
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = <CaseField>({
   id: 'PersonFirstName',
   label: 'First name',
   field_type: {
@@ -15,9 +15,9 @@ const CASE_FIELD: CaseField = {
   },
   display_context: 'OPTIONAL',
   value: 'Johnny'
-};
+});
 
-const CASE_FIELD_OF_LABEL_TYPE: CaseField = {
+const CASE_FIELD_OF_LABEL_TYPE: CaseField = <CaseField>({
   id: 'PersonFirstName',
   label: 'First name',
   field_type: {
@@ -26,7 +26,7 @@ const CASE_FIELD_OF_LABEL_TYPE: CaseField = {
   },
   display_context: 'OPTIONAL',
   value: 'Johnny'
-};
+});
 const BY_FIELD_LABEL = By.css('.case-field__label');
 
 describe('FieldReadLabelComponent', () => {
