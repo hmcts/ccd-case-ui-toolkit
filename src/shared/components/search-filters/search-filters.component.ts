@@ -71,22 +71,26 @@ export class SearchFiltersComponent implements OnInit {
       this.selected.formGroup = this.formGroup;
       this.selected.page = 1;
       this.selected.metadataFields = this.getMetadataFields();
-      // Save filters as query parameters for current route
-      let queryParams = {};
-      if (this.selected.jurisdiction) {
-        queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
-      }
-      if (this.selected.caseType) {
-        queryParams[SearchFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
-      }
-      if (this.selected.caseState) {
-        queryParams[SearchFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
-      }
       this.onApply.emit({
         selected: this.selected,
-        queryParams: queryParams
+        queryParams: this.getQueryParams()
       });
     }
+  }
+
+  private getQueryParams() {
+    // Save filters as query parameters for current route
+    let queryParams = {};
+    if (this.selected.jurisdiction) {
+      queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
+    }
+    if (this.selected.caseType) {
+      queryParams[SearchFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
+    }
+    if (this.selected.caseState) {
+      queryParams[SearchFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
+    }
+    return queryParams;
   }
 
   reset(): void {
@@ -107,20 +111,9 @@ export class SearchFiltersComponent implements OnInit {
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
     this.populateValuesInLocalStorage();
-    // Save filters as query parameters for current route
-    let queryParams = {};
-    if (this.selected.jurisdiction) {
-      queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
-    }
-    if (this.selected.caseType) {
-      queryParams[SearchFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
-    }
-    if (this.selected.caseState) {
-      queryParams[SearchFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
-    }
     this.onApply.emit({
       selected: this.selected,
-      queryParams: queryParams
+      queryParams: this.getQueryParams()
     });
   }
 
