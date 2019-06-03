@@ -1,4 +1,5 @@
-import { CaseTab } from '../domain';
+import { CaseField, CaseTab } from '../domain';
+import { plainToClass } from 'class-transformer';
 
 export let createCaseTabArray = () => {
   const tab1 = new CaseTab();
@@ -15,7 +16,7 @@ export let createCaseTabArray = () => {
   tab2.label = 'Name';
   tab2.order = 1;
   tab2.fields = [
-    {
+    plainToClass(CaseField, {
       id: 'PersonFirstName',
       label: 'First name',
       display_context: 'OPTIONAL',
@@ -26,8 +27,8 @@ export let createCaseTabArray = () => {
       order: 2,
       value: 'Janet',
       show_condition: ''
-    },
-    {
+    }),
+    plainToClass(CaseField, {
       id: 'PersonLastName',
       label: 'Last name',
       display_context: 'OPTIONAL',
@@ -38,8 +39,8 @@ export let createCaseTabArray = () => {
       order: 1,
       value: 'Parker',
       show_condition: 'PersonFirstName="Jane*"'
-    },
-    {
+    }),
+    plainToClass(CaseField, {
       id: 'PersonComplex',
       label: 'Complex field',
       display_context: 'OPTIONAL',
@@ -50,7 +51,7 @@ export let createCaseTabArray = () => {
       },
       order: 3,
       show_condition: 'PersonFirstName="Park"'
-    }
+    })
   ];
   tab2.show_condition = 'PersonFirstName="Janet"';
 
