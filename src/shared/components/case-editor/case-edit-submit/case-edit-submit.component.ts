@@ -140,7 +140,7 @@ export class CaseEditSubmitComponent implements OnInit {
       return field;
     }
 
-    let cloneField: CaseField = this.fieldsUtils.cloneObject(field);
+    let cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
     cloneField.value = this.editForm.get('data').get(field.id).value;
 
     return cloneField;
