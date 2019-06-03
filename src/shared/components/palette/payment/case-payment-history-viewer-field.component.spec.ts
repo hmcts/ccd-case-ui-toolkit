@@ -5,8 +5,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
 
@@ -14,12 +14,12 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     id: 'CasePaymentHistoryViewer',
     type: 'CasePaymentHistoryViewer'
   };
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
-  };
+  });
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
 

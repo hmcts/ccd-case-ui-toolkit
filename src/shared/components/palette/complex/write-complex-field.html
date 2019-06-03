@@ -11,7 +11,8 @@
                       [caseFields]="caseFields"
                       [formGroup]="formGroup"
                       [withLabel]="true"
-                      [idPrefix]="buildIdPrefix(field)">
+                      [idPrefix]="buildIdPrefix(field)"
+                      [registerControl]="buildControlRegistrer(field)">
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
                        ccdConditionalShow
@@ -21,6 +22,7 @@
                        [contextFields]="caseFields"
                        [caseFields]="caseFields"
                        [formGroup]="formGroup"
+                       [complexFormGroup]="complexGroup"
                        [registerControl]="buildControlRegistrer(field)"
                        [idPrefix]="buildIdPrefix(field)">
       </ccd-field-write>
