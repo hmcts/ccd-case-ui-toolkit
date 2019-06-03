@@ -270,29 +270,6 @@ describe('CaseEditComponent', () => {
 
       describe('next page', () => {
 
-        it('should navigate to next page when next is called and do not clear READONLY hidden field value', () => {
-          component.wizard = wizard;
-          let currentPage = new WizardPage();
-          currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
-          currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
-          wizard.getPage.and.returnValue(currentPage);
-          wizard.nextPage.and.returnValue(new WizardPage());
-          component.form = new FormGroup({
-            data : new FormGroup({
-              PersonFirstName: new FormControl('John'),
-              PersonLastName: new FormControl('Smith')
-            })
-          });
-          fixture.detectChanges();
-
-          component.next('somePage');
-
-          expect(wizard.nextPage).toHaveBeenCalled();
-          expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id).value).toBe('John');
-          expect(component.form.get('data').get(CASE_FIELD_2.id).value).toBe('Smith');
-        });
-
         it('should navigate to next page when next is called and do not clear visible field', () => {
           component.wizard = wizard;
           let currentPage = new WizardPage();
@@ -335,7 +312,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -358,7 +335,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -381,34 +358,12 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
       });
 
       describe('previous page', () => {
-        it('should navigate to previous page when previous is called and do not clear READONLY hidden field value', () => {
-          component.wizard = wizard;
-          let currentPage = new WizardPage();
-          currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
-          currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
-          wizard.getPage.and.returnValue(currentPage);
-          wizard.previousPage.and.returnValue(new WizardPage());
-          component.form = new FormGroup({
-            data : new FormGroup({
-              PersonFirstName: new FormControl('John'),
-              PersonLastName: new FormControl('Smith')
-            })
-          });
-          fixture.detectChanges();
-
-          component.previous('somePage');
-
-          expect(wizard.previousPage).toHaveBeenCalled();
-          expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id).value).toBe('John');
-          expect(component.form.get('data').get(CASE_FIELD_2.id).value).toBe('Smith');
-        });
 
         it('should navigate to previous page when previous is called and do not clear visible field', () => {
           component.wizard = wizard;
@@ -452,7 +407,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -475,7 +430,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
@@ -498,7 +453,7 @@ describe('CaseEditComponent', () => {
 
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
-          expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_1.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
       });
