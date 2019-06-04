@@ -127,6 +127,9 @@ export class FieldsUtils {
       return page.parsedShowCondition.match(currentState);
     };
   }
+  public getCurrentEventState(eventTrigger, form): any {
+    return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
+  }
 
   public cloneObject(obj: any): any {
     return Object.assign({}, obj);

@@ -96,7 +96,7 @@ export class CaseEditComponent implements OnInit {
   }
 
   next(currentPageId: string): Promise<boolean> {
-    this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId, 'next');
+    this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
     this.registrarService.reset();
 
     let theQueryParams: Params = {};
@@ -106,7 +106,7 @@ export class CaseEditComponent implements OnInit {
   }
 
   previous(currentPageId: string): Promise<boolean> {
-    this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId, 'previous');
+    this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
     this.registrarService.reset();
 
     let previousPage = this.wizard.previousPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
