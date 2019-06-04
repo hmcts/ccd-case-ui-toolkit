@@ -16,13 +16,13 @@ describe('ReadEmailFieldComponent', () => {
   const VALUE = 'ccd@hmcts.net';
 
   describe('Non-persistable readonly email field', () => {
-    const CASE_FIELD: CaseField = {
-      id: FIELD_ID,
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
     const EMPTY = '';
 
     let fixture: ComponentFixture<ReadEmailFieldComponent>;
@@ -77,13 +77,13 @@ describe('ReadEmailFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadEmailFieldComponent>;
     let component: ReadEmailFieldComponent;

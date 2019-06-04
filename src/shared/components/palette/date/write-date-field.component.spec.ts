@@ -14,13 +14,13 @@ const FIELD_TYPE: FieldType = {
   type: 'Date'
 };
 const VALUE = '2017-07-26';
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = <CaseField>({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-};
+});
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {
