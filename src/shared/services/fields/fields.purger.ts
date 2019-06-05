@@ -94,8 +94,4 @@ export class FieldsPurger {
   private isReadonly(case_field: CaseField) {
     return case_field.display_context.toUpperCase() === 'READONLY'
   }
-
-  private findIndex(wizardPageId, wizard) {
-    return wizard.pages.findIndex(page => wizardPageId === page.id);
-  }
 }
