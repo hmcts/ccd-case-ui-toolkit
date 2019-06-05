@@ -122,7 +122,7 @@ export class FieldsUtils {
   }
 
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
-    let currentState = this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
+    let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
     };
