@@ -10,10 +10,10 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { FormGroup } from '@angular/forms';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
-import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
 
 describe('WriteDocumentFieldComponent', () => {
 
@@ -156,9 +156,8 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should upload given document', () => {
-    let file = {
-      name: 'test.pdf'
-    };
+    let blobParts: BlobPart[] = ['some contents for blob']
+    let file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
@@ -173,9 +172,9 @@ describe('WriteDocumentFieldComponent', () => {
   it('should be invalid if document management throws error', () => {
     mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
       '"message": "But really really terrible thing!", "status": 502}'));
-    let file = {
-      name: 'test.pdf'
-    };
+
+    let blobParts: BlobPart[] = ['some contents for blob']
+    let file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
