@@ -2,7 +2,9 @@ import { CaseTab } from './case-tab.model';
 import { CaseViewEvent } from './case-view-event.model';
 import { CaseViewTrigger } from './case-view-trigger.model';
 import { CaseField } from '../definition';
+import { Type } from 'class-transformer';
 
+// @dynamic
 export class CaseView {
   case_id?: string;
   case_type: {
@@ -13,7 +15,8 @@ export class CaseView {
       id: string,
       name: string,
       description?: string
-    }
+    },
+    printEnabled?: boolean
   };
   state: {
     id: string,
@@ -22,8 +25,10 @@ export class CaseView {
     title_display?: string
   };
   channels: string[];
+  @Type(() => CaseTab)
   tabs: CaseTab[];
   triggers: CaseViewTrigger[];
   events: CaseViewEvent[];
+  @Type(() => CaseField)
   metadataFields?: CaseField[];
 }

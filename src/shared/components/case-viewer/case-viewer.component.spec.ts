@@ -16,15 +16,15 @@ import { LabelSubstitutorDirective } from '../../directives/substitutor';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { CaseViewTrigger, CaseViewEvent, CaseView } from '../../domain/case-view';
+import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../domain/case-view';
 import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { CaseService } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material';
-import { CaseService } from '../case-editor';
 
 @Component({
   // tslint:disable-next-line
@@ -132,7 +132,7 @@ const EVENTS: CaseViewEvent[] = [
 ];
 
 const METADATA: CaseField[] = [
-  {
+  Object.assign(new CaseField(), {
     id: '[CASE_REFERENCE]',
     label: 'Case Reference',
     value: 1533032330714079,
@@ -153,8 +153,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[CASE_TYPE]',
     label: 'Case Type',
     value: 'DIVORCE',
@@ -175,8 +175,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[CREATED_DATE]',
     label: 'Created Date',
     value: '2018-07-31T10:18:50.737',
@@ -197,8 +197,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[JURISDICTION]',
     label: 'Jurisdiction',
     value: 'DIVORCE',
@@ -219,8 +219,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[LAST_MODIFIED_DATE]',
     label: 'Last Modified Date',
     value: '2018-07-31T10:18:50.737',
@@ -241,8 +241,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[SECURITY_CLASSIFICATION]',
     label: 'Security Classification',
     value: 'PUBLIC',
@@ -263,8 +263,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[SECURITY_CLASSIFICATION]',
     label: 'Security Classification',
     value: 'PUBLIC',
@@ -285,7 +285,7 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  }
+  })
 ];
 
 const TRIGGERS: CaseViewTrigger[] = [
@@ -327,7 +327,8 @@ const CASE_VIEW: CaseView = {
     jurisdiction: {
       id: JID,
       name: 'Test',
-    }
+    },
+    printEnabled: true
   },
   channels: [],
   state: {
@@ -340,7 +341,7 @@ const CASE_VIEW: CaseView = {
       label: 'Name',
       order: 2,
       fields: [
-        {
+        Object.assign(new CaseField(), {
           id: 'PersonFirstName',
           label: 'First name',
           display_context: 'OPTIONAL',
@@ -352,8 +353,8 @@ const CASE_VIEW: CaseView = {
           value: 'Janet',
           show_condition: '',
           hint_text: ''
-        },
-        {
+        }),
+        Object.assign(new CaseField(), {
           id: 'PersonLastName',
           label: 'Last name',
           display_context: 'OPTIONAL',
@@ -365,8 +366,8 @@ const CASE_VIEW: CaseView = {
           value: 'Parker',
           show_condition: 'PersonFirstName="Jane*"',
           hint_text: ''
-        },
-        {
+        }),
+        Object.assign(new CaseField(), {
           id: 'PersonComplex',
           label: 'Complex field',
           display_context: 'OPTIONAL',
@@ -378,7 +379,7 @@ const CASE_VIEW: CaseView = {
           order: 3,
           show_condition: 'PersonFirstName="Park"',
           hint_text: ''
-        }
+        })
       ],
       show_condition: 'PersonFirstName="Janet"'
     },
@@ -386,7 +387,7 @@ const CASE_VIEW: CaseView = {
       id: 'HistoryTab',
       label: 'History',
       order: 1,
-      fields: [{
+      fields: [Object.assign(new CaseField(), {
         id: 'CaseHistory',
         label: 'Case History',
         display_context: 'OPTIONAL',
@@ -398,7 +399,7 @@ const CASE_VIEW: CaseView = {
         value: EVENTS,
         show_condition: '',
         hint_text: ''
-      }],
+      })],
       show_condition: ''
     },
     {
@@ -777,6 +778,14 @@ let caseService: any;
     fixture.detectChanges();
     let printLink = de.query($PRINT_LINK);
 
+    expect(printLink).toBeFalsy();
+  });
+
+  it('should not contain a print link if printableDocumentsUrl not configured', () => {
+    component.caseDetails.case_type.printEnabled = null;
+    fixture.detectChanges();
+    let printLink = de.query($PRINT_LINK);
+    expect(component.isPrintEnabled()).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
 

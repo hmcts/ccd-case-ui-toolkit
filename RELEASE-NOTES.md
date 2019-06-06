@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 2.49.0 - May 14 2019
-**RDM-4537** Case List Filters extraction and new contract
+### Version 2.51.0 - May 29 2019
+	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+
+### Version 2.50.2 - May 29 2019
+**RDM-4687** Continue button is not enabled for a mandatory collection field that includes show/hide conditions inside complex fields
+
+### Version 2.50.1 - May 29 2019
+**RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
+
+### Version 2.49.2 - May 21 2019
+**RDM-876** Hide print button when not configured  
 
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service

@@ -5,8 +5,8 @@ import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FieldWriteComponent } from './field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import createSpyObj = jasmine.createSpyObj;
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import createSpyObj = jasmine.createSpyObj;
 
 const CLASS = 'person-first-name-cls';
 
@@ -19,7 +19,7 @@ class FieldTestComponent {}
 
 describe('FieldWriteComponent', () => {
 
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'PersonFirstName',
     field_type: {
       id: 'Text',
@@ -27,7 +27,7 @@ describe('FieldWriteComponent', () => {
     },
     display_context: 'OPTIONAL',
     label: 'First name'
-  };
+  });
 
   let fixture: ComponentFixture<FieldWriteComponent>;
   let component: FieldWriteComponent;

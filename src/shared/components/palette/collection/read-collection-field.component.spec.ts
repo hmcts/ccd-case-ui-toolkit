@@ -31,14 +31,14 @@ describe('ReadCollectionFieldComponent', () => {
       value: 'Jacques',
     }
   ];
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     field_type: FIELD_TYPE,
     display_context: 'OPTIONAL',
     value: VALUES,
     hidden: false
-  };
+  });
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
@@ -156,14 +156,14 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
     }
   ];
 
-  const CASE_FIELD_WITH_DISPLAY_CONTEXT: CaseField = {
+  const CASE_FIELD_WITH_DISPLAY_CONTEXT: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     field_type: FIELD_TYPE,
     display_context: 'OPTIONAL',
     display_context_parameter: '#TABLE(Title,FIRSTNAME)',
     value: VALUES
-  };
+  });
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
