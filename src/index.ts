@@ -1,7 +1,8 @@
 export { CaseUIToolkitModule } from './case-ui-toolkit.module';
 export { CaseEditorConfig,
          AbstractAppConfig } from './app.config';
-export { FormValueService,
+export { FieldTypeSanitiser,
+         FormValueService,
          FormErrorService,
          DocumentManagementService,
          FieldsUtils,

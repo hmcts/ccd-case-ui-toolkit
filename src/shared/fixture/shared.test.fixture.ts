@@ -28,7 +28,7 @@ export let createCaseEventTrigger = (id: string,
 
 export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
   show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
-  return {
+  return <CaseField>({
     id: id || 'personFirstName',
     field_type: {
       id: type.toString() || 'Text',
@@ -38,7 +38,7 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
     display_context: display_context || 'OPTIONAL',
     label: label || 'First name',
     show_summary_content_option: show_summary_content_option
-  };
+  });
 };
 
 export let createWizardPage = (id: string,
@@ -103,7 +103,7 @@ export let createCaseField = (id: string,
                               display_context: string,
                               order = undefined,
                               show_condition = undefined): CaseField => {
-  return {
+  return <CaseField>({
     id: id || 'personFirstName',
     field_type: fieldType || textFieldType(),
     display_context: display_context || 'OPTIONAL',
@@ -112,7 +112,7 @@ export let createCaseField = (id: string,
     show_summary_content_option: 0,
     order: order,
     show_condition: show_condition || undefined
-  };
+  });
 };
 
 export let createFieldType = (typeId: string,
