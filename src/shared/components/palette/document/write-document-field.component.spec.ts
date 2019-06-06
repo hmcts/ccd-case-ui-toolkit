@@ -26,13 +26,13 @@ describe('WriteDocumentFieldComponent', () => {
     'document_binary_url': 'https://www.example.com/binary',
     'document_filename': 'evidence_document.evd'
   };
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
+  });
   const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
   const RESPONSE_FIRST_DOCUMENT: DocumentData = {
     _embedded: {
