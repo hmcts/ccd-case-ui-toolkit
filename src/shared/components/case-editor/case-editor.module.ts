@@ -32,6 +32,7 @@ import { DocumentManagementService } from '../../services/document-management';
 import { RouterHelperService } from '../../services/router';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { ErrorsModule } from '../error/errors.module';
+import { FieldTypeSanitiser } from '../../services/form';
 
 @NgModule({
     imports: [
@@ -70,6 +71,7 @@ import { ErrorsModule } from '../error/errors.module';
         FieldsPurger,
         ConditionalShowRegistrarService,
         WizardFactoryService,
+        FieldTypeSanitiser,
         FormValueService,
         FormErrorService,
         PageValidationService,
