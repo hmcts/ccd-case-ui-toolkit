@@ -17,13 +17,13 @@ describe('ReadYesNoFieldComponent', () => {
   const FIELD_ID = 'ReadOnlyFieldId';
 
   describe('Non-persistable readonly yes/no field', () => {
-    const CASE_FIELD: CaseField = {
-      id: FIELD_ID,
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
     const FORMATTED_VALUE = 'Yes';
 
     let fixture: ComponentFixture<ReadYesNoFieldComponent>;
@@ -70,13 +70,13 @@ describe('ReadYesNoFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadYesNoFieldComponent>;
     let component: ReadYesNoFieldComponent;

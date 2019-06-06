@@ -1,12 +1,13 @@
-import { Response, ResponseOptions, Headers } from '@angular/http';
+import { Headers, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { CaseHistoryService } from './case-history.service';
-import createSpyObj = jasmine.createSpyObj;
 import { HttpError } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
-import { HttpService, HttpErrorService } from '../../../services';
+import { HttpErrorService, HttpService } from '../../../services';
 import { CaseHistory } from '../domain';
 import { createCaseHistory } from '../../../fixture';
+import { classToPlain } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseHistoryService', () => {
 
@@ -38,7 +39,7 @@ describe('CaseHistoryService', () => {
 
     beforeEach(() => {
       httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(CASE_HISTORY)
+        body: JSON.stringify(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']}))
       }))));
     });
 
