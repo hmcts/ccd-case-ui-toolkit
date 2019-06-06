@@ -38,8 +38,11 @@ ___
                                 && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, colItemIndex)) {
 
                                     if (fieldIdToSubstitute.split('.').length > 1) {
-                                        numberCollectionItemsAsPlaceholder =
+                                        let newNumberOfCollectionItemsAsPlaceholder =
                                             this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
+                                            numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
+                                                newNumberOfCollectionItemsAsPlaceholder,
+                                                numberCollectionItemsAsPlaceholder)
                                     }
 
                                     stringToResolve = this.substitute(
@@ -66,6 +69,12 @@ ___
         return stringToResolve;
     }
 
+    private getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder, numberCollectionItemsAsPlaceholder) {
+        return newNumberOfCollectionItemsAsPlaceholder > numberCollectionItemsAsPlaceholder ?
+                                                    newNumberOfCollectionItemsAsPlaceholder :
+                                                    numberCollectionItemsAsPlaceholder;
+    }
+
     private getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute) {
         let fieldIds = fieldIdToSubstitute.split('.');
         let pageFormFieldsClone = this.fieldsUtils.cloneObject(pageFormFields);
@@ -81,6 +90,10 @@ ___
                 pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
             }
         }
+        console.log('pageFormFields=', pageFormFields);
+        console.log('fieldIdToSubstitute=', fieldIdToSubstitute);
+        console.log('numberCollectionItemsAsPlaceholder=', numberCollectionItemsAsPlaceholder);
+        console.log('-------------------');
         return numberCollectionItemsAsPlaceholder;
     }
 
