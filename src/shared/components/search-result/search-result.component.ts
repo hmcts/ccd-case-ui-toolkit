@@ -6,6 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-search-result',
@@ -113,13 +114,13 @@ export class SearchResultComponent implements OnChanges {
 
         const field = result.case_fields[fieldId];
 
-        caseFields.push({
+        caseFields.push(Object.assign(new CaseField(), {
           id: fieldId,
           label: null,
           field_type: {},
           value: field,
           display_context: null,
-        });
+        }));
       });
 
       result.hydrated_case_fields = caseFields;
@@ -146,13 +147,13 @@ export class SearchResultComponent implements OnChanges {
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
-    return {
+    return Object.assign(new CaseField(), {
       id: col.case_field_id,
       label: col.label,
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
       display_context: null,
-    };
+    });
   }
 
   getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {

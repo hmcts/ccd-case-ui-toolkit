@@ -85,7 +85,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -94,8 +94,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -104,8 +104,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -114,19 +114,19 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Poplar'
-        },
+        }),
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
+      caseField = <CaseField>({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_VALUES
-      };
+      });
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -181,7 +181,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -190,8 +190,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -200,8 +200,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: ''
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -210,19 +210,19 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Poplar'
-        },
+        }),
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
+      caseField = <CaseField>({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      };
+      });
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -247,7 +247,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -255,8 +255,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -264,8 +264,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -273,14 +273,14 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        },
+        }),
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
+      caseField =  <CaseField>({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
@@ -290,7 +290,7 @@ describe('ReadComplexFieldRawComponent', () => {
           'AddressLine2': '111 East India road',
           'AddressLine3': 'Poplar',
         }
-      };
+      });
 
       let test = initTests(caseField, [
         FieldReadComponent
@@ -334,7 +334,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -342,8 +342,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -351,8 +351,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        },
-        {
+        }),
+          <CaseField>({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -360,14 +360,14 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        },
+        }),
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = {
+      caseField = <CaseField>({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
@@ -376,7 +376,7 @@ describe('ReadComplexFieldRawComponent', () => {
           'AddressLine1': 'Flat 9',
           'AddressLine3': 'Poplar',
         }
-      };
+      });
 
       let test = initTests(caseField, [
         FieldReadComponent
