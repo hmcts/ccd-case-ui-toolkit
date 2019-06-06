@@ -17,27 +17,27 @@ describe('LabelFieldComponent', () => {
     id: 'Label',
     type: 'Label'
   };
-  const CASE_FIELD_WITH_NO_VALUE: CaseField = {
+  const CASE_FIELD_WITH_NO_VALUE: CaseField = <CaseField>({
     id: 'label',
     label: 'Label Field Label',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
-  };
-  const CASE_FIELD: CaseField = {
+  });
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'label',
     label: 'Label Field Label',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: 'Label Field Value'
-  };
+  });
 
-  const LABEL_CASE_FIELD: CaseField = {
+  const LABEL_CASE_FIELD: CaseField = <CaseField>({
     id: 'field',
     label: '${label}',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: 'Label Field Value'
-  };
+  });
 
   const CASE_FIELDS: CaseField[] = [
     CASE_FIELD
