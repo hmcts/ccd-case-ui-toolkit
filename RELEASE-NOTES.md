@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.51.1 - June 07 2019
+	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+
 ### Version 2.51.0 - May 29 2019
 	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
 
