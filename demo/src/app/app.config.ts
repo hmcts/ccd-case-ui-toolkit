@@ -5,13 +5,16 @@ import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit'
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
 
+
+
   protected config: CaseEditorConfig = {
     'api_url': '/aggregated',
     'case_data_url': '/data',
     'document_management_url': '/documents',
     'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': '/addresses?postcode=${postcode}',
+    'postcode_lookup_url': 'https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${key}',
+    'postcode_lookup_api_key': 'apikey',
     'remote_document_management_url': '/documents',
     'payments_url': '/payments',
     'activity_batch_collection_delay_ms': 1,
@@ -89,6 +92,11 @@ export class AppConfig extends AbstractAppConfig {
 
   public getActivityRetry() {
     return this.config.activity_retry;
+  }
+
+  public getPostcodeLookupApiKey(): string {
+
+    return this.config.postcode_lookup_api_key;
   }
 
   public getActivityBatchCollectionDelayMs() {

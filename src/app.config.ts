@@ -19,6 +19,7 @@ export abstract class AbstractAppConfig {
   abstract getPrintServiceUrl(): string;
   abstract getRemotePrintServiceUrl(): string;
   abstract getPaginationPageSize(): number;
+  abstract getPostcodeLookupApiKey():string;
 }
 
 export class CaseEditorConfig {
@@ -28,6 +29,7 @@ export class CaseEditorConfig {
   login_url: string;
   oauth2_client_id: string;
   postcode_lookup_url: string;
+  postcode_lookup_api_key: string;
   remote_document_management_url: string;
   payments_url: string;
   activity_batch_collection_delay_ms: number;

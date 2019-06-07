@@ -7,11 +7,12 @@ export class AddressOption {
   constructor (addressModel: AddressModel, description: string) {
     this.value = addressModel;
     this.description = (description == null)
-        ? this.value.AddressLine1
+        ? (this.value.AddressLine1
             +  this.prefixWithCommaIfPresent(this.value.AddressLine2)
               +  this.prefixWithCommaIfPresent(this.value.AddressLine3)
-                + ', ' + this.value.PostTown
+                + ', ' + this.value.PostTown)
                   : description;
+    this.description = this.description.replace(new RegExp("^,", "gi"),'');
   }
 
   private prefixWithCommaIfPresent(value: string) {
