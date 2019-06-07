@@ -90,10 +90,6 @@ ___
                 pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
             }
         }
-        console.log('pageFormFields=', pageFormFields);
-        console.log('fieldIdToSubstitute=', fieldIdToSubstitute);
-        console.log('numberCollectionItemsAsPlaceholder=', numberCollectionItemsAsPlaceholder);
-        console.log('-------------------');
         return numberCollectionItemsAsPlaceholder;
     }
 
