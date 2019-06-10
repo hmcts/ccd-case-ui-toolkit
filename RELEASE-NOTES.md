@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 2.52.0 - June 07 2019
-**RDM-4246** | Extract Case List Filter
+**RDM-2804** OR and Not Equals support for Show and Hide
 
 ### Version 2.51.1 - June 07 2019
 	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
