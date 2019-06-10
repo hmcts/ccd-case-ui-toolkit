@@ -21,7 +21,7 @@
           <div class="float-right">
             <button class="button button-secondary" type="button" (click)="openModal(i)"
                     [disabled]="isNotAuthorisedToDelete(i)"
-                    attr.aria-label="{{ itemLabel(i) }} remove">Remove</button>
+                    attr.aria-label="Remove {{ itemLabel(i) }}">Remove</button>
           </div>
         </div>
         <ccd-field-write [caseField]="buildCaseField(item, i)"
