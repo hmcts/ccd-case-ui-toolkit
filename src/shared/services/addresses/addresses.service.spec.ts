@@ -45,14 +45,14 @@ describe('AddressesService', () => {
     expect(addressesService).toBeTruthy();
   });
 
-  it('should return atleast more than one addresses from a given postcode', () => {
+  it('should return atleast one addresses from a given postcode', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
-    result.subscribe(i => { expect(i.length).toBeGreaterThan(2)});
+    result.subscribe(addresses => { expect(addresses.length).toBeGreaterThan(1)});
   });
 
   it('should return all addresses from a given postcode location', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
-    result.subscribe(i => { expect(i.length).toEqual(12)});
+    result.subscribe(addresses => { expect(addresses.length).toEqual(12)});
   });
 
   it('should return addresses with either addressLine1 or addressLine2 populated', () => {
