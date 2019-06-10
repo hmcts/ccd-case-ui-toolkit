@@ -27,7 +27,6 @@ describe('AddressesService', () => {
     appConfig.getPostcodeLookupApiKey.and.returnValue('apikey');
     let postCodeResponse = new Response(<ResponseOptions>{body: JSON.stringify(data)});
     httpService.get.and.returnValue(Observable.of(postCodeResponse));
-    // httpService.get.and.returnValue(Observable.of([]));
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [AddressesService, {provide: AbstractAppConfig, useValue: appConfig}, {
