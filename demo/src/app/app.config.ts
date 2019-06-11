@@ -93,11 +93,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.activity_retry;
   }
 
-  public getPostcodeLookupApiKey(): string {
-
-    return this.config.postcode_lookup_api_key;
-  }
-
   public getActivityBatchCollectionDelayMs() {
     return this.config.activity_batch_collection_delay_ms;
   }
