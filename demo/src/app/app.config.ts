@@ -5,8 +5,6 @@ import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit'
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
 
-
-
   protected config: CaseEditorConfig = {
     'api_url': '/aggregated',
     'case_data_url': '/data',

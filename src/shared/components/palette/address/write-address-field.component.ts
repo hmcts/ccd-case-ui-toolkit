@@ -7,6 +7,7 @@ import { AddressesService } from '../../../services/addresses/addresses.service'
 import { FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import {AlertService} from "../../../services/alert";
 
 @Component({
   selector: 'ccd-write-address-field',
@@ -29,11 +30,16 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   addressOptions: AddressOption[];
 
-  missingPostcode = false;
+  alertService: AlertService;
 
-  constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
+
+  missingPostcode = false
+
+
+  constructor (addressesService: AddressesService,  alertService: AlertService, private isCompoundPipe: IsCompoundPipe) {
     super();
     this.addressesService = addressesService;
+    this.alertService = alertService;
   }
 
   ngOnInit(): void {
@@ -52,9 +58,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     } else {
       this.missingPostcode = false;
       const postcode = this.postcode.value;
-
       this.caseField.value = null;
       this.addressOptions = new Array();
+      this.alertService.clear();
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
         result => {
           result.forEach(
@@ -65,8 +71,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           this.addressOptions.unshift(
             new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
           );
-        }, () => {
-          console.log(`An error occurred retrieving addresses for postcode ${postcode}.`);
+        }, (error) => {
+          console.log(`An error occurred retrieving addresses for postcode ${postcode}. ` + error);
+          this.alertService.error(`An error occurred retrieving addresses for postcode ${postcode}.`);
         });
       this.addressList.setValue(undefined);
       setTimeout(this.focusAddressList, 1000);
