@@ -20,11 +20,9 @@ describe('AddressesService', () => {
 
   beforeEach(() => {
 
-    appConfig = jasmine.createSpyObj<AbstractAppConfig>('AppConfig', ['getPostcodeLookupUrl',
-      'getPostcodeLookupApiKey']);
+    appConfig = jasmine.createSpyObj<AbstractAppConfig>('AppConfig', ['getPostcodeLookupUrl']);
     httpService = jasmine.createSpyObj<HttpService>('HttpService', ['get']);
     appConfig.getPostcodeLookupUrl.and.returnValue('http://postcodeUrl/postcode=${postcode}&key=${key}');
-    appConfig.getPostcodeLookupApiKey.and.returnValue('apikey');
     let postCodeResponse = new Response(<ResponseOptions>{body: JSON.stringify(data)});
     httpService.get.and.returnValue(Observable.of(postCodeResponse));
     TestBed.configureTestingModule({

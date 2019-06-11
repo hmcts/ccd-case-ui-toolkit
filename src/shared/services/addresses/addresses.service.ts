@@ -17,8 +17,7 @@ export class AddressesService {
   getAddressesForPostcode(postcode: string): Observable<Array<AddressModel>> {
     return this.http
       .get(this.appConfig.getPostcodeLookupUrl()
-        .replace('${postcode}', postcode)
-        .replace('${key}', this.appConfig.getPostcodeLookupApiKey()))
+        .replace('${postcode}', postcode))
       .pipe(
         map(res=> res.json().results)
        ).pipe(
