@@ -14,7 +14,9 @@ export class AddressesService {
     private appConfig: AbstractAppConfig
   ) {}
 
-  static readonly DPA = "DPA";
+  private static readonly DPA = 'DPA';
+
+  private static readonly UK = 'UK';
 
   getAddressesForPostcode(postcode: string): Observable<Array<AddressModel>> {
     return this.http
@@ -39,7 +41,7 @@ export class AddressesService {
       `${address.DEPENDENT_LOCALITY} ${address.DOUBLE_DEPENDENT_LOCALITY} ${address.DEPENDENT_THOROUGHFARE_NAME}`);
     addressModel.PostCode = address.POSTCODE;
     addressModel.PostTown = address.POST_TOWN;
-    addressModel.Country = 'UK';
+    addressModel.Country = AddressesService.UK;
     return addressModel;
   }
 
