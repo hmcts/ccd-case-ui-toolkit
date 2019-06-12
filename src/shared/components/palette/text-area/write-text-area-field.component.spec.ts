@@ -14,13 +14,13 @@ const FIELD_TYPE: FieldType = {
   type: 'TextArea'
 };
 const VALUE = 'Hello world';
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = <CaseField>({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-};
+});
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {

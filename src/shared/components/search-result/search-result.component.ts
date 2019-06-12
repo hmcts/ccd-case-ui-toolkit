@@ -6,6 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-search-result',
@@ -113,13 +114,13 @@ export class SearchResultComponent implements OnChanges {
 
         const field = result.case_fields[fieldId];
 
-        caseFields.push({
+        caseFields.push(Object.assign(new CaseField(), {
           id: fieldId,
           label: null,
           field_type: {},
           value: field,
           display_context: null,
-        });
+        }));
       });
 
       result.hydrated_case_fields = caseFields;
@@ -143,9 +144,9 @@ export class SearchResultComponent implements OnChanges {
     this.selected.page = page;
     // Apply filters
     let queryParams = {};
-    queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
-    queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
-    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
+    queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction ? this.selected.jurisdiction.id : null;
+    queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType ? this.selected.caseType.id : null;
+    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState ? this.selected.caseState.id : null;
     this.changePage.emit({
       selected: this.selected,
       queryParams: queryParams
@@ -153,13 +154,13 @@ export class SearchResultComponent implements OnChanges {
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
-    return {
+    return Object.assign(new CaseField(), {
       id: col.case_field_id,
       label: col.label,
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
       display_context: null,
-    };
+    });
   }
 
   getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
