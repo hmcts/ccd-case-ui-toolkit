@@ -69,7 +69,8 @@ describe('OrderService', () => {
   describe('should sort caseFields', () => {
     it('should keep the order of the fixedlist items', () => {
       const CASE_FIELDS = [
-        createCaseField('testField1', 'Debtor name', '', createFixedListFieldType('fixedList1', [{code:'c1', label: 'l1', order: 2}, {code:'c2', label: 'l2', order: 1}]), null, 3),
+        createCaseField('testField1', 'Debtor name', '', createFixedListFieldType('fixedList1', [{code: 'c1', label: 'l1', order: 2},
+          {code: 'c2', label: 'l2', order: 1}]), null, 3),
         createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5)];
 
       let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
@@ -83,7 +84,6 @@ describe('OrderService', () => {
 
       expect(caseFieldsOrdered[1].order).toEqual(5);
       expect(caseFieldsOrdered[1].id).toEqual('testField2');
-
 
     });
 
@@ -183,7 +183,10 @@ describe('OrderService', () => {
                 createFieldType('AddressUK', 'Complex', [
                   createCaseField('AddressLine1', 'Building and Street', 'hint 1', createFieldType('TextMax150', 'Text', []), null, 2),
                   createCaseField('AddressLine2', '', 'hint 2', createFieldType('TextMax50', 'Text', []), null),
-                  createCaseField('County', '', 'hint 2', createFixedListFieldType('countylist', [{code:'Somerset', label: 'Somerset', order: 2}, {code:'Avon', label: 'Avon', order: 1}]), null),
+                  createCaseField('County', '', 'hint 2', createFixedListFieldType('countylist', [{
+                    code: 'Somerset',
+                    label: 'Somerset', order: 2
+                  }, {code: 'Avon', label: 'Avon', order: 1}]), null),
                   createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3)
                 ]),
                 null

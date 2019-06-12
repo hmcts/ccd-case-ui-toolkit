@@ -57,7 +57,7 @@ export class OrderService {
           this.deriveOrderFromChildComplexFields(caseField, caseField.field_type.collection_field_type);
         }
       }
-      if(this.isOneOfFixedListTypes(caseField)){
+      if (this.isOneOfFixedListTypes(caseField)) {
         caseField.field_type.fixed_list_items = this.sort(caseField.field_type.fixed_list_items);
       }
     });
