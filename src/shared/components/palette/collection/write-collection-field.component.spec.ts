@@ -3,20 +3,18 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { WriteCollectionFieldComponent } from './write-collection-field.component';
 import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
-import { FieldType } from '../../../domain/definition';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { PaletteUtilsModule } from '../utils';
 import { By } from '@angular/platform-browser';
 import { FormValidatorsService } from '../../../services/form';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
-import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
 import { ProfileNotifier } from '../../../services';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
-import { BehaviorSubject } from 'rxjs';
+import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
 
 const FIELD_ID = 'Values';
 const SIMPLE_FIELD_TYPE: FieldType = {
@@ -86,7 +84,7 @@ describe('WriteCollectionFieldComponent', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {
+    caseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
@@ -101,7 +99,7 @@ describe('WriteCollectionFieldComponent', () => {
           delete: true
         }
       ]
-    };
+    });
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -336,7 +334,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {
+    caseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
@@ -351,7 +349,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
           delete: false
         }
       ]
-    };
+    });
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -453,7 +451,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {
+    caseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
@@ -468,7 +466,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
           delete: false
         }
       ]
-    };
+    });
     formGroup = new FormGroup({
       field1: new FormControl()
     });

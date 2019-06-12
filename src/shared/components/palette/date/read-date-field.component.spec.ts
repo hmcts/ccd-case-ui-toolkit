@@ -15,13 +15,13 @@ describe('ReadDateFieldComponent', () => {
   };
   const VALUE = '1800-07-15';
   describe('Non-persistable readonly date field', () => {
-    const CASE_FIELD: CaseField = {
-      id: FIELD_ID,
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
     const FORMATTED_VALUE = '15 Jul 1800';
     const EMPTY = '';
 
@@ -85,13 +85,14 @@ describe('ReadDateFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
+
     let fixture: ComponentFixture<ReadDateFieldComponent>;
     let component: ReadDateFieldComponent;
     let de: DebugElement;
