@@ -135,6 +135,10 @@ export class FieldsUtils {
     return Object.assign({}, obj);
   }
 
+  public cloneCaseField(obj: any): CaseField {
+    return Object.assign(new CaseField(), obj);
+  }
+
   mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
     return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
   }

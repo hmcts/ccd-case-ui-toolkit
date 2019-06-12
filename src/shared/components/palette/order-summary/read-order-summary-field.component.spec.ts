@@ -42,27 +42,27 @@ describe('ReadOrderSummaryFieldComponent', () => {
 
   const EXPECTED_FEE_AMOUNTS = ['£45.45', '£4.55'];
   const EXPECTED_PAYMENT_TOTAL = '£50.00';
-  const CASE_FIELD: CaseField = {
+  const CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'READONLY',
     field_type: FIELD_TYPE,
     value: VALUE
-  };
-  const UNDEFINED_CASE_FIELD: CaseField = {
+  });
+  const UNDEFINED_CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'READONLY',
     field_type: FIELD_TYPE,
     value: undefined
-  };
-  const NULL_CASE_FIELD: CaseField = {
+  });
+  const NULL_CASE_FIELD: CaseField = <CaseField>({
     id: 'x',
     label: 'X',
     display_context: 'READONLY',
     field_type: FIELD_TYPE,
     value: null
-  };
+  });
 
   const $HEAD_ROW = By.css('table>thead>tr');
   const $BODY = By.css('table>tbody');

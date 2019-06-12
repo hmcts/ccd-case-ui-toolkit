@@ -29,13 +29,13 @@ const FIELD_TYPE: FieldType = {
     }
   ]
 };
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-};
+});
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {
