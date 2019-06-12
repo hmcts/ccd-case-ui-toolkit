@@ -57,7 +57,11 @@ export class OrderService {
           this.deriveOrderFromChildComplexFields(caseField, caseField.field_type.collection_field_type);
         }
       }
+      if(this.isOneOfFixedListTypes(caseField)){
+        caseField.field_type.fixed_list_items = this.sort(caseField.field_type.fixed_list_items);
+      }
     });
+
     return this.sort(case_fields);
   }
 
@@ -67,6 +71,12 @@ export class OrderService {
 
   private isComplex(caseField: CaseField) {
     return caseField.field_type.type === 'Complex';
+  }
+
+  private isOneOfFixedListTypes(caseField: CaseField) {
+    return caseField.field_type.type === 'FixedList' ||
+      caseField.field_type.type === 'MultiSelectList' ||
+      caseField.field_type.type === 'FixedRadioList';
   }
 
   private deriveOrderFromChildComplexFields(caseField: CaseField, fieldType: FieldType) {

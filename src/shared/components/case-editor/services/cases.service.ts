@@ -9,6 +9,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { CaseEventData, CaseEventTrigger, CasePrintDocument, CaseView, Draft } from '../../../domain';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import { _ } from 'underscore';
 
 @Injectable()
 export class CasesService {
