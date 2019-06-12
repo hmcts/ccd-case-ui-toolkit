@@ -9,14 +9,14 @@ import 'rxjs/add/observable/of';
 @Injectable()
 export class AddressesService {
 
+  private static readonly DPA = 'DPA';
+
+  private static readonly UK = 'UK';
+
   constructor(
     private http: HttpService,
     private appConfig: AbstractAppConfig
   ) {}
-
-  private static readonly DPA = 'DPA';
-
-  private static readonly UK = 'UK';
 
   getAddressesForPostcode(postcode: string): Observable<Array<AddressModel>> {
     return this.http
@@ -31,7 +31,7 @@ export class AddressesService {
   }
 
   private mapToAddressModel(address:any) {
-    const addressModel = new AddressModel();
+    let addressModel = new AddressModel();
     let addressLine = this.removeNonAddressValues(
       `${address.ORGANISATION_NAME} ${address.DEPARTMENT_NAME} ${address.PO_BOX_NUMBER}`)
     if (addressLine != '') addressModel.AddressLine1 = addressLine;
@@ -58,7 +58,7 @@ export class AddressesService {
   }
 
   private removeEmptySpaces(value:string) {
-    return value.replace(new RegExp(" +", "gi"), ' ');
+    return value.replace(new RegExp(" +", "gi"), ' ').trim();
   }
 
   private removeInitialComma(value:string) {
