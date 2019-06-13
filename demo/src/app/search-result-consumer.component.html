@@ -33,15 +33,26 @@
             <ul class="list list-bullet text">
                 <li>Output fields:
                     <ul class="list list-bullet text">
-                        <li>changePage - a notification event about paging navigation containing an values:
+                        <li>changePage - a notification event about paging navigation containing:
                             <ul class="list list-bullet text">
-                                <li>init?: boolean</li>
-                                <li>jurisdiction?: Jurisdiction</li>
-                                <li>caseType?: CaseType</li>
-                                <li>caseState?: CaseState</li>
-                                <li>formGroup?: FormGroup</li>
-                                <li>metadataFields?: string[]</li>
-                                <li>page?: number</li>
+                                <li>selected: 
+                                    <ul class="list list-bullet text">
+                                        <li>init?: boolean</li>
+                                        <li>jurisdiction?: Jurisdiction</li>
+                                        <li>caseType?: CaseType</li>
+                                        <li>caseState?: CaseState</li>
+                                        <li>formGroup?: FormGroup</li>
+                                        <li>metadataFields?: string[]</li>
+                                        <li>page?: number</li>
+                                    </ul>
+                                </li>
+                                <li>queryParams:
+                                    <ul class="list list-bullet text">
+                                        <li>case-state: string</li>
+                                        <li>case-type: string</li>
+                                        <li>jurisdiction: string</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                     </ul>
