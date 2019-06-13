@@ -186,6 +186,9 @@ describe('OrderService', () => {
                   createCaseField('County', '', 'hint 2', createFixedListFieldType('countylist', [{
                     code: 'Somerset',
                     label: 'Somerset', order: 2
+                  }, {
+                    code: 'Oxford',
+                    label: 'Oxford', order: null
                   }, {code: 'Avon', label: 'Avon', order: 1}]), null),
                   createCaseField('PostCode', 'Postcode/Zipcode', 'hint 3', createFieldType('TextMax14', 'Text', []), null, 3)
                 ]),
@@ -218,6 +221,7 @@ describe('OrderService', () => {
       expect(county.field_type.fixed_list_items[0].order).toEqual(1);
       expect(county.field_type.fixed_list_items[1].code).toEqual('Somerset');
       expect(county.field_type.fixed_list_items[1].order).toEqual(2);
+      expect(county.field_type.fixed_list_items[2].code).toEqual('Oxford');
     });
   });
 });
