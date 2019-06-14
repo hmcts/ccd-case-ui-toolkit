@@ -32,9 +32,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   alertService: AlertService;
 
-
   missingPostcode = false
-
 
   constructor (addressesService: AddressesService,  alertService: AlertService, private isCompoundPipe: IsCompoundPipe) {
     super();
