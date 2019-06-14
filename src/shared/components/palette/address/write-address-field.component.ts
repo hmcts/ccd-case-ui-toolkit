@@ -19,6 +19,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
   addressesService: AddressesService;
+  idFocus: string;
 
   @Input()
   formGroup: FormGroup;
@@ -43,6 +44,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.addressList = new FormControl('');
       this.addressFormGroup.addControl('address', this.addressList);
     }
+    this.idFocus = this.id();
   }
 
   findAddress() {
@@ -74,8 +76,8 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   focusAddressList() {
-    if (document.getElementById(this.id() + '_addressList')) {
-      document.getElementById( this.id() + '_addressList').focus();
+    if (document.getElementById(this.idFocus + '_addressList')) {
+      document.getElementById( this.idFocus + '_addressList').focus();
     }
   }
 
