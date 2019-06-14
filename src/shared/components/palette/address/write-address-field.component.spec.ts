@@ -22,7 +22,7 @@ describe('WriteAddressFieldComponent', () => {
   const $POSTCODE_LOOKUP_ERROR_MESSAGE = By.css('.error-message');
 
   const $SELECT_ADDRESS = By.css('#selectAddress');
-  const $ADDRESS_LIST = By.css('#selectAddress > #addressList');
+  const $ADDRESS_LIST = By.css('#selectAddress > .addressList');
 
   const $MANUAL_LINK = By.css('.manual-link');
   const $ADDRESS_COMPLEX_FIELD = By.css('ccd-write-complex-type-field');

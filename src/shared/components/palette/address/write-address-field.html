@@ -4,20 +4,20 @@
     <h2 class="heading-h2">{{caseField | ccdFieldLabel }}</h2>
 
     <div class="form-group bottom-30" id="postcodeLookup" [ngClass]="{'form-group-error': missingPostcode}" *ngIf="!isExpanded">
-      <label [for]="id()">
+      <label [for]="id() + '_postcodeInput'">
         <span class="form-label">Enter a UK postcode</span>
       </label>
       <span class="error-message" *ngIf="missingPostcode">Enter the Postcode</span>
-      <input type="text" [id]="id()" name="postcode" class="form-control postcodeinput" [formControl]="postcode">
+      <input type="text" [id]="id() + '_postcodeInput'" name="postcode" class="form-control postcodeinput" [formControl]="postcode">
       <button type="button" class="button button-30" (click)="findAddress()">Find address</button>
     </div>
 
     <div class="form-group" *ngIf="addressOptions" id="selectAddress">
-      <label for="addressList">
+      <label [for]="id() + '_addressList'">
         <span class="form-label">Select an address</span>
       </label>
 
-      <select class="form-control ccd-dropdown" id="addressList" name="address" [formControl]="addressList" (change)="addressSelected()" >
+      <select class="form-control ccd-dropdown addressList" [id]="id() + '_addressList'" name="address" [formControl]="addressList" (change)="addressSelected()" >
         <option *ngFor="let addressOption of addressOptions" [ngValue]="addressOption.value">
           {{addressOption.description}}
         </option>
