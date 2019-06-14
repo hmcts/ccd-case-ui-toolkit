@@ -1,27 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { CaseField } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
 import { PaletteContext } from './palette-context.enum';
+import { plainToClassFromExist } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
 const $FIELD_TEST = By.css('ccd-field-read-label span.text-cls');
 
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
+  _list_items: [],
   id: 'PersonFirstName',
   label: 'First name',
   field_type: {
     id: 'Text',
     type: 'Text'
   },
-  value: 'Johnny',
+  _value: 'Johnny',
   display_context: 'READONLY'
-};
+});
+
 const CLASS = 'text-cls';
 
 const FORM_GROUP: FormGroup = new FormGroup({});
@@ -118,7 +121,7 @@ describe('FieldReadComponent', () => {
     expect(fieldTestComponent).toBeTruthy();
 
     let fieldTest = fieldTestComponent.componentInstance;
-    expect(fieldTest.caseField).toBe(CASE_FIELD);
+    expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
     expect(fieldTest.registerControl).not.toBeNull();

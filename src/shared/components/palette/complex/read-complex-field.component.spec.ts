@@ -201,7 +201,6 @@ describe('ReadComplexFieldComponent', () => {
     });
 
   });
-
   describe('Persistable readonly complex field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
     const REGISTER_CONTROL = (control) => {
@@ -212,7 +211,7 @@ describe('ReadComplexFieldComponent', () => {
       id: 'Complex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -221,8 +220,8 @@ describe('ReadComplexFieldComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -231,7 +230,7 @@ describe('ReadComplexFieldComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        }
+        })
       ]
     };
 
@@ -240,13 +239,13 @@ describe('ReadComplexFieldComponent', () => {
       'AddressLine1': '1 West',
       'AddressLine2': 'South'
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;
     let component: ReadComplexFieldComponent;
@@ -304,5 +303,4 @@ describe('ReadComplexFieldComponent', () => {
     });
 
   });
-
 });
