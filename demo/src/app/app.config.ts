@@ -11,7 +11,7 @@ export class AppConfig extends AbstractAppConfig {
     'document_management_url': '/documents',
     'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': 'https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${key}',
+    'postcode_lookup_url': '/${postcode}',
     'remote_document_management_url': '/documents',
     'payments_url': '/payments',
     'activity_batch_collection_delay_ms': 1,
