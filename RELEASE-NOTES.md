@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.54.0 - June 07 2019
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint 
+
+### Version 2.53.0 - June 07 2019
+**RDM-4537** Case List Filters extraction and new contract
+
 ### Version 2.52.0 - June 07 2019
 **RDM-2804** OR and Not Equals support for Show and Hide
 
@@ -15,8 +21,14 @@
 ### Version 2.50.1 - May 29 2019
 **RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
 
+### Version 2.50.0 - May 28 2019
+**RDM-4537** Case List Filters extraction and new contract
+
 ### Version 2.49.2 - May 21 2019
 **RDM-876** Hide print button when not configured  
+
+### REVRTED Version 2.49.0 - May 14 2019
+**RDM-4537** Case List Filters extraction and new contract
 
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service
