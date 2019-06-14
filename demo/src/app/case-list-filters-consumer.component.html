@@ -1,0 +1,45 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Case List Filters component</h1>
+   
+        <div class="text">
+            <p> Wrapper component for <strong>ccd-workbasket-filters</strong>. Service call to get "jurisdictions" is done here.</p>
+            <p> This component is used to set the jurisdiction, case type, state and keyword when searching cases. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>defaults - an object consisiting of jurisdiction, casetype and state id's
+                            <pre class="language-markup"><code class="language-markup">{{json.stringify(defaults, null, '\t')}}</code></pre>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>onApply - a notification event about search filters being submitted containing an event with:
+                            <ul class="list list-bullet text">
+                                <li>selected: Jurisdiction</li>
+                                <li>queryParams: Object</li>
+                            </ul>
+                        </li>
+                        <li>onReset - a notification event about search filters being reset
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-case-list-filters
+                [defaults]="defaults"
+                (onApply)="applied($event)"
+                (onReset)="reset()"
+            ></ccd-case-list-filters>
+        </div>
+    </main>
+</div>
