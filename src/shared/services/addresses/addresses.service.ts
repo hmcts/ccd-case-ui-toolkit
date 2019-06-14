@@ -26,7 +26,8 @@ export class AddressesService {
         map(res=> res.json().results)
        ).pipe(
         map(output => output.map(addresses=>
-            this.mapToAddressModel(addresses[AddressesService.DPA]))
+            this.mapToAddressModel(addresses[AddressesService.DPA])
+        )
       ));
   }
 
@@ -42,7 +43,36 @@ export class AddressesService {
     addressModel.PostCode = address.POSTCODE;
     addressModel.PostTown = address.POST_TOWN;
     addressModel.Country = AddressesService.UK;
+    addressModel = this.shiftAddressLinesUp(addressModel);
+    this.formatAddressLines(addressModel);
     return addressModel;
+  }
+
+  private formatAddressLines(addressModel) {
+    ['AddressLine1', 'AddressLine2', 'AddressLine3', 'PostTown'].forEach(value => {
+      addressModel[value] = this.toCapitalCase(addressModel[value]);
+    });
+  }
+
+  private shiftAddressLinesUp(addressModel:AddressModel) {
+    if (addressModel.AddressLine1 == '') {
+      addressModel.AddressLine1 = addressModel.AddressLine2;
+      addressModel.AddressLine2 = '';
+    }
+    if (addressModel.AddressLine2 == '') {
+      addressModel.AddressLine2 = addressModel.AddressLine3;
+      addressModel.AddressLine3 = '';
+    }
+    return addressModel;
+  }
+
+  private toCapitalCase(sentence:string) {
+   sentence = sentence.toLowerCase();
+   sentence.split(' ').forEach((value, index) => {
+        sentence = sentence.replace(value, value.charAt(0).toUpperCase() + value.substr(1));
+      }
+    )
+    return sentence;
   }
 
   private removeNonAddressValues(line: string) {

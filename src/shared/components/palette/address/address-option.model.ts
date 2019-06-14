@@ -9,6 +9,8 @@ export class AddressOption {
     if(description == null) {
       this.value = addressModel;
       this.description = this.getDescription();
+    } else {
+      this.description = description;
     }
   }
 
