@@ -107,12 +107,12 @@ describe('AddressesService', () => {
   fit('should expect addressLine1 and addressLine2 to be in capital case', ()=> {
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => {
-      expect(eachWordInAddressInCapitalCase(addresses[0].AddressLine1)).toBe(true);
-      expect(eachWordInAddressInCapitalCase(addresses[0].AddressLine2)).toBe(true);
+      expect(isAddressLineInCapitalCase(addresses[0].AddressLine1)).toBe(true);
+      expect(isAddressLineInCapitalCase(addresses[0].AddressLine2)).toBe(true);
     });
   });
 
-  function eachWordInAddressInCapitalCase(addressLine:string) {
+  function isAddressLineInCapitalCase(addressLine:string) {
     let result = true;
     addressLine.split(' ').forEach(word=> {
         if (!isInCapitalCase(word)) {
