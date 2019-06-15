@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
+### Version 2.54.3-prerelease - June 15 2019
+**RDM-5053** Fix bug in conditional show behaviour
+
 ### Version 2.54.0 - June 07 2019
-**RDM-4336** RDM-4336 New external V2 Create Event endpoint 
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint  
 
 ### Version 2.53.0 - June 07 2019
 **RDM-4537** Case List Filters extraction and new contract
