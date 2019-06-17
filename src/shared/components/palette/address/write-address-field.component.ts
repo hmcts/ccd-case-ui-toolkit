@@ -76,8 +76,8 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   focusAddressList() {
-    if (document.getElementById(this.idFocus + '_addressList')) {
-      document.getElementById( this.idFocus + '_addressList').focus();
+    if (document.getElementById( this.createId('addressList')) ) {
+      document.getElementById( this.createId('addressList') ).focus();
     }
   }
 
@@ -131,7 +131,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   createId(idField: string): string {
-    return this.id() + idField;
+    return this.id() + '_' + idField;
   }
 
   private defaultLabel(numberOfAddresses) {

@@ -4,20 +4,20 @@
     <h2 class="heading-h2">{{caseField | ccdFieldLabel }}</h2>
 
     <div class="form-group bottom-30" id="postcodeLookup" [ngClass]="{'form-group-error': missingPostcode}" *ngIf="!isExpanded">
-      <label [for]="createId('_postcodeInput')">
+      <label [for]="createId('postcodeInput')">
         <span class="form-label">Enter a UK postcode</span>
       </label>
       <span class="error-message" *ngIf="missingPostcode">Enter the Postcode</span>
-      <input type="text" [id]="createId('_postcodeInput')" name="postcode" class="form-control postcodeinput" [formControl]="postcode">
+      <input type="text" [id]="createId('postcodeInput')" name="postcode" class="form-control postcodeinput" [formControl]="postcode">
       <button type="button" class="button button-30" (click)="findAddress()">Find address</button>
     </div>
 
     <div class="form-group" *ngIf="addressOptions" id="selectAddress">
-      <label [for]="createId('_addressList')">
+      <label [for]="createId('addressList')">
         <span class="form-label">Select an address</span>
       </label>
 
-      <select class="form-control ccd-dropdown addressList" [id]="createId('_addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" >
+      <select class="form-control ccd-dropdown addressList" [id]="createId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" >
         <option *ngFor="let addressOption of addressOptions" [ngValue]="addressOption.value">
           {{addressOption.description}}
         </option>
