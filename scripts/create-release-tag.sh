@@ -6,7 +6,7 @@ createTag() {
        echo Tag $TAG_NAME already exists!;
     else
        git tag $TAG_NAME -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
-       git push https://${GH_TOKEN}@github.com/covfefe-spikes/nodejs-release-spike.git --tags >/dev/null
+       git push https://${GH_TOKEN}@github.com/hmcts/ccd-case-ui-toolkit.git --tags >/dev/null
     fi
 }
 
