@@ -130,6 +130,10 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     return this.isCompoundPipe.transform(field) ? `${this.idPrefix}_` : `${this.idPrefix}`;
   }
 
+  createId(idField: string): string {
+    return this.id() + idField;
+  }
+
   private defaultLabel(numberOfAddresses) {
     return numberOfAddresses === 0 ? 'No address found'
       : numberOfAddresses + (numberOfAddresses === 1 ? ' address ' : ' addresses ') + 'found';
