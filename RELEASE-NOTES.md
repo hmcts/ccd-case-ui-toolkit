@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.54.4-prerelease - June 15 2019
+### Version 2.54.6-prerelease - June 17 2019
 **RDM-5053** Fix bug in conditional show behaviour
 
 ### Version 2.54.0 - June 07 2019
