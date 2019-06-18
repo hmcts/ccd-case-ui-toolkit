@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges, OnInit } from '@angular/core';
 import { DisplayMode, Jurisdiction, CaseType, CaseState, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, CaseField, DRAFT_PREFIX, PaginationMetadata, SortParameters,
   SearchResultViewItemComparator, SortOrder } from '../../domain';
@@ -6,7 +6,6 @@ import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
-import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-search-result',
