@@ -19,7 +19,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
   addressesService: AddressesService;
-  addressListId: string;
 
   @Input()
   formGroup: FormGroup;
@@ -44,7 +43,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.addressList = new FormControl('');
       this.addressFormGroup.addControl('address', this.addressList);
     }
-    this.addressListId = this.createId('addressList');
   }
 
   findAddress() {
@@ -71,13 +69,11 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           console.log(`An error occurred retrieving addresses for postcode ${postcode}.`);
         });
       this.addressList.setValue(undefined);
-      setTimeout(this.focusAddressList, 1000);
-    }
-  }
-
-  focusAddressList() {
-    if (document.getElementById(this.addressListId)) {
-      document.getElementById( this.addressListId).focus();
+      setTimeout(() => {
+        if (document.getElementById(this.createId('addressList') + '')) {
+          document.getElementById(this.createId('addressList') + '').focus();
+        }
+      }, 1000);
     }
   }
 
