@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.55.0 - June 13 2019
+**RDM-4781** RDM-4781-Data not being shown on multi-select list
+
 ### Version 2.54.0 - June 07 2019
 **RDM-4336** RDM-4336 New external V2 Create Event endpoint 
 
