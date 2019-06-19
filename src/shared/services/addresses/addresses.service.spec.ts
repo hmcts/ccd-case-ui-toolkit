@@ -1,10 +1,10 @@
-import {AddressesService} from './addresses.service';
-import {getTestBed, TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {AbstractAppConfig} from "../../../app.config";
-import {Observable} from "rxjs";
-import {HttpService} from "../http";
-import {Response, ResponseOptions} from "@angular/http";
+import { AddressesService } from './addresses.service';
+import { getTestBed, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { AbstractAppConfig } from '../../../app.config';
+import { Observable } from 'rxjs';
+import { HttpService } from '../http';
+import { Response, ResponseOptions } from '@angular/http';
 
 describe('AddressesService', () => {
 

@@ -6,7 +6,7 @@ export class AddressOption {
   value: AddressModel;
 
   constructor (addressModel: AddressModel, description: string) {
-    if(description == null) {
+    if (description == null) {
       this.value = addressModel;
       this.description = this.getDescription();
     } else {
@@ -16,7 +16,7 @@ export class AddressOption {
 
   private getDescription() {
     return this.removeInitialCommaIfPresent(
-      (this.value.AddressLine1 === undefined ? '' :this.value.AddressLine1)
+      (this.value.AddressLine1 === undefined ? '' : this.value.AddressLine1)
       +  this.prefixWithCommaIfPresent(this.value.AddressLine2)
       +  this.prefixWithCommaIfPresent(this.value.AddressLine3)
       + ', ' + this.value.PostTown
@@ -28,7 +28,7 @@ export class AddressOption {
   }
 
   private removeInitialCommaIfPresent(value: string) {
-    return value.replace(new RegExp("^,", "gi"),'');
+    return value.replace(new RegExp('^,', 'gi'), '');
   }
 
 }
