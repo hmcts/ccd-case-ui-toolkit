@@ -104,12 +104,12 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     // Ensure first column field values are resolved by label interpolation before the view is rendered.
-    this.populateValuesForFirstColumnFields();
+    this.populateFirstColumnFields();
   }
 
-  populateValuesForFirstColumnFields() {
+  populateFirstColumnFields() {
     this.resultView.results.forEach(result => {
-      this.firstColumnFields.push(this.getColumnsWithPrefix(
+      this.firstColumnFields.push(this.getColumnWithPrefix(
         result.columns[this.resultView.columns[0].case_field_id],
         result));
     });
@@ -180,7 +180,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     });
   }
 
-  getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
+  getColumnWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
     col.value = this.draftPrefixOrGet(col, result);
     return col;
   }
