@@ -15,15 +15,15 @@ export class FieldsPurger {
 
   clearHiddenFields(form, wizard, eventTrigger, currentPageId) {
     this.clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger);
-    this.clearHiddenFieldForPageShowCondition(form, wizard);
+    this.clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger);
   }
 
-  private clearHiddenFieldForPageShowCondition(form, wizard) {
-    let formFields = form.getRawValue();
+  private clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger) {
+    let currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
     wizard.pages.forEach(wp => {
-      if (this.hasShowConditionPage(wp, formFields)) {
+      if (this.hasShowConditionPage(wp, currentEventState)) {
           let condition = new ShowCondition(wp.show_condition);
-          if (this.isHidden(condition, formFields)) {
+          if (this.isHidden(condition, currentEventState)) {
             this.resetPage(form, wp);
           }
       }
@@ -37,7 +37,7 @@ export class FieldsPurger {
       let case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
       if (this.hasShowConditionField(case_field, formFields)) {
         let condition = new ShowCondition(case_field.show_condition);
-        if (this.isHidden(condition, formFields) && !(this.isReadonly(case_field))) {
+        if (this.isHidden(condition, formFields.data) && !(this.isReadonly(case_field))) {
           this.resetField(form, case_field);
         }
       }
@@ -45,7 +45,7 @@ export class FieldsPurger {
   }
 
   private isHidden(condition, formFields) {
-    return !condition.match(formFields.data);
+    return !condition.match(formFields);
   }
 
   private findCaseFieldByWizardPageFieldId(currentPage, wizardPageField) {
@@ -53,7 +53,7 @@ export class FieldsPurger {
   }
 
   private hasShowConditionPage(wizardPage, formFields): boolean {
-    return wizardPage.show_condition && formFields.data[this.getShowConditionKey(wizardPage.show_condition)];
+    return wizardPage.show_condition && formFields[this.getShowConditionKey(wizardPage.show_condition)];
   }
 
   private hasShowConditionField(case_field, formFields): boolean {
