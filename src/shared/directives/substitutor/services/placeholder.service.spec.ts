@@ -145,7 +145,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
         'collection': [
         { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
         { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' }}}}}
       ]}};
       let stringToResolve = '${topComplex.field} and ${topComplex.collection.complex.nested} and ' +
         '${topComplex.collection.complex.nested2.doubleNested.trippleNested}';
@@ -159,12 +159,32 @@ ___
 value and nested value3 and tripple nested9`);
     });
 
+    it('should iterate collection items when resolving placeholders referring to collection items with null values', () => {
+      let pageFormFields = { 'topComplex': {
+        'field': 'value',
+        'collection': [
+        { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
+        { 'value': {'complex': {'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' }}}}}
+      ]}};
+      let stringToResolve = '${topComplex.field} and ${topComplex.collection.complex.nested} and ' +
+        '${topComplex.collection.complex.nested2.doubleNested.trippleNested}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe(`value and nested value1 and tripple nested7
+___
+value and \${topComplex.collection.complex.nested} and tripple nested8
+___
+value and nested value3 and tripple nested9`);
+    });
+
     it('should not resolve placeholders that do not point to a leaf value', () => {
       let pageFormFields = { 'topComplex': {
         'collection': [
         { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
         { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' }}}}}
       ]}};
       let stringToResolve = '${topComplex.collection.complex} and ${topComplex.collection.complex.nested2.doubleNested}';
 
@@ -231,6 +251,23 @@ value and nested value3 and tripple nested9`);
       expect(actual).toBe(`nested value1 and tripple nested7
 ___
 nested value2 and tripple nested8
+___
+nested value3 and tripple nested9`);
+    });
+
+    it('should iterate collection items when resolving placeholders referring to collection items with null values', () => {
+      let pageFormFields = { 'collection': [
+        { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
+        { 'value': {'complex': {'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
+        { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
+      ]};
+      let stringToResolve = '${collection.complex.nested} and ${collection.complex.nested2.doubleNested.trippleNested}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe(`nested value1 and tripple nested7
+___
+\${collection.complex.nested} and tripple nested8
 ___
 nested value3 and tripple nested9`);
     });
