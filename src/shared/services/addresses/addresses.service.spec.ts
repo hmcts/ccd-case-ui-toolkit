@@ -63,10 +63,10 @@ describe('AddressesService', () => {
   it('should return addresses without null or undefined values ', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => {
-      expect(addresses[0].AddressLine1).not.toContain("undefined");
-      expect(addresses[0].AddressLine1).not.toContain("null");
-      expect(addresses[0].AddressLine2).not.toContain("undefined");
-      expect(addresses[0].AddressLine2).not.toContain("null");
+      expect(addresses[0].AddressLine1).not.toContain('undefined');
+      expect(addresses[0].AddressLine1).not.toContain('null');
+      expect(addresses[0].AddressLine2).not.toContain('undefined');
+      expect(addresses[0].AddressLine2).not.toContain('null');
     });
 
   });
@@ -80,10 +80,10 @@ describe('AddressesService', () => {
     httpService.get.and.returnValue(Observable.of([]));
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => expect(addresses.length).toBe(1),
-                     error=> expect(error).toBeTruthy());
+                     error => expect(error).toBeTruthy());
   });
 
-  it('should shift address lines above when there is no address line 1', ()=> {
+  it('should shift address lines above when there is no address line 1', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => {
       expect(
@@ -92,7 +92,7 @@ describe('AddressesService', () => {
     });
   });
 
-  it('should expect both addressLine1 and addressLine2 populated', ()=> {
+  it('should expect both addressLine1 and addressLine2 populated', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => {
       expect(
@@ -104,7 +104,7 @@ describe('AddressesService', () => {
     });
   });
 
-  it('should expect addressLine1 and addressLine2 to be in capital case', ()=> {
+  it('should expect addressLine1 and addressLine2 to be in capital case', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => {
       expect(isAddressLineInCapitalCase(addresses[0].AddressLine1)).toBe(true);
@@ -112,9 +112,9 @@ describe('AddressesService', () => {
     });
   });
 
-  function isAddressLineInCapitalCase(addressLine:string) {
+  function isAddressLineInCapitalCase(addressLine: string) {
     let result = true;
-    addressLine.split(' ').forEach(word=> {
+    addressLine.split(' ').forEach(word => {
         if (!isInCapitalCase(word)) {
           result = false;
         }
@@ -122,13 +122,12 @@ describe('AddressesService', () => {
     return true;
   }
 
-  function isInCapitalCase(word:string) {
+  function isInCapitalCase(word: string) {
     return (letter: string) => {
-      let uppCase = letter.charAt(0) == letter.charAt(0).toUpperCase();
-      let lowCase = letter.charAt(1) == letter.charAt(1).toLowerCase();
+      let uppCase = letter.charAt(0) === letter.charAt(0).toUpperCase();
+      let lowCase = letter.charAt(1) === letter.charAt(1).toLowerCase();
       return (uppCase && lowCase);
     };
   }
-
 
 });
