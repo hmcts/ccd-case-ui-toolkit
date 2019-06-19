@@ -1,5 +1,20 @@
 ## RELEASE NOTES
 
+### Version 2.55.0 - June 13 2019
+**RDM-4781** RDM-4781-Data not being shown on multi-select list
+
+### Version 2.54.0 - June 07 2019
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint 
+
+### Version 2.53.0 - June 07 2019
+**RDM-4537** Case List Filters extraction and new contract
+
+### Version 2.52.0 - June 07 2019
+**RDM-2804** OR and Not Equals support for Show and Hide
+
+### Version 2.51.1 - June 07 2019
+	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+
 ### Version 2.51.0 - May 29 2019
 	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
 
@@ -9,8 +24,14 @@
 ### Version 2.50.1 - May 29 2019
 **RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
 
+### Version 2.50.0 - May 28 2019
+**RDM-4537** Case List Filters extraction and new contract
+
 ### Version 2.49.2 - May 21 2019
 **RDM-876** Hide print button when not configured  
+
+### REVRTED Version 2.49.0 - May 14 2019
+**RDM-4537** Case List Filters extraction and new contract
 
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service
