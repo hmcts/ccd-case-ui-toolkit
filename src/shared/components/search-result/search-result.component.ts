@@ -109,7 +109,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   populateFirstColumnFields() {
     this.resultView.results.forEach(result => {
-      this.firstColumnFields.push(this.getColumnWithPrefix(
+      this.firstColumnFields.push(this.getColumnFieldWithPrefix(
         result.columns[this.resultView.columns[0].case_field_id],
         result));
     });
@@ -180,7 +180,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     });
   }
 
-  getColumnWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
+  getColumnFieldWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
     col.value = this.draftPrefixOrGet(col, result);
     return col;
   }
