@@ -328,7 +328,10 @@ describe('SearchResultComponent', () => {
       };
 
       expect(component.selected.page).toBe(2);
-      expect(searchHandler.applyFilters).toHaveBeenCalledWith(selected);
+      expect(searchHandler.applyFilters).toHaveBeenCalledWith({
+        selected: selected,
+        queryParams: {jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id}
+      });
     });
 
     it('should select correct page if new page triggered from outside', () => {
