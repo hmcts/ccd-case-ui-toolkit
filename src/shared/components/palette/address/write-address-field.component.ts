@@ -30,14 +30,11 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   addressOptions: AddressOption[];
 
-  alertService: AlertService;
-
   missingPostcode = false
 
-  constructor (addressesService: AddressesService,  alertService: AlertService, private isCompoundPipe: IsCompoundPipe) {
+  constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
     super();
     this.addressesService = addressesService;
-    this.alertService = alertService;
   }
 
   ngOnInit(): void {
@@ -58,7 +55,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       const postcode = this.postcode.value;
       this.caseField.value = null;
       this.addressOptions = new Array();
-      this.alertService.clear();
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
         result => {
           result.forEach(
@@ -71,7 +67,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           );
         }, (error) => {
           console.log(`An error occurred retrieving addresses for postcode ${postcode}. ` + error);
-          this.alertService.error(`An error occurred retrieving addresses for postcode ${postcode}.`);
+          this.addressOptions.unshift(
+            new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
+          );
         });
       this.addressList.setValue(undefined);
       setTimeout(() => {

@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { AlertService } from '../../../services/alert';
 
 describe('WriteAddressFieldComponent', () => {
 
@@ -71,7 +70,6 @@ describe('WriteAddressFieldComponent', () => {
   }
 
   let addressesService: AddressesService;
-  let alertService: AlertService;
   let testHostComponent: TestHostComponent;
   let debugElement: DebugElement;
   let fixture: ComponentFixture<TestHostComponent>;
@@ -121,7 +119,6 @@ describe('WriteAddressFieldComponent', () => {
   beforeEach(async(() => {
 
     addressesService = new AddressesService(null, null);
-    alertService = jasmine.createSpyObj<AlertService>('AlertService', ['clear', 'error']);
     TestBed
       .configureTestingModule({
         imports: [
@@ -137,8 +134,7 @@ describe('WriteAddressFieldComponent', () => {
         ],
         providers: [
           IsCompoundPipe,
-          { provide: AddressesService, useValue: addressesService }, {provide: AlertService, useValue: alertService}
-        ]
+          { provide: AddressesService, useValue: addressesService }]
       })
       .compileComponents();
 
