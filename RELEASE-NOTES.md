@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.55.2 - June 24 2019
+**RDM-4512** Remove console warning message
+
 ### Version 2.55.1 - June 19 2019
 **RDM-4264** DAC - Duplicate postcode input IDs
 
