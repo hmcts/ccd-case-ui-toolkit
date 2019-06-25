@@ -10,6 +10,7 @@ export type FieldTypeEnum =
   | 'PhoneUK'
   | 'MoneyGBP'
   | 'FixedList'
+  | 'DynamicList'
   | 'FixedRadioList'
   | 'Complex'
   | 'Collection'

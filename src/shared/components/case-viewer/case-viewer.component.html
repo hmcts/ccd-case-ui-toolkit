@@ -20,11 +20,11 @@
   <div class="grid-row">
     <div class="column-one-half">
       <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
-      <div class="case-viewer-controls" *ngIf="!isDraft()">
+      <div class="case-viewer-controls" *ngIf="hasPrint && !isDraft() && isPrintEnabled()">
         <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">Print</a>
       </div>
     </div>
-    <div class="column-one-half">
+    <div *ngIf="hasEventSelector" class="column-one-half">
       <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers" [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()" (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
     </div>
   </div>

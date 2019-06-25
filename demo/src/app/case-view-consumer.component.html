@@ -8,17 +8,20 @@
                 <li>Input fields:
                     <ul class="list list-bullet text">
                         <li>case - an id of a case (e.g. 1111222233334444)</li>
+                        <li>hasPrint - optionally display/hide print button (true by default)</li>
+                        <li>hasEventSelector - optionally display/hide event selector dropdown (true by default)</li>
                     </ul>
                 </li>
             </ul>
         </div>
 
+        <p>Example with all optionals hidden:</p>
         <pre class="language-markup">
             <code class="language-markup">{{code}}</code>
         </pre>
 
         <div class="example">
-            <ccd-case-view [case]="caseId"></ccd-case-view>
+            <ccd-case-view [case]="caseId" [hasPrint]="false" [hasEventSelector]="false"></ccd-case-view>
         </div>
     </main>
 </div>

@@ -1,5 +1,60 @@
 ## RELEASE NOTES
 
+### Version 2.55.2 - June 24 2019
+**RDM-4512** Remove console warning message
+
+### Version 2.55.1 - June 19 2019
+**RDM-4264** DAC - Duplicate postcode input IDs
+
+### Version 2.55.0 - June 13 2019
+**RDM-4781** RDM-4781-Data not being shown on multi-select list
+
+### Version 2.54.0 - June 07 2019
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint 
+
+### Version 2.53.0 - June 07 2019
+**RDM-4537** Case List Filters extraction and new contract
+
+### Version 2.52.0 - June 07 2019
+**RDM-2804** OR and Not Equals support for Show and Hide
+
+### Version 2.51.1 - June 07 2019
+	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+
+### Version 2.51.0 - May 29 2019
+	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+
+### Version 2.50.2 - May 29 2019
+**RDM-4687** Continue button is not enabled for a mandatory collection field that includes show/hide conditions inside complex fields
+
+### Version 2.50.1 - May 29 2019
+**RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
+
+### Version 2.50.0 - May 28 2019
+**RDM-4537** Case List Filters extraction and new contract
+
+### Version 2.49.2 - May 21 2019
+**RDM-876** Hide print button when not configured  
+
+### REVRTED Version 2.49.0 - May 14 2019
+**RDM-4537** Case List Filters extraction and new contract
+
+### Version 2.48.0 - May 7 2019
+**RDM-4575** search filters definition service
+
+### Version 2.47.0 - May 7 2019
+**RDM-4574** Create Case Filters componant retrieve jurisdiction internally 
+
+### Version 2.46.0 - May 1 2019
+**RDM-3496** Case View of Nested Complex Types - Collection of complex types within complex types
+
+### Version 2.45.0 - April 29 2019
+**RDM-3460** Complex element *only* as list screen input
+
+### Version 2.43.0 - April 29 2019
+**RDM-4386** Make print, event selector and history tab optional but present by default
+**RDM-4130** Extract Results List Component to toolkit 
+
 ### Version 2.42.3 - April 23 2019
 **RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
 

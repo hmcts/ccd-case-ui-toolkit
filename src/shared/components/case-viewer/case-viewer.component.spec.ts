@@ -16,15 +16,15 @@ import { LabelSubstitutorDirective } from '../../directives/substitutor';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { CaseViewTrigger, CaseViewEvent, CaseView } from '../../domain/case-view';
+import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../domain/case-view';
 import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { CaseNotifier } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material';
-import { CaseNotifier } from '../case-editor';
 
 @Component({
   // tslint:disable-next-line
@@ -39,6 +39,7 @@ class TabsComponent { }
   template: '<ng-content></ng-content>'
 })
 class TabComponent {
+
   @Input()
   selected: boolean;
 }
@@ -131,7 +132,7 @@ const EVENTS: CaseViewEvent[] = [
 ];
 
 const METADATA: CaseField[] = [
-  {
+  Object.assign(new CaseField(), {
     id: '[CASE_REFERENCE]',
     label: 'Case Reference',
     value: 1533032330714079,
@@ -152,8 +153,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[CASE_TYPE]',
     label: 'Case Type',
     value: 'DIVORCE',
@@ -174,8 +175,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[CREATED_DATE]',
     label: 'Created Date',
     value: '2018-07-31T10:18:50.737',
@@ -196,8 +197,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[JURISDICTION]',
     label: 'Jurisdiction',
     value: 'DIVORCE',
@@ -218,8 +219,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[LAST_MODIFIED_DATE]',
     label: 'Last Modified Date',
     value: '2018-07-31T10:18:50.737',
@@ -240,8 +241,8 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  },
-  {
+  }),
+  Object.assign(new CaseField(), {
     id: '[SECURITY_CLASSIFICATION]',
     label: 'Security Classification',
     value: 'PUBLIC',
@@ -262,7 +263,29 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
-  }
+  }),
+  Object.assign(new CaseField(), {
+    id: '[SECURITY_CLASSIFICATION]',
+    label: 'Security Classification',
+    value: 'PUBLIC',
+    hint_text: null,
+    field_type: {
+      id: 'Text',
+      type: 'Text',
+      min: null,
+      max: null,
+      regular_expression: null,
+      fixed_list_items: [],
+      complex_fields: [],
+      collection_field_type: null
+    },
+    security_label: 'PUBLIC',
+    order: null,
+    display_context: null,
+    show_condition: null,
+    show_summary_change_option: null,
+    show_summary_content_option: null
+  })
 ];
 
 const TRIGGERS: CaseViewTrigger[] = [
@@ -292,7 +315,6 @@ const $ALL_TAB_HEADERS = By.css('cut-tabs>cut-tab');
 const $FIRST_TAB_HEADER = By.css('cut-tabs>cut-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
 const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
-const $EVENT_TAB_CONTENT = By.css('cut-tabs>cut-tab#HistoryTab');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
 const $ERROR_MESSAGE = By.css('p');
@@ -305,7 +327,8 @@ const CASE_VIEW: CaseView = {
     jurisdiction: {
       id: JID,
       name: 'Test',
-    }
+    },
+    printEnabled: true
   },
   channels: [],
   state: {
@@ -314,18 +337,11 @@ const CASE_VIEW: CaseView = {
   },
   tabs: [
     {
-      id: 'AddressTab',
-      label: 'Address',
-      order: 3,
-      fields: [],
-      show_condition: 'PersonFirstName="Jane"'
-    },
-    {
       id: 'NameTab',
       label: 'Name',
       order: 2,
       fields: [
-        {
+        Object.assign(new CaseField(), {
           id: 'PersonFirstName',
           label: 'First name',
           display_context: 'OPTIONAL',
@@ -337,8 +353,8 @@ const CASE_VIEW: CaseView = {
           value: 'Janet',
           show_condition: '',
           hint_text: ''
-        },
-        {
+        }),
+        Object.assign(new CaseField(), {
           id: 'PersonLastName',
           label: 'Last name',
           display_context: 'OPTIONAL',
@@ -350,8 +366,8 @@ const CASE_VIEW: CaseView = {
           value: 'Parker',
           show_condition: 'PersonFirstName="Jane*"',
           hint_text: ''
-        },
-        {
+        }),
+        Object.assign(new CaseField(), {
           id: 'PersonComplex',
           label: 'Complex field',
           display_context: 'OPTIONAL',
@@ -363,7 +379,7 @@ const CASE_VIEW: CaseView = {
           order: 3,
           show_condition: 'PersonFirstName="Park"',
           hint_text: ''
-        }
+        })
       ],
       show_condition: 'PersonFirstName="Janet"'
     },
@@ -371,7 +387,7 @@ const CASE_VIEW: CaseView = {
       id: 'HistoryTab',
       label: 'History',
       order: 1,
-      fields: [{
+      fields: [Object.assign(new CaseField(), {
         id: 'CaseHistory',
         label: 'Case History',
         display_context: 'OPTIONAL',
@@ -383,13 +399,13 @@ const CASE_VIEW: CaseView = {
         value: EVENTS,
         show_condition: '',
         hint_text: ''
-      }],
+      })],
       show_condition: ''
     },
     {
       id: 'SomeTab',
       label: 'Some Tab',
-      order: 4,
+      order: 3,
       fields: [],
       show_condition: ''
     },
@@ -428,11 +444,11 @@ let dialog: any;
 let matDialogRef: any;
 let caseNotifier: any;
 
-describe('CaseViewerComponent', () => {
+ describe('CaseViewerComponent', () => {
 
-  const FIELDS = CASE_VIEW.tabs[1].fields;
-  const SIMPLE_FIELDS = CASE_VIEW.tabs[1].fields.slice(0, 2);
-  const COMPLEX_FIELDS = CASE_VIEW.tabs[1].fields.slice(2);
+  const FIELDS = CASE_VIEW.tabs[0].fields;
+  const SIMPLE_FIELDS = CASE_VIEW.tabs[0].fields.slice(0, 2);
+  const COMPLEX_FIELDS = CASE_VIEW.tabs[0].fields.slice(2);
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -516,9 +532,9 @@ describe('CaseViewerComponent', () => {
   it('should render the correct tabs based on show_condition', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[2].label);
-    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[0].label);
   });
 
   it('should render the history tab first and select it', () => {
@@ -532,7 +548,7 @@ describe('CaseViewerComponent', () => {
   it('should render each tab defined by the Case view', () => {
     // we expect address tab not to be rendered
     let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length - 1);
+    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
     expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeTruthy('Could not find tab Some Tab');
@@ -554,7 +570,7 @@ describe('CaseViewerComponent', () => {
   it('should render tabs in ascending order', () => {
     let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
 
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
+    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[0].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_VIEW.tabs);
   });
 
@@ -765,6 +781,14 @@ describe('CaseViewerComponent', () => {
     expect(printLink).toBeFalsy();
   });
 
+  it('should not contain a print link if printableDocumentsUrl not configured', () => {
+    component.caseDetails.case_type.printEnabled = null;
+    fixture.detectChanges();
+    let printLink = de.query($PRINT_LINK);
+    expect(component.isPrintEnabled()).toBeFalsy();
+    expect(printLink).toBeFalsy();
+  });
+
   it('should pass flag to disable button when form valid but callback errors exist', () => {
     component.error = HttpError.from({});
     fixture.detectChanges();
@@ -882,13 +906,100 @@ describe('CaseViewerComponent - no tabs available', () => {
 
     fixture = TestBed.createComponent(CaseViewerComponent);
     component = fixture.componentInstance;
+
     component.callbackErrorsSubject = mockCallbackErrorSubject;
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
   it('should not display any tabs if unavailable', () => {
-    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(0);
+      let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+      expect(tabHeaders.length).toBe(0);
+  });
+});
+
+describe('CaseViewerComponent - print and event selector disabled', () => {
+
+   beforeEach(async(() => {
+    orderService = new OrderService();
+    spyOn(orderService, 'sort').and.callThrough();
+
+    draftService = createSpyObj('draftService', ['deleteDraft']);
+    draftService.deleteDraft.and.returnValue(Observable.of({}));
+
+    caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
+
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
+    alertService.success.and.returnValue(Observable.of({}));
+    alertService.warning.and.returnValue(Observable.of({}));
+
+    dialog = createSpyObj<MatDialog>('dialog', ['open']);
+    matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
+
+    activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
+    activityService.postViewActivity.and.returnValue(Observable.of());
+
+    router = createSpyObj<Router>('router', ['navigate']);
+    router.navigate.and.returnValue(new Promise(any));
+    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
+
+    CASE_VIEW.tabs = [];
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+        ],
+        declarations: [
+          CaseViewerComponent,
+          LabelSubstitutorDirective,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          FieldReadComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+          TabsComponent,
+          TabComponent,
+          MarkdownComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: Router, useValue: router },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(CaseViewerComponent);
+    component = fixture.componentInstance;
+    component.hasPrint = false;
+    component.hasEventSelector = false;
+
+    component.callbackErrorsSubject = mockCallbackErrorSubject;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  it('should not display print and event selector if disabled via inputs', () => {
+    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    let printLink = de.query($PRINT_LINK);
+
+    expect(eventTriggerElement).toBeFalsy();
+    expect(printLink).toBeFalsy();
   });
 });

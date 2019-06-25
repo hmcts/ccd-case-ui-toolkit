@@ -5,12 +5,12 @@ import { MockComponent } from 'ng2-mock-component';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
-import createSpyObj = jasmine.createSpyObj;
-import { CaseView, CaseEventTrigger, CaseEventData, HttpError } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CasesService, CaseNotifier } from '../../case-editor';
 import { CaseReferencePipe } from '../../../pipes';
-import { AlertService, ActivityPollingService } from '../../../services';
+import { ActivityPollingService, AlertService } from '../../../services';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -33,18 +33,18 @@ describe('CaseEventTriggerComponent', () => {
     '3',
     true,
     [
-      {
+      <CaseField>({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      },
-      {
+      }),
+      <CaseField>({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      }
+      })
     ]
   );
 

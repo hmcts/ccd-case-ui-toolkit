@@ -122,14 +122,21 @@ export class FieldsUtils {
   }
 
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
-    let currentState = this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
+    let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
     };
   }
+  public getCurrentEventState(eventTrigger, form): any {
+    return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
+  }
 
   public cloneObject(obj: any): any {
     return Object.assign({}, obj);
+  }
+
+  public cloneCaseField(obj: any): CaseField {
+    return Object.assign(new CaseField(), obj);
   }
 
   mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {

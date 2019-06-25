@@ -6,6 +6,7 @@ import { DraftService } from '../../../services';
 import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NavigationNotifier } from '../services/navigation.notifier';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-view',
@@ -15,6 +16,11 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   @Input()
   case: string;
+  @Input()
+  hasPrint = true;
+  @Input()
+  hasEventSelector = true;
+
   @Output()
   navigationTriggered: EventEmitter<any> = new EventEmitter();
 
@@ -33,8 +39,8 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     this.getCaseView(this.case)
       .pipe(
         map(caseView => {
-          this.caseDetails = caseView;
-          this.caseNofitier.announceCase(caseView);
+          this.caseDetails = plainToClassFromExist(new CaseView(), caseView);
+          this.caseNofitier.announceCase(this.caseDetails);
         })
       )
       .toPromise()

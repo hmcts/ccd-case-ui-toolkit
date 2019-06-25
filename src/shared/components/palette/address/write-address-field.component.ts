@@ -69,13 +69,11 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           console.log(`An error occurred retrieving addresses for postcode ${postcode}.`);
         });
       this.addressList.setValue(undefined);
-      setTimeout(this.focusAddressList, 1000);
-    }
-  }
-
-  focusAddressList() {
-    if (document.getElementById('addressList')) {
-      document.getElementById('addressList').focus();
+      setTimeout(() => {
+        if (document.getElementById(this.createId('addressList') + '')) {
+          document.getElementById(this.createId('addressList') + '').focus();
+        }
+      }, 1000);
     }
   }
 
@@ -126,6 +124,10 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   buildIdPrefix(field: CaseField): string {
     return this.isCompoundPipe.transform(field) ? `${this.idPrefix}_` : `${this.idPrefix}`;
+  }
+
+  createId(elementId: string): string {
+    return this.id() + '_' + elementId ;
   }
 
   private defaultLabel(numberOfAddresses) {

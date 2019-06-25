@@ -221,8 +221,10 @@ describe('SearchFiltersComponent', () => {
     fixture
       .whenStable()
       .then(() => {
-        expect(searchHandler.applyFilters).toHaveBeenCalledWith(
-          {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined});
+        expect(searchHandler.applyFilters).toHaveBeenCalledWith({
+          selected: {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined},
+          queryParams: {}
+        });
       });
   }));
 
@@ -419,7 +421,10 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_3;
     component.selected.metadataFields = METADATA_FIELDS;
     component.apply();
-    expect(searchHandler.applyFilters).toHaveBeenCalledWith(component.selected);
+    expect(searchHandler.applyFilters).toHaveBeenCalledWith({
+      selected: component.selected,
+      queryParams: {jurisdiction: component.selected.jurisdiction.id}
+    });
     expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
   }));
 
@@ -483,6 +488,25 @@ describe('SearchFiltersComponent', () => {
     expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
+  it('should render a valid search input complex field component with a path defined', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[2];
+    let complexFieldSearchInput = TEST_SEARCH_INPUTS[2];
+    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom([complexFieldSearchInput]));
+
+    let expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
+
+    component.onCaseTypeIdChange();
+    fixture.detectChanges();
+
+    let dynamicFilters = de.query(By.css('#dynamicFilters'));
+    let writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+    let writeFieldInstance = writeField.componentInstance;
+
+    expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
+    expect(writeFieldInstance.formGroup).toBeTruthy();
+  });
+
   it('should submit filters when apply button is clicked', async(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyFilters.calls.reset();
@@ -505,7 +529,7 @@ describe('SearchFiltersComponent', () => {
         let button = de.query(By.css('button'));
         component.formGroup = formGroup;
         button.nativeElement.click();
-        let arg: any = searchHandler.applyFilters.calls.mostRecent().args[0];
+        let arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
         expect(arg['formGroup'].value).toEqual(formGroup.value);

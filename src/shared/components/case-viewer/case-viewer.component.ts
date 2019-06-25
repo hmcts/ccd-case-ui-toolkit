@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
@@ -8,18 +8,16 @@ import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { CaseField } from '../../domain/definition';
 import { ShowCondition } from '../../directives/conditional-show/domain';
-import { Draft } from '../../domain';
+import { Draft, DRAFT_QUERY_PARAM } from '../../domain';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { CaseView, CaseViewTrigger } from '../../domain/case-view';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { DRAFT_QUERY_PARAM } from '../../domain';
 import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
-import { NgZone } from '@angular/core';
 import { NavigationNotifier } from './services/navigation.notifier';
 import { ERROR_DELETING_DRAFT, DRAFT_DELETED, DRAFT_RESUMED, EVENT_TRIGGERED } from './domain';
 
@@ -32,6 +30,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
+
+  @Input()
+  hasPrint = true;
+  @Input()
+  hasEventSelector = true;
 
   BANNER = DisplayMode.BANNER;
 
@@ -79,6 +82,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     });
   }
 
+  isPrintEnabled(): boolean {
+    return this.caseDetails.case_type.printEnabled;
+  }
+
   ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
@@ -91,33 +98,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
-  }
-
-  private init() {
-    // Clone and sort tabs array
-    this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
-
-    this.caseFields = this.getTabFields();
-
-    this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
-
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
-          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
-        });
-      });
-    }
-
-    if (this.caseDetails.triggers && this.error) {
-      this.resetErrors();
-    }
-  }
-
-  private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs
-      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
-      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   clearErrorsAndWarnings() {
@@ -199,16 +179,53 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.triggerText = callbackErrorsContext.trigger_text;
   }
 
+  isDraft(): boolean {
+    return Draft.isDraft(this.caseDetails.case_id);
+  }
+
+  isTriggerButtonDisabled(): boolean {
+    return (this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length)
+      || (this.error
+        && this.error.details
+        && this.error.details.field_errors
+        && this.error.details.field_errors.length);
+  }
+
+  private init() {
+    // Clone and sort tabs array
+    this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
+
+    this.caseFields = this.getTabFields();
+
+    this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
+
+    if (this.activityPollingService.isEnabled) {
+      this.ngZone.runOutsideAngular(() => {
+        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
+          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
+        });
+      });
+    }
+
+    if (this.caseDetails.triggers && this.error) {
+      this.resetErrors();
+    }
+  }
+
+  private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
+    return tabs
+      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
+  }
+
   private getTabFields(): CaseField[] {
     const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
       return acc.concat(tab.fields);
     }, []);
 
     return caseDataFields.concat(this.caseDetails.metadataFields);
-  }
-
-  isDraft(): boolean {
-    return Draft.isDraft(this.caseDetails.case_id);
   }
 
   private initDialog() {
@@ -239,16 +256,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
-  }
-
-  isTriggerButtonDisabled(): boolean {
-    return (this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length)
-      || (this.error
-      && this.error.details
-      && this.error.details.field_errors
-      && this.error.details.field_errors.length);
   }
 
 }

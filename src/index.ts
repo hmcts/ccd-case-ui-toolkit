@@ -1,7 +1,8 @@
 export { CaseUIToolkitModule } from './case-ui-toolkit.module';
 export { CaseEditorConfig,
          AbstractAppConfig } from './app.config';
-export { FormValueService,
+export { FieldTypeSanitiser,
+         FormValueService,
          FormErrorService,
          DocumentManagementService,
          FieldsUtils,
@@ -21,7 +22,9 @@ export { FormValueService,
          RequestOptionsBuilder,
          SearchService,
          WindowService,
-         JurisdictionService } from './shared/services';
+         WorkbasketInputFilterService,
+         JurisdictionService,
+         SearchResultViewItemComparatorFactory } from './shared/services';
 export { DocumentData,
          AddressModel,
          CaseEventData,
@@ -54,7 +57,11 @@ export { DocumentData,
          SearchResultView,
          SearchResultViewColumn,
          SearchResultViewItem,
-         Field } from './shared/domain';
+         Field,
+         PaginationMetadata,
+         SortOrder,
+         SortParameters,
+         SearchResultViewItemComparator } from './shared/domain';
 export { ShowCondition,
          ConditionalShowDirective,
          ConditionalShowModule,
@@ -110,9 +117,13 @@ export { PaletteModule,
          DRAFT_DELETED,
          ERROR_DELETING_DRAFT,
          DRAFT_RESUMED,
-         EVENT_TRIGGERED } from './shared/components';
+         WorkbasketFiltersModule,
+         CaseListFiltersModule,
+         SearchResultModule,
+         SearchResultComponent } from './shared/components';
 export { CaseReferencePipe,
-         PipesModule } from './shared/pipes';
+         PipesModule,
+         SortSearchResultPipe } from './shared/pipes';
 export { createCaseEventTrigger,
          aCaseField,
          createCaseView,
