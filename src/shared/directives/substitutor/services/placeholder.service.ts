@@ -24,11 +24,12 @@ ___
         let originalStringToResolve = stringToResolve;
         let numberCollectionItemsAsPlaceholder = 1;
         let colItemIndex = 0;
+        let scanIndex = 0;
 
         if (stringToResolve && typeof stringToResolve === 'string') {
             while (numberCollectionItemsAsPlaceholder-- > 0) {
 
-                for (let scanIndex = 0; scanIndex < stringToResolve.length; scanIndex++) {
+                while (scanIndex < stringToResolve.length) {
                     if (this.isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollecting)) {
                         startSubstitutionIndex = scanIndex;
                         isCollecting = true;
@@ -44,7 +45,6 @@ ___
                                                 newNumberOfCollectionItemsAsPlaceholder,
                                                 numberCollectionItemsAsPlaceholder)
                                     }
-
                                     stringToResolve = this.substitute(
                                         pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
 
@@ -57,6 +57,7 @@ ___
                             fieldIdToSubstitute += stringToResolve.charAt(scanIndex);
                         }
                     }
+                    scanIndex++
                 }
 
                 if (colItemIndex < numberCollectionItemsAsPlaceholder - 1) {
