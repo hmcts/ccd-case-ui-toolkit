@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 2.56.0 - June 25 2019
+**RDM-2987** Markdown supporting Iterating collection items when accessing Complex elements
+
+### Version 2.55.2 - June 24 2019
+**RDM-4512** Remove console warning message
+
+### Version 2.55.1 - June 19 2019
+**RDM-4264** DAC - Duplicate postcode input IDs
+
 ### Version 2.55.0 - June 13 2019
 **RDM-4781** RDM-4781-Data not being shown on multi-select list
 
