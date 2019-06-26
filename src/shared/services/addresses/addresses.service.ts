@@ -4,7 +4,6 @@ import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from '../../domain/addresses';
 import { HttpService } from '../http';
 import { map } from 'rxjs/operators';
-import 'rxjs/add/observable/of';
 
 @Injectable()
 export class AddressesService {
@@ -43,13 +42,13 @@ export class AddressesService {
   }
 
   private shiftAddressLinesUp(addressModel: AddressModel) {
-    if (addressModel.AddressLine1 === '') {
-      addressModel.AddressLine1 = addressModel.AddressLine2;
-      addressModel.AddressLine2 = '';
-    }
     if (addressModel.AddressLine2 === '') {
       addressModel.AddressLine2 = addressModel.AddressLine3;
       addressModel.AddressLine3 = '';
+    }
+    if (addressModel.AddressLine1 === '') {
+      addressModel.AddressLine1 = addressModel.AddressLine2;
+      addressModel.AddressLine2 = '';
     }
     return addressModel;
   }
