@@ -230,7 +230,6 @@ export class SearchResultComponent implements OnChanges {
     let isDescending = true;
 
     if (this.comparator(column) === undefined) {
-      console.warn('Cannot sort: unknown sort comparator for ' + column.case_field_type.type);
       return SortOrder.UNSORTED;
     }
     for (let i = 0; i < this.resultView.results.length - 1; i++) {
