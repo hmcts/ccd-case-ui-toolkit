@@ -925,19 +925,23 @@
           "fixed_list_items": [
             {
               "code": "MARRIAGE",
-              "label": "Marriage"
+              "label": "Marriage",
+              "order": 2
             },
             {
               "code": "CIVIL_PARTNERSHIP",
-              "label": "Civil Partnership"
+              "label": "Civil Partnership",
+              "order": 4
             },
             {
               "code": "SINGLE",
-              "label": "Single"
+              "label": "Single",
+              "order": 1
             },
             {
               "code": "WIDOW",
-              "label": "Widow"
+              "label": "Widow",
+              "order": 3
             }
           ],
           "complex_fields": [],
