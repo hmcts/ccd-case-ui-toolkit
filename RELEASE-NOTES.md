@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.57.0 - June 26 2019
+**RDM-4525** Ordering of fixed lists 
+
+### Version 2.56.0 - June 25 2019
+**RDM-2987** Markdown supporting Iterating collection items when accessing Complex elements
+
 ### Version 2.55.2 - June 24 2019
 **RDM-4512** Remove console warning message
 

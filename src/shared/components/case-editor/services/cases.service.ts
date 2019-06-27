@@ -38,7 +38,8 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper
-  ) {}
+  ) {
+  }
 
   getCaseView(jurisdictionId: string,
               caseTypeId: string,
@@ -84,7 +85,7 @@ export class CasesService {
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url =  this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
     let headers = new Headers({
       'experimental': 'true'
@@ -198,16 +199,16 @@ export class CasesService {
 
     if (Draft.isDraft(caseId)) {
       url += `/drafts/${caseId}`
-      + `/event-trigger`
-      + `?ignore-warning=${ignoreWarning}`;
+        + `/event-trigger`
+        + `?ignore-warning=${ignoreWarning}`;
     } else if (caseTypeId === undefined || caseTypeId === null) {
       url += `/cases/${caseId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`;
+        + `/event-triggers/${eventTriggerId}`
+        + `?ignore-warning=${ignoreWarning}`;
     } else {
       url += `/case-types/${caseTypeId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`;
+        + `/event-triggers/${eventTriggerId}`
+        + `?ignore-warning=${ignoreWarning}`;
     }
 
     return url;
