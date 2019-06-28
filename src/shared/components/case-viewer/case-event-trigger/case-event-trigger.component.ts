@@ -74,9 +74,10 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   submitted(event: any): void {
     let eventStatus: string = event['status'];
     this.router
-      .navigate([this.parentUrl])
+      .navigate([this.parentUrl], { queryParams: { 'onErrorCaseList': true } })
       .then(() => {
         let caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
+        this.alertService.setPreserveAlerts(true);
         if (EventStatusService.isIncomplete(eventStatus)) {
           this.alertService.warning(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name} `
             + `but the callback service cannot be completed`);

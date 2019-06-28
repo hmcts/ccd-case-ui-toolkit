@@ -12,21 +12,24 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
+  public static readonly ON_ERROR_CASE_LIST = 'onErrorCaseList';
 
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
   public cachedCaseView: CaseView;
+  onErrorCaseList: boolean;
 
   constructor(private caseService: CaseService,
-               private casesService: CasesService,
-               private draftService: DraftService,
-               private router: Router,
-               private alertService: AlertService) {}
+              private casesService: CasesService,
+              private draftService: DraftService,
+              private router: Router,
+              private alertService: AlertService) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
 
     let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
+    this.onErrorCaseList = (route.queryParamMap.get(CaseResolver.ON_ERROR_CASE_LIST) || 'false' ) === 'true';
 
     if (!cid) {
       // when redirected to case view after a case created, and the user has no READ access,
@@ -87,6 +90,10 @@ export class CaseResolver implements Resolve<CaseView> {
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
+    if (this.onErrorCaseList && error.status === 404) {
+      this.router.navigate(['/list/case'])
+      return Observable.of(null);
+    }
     if (error.status !== 401 && error.status !== 403) {
       this.router.navigate(['/error']);
     }
