@@ -38,7 +38,8 @@ describe('CaseResolver', () => {
         firstChild: {
           url: []
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
       };
       route.paramMap.get.and.returnValue(CASE_ID);
     });
@@ -67,7 +68,8 @@ describe('CaseResolver', () => {
           url: [],
           fragment: 'someFragment'
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
       };
       route.paramMap.get.and.returnValue(CASE_ID);
 
@@ -88,7 +90,8 @@ describe('CaseResolver', () => {
           url: [],
           fragment: 'someFragment'
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
       };
       route.paramMap.get.and.returnValue(CASE_ID);
 
@@ -110,7 +113,8 @@ describe('CaseResolver', () => {
         firstChild: {
           url: ['someUrlSegment']
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
       };
       route.paramMap.get.and.returnValue(CASE_ID);
 
@@ -130,7 +134,8 @@ describe('CaseResolver', () => {
         firstChild: {
           url: ['someUrlSegment']
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
       };
       route.paramMap.get.and.returnValue(CASE_ID);
 
@@ -157,6 +162,44 @@ describe('CaseResolver', () => {
         });
 
       expect(router.navigate).toHaveBeenCalledWith(['/error']);
+    });
+
+    it('should redirect to case list page when case cannot be found and onErrorCaseList param is true', () => {
+      const error = {
+        status: 404
+      };
+      route.queryParamMap.get.and.returnValue('true');
+
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/list/case']);
+    });
+
+    it('should not redirect to case list page when case cannot be found and onErrorCaseList param is false', () => {
+      const error = {
+        status: 404
+      };
+      route.queryParamMap.get.and.returnValue('false');
+
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).not.toHaveBeenCalledWith(['/list/case']);
     });
 
     it('should redirect to case list page when case id is empty', () => {
@@ -209,7 +252,8 @@ describe('CaseResolver', () => {
         firstChild: {
           url: []
         },
-        paramMap: createSpyObj('paramMap', ['get'])
+        paramMap: createSpyObj('paramMap', ['get']),
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
       };
       route.paramMap.get.and.returnValue(DRAFT_ID);
     });
