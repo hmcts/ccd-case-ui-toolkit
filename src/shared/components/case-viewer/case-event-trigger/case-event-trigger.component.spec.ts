@@ -197,7 +197,8 @@ describe('CaseEventTriggerComponent', () => {
 
     component.submitted({caseId: 123});
 
-    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path], { queryParams: { onErrorCaseList: true } });
+    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path],
+      { queryParams: { onErrorCaseList: true } });
   });
 
   it('should alert success message after navigation upon successful event creation', () => {
