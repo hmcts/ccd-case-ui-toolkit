@@ -5,6 +5,9 @@
 **RDM-4274** DAC - Non-Descriptive form fields 
 **RDM-4282** DAC - no postcode link P1 - Colour contrast
 
+### Version 2.58.1 - July 1 2019
+**RDM-4525** Remove unused id on write fixed list field template as breaking external tests.
+
 ### Version 2.58.0 - June 27 2019
 **RDM-4890** Integrate New Postcode Lookup into CCD
 **RDM-3782** Previous Case Reference data is displayed until new data is loaded
@@ -31,7 +34,7 @@
 ### Version 2.53.0 - June 07 2019
 **RDM-4537** Case List Filters extraction and new contract
 
-### Version 2.52.0 - June 07 20192.58.1
+### Version 2.52.0 - June 07 2019
 **RDM-2804** OR and Not Equals support for Show and Hide
 
 ### Version 2.51.1 - June 07 2019
