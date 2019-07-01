@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.1 - July 1 2019
+**RDM-4525** Remove unused id on write fixed list field template as breaking external tests.
+
 ### Version 2.58.0 - June 27 2019
 **RDM-4890** Integrate New Postcode Lookup into CCD
 **RDM-3782** Previous Case Reference data is displayed until new data is loaded
