@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 2.58.1 - July 01 2019
+**RDM-4266** DAC - List mark-up
+**RDM-4274** DAC - Non-Descriptive form fields 
+**RDM-4282** DAC - no postcode link P1 - Colour contrast
+
 ### Version 2.58.0 - June 27 2019
 **RDM-4890** Integrate New Postcode Lookup into CCD
 **RDM-3782** Previous Case Reference data is displayed until new data is loaded
