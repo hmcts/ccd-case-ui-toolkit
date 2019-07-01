@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 2.58.2 - July 01 2019
+**RDM-4266** DAC - List mark-up
+**RDM-4274** DAC - Non-Descriptive form fields 
+**RDM-4282** DAC - no postcode link P1 - Colour contrast
+
 ### Version 2.58.1 - July 1 2019
 **RDM-4525** Remove unused id on write fixed list field template as breaking external tests.
 
