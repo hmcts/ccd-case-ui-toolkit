@@ -4,15 +4,15 @@ import { RouterModule } from '@angular/router';
 import { CallbackErrorsComponent } from './callback-errors.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-    ],
-    declarations: [
-        CallbackErrorsComponent
-    ],
-    exports: [
-        CallbackErrorsComponent,
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+  ],
+  declarations: [
+    CallbackErrorsComponent
+  ],
+  exports: [
+    CallbackErrorsComponent,
+  ]
 })
 export class ErrorsModule {}
