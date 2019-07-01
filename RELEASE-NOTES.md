@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.58.1 - July 01 2019
+### Version 2.58.2 - July 01 2019
 **RDM-4266** DAC - List mark-up
 **RDM-4274** DAC - Non-Descriptive form fields 
 **RDM-4282** DAC - no postcode link P1 - Colour contrast
