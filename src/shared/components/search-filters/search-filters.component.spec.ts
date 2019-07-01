@@ -221,8 +221,10 @@ describe('SearchFiltersComponent', () => {
     fixture
       .whenStable()
       .then(() => {
-        expect(searchHandler.applyFilters).toHaveBeenCalledWith(
-          {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined});
+        expect(searchHandler.applyFilters).toHaveBeenCalledWith({
+          selected: {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined},
+          queryParams: {}
+        });
       });
   }));
 
@@ -419,7 +421,10 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_3;
     component.selected.metadataFields = METADATA_FIELDS;
     component.apply();
-    expect(searchHandler.applyFilters).toHaveBeenCalledWith(component.selected);
+    expect(searchHandler.applyFilters).toHaveBeenCalledWith({
+      selected: component.selected,
+      queryParams: {jurisdiction: component.selected.jurisdiction.id}
+    });
     expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
   }));
 
@@ -524,7 +529,7 @@ describe('SearchFiltersComponent', () => {
         let button = de.query(By.css('button'));
         component.formGroup = formGroup;
         button.nativeElement.click();
-        let arg: any = searchHandler.applyFilters.calls.mostRecent().args[0];
+        let arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
         expect(arg['formGroup'].value).toEqual(formGroup.value);

@@ -43,7 +43,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -52,8 +52,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             type: 'Text'
           },
           value: ''
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -62,7 +62,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        }
+        })
       ]
     };
 
@@ -70,7 +70,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        {
+        <CaseField>({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -79,8 +79,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -89,8 +89,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             type: 'Number'
           },
           value: '111 East India road'
-        },
-        {
+        }),
+        <CaseField>({
           id: 'AddressPostcode',
           label: 'Post code',
           display_context: 'OPTIONAL',
@@ -100,11 +100,11 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             complex_fields: []
           },
           value: 'tw45ed'
-        }
+        })
       ]
     };
 
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: '',
       label: 'Complex Field',
       display_context: 'OPTIONAL',
@@ -128,7 +128,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       ],
         display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
         field_type: FIELD_TYPE_WITH_VALUES
-      };
+      });
 
     const LINE_1 = 0;
     const LINE_2 = 1;

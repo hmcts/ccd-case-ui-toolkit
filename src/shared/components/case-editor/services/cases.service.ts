@@ -22,6 +22,8 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_CREATE_EVENT =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json;charset=UTF-8';
 
   /**
    *
@@ -36,7 +38,8 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper
-  ) {}
+  ) {
+  }
 
   getCaseView(jurisdictionId: string,
               caseTypeId: string,
@@ -82,7 +85,7 @@ export class CasesService {
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url =  this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
     let headers = new Headers({
       'experimental': 'true'
@@ -109,13 +112,16 @@ export class CasesService {
   }
 
   createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<object> {
-    const jid = caseDetails.case_type.jurisdiction.id;
-    const ctid = caseDetails.case_type.id;
     const caseId = caseDetails.case_id;
-    const url = this.appConfig.getCaseDataUrl() + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/cases/${caseId}/events`;
+    const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
+
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
+    });
 
     return this.http
-      .post(url, eventData)
+      .post(url, eventData, {headers})
       .pipe(
         map(response => this.processResponse(response)),
         catchError(error => {
@@ -193,16 +199,16 @@ export class CasesService {
 
     if (Draft.isDraft(caseId)) {
       url += `/drafts/${caseId}`
-      + `/event-trigger`
-      + `?ignore-warning=${ignoreWarning}`;
+        + `/event-trigger`
+        + `?ignore-warning=${ignoreWarning}`;
     } else if (caseTypeId === undefined || caseTypeId === null) {
       url += `/cases/${caseId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`;
+        + `/event-triggers/${eventTriggerId}`
+        + `?ignore-warning=${ignoreWarning}`;
     } else {
       url += `/case-types/${caseTypeId}`
-      + `/event-triggers/${eventTriggerId}`
-      + `?ignore-warning=${ignoreWarning}`;
+        + `/event-triggers/${eventTriggerId}`
+        + `?ignore-warning=${ignoreWarning}`;
     }
 
     return url;

@@ -17,27 +17,30 @@ describe('ReadFixedRadioListFieldComponent', () => {
     fixed_list_items: [
       {
         code: 'M',
-        label: 'Male'
+        label: 'Male',
+        order: 1
       },
       {
         code: VALUE,
-        label: EXPECTED_LABEL
+        label: EXPECTED_LABEL,
+        order: 2
       },
       {
         code: 'O',
-        label: 'Other'
+        label: 'Other',
+        order: 3
       }
     ]
   };
 
   describe('Non-persistable readonly fixed radio list field', () => {
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
     const EMPTY = '';
 
     let fixture: ComponentFixture<ReadFixedRadioListFieldComponent>;
@@ -93,13 +96,13 @@ describe('ReadFixedRadioListFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = {
+    const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    };
+    });
 
     let fixture: ComponentFixture<ReadFixedRadioListFieldComponent>;
     let component: ReadFixedRadioListFieldComponent;

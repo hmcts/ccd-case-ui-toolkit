@@ -17,25 +17,28 @@ const FIELD_TYPE: FieldType = {
   fixed_list_items: [
     {
       code: 'M',
-      label: 'Male'
+      label: 'Male',
+      order: 1
     },
     {
       code: VALUE,
-      label: EXPECTED_LABEL
+      label: EXPECTED_LABEL,
+      order: 2
     },
     {
       code: 'O',
-      label: 'Other'
+      label: 'Other',
+      order: 3
     }
   ]
 };
-const CASE_FIELD: CaseField = {
+const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-};
+});
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 const REGISTER_CONTROL = (control) => {

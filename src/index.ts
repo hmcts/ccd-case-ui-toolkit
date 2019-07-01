@@ -1,7 +1,8 @@
 export { CaseUIToolkitModule } from './case-ui-toolkit.module';
 export { CaseEditorConfig,
          AbstractAppConfig } from './app.config';
-export { FormValueService,
+export { FieldTypeSanitiser,
+         FormValueService,
          FormErrorService,
          DocumentManagementService,
          FieldsUtils,
@@ -21,6 +22,7 @@ export { FormValueService,
          RequestOptionsBuilder,
          SearchService,
          WindowService,
+         WorkbasketInputFilterService,
          JurisdictionService,
          SearchResultViewItemComparatorFactory } from './shared/services';
 export { DocumentData,
@@ -111,6 +113,8 @@ export { PaletteModule,
          CreateCaseFiltersModule,
          CaseTimelineModule,
          CreateCaseFiltersSelection,
+         WorkbasketFiltersModule,
+         CaseListFiltersModule,
          SearchResultModule,
          SearchResultComponent } from './shared/components';
 export { CaseReferencePipe,

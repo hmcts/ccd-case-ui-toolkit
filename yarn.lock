@@ -383,10 +383,10 @@
     is-absolute "^1.0.0"
     is-negated-glob "^1.0.0"
 
-"@hmcts/ccpay-web-component@^1.6.2":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-1.8.2.tgz#4c65206e863485b236c629ed5b99f859fba07bab"
-  integrity sha512-u5Q3Xzm9sPezWQ5tmnLshOz3zRQEz2sbrkrlN/H0xRQIWmuiTRSB65nlqZwYQYK/EgHP6ounNZWJRy3h/MOxFQ==
+"@hmcts/ccpay-web-component@^1.8.6":
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-1.8.6.tgz#61953dc6d80af6dbc3a54503880ba8737a998555"
+  integrity sha512-a0rcpTlZm2+hzehYng2+cAwSC3XOHEUVo5nbIfiXwWen18kCBIAp8XFxDGK9TY6h6J5K5+yBn/lPQzoIpmG90A==
   dependencies:
     tslib "^1.9.0"
 
@@ -9270,6 +9270,14 @@ send@0.16.2, send@latest:
     range-parser "~1.2.0"
     statuses "~1.4.0"
 
+sentence-case@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/sentence-case/-/sentence-case-2.1.1.tgz#1f6e2dda39c168bf92d13f86d4a918933f667ed4"
+  integrity sha1-H24t2jnBaL+S0T+G1KkYkz9mftQ=
+  dependencies:
+    no-case "^2.2.0"
+    upper-case-first "^1.1.2"
+
 sequencify@~0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/sequencify/-/sequencify-0.0.7.tgz#90cff19d02e07027fd767f5ead3e7b95d1e7380c"
@@ -10512,6 +10520,11 @@ unc-path-regex@^0.1.2:
   resolved "https://registry.yarnpkg.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
   integrity sha1-5z3T17DXxe2G+6xrCufYxqadUPo=
 
+underscore@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
+  integrity sha512-5/4etnCkd9c8gwgowi5/om/mYO5ajCaOgdzj/oW+0eQV9WxKBDZw5+ycmKmeaTXjInS/W0BzpGLo2xR2aBwZdg==
+
 underscore@~1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.4.4.tgz#61a6a32010622afa07963bf325203cf12239d604"
@@ -10617,6 +10630,13 @@ update-notifier@^2.5.0:
     latest-version "^3.0.0"
     semver-diff "^2.0.0"
     xdg-basedir "^3.0.0"
+
+upper-case-first@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/upper-case-first/-/upper-case-first-1.1.2.tgz#5d79bedcff14419518fd2edb0a0507c9b6859115"
+  integrity sha1-XXm+3P8UQZUY/S7bCgUHybaFkRU=
+  dependencies:
+    upper-case "^1.1.1"
 
 upper-case@^1.1.1:
   version "1.1.3"

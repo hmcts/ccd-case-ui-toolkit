@@ -1,19 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import createSpyObj = jasmine.createSpyObj;
 import { CaseViewComponent } from './case-view.component';
 import { CaseView, HttpError } from '../../../domain';
-import { CasesService, CaseService } from '../../case-editor';
+import { CaseService, CasesService } from '../../case-editor';
 import { AlertService, DraftService } from '../../../services';
 import { RouterTestingModule } from '@angular/router/testing'
 import { MockComponent } from 'ng2-mock-component';
+import { plainToClassFromExist } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseViewComponent', () => {
 
   const CASE_REFERENCE = '1234123412341234';
   const DRAFT_REFERENCE = 'DRAFT1234';
-  const CASE_VIEW: CaseView = {
+  const CASE_VIEW: CaseView = plainToClassFromExist(new CaseView(), {
     case_id: CASE_REFERENCE,
     case_type: {
       id: 'TestAddressBookCase',
@@ -31,7 +32,7 @@ describe('CaseViewComponent', () => {
     tabs: [],
     triggers: [],
     events: []
-  };
+  });
   const CASE_VIEW_OBS: Observable<CaseView> = Observable.of(CASE_VIEW);
 
   let caseService;

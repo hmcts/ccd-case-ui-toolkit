@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../../services/fields';
 
 @Pipe({
   name: 'ccdFieldsFilter'
@@ -71,6 +72,10 @@ export class FieldsFilterPipe implements PipeTransform {
     return FieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
 
+  constructor(
+    private fieldsUtils: FieldsUtils
+  ) {}
+
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.
    *
@@ -88,7 +93,7 @@ export class FieldsFilterPipe implements PipeTransform {
 
     return fields
       .map(f => {
-        let clone = { ...f };
+        let clone = this.fieldsUtils.cloneObject(f);
 
         let value = FieldsFilterPipe.getValue(f, values, index);
 
