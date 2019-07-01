@@ -119,7 +119,6 @@ describe('WriteAddressFieldComponent', () => {
   beforeEach(async(() => {
 
     addressesService = new AddressesService(null, null);
-
     TestBed
       .configureTestingModule({
         imports: [
@@ -135,8 +134,7 @@ describe('WriteAddressFieldComponent', () => {
         ],
         providers: [
           IsCompoundPipe,
-          { provide: AddressesService, useValue: addressesService }
-        ]
+          { provide: AddressesService, useValue: addressesService }]
       })
       .compileComponents();
 

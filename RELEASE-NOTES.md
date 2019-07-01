@@ -1,5 +1,13 @@
 ## RELEASE NOTES
 
+### Version 2.58.0 - June 27 2019
+**RDM-4890** Integrate New Postcode Lookup into CCD
+**RDM-3782** Previous Case Reference data is displayed until new data is loaded
+**RDM-4906** Payment web-component v1.8.6 integration in CCD
+
+### Version 2.57.0 - June 26 2019
+**RDM-4525** Ordering of fixed lists 
+
 ### Version 2.56.0 - June 25 2019
 **RDM-2987** Markdown supporting Iterating collection items when accessing Complex elements
 
