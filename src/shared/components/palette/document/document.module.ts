@@ -5,16 +5,22 @@ import { ReadDocumentFieldComponent } from './read-document-field.component';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { RouterModule } from '@angular/router';
+import { DocViewerComponent } from './doc-viewer.component';
+import { MediaViewerModule } from '@hmcts/media-viewer';
 
 @NgModule({
   imports: [
     CommonModule,
     MarkdownModule,
     PaletteUtilsModule,
+    RouterModule,
+    MediaViewerModule,
   ],
   declarations: [
     DocumentUrlPipe,
     ReadDocumentFieldComponent,
+    DocViewerComponent,
     WriteDocumentFieldComponent
   ],
   entryComponents: [

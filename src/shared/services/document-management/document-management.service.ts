@@ -5,11 +5,14 @@ import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
+import { CaseField } from '../../domain/definition';
 
 @Injectable()
 export class DocumentManagementService {
   private static readonly HEADER_ACCEPT = 'Accept';
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
+  private static readonly PDF = 'pdf';
+  private static readonly IMAGE = 'image';
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -25,5 +28,27 @@ export class DocumentManagementService {
       .pipe(
         map(response => response.json())
       );
+  }
+
+  createDocViewer(caseField: CaseField): string {
+    let docViewer = {};
+    if (caseField.value) {
+      docViewer = {
+        document_url: caseField.value.document_url,
+        document_binary_url: caseField.value.document_binary_url,
+        document_filename: caseField.value.document_filename,
+        contentType: this.getContentType(caseField)
+      }
+    }
+    return JSON.stringify(docViewer);
+  }
+
+  getContentType(caseField: CaseField): string {
+    let fileExtension = '';
+    if (caseField.value && caseField.value.document_filename) {
+      fileExtension = caseField.value.document_filename
+        .slice(caseField.value.document_filename.lastIndexOf('.') + 1);
+    }
+    return (fileExtension == 'pdf') ? DocumentManagementService.PDF : DocumentManagementService.IMAGE;
   }
 }
