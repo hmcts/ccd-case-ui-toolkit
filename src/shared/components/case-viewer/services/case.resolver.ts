@@ -1,4 +1,4 @@
-import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -10,26 +10,30 @@ import { plainToClassFromExist } from 'class-transformer';
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
 
+  public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
-  public static readonly ON_ERROR_CASE_LIST = 'onErrorCaseList';
 
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
   public cachedCaseView: CaseView;
-  onErrorCaseList: boolean;
-
+  previousUrl: string;
   constructor(private caseService: CaseService,
               private casesService: CasesService,
               private draftService: DraftService,
               private router: Router,
-              private alertService: AlertService) {}
+              private alertService: AlertService) {
+    router.events
+      .filter(event => event instanceof NavigationEnd)
+      .subscribe((event: NavigationEnd) => {
+        this.previousUrl = event.url;
+      });
+  }
 
   resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
 
     let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
-    this.onErrorCaseList = (route.queryParamMap.get(CaseResolver.ON_ERROR_CASE_LIST) || 'false' ) === 'true';
 
     if (!cid) {
       // when redirected to case view after a case created, and the user has no READ access,
@@ -90,7 +94,7 @@ export class CaseResolver implements Resolve<CaseView> {
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
-    if (this.onErrorCaseList && error.status === 404) {
+    if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case'])
       return Observable.of(null);
     }

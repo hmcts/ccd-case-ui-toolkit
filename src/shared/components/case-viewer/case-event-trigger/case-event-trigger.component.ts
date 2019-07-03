@@ -74,7 +74,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   submitted(event: any): void {
     let eventStatus: string = event['status'];
     this.router
-      .navigate([this.parentUrl], { queryParams: { 'onErrorCaseList': true } })
+      .navigate([this.parentUrl])
       .then(() => {
         let caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
         if (EventStatusService.isIncomplete(eventStatus)) {
