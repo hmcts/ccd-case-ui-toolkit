@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.3 - July 02 2019
+**RDM-5168** Sumbitted Callback fix
+
 ### Version 2.58.2 - July 01 2019
 **RDM-4266** DAC - List mark-up
 **RDM-4274** DAC - Non-Descriptive form fields 
