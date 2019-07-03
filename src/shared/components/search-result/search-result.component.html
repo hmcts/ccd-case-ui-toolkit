@@ -29,7 +29,7 @@
 
       <a *ngIf="colIndex == 0" routerLink="/case/{{jurisdiction.id}}/{{caseType.id}}/{{result.case_id}}"
          attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}">
-        <ng-container class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
+        <ng-container class="text-16" *ngIf="!hideRows">
           <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
                           ccdLabelSubstitutor [caseField]="getFirstColumnField(rowIndex)"
                           [contextFields]="result.hydrated_case_fields"
