@@ -42,7 +42,9 @@
     "install:demo": "yarn --cwd demo install",
     "build:demo": "yarn --cwd demo build",
     "start": "yarn --cwd demo start",
-    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
+    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@angular/cli": "^6.0.8",
@@ -53,7 +55,8 @@
     "karma-jasmine-html-reporter": "^1.2.0",
     "mocha": "^5.0.5",
     "typescript": "3.1.1",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "snyk": "^1.189.0"
   },
   "peerDependencies": {
     "@angular/common": "~7.0.3",
@@ -162,5 +165,6 @@
     ],
     "sourceMap": false,
     "instrument": false
-  }
+  },
+  "snyk": true
 }
