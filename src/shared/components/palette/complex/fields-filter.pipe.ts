@@ -63,7 +63,7 @@ export class FieldsFilterPipe implements PipeTransform {
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
-    let value:any;
+    let value: any;
     if (index >= 0 ) {
       value = values[index].value[field.id]
     } else {
