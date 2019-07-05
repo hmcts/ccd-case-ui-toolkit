@@ -23,7 +23,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
+  <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }; let rowIndex = index">
 
     <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index">
 
@@ -31,7 +31,7 @@
          attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}">
         <ng-container class="text-16" *ngIf="!hideRows">
           <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
-                          ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
+                          ccdLabelSubstitutor [caseField]="getFirstColumnField(rowIndex)"
                           [contextFields]="result.hydrated_case_fields"
                           [elementsToSubstitute]="['value']"></ccd-field-read>
           <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>

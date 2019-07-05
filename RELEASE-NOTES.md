@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.4 - July 05 2019
+**RDM-5044** Field interpolation is broken on workbasket results
+
 ### Version 2.58.3 - July 02 2019
 **RDM-5168** Sumbitted Callback fix
 
