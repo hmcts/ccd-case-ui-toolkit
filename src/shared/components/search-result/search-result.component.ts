@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges, OnInit } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { DisplayMode, Jurisdiction, CaseType, CaseState, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, CaseField, DRAFT_PREFIX, PaginationMetadata, SortParameters,
   SearchResultViewItemComparator, SortOrder } from '../../domain';
@@ -6,13 +6,14 @@ import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss']
 })
-export class SearchResultComponent implements OnChanges, OnInit {
+export class SearchResultComponent implements OnChanges {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
@@ -51,8 +52,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   hideRows: boolean;
 
-  firstColumnFields: CaseField[] = [];
-
   selected: {
     init?: boolean,
     jurisdiction?: Jurisdiction,
@@ -79,6 +78,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
     if (changes['resultView']) {
       this.hideRows = false;
 
@@ -100,23 +100,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
-  }
-
-  ngOnInit() {
-    // Ensure first column field values are resolved by label interpolation before the view is rendered.
-    this.populateFirstColumnFields();
-  }
-
-  populateFirstColumnFields() {
-    this.resultView.results.forEach(result => {
-      this.firstColumnFields.push(this.getColumnFieldWithPrefix(
-        result.columns[this.resultView.columns[0].case_field_id],
-        result));
-    });
-  }
-
-  getFirstColumnField(rowIndex) {
-    return this.firstColumnFields[rowIndex];
   }
 
   /**
@@ -180,7 +163,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     });
   }
 
-  getColumnFieldWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
+  getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
     col.value = this.draftPrefixOrGet(col, result);
     return col;
   }
