@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.5 - July 09 2019
+**RDM-4279** Fix for DAC Focus Order
+
 ### Version 2.58.3 - July 02 2019
 **RDM-5168** Sumbitted Callback fix
 
