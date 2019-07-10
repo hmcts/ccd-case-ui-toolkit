@@ -1,4 +1,4 @@
-<mv-media-viewer [url]="document.document_binary_url"
+<mv-media-viewer [url]="document.document_binary_url | ccdDocumentUrl"
                  [downloadFileName]="document.document_filename"
                  [showToolbar]="true"
                  [contentType]="document.contentType">

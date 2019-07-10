@@ -429,13 +429,12 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
   integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
-"@hmcts/media-viewer@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-0.1.1.tgz#4d4876593a89071de570da51c081954c80f6e14b"
-  integrity sha512-CKktJJf31uArdlblE+fnSKxBiDbG6TEYuWSRXmMDUbiPXgMEkUMtwx42Mf80quonsxtLymzTamfpIv3y1W0AiQ==
+"@hmcts/media-viewer@0.1.0-credentials-fix":
+  version "0.1.0-credentials-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-0.1.0-credentials-fix.tgz#284c308afdff3e63ac81e03050bce7bb47f4de64"
+  integrity sha512-dJhGvGY7PgraENizdu1q/QxryI52YVl7qHwItE1nJWKyztnbNu2K4VjghZvyZbDqbVa/M2GDfpT+IeR1/Wh3JQ==
   dependencies:
     "@hmcts/frontend" "^0.0.34-alpha"
-    angular2-draggable "^2.3.0"
     govuk-frontend "^2.11.0"
     pdfjs-dist "^2.0.943"
     tslib "^1.9.0"
@@ -1037,13 +1036,6 @@ amdefine@>=0.0.4, amdefine@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
-
-angular2-draggable@^2.3.0:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/angular2-draggable/-/angular2-draggable-2.3.2.tgz#54ca569a6b3aa9ca1a8a4d663d3eee3024c48af3"
-  integrity sha512-rw2O/icgVang8uSVIU7nmm59f1DceSAUQkOuSGYnKbv/h8EbhJ9099sCjh/I5LymZBza1XPKeFZofIvhekdE+A==
-  dependencies:
-    tslib "^1.9.0"
 
 angular2-template-loader@^0.6.2:
   version "0.6.2"
