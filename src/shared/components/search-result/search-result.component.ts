@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
-import { plainToClass } from 'class-transformer';
+import { PlaceholderService } from '../../directives';
 
 @Component({
   selector: 'ccd-search-result',
@@ -70,7 +70,8 @@ export class SearchResultComponent implements OnChanges {
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
     appConfig: AbstractAppConfig,
     private activityService: ActivityService,
-    private caseReferencePipe: CaseReferencePipe
+    private caseReferencePipe: CaseReferencePipe,
+    private placeholderService: PlaceholderService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -165,6 +166,7 @@ export class SearchResultComponent implements OnChanges {
 
   getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
     col.value = this.draftPrefixOrGet(col, result);
+    col.value = this.placeholderService.resolvePlaceholders(result.case_fields, col.value);
     return col;
   }
 
