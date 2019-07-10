@@ -9,8 +9,9 @@ import { FormGroup } from '@angular/forms';
 import createSpyObj = jasmine.createSpyObj;
 import { Jurisdiction, CaseType, CaseState, PaginationMetadata, SearchResultView, DRAFT_PREFIX, SearchResultViewItem } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
+import { ActivityService, SearchResultViewItemComparatorFactory, FieldsUtils } from '../../services';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
+import { PlaceholderService } from '../../directives';
 
 @Component({
   selector: 'ccd-field-read',
@@ -162,6 +163,8 @@ describe('SearchResultComponent', () => {
           ],
           schemas: [NO_ERRORS_SCHEMA],
           providers: [
+            PlaceholderService,
+            FieldsUtils,
             SearchResultViewItemComparatorFactory,
             { provide: ActivityService, useValue: activityService },
             PaginationService,
@@ -489,6 +492,8 @@ describe('SearchResultComponent', () => {
           ],
           schemas: [NO_ERRORS_SCHEMA],
           providers: [
+            PlaceholderService,
+            FieldsUtils,
             SearchResultViewItemComparatorFactory,
             { provide: ActivityService, useValue: activityService },
             PaginationService,
