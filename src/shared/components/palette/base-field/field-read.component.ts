@@ -28,19 +28,22 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   }
 
   ngOnInit(): void {
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    // Ensure all field values are resolved by label interpolation before the component is fully initialised.
+    Promise.resolve(null).then(() => {
+      let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
+      let injector = Injector.create([], this.fieldContainer.parentInjector);
+      let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
-    // Provide component @Inputs
-    component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
-    component.instance['caseFields'] = this.caseFields;
-    component.instance['formGroup'] = this.formGroup;
-    component.instance['caseReference'] = this.caseReference;
-    component.instance['context'] = this.context;
-    component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
+      // Provide component @Inputs
+      component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
+      component.instance['caseFields'] = this.caseFields;
+      component.instance['formGroup'] = this.formGroup;
+      component.instance['caseReference'] = this.caseReference;
+      component.instance['context'] = this.context;
+      component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
 
-    this.fieldContainer.insert(component.hostView);
+      this.fieldContainer.insert(component.hostView);
+    });
   }
 
 }
