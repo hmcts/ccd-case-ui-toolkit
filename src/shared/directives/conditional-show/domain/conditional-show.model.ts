@@ -126,8 +126,9 @@ export class ShowCondition {
             try {
               let arrayIndex = Number.parseInt(pathTail[0], 10);
               const [__, ...dropNumberPath] = pathTail;
-              let newFields = fields[head][arrayIndex] !== undefined ? fields[head][arrayIndex]['value'] : fields[head];
-              return this.findValueForComplexCondition(newFields, tail[0], tail.slice(1), dropNumberPath.join('_'));
+              // undefined possible when FormArray control removing an item simultaneously(asynchronously)
+              return (fields[head][arrayIndex] !== undefined) ?
+                this.findValueForComplexCondition(fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
             } catch (e) {
               console.log('Error while parsing number', pathTail[0], e);
             }
