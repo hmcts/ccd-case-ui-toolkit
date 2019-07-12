@@ -30,17 +30,16 @@ export class DocumentManagementService {
       );
   }
 
-  createDocViewer(caseField: CaseField): string {
-    let docViewer = {};
+  createMediaViewer(caseField: CaseField): string {
+    let mediaViewer = {};
     if (caseField.value) {
-      docViewer = {
-        document_url: caseField.value.document_url,
+      mediaViewer = {
         document_binary_url: caseField.value.document_binary_url,
         document_filename: caseField.value.document_filename,
         contentType: this.getContentType(caseField)
       }
     }
-    return JSON.stringify(docViewer);
+    return JSON.stringify(mediaViewer);
   }
 
   getContentType(caseField: CaseField): string {

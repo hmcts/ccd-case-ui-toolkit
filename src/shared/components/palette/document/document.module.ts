@@ -6,7 +6,7 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { RouterModule } from '@angular/router';
-import { DocViewerComponent } from './doc-viewer.component';
+import { MediaViewerComponent } from './media-viewer.component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 
 @NgModule({
@@ -20,7 +20,7 @@ import { MediaViewerModule } from '@hmcts/media-viewer';
   declarations: [
     DocumentUrlPipe,
     ReadDocumentFieldComponent,
-    DocViewerComponent,
+    MediaViewerComponent,
     WriteDocumentFieldComponent
   ],
   entryComponents: [

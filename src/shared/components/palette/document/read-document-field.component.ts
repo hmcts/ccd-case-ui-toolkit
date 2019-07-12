@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
 
+const MEDIA_VIEWER = 'media-viewer';
+
 @Component({
   selector: 'ccd-read-document-field',
   templateUrl: './read-document-field.html'
@@ -16,10 +18,10 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent {
     super();
   }
 
-  showDocViewer(): void {
-    let routerDocViewer = this.router.createUrlTree(['/doc-viewer']);
-    this.windowService.setLocalStorage('DOC_VIEWER', this.documentManagement.createDocViewer(this.caseField));
-    window.open(routerDocViewer.toString(), '_blank');
+  showMediaViewer(): void {
+    let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
+    this.windowService.setLocalStorage(MEDIA_VIEWER, this.documentManagement.createMediaViewer(this.caseField));
+    window.open(routerMediaViewer.toString(), '_blank');
   }
 
 }
