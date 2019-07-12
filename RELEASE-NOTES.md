@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.8 - July 12 2019
+**RDM-4673** Show/Hide condition handling on New Collection View UI change 
+
 ### Version 2.58.7 - July 11 2019
 **RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
 **RDM-3480** Document links getting lost in Mandatory field on Complex Type
