@@ -34,9 +34,9 @@ export class DocumentManagementService {
     let mediaViewer = {};
     if (caseField.value) {
       mediaViewer = {
-        document_binary_url: caseField.value.document_binary_url,
+        document_binary_url: this.transformDocumentUrl(caseField.value.document_binary_url),
         document_filename: caseField.value.document_filename,
-        contentType: this.getContentType(caseField)
+        content_type: this.getContentType(caseField),
       }
     }
     return JSON.stringify(mediaViewer);
@@ -49,5 +49,10 @@ export class DocumentManagementService {
         .slice(caseField.value.document_filename.lastIndexOf('.') + 1);
     }
     return (fileExtension == 'pdf') ? DocumentManagementService.PDF : DocumentManagementService.IMAGE;
+  }
+
+  transformDocumentUrl(value: string): string {
+    let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
+    return value.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
   }
 }

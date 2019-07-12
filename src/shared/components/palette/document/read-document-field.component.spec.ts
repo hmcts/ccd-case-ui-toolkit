@@ -39,6 +39,7 @@ describe('ReadDocumentFieldComponent', () => {
       value: VALUE
     });
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
+    const DOCUMENT_CLICKABLE_HREF = 'javascript:void(0)';
 
     let fixture: ComponentFixture<ReadDocumentFieldComponent>;
     let component: ReadDocumentFieldComponent;
@@ -49,9 +50,9 @@ describe('ReadDocumentFieldComponent', () => {
       mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
       mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
       mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(VALUE.document_binary_url);
-      mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
+      mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'createMediaViewer']);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-      router = createSpyObj<Router>('router', ['navigate']);
+      router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
 
       TestBed
@@ -86,8 +87,19 @@ describe('ReadDocumentFieldComponent', () => {
       expect(text(de)).toEqual(VALUE.document_filename.toString());
       let linkElement = de.query(By.css('a'));
       expect(linkElement).toBeTruthy();
-      // Below in-progress...
-      // expect(attr(linkElement, 'href')).toEqual(GATEWAY_DOCUMENT_URL);
+      expect(attr(linkElement, 'href')).toEqual(DOCUMENT_CLICKABLE_HREF);
+    });
+
+    it('should call Media Viewer when the document link is clicked', () => {
+      component.caseField.value = VALUE;
+      fixture.detectChanges();
+      spyOn(component, 'showMediaViewer');
+      let linkElement = de.query(By.css('a'));
+      expect(linkElement).toBeTruthy();
+      linkElement.triggerEventHandler('click', null);
+      fixture.detectChanges();
+      component.showMediaViewer();
+      expect(component.showMediaViewer).toHaveBeenCalled();
     });
 
     it('should render undefined value as empty string', () => {

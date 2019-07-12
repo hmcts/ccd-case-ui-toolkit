@@ -11,7 +11,7 @@ export class MediaViewerComponent implements OnInit {
 
   mediaURL: string = '';
   mediaFilename: string = '';
-  mediaContentType: string = ''
+  mediaContentType: string = '';
 
   public constructor(private windowService: WindowService) {
   }
@@ -22,7 +22,7 @@ export class MediaViewerComponent implements OnInit {
       const media = JSON.parse(localstorageMedia);
       this.mediaURL = media.document_binary_url;
       this.mediaFilename = media.document_filename;
-      this.mediaContentType = media.contentType;
+      this.mediaContentType = media.content_type;
     }
     this.windowService.removeLocalStorage(MEDIA_VIEWER);
   }
