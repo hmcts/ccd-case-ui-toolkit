@@ -271,7 +271,7 @@ describe('CasesService', () => {
 
     const EVENT_RESPONSE = { id: 5 };
     const EMPTY_RESPONSE = { id: '' };
-    const HEADERS = new Headers({'content-type': 'application/json;charset=UTF-8'});
+    const HEADERS = new Headers({'content-type': CasesService.V2_MEDIATYPE_CREATE_EVENT});
 
     beforeEach(() => {
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({

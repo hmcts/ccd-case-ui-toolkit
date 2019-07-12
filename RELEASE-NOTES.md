@@ -1,5 +1,18 @@
 ## RELEASE NOTES
 
+### Version 2.58.7 - July 11 2019
+**RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
+**RDM-3480** Document links getting lost in Mandatory field on Complex Type
+
+### Version 2.58.6 - July 10 2019
+**RDM-5044** Fix for Field interpolation is broken on workbasket results
+
+### Version 2.58.5 - July 09 2019
+**RDM-4279** Fix for DAC Focus Order
+
+### Version 2.58.3 - July 02 2019
+**RDM-5168** Sumbitted Callback fix
+
 ### Version 2.58.2 - July 01 2019
 **RDM-4266** DAC - List mark-up
 **RDM-4274** DAC - Non-Descriptive form fields 
