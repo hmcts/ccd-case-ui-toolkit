@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.58.7 - July 11 2019
+**RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
+**RDM-3480** Document links getting lost in Mandatory field on Complex Type
+
 ### Version 2.58.6 - July 10 2019
 **RDM-5044** Fix for Field interpolation is broken on workbasket results
 
