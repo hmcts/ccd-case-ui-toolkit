@@ -1,5 +1,29 @@
 ## RELEASE NOTES
 
+### Version 2.58.8 - July 12 2019
+**RDM-4673** Show/Hide condition handling on New Collection View UI change 
+
+### Version 2.58.7 - July 11 2019
+**RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
+**RDM-3480** Document links getting lost in Mandatory field on Complex Type
+
+### Version 2.58.6 - July 10 2019
+**RDM-5044** Fix for Field interpolation is broken on workbasket results
+
+### Version 2.58.5 - July 09 2019
+**RDM-4279** Fix for DAC Focus Order
+
+### Version 2.58.3 - July 02 2019
+**RDM-5168** Sumbitted Callback fix
+
+### Version 2.58.2 - July 01 2019
+**RDM-4266** DAC - List mark-up
+**RDM-4274** DAC - Non-Descriptive form fields 
+**RDM-4282** DAC - no postcode link P1 - Colour contrast
+
+### Version 2.58.1 - July 1 2019
+**RDM-4525** Remove unused id on write fixed list field template as breaking external tests.
+
 ### Version 2.58.0 - June 27 2019
 **RDM-4890** Integrate New Postcode Lookup into CCD
 **RDM-3782** Previous Case Reference data is displayed until new data is loaded
