@@ -91,7 +91,7 @@
     "codecov": "^3.0.0",
     "codelyzer": "^4.1.0",
     "concurrently": "^4.0.1",
-    "core-js": "^2.4.1",
+    "core-js": "^2.6.9",
     "css-loader": "^1.0.0",
     "del": "^3.0.0",
     "expect": "^23.0.0",
