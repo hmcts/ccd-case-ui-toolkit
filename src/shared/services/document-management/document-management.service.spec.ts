@@ -89,6 +89,11 @@ describe('DocumentManagementService', () => {
       document_filename: 'sample.jpeg',
       content_type: 'image'
     };
+    const MEDIA_VIEWER_OTHER = {
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.doc',
+      content_type: null
+    };
 
     it('should return contentType as pdf for the PDF document', () => {
       CASE_FIELD.value.document_filename = 'media.pdf';
@@ -110,6 +115,12 @@ describe('DocumentManagementService', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.pdf';
       expect(documentManagementService.createMediaViewer(CASE_FIELD)).toBe(JSON.stringify(MEDIA_VIEWER_PDF));
+    });
+
+    it('should return media viewer data for other contentType', () => {
+      CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
+      CASE_FIELD.value.document_filename = 'sample.doc';
+      expect(documentManagementService.createMediaViewer(CASE_FIELD)).toBe(JSON.stringify(MEDIA_VIEWER_OTHER));
     });
   });
 });

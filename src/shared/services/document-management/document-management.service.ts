@@ -14,6 +14,8 @@ export class DocumentManagementService {
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
 
+  imagesList: string[] = ['JPEG', 'GIF', 'PNG', 'TIF', 'JPG'];
+
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
   uploadFile(formData: FormData): Observable<DocumentData> {
@@ -48,7 +50,17 @@ export class DocumentManagementService {
       fileExtension = caseField.value.document_filename
         .slice(caseField.value.document_filename.lastIndexOf('.') + 1);
     }
-    return (fileExtension == 'pdf') ? DocumentManagementService.PDF : DocumentManagementService.IMAGE;
+    if (this.isImage(fileExtension)) {
+      return DocumentManagementService.IMAGE;
+    } else if (fileExtension == 'pdf') {
+      return DocumentManagementService.PDF;
+    } else {
+      return null;
+    }
+  }
+
+  isImage(imageType: string) {
+    return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
   }
 
   transformDocumentUrl(value: string): string {
