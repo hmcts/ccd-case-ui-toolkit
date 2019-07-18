@@ -1021,6 +1021,153 @@ describe('WorkbasketFiltersComponent', () => {
     });
   });
 
+  describe('with no defaults', () => {
+    const SELECT_A_VALUE = 'Select a value';
+    const JURISDICTION_ONE: Jurisdiction = {
+      id: 'J1',
+      name: 'Jurisdiction 1',
+      description: '',
+      caseTypes: CASE_TYPES_1
+    };
+
+    beforeEach(async(() => {
+      workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
+      router = createSpyObj<Router>('router', ['navigate']);
+      router.navigate.and.returnValue(Promise.resolve('someResult'));
+      alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
+      orderService = createSpyObj('orderService', ['sortAsc']);
+      workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
+      jurisdictionService = new JurisdictionService();
+      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+      windowService.getLocalStorage.and.returnValue('{}');
+      activatedRoute = {
+        queryParams: Observable.of({}),
+        snapshot: {
+          queryParams: {}
+        }
+      };
+
+      TestBed
+        .configureTestingModule({
+          imports: [
+            FormsModule,
+            ReactiveFormsModule
+          ],
+          declarations: [
+            WorkbasketFiltersComponent,
+            FieldWriteComponent
+          ],
+          providers: [
+            { provide: Router, useValue: router },
+            { provide: ActivatedRoute, useValue: activatedRoute },
+            { provide: OrderService, useValue: orderService },
+            { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
+            { provide: JurisdictionService, useValue: jurisdictionService },
+            { provide: AlertService, useValue: alertService },
+            { provide: WindowService, useValue: windowService },
+          ]
+        })
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(WorkbasketFiltersComponent);
+          component = fixture.componentInstance;
+
+          component.jurisdictions = [
+            JURISDICTION_ONE,
+          ];
+          component.formGroup = TEST_FORM_GROUP;
+          component.defaults = { };
+          component.onApply.subscribe(workbasketHandler.applyFilters);
+
+          de = fixture.debugElement;
+          fixture.detectChanges();
+        });
+    }));
+    it('  ', async(() => {
+      component.selected.jurisdiction = JURISDICTION_2;
+      component.selected.caseType = null;
+      component.selected.caseState = null;
+
+      fixture.detectChanges();
+      let button = de.query($APPLY_BUTTON);
+      expect(button.nativeElement.disabled).toBeTruthy();
+    }));
+
+    it('should initialise jurisdiction selector with "Select a value"', () => {
+      let selector = de.query(By.css('#wb-jurisdiction'));
+
+      expect(selector.children.length).toEqual(2);
+
+      expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+
+      expect(selector.nativeElement.selectedIndex).toEqual(0);
+
+    });
+
+    it('should initialise case type selector and case state as blank', () => {
+      let selector = de.query(By.css('#wb-case-type'));
+
+      expect(selector.children.length).toEqual(1);
+      expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+      expect(selector.nativeElement.selectedIndex).toEqual(-1);
+
+      selector = de.query(By.css('#wb-case-state'));
+
+      expect(selector.children.length).toEqual(1);
+      expect(selector.children[0].nativeElement.textContent).toEqual('Any');
+      expect(selector.nativeElement.selectedIndex).toEqual(-1);
+
+    });
+
+    it('should initialise case type with types from selected jurisdiction and index should be "Select a value" ', async(() => {
+      component.selected.jurisdiction = JURISDICTION_ONE;
+      fixture.detectChanges();
+
+      component.onJurisdictionIdChange();
+      fixture.detectChanges();
+
+      fixture
+        .whenStable()
+        .then(() => {
+          let selector = de.query(By.css('#wb-jurisdiction'));
+          expect(selector.nativeElement.selectedIndex).toEqual(1);
+          expect(component.selected.jurisdiction).toBe(JURISDICTION_ONE);
+
+          selector = de.query(By.css('#wb-case-type'));
+
+          expect(selector.children.length).toEqual(2);
+          expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+          expect(selector.nativeElement.selectedIndex).toEqual(0);
+        });
+    }));
+
+    it('should initialise case state with states from selected case type and index should be first state ', async(() => {
+      component.selected.jurisdiction = JURISDICTION_ONE;
+      component.onJurisdictionIdChange();
+      fixture.detectChanges();
+
+      component.selected.caseType = CASE_TYPES_1[0];
+      fixture.detectChanges();
+
+      component.onCaseTypeIdChange();
+      fixture.detectChanges();
+
+      fixture
+        .whenStable()
+        .then(() => {
+          let selector = de.query(By.css('#wb-case-type'));
+          expect(selector.nativeElement.selectedIndex).toEqual(1);
+          expect(component.selected.caseType).toBe(CASE_TYPES_1[0]);
+
+          selector = de.query(By.css('#wb-case-state'));
+
+          expect(selector.children.length).toEqual(3);
+          expect(selector.nativeElement.selectedIndex).toEqual(1);
+        });
+    }));
+  });
+
 });
 
 function resetCaseTypes(jurisdiction: Jurisdiction, caseTypes: CaseType[]) {
