@@ -90,7 +90,6 @@ Install Yarn by following the [instructions](https://yarnpkg.com/en/docs/install
 
 ## Start project in watch mode
 - `yarn start:watch` for starting version of demo project and start watching for library changes.
-
 This command may be used simultaneously in combination with [ccd-case-ui-toolkit](https://github.com/hmcts/ccd-case-ui-toolkit)'s `yarn build:watch`. As a result once you change library source code it will be automatically re-compiled and in turn your demo-project will be automatically re-built and you will be able to see that changes in your browser instantly. 
 
 See [Development Workflow](https://github.com/hmcts/ccd-case-ui-toolkit#development-workflow) section of [ccd-case-ui-toolkit](hhttps://github.com/hmcts/ccd-case-ui-toolkit)'s README for more details.

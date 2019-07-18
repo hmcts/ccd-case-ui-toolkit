@@ -6,7 +6,7 @@ import { PlaceholderService } from './services';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
- * Checks all labels and substitutes any that reference other ones.
+ * Checks all labels and substitutes any placholders that reference other fields values.
  */
 export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 

@@ -6,15 +6,18 @@ describe('FixedListPipe', () => {
   const FIXED_LIST: FixedListItem[] = [
     {
       code: 'M',
-      label: 'Male'
+      label: 'Male',
+      order: 1
     },
     {
       code: 'F',
-      label: 'Female'
+      label: 'Female',
+      order: 2
     },
     {
       code: 'O',
-      label: 'Other'
+      label: 'Other',
+      order: 3
     }
   ];
   const EMPTY = '';
