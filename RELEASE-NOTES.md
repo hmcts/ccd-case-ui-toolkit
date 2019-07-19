@@ -1,5 +1,6 @@
 ## RELEASE NOTES
 
+### Version 2.58.12 - July 19 2019
 **RDM-5031** redirect to case-list when user do not have access to the case after an event
 
 ### Version 2.58.8 - July 12 2019
