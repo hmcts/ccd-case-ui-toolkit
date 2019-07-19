@@ -20,15 +20,18 @@ describe('ReadMultiSelectListFieldComponent', () => {
     fixed_list_items: [
       {
         label: 'Pierre',
-        code: 'P'
+        code: 'P',
+        order: 1
       },
       {
         label: 'Paul',
-        code: 'PA'
+        code: 'PA',
+        order: 2
       },
       {
         label: 'Jacques',
-        code: 'J'
+        code: 'J',
+        order: 3
       }
     ]
   };

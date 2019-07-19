@@ -17,15 +17,18 @@ describe('ReadFixedListFieldComponent', () => {
     fixed_list_items: [
       {
         code: 'M',
-        label: 'Male'
+        label: 'Male',
+        order: 1
       },
       {
         code: VALUE,
-        label: EXPECTED_LABEL
+        label: EXPECTED_LABEL,
+        order: 2
       },
       {
         code: 'O',
-        label: 'Other'
+        label: 'Other',
+        order: 3
       }
     ]
   };
@@ -34,15 +37,18 @@ describe('ReadFixedListFieldComponent', () => {
     const ITEMS = [
       {
         code: 'M',
-        label: 'Male'
+        label: 'Male',
+        order: 1
       },
       {
         code: VALUE,
-        label: EXPECTED_LABEL
+        label: EXPECTED_LABEL,
+        order: 2
       },
       {
         code: 'O',
-        label: 'Other'
+        label: 'Other',
+        order: 3
       }
     ];
 
@@ -129,15 +135,18 @@ describe('ReadFixedListFieldComponent', () => {
     const ITEMS = [
       {
         code: 'M',
-        label: 'Male'
+        label: 'Male',
+        order: 1
       },
       {
         code: 'F',
-        label: 'Female'
+        label: 'Female',
+        order: 2
       },
       {
         code: 'O',
-        label: 'Other'
+        label: 'Other',
+        order: 3
       }
     ];
     const CASE_FIELD_DYNAMIC_LIST: CaseField = Object.assign(new CaseField(), {

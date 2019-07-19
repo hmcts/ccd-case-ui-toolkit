@@ -179,7 +179,7 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
     createFieldType('defendantTimeLineEvents-acd64b3a', 'Collection', [], TIMELINE_EVENT_COMPLEX), null);
   const RESPONSE_SUBJECT_LIST_ITEM = createCaseField('responseSubject', 'Who is this response from?', '',
     createFixedListFieldType('ResponseSubject',
-      [{code: 'Res_CLAIMANT', label: 'Claimant response'}, {code: 'Res_DEFENDANT', label: 'Defendant response'}]),
+      [{code: 'Res_CLAIMANT', label: 'Claimant response', order: 1}, {code: 'Res_DEFENDANT', label: 'Defendant response', order: 2}]),
     null);
   const PARTY_NAME_TEXT_FIELD = createCaseField('partyName', 'Defendant Name', '', textFieldType(), null);
   const RESPONDENT_COMPLEX_FIELD_TYPE = createFieldType('Respondent', 'Complex',
