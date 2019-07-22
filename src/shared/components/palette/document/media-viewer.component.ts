@@ -9,9 +9,9 @@ const MEDIA_VIEWER = 'media-viewer';
 })
 export class MediaViewerComponent implements OnInit {
 
-  mediaURL: string = '';
-  mediaFilename: string = '';
-  mediaContentType: string = '';
+  mediaURL = '';
+  mediaFilename = '';
+  mediaContentType = '';
 
   public constructor(private windowService: WindowService) {
   }

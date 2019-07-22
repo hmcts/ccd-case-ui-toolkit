@@ -52,7 +52,7 @@ export class DocumentManagementService {
     }
     if (this.isImage(fileExtension)) {
       return DocumentManagementService.IMAGE;
-    } else if (fileExtension == 'pdf') {
+    } else if (fileExtension === 'pdf') {
       return DocumentManagementService.PDF;
     } else {
       return null;

@@ -47,10 +47,12 @@ describe('ReadDocumentFieldComponent', () => {
     let mockAppConfig: any;
 
     beforeEach(() => {
-      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig',
+        ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
       mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
       mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(VALUE.document_binary_url);
-      mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'createMediaViewer']);
+      mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService',
+        ['uploadFile', 'createMediaViewer']);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
