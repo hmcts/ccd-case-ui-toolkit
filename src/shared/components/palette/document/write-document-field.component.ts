@@ -58,7 +58,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
-    
+
     if (document) {
       this.createDocumentGroup(
         document.document_url,
@@ -69,8 +69,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileValidations () {
-    
-    console.log("fileValidations()"); 
 
     if (this.isAMandatoryComponet()) {
 
@@ -100,7 +98,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     this.valid = false;
     this.uploadError = 'Document required';
-    console.log("displayFileErrors()"); 
   }
   
   private  validateFormUploadedDocument() :  boolean {
@@ -144,13 +141,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.valid = false;       
       });
     } else {
-     
-      this.selectedFile = null;
 
+      this.selectedFile = null;
       this.uploadedDocument.get('document_url').setValue(null);
       this.uploadedDocument.get('document_binary_url').setValue(null);
       this.uploadedDocument.get('document_filename').setValue(null);
-      this.displayFileErrors();
+      
+      if (this.isAMandatoryComponet()) {
+        this.displayFileErrors();
+      }
     }
   }
 

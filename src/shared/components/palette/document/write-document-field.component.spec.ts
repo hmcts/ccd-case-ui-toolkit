@@ -33,6 +33,15 @@ describe('WriteDocumentFieldComponent', () => {
     field_type: FIELD_TYPE,
     value: VALUE
   });
+
+  const CASE_FIELD_MANDATORY: CaseField = <CaseField>({
+    id: 'x',
+    label: 'X',
+    display_context: 'MANDATORY',
+    field_type: FIELD_TYPE,
+    value: VALUE
+  });
+
   const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
   const RESPONSE_FIRST_DOCUMENT: DocumentData = {
     _embedded: {
@@ -129,6 +138,11 @@ describe('WriteDocumentFieldComponent', () => {
     fixture.detectChanges();
   });
 
+  it('should be valid for the initial component state.', () => {
+    console.log('component.caseField', component.caseField);
+    expect(component.valid).toBeTruthy();
+  });
+
   it('should render an element for file selection', () => {
     let uploadElement = de.query(By.css('input[type=file]'));
 
@@ -185,7 +199,26 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.valid).toBeFalsy();
   });
 
-  it('should be invalid if no document specified for upload', () => {
+  it('should be invalid if no document specified for upload for read only. Empty file.', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    component.ngOnInit()
+    expect(component.caseField.value).toBeTruthy();
+   
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(component.valid).toBeFalsy();
+    expect(component.uploadError).toEqual('Document required');
+  });
+
+  it('should be valid if no document specified for upload for not read only. Empty file.', () => {
+    
+    component.caseField = CASE_FIELD;
+    component.ngOnInit()
+    expect(component.caseField.value).toBeTruthy();
+   
     component.fileChangeEvent({
       target: {
         files: []
@@ -194,6 +227,7 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.valid).toBeTruthy();
   });
 
+  
   it('should display dialog only if document exist', () => {
     component.caseField.value = VALUE;
     expect(component.caseField.value).toBeTruthy();
@@ -344,9 +378,5 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     fixture.detectChanges();
   });
 
-  it('should be invalid if no document specified for upload', () => {
-    console.log('component.caseField', component.caseField);
-    expect(component.valid).toBeFalsy();
-    expect(component.uploadError).toEqual('Document required');
-  });
+
 });
