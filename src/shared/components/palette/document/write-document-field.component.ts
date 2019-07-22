@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
@@ -20,11 +20,26 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   valid = true;
   uploadError: string;
   confirmReplaceResult: string;
+  clickInsideTheDocument: boolean 
+
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    //Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
+
+    if(this.fileInput.nativeElement.contains(event.target)) {
+      this.clickInsideTheDocument=true
+      console.log("clicked inside");
+    } else {
+      console.log("clicked outside");  
+      this.fileValidations ()   
+    }
+  }
 
   constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog) {
     super();
   }
 
+  
   private initDialog() {
     this.dialogConfig = new MatDialogConfig();
     this.dialogConfig.disableClose = true;
@@ -43,11 +58,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
-    if (this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY) {
-      this.valid = false;
-      this.uploadError = 'Document required';
-    }
-
+    
     if (document) {
       this.createDocumentGroup(
         document.document_url,
@@ -55,12 +66,59 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document.document_filename,
       );
     }
-/*  else {
-      this.createDocumentGroup();
-    } */
+  }
+
+  fileValidations () {
+    
+    console.log("fileValidations()"); 
+
+    if (this.isAMandatoryComponet()) {
+
+      if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() ) {
+        this.displayFileErrors();
+      }       
+    }
+  }
+  fileValidationsOnTab () {
+
+    console.log("fileValidationsOnTab()"); 
+
+    if (this.isAMandatoryComponet()) {
+
+      if ( this.validateFormUploadedDocument() ) {
+        this.displayFileErrors();
+      }       
+    }
+  }
+
+  private isAMandatoryComponet() {
+
+    return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY; 
+  }
+
+  private displayFileErrors () {
+
+    this.valid = false;
+    this.uploadError = 'Document required';
+    console.log("displayFileErrors()"); 
+  }
+  
+  private  validateFormUploadedDocument() :  boolean {
+    
+    if (!this.uploadedDocument ) {
+      return true;
+    }
+
+    let validation = !this.uploadedDocument.get('document_url').valid &&
+          !this.uploadedDocument.get('document_binary_url').valid &&
+          !this.uploadedDocument.get('document_filename').valid;
+
+    return validation;
   }
 
   fileChangeEvent(fileInput: any) {
+    
+
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
 
@@ -69,7 +127,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
       documentUpload.append('classification', 'PUBLIC');
       this.documentManagement.uploadFile(documentUpload).subscribe(result => {
-        if (!this.uploadedDocument) {
+        if (!this.uploadedDocument ) {
           this.createDocumentGroup();
         }
 
@@ -83,19 +141,24 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.valid = true;
       }, (error: HttpError) => {
         this.uploadError = this.getErrorMessage(error);
-        this.valid = false;
+        this.valid = false;       
       });
     } else {
+     
       this.selectedFile = null;
-      this.valid = true;
+
+      this.uploadedDocument.get('document_url').setValue(null);
+      this.uploadedDocument.get('document_binary_url').setValue(null);
+      this.uploadedDocument.get('document_filename').setValue(null);
+      this.displayFileErrors();
     }
   }
 
   private createDocumentGroup(url?: string, binaryUrl?: string, filename?: string): void {
     this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url || ''),
-      document_binary_url: new FormControl(binaryUrl || ''),
-      document_filename: new FormControl(filename || '')
+      document_url: new FormControl(url || '',Validators.required ),
+      document_binary_url: new FormControl(binaryUrl || '',Validators.required ),
+      document_filename: new FormControl(filename || '',Validators.required )
     }));
   }
 
