@@ -37,7 +37,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     super();
   }
 
-  
   private initDialog() {
     this.dialogConfig = new MatDialogConfig();
     this.dialogConfig.disableClose = true;
@@ -68,16 +67,17 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   fileValidations () {
 
-    if (this.isAMandatoryComponet()) {
+    if (this.isAMandatoryComponent()) {
 
       if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() ) {
         this.displayFileErrors();
       }       
     }
   }
+
   fileValidationsOnTab () {
 
-    if (this.isAMandatoryComponet()) {
+    if (this.isAMandatoryComponent()) {
 
       if ( this.validateFormUploadedDocument() ) {
         this.displayFileErrors();
@@ -85,7 +85,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  private isAMandatoryComponet() {
+  private isAMandatoryComponent() {
 
     return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY; 
   }
@@ -143,7 +143,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.uploadedDocument.get('document_binary_url').setValue(null);
       this.uploadedDocument.get('document_filename').setValue(null);
       
-      if (this.isAMandatoryComponet()) {
+      if (this.isAMandatoryComponent()) {
         this.displayFileErrors();
       }
     }
