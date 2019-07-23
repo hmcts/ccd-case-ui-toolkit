@@ -15,64 +15,58 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 
+
+const FIELD_TYPE: FieldType = {
+  id: 'Document',
+  type: 'Document'
+};
+const VALUE = {
+  'document_url': 'https://www.example.com',
+  'document_binary_url': 'https://www.example.com/binary',
+  'document_filename': 'evidence_document.evd'
+};
+const CASE_FIELD: CaseField = <CaseField>({
+  id: 'x',
+  label: 'X',
+  display_context: 'OPTIONAL',
+  field_type: FIELD_TYPE,
+  value: VALUE
+});
+
+const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
+const RESPONSE_FIRST_DOCUMENT: DocumentData = {
+  _embedded: {
+    documents: [{
+      originalDocumentName: 'howto.pdf',
+      _links: {
+        self: {
+          href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+        },
+        binary: {
+          href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+        }
+      }
+    }]
+  }
+};
+const RESPONSE_SECOND_DOCUMENT: DocumentData = {
+  _embedded: {
+    documents: [{
+      originalDocumentName: 'plop.pdf',
+      _links: {
+        self: {
+          href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+        },
+        binary: {
+          href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+        }
+      }
+    }]
+  }
+};
+
 describe('WriteDocumentFieldComponent', () => {
 
-  const FIELD_TYPE: FieldType = {
-    id: 'Document',
-    type: 'Document'
-  };
-  const VALUE = {
-    'document_url': 'https://www.example.com',
-    'document_binary_url': 'https://www.example.com/binary',
-    'document_filename': 'evidence_document.evd'
-  };
-  const CASE_FIELD: CaseField = <CaseField>({
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  });
-
-  const CASE_FIELD_MANDATORY: CaseField = <CaseField>({
-    id: 'x',
-    label: 'X',
-    display_context: 'MANDATORY',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  });
-
-  const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
-  const RESPONSE_FIRST_DOCUMENT: DocumentData = {
-    _embedded: {
-      documents: [{
-        originalDocumentName: 'howto.pdf',
-        _links: {
-          self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
-          },
-          binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
-          }
-        }
-      }]
-    }
-  };
-  const RESPONSE_SECOND_DOCUMENT: DocumentData = {
-    _embedded: {
-      documents: [{
-        originalDocumentName: 'plop.pdf',
-        _links: {
-          self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
-          },
-          binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
-          }
-        }
-      }]
-    }
-  };
   const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});
   const REGISTER_CONTROL = (control) => {
@@ -197,34 +191,6 @@ describe('WriteDocumentFieldComponent', () => {
       }
     });
     expect(component.valid).toBeFalsy();
-  });
-
-  it('should be invalid if no document specified for upload for read only. Empty file.', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    component.ngOnInit()
-    expect(component.caseField.value).toBeTruthy();
-   
-    component.fileChangeEvent({
-      target: {
-        files: []
-      }
-    });
-    expect(component.valid).toBeFalsy();
-    expect(component.uploadError).toEqual('Document required');
-  });
-
-  it('should be valid if no document specified for upload for not read only. Empty file.', () => {
-    
-    component.caseField = CASE_FIELD;
-    component.ngOnInit()
-    expect(component.caseField.value).toBeTruthy();
-   
-    component.fileChangeEvent({
-      target: {
-        files: []
-      }
-    });
-    expect(component.valid).toBeTruthy();
   });
 
   
@@ -378,5 +344,33 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     fixture.detectChanges();
   });
 
+  it('should be invalid if no document specified for upload for read only. Empty file.', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    component.ngOnInit()
+    expect(component.caseField.value).toBeTruthy();
+   
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(component.valid).toBeFalsy();
+    expect(component.uploadError).toEqual('Document required');
+  });
 
+  it('should be valid if no document specified for upload for not read only. Empty file.', () => {
+    //Initialization.
+    component.valid = true;
+    component.caseField = CASE_FIELD;
+    component.ngOnInit()
+    expect(component.caseField.value).toBeTruthy();
+    expect(component.valid).toBeTruthy();
+    
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(component.valid).toBeTruthy();
+  });
 });

@@ -28,9 +28,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     if(this.fileInput.nativeElement.contains(event.target)) {
       this.clickInsideTheDocument=true
-      console.log("clicked inside");
-    } else {
-      console.log("clicked outside");  
+    } else {  
       this.fileValidations ()   
     }
   }
@@ -78,8 +76,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
   fileValidationsOnTab () {
-
-    console.log("fileValidationsOnTab()"); 
 
     if (this.isAMandatoryComponet()) {
 
@@ -141,7 +137,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.valid = false;       
       });
     } else {
-
+     
       this.selectedFile = null;
       this.uploadedDocument.get('document_url').setValue(null);
       this.uploadedDocument.get('document_binary_url').setValue(null);
