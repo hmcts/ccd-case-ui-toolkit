@@ -355,7 +355,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       }
     });
     expect(component.valid).toBeFalsy();
-    expect(component.uploadError).toEqual('Document required');
+    expect(component.uploadError).toEqual('File required');
   });
 
   it('should be valid if no document specified for upload for not read only. Empty file.', () => {
