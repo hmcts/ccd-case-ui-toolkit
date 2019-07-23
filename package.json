@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "v2.58.9",
+  "version": "2.58.12-RDM-4135-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -53,6 +53,8 @@
     "karma-jasmine-html-reporter": "^1.2.0",
     "mocha": "^5.0.5",
     "typescript": "3.1.1",
+    "@hmcts/media-viewer": "0.1.0-credentials-fix",
+    "@ng-toolkit/universal": "^1.1.45",
     "underscore": "^1.9.1"
   },
   "peerDependencies": {
