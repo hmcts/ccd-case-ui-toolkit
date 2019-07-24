@@ -20,16 +20,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   valid = true;
   uploadError: string;
   confirmReplaceResult: string;
-  clickInsideTheDocument: boolean 
+  clickInsideTheDocument: boolean
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-    //Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
+    // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
 
-    if(this.fileInput.nativeElement.contains(event.target)) {
-      this.clickInsideTheDocument=true
-    } else {  
-      this.fileValidations ()   
+    if (this.fileInput.nativeElement.contains(event.target)) {
+      this.clickInsideTheDocument = true
+    } else {
+      this.fileValidations()
     }
   }
 
@@ -71,7 +71,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
       if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() ) {
         this.displayFileErrors();
-      }       
+      }
     }
   }
 
@@ -81,13 +81,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
       if ( this.validateFormUploadedDocument() ) {
         this.displayFileErrors();
-      }       
+      }
     }
   }
 
   private isAMandatoryComponent() {
 
-    return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY; 
+    return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY;
   }
 
   private displayFileErrors () {
@@ -95,9 +95,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.valid = false;
     this.uploadError = 'File required';
   }
-  
-  private  validateFormUploadedDocument() :  boolean {
-    
+
+  private  validateFormUploadedDocument():  boolean {
     if (!this.uploadedDocument ) {
       return true;
     }
@@ -110,7 +109,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileChangeEvent(fileInput: any) {
-    
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -134,15 +132,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.valid = true;
       }, (error: HttpError) => {
         this.uploadError = this.getErrorMessage(error);
-        this.valid = false;       
+        this.valid = false;
       });
     } else {
-     
+
       this.selectedFile = null;
       this.uploadedDocument.get('document_url').setValue(null);
       this.uploadedDocument.get('document_binary_url').setValue(null);
       this.uploadedDocument.get('document_filename').setValue(null);
-      
+
       if (this.isAMandatoryComponent()) {
         this.displayFileErrors();
       }
@@ -151,9 +149,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private createDocumentGroup(url?: string, binaryUrl?: string, filename?: string): void {
     this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url || '',Validators.required ),
-      document_binary_url: new FormControl(binaryUrl || '',Validators.required ),
-      document_filename: new FormControl(filename || '',Validators.required )
+      document_url: new FormControl(url || '', Validators.required),
+      document_binary_url: new FormControl(binaryUrl || '', Validators.required),
+      document_filename: new FormControl(filename || '', Validators.required)
     }));
   }
 

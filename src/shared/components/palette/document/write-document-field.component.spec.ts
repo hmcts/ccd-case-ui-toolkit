@@ -15,7 +15,6 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 
-
 const FIELD_TYPE: FieldType = {
   id: 'Document',
   type: 'Document'
@@ -113,10 +112,10 @@ describe('WriteDocumentFieldComponent', () => {
           ReadDocumentComponent,
         ],
         providers: [
-          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DocumentDialogComponent
         ]
       })
@@ -193,7 +192,6 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.valid).toBeFalsy();
   });
 
-  
   it('should display dialog only if document exist', () => {
     component.caseField.value = VALUE;
     expect(component.caseField.value).toBeTruthy();
@@ -231,11 +229,11 @@ describe('WriteDocumentFieldComponent', () => {
 
 describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
-  const FIELD_TYPE: FieldType = {
+  const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
   };
-  const VALUE = {
+  const VALUE_MANDATORY = {
     'document_url': 'https://www.example.com',
     'document_binary_url': 'https://www.example.com/binary',
     'document_filename': 'evidence_document.evd'
@@ -245,35 +243,35 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     id: 'x',
     label: 'X',
     display_context: 'MANDATORY',
-    field_type: FIELD_TYPE,
-    value: VALUE
+    field_type: FIELD_TYPE_MANDATORY,
+    value: VALUE_MANDATORY
   });
-  const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
-  const RESPONSE_FIRST_DOCUMENT: DocumentData = {
+  const DOCUMENT_MANAGEMENT_URL_MANDATORY = 'http://docmanagement.ccd.reform/documents';
+  const RESPONSE_FIRST_DOCUMENT_MANDATORY: DocumentData = {
     _embedded: {
       documents: [{
         originalDocumentName: 'howto.pdf',
         _links: {
           self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123'
           },
           binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123/binary'
           }
         }
       }]
     }
   };
-  const RESPONSE_SECOND_DOCUMENT: DocumentData = {
+  const RESPONSE_SECOND_DOCUMENT_MANDATORY: DocumentData = {
     _embedded: {
       documents: [{
         originalDocumentName: 'plop.pdf',
         _links: {
           self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567'
           },
           binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567/binary'
           }
         }
       }]
@@ -308,8 +306,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
     mockDocumentManagementService.uploadFile.and.returnValues(
-      of(RESPONSE_FIRST_DOCUMENT),
-      of(RESPONSE_SECOND_DOCUMENT)
+      of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
+      of(RESPONSE_SECOND_DOCUMENT_MANDATORY)
     );
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
@@ -348,7 +346,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     component.caseField = CASE_FIELD_MANDATORY;
     component.ngOnInit()
     expect(component.caseField.value).toBeTruthy();
-   
+
     component.fileChangeEvent({
       target: {
         files: []
@@ -359,13 +357,13 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   });
 
   it('should be valid if no document specified for upload for not read only. Empty file.', () => {
-    //Initialization.
+    // Initialization.
     component.valid = true;
     component.caseField = CASE_FIELD;
     component.ngOnInit()
     expect(component.caseField.value).toBeTruthy();
     expect(component.valid).toBeTruthy();
-    
+
     component.fileChangeEvent({
       target: {
         files: []
