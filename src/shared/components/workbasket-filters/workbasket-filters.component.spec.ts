@@ -1179,7 +1179,7 @@ describe('WorkbasketFiltersComponent', () => {
           expect(selector.nativeElement.selectedIndex).toEqual(0);
           expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
           selector = de.query(By.css('#wb-case-type'));
-          expect(selector.nativeElement.selectedIndex).toEqual(0);
+          expect(selector.nativeElement.selectedIndex).toEqual(-1);
           selector = de.query(By.css('#wb-case-state'));
           expect(selector.nativeElement.selectedIndex).toEqual(-1);
         });
