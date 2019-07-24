@@ -106,6 +106,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   reset(): void {
     this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
     this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
+    this.resetFieldsWhenNoDefaults();
     this.onReset.emit(true);
   }
 
@@ -241,6 +242,16 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   isSearchableAndWorkbasketInputsReady(): boolean {
     return this.selected.jurisdiction && this.selected.caseType && this.workbasketInputsReady;
+  }
+
+  private resetFieldsWhenNoDefaults() {
+    if (!(this.defaults && this.defaults.jurisdiction_id)) {
+      this.workbasketDefaults = false;
+      this.selected.jurisdiction = null;
+      this.resetCaseType();
+      this.resetCaseState();
+      this.clearWorkbasketInputs();
+    }
   }
 
   private clearWorkbasketInputs() {

@@ -1039,7 +1039,8 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       jurisdictionService = new JurisdictionService();
-      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+      windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
+        'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -1166,6 +1167,25 @@ describe('WorkbasketFiltersComponent', () => {
           expect(selector.nativeElement.selectedIndex).toEqual(1);
         });
     }));
+
+    it('should remove localStorage and clear selected fields once reset button is clicked', async(() => {
+      component.reset();
+      fixture.detectChanges();
+
+      fixture
+        .whenStable()
+        .then(() => {
+          let selector = de.query(By.css('#wb-jurisdiction'));
+          expect(selector.nativeElement.selectedIndex).toEqual(0);
+          expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+          selector = de.query(By.css('#wb-case-type'));
+          expect(selector.nativeElement.selectedIndex).toEqual(0);
+          selector = de.query(By.css('#wb-case-state'));
+          expect(selector.nativeElement.selectedIndex).toEqual(-1);
+        });
+
+      expect(windowService.removeLocalStorage).toHaveBeenCalled();
+    }))
   });
 
 });
