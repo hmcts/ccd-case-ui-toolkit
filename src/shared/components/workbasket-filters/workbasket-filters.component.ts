@@ -265,7 +265,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private resetCaseType() {
-    this.selected.caseType = null;
+    this.selected.caseType = undefined; // option should be blank rather than "Select a value"
     this.selectedJurisdictionCaseTypes = null;
   }
 }
