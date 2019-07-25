@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { WindowService } from '../../../services/window';
 
 const MEDIA_VIEWER = 'media-viewer';
@@ -13,7 +13,9 @@ export class MediaViewerComponent implements OnInit {
   mediaFilename = '';
   mediaContentType = '';
 
-  public constructor(private windowService: WindowService) {
+  public constructor(public renderer: Renderer2,
+                     private el: ElementRef,
+                     private windowService: WindowService) {
   }
 
   ngOnInit() {
@@ -25,5 +27,18 @@ export class MediaViewerComponent implements OnInit {
       this.mediaContentType = media.content_type;
     }
     this.windowService.removeLocalStorage(MEDIA_VIEWER);
+    this.removeSideBar();
+  }
+
+  removeSideBar() {
+    if (this.el.nativeElement) {
+      let tempElement = this.el.nativeElement.parentElement
+      while (tempElement) {
+        if (tempElement.tagName === 'HTML') {
+          this.renderer.setStyle(tempElement, 'background-color', '#ffffff');
+        }
+        tempElement = tempElement.parentElement;
+      }
+    }
   }
 }
