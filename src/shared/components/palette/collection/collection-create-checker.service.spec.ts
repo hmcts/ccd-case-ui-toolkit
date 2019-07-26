@@ -16,7 +16,16 @@ describe('CollectionCreateCheckerService', () => {
   const DATE_TEXT_FIELD = createCaseField('date', 'Date', '', textFieldType(), 'READONLY', undefined, undefined, [acl1, acl2]);
   const DESCRIPTION_TEXT_FIELD = createCaseField('description', 'Description', '', textFieldType(), 'READONLY',
     undefined, undefined, [acl3]);
-  const TIMELINE_EVENT_COMPLEX = createFieldType('TimelineEvent', 'Complex', [DATE_TEXT_FIELD, DESCRIPTION_TEXT_FIELD]);
+  const CATEGORY_TEXT_FIELD = createCaseField('categoryText', 'Category name', '', textFieldType(),
+    'READONLY', undefined, undefined, [acl1, acl2]);
+  const COLOR_TEXT_FIELD = createCaseField('colorText', 'Category', '', textFieldType(), 'READONLY', undefined, undefined, [acl1, acl2]);
+  const CATEGORY_COMPLEX_TYPE = createFieldType('TimelineEvent', 'Complex', [CATEGORY_TEXT_FIELD, COLOR_TEXT_FIELD]);
+  const CATEGORY = createCaseField('categoy', 'Category', '', CATEGORY_COMPLEX_TYPE, 'READONLY', undefined, undefined, [acl1]);
+  const TAGS_COLLECTION = createCaseField('tags', 'Tags', '',
+    createFieldType('tagss-bbcd64b3a', 'Collection', [], textFieldType()), 'READONLY',
+    undefined, undefined, [acl1]);
+  const TIMELINE_EVENT_COMPLEX = createFieldType('TimelineEvent', 'Complex',
+    [DATE_TEXT_FIELD, DESCRIPTION_TEXT_FIELD, CATEGORY, TAGS_COLLECTION]);
   const TIMELINE_EVENTS_COLLECTION = createCaseField('defendantTimeLineEvents', 'Timeline Events', '',
     createFieldType('defendantTimeLineEvents-acd64b3a', 'Collection', [], TIMELINE_EVENT_COMPLEX), 'OPTIONAL',
     undefined, undefined, [acl2]);
@@ -55,8 +64,14 @@ describe('CollectionCreateCheckerService', () => {
   });
 
   it('should be created with all the dependencies', () => {
-    collectionCreateCheckerService.setDisplayContextForChildren(TIMELINE_EVENTS_COLLECTION, [TIMELINE_EVENTS_COLLECTION], profile);
+    collectionCreateCheckerService.setDisplayContextForChildren(TIMELINE_EVENTS_COLLECTION, profile);
     expect(TIMELINE_EVENTS_COLLECTION.field_type.collection_field_type.complex_fields[0].display_context).toEqual('OPTIONAL');
     expect(TIMELINE_EVENTS_COLLECTION.field_type.collection_field_type.complex_fields[1].display_context).toEqual('READONLY');
+    expect(TIMELINE_EVENTS_COLLECTION.field_type.collection_field_type.complex_fields[2].display_context).toEqual('OPTIONAL');
+    expect(TIMELINE_EVENTS_COLLECTION.field_type.collection_field_type.complex_fields[2].field_type.complex_fields[0].display_context)
+      .toEqual('OPTIONAL');
+    expect(TIMELINE_EVENTS_COLLECTION.field_type.collection_field_type.complex_fields[2].field_type.complex_fields[1].display_context)
+      .toEqual('OPTIONAL');
+    expect(TIMELINE_EVENTS_COLLECTION.field_type.collection_field_type.complex_fields[3].display_context).toEqual('OPTIONAL');
   });
 });

@@ -5,13 +5,16 @@ import { Profile } from '../../../domain/profile';
 @Injectable()
 export class CollectionCreateCheckerService {
 
-  public setDisplayContextForChildren(caseField: CaseField, caseFields: CaseField[], profile: Profile) {
+  public setDisplayContextForChildren(caseField: CaseField, profile: Profile) {
     let children = this.getCaseFieldChildren(caseField);
 
     if (children && children.length > 0) {
       children.forEach(child => {
         if (!!profile.user.idam.roles.find(role => this.hasCreateAccess(child, role))) {
           child.display_context = caseField.display_context;
+        }
+        if (this.isCollection(child) || this.isComplex(child)) {
+          this.setDisplayContextForChildren(child, profile)
         }
       });
     }
