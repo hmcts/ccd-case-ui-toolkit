@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.10 - July 26 2019
+**RDM-5053**  Dynamic list: Page Show condition fix
+
 ### Version 2.58.9 - July 19 2019
 **RDM-5031** redirect to case-list when user do not have access to the case after an event
 
@@ -48,7 +51,7 @@
 **RDM-4781** RDM-4781-Data not being shown on multi-select list
 
 ### Version 2.54.0 - June 07 2019
-**RDM-4336** RDM-4336 New external V2 Create Event endpoint 
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint  
 
 ### Version 2.53.0 - June 07 2019
 **RDM-4537** Case List Filters extraction and new contract
