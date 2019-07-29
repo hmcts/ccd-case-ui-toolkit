@@ -1,4 +1,4 @@
-export enum NavOrigins {
+export enum NavigationOrigin {
   DRAFT_DELETED,
   ERROR_DELETING_DRAFT,
   DRAFT_RESUMED,

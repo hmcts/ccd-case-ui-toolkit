@@ -2,7 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CaseViewerComponent } from './case-viewer.component';
-import { ActivityService, ActivityPollingService, OrderService, DraftService, HttpService } from '../../services';
+import {
+  ActivityService,
+  ActivityPollingService,
+  OrderService,
+  DraftService,
+  HttpService,
+  NavigationNotifierService
+} from '../../services';
 import { ErrorsModule } from '../error/errors.module';
 import { ActivityModule } from '../activity/activity.module';
 import { CaseHeaderModule } from '../case-header';
@@ -13,7 +20,7 @@ import { PaletteModule, EventLogModule } from '../palette';
 import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
-import { EventTriggerResolver, CaseResolver, NavigationNotifier } from './services';
+import { EventTriggerResolver, CaseResolver } from './services';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
@@ -48,7 +55,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
   ],
   providers: [
     CaseNotifier,
-    NavigationNotifier,
+    NavigationNotifierService,
     CaseReferencePipe,
     EventTriggerResolver,
     ActivityService,

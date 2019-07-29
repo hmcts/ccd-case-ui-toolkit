@@ -5,7 +5,7 @@ import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NavigationNotifier } from '../services/navigation.notifier';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
@@ -28,7 +28,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   caseDetails: CaseView;
 
   constructor(
-    private navigationNotifier: NavigationNotifier,
+    private navigationNotifier: NavigationNotifierService,
     private caseNofitier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,

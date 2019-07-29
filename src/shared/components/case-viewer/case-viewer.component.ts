@@ -18,8 +18,7 @@ import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
-import { NavigationNotifier } from './services/navigation.notifier';
-import { NavOrigins } from './domain';
+import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -56,7 +55,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private route: ActivatedRoute,
     private router: Router,
-    private navigationNotifier: NavigationNotifier,
+    private navigationNotifier: NavigationNotifierService,
     private orderService: OrderService,
     private activityPollingService: ActivityPollingService,
     private dialog: MatDialog,
@@ -107,7 +106,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   applyTrigger(trigger: CaseViewTrigger) {
-    console.log('applyTrigger trigger=', trigger);
     this.error = null;
 
     let theQueryParams: Params = {};
@@ -123,15 +121,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifier.announceNavigation({action: NavOrigins.DRAFT_DELETED});
-              // return this.router.navigate(['list/case'])
-              //   .then(() => {
-              //     this.alertService.setPreserveAlerts(true);
-              //     this.alertService.success(`The draft has been successfully deleted`);
-              //   });
+              this.navigationNotifier.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
             }, _ => {
-              this.navigationNotifier.announceNavigation({action: NavOrigins.ERROR_DELETING_DRAFT});
-              // return this.router.navigate(['list/case']);
+              this.navigationNotifier.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
             });
         }
       });
@@ -139,30 +131,17 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifier.announceNavigation(
-        {action: NavOrigins.DRAFT_RESUMED,
+        {action: NavigationOrigin.DRAFT_RESUMED,
           jid: this.caseDetails.case_type.jurisdiction.id,
           ctid: this.caseDetails.case_type.id,
           etid: trigger.id,
           queryParams : theQueryParams});
-      // return this.router.navigate(
-      //   ['create/case',
-      //     this.caseDetails.case_type.jurisdiction.id,
-      //     this.caseDetails.case_type.id,
-      //     trigger.id], { queryParams: theQueryParams } ).catch(error => {
-      //   this.handleError(error, trigger)
-      // });
     } else {
       this.navigationNotifier.announceNavigation(
-        {action: NavOrigins.EVENT_TRIGGERED,
+        {action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,
           etid: trigger.id,
           relativeTo: this.route});
-      // return this.router.navigate(['trigger', trigger.id], {
-      //   queryParams: theQueryParams,
-      //   relativeTo: this.route
-      // }).catch(error => {
-      //   this.handleError(error, trigger)
-      // });
     }
   }
 

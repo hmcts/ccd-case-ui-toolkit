@@ -1,4 +1,3 @@
-export * from './domain';
 export * from './services';
 export * from './case-event-trigger';
 export * from './case-view';

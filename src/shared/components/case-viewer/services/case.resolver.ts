@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { AlertService, DraftService } from '../../../services';
+import { AlertService, DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
-import { NavOrigins } from '../domain';
-import { NavigationNotifier } from './navigation.notifier';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -24,7 +23,7 @@ export class CaseResolver implements Resolve<CaseView> {
   constructor(private caseNotifier: CaseNotifier,
               private casesService: CasesService,
               private draftService: DraftService,
-              private navigationNotifier: NavigationNotifier,
+              private navigationNotifier: NavigationNotifierService,
               private router: Router,
               private alertService: AlertService) {
     router.events
@@ -50,9 +49,7 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private navigateToCaseList() {
-    // this.router.navigate(['/list/case'])
-    // .then(() => this.alertService.success(CaseResolver.CASE_CREATED_MSG));
-    this.navigationNotifier.announceNavigation({action: NavOrigins.NO_READ_ACCESS_REDIRECTION});
+    this.navigationNotifier.announceNavigation({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
     this.alertService.success(CaseResolver.CASE_CREATED_MSG);
   }
 
