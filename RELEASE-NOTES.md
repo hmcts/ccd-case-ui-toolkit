@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.11 - July 29 2019
+**RDM-4692** ccd-write-address-field id fix
+
 ### Version 2.58.10 - July 26 2019
 **RDM-5053**  Dynamic list: Page Show condition fix
 
