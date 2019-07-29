@@ -13,49 +13,51 @@ import { PaletteModule, EventLogModule } from '../palette';
 import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
-import { EventTriggerResolver, CaseResolver } from './services';
+import { EventTriggerResolver, CaseResolver, NavigationNotifier } from './services';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        ErrorsModule,
-        ActivityModule,
-        CaseHeaderModule,
-        EventTriggerModule,
-        TabsModule,
-        PaletteModule,
-        LabelSubstitutorModule,
-        CaseEditorModule,
-        PipesModule,
-        ConditionalShowModule,
-        CaseHistoryModule,
-        EventLogModule,
-    ],
-    declarations: [
-        CaseEventTriggerComponent,
-        CasePrinterComponent,
-        CaseViewerComponent,
-        CaseViewComponent,
-        PrintUrlPipe,
-    ],
-    exports: [
-        CaseViewerComponent,
-        CaseViewComponent,
-    ],
-    providers: [
-        CaseNotifier,
-        CaseReferencePipe,
-        EventTriggerResolver,
-        ActivityService,
-        ActivityPollingService,
-        OrderService,
-        DraftService,
-        HttpService,
-        CaseResolver,
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    ErrorsModule,
+    ActivityModule,
+    CaseHeaderModule,
+    EventTriggerModule,
+    TabsModule,
+    PaletteModule,
+    LabelSubstitutorModule,
+    CaseEditorModule,
+    PipesModule,
+    ConditionalShowModule,
+    CaseHistoryModule,
+    EventLogModule,
+  ],
+  declarations: [
+    CaseEventTriggerComponent,
+    CasePrinterComponent,
+    CaseViewerComponent,
+    CaseViewComponent,
+    PrintUrlPipe,
+  ],
+  exports: [
+    CaseViewerComponent,
+    CaseViewComponent,
+  ],
+  providers: [
+    CaseNotifier,
+    NavigationNotifier,
+    CaseReferencePipe,
+    EventTriggerResolver,
+    ActivityService,
+    ActivityPollingService,
+    OrderService,
+    DraftService,
+    HttpService,
+    CaseResolver,
+  ]
 })
-export class CaseViewerModule {}
+export class CaseViewerModule {
+}

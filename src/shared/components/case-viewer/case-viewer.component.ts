@@ -19,7 +19,7 @@ import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
 import { NavigationNotifier } from './services/navigation.notifier';
-import { ERROR_DELETING_DRAFT, DRAFT_DELETED, DRAFT_RESUMED, EVENT_TRIGGERED } from './domain';
+import { NavOrigins } from './domain';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -123,14 +123,14 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifier.announceNavigation({action: DRAFT_DELETED});
+              this.navigationNotifier.announceNavigation({action: NavOrigins.DRAFT_DELETED});
               // return this.router.navigate(['list/case'])
               //   .then(() => {
               //     this.alertService.setPreserveAlerts(true);
               //     this.alertService.success(`The draft has been successfully deleted`);
               //   });
             }, _ => {
-              this.navigationNotifier.announceNavigation({action: ERROR_DELETING_DRAFT});
+              this.navigationNotifier.announceNavigation({action: NavOrigins.ERROR_DELETING_DRAFT});
               // return this.router.navigate(['list/case']);
             });
         }
@@ -139,7 +139,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifier.announceNavigation(
-        {action: DRAFT_RESUMED,
+        {action: NavOrigins.DRAFT_RESUMED,
           jid: this.caseDetails.case_type.jurisdiction.id,
           ctid: this.caseDetails.case_type.id,
           etid: trigger.id,
@@ -153,7 +153,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       // });
     } else {
       this.navigationNotifier.announceNavigation(
-        {action: EVENT_TRIGGERED,
+        {action: NavOrigins.EVENT_TRIGGERED,
           queryParams: theQueryParams,
           etid: trigger.id,
           relativeTo: this.route});

@@ -6,6 +6,8 @@ import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { AlertService, DraftService } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
+import { NavOrigins } from '../domain';
+import { NavigationNotifier } from './navigation.notifier';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -22,6 +24,7 @@ export class CaseResolver implements Resolve<CaseView> {
   constructor(private caseNotifier: CaseNotifier,
               private casesService: CasesService,
               private draftService: DraftService,
+              private navigationNotifier: NavigationNotifier,
               private router: Router,
               private alertService: AlertService) {
     router.events
@@ -47,8 +50,10 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private navigateToCaseList() {
-    this.router.navigate(['/list/case'])
-    .then(() => this.alertService.success(CaseResolver.CASE_CREATED_MSG));
+    // this.router.navigate(['/list/case'])
+    // .then(() => this.alertService.success(CaseResolver.CASE_CREATED_MSG));
+    this.navigationNotifier.announceNavigation({action: NavOrigins.NO_READ_ACCESS_REDIRECTION});
+    this.alertService.success(CaseResolver.CASE_CREATED_MSG);
   }
 
   private isRootCaseViewRoute(route: ActivatedRouteSnapshot) {
