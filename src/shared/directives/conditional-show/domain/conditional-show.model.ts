@@ -1,5 +1,6 @@
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
+import { _ as _score } from 'underscore';
 
 export class ShowCondition {
 
@@ -116,7 +117,11 @@ export class ShowCondition {
 
   private findValueForComplexCondition(fields: any, head: string, tail: string[], path?: string) {
     if (tail.length === 0) {
-      return fields[head];
+      if (this.isDynamicList(fields[head])) {
+        return fields[head].value.code;
+      } else {
+        return fields[head];
+      }
     } else {
       if (Array.isArray(fields[head])) {
         // use the path to resolve which array element we refer to
@@ -144,6 +149,11 @@ export class ShowCondition {
         }
       }
     }
+  }
+
+  private isDynamicList(dynamiclist) {
+    return !_score.isEmpty(dynamiclist) &&
+      (_score.has(dynamiclist, 'value') && _score.has(dynamiclist, 'list_items'));
   }
 
   private unquoted(str) {

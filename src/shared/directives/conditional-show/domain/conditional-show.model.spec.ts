@@ -67,6 +67,19 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
+    it('dynamic list show condition', () => {
+      let sc = new ShowCondition('field="List3"');
+      let fields = {
+        field : { value: {code: 'List3', label: 'List 3'},
+        list_items: [{code: 'List1', label: 'List 2'},
+          {code: 'List2', label: 'List 3'},
+          {code: 'List3', label: 'List 3'}]
+      }
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(true);
+    });
+
     it('field has expected value', () => {
       let sc = new ShowCondition('field="s1"');
       let fields = {
