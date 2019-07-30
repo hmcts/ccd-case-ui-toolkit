@@ -125,10 +125,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     }
   }
 
-  buildIdPrefix(field: CaseField): string {
-    return this.isCompoundPipe.transform(field) ? `${this.idPrefix}_` : `${this.idPrefix}`;
-  }
-
   createId(elementId: string): string {
     return this.id() + '_' + elementId ;
   }
