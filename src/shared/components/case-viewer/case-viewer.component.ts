@@ -1,5 +1,5 @@
 import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
@@ -54,8 +54,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   constructor(
     private ngZone: NgZone,
     private route: ActivatedRoute,
-    private router: Router,
-    private navigationNotifier: NavigationNotifierService,
+    private navigationNotifierService: NavigationNotifierService,
     private orderService: OrderService,
     private activityPollingService: ActivityPollingService,
     private dialog: MatDialog,
@@ -121,23 +120,23 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifier.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
+              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
             }, _ => {
-              this.navigationNotifier.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
+              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
             });
         }
       });
     } else if (this.isDraft() && trigger.id !== CaseViewTrigger.DELETE) {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
-      this.navigationNotifier.announceNavigation(
+      this.navigationNotifierService.announceNavigation(
         {action: NavigationOrigin.DRAFT_RESUMED,
           jid: this.caseDetails.case_type.jurisdiction.id,
           ctid: this.caseDetails.case_type.id,
           etid: trigger.id,
           queryParams : theQueryParams});
     } else {
-      this.navigationNotifier.announceNavigation(
+      this.navigationNotifierService.announceNavigation(
         {action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,
           etid: trigger.id,

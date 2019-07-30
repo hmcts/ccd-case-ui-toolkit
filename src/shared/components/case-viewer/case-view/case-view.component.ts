@@ -28,7 +28,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   caseDetails: CaseView;
 
   constructor(
-    private navigationNotifier: NavigationNotifierService,
+    private navigationNotifierService: NavigationNotifierService,
     private caseNofitier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,
@@ -45,7 +45,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       )
       .toPromise()
       .catch(error => this.checkAuthorizationError(error));
-    this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
+    this.navigationSubscription = this.navigationNotifierService.navigation.subscribe(navigation => {
       this.navigationTriggered.emit(navigation);
     });
   }

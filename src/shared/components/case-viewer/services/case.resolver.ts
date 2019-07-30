@@ -23,7 +23,7 @@ export class CaseResolver implements Resolve<CaseView> {
   constructor(private caseNotifier: CaseNotifier,
               private casesService: CasesService,
               private draftService: DraftService,
-              private navigationNotifier: NavigationNotifierService,
+              private navigationNotifierService: NavigationNotifierService,
               private router: Router,
               private alertService: AlertService) {
     router.events
@@ -49,7 +49,7 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private navigateToCaseList() {
-    this.navigationNotifier.announceNavigation({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
+    this.navigationNotifierService.announceNavigation({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
     this.alertService.success(CaseResolver.CASE_CREATED_MSG);
   }
 
