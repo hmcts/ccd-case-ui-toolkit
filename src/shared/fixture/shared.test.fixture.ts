@@ -5,6 +5,8 @@ import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-pa
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ShowCondition } from '../directives/conditional-show/domain';
 import { FixedListItem } from '../domain/definition';
+import { AccessControlList } from '../domain/definition/access-control-list.model';
+import { isBoolean } from 'util';
 
 export let createCaseEventTrigger = (id: string,
                                       name: string,
@@ -102,7 +104,8 @@ export let createCaseField = (id: string,
                               fieldType: FieldType,
                               display_context: string,
                               order = undefined,
-                              show_condition = undefined): CaseField => {
+                              show_condition = undefined,
+                              ACLs: AccessControlList[] = undefined): CaseField => {
   return <CaseField>({
     id: id || 'personFirstName',
     field_type: fieldType || textFieldType(),
@@ -111,7 +114,8 @@ export let createCaseField = (id: string,
     hint_text: hint || 'First name hint text',
     show_summary_content_option: 0,
     order: order,
-    show_condition: show_condition || undefined
+    show_condition: show_condition || undefined,
+    acls: ACLs
   });
 };
 
@@ -142,4 +146,14 @@ export let textFieldType = (): FieldType => {
     type: 'Text',
     complex_fields: []
   };
+};
+
+export let createACL = (role: string, create: boolean, read: boolean, update: boolean, _delete: boolean): AccessControlList => {
+  return <AccessControlList> ({
+    role: role || 'roleX',
+    create: create,
+    read: read,
+    update: update,
+    delete: _delete
+  });
 };
