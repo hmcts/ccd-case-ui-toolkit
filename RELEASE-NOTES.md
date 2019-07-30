@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.13 - July 30 2019
+**RDM-5318** Changes to make Workbasket tolerant of missing defaults
+
 ### Version 2.58.11 - July 29 2019
 **RDM-4692** ccd-write-address-field id fix
 
