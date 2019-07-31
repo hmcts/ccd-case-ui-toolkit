@@ -3,11 +3,11 @@
         <h1 class="heading-large">Search Filters component</h1>
 
         <div class="text">
+            <p> Wrapper component for <strong>ccd-search-filters</strong>. Service call to get "jurisdictions" is done here.</p>
             <p> This component is used to trigger searches of cases. The elements of the contract are:</p>
             <ul class="list list-bullet text">
                 <li>Input fields:
                     <ul class="list list-bullet text">
-                        <li>jurisdictions - a collection of jurisdictions - including nested casetypes and events</li>
                         <li>autoApply - a flag indicating a search should happen as part of the loading of the component</li>
                     </ul>
                 </li>
@@ -29,10 +29,11 @@
                                     </ul>
                         </li>
                         <li>onReset - a notification event about a reset button being clicked</li>
-                        <li>onJuridiction - a notification event with selected jurisdiction object</li>
+                        <li>onJurisdiction - a notification event with selected jurisdiction object</li>
                     </ul>
                 </li>
             </ul>
+            <p>Additionally the component saves user selections to local browser storage any time a user click Apply button after selecting dropdown values. This way any time a user is back on the Create Case Filters page the dropdown will be restored from the last applied selection. This can be cleared by clicking Reset button.</p>
         </div>
 
         <pre class="language-markup">
@@ -40,12 +41,12 @@
         </pre>
 
         <div class="example">
-            <ccd-search-filters [jurisdictions]="jurisdictions"
+            <ccd-search-filters-wrapper 
                                 [autoApply]="true"
                                 (onApply)="applied($event)"
                                 (onReset)="reset()"
-                                (onJuridiction)="jurisdictionSelected($event)">
-            </ccd-search-filters>
+                                (onJurisdiction)="jurisdictionSelected($event)">
+            </ccd-search-filters-wrapper>
         </div>
     </main>
 </div>

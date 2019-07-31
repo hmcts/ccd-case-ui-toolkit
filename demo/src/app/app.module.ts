@@ -11,21 +11,28 @@ import { AppConfig } from './app.config';
 import { routing } from './app.routing';
 import { AppComponent } from './app.component';
 import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
+WorkbasketFiltersModule, CaseListFiltersModule,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
   PlaceholderService, DocumentManagementService, PageValidationService, SearchService,
   RequestOptionsBuilder,
-  CreateCaseFiltersModule} from '@hmcts/ccd-case-ui-toolkit';
+  CreateCaseFiltersModule,
+  CaseTimelineModule,
+  SearchFiltersModule,
+  SearchResultModule} from '@hmcts/ccd-case-ui-toolkit';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
 import { CoreComponent } from './core.component';
 import { CaseViewConsumerComponent } from './case-view-consumer.component';
-import { SearchFiltersConsumerComponent } from './search-filters-consumer.component';
 import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
+import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
+import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.component';
+import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-consumer.component';
+import { SearchResultConsumerComponent } from './search-result-consumer.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
     BrowserModule.withServerTransition({ appId: 'my-app' }),
-    routing,
     CaseUIToolkitModule,
     RouterModule,
     CommonModule,
@@ -35,6 +42,13 @@ import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consum
     BrowserAnimationsModule,
     HttpModule,
     CreateCaseFiltersModule,
+    CaseTimelineModule,
+    routing,
+    WorkbasketFiltersModule,
+    CaseListFiltersModule,
+    SearchFiltersModule,
+    SearchResultModule,
+    NgxPaginationModule
   ],
   declarations: [
     AppComponent,
@@ -42,8 +56,11 @@ import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consum
     CaseCreateConsumerComponent,
     CaseProgressConsumerComponent,
     CaseViewConsumerComponent,
-    SearchFiltersConsumerComponent,
-    CreateCaseFiltersConsumerComponent
+    SearchFiltersWrapperConsumerComponent,
+    CreateCaseFiltersConsumerComponent,
+    CaseTimelineConsumerComponent,
+    CaseListFiltersConsumerComponent,
+    SearchResultConsumerComponent,
   ],
   providers: [
     CasesService,

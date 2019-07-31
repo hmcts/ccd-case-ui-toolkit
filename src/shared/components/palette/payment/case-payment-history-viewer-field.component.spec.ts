@@ -5,8 +5,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
+import createSpyObj = jasmine.createSpyObj;
 import { newCaseField } from '../../../fixture';
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {

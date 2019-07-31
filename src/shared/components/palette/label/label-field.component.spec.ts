@@ -25,7 +25,7 @@ describe('LabelFieldComponent', () => {
   const LABEL_CASE_FIELD: CaseField = newCaseField('field', '${label}', null, FIELD_TYPE, 'OPTIONAL')
     .withValue('Label Field Value').build();
 
-  const EVENT_CASE_FIELDS: CaseField[] = [
+  const CASE_FIELDS: CaseField[] = [
     CASE_FIELD
   ];
 
@@ -74,7 +74,7 @@ describe('LabelFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = LABEL_CASE_FIELD;
-      component.eventFields = EVENT_CASE_FIELDS;
+      component.caseFields = CASE_FIELDS;
 
       de = fixture.debugElement;
       fixture.detectChanges();

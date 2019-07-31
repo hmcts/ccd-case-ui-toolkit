@@ -1,0 +1,81 @@
+<div class="site-wrapper">
+    <main id="content" role="main">
+        <h1 class="heading-large">Search Result component</h1>
+
+        <div class="text">
+            <p> This component is used to list cases following a search action. The elements of the contract are:</p>
+            <ul class="list list-bullet text">
+                <li>Input fields:
+                    <ul class="list list-bullet text">
+                        <li>jurisdiction
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/jurisdiction.model.ts" target="_blank">Jurisdiction model</a></p>
+                        </li>
+                        <li>caseType
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-type.model.ts" target="_blank">CaseType model</a></p>
+                        </li>
+                        <li>caseState                            
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-state.model.ts" target="_blank">CaseState model</a></p>
+                        </li>
+                        <li>caseFilterFG
+                            <p><a href="https://angular.io/api/forms/FormGroup" target="_blank">FormGroup</a></p>
+                        </li>
+                        <li>resultView                            
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/search/search-result-view.model.ts" target="_blank">SearchResultView model</a></p>
+                        </li>
+                        <li>paginationMetadata                            
+                            <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/pagination-metadata.model.ts" target="_blank">PaginationMetadata model</a></p>
+                        </li>
+                        <li>metadataFields - a collection of strings
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="list list-bullet text">
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>changePage - a notification event about paging navigation containing:
+                            <ul class="list list-bullet text">
+                                <li>selected: 
+                                    <ul class="list list-bullet text">
+                                        <li>init?: boolean</li>
+                                        <li>jurisdiction?: Jurisdiction</li>
+                                        <li>caseType?: CaseType</li>
+                                        <li>caseState?: CaseState</li>
+                                        <li>formGroup?: FormGroup</li>
+                                        <li>metadataFields?: string[]</li>
+                                        <li>page?: number</li>
+                                    </ul>
+                                </li>
+                                <li>queryParams:
+                                    <ul class="list list-bullet text">
+                                        <li>case-state: string</li>
+                                        <li>case-type: string</li>
+                                        <li>jurisdiction: string</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <pre class="language-markup">
+            <code class="language-markup">{{code}}</code>
+        </pre>
+
+        <div class="example">
+            <ccd-search-result
+                *ngIf="resultView"
+                [jurisdiction]="jurisdiction"
+                [caseType]="caseType"
+                [caseState]="caseState"
+                [caseFilterFG]="fg"
+                [resultView]="resultView"
+                [paginationMetadata]="paginationMetadata"
+                [metadataFields]="metadataFields"
+                (changePage)="apply($event)"
+            ></ccd-search-result>
+        </div>
+    </main>
+</div>

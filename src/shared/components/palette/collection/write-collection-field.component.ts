@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -18,6 +18,12 @@ import { ProfileNotifier } from '../../../services';
   styleUrls: ['./collection-field.scss']
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+  @Input()
+  caseFields: CaseField[] = [];
+
+  @Input()
+  formGroup: FormGroup;
+
   formArray: FormArray;
 
   profile: Profile;

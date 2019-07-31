@@ -1,8 +1,9 @@
 import { CaseResolver } from './case.resolver';
+import { NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
-import createSpyObj = jasmine.createSpyObj;
 import { CaseView } from '../../../domain';
-import { DraftService, AlertService } from '../../../services';
+import { AlertService, DraftService } from '../../../services';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseResolver', () => {
   describe('resolve()', () => {
@@ -10,13 +11,15 @@ describe('CaseResolver', () => {
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
 
     const CASE_ID = '42';
-    const CASE: CaseView = createSpyObj<any>('case', ['toString']);
-    const CASE_CACHED: CaseView = createSpyObj<any>('caseCached', ['toString']);
+    const CASE: CaseView = new CaseView();
+    CASE.case_id = 'CASE_ID_1';
+
+    const CASE_CACHED: CaseView = new CaseView();
+    CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
     const CASE_OBS: Observable<CaseView> = Observable.of(CASE);
 
     let caseResolver: CaseResolver;
     let draftService: DraftService;
-
     let casesService: any;
     let caseService: any;
     let alertService: AlertService;
@@ -25,11 +28,13 @@ describe('CaseResolver', () => {
     let router: any;
 
     beforeEach(() => {
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/case', '/home'))
+    };
       caseService = createSpyObj('caseService', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
-
-      router = createSpyObj('router', ['navigate']);
       alertService = createSpyObj('alertService', ['success']);
       caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
 
@@ -49,13 +54,13 @@ describe('CaseResolver', () => {
       caseResolver
         .resolve(route)
         .then(caseData => {
-          expect(caseData).toBe(CASE);
+          expect(caseData).toEqual(CASE);
         });
 
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
       // allows to access private cachedCaseView field
-      expect(caseResolver['cachedCaseView']).toBe(CASE);
+      expect(caseResolver['cachedCaseView']).toEqual(CASE);
     });
 
     it('should return cached case view when the route is a case view tab and cached view exists', () => {
@@ -94,12 +99,12 @@ describe('CaseResolver', () => {
       caseResolver
         .resolve(route)
         .then(caseData => {
-          expect(caseData).toBe(CASE);
+          expect(caseData).toEqual(CASE);
         });
 
-          expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
+      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
       // allows to access private cachedCaseView field
-          expect(caseResolver['cachedCaseView']).toBe(CASE);
+      expect(caseResolver['cachedCaseView']).toEqual(CASE);
     });
 
     it('should return cached case view when the route is not the one for case view and cached view exists', () => {
@@ -119,7 +124,7 @@ describe('CaseResolver', () => {
           expect(caseData).toBe(CASE_CACHED);
         });
       expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
-      expect(caseResolver['cachedCaseView']).toBe(CASE_CACHED);
+      expect(caseResolver['cachedCaseView']).toEqual(CASE_CACHED);
     });
 
     it('should retrieve case view when the route is not the one for case view and cached is empty', () => {
@@ -136,12 +141,12 @@ describe('CaseResolver', () => {
       caseResolver
         .resolve(route)
         .then(caseData => {
-          expect(caseData).toBe(CASE);
+          expect(caseData).toEqual(CASE);
         });
 
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
       // allows to access private cachedCaseView field
-      expect(caseResolver['cachedCaseView']).toBe(CASE);
+      expect(caseResolver['cachedCaseView']).toEqual(CASE);
     });
 
     it('should redirect to error page when case cannot be retrieved', () => {
@@ -156,6 +161,54 @@ describe('CaseResolver', () => {
         });
 
       expect(router.navigate).toHaveBeenCalledWith(['/error']);
+    });
+
+    it('should redirect to case list page when case cannot be found and previousUrl is event submission', () => {
+      const error = {
+        status: 404
+      };
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
+      };
+
+      caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/list/case']);
+    });
+
+    it('should not redirect to case list page when case cannot be found and previousUrl is not matching event submission', () => {
+      const error = {
+        status: 404
+      };
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+      };
+
+      caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).not.toHaveBeenCalledWith(['/list/case']);
     });
 
     it('should redirect to case list page when case id is empty', () => {
@@ -178,8 +231,11 @@ describe('CaseResolver', () => {
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
 
     const DRAFT_ID = 'DRAFT42';
-    const DRAFT: CaseView = createSpyObj<any>('draft', ['toString']);
-    const DRAFT_CACHED: CaseView = createSpyObj<any>('draftCached', ['toString']);
+    const DRAFT: CaseView = new CaseView();
+    DRAFT.case_id = 'DRAFT_CASE_ID_1';
+
+    const DRAFT_CACHED: CaseView = new CaseView();
+    DRAFT_CACHED.case_id = 'DRAFT_CASE_CACHED_ID_1';
     const DRAFT_OBS: Observable<CaseView> = Observable.of(DRAFT);
 
     let caseResolver: CaseResolver;
@@ -193,11 +249,14 @@ describe('CaseResolver', () => {
     let router: any;
 
     beforeEach(() => {
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/case', '/home'))
+      };
       caseService = createSpyObj('caseService', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
       draftService.getDraft.and.returnValue(DRAFT_OBS);
-      router = createSpyObj('router', ['navigate']);
       alertService = createSpyObj('alertService', ['success']);
       caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
 
@@ -216,13 +275,13 @@ describe('CaseResolver', () => {
       caseResolver
         .resolve(route)
         .then(caseData => {
-          expect(caseData).toBe(DRAFT);
+          expect(caseData).toEqual(DRAFT);
         });
 
       expect(draftService.getDraft).toHaveBeenCalledWith(DRAFT_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
       // allows to access private cachedCaseView field
-      expect(caseResolver['cachedCaseView']).toBe(DRAFT);
+      expect(caseResolver['cachedCaseView']).toEqual(DRAFT);
     });
   });
 });

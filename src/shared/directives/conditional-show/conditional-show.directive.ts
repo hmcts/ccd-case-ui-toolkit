@@ -20,9 +20,11 @@ import { GreyBarService } from './services/grey-bar.service';
 export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[] = [];
+  @Input() idPrefix: string;
+  @Input() contextFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
   @Input() greyBarEnabled = false;
+  @Input() complexFormGroup: FormGroup;
 
   condition: ShowCondition;
   private formChangesSubscription: Subscription;
@@ -40,7 +42,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       this.condition = new ShowCondition(this.caseField.show_condition);
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
-      this.formField = this.formGroup.get(this.caseField.id);
+      this.complexFormGroup = this.complexFormGroup || new FormGroup({});
+      this.formField = this.complexFormGroup.get(this.caseField.id) || this.formGroup.get(this.caseField.id);
       // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && this.greyBarService.wasToggledToShow(this.caseField.id)) {
@@ -89,7 +92,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private onHide() {
     // console.log('on hide is form field', this.formField);
-
     if (this.formField) {
       this.unsubscribeFromFormChanges();
       // console.log('FIELD ' + this.caseField.id + ' disabling form field');
@@ -122,17 +124,24 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private shouldToggleToHide(fields, forced) {
-    return (!this.isHidden() || forced) && !this.condition.match(fields);
+    return (!this.isHidden() || forced) && !this.condition.match(fields, this.buildPath());
   }
 
   private shouldToggleToShow(fields) {
-    return this.isHidden() && this.condition.match(fields);
+    return this.isHidden() && this.condition.match(fields, this.buildPath());
+  }
+
+  private buildPath() {
+    if (this.idPrefix) {
+      return this.idPrefix + this.caseField.id;
+    }
+    return this.caseField.id;
   }
 
   private getCurrentPagesReadOnlyAndFormFieldValues() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
-    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.eventFields, formFields);
+    return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
   }
 
   private getFormFieldsValuesIncludingDisabled() {

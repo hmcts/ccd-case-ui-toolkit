@@ -5,9 +5,9 @@ import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FieldWriteComponent } from './field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import createSpyObj = jasmine.createSpyObj;
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
-import { newCaseField } from '../../../fixture';
+import { plainToClassFromExist } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 
 const CLASS = 'person-first-name-cls';
 
@@ -20,7 +20,15 @@ class FieldTestComponent {}
 
 describe('FieldWriteComponent', () => {
 
-  const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL').build();
+  const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
+    id: 'PersonFirstName',
+    field_type: {
+      id: 'Text',
+      type: 'Text'
+    },
+    display_context: 'OPTIONAL',
+    label: 'First name',
+  });
 
   let fixture: ComponentFixture<FieldWriteComponent>;
   let component: FieldWriteComponent;
@@ -30,6 +38,7 @@ describe('FieldWriteComponent', () => {
   let formValidatorService: any;
 
   let formGroup: FormGroup;
+  let caseFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -66,6 +75,7 @@ describe('FieldWriteComponent', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
+    component.caseFields = caseFields;
     component.formGroup = formGroup;
 
     de = fixture.debugElement;
@@ -85,7 +95,9 @@ describe('FieldWriteComponent', () => {
     expect(fieldTestComponent.attributes['class']).toEqual(CLASS);
 
     let fieldTest = fieldTestComponent.componentInstance;
-    expect(fieldTest.caseField).toBe(CASE_FIELD);
+    expect(fieldTest.caseField).toEqual(CASE_FIELD);
+    expect(fieldTest.caseFields).toBe(caseFields);
+    expect(fieldTest.formGroup).toBe(formGroup);
     expect(fieldTest.registerControl).not.toBeNull();
   });
 

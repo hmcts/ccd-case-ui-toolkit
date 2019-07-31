@@ -3,21 +3,18 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { WriteCollectionFieldComponent } from './write-collection-field.component';
 import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
-import { FieldType } from '../../../domain/definition';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { PaletteUtilsModule } from '../utils';
 import { By } from '@angular/platform-browser';
 import { FormValidatorsService } from '../../../services/form';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
-import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
 import { ProfileNotifier } from '../../../services';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
-import { BehaviorSubject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
 import { newCaseField } from '../../../fixture';
 
 const FIELD_ID = 'Values';
@@ -60,12 +57,12 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 let FieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'registerControl', 'idPrefix', 'isExpanded'],
+  inputs: ['caseField', 'caseFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded'],
   template: '<input type="text" />',
 });
 let FieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'context']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
@@ -79,35 +76,37 @@ describe('WriteCollectionFieldComponent', () => {
   let route: any;
   let profileNotifier: any;
   let caseField: CaseField;
+  let formGroup: FormGroup;
 
   beforeEach(async(() => {
-    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
-    dialogRef.afterClosed.and.returnValue(of());
-    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
-    dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
-    caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
-      .withValue(VALUES.slice())
-      .withACLs([
-        {
-          role: 'caseworker-divorce',
-          create: true,
-          read: true,
-          update: true,
-          delete: true
-        }]).build();
-    route = {
-      parent: {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+      dialogRef.afterClosed.and.returnValue(of());
+      dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+      dialog.open.and.returnValue(dialogRef);
+      scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+      scrollToService.scrollTo.and.returnValue(of());
+      caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
+        .withValue(VALUES.slice())
+        .withACLs([
+          {
+            role: 'caseworker-divorce',
+            create: true,
+            read: true,
+            update: true,
+            delete: true
+          }]).build();
+      route = {
         parent: {
           parent: {
-            snapshot: {
-              data: {
-                profile: {
-                  user: {
-                    idam: {
-                      roles: ['caseworker-divorce']
+            parent: {
+              snapshot: {
+                data: {
+                  profile: {
+                    user: {
+                      idam: {
+                        roles: ['caseworker-divorce']
+                      }
                     }
                   }
                 }
@@ -115,46 +114,53 @@ describe('WriteCollectionFieldComponent', () => {
             }
           }
         }
-      }
-    };
-    profileNotifier = new ProfileNotifier();
-    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      };
+      formGroup = new FormGroup({
+        field1: new FormControl()
+      });
 
-    TestBed
-      .configureTestingModule({
-        imports: [
-          ReactiveFormsModule,
-          PaletteUtilsModule
-        ],
-        declarations: [
-          WriteCollectionFieldComponent,
-          // Mock
-          FieldWriteComponent,
-          FieldReadComponent
-        ],
-        providers: [
-          { provide: FormValidatorsService, useValue: formValidatorService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
-          { provide: ProfileNotifier, useValue: profileNotifier },
-          RemoveDialogComponent
-        ]
-      })
-      .compileComponents();
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
-    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
-    component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
-    component.caseField = caseField;
-    component.ngOnInit();
-    de = fixture.debugElement;
-    fixture.detectChanges();
-    // Manually populate the form array as item field are mocked and can't register themselves
-    VALUES.forEach((collectionItem, index) => {
-      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
-    });
-    fixture.detectChanges();
-  }));
+      TestBed
+        .configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            PaletteUtilsModule
+          ],
+          declarations: [
+            WriteCollectionFieldComponent,
+            // Mock
+            FieldWriteComponent,
+            FieldReadComponent
+          ],
+          providers: [
+            {provide: FormValidatorsService, useValue: formValidatorService},
+            {provide: MatDialog, useValue: dialog},
+            {provide: ScrollToService, useValue: scrollToService},
+            {provide: ProfileNotifier, useValue: profileNotifier},
+            RemoveDialogComponent
+          ]
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+      component = fixture.componentInstance;
+      component.registerControl = REGISTER_CONTROL;
+      component.caseField = caseField;
+      component.caseFields = [caseField];
+      component.formGroup = formGroup;
+      component.ngOnInit();
+      de = fixture.debugElement;
+      fixture.detectChanges();
+      // Manually populate the form array as item field are mocked and can't register themselves
+      VALUES.forEach((collectionItem, index) => {
+        component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+      });
+      fixture.detectChanges();
+    })
+  )
+  ;
 
   it('should render a row with a write field for each items', () => {
     let writeFields = de.queryAll($WRITE_FIELDS);
@@ -313,19 +319,11 @@ describe('WriteCollectionFieldComponent', () => {
     let fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
   });
-});
+})
+;
 
 describe('WriteCollectionFieldComponent CRUD impact', () => {
-  const collectionValues = [
-    {
-      id: '123',
-      value: 'v1'
-    },
-    {
-      value: 'v2'
-    }
-  ];
-
+  const collectionValues = [{id: '123', value: 'v1'}, {value: 'v2'}];
   let fixture: ComponentFixture<WriteCollectionFieldComponent>;
   let component: WriteCollectionFieldComponent;
   let de: DebugElement;
@@ -336,35 +334,37 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let route: any;
   let profileNotifier: any;
   let caseField: CaseField;
+  let formGroup: FormGroup;
 
   beforeEach(async(() => {
-    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
-    dialogRef.afterClosed.and.returnValue(of());
-    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
-    dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
-    caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
-      .withValue(collectionValues.slice())
-      .withACLs([
-        {
-          role: 'caseworker-divorce',
-          create: false,
-          read: true,
-          update: true,
-          delete: false
-        }]).build();
-    route = {
-      parent: {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+      dialogRef.afterClosed.and.returnValue(of());
+      dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+      dialog.open.and.returnValue(dialogRef);
+      scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+      scrollToService.scrollTo.and.returnValue(of());
+      caseField = newCaseField(FIELD_ID, 'X', null, SIMPLE_FIELD_TYPE, 'OPTIONAL')
+        .withValue(collectionValues.slice())
+        .withACLs([
+          {
+            role: 'caseworker-divorce',
+            create: false,
+            read: true,
+            update: true,
+            delete: false
+          }]).build();
+      route = {
         parent: {
           parent: {
-            snapshot: {
-              data: {
-                profile: {
-                  user: {
-                    idam: {
-                      roles: ['caseworker-divorce']
+            parent: {
+              snapshot: {
+                data: {
+                  profile: {
+                    user: {
+                      idam: {
+                        roles: ['caseworker-divorce']
+                      }
                     }
                   }
                 }
@@ -372,46 +372,53 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
             }
           }
         }
-      }
-    };
-  profileNotifier = new ProfileNotifier();
-  profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      };
+      formGroup = new FormGroup({
+        field1: new FormControl()
+      });
 
-    TestBed
-      .configureTestingModule({
-        imports: [
-          ReactiveFormsModule,
-          PaletteUtilsModule
-        ],
-        declarations: [
-          WriteCollectionFieldComponent,
-          // Mock
-          FieldWriteComponent,
-          FieldReadComponent
-        ],
-        providers: [
-          { provide: FormValidatorsService, useValue: formValidatorService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
-          { provide: ProfileNotifier, useValue: profileNotifier },
-          RemoveDialogComponent
-        ]
-      })
-      .compileComponents();
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
-    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
-    component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
-    component.caseField = caseField;
-    component.ngOnInit();
-    de = fixture.debugElement;
-    fixture.detectChanges();
-    // Manually populate the form array as item field are mocked and can't register themselves
-    collectionValues.forEach((collectionItem, index) => {
-      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
-    });
-    fixture.detectChanges();
-  }));
+      TestBed
+        .configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            PaletteUtilsModule
+          ],
+          declarations: [
+            WriteCollectionFieldComponent,
+            // Mock
+            FieldWriteComponent,
+            FieldReadComponent
+          ],
+          providers: [
+            {provide: FormValidatorsService, useValue: formValidatorService},
+            {provide: MatDialog, useValue: dialog},
+            {provide: ScrollToService, useValue: scrollToService},
+            {provide: ProfileNotifier, useValue: profileNotifier},
+            RemoveDialogComponent
+          ]
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+      component = fixture.componentInstance;
+      component.registerControl = REGISTER_CONTROL;
+      component.caseField = caseField;
+      component.caseFields = [caseField];
+      component.formGroup = formGroup;
+      component.ngOnInit();
+      de = fixture.debugElement;
+      fixture.detectChanges();
+      // Manually populate the form array as item field are mocked and can't register themselves
+      collectionValues.forEach((collectionItem, index) => {
+        component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+      });
+      fixture.detectChanges();
+    })
+  )
+  ;
 
   it('should disable remove buttons when user does not have DELETE right', () => {
     let removeButtons = de.queryAll($REMOVE_BUTTONS);
@@ -436,13 +443,11 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
 
     expect(writeFields.length).toEqual(2);
   });
-});
+})
+;
 
 describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
-  const collectionValues = [
-    {
-      id: '123',
-      value: 'v1'
+  const collectionValues = [{id: '123', value: 'v1'
     },
     {
       id: '123',
@@ -460,6 +465,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let route: any;
   let profileNotifier: any;
   let caseField: CaseField;
+  let formGroup: FormGroup;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -498,6 +504,10 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         }
       }
     };
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
@@ -514,10 +524,10 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
           FieldReadComponent
         ],
         providers: [
-          { provide: FormValidatorsService, useValue: formValidatorService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
-          { provide: ProfileNotifier, useValue: profileNotifier },
+          {provide: FormValidatorsService, useValue: formValidatorService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: ScrollToService, useValue: scrollToService},
+          {provide: ProfileNotifier, useValue: profileNotifier},
           RemoveDialogComponent
         ]
       })
@@ -527,6 +537,8 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();

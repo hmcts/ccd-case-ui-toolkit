@@ -62,11 +62,15 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       if (obj.field_type.type === 'FixedList' ||
         obj.field_type.type === 'MultiSelectList' ||
         obj.field_type.type === 'FixedRadioList') {
-        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type};
+        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type, caseField: obj};
         allLabels[obj.id] = {label: obj.label, type: obj.field_type};
+      } else if (obj.field_type.type === 'Complex') {
+        obj.value = this.rows[0][obj.id];
+        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
+        allLabels[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
       } else {
-        labelsVertical[obj.id] = {label: obj.label, type: {type: obj.field_type.type}};
-        allLabels[obj.id] = {label: obj.label, type: {type: obj.field_type.type}};
+        labelsVertical[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
+        allLabels[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
       }
     }
   }

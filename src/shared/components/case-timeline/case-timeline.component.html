@@ -1,3 +1,17 @@
 <div *ngIf="isDataLoaded()">
-    <ccd-event-log [events]="events"></ccd-event-log>
+    <ng-container [ngSwitch]="displayMode">
+        <ng-container *ngSwitchCase="dspMode.TIMELINE">
+            <ccd-event-log [events]="events" (onCaseHistory)="caseHistoryClicked($event)" *ngIf="displayMode === dspMode.TIMELINE"></ccd-event-log>
+        </ng-container>
+        <ng-container *ngSwitchCase="dspMode.DETAILS">
+            <div class="govuk-breadcrumbs">
+                <ol class="govuk-breadcrumbs__list">
+                    <li class="govuk-breadcrumbs__list-item">
+                        <a href="javascript:void(0)" (click)="goToCaseTimeline()" class="govuk-back-link">Back to case timeline</a>
+                    </li>
+                </ol>
+            </div>
+            <ccd-case-history [event]="selectedEventId"></ccd-case-history>
+        </ng-container>
+    </ng-container>
 </div>

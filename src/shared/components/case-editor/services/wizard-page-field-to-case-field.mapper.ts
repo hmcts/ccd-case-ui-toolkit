@@ -2,6 +2,7 @@ import { WizardPageField } from '../domain';
 import { CaseField } from '../../../domain';
 import { ComplexFieldOverride } from '../domain/wizard-page-field-complex-override.model';
 import { Injectable } from '@angular/core';
+import { ShowCondition } from '../../../directives/conditional-show/domain';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +18,12 @@ export class WizardPageFieldToCaseFieldMapper {
   private map(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
 
     let caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
-    caseField.id = wizardPageField.case_field_id;
     caseField.wizardProps = wizardPageField;
     caseField.display_context = wizardPageField.display_context;
     caseField.order = wizardPageField.order;
+
+    this.initializeNaturalOrder(caseField);
+    this.fixShowConditionPath(caseField, '');
 
     if (wizardPageField.complex_field_overrides && wizardPageField.complex_field_overrides.length > 0) {
       wizardPageField.complex_field_overrides.forEach((override: ComplexFieldOverride) => {
@@ -28,16 +31,21 @@ export class WizardPageFieldToCaseFieldMapper {
       });
     }
 
+    // this will fix the CaseLink type as we exclude it in ccdFieldsFilter directive
+    this.hideParentIfAllChildrenHidden(caseField);
+
     return caseField;
   }
 
-  private processComplexFieldOverride(override: ComplexFieldOverride, case_field: CaseField, caseFields: CaseField[]) {
+  private processComplexFieldOverride(override: ComplexFieldOverride, caseField: CaseField, caseFields: CaseField[]) {
     const caseFieldIds = override.complex_field_element_id.split('.');
     let case_field_leaf: CaseField;
 
-    if (this.isCollectionOfComplex(case_field)) {
+    let children = this.getCaseFieldChildren(caseField);
+
+    if (children.length > 0) {
       const [_, ...tail] = caseFieldIds;
-      case_field_leaf = this.getCaseFieldLeaf(tail, case_field.field_type.collection_field_type.complex_fields);
+      case_field_leaf = this.getCaseFieldLeaf(tail, children);
     } else {
       case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, caseFields);
     }
@@ -62,6 +70,22 @@ export class WizardPageFieldToCaseFieldMapper {
     }
   }
 
+  private fixShowConditionPath(caseField: CaseField, pathPrefix: string) {
+    if (caseField.show_condition) {
+      caseField.show_condition = ShowCondition.addPathPrefixToCondition(caseField.show_condition, pathPrefix);
+    }
+
+    let childrenCaseFields = this.getCaseFieldChildren(caseField);
+
+    childrenCaseFields.forEach(collectionCaseField => {
+      this.fixShowConditionPath(collectionCaseField, this.preparePathPrefix(pathPrefix, caseField.id));
+    });
+  }
+
+  private preparePathPrefix(pathPrefix: string, caseField: string) {
+    return pathPrefix.length === 0 ? caseField : pathPrefix + '.' + caseField;
+  }
+
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
     const [head, ...tail] = caseFieldId;
     if (caseFieldId.length === 1) {
@@ -72,14 +96,58 @@ export class WizardPageFieldToCaseFieldMapper {
       return caseLeaf;
     } else if (caseFieldId.length > 1) {
       let caseField = caseFields.find(e => e.id === head);
-      if (!caseField.field_type && !caseField.field_type.complex_fields) {
+      let children = this.getCaseFieldChildren(caseField);
+
+      if (children.length === 0) {
         throw new Error(`field_type or complex_fields missing for ${caseFieldId.join('.')}`);
       }
-      let newCaseFields = caseField.field_type.complex_fields;
-      return this.getCaseFieldLeaf(tail, newCaseFields)
+      return this.getCaseFieldLeaf(tail, children)
     } else {
       throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
     }
+  }
+
+  private hideParentIfAllChildrenHidden(caseField: CaseField) {
+
+    let childrenCaseFields = this.getCaseFieldChildren(caseField);
+
+    childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));
+
+    if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
+      caseField.hidden = true;
+    }
+  }
+
+  private initializeNaturalOrder(caseField: CaseField) {
+    let childrenCaseFields = this.getCaseFieldChildren(caseField);
+    let orderCounter = 1;
+    childrenCaseFields.forEach(e => {
+      e.order = orderCounter;
+      orderCounter = orderCounter + 1;
+      this.initializeNaturalOrder(e);
+    });
+  }
+
+  private getCaseFieldChildren(caseField: CaseField) {
+    let childrenCaseFields = [];
+    if (this.isCollection(caseField)) {
+      childrenCaseFields = caseField.field_type.collection_field_type.complex_fields || [];
+    } else if (this.isComplex(caseField)) {
+      childrenCaseFields = caseField.field_type.complex_fields || [];
+    }
+    return childrenCaseFields;
+  }
+
+  private allCaseFieldsHidden(children: CaseField[]): boolean {
+    return !children.some(e => e.hidden !== true);
+  }
+
+  private isComplex(case_field: CaseField) {
+    return case_field.field_type.type === 'Complex';
+  }
+
+  private isCollection(case_field: CaseField) {
+    return case_field.field_type.type === 'Collection';
   }
 
   private isCollectionOfComplex(case_field: CaseField) {

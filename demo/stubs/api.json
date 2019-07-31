@@ -82,13 +82,378 @@
         "value": null,
         "hint_text": null,
         "field_type": {
-          "id": "Postcode",
-          "type": "Postcode",
+          "id": "AddressUK",
+          "type": "Complex",
           "min": null,
           "max": null,
           "regular_expression": null,
           "fixed_list_items": [],
-          "complex_fields": [],
+          "complex_fields": [
+            {
+              "id": "AddressLine1",
+              "label": "Building and Street",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax150",
+                "type": "Text",
+                "min": null,
+                "max": 150,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            },
+            {
+              "id": "AddressLine2",
+              "label": "",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax50",
+                "type": "Text",
+                "min": null,
+                "max": 50,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            },
+            {
+              "id": "AddressLine3",
+              "label": "",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax50",
+                "type": "Text",
+                "min": null,
+                "max": 50,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            },
+            {
+              "id": "PostTown",
+              "label": "Town or City",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax50",
+                "type": "Text",
+                "min": null,
+                "max": 50,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            },
+            {
+              "id": "County",
+              "label": "County",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax50",
+                "type": "Text",
+                "min": null,
+                "max": 50,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            },
+            {
+              "id": "PostCode",
+              "label": "Postcode/Zipcode",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax14",
+                "type": "Text",
+                "min": null,
+                "max": 14,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            },
+            {
+              "id": "Country",
+              "label": "Country",
+              "hidden": null,
+              "metadata": false,
+              "case_type_id": null,
+              "hint_text": null,
+              "field_type": {
+                "id": "TextMax50",
+                "type": "Text",
+                "min": null,
+                "max": 50,
+                "regular_expression": null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": null
+              },
+              "security_classification": "PUBLIC",
+              "live_from": null,
+              "live_until": null,
+              "show_condition": null,
+              "acls": [
+                {
+                  "role": "caseworker-divorce-courtadmin_beta",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-courtadmin",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "citizen",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                },
+                {
+                  "role": "caseworker-divorce-solicitor",
+                  "create": true,
+                  "read": true,
+                  "update": true,
+                  "delete": false
+                }
+              ]
+            }
+          ],
           "collection_field_type": null
         },
         "validation_expr": null,
@@ -560,19 +925,23 @@
           "fixed_list_items": [
             {
               "code": "MARRIAGE",
-              "label": "Marriage"
+              "label": "Marriage",
+              "order": 2
             },
             {
               "code": "CIVIL_PARTNERSHIP",
-              "label": "Civil Partnership"
+              "label": "Civil Partnership",
+              "order": 4
             },
             {
               "code": "SINGLE",
-              "label": "Single"
+              "label": "Single",
+              "order": 1
             },
             {
               "code": "WIDOW",
-              "label": "Widow"
+              "label": "Widow",
+              "order": 3
             }
           ],
           "complex_fields": [],
@@ -920,7 +1289,7 @@
         },
         "acls": [
           {
-            "role": "caseworker-probate-public",
+            "role": "case-worker",
             "create": true,
             "read": true,
             "update": true,
@@ -930,8 +1299,10 @@
         "security_label": "PRIVATE",
         "order": null,
         "display_context": "OPTIONAL",
+        "display_context_parameter": null,
         "show_condition": null,
-        "show_summary_change_option": true
+        "show_summary_change_option": true,
+        "show_summary_content_option:": null
       },
       {
         "id": "PersonOrderSummary",
@@ -1341,8 +1712,8 @@
       }
     }
   },
-  "validate": {  
-    "data":{  
+  "validate": {
+    "data":{
       "PersonLastName": "Tom",
       "PersonFirstName": "Smith",
       "Wage": "50000"
@@ -2109,50 +2480,50 @@
     ],
     "metadataFields": []
   },
-  "history": {  
-    "tabs":[  
-       {  
+  "history": {
+    "tabs":[
+       {
           "id":"ThirdTab",
           "label":"Third tab",
           "order":3,
-          "fields":[  
-             {  
+          "fields":[
+             {
                 "id":"ComplexField",
                 "label":"A `Complex` field",
                 "hidden":false,
-                "value":{  
+                "value":{
                    "ComplexTextField":"Nested text",
                    "ComplexFixedListField":"VALUE2"
                 },
                 "hint_text":"Aggregate of fields",
-                "field_type":{  
+                "field_type":{
                    "id":"ComplexType",
                    "type":"Complex",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
-                      {  
+                   "complex_fields":[
+                      {
                          "id":"ComplexTextField",
                          "label":"A `Text` field inside a complex",
                          "hidden":false,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"Text",
                             "type":"Text",
                             "min":null,
                             "max":null,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2162,35 +2533,35 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"ComplexFixedListField",
                          "label":"A `FixedList` field inside a complex",
                          "hidden":false,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"FixedList-FixedListType",
                             "type":"FixedList",
                             "min":null,
                             "max":null,
                             "regular_expression":null,
-                            "fixed_list_items":[  
-                               {  
+                            "fixed_list_items":[
+                               {
                                   "code":"VALUE1",
                                   "label":"Value 1"
                                },
-                               {  
+                               {
                                   "code":"VALUE2",
                                   "label":"Value 2"
                                },
-                               {  
+                               {
                                   "code":"VALUE3",
                                   "label":"Value 3"
                                }
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2200,41 +2571,41 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"ComplexNestedField",
                          "label":"A `Complex` field inside a complex",
                          "hidden":false,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"NestedComplexType",
                             "type":"Complex",
                             "min":null,
                             "max":null,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
-                               {  
+                            "complex_fields":[
+                               {
                                   "id":"NestedNumberField",
                                   "label":"A `Number` field inside a nested complex",
                                   "hidden":false,
                                   "metadata":false,
                                   "case_type_id":null,
                                   "hint_text":null,
-                                  "field_type":{  
+                                  "field_type":{
                                      "id":"Number",
                                      "type":"Number",
                                      "min":null,
                                      "max":null,
                                      "regular_expression":null,
-                                     "fixed_list_items":[  
- 
+                                     "fixed_list_items":[
+
                                      ],
-                                     "complex_fields":[  
- 
+                                     "complex_fields":[
+
                                      ],
                                      "collection_field_type":null
                                   },
@@ -2244,36 +2615,36 @@
                                   "show_condition":null,
                                   "acls":null
                                },
-                               {  
+                               {
                                   "id":"NestedCollectionTextField",
                                   "label":"A `Collection` field of `Text` inside a nested complex",
                                   "hidden":false,
                                   "metadata":false,
                                   "case_type_id":null,
                                   "hint_text":null,
-                                  "field_type":{  
+                                  "field_type":{
                                      "id":"NestedCollectionTextField-ad2df6fa-2d6f-4359-aa98-0dd9adb5d6f0",
                                      "type":"Collection",
                                      "min":null,
                                      "max":null,
                                      "regular_expression":null,
-                                     "fixed_list_items":[  
- 
+                                     "fixed_list_items":[
+
                                      ],
-                                     "complex_fields":[  
- 
+                                     "complex_fields":[
+
                                      ],
-                                     "collection_field_type":{  
+                                     "collection_field_type":{
                                         "id":"Text",
                                         "type":"Text",
                                         "min":null,
                                         "max":null,
                                         "regular_expression":null,
-                                        "fixed_list_items":[  
- 
+                                        "fixed_list_items":[
+
                                         ],
-                                        "complex_fields":[  
- 
+                                        "complex_fields":[
+
                                         ],
                                         "collection_field_type":null
                                      }
@@ -2304,8 +2675,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2314,11 +2685,11 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"AddressUKField",
                 "label":"A `AddressUK` field",
                 "hidden":false,
-                "value":{  
+                "value":{
                    "County":"Greater London",
                    "Country":"UK",
                    "PostCode":"SW1H 9AJ",
@@ -2328,34 +2699,34 @@
                    "AddressLine3":"c/o HMCTS Reform"
                 },
                 "hint_text":"A UK address.",
-                "field_type":{  
+                "field_type":{
                    "id":"AddressUK",
                    "type":"Complex",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
-                      {  
+                   "complex_fields":[
+                      {
                          "id":"AddressLine1",
                          "label":"Building and Street",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax150",
                             "type":"Text",
                             "min":null,
                             "max":150,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2365,24 +2736,24 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"AddressLine2",
                          "label":"",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax50",
                             "type":"Text",
                             "min":null,
                             "max":50,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2392,24 +2763,24 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"AddressLine3",
                          "label":"",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax50",
                             "type":"Text",
                             "min":null,
                             "max":50,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2419,24 +2790,24 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"PostTown",
                          "label":"Town or City",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax50",
                             "type":"Text",
                             "min":null,
                             "max":50,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2446,24 +2817,24 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"County",
                          "label":"County",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax50",
                             "type":"Text",
                             "min":null,
                             "max":50,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2473,24 +2844,24 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"PostCode",
                          "label":"Postcode/Zipcode",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax14",
                             "type":"Text",
                             "min":null,
                             "max":14,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2500,24 +2871,24 @@
                          "show_condition":null,
                          "acls":null
                       },
-                      {  
+                      {
                          "id":"Country",
                          "label":"Country",
                          "hidden":null,
                          "metadata":false,
                          "case_type_id":null,
                          "hint_text":null,
-                         "field_type":{  
+                         "field_type":{
                             "id":"TextMax50",
                             "type":"Text",
                             "min":null,
                             "max":50,
                             "regular_expression":null,
-                            "fixed_list_items":[  
- 
+                            "fixed_list_items":[
+
                             ],
-                            "complex_fields":[  
- 
+                            "complex_fields":[
+
                             ],
                             "collection_field_type":null
                          },
@@ -2538,8 +2909,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2548,44 +2919,44 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"CollectionField",
                 "label":"A `Collection` of `Text` fields",
                 "hidden":false,
-                "value":[  
-                   {  
+                "value":[
+                   {
                       "id":"aeeb1c8d-a77e-4b40-b39c-3090932ae4ad",
                       "value":"Alias 1"
                    },
-                   {  
+                   {
                       "id":"a3af04ab-a5fa-4cac-9810-6b681034ec20",
                       "value":"Alias 2"
                    }
                 ],
                 "hint_text":"Zero to many items, here of type `Text`",
-                "field_type":{  
+                "field_type":{
                    "id":"CollectionField-b085018c-1517-4546-9414-b988a00f690a",
                    "type":"Collection",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
-                   "collection_field_type":{  
+                   "collection_field_type":{
                       "id":"Text",
                       "type":"Text",
                       "min":null,
                       "max":null,
                       "regular_expression":null,
-                      "fixed_list_items":[  
- 
+                      "fixed_list_items":[
+
                       ],
-                      "complex_fields":[  
- 
+                      "complex_fields":[
+
                       ],
                       "collection_field_type":null
                    }
@@ -2598,8 +2969,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2611,28 +2982,28 @@
           ],
           "show_condition":null
        },
-       {  
+       {
           "id":"FirstTab",
           "label":"First tab",
           "order":1,
-          "fields":[  
-             {  
+          "fields":[
+             {
                 "id":"TextField",
                 "label":"A `Text` field",
                 "hidden":false,
                 "value":"Some Text",
                 "hint_text":"Some generic textual data.",
-                "field_type":{  
+                "field_type":{
                    "id":"Text",
                    "type":"Text",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2644,8 +3015,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2654,23 +3025,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"NumberField",
                 "label":"A `Number` field",
                 "hidden":false,
                 "value":"164528",
                 "hint_text":"A numeric data.",
-                "field_type":{  
+                "field_type":{
                    "id":"Number",
                    "type":"Number",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2682,8 +3053,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2692,23 +3063,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"YesOrNoField",
                 "label":"A `YesOrNo` field",
                 "hidden":false,
                 "value":"Yes",
                 "hint_text":"A simple boolean.",
-                "field_type":{  
+                "field_type":{
                    "id":"YesOrNo",
                    "type":"YesOrNo",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2720,8 +3091,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2730,23 +3101,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"PhoneUKField",
                 "label":"A `PhoneUK` field",
                 "hidden":false,
                 "value":"07123456789",
                 "hint_text":"A UK phone number.",
-                "field_type":{  
+                "field_type":{
                    "id":"PhoneUK",
                    "type":"PhoneUK",
                    "min":null,
                    "max":null,
                    "regular_expression":"^(((\\+44\\s?\\d{4}|\\(?0\\d{4}\\)?)\\s?\\d{3}\\s?\\d{3})|((\\+44\\s?\\d{3}|\\(?0\\d{3}\\)?)\\s?\\d{3}\\s?\\d{4})|((\\+44\\s?\\d{2}|\\(?0\\d{2}\\)?)\\s?\\d{4}\\s?\\d{4}))(\\s?\\#(\\d{4}|\\d{3}))?$",
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2758,8 +3129,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2768,23 +3139,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"EmailField",
                 "label":"An `Email` field",
                 "hidden":false,
                 "value":"ccd@hmcts.net",
                 "hint_text":"A valid email address.",
-                "field_type":{  
+                "field_type":{
                    "id":"Email",
                    "type":"Email",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2796,8 +3167,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2809,39 +3180,39 @@
           ],
           "show_condition":null
        },
-       {  
+       {
           "id":"SecondTab",
           "label":"Second tab",
           "order":2,
-          "fields":[  
-             {  
+          "fields":[
+             {
                 "id":"FixedListField",
                 "label":"A `FixedList` field",
                 "hidden":false,
                 "value":"VALUE3",
                 "hint_text":"A dropdown to select one value out of many.",
-                "field_type":{  
+                "field_type":{
                    "id":"FixedList-FixedListType",
                    "type":"FixedList",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
-                      {  
+                   "fixed_list_items":[
+                      {
                          "code":"VALUE1",
                          "label":"Value 1"
                       },
-                      {  
+                      {
                          "code":"VALUE2",
                          "label":"Value 2"
                       },
-                      {  
+                      {
                          "code":"VALUE3",
                          "label":"Value 3"
                       }
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2853,8 +3224,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2863,45 +3234,45 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"MultiSelectListField",
                 "label":"A `MultiSelectList` field",
                 "hidden":false,
-                "value":[  
+                "value":[
                    "OPTION2",
                    "OPTION4"
                 ],
                 "hint_text":"Checkboxes to select many values.",
-                "field_type":{  
+                "field_type":{
                    "id":"MultiSelectList-MultiSelectListType",
                    "type":"MultiSelectList",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
-                      {  
+                   "fixed_list_items":[
+                      {
                          "code":"OPTION1",
                          "label":"Option 1"
                       },
-                      {  
+                      {
                          "code":"OPTION2",
                          "label":"Option 2"
                       },
-                      {  
+                      {
                          "code":"OPTION3",
                          "label":"Option 3"
                       },
-                      {  
+                      {
                          "code":"OPTION4",
                          "label":"Option 4"
                       },
-                      {  
+                      {
                          "code":"OPTION5",
                          "label":"Option 5"
                       }
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2913,8 +3284,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2923,23 +3294,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"TextAreaField",
                 "label":"A `TextArea` field",
                 "hidden":false,
                 "value":"Line1\nLine2",
                 "hint_text":"Multiple lines of text.",
-                "field_type":{  
+                "field_type":{
                    "id":"TextArea",
                    "type":"TextArea",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2951,8 +3322,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2961,23 +3332,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"MoneyGBPField",
                 "label":"A `MoneyGBP` field",
                 "hidden":false,
                 "value":"4200",
                 "hint_text":"A monetary value.",
-                "field_type":{  
+                "field_type":{
                    "id":"MoneyGBP",
                    "type":"MoneyGBP",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -2989,8 +3360,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -2999,23 +3370,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"DateField",
                 "label":"A `Date` field",
                 "hidden":false,
                 "value":"2017-02-13",
                 "hint_text":"A temporal value without time.",
-                "field_type":{  
+                "field_type":{
                    "id":"Date",
                    "type":"Date",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -3027,8 +3398,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -3037,23 +3408,23 @@
                    }
                 ]
              },
-             {  
+             {
                 "id":"DateTimeField",
                 "label":"A `DateTime` field",
                 "hidden":false,
                 "value":"1988-07-07T22:20:00",
                 "hint_text":"A temporal value with time.",
-                "field_type":{  
+                "field_type":{
                    "id":"DateTime",
                    "type":"DateTime",
                    "min":null,
                    "max":null,
                    "regular_expression":null,
-                   "fixed_list_items":[  
- 
+                   "fixed_list_items":[
+
                    ],
-                   "complex_fields":[  
- 
+                   "complex_fields":[
+
                    ],
                    "collection_field_type":null
                 },
@@ -3065,8 +3436,8 @@
                 "show_condition":null,
                 "show_summary_change_option":null,
                 "show_summary_content_option":null,
-                "acls":[  
-                   {  
+                "acls":[
+                   {
                       "role":"caseworker-autotest1",
                       "create":true,
                       "read":true,
@@ -3080,23 +3451,23 @@
        }
     ],
     "metadataFields":null,
-    "_links":{  
-       "self":{  
+    "_links":{
+       "self":{
           "href":"http://localhost:4452/internal/cases/1543420570779902/events/3"
        }
     },
     "case_id":"1543420570779902",
-    "case_type":{  
+    "case_type":{
        "id":"AAT",
        "name":"Demo case",
        "description":"Demonstrate everything CCD can do!",
-       "jurisdiction":{  
+       "jurisdiction":{
           "id":"AUTOTEST1",
           "name":"Auto Test 1",
           "description":"Content for the Test Jurisdiction."
        }
     },
-    "event":{  
+    "event":{
        "id":3,
        "timestamp":"2018-11-28T15:56:10.738",
        "summary":null,
@@ -3595,8 +3966,8 @@
       }
   }
   },
-  "documents": [  
-    {  
+  "documents": [
+    {
        "url":"http://localhost:8080/print/jurisdictions/TEST/case-types/TestAddresBookCase/cases/1111222233334444",
        "name":"CCD Print",
        "type":"CCD Print Type",
@@ -3605,22 +3976,22 @@
   ],
   "CT0inputs" : {
     "searchInputs": [
-      {  
+      {
         "label":"Search `Text` field",
         "order":1,
-        "field":{  
+        "field":{
             "id":"TextField",
             "metadata":false,
-            "field_type":{  
+            "field_type":{
               "id":"Text",
               "type":"Text",
               "min":null,
               "max":null,
               "regular_expression":null,
-              "fixed_list_items":[  
+              "fixed_list_items":[
 
               ],
-              "complex_fields":[  
+              "complex_fields":[
 
               ],
               "collection_field_type":null
@@ -3631,22 +4002,22 @@
   },
   "CT2inputs" : {
     "searchInputs": [
-      {  
+      {
         "label":"Search `Number` field",
         "order":1,
-        "field":{  
+        "field":{
             "id":"NumberField",
             "metadata":false,
-            "field_type":{  
+            "field_type":{
               "id":"Number",
               "type":"Number",
               "min":null,
               "max":null,
               "regular_expression":null,
-              "fixed_list_items":[  
+              "fixed_list_items":[
 
               ],
-              "complex_fields":[  
+              "complex_fields":[
 
               ],
               "collection_field_type":null
@@ -3657,22 +4028,22 @@
   },
   "CT3inputs" : {
     "searchInputs": [
-      {  
+      {
         "label":"Search `YesOrNo` field",
         "order":1,
-        "field":{  
+        "field":{
             "id":"YesOrNoField",
             "metadata":false,
-            "field_type":{  
+            "field_type":{
               "id":"YesOrNo",
               "type":"YesOrNo",
               "min":null,
               "max":null,
               "regular_expression":null,
-              "fixed_list_items":[  
+              "fixed_list_items":[
 
               ],
-              "complex_fields":[  
+              "complex_fields":[
 
               ],
               "collection_field_type":null
@@ -3680,5 +4051,137 @@
         }
       }
     ]
-  }
+  },
+  "workbasketInputs": {
+    "workbasketInputs": [
+      {
+        "label": "Text Field",
+        "order": 1,
+        "field": {
+          "id": "TextField",
+          "metadata": false,
+          "field_type": {
+            "id": "Text",
+            "type": "Text",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": [],
+            "complex_fields": [],
+            "collection_field_type": null
+          }
+        }
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "http://ccd-data-store-api:4452/internal/case-types/AllDataTypes2/work-basket-inputs"
+      }
+    }
+  },
+  "jurisdictions-read": [
+    {
+      "id": "J1",
+      "name": "Jurisdiction 1",
+      "description": "",
+      "caseTypes": [
+        {
+          "id": "CT0",
+          "name": "Case type 0",
+          "description": "",
+          "states": [
+            {
+              "id": "S1",
+              "name": "State 1",
+              "description": ""
+            },
+            {
+              "id": "S2",
+              "name": "State 2",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": "CT2",
+          "name": "Case type 2",
+          "description": "",
+          "states": [
+            {
+              "id": "S1",
+              "name": "State 1",
+              "description": ""
+            },
+            {
+              "id": "S2",
+              "name": "State 2",
+              "description": ""
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "J2",
+      "name": "Jurisdiction 2",
+      "description": "",
+      "caseTypes": [
+        {
+          "id": "CT3",
+          "name": "Case type 3",
+          "description": "",
+          "states": [
+            {
+              "id": "S1",
+              "name": "State 1",
+              "description": ""
+            },
+            {
+              "id": "S2",
+              "name": "State 2",
+              "description": ""
+            }
+          ],
+          "events": []
+        }
+      ]
+    }
+
+  ],
+  "jurisdictions-create": [
+    {
+        "id": "FR",
+        "name": "Financial Remedy",
+        "description": "Financial Remedy: remedy",
+        "caseTypes": [{
+            "id": "FR",
+            "description": "Handling of the financial remedy",
+            "name": "FR case - v108.10",
+            "states": null,
+            "events": [{
+                "id": "create",
+                "name": "Apply for a financial remedy",
+                "description": "Apply for a financial remedy",
+                "pre_states": [],
+                "post_state": null,
+                "case_fields": []
+            }, {
+                "id": "create2",
+                "name": "Apply for a financial remedy 2",
+                "description": "Apply for a financial remedy 2",
+                "pre_states": [],
+                "post_state": null,
+                "case_fields": []
+            }, {
+                "id": "create3",
+                "name": "Apply for a financial remedy 3",
+                "description": "Apply for a financial remedy 3",
+                "pre_states": [],
+                "post_state": null,
+                "case_fields": []
+            }]
+        }]
+    }
+]
 }

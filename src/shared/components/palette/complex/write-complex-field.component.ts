@@ -3,6 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { Constants } from '../../../commons/constants';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 
 @Component({
@@ -11,6 +12,12 @@ import { FormValidatorsService } from '../../../services/form/form-validators.se
   styleUrls: ['./read-complex-field-table.scss']
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+  @Input()
+  caseFields: CaseField[] = [];
+
+  @Input()
+  formGroup: FormGroup;
+
   complexGroup: FormGroup;
 
   @Input()
@@ -36,7 +43,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
       const validatorsRequired = function () {
         return 'AddressLine1' === caseField.id
           && 'TextMax150' === caseField.field_type.id
-          && FormValidatorsService.MANDATORY === caseField.display_context
+          && Constants.MANDATORY === caseField.display_context
           || !this.ignoreMandatory;
       };
       if (validatorsRequired.call(this)) {

@@ -16,3 +16,6 @@ export * from './request';
 export * from './search';
 export * from './router';
 export * from './window';
+export * from './workbasket';
+export * from './definitions';
+export * from './search-result/sorting/search-result-view-item-comparator-factory';

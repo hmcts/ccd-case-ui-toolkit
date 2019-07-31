@@ -163,17 +163,33 @@ select::-ms-expand {
   width: 80%;
   padding-right: 15px;
   box-sizing: border-box;
+  padding-left: 1.3%;
+  border-left: 1px solid #BFC1C3;
 }
 .screen-990 {
   width: 990px;
   margin: 0 auto;
 }
-.heading-small {
-  margin-top: 30px;
+%headers {
+  font-weight: bold;
+  margin-top: 20px;
   margin-bottom: 20px;
 }
-.heading-17 {
-  font-size: 17px;
+.heading-h1 {
+  @extend %headers;
+  font-size: 32px;
+}
+.heading-h2 {
+  @extend %headers;
+  font-size: 24px;
+}
+.heading-h3 {
+  @extend %headers;
+  font-size: 18px;
+}
+.heading-h4 {
+  @extend %headers;
+  font-size: 16px;
 }
 .form-group, .bottom-0 {
   margin-bottom: 0;
@@ -187,10 +203,12 @@ select::-ms-expand {
 .form-label {
   font-size: 16px;
   margin-bottom: 5px;
+  padding-bottom: 0px;
 }
 .form-hint {
   font-size: 14px;
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   font-family: "nta", Arial, sans-serif;
 }
 .multiple-choice {
@@ -215,6 +233,7 @@ select::-ms-expand {
 .text-16, .error-message {
   font-size: 16px;
   font-family: "nta", Arial, sans-serif;
+  white-space: normal;
 }
 .postcodeinput {
   width: 49%;
@@ -222,14 +241,44 @@ select::-ms-expand {
 .button-30 {
   height: 30px;
 }
-.markdown h2, .markdown h3 {
-  font-size: 17px;
-  margin-top: 0px;
+.markdown {
+  h1 {
+    @extend %headers;
+    font-size: 32px;
+  }
+  h2 {
+    @extend %headers;
+    font-size: 24px;
+  }
+  h3 {
+    @extend %headers;
+    font-size: 18px;
+  }
+  h4 {
+    @extend %headers;
+    font-size: 16px;
+  }
+  p {
+    font-size: 16px;
+    margin-bottom: 25px;
+    white-space: normal;
+  }
+  ul {
+    font-size: 16px;
+    margin-bottom: 25px;
+    white-space: normal;
+    li {
+      margin-bottom: 5px;
+      list-style-type: disc;
+    }
+  }
 }
-.markdown ul, .markdown p {
-  margin-bottom: 25px;
+tr.compound-field .markdown ul,
+tr.compound-field .markdown p,
+form.check-your-answers table  td .markdown ul,
+form.check-your-answers table  td .markdown p {
+  margin: 10px 0px;
 }
-
 #fileInputWrapper{
   position:absolute;
   width:50%;
@@ -250,6 +299,10 @@ select::-ms-expand {
   float: left;
   margin-bottom: 10px;
 }
+.caption {
+  text-align: left;
+  margin-bottom: 10px;
+}
 .sr-only {
   position: absolute;
   width: 1px;
@@ -259,4 +312,17 @@ select::-ms-expand {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+.govuk-skip-link {
+  display:block;
+  font-size: 0px;
+  height: 0px;
+  &:focus {
+    font-size: 16px;
+    padding-left: 15px;
+    width: 100%;
+    height: 41px;
+    display:flex;
+    align-items:center;
+  }
 }

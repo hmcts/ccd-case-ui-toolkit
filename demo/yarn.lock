@@ -285,9 +285,10 @@
     mocha "^5.0.5"
     typescript "3.1.1"
 
-"@hmcts/ccpay-web-component@1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-1.6.2.tgz#ac02986bfe6575f332cefc795b2fef84c049a9e3"
+"@hmcts/ccpay-web-component@^1.6.2":
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-1.8.5.tgz#91f1fe57b95104cb479a6fd5c34219d00adfc891"
+  integrity sha512-5oPnCWOM3LXV1ybGF2UVAuzX0FdwA2bUbeb7eTDJXCtjUz3Mdd2OMw0N9TLKPJVFhp0PD0OCs7o3CWXMd7+MVw==
   dependencies:
     tslib "^1.9.0"
 
@@ -4708,6 +4709,11 @@ ngx-md@~6.0.0:
     marked "^0.5.0"
     prismjs "^1.15.0"
     tslib "^1.9.0"
+
+ngx-pagination@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/ngx-pagination/-/ngx-pagination-3.2.1.tgz#d82fe15b03a628621dabb835ebc90011f2557689"
+  integrity sha512-+dprQkYoiNYDZkNAe/1HX0wDFbwCTE31mC2bEQVdI7ZbjEIvGB7R3zp5QoCKgz6cPFatUj4Iw6Ukqp5zx0oT/Q==
 
 nice-try@^1.0.4:
   version "1.0.5"

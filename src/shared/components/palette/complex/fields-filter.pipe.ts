@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../../services/fields';
 
 @Pipe({
   name: 'ccdFieldsFilter'
@@ -61,9 +62,19 @@ export class FieldsFilterPipe implements PipeTransform {
               || !FieldsFilterPipe.isEmpty(value[field.id]);
   }
 
-  private static getValue(field: CaseField, values: any): any {
-    return FieldsFilterPipe.isEmpty(field.value) ? values[field.id] : field.value;
+  private static getValue(field: CaseField, values: any, index?: number): any {
+    let value: any;
+    if (index >= 0 ) {
+      value = values[index].value[field.id]
+    } else {
+      value = values[field.id]
+    }
+    return FieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
+
+  constructor(
+    private fieldsUtils: FieldsUtils
+  ) {}
 
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.
@@ -72,7 +83,7 @@ export class FieldsFilterPipe implements PipeTransform {
    * @param keepEmpty
    * @returns {any}
    */
-  transform(complexField: CaseField, keepEmpty?: boolean): CaseField[] {
+  transform(complexField: CaseField, keepEmpty?: boolean, index?: number): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }
@@ -82,9 +93,9 @@ export class FieldsFilterPipe implements PipeTransform {
 
     return fields
       .map(f => {
-        let clone = Object.assign(new CaseField(), f);
+        let clone = this.fieldsUtils.cloneObject(f);
 
-        let value = FieldsFilterPipe.getValue(f, values);
+        let value = FieldsFilterPipe.getValue(f, values, index);
 
         if (!FieldsFilterPipe.isEmpty(value)) {
           clone.value = value;

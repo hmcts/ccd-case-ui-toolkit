@@ -7,7 +7,6 @@ export class CaseTab implements Orderable {
   id: string;
   label: string;
   order?: number;
-
   @Type(() => CaseField)
   fields: CaseField[];
   show_condition?: string;

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { By } from '@angular/platform-browser';
-import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { of } from 'rxjs';
@@ -17,26 +17,27 @@ describe('WriteAddressFieldComponent', () => {
   const $TITLE = By.css('h2');
 
   const $POSTCODE_LOOKUP = By.css('#postcodeLookup');
-  const $POSTCODE_LOOKUP_INPUT = By.css('#postcodeInput');
+  const $POSTCODE_LOOKUP_INPUT = By.css('.postcodeinput');
   const $POSTCODE_LOOKUP_FIND = By.css('#postcodeLookup > button');
   const $POSTCODE_LOOKUP_ERROR_MESSAGE = By.css('.error-message');
 
   const $SELECT_ADDRESS = By.css('#selectAddress');
-  const $ADDRESS_LIST = By.css('#selectAddress > #addressList');
+  const $ADDRESS_LIST = By.css('#selectAddress > .addressList');
 
   const $MANUAL_LINK = By.css('.manual-link');
   const $ADDRESS_COMPLEX_FIELD = By.css('ccd-write-complex-type-field');
 
   @Component({
     selector: `ccd-host-component`,
-    template: `<ccd-write-address-field [caseField]="caseField" [registerControl]="registerControl"></ccd-write-address-field>`
+    template: `<ccd-write-address-field [caseField]="caseField" [registerControl]="registerControl" [formGroup]="formGroup">
+    </ccd-write-address-field>`
   })
   class TestHostComponent {
     @ViewChild(WriteAddressFieldComponent)
     public componentUnderTest: WriteAddressFieldComponent;
 
     caseField = caseField(null);
-
+    formGroup = addressFormGroup();
     registerControl = () => {};
   }
 
@@ -82,6 +83,18 @@ describe('WriteAddressFieldComponent', () => {
     };
   }
 
+  function addressFormGroup() {
+    return new FormGroup({
+      AddressLine1: new FormControl(),
+      AddressLine2: new FormControl(),
+      AddressLine3: new FormControl(),
+      PostTown: new FormControl(),
+      County: new FormControl(),
+      PostCode: new FormControl(),
+      Country: new FormControl()
+    });
+  }
+
   function buildAddress(entryNo: number): AddressModel {
     const address = new AddressModel();
     address.AddressLine1 = 'AddressLine1-' + entryNo;
@@ -106,7 +119,6 @@ describe('WriteAddressFieldComponent', () => {
   beforeEach(async(() => {
 
     addressesService = new AddressesService(null, null);
-
     TestBed
       .configureTestingModule({
         imports: [
@@ -122,8 +134,7 @@ describe('WriteAddressFieldComponent', () => {
         ],
         providers: [
           IsCompoundPipe,
-          { provide: AddressesService, useValue: addressesService }
-        ]
+          { provide: AddressesService, useValue: addressesService }]
       })
       .compileComponents();
 

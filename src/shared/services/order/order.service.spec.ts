@@ -1,6 +1,6 @@
 import { OrderService } from './order.service';
-import { createFieldType, textFieldType } from '../../fixture/shared.test.fixture';
 import { newCaseField } from '../../fixture';
+import { createFieldType, createFixedListFieldType, textFieldType } from '../../fixture/shared.test.fixture';
 
 describe('OrderService', () => {
 
@@ -68,6 +68,26 @@ describe('OrderService', () => {
   });
 
   describe('should sort caseFields', () => {
+    it('should keep the order of the fixedlist items', () => {
+      const CASE_FIELDS = [
+        newCaseField('testField1', 'Debtor name', '', createFixedListFieldType('fixedList1', [{code: 'c1', label: 'l1', order: 2},
+          {code: 'c2', label: 'l2', order: 1}]), null, 3).build(),
+        newCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5).build()];
+
+      let caseFieldsOrdered = orderService.deepSort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField1');
+      expect(caseFieldsOrdered[0].field_type.fixed_list_items[0].code).toEqual('c2');
+      expect(caseFieldsOrdered[0].field_type.fixed_list_items[0].order).toEqual(1);
+      expect(caseFieldsOrdered[0].field_type.fixed_list_items[1].code).toEqual('c1');
+      expect(caseFieldsOrdered[0].field_type.fixed_list_items[1].order).toEqual(2);
+
+      expect(caseFieldsOrdered[1].order).toEqual(5);
+      expect(caseFieldsOrdered[1].id).toEqual('testField2');
+
+    });
+
     it('should keep the order of the fields if already sorted', () => {
       const CASE_FIELDS = [
         newCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3).build(),
@@ -152,7 +172,7 @@ describe('OrderService', () => {
       expect(testField2.order).toEqual(4);
     });
 
-    it('should sort Collection type containing Complex type', () => {
+    it('should sort Collection type and fixed lists in collection type containing Complex type', () => {
       const CASE_FIELDS_WITH_COMPLEX_TYPE_IN_COLLECTION = [
         newCaseField('debtorName', 'Debtor name', '', textFieldType(), null, 1).build(),
         newCaseField('interimReturns', 'Interim returns', '',
@@ -180,6 +200,7 @@ describe('OrderService', () => {
       let addressAttended = interimReturns.field_type.collection_field_type.complex_fields[0];
       let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
       let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
+      let county = addressAttended.field_type.complex_fields.find(e => e.id === 'County');
       let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
 
       expect(debtorName.id).toEqual('debtorName');
@@ -190,6 +211,11 @@ describe('OrderService', () => {
       expect(addressAttended.order).toEqual(addressLine1.order);
       expect(addressLine2.order).toBeUndefined();
       expect(postCode.order).toEqual(3);
+      expect(county.field_type.fixed_list_items[0].code).toEqual('Avon');
+      expect(county.field_type.fixed_list_items[0].order).toEqual(1);
+      expect(county.field_type.fixed_list_items[1].code).toEqual('Somerset');
+      expect(county.field_type.fixed_list_items[1].order).toEqual(2);
+      expect(county.field_type.fixed_list_items[2].code).toEqual('Oxford');
     });
   });
 });

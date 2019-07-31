@@ -6,12 +6,12 @@ import { PlaceholderService } from './services';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
- * Checks all labels and substitutes any that reference other ones.
+ * Checks all labels and substitutes any placholders that reference other fields values.
  */
 export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[] = [];
+  @Input() contextFields: CaseField[] = [];
   @Input() formGroup: FormGroup;
   @Input() elementsToSubstitute: string[] = ['label', 'hint_text'];
 
@@ -50,9 +50,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private getReadOnlyAndFormFields() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
-    // TODO: Delete following line when @Input eventFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
-    let uniqueEventFields = this.removeDuplicates(this.eventFields);
-    return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueEventFields, formFields);
+    // TODO: Delete following line when @Input contextFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
+    let uniqueContextFields = this.removeDuplicates(this.contextFields);
+    return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueContextFields, formFields);
   }
 
   private removeDuplicates(arr: CaseField[]) {

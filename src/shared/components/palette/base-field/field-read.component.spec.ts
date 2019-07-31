@@ -1,19 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { CaseField } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
 import { PaletteContext } from './palette-context.enum';
-import { newCaseField } from '../../../fixture';
+import { plainToClassFromExist } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
 const $FIELD_TEST = By.css('ccd-field-read-label span.text-cls');
 
-const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'READONLY').withValue('Johnny').build();
+const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
+  _list_items: [],
+  id: 'PersonFirstName',
+  label: 'First name',
+  field_type: {
+    id: 'Text',
+    type: 'Text'
+  },
+  _value: 'Johnny',
+  display_context: 'READONLY'
+});
+
 const CLASS = 'text-cls';
 
 @Component({
@@ -44,6 +55,9 @@ describe('FieldReadComponent', () => {
   let de: DebugElement;
 
   let paletteService: any;
+
+  let formGroup: FormGroup;
+  let caseFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
@@ -80,6 +94,8 @@ describe('FieldReadComponent', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
+    component.caseFields = caseFields;
+    component.formGroup = formGroup;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -103,7 +119,10 @@ describe('FieldReadComponent', () => {
     expect(fieldTestComponent).toBeTruthy();
 
     let fieldTest = fieldTestComponent.componentInstance;
-    expect(fieldTest.caseField).toBe(CASE_FIELD);
+    expect(fieldTest.caseField).toEqual(CASE_FIELD);
+    expect(fieldTest.caseFields).toBe(caseFields);
+    expect(fieldTest.formGroup).toBe(formGroup);
+    expect(fieldTest.registerControl).not.toBeNull();
   });
 
   it('should pass context to field instance', () => {

@@ -13,28 +13,34 @@ import { GreyBarService } from './services/grey-bar.service';
 
 @Component({
     template: `
-      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields" [greyBarEnabled]="true">
+      <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [complexFormGroup]="complexFormGroup"
+           [contextFields]="caseFields" [idPrefix]="idPrefix" [greyBarEnabled]="true">
         <div>text field</div>
       </div>`
 })
 class TestHostComponent {
 
-    @Input() caseField: CaseField;
-    @Input() eventFields: CaseField[];
-    @Input() formGroup: FormGroup;
+  @Input() caseField: CaseField;
+  @Input() idPrefix: string;
+  @Input() caseFields: CaseField[];
+  @Input() formGroup: FormGroup;
+  @Input() complexFormGroup: FormGroup;
 }
 
 @Component({
   template: `
-    <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup" [eventFields]="eventFields">
+    <div ccdConditionalShow [caseField]="caseField" [formGroup]="formGroup"
+         [contextFields]="caseFields" [idPrefix]="idPrefix">
       <div>text field</div>
     </div>`
 })
 class TestHostGreyBarDisabledComponent {
 
   @Input() caseField: CaseField;
-  @Input() eventFields: CaseField[];
+  @Input() idPrefix: string;
+  @Input() caseFields: CaseField[];
   @Input() formGroup: FormGroup;
+  @Input() complexFormGroup: FormGroup;
 }
 
 let field = (id, value, showCondition?) => {
@@ -95,7 +101,7 @@ describe('ConditionalShowDirective', () => {
       el = de.nativeElement;
       conditionalShow = de.injector.get(ConditionalShowDirective) as ConditionalShowDirective;
       comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
-      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+      comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
       comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
@@ -119,7 +125,7 @@ describe('ConditionalShowDirective', () => {
       fieldType.id = 'fieldId';
       fieldType.type = 'Text';
       comp.caseField.field_type = fieldType;
-      comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
+      comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
       fixture.detectChanges();
 
       expect(el.hidden).toBe(false);
@@ -129,7 +135,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display grey bar when toggled to show', () => {
       comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
-      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+      comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
       comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
@@ -149,7 +155,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should remove grey bar when toggled to hide', () => {
       comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
-      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+      comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
       comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
@@ -178,7 +184,7 @@ describe('ConditionalShowDirective', () => {
       fieldType.id = 'fieldId';
       fieldType.type = 'Text';
       comp.caseField.field_type = fieldType;
-      comp.eventFields = [comp.caseField, field('PersonLastName', 'Jack', '')];
+      comp.caseFields = [comp.caseField, field('PersonLastName', 'Jack', '')];
       fixture.detectChanges();
 
       expect(el.hidden).toBe(true);
@@ -192,7 +198,7 @@ describe('ConditionalShowDirective', () => {
       fieldType.id = 'fieldId';
       fieldType.type = 'Collection';
       comp.caseField.field_type = fieldType;
-      comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+      comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
       comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
@@ -212,7 +218,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches a read only field. No form fields', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', '')];
         fixture.detectChanges();
 
         expect(el.hidden).toBe(false);
@@ -221,7 +227,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match any read only field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Mundy', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Mundy', '')];
         fixture.detectChanges();
 
         expect(el.hidden).toBe(true);
@@ -229,7 +235,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match an undefined readonly field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonLastName="Doe"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', '', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', '', '')];
         fixture.detectChanges();
 
         expect(el.hidden).toBe(true);
@@ -237,7 +243,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches a form field. No read only fields', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', '')];
+        comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonHasSecondAddress: new FormControl('Yes'),
             PersonSecondAddress: new FormControl(''),
@@ -249,7 +255,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches a form field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', ''), field('PersonHasSecondAddress', 'Yes', '')];
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''), field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonHasSecondAddress: new FormControl('Yes'),
             PersonSecondAddress: new FormControl(''),
@@ -262,7 +268,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match any form field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
                              field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonSecondAddress: new FormControl(''),
@@ -277,7 +283,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not display when condition does not match because form field is undefined', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
+        comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonSecondAddress: new FormControl(''),
@@ -290,7 +296,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should display when condition matches after field change', () => {
         comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
+        comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                             field('PersonFirstName', 'Mario', '')];
         comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Hollis'),
@@ -309,7 +315,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should disable a form field when hiding and keep its value', () => {
         comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
+        comp.caseFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Hollis'),
@@ -342,7 +348,7 @@ describe('ConditionalShowDirective', () => {
 
     it('should not clear a form field on hide if not dirty', () => {
         comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
-        comp.eventFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
+        comp.caseFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
         comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Hollis'),
@@ -360,4 +366,44 @@ describe('ConditionalShowDirective', () => {
         expect(conditionalShow.formField.status).toBe('DISABLED');
         expect(conditionalShow.formField.value).toBe('Hollis');
     });
+
+  describe('conditional show hide for complex field group', () => {
+
+    beforeEach(() => {
+      comp.caseField = field('Postcode', '', 'Address.Country="UK"');
+      comp.idPrefix = 'Address_';
+      comp.caseFields = [field('PersonLastName', 'Doe', '')];
+      comp.formGroup = new FormGroup({
+        Address: new FormGroup({
+          Country: new FormControl('UK'),
+          Postcode: new FormControl('W4')
+        })
+      });
+    });
+
+    it('should display when condition matches complex subfield', () => {
+      comp.complexFormGroup = new FormGroup({
+        Country: new FormControl('UK'),
+        Postcode: new FormControl('W4')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(false);
+      expect(conditionalShow.formField.disabled).toBe(false);
+      expect(conditionalShow.formField.value).toBe('W4');
+    });
+
+    it('should not display when condition does not match complex subfield', () => {
+      comp.formGroup.patchValue({Address: {Country: 'FRANCE'}});
+      comp.complexFormGroup = new FormGroup({
+        Country: new FormControl('FRANCE'),
+        Postcode: new FormControl('W4')
+      });
+      fixture.detectChanges();
+
+      expect(el.hidden).toBe(true);
+      expect(conditionalShow.formField.disabled).toBe(true);
+    });
+
+  });
 });

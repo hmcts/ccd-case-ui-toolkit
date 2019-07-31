@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import createSpyObj = jasmine.createSpyObj;
 import { CasesService } from '../services/cases.service';
 import { CaseProgressComponent } from './case-progress.component';
-import { CaseEventTrigger, CaseDetails, CaseEventData, CaseView } from '../../../domain';
+import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { AlertService } from '../../../services/alert';
-import { of, Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { HttpError } from '../../../domain/http';
 import { MockComponent } from 'ng2-mock-component';
 import { EventTriggerService } from '../services/event-trigger.service';
+import createSpyObj = jasmine.createSpyObj;
 import { newCaseField } from '../../../fixture/case-field.test.fixture';
 
 let CaseEditComponent: any = MockComponent({
@@ -113,8 +113,10 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
         ],
         schemas: [NO_ERRORS_SCHEMA],
         declarations: [
-          CaseEditComponent,
           CaseProgressComponent,
+
+          // mock
+          CaseEditComponent,
         ],
         providers: [
           { provide: CasesService, useValue: casesService },

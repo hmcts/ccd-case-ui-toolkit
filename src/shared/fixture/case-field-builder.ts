@@ -73,6 +73,11 @@ export class CaseFieldBuilder {
     return this;
   }
 
+  public withListValue(value: any): CaseFieldBuilder {
+    this.caseField.list_items = value;
+    return this;
+  }
+
   public build(): CaseField {
     return this.caseField;
   }

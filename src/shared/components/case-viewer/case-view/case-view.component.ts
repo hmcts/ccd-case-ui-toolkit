@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertService } from '../../../services/alert';
 import { CaseView, Draft } from '../../../domain';
-import { CasesService, CaseService } from '../../case-editor';
+import { CaseService, CasesService } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-view',
@@ -14,6 +15,10 @@ export class CaseViewComponent implements OnInit {
 
   @Input()
   case: string;
+  @Input()
+  hasPrint = true;
+  @Input()
+  hasEventSelector = true;
 
   caseDetails: CaseView;
 
@@ -28,8 +33,8 @@ export class CaseViewComponent implements OnInit {
     this.getCaseView(this.case)
       .pipe(
         map(caseView => {
-          this.caseDetails = caseView;
-          this.caseService.announceCase(caseView);
+          this.caseDetails = plainToClassFromExist(new CaseView(), caseView);
+          this.caseService.announceCase(this.caseDetails);
         })
       )
       .toPromise()

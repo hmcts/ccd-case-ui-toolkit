@@ -145,7 +145,15 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
 
       expect(simpleRowsHeadersClickers[0].properties.innerHTML).toEqual(UNORDERED);
       expect(simpleRowsHeadersClickers[1].properties.innerHTML).toEqual(UNORDERED);
-
+      expect(component.columnsVerticalLabel['AddressPostcode'].label).toEqual('Post code')
+      expect(component.columnsVerticalLabel['AddressPostcode'].type).toEqual('Complex');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField).toEqual(
+        {
+          id: 'AddressPostcode',
+          label: 'Post code', display_context: 'OPTIONAL',
+          field_type: {id: 'Complex', type: 'Complex', complex_fields: []}, value: {postcode: 'TE45ED'}
+        }
+      );
     });
 
     it('should sort rows based on column name', () => {
@@ -163,7 +171,6 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       component.sortRowsByColumns('AddressLine2');
       expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
     });
-
   });
 
 });

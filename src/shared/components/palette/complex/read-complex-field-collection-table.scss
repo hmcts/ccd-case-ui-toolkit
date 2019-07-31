@@ -47,10 +47,19 @@
   .complex-panel-simple-field {
     th {
       padding-left: $padding;
+      padding-top: 0px;
+      padding-bottom: 0px;
       width: 295px;
     }
   }
-
+  .complex-panel-nested-field {
+    th {
+      padding-left: 33px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      width: 200px;
+    }
+  }
   .complex-panel-compound-field {
     td {
       padding: $padding;
