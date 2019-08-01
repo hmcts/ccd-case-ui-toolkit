@@ -1,8 +1,5 @@
 ## RELEASE NOTES
 
-### Version 2.58.12 - August 01 2019
-**RDM-5313** Inline mandatory validation error to be displayed for document upload field 
-
 ### Version 2.58.9 - July 19 2019
 **RDM-5031** redirect to case-list when user do not have access to the case after an event
 
