@@ -82,12 +82,6 @@ describe('WriteAddressFieldComponent', () => {
     field.field_type = createFieldType('FieldTypeId', 'Complex');
     field.value = address;
     return field;
-    // return {
-    //   id: 'caseFieldId',
-    //   label: CASE_FIELD_LABEL,
-    //   field_type: { id: 'FieldTypeId', type: 'Complex' },
-    //   value: address
-    // };
   }
 
   function addressFormGroup() {

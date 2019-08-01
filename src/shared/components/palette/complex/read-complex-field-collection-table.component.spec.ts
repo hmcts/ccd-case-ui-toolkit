@@ -146,11 +146,9 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.columnsVerticalLabel['AddressPostcode'].type).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.id).toEqual('AddressPostcode');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.label).toEqual('Post code');
-        // {
-        //   id: 'AddressPostcode',
-        //   label: 'Post code', display_context: 'OPTIONAL',
-        //   field_type: {id: 'Complex', type: 'Complex', complex_fields: []}, value: {postcode: 'TE45ED'}
-        // }
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.id).toEqual('Complex');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.type).toEqual('Complex');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.value).toEqual({postcode: 'TE45ED'});
       // );
     });
 
