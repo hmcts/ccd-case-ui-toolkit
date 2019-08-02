@@ -69,7 +69,9 @@ export { ShowCondition,
          LabelSubstitutorDirective,
          LabelSubstitutorModule,
          ConditionalShowRegistrarService,
-         GreyBarService } from './shared/directives';
+         GreyBarService,
+         FocusElementDirective,
+         FocusElementModule } from './shared/directives';
 export { PaletteModule,
          PaletteUtilsModule,
          MarkdownModule,

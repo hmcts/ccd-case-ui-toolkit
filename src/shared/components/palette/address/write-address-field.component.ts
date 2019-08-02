@@ -72,11 +72,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           );
         });
       this.addressList.setValue(undefined);
-      setTimeout(() => {
-        if (document.getElementById(this.createId('addressList') + '')) {
-          document.getElementById(this.createId('addressList') + '').focus();
-        }
-      }, 1000);
     }
   }
 
