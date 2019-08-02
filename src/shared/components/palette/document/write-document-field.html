@@ -11,7 +11,8 @@
   </div>
 
   <div style='position:relative'>
-    <div id='fileInputWrapper' (click)="fileSelectEvent()"></div>
-    <input class="form-control bottom-30" [id]="id()" type="file" (change)="fileChangeEvent($event)" #fileInput/>
+
+    <div id='fileInputWrapper' (click)="fileSelectEvent()"  ></div>
+    <input class="form-control bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event)"  #fileInput/>
   </div>
 </div>
