@@ -409,21 +409,6 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/document-viewer-webcomponent@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/document-viewer-webcomponent/-/document-viewer-webcomponent-1.1.5.tgz#0376905e183c015709ebd6bac383af1ed794b71c"
-  integrity sha512-hNdGuf8qMbOCLJ17zaZzZAZWeQLuTmsrw3ygeFikMBt49sOvNMDRNWYnmCmXhl6bOSRkgV/3t1xiApVdN0NRbQ==
-  dependencies:
-    "@hmcts/frontend" "0.0.14-alpha"
-    "@hmcts/pdf-annotate" "^1.1.17"
-    govuk-frontend "2.5.0"
-    tslib "^1.9.0"
-
-"@hmcts/frontend@0.0.14-alpha":
-  version "0.0.14-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.14-alpha.tgz#ebd5a8e85bf11a0473f02398ecece3321cf82953"
-  integrity sha512-gRaSJgF41A7SyL87nwf9dU/nFrB4OPT/xz4CwtJkkaxX0cLjUiAiNGr3ti6wLEaHviCh5Jjw8i5kMHWm9bGBFw==
-
 "@hmcts/frontend@^0.0.34-alpha":
   version "0.0.34-alpha"
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
@@ -438,14 +423,6 @@
     govuk-frontend "^2.11.0"
     pdfjs-dist "^2.0.943"
     tslib "^1.9.0"
-
-"@hmcts/pdf-annotate@^1.1.17":
-  version "1.1.17"
-  resolved "https://registry.yarnpkg.com/@hmcts/pdf-annotate/-/pdf-annotate-1.1.17.tgz#99e9d06312576a4a6d6a1cba11c6b103dfa94aa1"
-  integrity sha512-JbJ9k6DYWQRqz6eILNBTyHpmgoNLc0FfRLnJUMa/DvT9GxTmuJDZ/WZSevAiS8F392xRoOy4kYEK4ziFeN76LQ==
-  dependencies:
-    create-stylesheet "^0.3.0"
-    object-assign "^4.0.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -2666,11 +2643,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-stylesheet@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/create-stylesheet/-/create-stylesheet-0.3.0.tgz#37479d83c75131b0677d00510d0419fcccc9bc96"
-  integrity sha1-N0edg8dRMbBnfQBRDQQZ/MzJvJY=
-
 cross-spawn@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-3.0.1.tgz#1256037ecb9f0c5f79e3d6ef135e30770184b982"
@@ -4654,11 +4626,6 @@ govuk-elements-sass@^3.1.2:
   integrity sha512-uLg/LHSrylkXDKVPlz9uQtdAOQ2CG4rwxPBmQGO5c5QqW4OS83gspNEDaM/dzK2n2OduiieynfkwKbtqR89xiA==
   dependencies:
     govuk_frontend_toolkit "^7.1.0"
-
-govuk-frontend@2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-2.5.0.tgz#7fa7a1f6522ffbc500613598aaae32ecbf390a9a"
-  integrity sha512-NjrI7G7oFXvuFhj30a3bAuouUWZwfkpewEUmmz5Sfm/BgM9ElTyhV/bvQaGcCefLhYTwXI8DSnZ86861GMZUug==
 
 govuk-frontend@^2.11.0:
   version "2.13.0"
