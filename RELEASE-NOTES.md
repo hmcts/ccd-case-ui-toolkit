@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.13 - July 30 2019
+**RDM-5318** Changes to make Workbasket tolerant of missing defaults
+
 ### Version 2.58.12 - August 01 2019
 **RDM-5313** Inline mandatory validation error to be displayed for document upload field
 
