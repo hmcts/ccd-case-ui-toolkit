@@ -145,10 +145,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
   private setComponentToInitialValues() {
-    this.selectedFile = null;
-    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).setValue(null);
-    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).setValue(null);
-    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).setValue(null);
+    if (this.isAMandatoryComponent()) {
+      this.selectedFile = null;
+      this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).setValue(null);
+      this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).setValue(null);
+      this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).setValue(null);
+    }
   }
   private createDocumentGroup(url: string, binaryUrl: string, filename: string): void {
 
@@ -157,12 +159,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document_url: new FormControl(url, Validators.required),
         document_binary_url: new FormControl(binaryUrl, Validators.required),
         document_filename: new FormControl(filename, Validators.required)
-      }));
-    } else {
-      this.uploadedDocument = this.registerControl(new FormGroup({
-        document_url: new FormControl(url),
-        document_binary_url: new FormControl(binaryUrl),
-        document_filename: new FormControl(filename)
       }));
     }
   }
