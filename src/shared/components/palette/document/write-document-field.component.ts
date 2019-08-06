@@ -124,6 +124,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
       documentUpload.append('classification', 'PUBLIC');
       this.documentManagement.uploadFile(documentUpload).subscribe(result => {
+        if (!this.uploadedDocument) {
+            this.uploadedDocument = this.registerControl(new FormGroup({
+              document_url: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_URL),
+              document_binary_url: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL),
+              document_filename: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME)
+            }));
+        }
         let document = result._embedded.documents[0];
         this.setDocumentGroupValues(
           document._links.self.href,

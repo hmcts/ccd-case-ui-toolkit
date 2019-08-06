@@ -148,12 +148,6 @@ describe('WriteDocumentFieldComponent', () => {
     expect(ccdReadDocumentElement).toBeTruthy();
   });
 
-  it('should initialise formControl with provided value', () => {
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_url).toBe(VALUE.document_url);
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_binary_url).toBe(VALUE.document_binary_url);
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_filename).toBe(VALUE.document_filename);
-  });
-
   it('should open file dialog if document does not exist', () => {
     component.caseField.value = null;
     expect(component.caseField.value).toBeFalsy();
