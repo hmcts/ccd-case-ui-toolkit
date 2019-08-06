@@ -3,8 +3,6 @@ import { NavigationOrigin } from './navigation-origin.model';
 import createSpyObj = jasmine.createSpyObj;
 import { BehaviorSubject } from 'rxjs';
 
-
-
 describe('NavigationNotifierService', () => {
   let navigationNotifierService: NavigationNotifierService;
   let myObservable: any;
