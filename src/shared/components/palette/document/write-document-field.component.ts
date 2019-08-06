@@ -64,9 +64,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       )
     } else {
       this.createDocumentGroup(
-        WriteDocumentFieldDefinitios.DOCUMENT_URL,
-        WriteDocumentFieldDefinitios.DOCUMENT_BINARY_URL,
-        WriteDocumentFieldDefinitios.DOCUMENT_FILENAME);
+        WriteDocumentFieldDefinitions.DOCUMENT_URL,
+        WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL,
+        WriteDocumentFieldDefinitions.DOCUMENT_FILENAME);
       this.setComponentToInitialValues();
     }
   }
@@ -99,7 +99,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private displayFileErrors () {
 
     this.valid = false;
-    this.uploadError = WriteDocumentFieldDefinitios.UPLOAD_ERROR;
+    this.uploadError = WriteDocumentFieldDefinitions.UPLOAD_ERROR_FILE_REQUIRED;
   }
 
   private  validateFormUploadedDocument():  boolean {
@@ -107,9 +107,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return true;
     }
 
-    let validation = !this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_URL).valid &&
-      !this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_BINARY_URL).valid &&
-      !this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_FILENAME).valid;
+    let validation = !this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).valid &&
+      !this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).valid &&
+      !this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).valid;
 
     return validation;
   }
@@ -146,9 +146,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
   private setComponentToInitialValues() {
     this.selectedFile = null;
-    this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_URL).setValue(null);
-    this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_BINARY_URL).setValue(null);
-    this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_FILENAME).setValue(null);
+    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).setValue(null);
+    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).setValue(null);
+    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).setValue(null);
   }
   private createDocumentGroup(url: string, binaryUrl: string, filename: string): void {
 
@@ -168,15 +168,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private setDocumentGroupValues(url: string, binaryUrl: string, filename: string): void {
-    this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_URL).setValue(url);
-    this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_BINARY_URL).setValue(binaryUrl);
-    this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_FILENAME).setValue(filename);
+    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).setValue(url);
+    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).setValue(binaryUrl);
+    this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).setValue(filename);
   }
 
   private getErrorMessage(error: HttpError): string {
     // Document Management unavailable
     if (0 === error.status || 502 === error.status) {
-      return WriteDocumentFieldDefinitios.UPLOAD_ERROR_NO_AVAILABLE;
+      return WriteDocumentFieldDefinitions.UPLOAD_ERROR_NOT_AVAILABLE;
     }
 
     return error.error;
@@ -210,17 +210,17 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   getUploadedFileName() {
     if (this.uploadedDocument) {
-      return this.uploadedDocument.get(WriteDocumentFieldDefinitios.DOCUMENT_FILENAME).value;
+      return this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).value;
     } else {
       return undefined;
     }
   }
 }
 
-class WriteDocumentFieldDefinitios {
+class WriteDocumentFieldDefinitions {
   static readonly DOCUMENT_URL = 'document_url';
   static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   static readonly DOCUMENT_FILENAME = 'document_filename';
-  static readonly UPLOAD_ERROR = 'File required';
-  static readonly UPLOAD_ERROR_NO_AVAILABLE = 'Document upload facility is not available at the moment';
+  static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
+  static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
 }
