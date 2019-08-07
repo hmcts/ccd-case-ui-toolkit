@@ -13,7 +13,7 @@ export class IsReadOnlyAndNotCollectionPipe implements PipeTransform {
     if (!field || !field.field_type || !field.field_type.type) {
       return false;
     }
-    if (field.field_type.type === 'Collection') {
+    if (field.isCollection()) {
       return false;
     }
     return this.caseFieldService.isReadOnly(field);

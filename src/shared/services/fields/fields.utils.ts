@@ -25,7 +25,7 @@ export class FieldsUtils {
   private static prepareValue(field: CaseField) {
     if (field.value) {
       return field.value;
-    } else if (field.field_type.type === 'Complex') {
+    } else if (field.isComplex()) {
       let valueMap = {};
       field.field_type.complex_fields.forEach(complexField => {
         valueMap[complexField.id] = FieldsUtils.prepareValue(complexField);
