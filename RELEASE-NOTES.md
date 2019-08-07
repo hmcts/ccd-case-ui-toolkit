@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.14 - August 7 2019
+**RDM-4068** CRUD permissions on elements within complex types
+
 ### Version 2.58.13 - July 30 2019
 **RDM-5318** Changes to make Workbasket tolerant of missing defaults
 
