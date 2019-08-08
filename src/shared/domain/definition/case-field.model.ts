@@ -63,4 +63,13 @@ export class CaseField implements Orderable {
       && this.display_context.toUpperCase() === 'READONLY';
   }
 
+  @Expose()
+  isCollection(): boolean {
+    return this.field_type && this.field_type.type === 'Collection';
+  }
+
+  @Expose()
+  isComplex(): boolean {
+    return this.field_type && this.field_type.type === 'Complex';
+  }
 }
