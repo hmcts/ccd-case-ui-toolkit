@@ -223,9 +223,6 @@ describe('CaseResolver', () => {
 
       expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
 
-      navigationResult.then(() => {
-        expect(alertService.success).toHaveBeenCalledWith(CaseResolver.CASE_CREATED_MSG);
-      });
     });
   });
 

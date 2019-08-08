@@ -50,7 +50,6 @@ export class CaseResolver implements Resolve<CaseView> {
 
   private navigateToCaseList() {
     this.navigationNotifierService.announceNavigation({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
-    this.alertService.success(CaseResolver.CASE_CREATED_MSG);
   }
 
   private isRootCaseViewRoute(route: ActivatedRouteSnapshot) {
