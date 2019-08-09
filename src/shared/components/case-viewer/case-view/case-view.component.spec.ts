@@ -3,8 +3,8 @@ import { DebugElement } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { CaseViewComponent } from './case-view.component';
 import { CaseView, HttpError } from '../../../domain';
-import { CaseService, CasesService } from '../../case-editor';
-import { AlertService, DraftService } from '../../../services';
+import { CasesService, CaseNotifier } from '../../case-editor';
+import { AlertService, DraftService, NavigationNotifierService } from '../../../services';
 import { RouterTestingModule } from '@angular/router/testing'
 import { MockComponent } from 'ng2-mock-component';
 import { plainToClassFromExist } from 'class-transformer';
@@ -35,10 +35,11 @@ describe('CaseViewComponent', () => {
   });
   const CASE_VIEW_OBS: Observable<CaseView> = Observable.of(CASE_VIEW);
 
-  let caseService;
+  let caseNotifier;
   let casesService;
   let alertService: any;
   let draftService: any;
+  let navigationNotifierService: NavigationNotifierService;
 
   let fixture: ComponentFixture<CaseViewComponent>;
   let component: CaseViewComponent;
@@ -51,81 +52,84 @@ describe('CaseViewComponent', () => {
 
   describe('Case', () => {
     describe('CaseViewComponent successfully resolves case view', () => {
-        beforeEach(async(() => {
+      beforeEach(async(() => {
 
-          caseService = createSpyObj('caseService', ['announceCase']);
-          draftService = createSpyObj('draftService', ['getDraft']);
+        caseNotifier = createSpyObj('caseService', ['announceCase']);
+        navigationNotifierService = new NavigationNotifierService();
+        draftService = createSpyObj('draftService', ['getDraft']);
 
-          casesService = createSpyObj('casesService', ['getCaseViewV2']);
-          casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
+        casesService = createSpyObj('casesService', ['getCaseViewV2']);
+        casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
 
-          alertService = createSpyObj('alertService', ['error']);
-          alertService.error.and.returnValue(Observable.of({}));
+        alertService = createSpyObj('alertService', ['error']);
+        alertService.error.and.returnValue(Observable.of({}));
 
-          TestBed
-            .configureTestingModule({
-              imports: [ RouterTestingModule ],
-              declarations: [
-                CaseViewComponent,
+        TestBed
+          .configureTestingModule({
+            imports: [RouterTestingModule],
+            declarations: [
+              CaseViewComponent,
 
-                // mock
-                CaseViewerComponent,
-              ],
-              providers: [
-                { provide: CaseService, useValue: caseService },
-                { provide: CasesService, useValue: casesService },
-                { provide: AlertService, useValue: alertService },
-                { provide: DraftService, useValue: draftService },
-              ]
-            })
-            .compileComponents();
+              // mock
+              CaseViewerComponent,
+            ],
+            providers: [
+              {provide: NavigationNotifierService, useValue: navigationNotifierService},
+              {provide: CaseNotifier, useValue: caseNotifier},
+              {provide: CasesService, useValue: casesService},
+              {provide: AlertService, useValue: alertService},
+              {provide: DraftService, useValue: draftService},
+            ]
+          })
+          .compileComponents();
 
-          fixture = TestBed.createComponent(CaseViewComponent);
-          component = fixture.componentInstance;
-          component.case = CASE_REFERENCE;
-          component.hasPrint = true;
-          component.hasEventSelector = true;
-          de = fixture.debugElement;
-          fixture.detectChanges();
-        }));
+        fixture = TestBed.createComponent(CaseViewComponent);
+        component = fixture.componentInstance;
+        component.case = CASE_REFERENCE;
+        component.hasPrint = true;
+        component.hasEventSelector = true;
+        de = fixture.debugElement;
+        fixture.detectChanges();
+      }));
 
-        it('should get case view on loading and announce it', () => {
-            expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_VIEW.case_id);
-            expect(caseService.announceCase).toHaveBeenCalledWith(CASE_VIEW);
-        });
+      it('should get case view on loading and announce it', () => {
+        expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_VIEW.case_id);
+        expect(caseNotifier.announceCase).toHaveBeenCalledWith(CASE_VIEW);
       });
+    });
 
     describe('CaseViewComponent fails to resolve case view', () => {
 
-        const ERROR_MSG = 'Critical error!';
+      const ERROR_MSG = 'Critical error!';
 
-        beforeEach(async(() => {
+      beforeEach(async(() => {
 
         const ERROR: HttpError = new HttpError();
         ERROR.message = ERROR_MSG;
         const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
         casesService.getCaseViewV2.and.returnValue(ERROR_OBS);
 
-        caseService = createSpyObj('caseService', ['announceCase']);
+        caseNotifier = createSpyObj('caseService', ['announceCase']);
         alertService = createSpyObj('alertService', ['error']);
 
         TestBed
-            .configureTestingModule({
-            imports: [ RouterTestingModule ],
+          .configureTestingModule({
+            imports: [RouterTestingModule],
             declarations: [
-                CaseViewComponent,
+              CaseViewComponent,
 
-                // mock
-                CaseViewerComponent,
+              // mock
+              CaseViewerComponent,
             ],
             providers: [
-                { provide: CaseService, useValue: caseService },
-                { provide: CasesService, useValue: casesService },
-                { provide: AlertService, useValue: alertService },
-                { provide: DraftService, useValue: draftService },
+              {provide: NavigationNotifierService, useValue: navigationNotifierService},
+              {provide: CaseNotifier, useValue: caseNotifier},
+              {provide: CasesService, useValue: casesService},
+              {provide: AlertService, useValue: alertService},
+              {provide: DraftService, useValue: draftService},
             ]
-            })
-            .compileComponents();
+          })
+          .compileComponents();
 
         fixture = TestBed.createComponent(CaseViewComponent);
         component = fixture.componentInstance;
@@ -133,20 +137,20 @@ describe('CaseViewComponent', () => {
 
         de = fixture.debugElement;
         fixture.detectChanges();
-        }));
+      }));
 
-        it('should call alert service and not announce case', () => {
-            expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
-            expect(caseService.announceCase).not.toHaveBeenCalledWith(CASE_VIEW);
-        });
+      it('should call alert service and not announce case', () => {
+        expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
+        expect(caseNotifier.announceCase).not.toHaveBeenCalledWith(CASE_VIEW);
+      });
     });
   });
 
   describe('Draft', () => {
     describe('CaseViewComponent successfully resolves case view from draft', () => {
-        beforeEach(async(() => {
+      beforeEach(async(() => {
 
-        caseService = createSpyObj('caseService', ['announceCase']);
+        caseNotifier = createSpyObj('caseService', ['announceCase']);
         casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
         draftService = createSpyObj('draftService', ['getDraft']);
@@ -156,22 +160,23 @@ describe('CaseViewComponent', () => {
         alertService.error.and.returnValue(Observable.of({}));
 
         TestBed
-            .configureTestingModule({
-            imports: [ RouterTestingModule ],
+          .configureTestingModule({
+            imports: [RouterTestingModule],
             declarations: [
-                CaseViewComponent,
+              CaseViewComponent,
 
-                // mock
-                CaseViewerComponent,
+              // mock
+              CaseViewerComponent,
             ],
             providers: [
-                { provide: CaseService, useValue: caseService },
-                { provide: CasesService, useValue: casesService },
-                { provide: AlertService, useValue: alertService },
-                { provide: DraftService, useValue: draftService },
+              {provide: NavigationNotifierService, useValue: navigationNotifierService},
+              {provide: CaseNotifier, useValue: caseNotifier},
+              {provide: CasesService, useValue: casesService},
+              {provide: AlertService, useValue: alertService},
+              {provide: DraftService, useValue: draftService},
             ]
-            })
-            .compileComponents();
+          })
+          .compileComponents();
 
         fixture = TestBed.createComponent(CaseViewComponent);
         component = fixture.componentInstance;
@@ -179,45 +184,46 @@ describe('CaseViewComponent', () => {
 
         de = fixture.debugElement;
         fixture.detectChanges();
-        }));
+      }));
 
-        it('should get case view on loading and announce it', () => {
-            expect(draftService.getDraft).toHaveBeenCalledWith(DRAFT_REFERENCE);
-            expect(caseService.announceCase).toHaveBeenCalledWith(CASE_VIEW);
-        });
+      it('should get case view on loading and announce it', () => {
+        expect(draftService.getDraft).toHaveBeenCalledWith(DRAFT_REFERENCE);
+        expect(caseNotifier.announceCase).toHaveBeenCalledWith(CASE_VIEW);
+      });
     });
 
     describe('CaseViewComponent fails to resolve case view from draft', () => {
 
-        const ERROR_MSG = 'Critical error!';
+      const ERROR_MSG = 'Critical error!';
 
-        beforeEach(async(() => {
+      beforeEach(async(() => {
 
         const ERROR: HttpError = new HttpError();
         ERROR.message = ERROR_MSG;
         const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
         draftService.getDraft.and.returnValue(ERROR_OBS);
 
-        caseService = createSpyObj('caseService', ['announceCase']);
+        caseNotifier = createSpyObj('caseService', ['announceCase']);
         alertService = createSpyObj('alertService', ['error']);
 
         TestBed
-            .configureTestingModule({
-            imports: [ RouterTestingModule ],
+          .configureTestingModule({
+            imports: [RouterTestingModule],
             declarations: [
-                CaseViewComponent,
+              CaseViewComponent,
 
-                // mock
-                CaseViewerComponent
+              // mock
+              CaseViewerComponent
             ],
             providers: [
-                { provide: CaseService, useValue: caseService },
-                { provide: CasesService, useValue: casesService },
-                { provide: AlertService, useValue: alertService },
-                { provide: DraftService, useValue: draftService },
+              {provide: NavigationNotifierService, useValue: navigationNotifierService},
+              {provide: CaseNotifier, useValue: caseNotifier},
+              {provide: CasesService, useValue: casesService},
+              {provide: AlertService, useValue: alertService},
+              {provide: DraftService, useValue: draftService},
             ]
-            })
-            .compileComponents();
+          })
+          .compileComponents();
 
         fixture = TestBed.createComponent(CaseViewComponent);
         component = fixture.componentInstance;
@@ -225,12 +231,12 @@ describe('CaseViewComponent', () => {
 
         de = fixture.debugElement;
         fixture.detectChanges();
-        }));
+      }));
 
-        it('should call alert service and not announce case', () => {
-            expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
-            expect(caseService.announceCase).not.toHaveBeenCalledWith(CASE_VIEW);
-        });
+      it('should call alert service and not announce case', () => {
+        expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
+        expect(caseNotifier.announceCase).not.toHaveBeenCalledWith(CASE_VIEW);
+      });
     });
   });
 
