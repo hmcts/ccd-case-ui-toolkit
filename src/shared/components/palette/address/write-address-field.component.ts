@@ -1,11 +1,12 @@
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressOption } from './address-option.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { FocusElementDirective } from '../../../directives/focus-element';
 
 @Component({
   selector: 'ccd-write-address-field',
@@ -16,6 +17,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
+
+  @ViewChildren(FocusElementDirective)
+  focusElementDirectives: QueryList<FocusElementDirective>;
 
   addressesService: AddressesService;
 
@@ -28,7 +32,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   addressOptions: AddressOption[];
 
-  missingPostcode = false
+  missingPostcode = false;
 
   constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
     super();
@@ -70,6 +74,13 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           );
         });
       this.addressList.setValue(undefined);
+      this.refocusElement();
+    }
+  }
+
+  refocusElement(): void {
+    if (this.focusElementDirectives && this.focusElementDirectives.length > 0) {
+      this.focusElementDirectives.first.focus();
     }
   }
 
