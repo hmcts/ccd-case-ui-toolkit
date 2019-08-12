@@ -7,6 +7,8 @@ import { ShowCondition } from '../directives/conditional-show/domain';
 import { FixedListItem } from '../domain/definition';
 import { AccessControlList } from '../domain/definition/access-control-list.model';
 import { isBoolean } from 'util';
+import { plainToClass } from 'class-transformer';
+import { CaseFieldBuilder } from './case-field-builder';
 
 export let createCaseEventTrigger = (id: string,
                                       name: string,
@@ -117,6 +119,22 @@ export let createCaseField = (id: string,
     show_condition: show_condition || undefined,
     acls: ACLs
   });
+};
+
+export let newCaseField = (id: string,
+                           label: string,
+                           hint: string,
+                           fieldType: FieldType,
+                           display_context: string,
+                           order = undefined): CaseFieldBuilder => {
+  return CaseFieldBuilder.create()
+    .withId(id || 'personFirstName')
+    .withFieldType(fieldType || textFieldType())
+    .withDisplayContext(display_context || 'OPTIONAL')
+    .withHintText(hint || 'First name hint text')
+    .withLabel(label || 'First name')
+    .withOrder(order)
+    .withShowSummaryContentOption(0);
 };
 
 export let createFieldType = (typeId: string,
