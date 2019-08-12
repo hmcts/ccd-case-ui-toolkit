@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.15 - August 12 2019
+**RDM-5604** Object instantiation with curly braces breaks read-label-field component
+
 ### Version 2.58.14 - August 07 2019
 **RDM-4073** Ui refactoring: Introduce utility methods on CaseField isCollection and isCollectionOfComplex
 
