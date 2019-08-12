@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 2.58.15 - August 7 2019
+### Version 2.58.16 - August 13 2019
 **RDM-4068** CRUD permissions on elements within complex types
+
+### Version 2.58.15 - August 12 2019
+**RDM-5604** Object instantiation with curly braces breaks read-label-field component
 
 ### Version 2.58.14 - August 07 2019
 **RDM-4073** Ui refactoring: Introduce utility methods on CaseField isCollection and isCollectionOfComplex
