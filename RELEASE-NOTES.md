@@ -1,5 +1,85 @@
 ## RELEASE NOTES
 
+### Version 2.58.16 - August 13 2019
+**RDM-4068** CRUD permissions on elements within complex types
+
+### Version 2.58.15 - August 12 2019
+**RDM-5604** Object instantiation with curly braces breaks read-label-field component
+
+### Version 2.58.14 - August 07 2019
+**RDM-4073** Ui refactoring: Introduce utility methods on CaseField isCollection and isCollectionOfComplex
+
+### Version 2.58.13 - July 30 2019
+**RDM-5318** Changes to make Workbasket tolerant of missing defaults
+
+### Version 2.58.12 - August 01 2019
+**RDM-5313** Inline mandatory validation error to be displayed for document upload field
+
+### Version 2.58.11 - July 29 2019
+**RDM-4692** ccd-write-address-field id fix
+
+### Version 2.58.10 - July 26 2019
+**RDM-5053**  Dynamic list: Page Show condition fix
+
+### Version 2.58.9 - July 19 2019
+**RDM-5031** redirect to case-list when user do not have access to the case after an event
+
+### Version 2.58.8 - July 12 2019
+**RDM-4673** Show/Hide condition handling on New Collection View UI change 
+
+### Version 2.58.7 - July 11 2019
+**RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
+**RDM-3480** Document links getting lost in Mandatory field on Complex Type
+
+### Version 2.58.6 - July 10 2019
+**RDM-5044** Fix for Field interpolation is broken on workbasket results
+
+### Version 2.58.5 - July 09 2019
+**RDM-4279** Fix for DAC Focus Order
+
+### Version 2.58.3 - July 02 2019
+**RDM-5168** Sumbitted Callback fix
+
+### Version 2.58.2 - July 01 2019
+**RDM-4266** DAC - List mark-up
+**RDM-4274** DAC - Non-Descriptive form fields 
+**RDM-4282** DAC - no postcode link P1 - Colour contrast
+
+### Version 2.58.1 - July 1 2019
+**RDM-4525** Remove unused id on write fixed list field template as breaking external tests.
+
+### Version 2.58.0 - June 27 2019
+**RDM-4890** Integrate New Postcode Lookup into CCD
+**RDM-3782** Previous Case Reference data is displayed until new data is loaded
+**RDM-4906** Payment web-component v1.8.6 integration in CCD
+
+### Version 2.57.0 - June 26 2019
+**RDM-4525** Ordering of fixed lists 
+
+### Version 2.56.0 - June 25 2019
+**RDM-2987** Markdown supporting Iterating collection items when accessing Complex elements
+
+### Version 2.55.2 - June 24 2019
+**RDM-4512** Remove console warning message
+
+### Version 2.55.1 - June 19 2019
+**RDM-4264** DAC - Duplicate postcode input IDs
+
+### Version 2.55.0 - June 13 2019
+**RDM-4781** RDM-4781-Data not being shown on multi-select list
+
+### Version 2.54.0 - June 07 2019
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint  
+
+### Version 2.53.0 - June 07 2019
+**RDM-4537** Case List Filters extraction and new contract
+
+### Version 2.52.0 - June 07 2019
+**RDM-2804** OR and Not Equals support for Show and Hide
+
+### Version 2.51.1 - June 07 2019
+	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+
 ### Version 2.51.0 - May 29 2019
 	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
 
@@ -9,8 +89,14 @@
 ### Version 2.50.1 - May 29 2019
 **RDM-4622** Page Show Conditions not working as expected in CaseEventToFields
 
+### Version 2.50.0 - May 28 2019
+**RDM-4537** Case List Filters extraction and new contract
+
 ### Version 2.49.2 - May 21 2019
 **RDM-876** Hide print button when not configured  
+
+### REVRTED Version 2.49.0 - May 14 2019
+**RDM-4537** Case List Filters extraction and new contract
 
 ### Version 2.48.0 - May 7 2019
 **RDM-4575** search filters definition service

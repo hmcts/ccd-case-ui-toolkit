@@ -20,7 +20,7 @@ yarn link
 yarn build:watch
 ```
 
-In you project folder that should consume the library:
+In your project folder that should consume the library:
 
 ```bash
 # Go to consumer repository folder
@@ -141,6 +141,12 @@ To do so you need to:
 3. Launch your consumer project build (JIT version) in watch-mode by running `yarn start` in second console instance (for instance assuming that you're in `case-management-web` folder).
 
 As a result once you change library source code it will be automatically re-compiled and in turn your JIT consuming project (e.g. case-management-web) will be automatically re-built and you will be able to see that changes in your browser instantly.
+
+### Library Release
+
+Travis build system automatically publish NPM packages including GitHub releases whenever there is a version change in package.json
+
+Prerelease version from PR branch should follow the format as `x.y.z-RDM-xxx-prerelease`
 
 ## LICENSE
 

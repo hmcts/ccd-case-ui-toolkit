@@ -1,14 +1,17 @@
 import { ShowCondition } from './conditional-show.model';
 import { async } from '@angular/core/testing';
-import { aCaseField, CaseField } from '../../..';
+import { CaseField, createFieldType } from '../../..';
+import { newCaseField } from '../../../fixture';
 
 describe('conditional-show', () => {
-  let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
-  let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
-  let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', null);
-  let caseField4: CaseField = aCaseField('field4', 'field4', 'Text', 'OPTIONAL', null);
-  let complexAddressUK: CaseField = aCaseField('AddressUKCode', 'Address UK', 'AddressUK', 'OPTIONAL', null);
-  let claimantDetailsField: CaseField = aCaseField('claimantDetails', 'ClaimantsDetails', 'Complex', 'OPTIONAL', null, [complexAddressUK]);
+  let caseField1: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
+  let caseField2: CaseField = newCaseField('field2', 'field2', null, null, 'OPTIONAL', null).build();
+  let caseField3: CaseField = newCaseField('field3', 'field3', null, null, 'OPTIONAL', null).build();
+  let caseField4: CaseField = newCaseField('field4', 'field4', null, null, 'OPTIONAL', null).build();
+  let complexAddressUK: CaseField = newCaseField('AddressUKCode', 'Address UK', null,
+    createFieldType('AddressUK', 'AddressUK'), 'OPTIONAL', null).build();
+  let claimantDetailsField: CaseField = newCaseField('claimantDetails', 'ClaimantsDetails', null,
+    createFieldType('Complex', 'Complex',  [complexAddressUK]), 'OPTIONAL', null).build();
   const COLLECTION_OF_INTERIM_RETURNS = {
     interimReturns: [
       {
@@ -53,7 +56,6 @@ describe('conditional-show', () => {
     debtorFirstNames: 'John',
     debtorSurname: 'Snow'
   };
-
   let contextFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
 
   describe('matches when', () => {
@@ -64,6 +66,19 @@ describe('conditional-show', () => {
       };
       let matched = sc.match(fields);
 
+      expect(matched).toBe(true);
+    });
+
+    it('dynamic list show condition', () => {
+      let sc = new ShowCondition('field="List3"');
+      let fields = {
+        field : { value: {code: 'List3', label: 'List 3'},
+        list_items: [{code: 'List1', label: 'List 2'},
+          {code: 'List2', label: 'List 3'},
+          {code: 'List3', label: 'List 3'}]
+      }
+      };
+      let matched = sc.match(fields);
       expect(matched).toBe(true);
     });
 
@@ -605,6 +620,112 @@ describe('conditional-show', () => {
 
       expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2CONTAINS"s1"',
         'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2CONTAINS"s1"');
+    });
+  });
+  describe('NOT EQUALS', () => {
+    it('Scenario1 show: comparator match with specific value', () => {
+      let sc = new ShowCondition('field!="MOJ"');
+      let fields = {
+        field: 'Reform'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(true);
+    });
+    it('Scenario2 show: is not blank', () => {
+      let sc = new ShowCondition('field!=""');
+      let fields = {
+        field: 'MOJ'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(true);
+    });
+    it('Scenario2 hide: is not blank', () => {
+      let sc = new ShowCondition('field!=""');
+      let fields = {
+        field: '    '
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario2 hide: is not blank with null value', () => {
+      let sc = new ShowCondition('field!=""');
+      let fields = {
+        field: null
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario2 hide: is not blank with showCondition multiple spaces', () => {
+      let sc = new ShowCondition('field!="  "');
+      let fields = {
+        field: null
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario3 hide: has any value', () => {
+      let sc = new ShowCondition('field!="*"');
+      let fields = {
+        field: 'MOJ'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario4 hide: comparator does not match value', () => {
+      let sc = new ShowCondition('field!="Reform"');
+      let fields = {
+        field: 'Reform'
+      };
+      let matched = sc.match(fields);
+      expect(matched).toBe(false);
+    });
+    it('Scenario4 hide: multi select not equals', () => {
+      let sc = new ShowCondition('field!="s1,s2"');
+      let fields = {
+        field: ['s1', 's2']
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
+    describe('OR conditional tests', () => {
+      it('Scenario1: OR condition', () => {
+        let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(false);
+      });
+      it('Scenario2 positive: OR logic with equals', () => {
+        let sc = new ShowCondition('field1="field1Value" OR field2=3 OR field3="no-match"');
+        contextFields[1].value = 3;
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(true);
+      });
+      it('Scenario2 positive: OR logic with not equals', () => {
+        let sc = new ShowCondition('field1!="field1Value" OR field2=3 OR field3="no-match"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(true);
+      });
+      it('OR condition mixed with AND => equals condition', () => {
+        let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(false);
+      });
+      it('OR condition mixed with AND => not equals condition', () => {
+        let sc = new ShowCondition('field1!="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(true);
+      });
+      it('AND condition mixed with OR => equals condition', () => {
+        let sc = new ShowCondition('field1="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(false);
+      });
+      it('AND condition mixed with OR => not equals condition', () => {
+        let sc = new ShowCondition('field1!="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        let matched = sc.matchByContextFields(contextFields);
+        expect(matched).toBe(true);
+      });
     });
   });
 });

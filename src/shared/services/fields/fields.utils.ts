@@ -25,7 +25,7 @@ export class FieldsUtils {
   private static prepareValue(field: CaseField) {
     if (field.value) {
       return field.value;
-    } else if (field.field_type.type === 'Complex') {
+    } else if (field.isComplex()) {
       let valueMap = {};
       field.field_type.complex_fields.forEach(complexField => {
         valueMap[complexField.id] = FieldsUtils.prepareValue(complexField);
@@ -122,10 +122,13 @@ export class FieldsUtils {
   }
 
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
-    let currentState = this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
+    let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
     };
+  }
+  public getCurrentEventState(eventTrigger, form): any {
+    return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
   }
 
   public cloneObject(obj: any): any {

@@ -16,15 +16,18 @@ const FIELD_TYPE: FieldType = {
   fixed_list_items: [
     {
       code: 'Option1',
-      label: 'Option 1'
+      label: 'Option 1',
+      order: 1
     },
     {
       code: 'Option2',
-      label: 'Option 2'
+      label: 'Option 2',
+      order: 2
     },
     {
       code: 'Option3',
-      label: 'Option 3'
+      label: 'Option 3',
+      order: 3
     }
   ]
 };

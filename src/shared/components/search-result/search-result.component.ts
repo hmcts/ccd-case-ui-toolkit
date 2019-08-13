@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
-import { plainToClass } from 'class-transformer';
+import { PlaceholderService } from '../../directives';
 
 @Component({
   selector: 'ccd-search-result',
@@ -70,7 +70,8 @@ export class SearchResultComponent implements OnChanges {
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
     appConfig: AbstractAppConfig,
     private activityService: ActivityService,
-    private caseReferencePipe: CaseReferencePipe
+    private caseReferencePipe: CaseReferencePipe,
+    private placeholderService: PlaceholderService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -143,7 +144,14 @@ export class SearchResultComponent implements OnChanges {
     this.selected.metadataFields = this.metadataFields;
     this.selected.page = page;
     // Apply filters
-    this.changePage.emit(this.selected);
+    let queryParams = {};
+    queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction ? this.selected.jurisdiction.id : null;
+    queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType ? this.selected.caseType.id : null;
+    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState ? this.selected.caseState.id : null;
+    this.changePage.emit({
+      selected: this.selected,
+      queryParams: queryParams
+    });
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
@@ -158,6 +166,7 @@ export class SearchResultComponent implements OnChanges {
 
   getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
     col.value = this.draftPrefixOrGet(col, result);
+    col.value = this.placeholderService.resolvePlaceholders(result.case_fields, col.value);
     return col;
   }
 
@@ -223,7 +232,6 @@ export class SearchResultComponent implements OnChanges {
     let isDescending = true;
 
     if (this.comparator(column) === undefined) {
-      console.warn('Cannot sort: unknown sort comparator for ' + column.case_field_type.type);
       return SortOrder.UNSORTED;
     }
     for (let i = 0; i < this.resultView.results.length - 1; i++) {

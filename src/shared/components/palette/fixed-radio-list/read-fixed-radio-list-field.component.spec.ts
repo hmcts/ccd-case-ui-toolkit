@@ -17,15 +17,18 @@ describe('ReadFixedRadioListFieldComponent', () => {
     fixed_list_items: [
       {
         code: 'M',
-        label: 'Male'
+        label: 'Male',
+        order: 1
       },
       {
         code: VALUE,
-        label: EXPECTED_LABEL
+        label: EXPECTED_LABEL,
+        order: 2
       },
       {
         code: 'O',
-        label: 'Other'
+        label: 'Other',
+        order: 3
       }
     ]
   };

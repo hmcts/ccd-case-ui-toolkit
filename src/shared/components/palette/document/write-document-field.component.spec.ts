@@ -10,60 +10,62 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { FormGroup } from '@angular/forms';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
-import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
+
+const FIELD_TYPE: FieldType = {
+  id: 'Document',
+  type: 'Document'
+};
+const VALUE = {
+  'document_url': 'https://www.example.com',
+  'document_binary_url': 'https://www.example.com/binary',
+  'document_filename': 'evidence_document.evd'
+};
+const CASE_FIELD: CaseField = <CaseField>({
+  id: 'x',
+  label: 'X',
+  display_context: 'OPTIONAL',
+  field_type: FIELD_TYPE,
+  value: VALUE
+});
+
+const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
+const RESPONSE_FIRST_DOCUMENT: DocumentData = {
+  _embedded: {
+    documents: [{
+      originalDocumentName: 'howto.pdf',
+      _links: {
+        self: {
+          href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+        },
+        binary: {
+          href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+        }
+      }
+    }]
+  }
+};
+const RESPONSE_SECOND_DOCUMENT: DocumentData = {
+  _embedded: {
+    documents: [{
+      originalDocumentName: 'plop.pdf',
+      _links: {
+        self: {
+          href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+        },
+        binary: {
+          href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+        }
+      }
+    }]
+  }
+};
 
 describe('WriteDocumentFieldComponent', () => {
 
-  const FIELD_TYPE: FieldType = {
-    id: 'Document',
-    type: 'Document'
-  };
-  const VALUE = {
-    'document_url': 'https://www.example.com',
-    'document_binary_url': 'https://www.example.com/binary',
-    'document_filename': 'evidence_document.evd'
-  };
-  const CASE_FIELD: CaseField = <CaseField>({
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  });
-  const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
-  const RESPONSE_FIRST_DOCUMENT: DocumentData = {
-    _embedded: {
-      documents: [{
-        originalDocumentName: 'howto.pdf',
-        _links: {
-          self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
-          },
-          binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
-          }
-        }
-      }]
-    }
-  };
-  const RESPONSE_SECOND_DOCUMENT: DocumentData = {
-    _embedded: {
-      documents: [{
-        originalDocumentName: 'plop.pdf',
-        _links: {
-          self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
-          },
-          binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
-          }
-        }
-      }]
-    }
-  };
   const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});
   const REGISTER_CONTROL = (control) => {
@@ -110,10 +112,10 @@ describe('WriteDocumentFieldComponent', () => {
           ReadDocumentComponent,
         ],
         providers: [
-          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DocumentDialogComponent
         ]
       })
@@ -127,6 +129,11 @@ describe('WriteDocumentFieldComponent', () => {
 
     de = fixture.debugElement;
     fixture.detectChanges();
+  });
+
+  it('should be valid for the initial component state.', () => {
+    console.log('component.caseField', component.caseField);
+    expect(component.valid).toBeTruthy();
   });
 
   it('should render an element for file selection', () => {
@@ -156,9 +163,8 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should upload given document', () => {
-    let file = {
-      name: 'test.pdf'
-    };
+    let blobParts: BlobPart[] = ['some contents for blob']
+    let file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
@@ -173,9 +179,9 @@ describe('WriteDocumentFieldComponent', () => {
   it('should be invalid if document management throws error', () => {
     mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
       '"message": "But really really terrible thing!", "status": 502}'));
-    let file = {
-      name: 'test.pdf'
-    };
+
+    let blobParts: BlobPart[] = ['some contents for blob']
+    let file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
@@ -184,15 +190,6 @@ describe('WriteDocumentFieldComponent', () => {
       }
     });
     expect(component.valid).toBeFalsy();
-  });
-
-  it('should be invalid if no document specified for upload', () => {
-    component.fileChangeEvent({
-      target: {
-        files: []
-      }
-    });
-    expect(component.valid).toBeTruthy();
   });
 
   it('should display dialog only if document exist', () => {
@@ -227,5 +224,151 @@ describe('WriteDocumentFieldComponent', () => {
     dialogCancelButton.nativeElement.click();
     expect(componentDialog.result).toEqual('Cancel');
     fixture.detectChanges();
+  });
+});
+
+describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
+
+  const FIELD_TYPE_MANDATORY: FieldType = {
+    id: 'Document',
+    type: 'Document'
+  };
+  const VALUE_MANDATORY = {
+    'document_url': 'https://www.example.com',
+    'document_binary_url': 'https://www.example.com/binary',
+    'document_filename': 'evidence_document.evd'
+  };
+
+  const CASE_FIELD_MANDATORY: CaseField = <CaseField>({
+    id: 'x',
+    label: 'X',
+    display_context: 'MANDATORY',
+    field_type: FIELD_TYPE_MANDATORY,
+    value: VALUE_MANDATORY
+  });
+  const DOCUMENT_MANAGEMENT_URL_MANDATORY = 'http://docmanagement.ccd.reform/documents';
+  const RESPONSE_FIRST_DOCUMENT_MANDATORY: DocumentData = {
+    _embedded: {
+      documents: [{
+        originalDocumentName: 'howto.pdf',
+        _links: {
+          self: {
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123'
+          },
+          binary: {
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123/binary'
+          }
+        }
+      }]
+    }
+  };
+  const RESPONSE_SECOND_DOCUMENT_MANDATORY: DocumentData = {
+    _embedded: {
+      documents: [{
+        originalDocumentName: 'plop.pdf',
+        _links: {
+          self: {
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567'
+          },
+          binary: {
+            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567/binary'
+          }
+        }
+      }]
+    }
+  };
+  const FORM_GROUP_ID = 'document_url';
+  const FORM_GROUP = new FormGroup({});
+  const REGISTER_CONTROL = (control) => {
+    FORM_GROUP.addControl(FORM_GROUP_ID, control);
+    return control;
+  };
+  const DIALOG_CONFIG = new MatDialogConfig();
+  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
+  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+
+  let ReadDocumentComponent = MockComponent({
+    selector: 'ccd-read-document-field',
+    inputs: ['caseField']
+  });
+
+  let fixture: ComponentFixture<WriteDocumentFieldComponent>;
+  let component: WriteDocumentFieldComponent;
+  let de: DebugElement;
+  let mockDocumentManagementService: any;
+
+  let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
+  let componentDialog: DocumentDialogComponent;
+  let deDialog: DebugElement;
+  let dialog: any;
+  let matDialogRef: MatDialogRef<DocumentDialogComponent>;
+
+  beforeEach(() => {
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
+    mockDocumentManagementService.uploadFile.and.returnValues(
+      of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
+      of(RESPONSE_SECOND_DOCUMENT_MANDATORY)
+    );
+    dialog = createSpyObj<MatDialog>('dialog', ['open']);
+    matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
+
+    TestBed
+      .configureTestingModule({
+        imports: [],
+        declarations: [
+          WriteDocumentFieldComponent,
+          FieldLabelPipe,
+          DocumentDialogComponent,
+          // Mock
+          ReadDocumentComponent,
+        ],
+        providers: [
+          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DocumentDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteDocumentFieldComponent);
+    component = fixture.componentInstance;
+
+    component.registerControl = REGISTER_CONTROL;
+    component.caseField = CASE_FIELD_MANDATORY;
+
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+
+  it('should be invalid if no document specified for upload for read only. Empty file.', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    component.ngOnInit()
+    expect(component.caseField.value).toBeTruthy();
+
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(component.valid).toBeFalsy();
+    expect(component.uploadError).toEqual('File required');
+  });
+
+  it('should be valid if no document specified for upload for not read only. Empty file.', () => {
+    // Initialization.
+    component.valid = true;
+    component.caseField = CASE_FIELD;
+    component.ngOnInit()
+    expect(component.caseField.value).toBeTruthy();
+    expect(component.valid).toBeTruthy();
+
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(component.valid).toBeTruthy();
   });
 });

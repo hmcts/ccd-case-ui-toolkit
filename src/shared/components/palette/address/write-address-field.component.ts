@@ -5,7 +5,6 @@ import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressOption } from './address-option.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
 @Component({
@@ -29,7 +28,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   addressOptions: AddressOption[];
 
-  missingPostcode = false;
+  missingPostcode = false
 
   constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
     super();
@@ -52,7 +51,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     } else {
       this.missingPostcode = false;
       const postcode = this.postcode.value;
-
       this.caseField.value = null;
       this.addressOptions = new Array();
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
@@ -65,17 +63,18 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           this.addressOptions.unshift(
             new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
           );
-        }, () => {
-          console.log(`An error occurred retrieving addresses for postcode ${postcode}.`);
+        }, (error) => {
+          console.log(`An error occurred retrieving addresses for postcode ${postcode}. ` + error);
+          this.addressOptions.unshift(
+            new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
+          );
         });
       this.addressList.setValue(undefined);
-      setTimeout(this.focusAddressList, 1000);
-    }
-  }
-
-  focusAddressList() {
-    if (document.getElementById('addressList')) {
-      document.getElementById('addressList').focus();
+      setTimeout(() => {
+        if (document.getElementById(this.createId('addressList') + '')) {
+          document.getElementById(this.createId('addressList') + '').focus();
+        }
+      }, 1000);
     }
   }
 
@@ -85,7 +84,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   isComplexWithHiddenFields() {
-    if (this.caseField.field_type.type === 'Complex' && this.caseField.field_type.complex_fields
+    if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
       && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
       return true;
     }
@@ -124,8 +123,8 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     }
   }
 
-  buildIdPrefix(field: CaseField): string {
-    return this.isCompoundPipe.transform(field) ? `${this.idPrefix}_` : `${this.idPrefix}`;
+  createId(elementId: string): string {
+    return this.id() + '_' + elementId ;
   }
 
   private defaultLabel(numberOfAddresses) {

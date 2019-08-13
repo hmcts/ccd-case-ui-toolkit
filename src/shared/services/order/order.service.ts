@@ -41,32 +41,34 @@ export class OrderService {
 
   public deepSort(case_fields: CaseField[]): CaseField[] {
     case_fields.forEach((caseField: CaseField) => {
-      if (this.isComplex(caseField)) {
+      if (caseField.isComplex()) {
         let sorted = this.deepSort(caseField.field_type.complex_fields);
         caseField.field_type.complex_fields = sorted;
       }
-      if (this.isCollection(caseField)) {
+      if (caseField.isCollection()) {
         let sorted = this.deepSort(caseField.field_type.collection_field_type.complex_fields);
         caseField.field_type.collection_field_type.complex_fields = sorted;
       }
       if (caseField.hidden !== true && !caseField.order) {
-        if (this.isComplex(caseField)) {
+        if (caseField.isComplex()) {
           this.deriveOrderFromChildComplexFields(caseField, caseField.field_type);
         }
-        if (this.isCollection(caseField)) {
+        if (caseField.isCollection()) {
           this.deriveOrderFromChildComplexFields(caseField, caseField.field_type.collection_field_type);
         }
       }
+      if (this.isOneOfFixedListTypes(caseField)) {
+        caseField.field_type.fixed_list_items = this.sort(caseField.field_type.fixed_list_items);
+      }
     });
+
     return this.sort(case_fields);
   }
 
-  private isCollection(caseField: CaseField) {
-    return caseField.field_type.type === 'Collection';
-  }
-
-  private isComplex(caseField: CaseField) {
-    return caseField.field_type.type === 'Complex';
+  private isOneOfFixedListTypes(caseField: CaseField) {
+    return caseField.field_type.type === 'FixedList' ||
+      caseField.field_type.type === 'MultiSelectList' ||
+      caseField.field_type.type === 'FixedRadioList';
   }
 
   private deriveOrderFromChildComplexFields(caseField: CaseField, fieldType: FieldType) {

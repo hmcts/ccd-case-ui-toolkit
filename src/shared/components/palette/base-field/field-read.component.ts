@@ -1,15 +1,9 @@
-import {
-  Component,
-  ComponentFactoryResolver,
-  Injector,
-  Input, OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-field-read',
@@ -34,19 +28,26 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   }
 
   ngOnInit(): void {
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
+    if (!(this.caseField instanceof CaseField)) {
+      this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
+    }
+    // Ensure all field values are resolved by label interpolation before the component is fully initialised.
+    Promise.resolve(null).then(() => {
+      let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
+      let injector = Injector.create([], this.fieldContainer.parentInjector);
+      let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
-    // Provide component @Inputs
-    component.instance['caseField'] = this.caseField;
-    component.instance['caseFields'] = this.caseFields;
-    component.instance['formGroup'] = this.formGroup;
-    component.instance['caseReference'] = this.caseReference;
-    component.instance['context'] = this.context;
-    component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
+      // Provide component @Inputs
+      component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
+      component.instance['caseFields'] = this.caseFields;
+      component.instance['formGroup'] = this.formGroup;
+      component.instance['caseReference'] = this.caseReference;
+      component.instance['context'] = this.context;
+      component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
 
-    this.fieldContainer.insert(component.hostView);
+      this.fieldContainer.insert(component.hostView);
+    });
   }
 
 }

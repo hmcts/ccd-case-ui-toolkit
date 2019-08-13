@@ -1,0 +1,41 @@
+<h2 class="heading-h2" aria-label="Filters">Filters</h2>
+<form class="global-display">
+  <div class="form-group">
+    <label class="form-label" for="wb-jurisdiction">Jurisdiction</label>
+    <select class="form-control form-control-3-4 ccd-dropdown" id="wb-jurisdiction"
+            name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
+            (change)="onJurisdictionIdChange()">
+      <option *ngIf="!workbasketDefaults" [ngValue]="null">Select a value</option>
+      <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="wb-case-type">Case type</label>
+    <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-type"
+            name="case-type" [(ngModel)]="selected.caseType" [disabled]="isCaseTypesDropdownDisabled()"
+            (change)="onCaseTypeIdChange()" aria-controls="search-result">
+      <option *ngIf="!workbasketDefaults" [ngValue]="null">Select a value</option>
+      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="wb-case-state">State</label>
+    <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
+            name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
+            aria-controls="search-result">
+      <option value="">Any</option>
+      <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name}}</option>
+    </select>
+  </div>
+
+  <div id="dynamicFilters" *ngIf="isSearchableAndWorkbasketInputsReady()">
+    <div class="form-group" *ngFor="let workbasketInput of workbasketInputs">
+      <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply()"></ccd-field-write>
+    </div>
+  </div>
+
+  <button type="button" class="button" (click)="apply(true)" [disabled]="isApplyButtonDisabled()" >Apply</button> &nbsp;&nbsp;&nbsp;
+  <button type="button" (click)="reset()" class="button button-secondary">Reset</button>
+</form>

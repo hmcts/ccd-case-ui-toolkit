@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { createFieldType } from '../../../fixture';
 
 describe('WriteAddressFieldComponent', () => {
 
@@ -17,12 +18,12 @@ describe('WriteAddressFieldComponent', () => {
   const $TITLE = By.css('h2');
 
   const $POSTCODE_LOOKUP = By.css('#postcodeLookup');
-  const $POSTCODE_LOOKUP_INPUT = By.css('#postcodeInput');
+  const $POSTCODE_LOOKUP_INPUT = By.css('.postcodeinput');
   const $POSTCODE_LOOKUP_FIND = By.css('#postcodeLookup > button');
   const $POSTCODE_LOOKUP_ERROR_MESSAGE = By.css('.error-message');
 
   const $SELECT_ADDRESS = By.css('#selectAddress');
-  const $ADDRESS_LIST = By.css('#selectAddress > #addressList');
+  const $ADDRESS_LIST = By.css('#selectAddress > .addressList');
 
   const $MANUAL_LINK = By.css('.manual-link');
   const $ADDRESS_COMPLEX_FIELD = By.css('ccd-write-complex-type-field');
@@ -75,12 +76,12 @@ describe('WriteAddressFieldComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
 
   function caseField(address: AddressModel) {
-    return {
-      id: 'caseFieldId',
-      label: CASE_FIELD_LABEL,
-      field_type: { id: 'FieldTypeId', type: 'Complex' },
-      value: address
-    };
+    let field = new CaseField();
+    field.id = 'caseFieldId';
+    field.label = CASE_FIELD_LABEL;
+    field.field_type = createFieldType('FieldTypeId', 'Complex');
+    field.value = address;
+    return field;
   }
 
   function addressFormGroup() {
@@ -119,7 +120,6 @@ describe('WriteAddressFieldComponent', () => {
   beforeEach(async(() => {
 
     addressesService = new AddressesService(null, null);
-
     TestBed
       .configureTestingModule({
         imports: [
@@ -135,8 +135,7 @@ describe('WriteAddressFieldComponent', () => {
         ],
         providers: [
           IsCompoundPipe,
-          { provide: AddressesService, useValue: addressesService }
-        ]
+          { provide: AddressesService, useValue: addressesService }]
       })
       .compileComponents();
 

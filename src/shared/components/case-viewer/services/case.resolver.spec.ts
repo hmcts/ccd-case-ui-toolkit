@@ -1,4 +1,5 @@
 import { CaseResolver } from './case.resolver';
+import { NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService } from '../../../services';
@@ -27,10 +28,13 @@ describe('CaseResolver', () => {
     let router: any;
 
     beforeEach(() => {
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/case', '/home'))
+    };
       caseService = createSpyObj('caseService', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
-      router = createSpyObj('router', ['navigate']);
       alertService = createSpyObj('alertService', ['success']);
       caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
 
@@ -98,7 +102,7 @@ describe('CaseResolver', () => {
           expect(caseData).toEqual(CASE);
         });
 
-          expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
+      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
       // allows to access private cachedCaseView field
       expect(caseResolver['cachedCaseView']).toEqual(CASE);
     });
@@ -159,6 +163,54 @@ describe('CaseResolver', () => {
       expect(router.navigate).toHaveBeenCalledWith(['/error']);
     });
 
+    it('should redirect to case list page when case cannot be found and previousUrl is event submission', () => {
+      const error = {
+        status: 404
+      };
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
+      };
+
+      caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/list/case']);
+    });
+
+    it('should not redirect to case list page when case cannot be found and previousUrl is not matching event submission', () => {
+      const error = {
+        status: 404
+      };
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+      };
+
+      caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).not.toHaveBeenCalledWith(['/list/case']);
+    });
+
     it('should redirect to case list page when case id is empty', () => {
       let navigationResult = Promise.resolve('someResult');
       router.navigate.and.returnValue(navigationResult);
@@ -197,11 +249,14 @@ describe('CaseResolver', () => {
     let router: any;
 
     beforeEach(() => {
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/case', '/home'))
+      };
       caseService = createSpyObj('caseService', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
       draftService.getDraft.and.returnValue(DRAFT_OBS);
-      router = createSpyObj('router', ['navigate']);
       alertService = createSpyObj('alertService', ['success']);
       caseResolver = new CaseResolver(caseService, casesService, draftService, router, alertService);
 

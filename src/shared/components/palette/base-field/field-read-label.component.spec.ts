@@ -5,28 +5,13 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { By } from '@angular/platform-browser';
 import { text } from '../../../test/helpers';
 import { FieldReadLabelComponent } from './field-read-label.component';
+import { newCaseField, createFieldType } from '../../../fixture';
 
-const CASE_FIELD: CaseField = <CaseField>({
-  id: 'PersonFirstName',
-  label: 'First name',
-  field_type: {
-    id: 'Text',
-    type: 'Text'
-  },
-  display_context: 'OPTIONAL',
-  value: 'Johnny'
-});
+const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL')
+  .withValue('Johnny').build();
 
-const CASE_FIELD_OF_LABEL_TYPE: CaseField = <CaseField>({
-  id: 'PersonFirstName',
-  label: 'First name',
-  field_type: {
-    id: 'Text',
-    type: 'Label'
-  },
-  display_context: 'OPTIONAL',
-  value: 'Johnny'
-});
+const CASE_FIELD_OF_LABEL_TYPE: CaseField = newCaseField('PersonFirstName', 'First name', null,
+  createFieldType('Text', 'Label'), 'OPTIONAL').withValue('Johnny').build();
 const BY_FIELD_LABEL = By.css('.case-field__label');
 
 describe('FieldReadLabelComponent', () => {

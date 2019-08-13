@@ -1,4 +1,4 @@
- <div class="complex-panel">
+ <div class="complex-panel" [hidden]="caseField.hidden">
       <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
       <table class="complex-panel-table">
         <tbody>
@@ -44,7 +44,8 @@
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
                   <ng-container  *ngFor="let name of item | keyvalue">
                     <ng-container  *ngIf="vLabel.key == name.key" >
-                    <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion">
+                    <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
+                        ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th ><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
                         <ccd-field-read [caseField]="{
@@ -60,7 +61,7 @@
                         <ng-container *ngFor="let field of vLabel.value.caseField | ccdFieldsFilter">
                           <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
                             <tr class="complex-panel-compound-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
-                                [contextFields]="caseField | ccdFieldsFilter">
+                                [contextFields]="vLabel.value.caseField | ccdFieldsFilter">
                               <td colspan="2">
                                 <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
                               </td>
@@ -68,7 +69,7 @@
                           </ng-container>
                           <ng-template #SimpleRow>
                             <tr class="complex-panel-nested-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
-                                [contextFields]="caseField | ccdFieldsFilter">
+                                [contextFields]="vLabel.value.caseField  | ccdFieldsFilter">
                               <th><span class="text-16">{{field.label}}</span></th>
                               <td>
                                 <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
