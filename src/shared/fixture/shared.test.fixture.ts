@@ -5,16 +5,16 @@ import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-pa
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ShowCondition } from '../directives/conditional-show/domain';
 import { FixedListItem } from '../domain/definition';
-import { plainToClass } from 'class-transformer';
+import { AccessControlList } from '../domain/definition/access-control-list.model';
 import { CaseFieldBuilder } from './case-field-builder';
 
 export let createCaseEventTrigger = (id: string,
-                                      name: string,
-                                      case_id: string,
-                                      show_summary: boolean,
-                                      case_fields: CaseField[],
-                                      wizard_pages = [],
-                                      can_save_draft = false) => {
+                                     name: string,
+                                     case_id: string,
+                                     show_summary: boolean,
+                                     case_fields: CaseField[],
+                                     wizard_pages = [],
+                                     can_save_draft = false) => {
   const eventTrigger = new CaseEventTrigger();
 
   eventTrigger.id = id;
@@ -29,7 +29,7 @@ export let createCaseEventTrigger = (id: string,
 };
 
 export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-  show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
+                         show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
   return <CaseField>({
     id: id || 'personFirstName',
     field_type: {
@@ -104,17 +104,19 @@ export let createCaseField = (id: string,
                               fieldType: FieldType,
                               display_context: string,
                               order = undefined,
-                              show_condition = undefined): CaseField => {
-  return plainToClass(CaseField, {
-    id: id || 'personFirstName',
-    field_type: fieldType || textFieldType(),
-    display_context: display_context || 'OPTIONAL',
-    label: label || 'First name',
-    hint_text: hint || 'First name hint text',
-    show_summary_content_option: 0,
-    order: order,
-    show_condition: show_condition || undefined
-  });
+                              show_condition = undefined,
+                              ACLs: AccessControlList[] = undefined): CaseField => {
+  return CaseFieldBuilder.create()
+    .withId(id || 'personFirstName')
+    .withFieldType(fieldType || textFieldType())
+    .withDisplayContext(display_context || 'OPTIONAL')
+    .withLabel(label || 'First name')
+    .withHintText(hint || 'First name hint text')
+    .withShowSummaryContentOption(0)
+    .withOrder(order)
+    .withShowCondition(show_condition || undefined)
+    .withACLs(ACLs)
+    .build();
 };
 
 export let newCaseField = (id: string,
@@ -160,4 +162,14 @@ export let textFieldType = (): FieldType => {
     type: 'Text',
     complex_fields: []
   };
+};
+
+export let createACL = (role: string, create: boolean, read: boolean, update: boolean, _delete: boolean): AccessControlList => {
+  return <AccessControlList>({
+    role: role || 'roleX',
+    create: create,
+    read: read,
+    update: update,
+    delete: _delete
+  });
 };
