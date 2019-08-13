@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.16 - August 13 2019
+**RDM-4068** CRUD permissions on elements within complex types
+
 ### Version 2.58.15 - August 12 2019
 **RDM-5604** Object instantiation with curly braces breaks read-label-field component
 
