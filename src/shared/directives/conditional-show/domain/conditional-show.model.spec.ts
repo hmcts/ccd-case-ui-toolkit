@@ -1,14 +1,17 @@
 import { ShowCondition } from './conditional-show.model';
 import { async } from '@angular/core/testing';
-import { aCaseField, CaseField } from '../../..';
+import { CaseField, createFieldType } from '../../..';
+import { newCaseField } from '../../../fixture';
 
 describe('conditional-show', () => {
-  let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
-  let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
-  let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', null);
-  let caseField4: CaseField = aCaseField('field4', 'field4', 'Text', 'OPTIONAL', null);
-  let complexAddressUK: CaseField = aCaseField('AddressUKCode', 'Address UK', 'AddressUK', 'OPTIONAL', null);
-  let claimantDetailsField: CaseField = aCaseField('claimantDetails', 'ClaimantsDetails', 'Complex', 'OPTIONAL', null, [complexAddressUK]);
+  let caseField1: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
+  let caseField2: CaseField = newCaseField('field2', 'field2', null, null, 'OPTIONAL', null).build();
+  let caseField3: CaseField = newCaseField('field3', 'field3', null, null, 'OPTIONAL', null).build();
+  let caseField4: CaseField = newCaseField('field4', 'field4', null, null, 'OPTIONAL', null).build();
+  let complexAddressUK: CaseField = newCaseField('AddressUKCode', 'Address UK', null,
+    createFieldType('AddressUK', 'AddressUK'), 'OPTIONAL', null).build();
+  let claimantDetailsField: CaseField = newCaseField('claimantDetails', 'ClaimantsDetails', null,
+    createFieldType('Complex', 'Complex',  [complexAddressUK]), 'OPTIONAL', null).build();
   const COLLECTION_OF_INTERIM_RETURNS = {
     interimReturns: [
       {
@@ -53,7 +56,6 @@ describe('conditional-show', () => {
     debtorFirstNames: 'John',
     debtorSurname: 'Snow'
   };
-
   let contextFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
 
   describe('matches when', () => {

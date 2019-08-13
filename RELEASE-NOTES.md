@@ -1,5 +1,20 @@
 ## RELEASE NOTES
 
+### Version 2.58.16 - August 13 2019
+**RDM-4068** CRUD permissions on elements within complex types
+
+### Version 2.58.15 - August 12 2019
+**RDM-5604** Object instantiation with curly braces breaks read-label-field component
+
+### Version 2.58.14 - August 07 2019
+**RDM-4073** Ui refactoring: Introduce utility methods on CaseField isCollection and isCollectionOfComplex
+
+### Version 2.58.13 - July 30 2019
+**RDM-5318** Changes to make Workbasket tolerant of missing defaults
+
+### Version 2.58.12 - August 01 2019
+**RDM-5313** Inline mandatory validation error to be displayed for document upload field
+
 ### Version 2.58.11 - July 29 2019
 **RDM-4692** ccd-write-address-field id fix
 
