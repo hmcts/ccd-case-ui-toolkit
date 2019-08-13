@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { FocusElementModule } from '../../../directives/focus-element';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { PaletteUtilsModule } from '../utils/utils.module';
     ComplexModule,
     ReactiveFormsModule,
     MarkdownModule,
-    PaletteUtilsModule
+    PaletteUtilsModule,
+    FocusElementModule
   ],
   declarations: [
     WriteAddressFieldComponent
