@@ -120,6 +120,8 @@ export class CasesService {
       'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
     });
 
+    console.log('caseDetails', caseDetails);
+    console.log('eventData', eventData);
     return this.http
       .post(url, eventData, {headers})
       .pipe(

@@ -37,7 +37,7 @@ export class CaseProgressComponent implements OnInit {
     this.casesService.getCaseViewV2(this.case).toPromise()
       .then(caseView => this.caseDetails = caseView)
       .then(caseView => this.casesService.getEventTrigger(caseTypeId, this.event, caseView.case_id)
-                                                            .toPromise())
+        .toPromise())
       .then(eventTrigger => {
         this.eventTriggerService.announceEventTrigger(eventTrigger);
         this.eventTrigger = eventTrigger;
@@ -48,8 +48,36 @@ export class CaseProgressComponent implements OnInit {
       });
   }
 
+  replaceFixedListEmptyStringWithNull(sanitizedEditForm: CaseEventData) {
+    let data = sanitizedEditForm.data;
+    console.log('Traversing data...');
+    this.traverseData(data);
+  }
+
+  private traverseData(data: object) {
+    Object.keys(data).forEach(fieldId => {
+      // if (typeof data[fieldId] === 'object') {
+      //   this.traverseData(data[fieldId]);
+      // }
+      console.log('working on', fieldId);
+      if (data[fieldId] === '' && this.isFixedList(fieldId)) {
+        console.log('Founbd a fixed List with null fieldId --> ', fieldId);
+        data[fieldId] = 'null';
+      }
+    });
+  }
+
+  private isFixedList(value: string): boolean {
+    return !!this.eventTrigger.case_fields.find(field => field.id === value && field.field_type.type === 'FixedList');
+  }
+
   submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData) => this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
+    console.log('submit called');
+    return (sanitizedEditForm: CaseEventData) => {
+      console.log('replaceFixedListEmptyStringWithNull');
+      this.replaceFixedListEmptyStringWithNull(sanitizedEditForm)
+      return this.casesService.createEvent(this.caseDetails, sanitizedEditForm)
+    };
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
