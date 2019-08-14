@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.18 - August 14 2019
+**CLEAN RELEASE OF v2.58.13** Pay Component Upgrade
+
 ### Version 2.58.16 - August 13 2019
 **RDM-4068** CRUD permissions on elements within complex types
 
