@@ -52,7 +52,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   ngOnDestroy() {
-    this.profileSubscription.unsubscribe();
+    if (typeof this.profileSubscription !== 'undefined') {
+      console.log('unsubscribing from collection write field subscription')
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   buildCaseField(item, index: number): CaseField {
