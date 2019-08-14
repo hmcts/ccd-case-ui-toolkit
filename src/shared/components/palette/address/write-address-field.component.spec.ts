@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { createFieldType } from '../../../fixture';
 
 describe('WriteAddressFieldComponent', () => {
 
@@ -76,12 +75,12 @@ describe('WriteAddressFieldComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
 
   function caseField(address: AddressModel) {
-    let field = new CaseField();
-    field.id = 'caseFieldId';
-    field.label = CASE_FIELD_LABEL;
-    field.field_type = createFieldType('FieldTypeId', 'Complex');
-    field.value = address;
-    return field;
+    return {
+      id: 'caseFieldId',
+      label: CASE_FIELD_LABEL,
+      field_type: { id: 'FieldTypeId', type: 'Complex' },
+      value: address
+    };
   }
 
   function addressFormGroup() {

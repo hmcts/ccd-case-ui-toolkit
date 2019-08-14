@@ -28,10 +28,6 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   }
 
   ngOnInit(): void {
-    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
-    if (!(this.caseField instanceof CaseField)) {
-      this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
-    }
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
       let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
