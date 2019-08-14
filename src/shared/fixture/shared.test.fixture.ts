@@ -5,8 +5,6 @@ import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-pa
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ShowCondition } from '../directives/conditional-show/domain';
 import { FixedListItem } from '../domain/definition';
-import { plainToClass } from 'class-transformer';
-import { CaseFieldBuilder } from './case-field-builder';
 
 export let createCaseEventTrigger = (id: string,
                                       name: string,
@@ -105,7 +103,7 @@ export let createCaseField = (id: string,
                               display_context: string,
                               order = undefined,
                               show_condition = undefined): CaseField => {
-  return plainToClass(CaseField, {
+  return <CaseField>({
     id: id || 'personFirstName',
     field_type: fieldType || textFieldType(),
     display_context: display_context || 'OPTIONAL',
@@ -115,22 +113,6 @@ export let createCaseField = (id: string,
     order: order,
     show_condition: show_condition || undefined
   });
-};
-
-export let newCaseField = (id: string,
-                           label: string,
-                           hint: string,
-                           fieldType: FieldType,
-                           display_context: string,
-                           order = undefined): CaseFieldBuilder => {
-  return CaseFieldBuilder.create()
-    .withId(id || 'personFirstName')
-    .withFieldType(fieldType || textFieldType())
-    .withDisplayContext(display_context || 'OPTIONAL')
-    .withHintText(hint || 'First name hint text')
-    .withLabel(label || 'First name')
-    .withOrder(order)
-    .withShowSummaryContentOption(0);
 };
 
 export let createFieldType = (typeId: string,
