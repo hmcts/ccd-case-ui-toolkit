@@ -79,12 +79,12 @@ describe('WriteAddressFieldComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
 
   function caseField(address: AddressModel) {
-    let field = new CaseField();
-    field.id = 'caseFieldId';
-    field.label = CASE_FIELD_LABEL;
-    field.field_type = createFieldType('FieldTypeId', 'Complex');
-    field.value = address;
-    return field;
+    return {
+      id: 'caseFieldId',
+      label: CASE_FIELD_LABEL,
+      field_type: { id: 'FieldTypeId', type: 'Complex' },
+      value: address
+    };
   }
 
   function addressFormGroup() {
