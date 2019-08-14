@@ -6,6 +6,7 @@ import { ShowCondition } from './domain/conditional-show.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import { GreyBarService } from './services/grey-bar.service';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Directive({ selector: '[ccdConditionalShow]' })
 /** Hides and shows the host element based on the show condition if the condition is not empty. Works on read only fields and form fields.
@@ -38,6 +39,10 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
+    if (!(this.caseField instanceof CaseField)) {
+      this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
+    }
     if (this.caseField.show_condition) {
       this.condition = new ShowCondition(this.caseField.show_condition);
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
