@@ -5,9 +5,7 @@ import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressOption } from './address-option.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { AlertService } from '../../../services/alert';
 
 @Component({
   selector: 'ccd-write-address-field',
