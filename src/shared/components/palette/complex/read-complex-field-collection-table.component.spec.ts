@@ -9,6 +9,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
+import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
 
 describe('ReadComplexFieldCollectionTableComponent', () => {
 
@@ -17,8 +18,6 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK = By.css('div>table>tbody>tr>th>a');
   const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('div>table>tbody>tr>td>div>ccd-field-read');
-  const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
-  const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
   const UNORDERED = '&#9650;';
   const FIRST_COLUMN = 'AddressLine1';
   const SECOND_COLUMN = 'AddressLine2';
@@ -43,26 +42,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: ''
-        }),
-        <CaseField>({
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: '111 East India road'
-        })
+        newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').withValue('').build(),
+        newCaseField('AddressLine2', 'Line 2', null, textFieldType(), 'OPTIONAL').withValue('111 East India road').build(),
       ]
     };
 
@@ -70,45 +51,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: 'Flat 9'
-        }),
-        <CaseField>({
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Number',
-            type: 'Number'
-          },
-          value: '111 East India road'
-        }),
-        <CaseField>({
-          id: 'AddressPostcode',
-          label: 'Post code',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Complex',
-            type: 'Complex',
-            complex_fields: []
-          },
-          value: 'tw45ed'
-        })
+        newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').withValue('Flat 9').build(),
+        newCaseField('AddressLine2', 'Line 2', null, createFieldType('Number', 'Number'), 'OPTIONAL')
+          .withValue('111 East India road').build(),
+        newCaseField('AddressPostcode', 'Post code', null, createFieldType('Complex', 'Complex'), 'OPTIONAL').withValue('tw45ed').build(),
       ]
     };
-
-    const CASE_FIELD: CaseField = <CaseField>({
-      id: '',
-      label: 'Complex Field',
-      display_context: 'OPTIONAL',
-      value: [
+    const CASE_FIELD: CaseField = newCaseField('', 'Complex Field', null, FIELD_TYPE_WITH_VALUES, 'OPTIONAL')
+      .withValue([
         {
           value: {
             label: 'SomeLabel',
@@ -125,10 +75,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
         ​​​      AddressPostcode: { postcode: 'TE45ED' }
           }
         }
-      ],
-        display_context_parameter: '#TABLE(AddressLine1, AddressLine2)',
-        field_type: FIELD_TYPE_WITH_VALUES
-      });
+      ]).withDisplayContextParameter('#TABLE(AddressLine1, AddressLine2)').build();
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -197,13 +144,12 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(simpleRowsHeadersClickers[1].properties.innerHTML).toEqual(UNORDERED);
       expect(component.columnsVerticalLabel['AddressPostcode'].label).toEqual('Post code')
       expect(component.columnsVerticalLabel['AddressPostcode'].type).toEqual('Complex');
-      expect(component.columnsVerticalLabel['AddressPostcode'].caseField).toEqual(
-        {
-          id: 'AddressPostcode',
-          label: 'Post code', display_context: 'OPTIONAL',
-          field_type: {id: 'Complex', type: 'Complex', complex_fields: []}, value: {postcode: 'TE45ED'}
-        }
-      );
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.id).toEqual('AddressPostcode');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.label).toEqual('Post code');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.id).toEqual('Complex');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.type).toEqual('Complex');
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.value).toEqual({postcode: 'TE45ED'});
+      // );
     });
 
     it('should sort rows based on column name', () => {
