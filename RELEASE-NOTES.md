@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.19 - August 15 2019
+**RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type
+
 ### Version 2.58.18 - August 14 2019
 **CLEAN RELEASE OF v2.58.13** Pay Component Upgrade
 
