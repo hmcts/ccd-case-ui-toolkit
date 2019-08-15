@@ -102,6 +102,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.uploadError = WriteDocumentFieldDefinitions.UPLOAD_ERROR_FILE_REQUIRED;
   }
 
+  private displayFileWaitingStatus () {
+
+    this.valid = false;
+    this.uploadError = WriteDocumentFieldDefinitions.UPLOAD_WAITING_FILE_STATUS;
+  }
+
   private  validateFormUploadedDocument():  boolean {
     if (!this.uploadedDocument ) {
       return true;
@@ -119,6 +125,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
 
+      this.displayFileWaitingStatus();
       // Perform the file upload immediately on file selection
       let documentUpload: FormData = new FormData();
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
@@ -225,5 +232,6 @@ class WriteDocumentFieldDefinitions {
   static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   static readonly DOCUMENT_FILENAME = 'document_filename';
   static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
+  static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
 }

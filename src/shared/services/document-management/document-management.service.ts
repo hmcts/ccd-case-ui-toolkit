@@ -5,6 +5,7 @@ import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
+import { delay } from 'rxjs/internal/operators';
 
 @Injectable()
 export class DocumentManagementService {
@@ -22,8 +23,11 @@ export class DocumentManagementService {
     headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
     return this.http
       .post(url, formData, { headers })
+      .pipe(delay( 3000 ))
       .pipe(
-        map(response => response.json())
+        map(response => {
+          return response.json();
+        })
       );
   }
 }
