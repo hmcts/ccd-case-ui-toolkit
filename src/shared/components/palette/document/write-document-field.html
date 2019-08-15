@@ -13,6 +13,7 @@
   <div style='position:relative'>
 
     <div id='fileInputWrapper' (click)="fileSelectEvent()"  ></div>
-    <input class="form-control bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event)"  #fileInput/>
+    <input class="form-control bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event)"
+           accept="{{caseField.field_type.regular_expression}}" #fileInput/>
   </div>
 </div>
