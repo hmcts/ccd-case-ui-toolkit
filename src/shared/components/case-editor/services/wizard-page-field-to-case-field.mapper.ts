@@ -131,9 +131,9 @@ export class WizardPageFieldToCaseFieldMapper {
 
   private getCaseFieldChildren(caseField: CaseField) {
     let childrenCaseFields = [];
-    if (this.isCollection(caseField)) {
+    if (caseField.isCollection()) {
       childrenCaseFields = caseField.field_type.collection_field_type.complex_fields || [];
-    } else if (this.isComplex(caseField)) {
+    } else if (caseField.isComplex()) {
       childrenCaseFields = caseField.field_type.complex_fields || [];
     }
     return childrenCaseFields;
@@ -141,13 +141,5 @@ export class WizardPageFieldToCaseFieldMapper {
 
   private allCaseFieldsHidden(children: CaseField[]): boolean {
     return !children.some(e => e.hidden !== true);
-  }
-
-  private isComplex(case_field: CaseField) {
-    return case_field.field_type.type === 'Complex';
-  }
-
-  private isCollection(case_field: CaseField) {
-    return case_field.field_type.type === 'Collection';
   }
 }
