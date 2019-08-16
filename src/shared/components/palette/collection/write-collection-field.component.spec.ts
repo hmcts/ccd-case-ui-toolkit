@@ -524,7 +524,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     fixture.detectChanges();
   }));
 
-  fit('should render a row with a read field for each items when user does not have update right', () => {
+  it('should render a row with a read field for each items when user does not have update right', () => {
     let collectionItem = collectionValues[0];
     console.log('collectionItem', collectionItem);
     component.formArray.controls[0].get('id').setValue('123');
