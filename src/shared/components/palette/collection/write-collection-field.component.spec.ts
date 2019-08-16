@@ -50,7 +50,6 @@ const REGISTER_CONTROL = (control) => {
   return control;
 };
 const $WRITE_FIELDS = By.css('ccd-field-write');
-const $READ_FIELDS = By.css('ccd-field-read');
 const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
 const $ADD_BUTTON_BOTTOM = By.css('.form-group>.panel>.button:nth-of-type(2)');
 const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
@@ -525,11 +524,14 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     fixture.detectChanges();
   }));
 
-  it('should render a row with a read field for each items when user does not have update right', () => {
-    let readFields = de.queryAll($READ_FIELDS);
-    let writeFields = de.queryAll($WRITE_FIELDS);
+  fit('should render a row with a read field for each items when user does not have update right', () => {
+    let collectionItem = collectionValues[0];
+    console.log('collectionItem', collectionItem);
+    component.formArray.controls[0].get('id').setValue('123');
 
-    expect(writeFields.length).toEqual(0);
-    expect(readFields.length).toEqual(2);
+    let updatedCaseField = component.buildCaseField(collectionItem, 0);
+
+    fixture.detectChanges();
+    expect(updatedCaseField.display_context).toEqual('READONLY');
   });
 });
