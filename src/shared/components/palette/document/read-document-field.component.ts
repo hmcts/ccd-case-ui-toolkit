@@ -20,6 +20,7 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent {
 
   showMediaViewer(): void {
     let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
+    this.windowService.removeLocalStorage(MEDIA_VIEWER);
     this.windowService.setLocalStorage(MEDIA_VIEWER, this.documentManagement.createMediaViewer(this.caseField));
     if (routerMediaViewer) {
       window.open(routerMediaViewer.toString(), '_blank');
