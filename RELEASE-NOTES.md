@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.59.1 - August 15 2019
+**RDM-5398** Allow file upload document type whitelist
+
 ### Version 2.59.0 - August 15 2019
 **RDM-4544** Allow file upload document type whitelist
 

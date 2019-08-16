@@ -44,8 +44,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
-
     this.formArray = this.registerControl(new FormArray([]));
+    this.formArray.setErrors(null);
   }
 
   buildCaseField(item, index: number): CaseField {
