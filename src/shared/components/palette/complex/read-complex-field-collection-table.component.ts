@@ -60,7 +60,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
         obj.field_type.type === 'FixedRadioList') {
         labelsVertical[obj.id] = {label: obj.label, type: obj.field_type, caseField: obj};
         allLabels[obj.id] = {label: obj.label, type: obj.field_type};
-      } else if (obj.field_type.type === 'Complex') {
+      } else if (obj.isComplex()) {
         obj.value = this.rows[0][obj.id];
         labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
         allLabels[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
