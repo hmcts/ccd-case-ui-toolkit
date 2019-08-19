@@ -429,13 +429,14 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
 });
 
 describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
+  const USER_HAS_UPDATE_ROLE = false;
   const collectionValues = [
     {
       id: '123',
       value: 'v1'
     },
     {
-      id: '123',
+      id: '456',
       value: 'v2'
     }
   ];
@@ -465,13 +466,13 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
       display_context: 'OPTIONAL',
-      value: collectionValues.slice(),
+      value: collectionValues,
       acls: [
         {
           role: 'caseworker-divorce',
           create: false,
           read: true,
-          update: false,
+          update: USER_HAS_UPDATE_ROLE,
           delete: false
         }
       ]
@@ -524,14 +525,11 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     fixture.detectChanges();
   }));
 
-  it('should render a row with a read field for each items when user does not have update right', () => {
+  it('should change the displayContext to READONLY when user does not have update right', () => {
     let collectionItem = collectionValues[0];
-    console.log('collectionItem', collectionItem);
-    component.formArray.controls[0].get('id').setValue('123');
 
     let updatedCaseField = component.buildCaseField(collectionItem, 0);
 
-    fixture.detectChanges();
     expect(updatedCaseField.display_context).toEqual('READONLY');
   });
 });
