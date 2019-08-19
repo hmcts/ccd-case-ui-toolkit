@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.59.2 - August 19 2019
+**RDM-5072** remove some bad code introduced in WriteAddressFieldComponent
+
 ### Version 2.59.1 - August 15 2019
 **RDM-5398** Allow file upload document type whitelist
 
