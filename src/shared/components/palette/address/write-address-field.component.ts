@@ -6,7 +6,7 @@ import { AddressOption } from './address-option.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { FocusElementDirective } from '../../../directives/focus-element';
+import { AlertService } from '../../../services/alert';
 
 @Component({
   selector: 'ccd-write-address-field',
