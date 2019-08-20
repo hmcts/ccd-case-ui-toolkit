@@ -67,7 +67,6 @@ export class WizardPageFieldToCaseFieldMapper {
       }
     } else {
       case_field_leaf.hidden = true;
-      case_field_leaf.display_context = override.display_context;
     }
   }
 
