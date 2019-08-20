@@ -148,12 +148,6 @@ describe('WriteDocumentFieldComponent', () => {
     expect(ccdReadDocumentElement).toBeTruthy();
   });
 
-  it('should initialise formControl with provided value', () => {
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_url).toBe(VALUE.document_url);
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_binary_url).toBe(VALUE.document_binary_url);
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_filename).toBe(VALUE.document_filename);
-  });
-
   it('should open file dialog if document does not exist', () => {
     component.caseField.value = null;
     expect(component.caseField.value).toBeFalsy();
@@ -163,7 +157,7 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should upload given document', () => {
-    let blobParts: BlobPart[] = ['some contents for blob']
+    let blobParts: BlobPart[] = ['some contents for blob'];
     let file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
@@ -180,7 +174,7 @@ describe('WriteDocumentFieldComponent', () => {
     mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
       '"message": "But really really terrible thing!", "status": 502}'));
 
-    let blobParts: BlobPart[] = ['some contents for blob']
+    let blobParts: BlobPart[] = ['some contents for blob'];
     let file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
@@ -225,6 +219,34 @@ describe('WriteDocumentFieldComponent', () => {
     expect(componentDialog.result).toEqual('Cancel');
     fixture.detectChanges();
   });
+
+  it('should accept all files', () => {
+    const fileElement = de.query(By.css('input[type=file]'));
+
+    expect(fileElement.nativeElement.accept).toBe('');
+  });
+
+  it('should accept only the files provided in case field type regular expression', () => {
+    const FIELD_TYPE_WITH_REGEX: FieldType = {
+      id: 'Document',
+      type: 'Document',
+      regular_expression: '.pdf,.docx,.xlsx'
+    };
+    component.caseField = <CaseField>({
+      id: 'x',
+      label: 'X',
+      field_type: FIELD_TYPE_WITH_REGEX,
+      value: VALUE
+    });
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const fileElement = de.query(By.css('input[type=file]'));
+
+    expect(fileElement.nativeElement.accept).toBe(FIELD_TYPE_WITH_REGEX.regular_expression);
+  });
+
 });
 
 describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
@@ -344,7 +366,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   it('should be invalid if no document specified for upload for read only. Empty file.', () => {
     component.caseField = CASE_FIELD_MANDATORY;
-    component.ngOnInit()
+    component.ngOnInit();
     expect(component.caseField.value).toBeTruthy();
 
     component.fileChangeEvent({
@@ -360,7 +382,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     // Initialization.
     component.valid = true;
     component.caseField = CASE_FIELD;
-    component.ngOnInit()
+    component.ngOnInit();
     expect(component.caseField.value).toBeTruthy();
     expect(component.valid).toBeTruthy();
 

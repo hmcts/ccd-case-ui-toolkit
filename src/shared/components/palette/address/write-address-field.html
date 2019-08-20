@@ -17,7 +17,7 @@
         <span class="form-label">Select an address</span>
       </label>
 
-      <select class="form-control ccd-dropdown addressList" [id]="createId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" >
+      <select class="form-control ccd-dropdown addressList" [id]="createId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" focusElement>
         <option *ngFor="let addressOption of addressOptions" [ngValue]="addressOption.value">
           {{addressOption.description}}
         </option>
