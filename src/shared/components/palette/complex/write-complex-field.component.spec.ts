@@ -30,7 +30,7 @@ describe('WriteComplexFieldComponent', () => {
   });
 
   @Pipe({name: 'ccdIsReadOnlyAndNotCollection'})
-  class MockIsReadOnlyPipe implements PipeTransform {
+  class MockIsReadOnlyAndNotCollectionPipe implements PipeTransform {
     transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
         return false;
@@ -43,6 +43,31 @@ describe('WriteComplexFieldComponent', () => {
   let component: WriteComplexFieldComponent;
   let de: DebugElement;
   let formValidatorService: any;
+
+  function prepareTestBed() {
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          ConditionalShowModule
+        ],
+        declarations: [
+          WriteComplexFieldComponent,
+          FieldsFilterPipe,
+
+          // Mock
+          FieldWriteComponent,
+          FieldReadComponent,
+          MockIsReadOnlyAndNotCollectionPipe
+        ],
+        providers: [
+          IsCompoundPipe,
+          IsReadOnlyPipe,
+          {provide: FormValidatorsService, useValue: formValidatorService}
+        ]
+      })
+      .compileComponents();
+  }
 
   describe('when values split across children fields', () => {
     const FIELD_TYPE_WITH_MISSING_VALUE: FieldType = {
@@ -150,28 +175,8 @@ describe('WriteComplexFieldComponent', () => {
 
     beforeEach(async(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-      TestBed
-        .configureTestingModule({
-          imports: [
-            PaletteUtilsModule,
-            ConditionalShowModule
-          ],
-          declarations: [
-            WriteComplexFieldComponent,
-            FieldsFilterPipe,
 
-            // Mock
-            FieldWriteComponent,
-            FieldReadComponent,
-            MockIsReadOnlyPipe
-          ],
-          providers: [
-            IsCompoundPipe,
-            IsReadOnlyPipe,
-            { provide: FormValidatorsService, useValue: formValidatorService }
-          ]
-        })
-        .compileComponents();
+      prepareTestBed();
 
       fixture = TestBed.createComponent(WriteComplexFieldComponent);
       component = fixture.componentInstance;
@@ -341,28 +346,7 @@ describe('WriteComplexFieldComponent', () => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
       formGroup = new FormGroup({});
 
-      TestBed
-        .configureTestingModule({
-          imports: [
-            PaletteUtilsModule,
-            ConditionalShowModule
-          ],
-          declarations: [
-            WriteComplexFieldComponent,
-            FieldsFilterPipe,
-
-            // Mock
-            FieldWriteComponent,
-            FieldReadComponent,
-            MockIsReadOnlyPipe
-          ],
-          providers: [
-            IsCompoundPipe,
-            IsReadOnlyPipe,
-            { provide: FormValidatorsService, useValue: formValidatorService }
-          ]
-        })
-        .compileComponents();
+      prepareTestBed();
 
       fixture = TestBed.createComponent(WriteComplexFieldComponent);
       component = fixture.componentInstance;
@@ -498,28 +482,7 @@ describe('WriteComplexFieldComponent', () => {
     beforeEach(async(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
 
-      TestBed
-        .configureTestingModule({
-          imports: [
-            PaletteUtilsModule,
-            ConditionalShowModule
-          ],
-          declarations: [
-            WriteComplexFieldComponent,
-            FieldsFilterPipe,
-
-            // Mock
-            FieldWriteComponent,
-            FieldReadComponent,
-            MockIsReadOnlyPipe
-          ],
-          providers: [
-            IsCompoundPipe,
-            IsReadOnlyPipe,
-            { provide: FormValidatorsService, useValue: formValidatorService }
-          ]
-        })
-        .compileComponents();
+      prepareTestBed();
 
       fixture = TestBed.createComponent(WriteComplexFieldComponent);
       component = fixture.componentInstance;
