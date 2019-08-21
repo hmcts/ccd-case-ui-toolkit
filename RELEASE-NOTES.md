@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.59.3 - August 19 2019
+Revert 5398
+
 ### Version 2.59.2 - August 19 2019
 **RDM-5072** remove some bad code introduced in WriteAddressFieldComponent
 
