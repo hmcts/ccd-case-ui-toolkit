@@ -29,7 +29,7 @@ describe('WriteComplexFieldComponent', () => {
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel', 'registerControl']
   });
 
-  @Pipe({name: 'ccdIsReadOnly'})
+  @Pipe({name: 'ccdIsReadOnlyAndNotCollection'})
   class MockIsReadOnlyPipe implements PipeTransform {
     transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
