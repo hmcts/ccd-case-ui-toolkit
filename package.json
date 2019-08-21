@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.58.14-RDM-4135-prerelease",
+  "version": "2.58.15-RDM-4135-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -78,7 +78,7 @@
     "@angular/router": "~7.0.3",
     "@angular/upgrade": "~7.0.3",
     "@compodoc/compodoc": "^1.1.7",
-    "@hmcts/ccpay-web-component": "^1.8.6",
+    "@hmcts/ccpay-web-component": "^2.0.12",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
