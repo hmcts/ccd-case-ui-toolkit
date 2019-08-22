@@ -10,10 +10,14 @@ import { of } from 'rxjs';
 import { FieldLabelPipe } from '../utils/field-label.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { createFieldType } from '../../../fixture';
+import { FocusElementModule } from '../../../directives/focus-element';
 
 describe('WriteAddressFieldComponent', () => {
 
   const CASE_FIELD_LABEL = 'Case Field Label';
+  const POSTCODE = 'P05T CDE';
+  const POSTCODE2 = 'P05T CDF';
   const $TITLE = By.css('h2');
 
   const $POSTCODE_LOOKUP = By.css('#postcodeLookup');
@@ -75,12 +79,12 @@ describe('WriteAddressFieldComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
 
   function caseField(address: AddressModel) {
-    return {
-      id: 'caseFieldId',
-      label: CASE_FIELD_LABEL,
-      field_type: { id: 'FieldTypeId', type: 'Complex' },
-      value: address
-    };
+    let field = new CaseField();
+    field.id = 'caseFieldId';
+    field.label = CASE_FIELD_LABEL;
+    field.field_type = createFieldType('FieldTypeId', 'Complex');
+    field.value = address;
+    return field;
   }
 
   function addressFormGroup() {
@@ -107,9 +111,9 @@ describe('WriteAddressFieldComponent', () => {
     return address;
   }
 
-  function queryPostcode() {
+  function queryPostcode(postcode: string) {
     let postcodeField = fixture.debugElement.query($POSTCODE_LOOKUP_INPUT).nativeElement;
-    postcodeField.value = 'P05T CDE';
+    postcodeField.value = postcode;
     postcodeField.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     debugElement.query($POSTCODE_LOOKUP_FIND).triggerEventHandler('click', null);
@@ -124,6 +128,7 @@ describe('WriteAddressFieldComponent', () => {
         imports: [
           ConditionalShowModule,
           ReactiveFormsModule,
+          FocusElementModule,
         ],
         declarations: [
           WriteAddressFieldComponent,
@@ -216,7 +221,7 @@ describe('WriteAddressFieldComponent', () => {
 
     spyOn(addressesService, 'getAddressesForPostcode').and.returnValue(of([]));
 
-    queryPostcode();
+    queryPostcode(POSTCODE);
 
     expect(debugElement.query($MANUAL_LINK)).toBeTruthy();
     expect(addressesService.getAddressesForPostcode).toHaveBeenCalledWith('P05TCDE');
@@ -237,7 +242,7 @@ describe('WriteAddressFieldComponent', () => {
       of([buildAddress(1), address2, address3])
     );
 
-    queryPostcode();
+    queryPostcode(POSTCODE);
 
     expect(addressesService.getAddressesForPostcode).toHaveBeenCalledWith('P05TCDE');
     expect(debugElement.query($MANUAL_LINK)).toBeTruthy();
@@ -313,10 +318,24 @@ describe('WriteAddressFieldComponent', () => {
     testHostComponent.componentUnderTest.missingPostcode = true;
     fixture.detectChanges();
 
-    queryPostcode();
+    queryPostcode(POSTCODE);
 
     expect(debugElement.query($POSTCODE_LOOKUP_ERROR_MESSAGE)).toBeFalsy();
 
+  });
+
+  it('should call focus directive for subsequent postcode searches', () => {
+    // do the first search to display the address list
+    spyOn(addressesService, 'getAddressesForPostcode').and.returnValue(
+      of([buildAddress(1)]));
+
+    queryPostcode(POSTCODE);
+
+    // for subsequent postcode searches (when the address list is already visible), the focus directive should be called
+    spyOn(testHostComponent.componentUnderTest.focusElementDirectives.first, 'focus');
+    queryPostcode(POSTCODE2);
+
+    expect(testHostComponent.componentUnderTest.focusElementDirectives.first.focus).toHaveBeenCalled();
   });
 
 });
