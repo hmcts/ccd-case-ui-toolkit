@@ -167,9 +167,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         document_binary_url: new FormControl(binaryUrl, Validators.required),
         document_filename: new FormControl(filename, Validators.required)
       }));
+    } else {
+      if (this.caseField.value) {
+        this.uploadedDocument = this.registerControl(new FormGroup({
+          document_url: new FormControl(url),
+          document_binary_url: new FormControl(binaryUrl),
+          document_filename: new FormControl(filename)
+        }));
+      }
     }
   }
-
   private setDocumentGroupValues(url: string, binaryUrl: string, filename: string): void {
     this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).setValue(url);
     this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).setValue(binaryUrl);
