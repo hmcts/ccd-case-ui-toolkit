@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MediaViewerComponent } from './media-viewer.component';
+import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MediaViewerComponent
+    component: MediaViewerWrapperComponent
   }
 ];
 

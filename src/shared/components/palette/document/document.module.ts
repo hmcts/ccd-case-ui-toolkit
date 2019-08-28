@@ -5,7 +5,7 @@ import { ReadDocumentFieldComponent } from './read-document-field.component';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { PaletteUtilsModule } from '../utils/utils.module';
-import { MediaViewerComponent } from './media-viewer.component';
+import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { DocumentRoutingModule } from './document-routing.module';
 import { WindowService } from '../../../services/window';
@@ -21,17 +21,17 @@ import { WindowService } from '../../../services/window';
   declarations: [
     DocumentUrlPipe,
     ReadDocumentFieldComponent,
-    MediaViewerComponent,
+    MediaViewerWrapperComponent,
     WriteDocumentFieldComponent
   ],
   entryComponents: [
     ReadDocumentFieldComponent,
     WriteDocumentFieldComponent,
-    MediaViewerComponent
+    MediaViewerWrapperComponent
   ],
   exports: [
     DocumentUrlPipe,
-    MediaViewerComponent
+    MediaViewerWrapperComponent
   ],
   providers: [
     WindowService
