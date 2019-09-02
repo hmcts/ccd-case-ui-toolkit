@@ -8,8 +8,8 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
+import { ActivatedRoute } from '@angular/router';
 import { ProfileNotifier } from '../../../services';
-import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -34,7 +34,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
               private dialog: MatDialog,
               private scrollToService: ScrollToService,
               private profileNotifier: ProfileNotifier,
-              private createChecker: CollectionCreateCheckerService
   ) {
     super();
   }
@@ -44,8 +43,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
+
     this.formArray = this.registerControl(new FormArray([]));
-    this.formArray.setErrors(null);
   }
 
   buildCaseField(item, index: number): CaseField {
