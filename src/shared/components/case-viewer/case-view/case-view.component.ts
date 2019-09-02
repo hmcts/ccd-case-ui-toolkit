@@ -49,7 +49,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       .toPromise()
       .catch(error => this.checkAuthorizationError(error));
     this.navigationSubscription = this.navigationNotifierService.navigation.subscribe(navigation => {
-      console.log('emitting navigation=', navigation);
       if (!this.fieldsUtils.isEmpty(navigation)) {
         this.navigationTriggered.emit(navigation);
       }

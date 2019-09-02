@@ -144,7 +144,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
           etid: trigger.id,
           queryParams : theQueryParams});
     } else {
-      console.log('event triggered!!! trigger.id=', trigger.id);
       this.navigationNotifierService.announceNavigation(
         {action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,
