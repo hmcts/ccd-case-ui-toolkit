@@ -2,11 +2,12 @@ import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angu
 import { AlertService } from '../../../services/alert';
 import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
-import { DraftService } from '../../../services';
+import { DraftService, FieldsUtils } from '../../../services';
 import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { plainToClassFromExist } from 'class-transformer';
+import { CaseViewInputNotifier } from './case-view-input.notifier';
 
 @Component({
   selector: 'ccd-case-view',
@@ -29,10 +30,12 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private navigationNotifierService: NavigationNotifierService,
+    private caseViewInputNotifier: CaseViewInputNotifier,
     private caseNofitier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,
     private alertService: AlertService,
+    private fieldsUtils: FieldsUtils
   ) {}
 
   ngOnInit(): void {
@@ -46,8 +49,12 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       .toPromise()
       .catch(error => this.checkAuthorizationError(error));
     this.navigationSubscription = this.navigationNotifierService.navigation.subscribe(navigation => {
-      this.navigationTriggered.emit(navigation);
+      console.log('emitting navigation=', navigation);
+      if (!this.fieldsUtils.isEmpty(navigation)) {
+        this.navigationTriggered.emit(navigation);
+      }
     });
+    this.caseViewInputNotifier.announceInput({hasPrint: this.hasPrint, hasEventSelector: this.hasEventSelector});
   }
 
   ngOnDestroy() {

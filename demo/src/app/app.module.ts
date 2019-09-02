@@ -29,6 +29,7 @@ import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.c
 import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-consumer.component';
 import { SearchResultConsumerComponent } from './search-result-consumer.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NavigationListenerService } from './navigation-listener.service';
 
 @NgModule({
   imports: [
@@ -77,6 +78,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     RouterHelperService,
     DocumentManagementService,
     ScrollToService,
+    NavigationListenerService,
     AppConfig,
     {
       provide: AbstractAppConfig,

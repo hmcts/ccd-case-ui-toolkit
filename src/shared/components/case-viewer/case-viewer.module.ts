@@ -24,6 +24,7 @@ import { EventTriggerResolver, CaseResolver } from './services';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
+import { CaseViewInputNotifier } from './case-view/case-view-input.notifier';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
     CaseViewComponent,
   ],
   providers: [
+    CaseViewInputNotifier,
     CaseNotifier,
     NavigationNotifierService,
     CaseReferencePipe,

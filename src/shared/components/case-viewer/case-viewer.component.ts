@@ -19,6 +19,7 @@ import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
 import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
+import { CaseViewInputNotifier } from './case-view/case-view-input.notifier';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -50,6 +51,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
+  caseViewInputSubscription: Subscription;
 
   constructor(
     private ngZone: NgZone,
@@ -60,7 +62,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private alertService: AlertService,
     private draftService: DraftService,
-    private caseNotifier: CaseNotifier
+    private caseNotifier: CaseNotifier,
+    private caseViewInputNotifier: CaseViewInputNotifier
   ) {}
 
   ngOnInit() {
@@ -78,6 +81,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
+    this.caseViewInputSubscription = this.caseViewInputNotifier.caseViewInput.subscribe(navigation => {
+      this.hasPrint = navigation.hasPrint;
+      this.hasEventSelector = navigation.hasEventSelector;
+    });
   }
 
   isPrintEnabled(): boolean {
@@ -92,6 +99,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     if (!this.route.snapshot.data.case) {
       this.caseSubscription.unsubscribe();
     }
+    this.caseViewInputSubscription.unsubscribe();
   }
 
   postViewActivity(): Observable<Activity[]> {
@@ -136,6 +144,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
           etid: trigger.id,
           queryParams : theQueryParams});
     } else {
+      console.log('event triggered!!! trigger.id=', trigger.id);
       this.navigationNotifierService.announceNavigation(
         {action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,

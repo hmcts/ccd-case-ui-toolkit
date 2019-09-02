@@ -158,4 +158,13 @@ export class FieldsUtils {
     return result;
   }
 
+  public isEmpty(obj) {
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }
