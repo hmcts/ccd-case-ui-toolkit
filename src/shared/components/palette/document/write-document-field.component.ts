@@ -42,58 +42,26 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     super();
   }
 
-  private initDialog() {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
-  }
-
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
     if (document) {
       if (this.isAMandatoryComponent()) {
-        this.setDocumentFormValuesWithValidator(document.document_url, document.document_binary_url, document.document_filename);
+        this.createDocumentFormWithValidator(document.document_url, document.document_binary_url, document.document_filename);
       } else {
-        this.setDocumentFormValues(document.document_url, document.document_binary_url, document.document_filename);
+        this.createDocumentForm(document.document_url, document.document_binary_url, document.document_filename);
       }
     } else {
       if (this.isAMandatoryComponent()) {
-        this.setDocumentFormValuesWithValidator(null, null, null);
+        this.createDocumentFormWithValidator(null, null, null);
         this.selectedFile = null;
       }
     }
   }
 
-  private setDocumentFormValuesWithValidator(url: string, binaryUrl: string, filename: string) {
-    this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url, Validators.required),
-      document_binary_url: new FormControl(binaryUrl, Validators.required),
-      document_filename: new FormControl(filename, Validators.required)
-    }));
-  }
-
-  private setDocumentFormValues(url: string, binaryUrl: string, filename: string) {
-    this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url),
-      document_binary_url: new FormControl(binaryUrl),
-      document_filename: new FormControl(filename)
-    }));
-  }
-
   fileValidations () {
 
     if (this.isAMandatoryComponent()) {
-
       if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() ) {
         this.displayFileErrors();
       }
@@ -103,34 +71,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   fileValidationsOnTab () {
 
     if (this.isAMandatoryComponent()) {
-
       if ( this.validateFormUploadedDocument() ) {
         this.displayFileErrors();
       }
     }
-  }
-
-  private isAMandatoryComponent() {
-
-    return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY;
-  }
-
-  private displayFileErrors () {
-
-    this.valid = false;
-    this.uploadError = WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED;
-  }
-
-  private  validateFormUploadedDocument():  boolean {
-    if (!this.uploadedDocument ) {
-      return true;
-    }
-
-    let validation = !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).valid &&
-      !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).valid &&
-      !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).valid;
-
-    return validation;
   }
 
   fileChangeEvent(fileInput: any) {
@@ -144,14 +88,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentUpload.append('classification', 'PUBLIC');
       this.documentManagement.uploadFile(documentUpload).subscribe(result => {
         if (!this.uploadedDocument) {
-            this.uploadedDocument = this.registerControl(new FormGroup({
-              document_url: new FormControl(WriteDocumentFieldComponent.DOCUMENT_URL),
-              document_binary_url: new FormControl(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL),
-              document_filename: new FormControl(WriteDocumentFieldComponent.DOCUMENT_FILENAME)
-            }));
+          this.createDocumentForm(null, null, null);
         }
         let document = result._embedded.documents[0];
-        this.setDocumentGroupValues(
+        this.updateDocumentForm(
           document._links.self.href,
           document._links.binary.href,
           document.originalDocumentName,
@@ -163,34 +103,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.valid = false;
       });
     } else {
-
-      this.setMandatoryDocumentToEmtpyValues();
       if (this.isAMandatoryComponent()) {
+        this.selectedFile = null;
+        this.updateDocumentForm(null, null, null);
         this.displayFileErrors();
       }
     }
-  }
-  private setMandatoryDocumentToEmtpyValues() {
-    if (this.isAMandatoryComponent()) {
-      this.selectedFile = null;
-      this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).setValue(null);
-      this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).setValue(null);
-      this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).setValue(null);
-    }
-  }
-  private setDocumentGroupValues(url: string, binaryUrl: string, filename: string): void {
-    this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).setValue(url);
-    this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).setValue(binaryUrl);
-    this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).setValue(filename);
-  }
-
-  private getErrorMessage(error: HttpError): string {
-    // Document Management unavailable
-    if (0 === error.status || 502 === error.status) {
-      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
-    }
-
-    return error.error;
   }
 
   openFileDialog(): void {
@@ -225,5 +143,71 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     } else {
       return undefined;
     }
+  }
+
+  private initDialog() {
+    this.dialogConfig = new MatDialogConfig();
+    this.dialogConfig.disableClose = true;
+    this.dialogConfig.autoFocus = true;
+    this.dialogConfig.ariaLabel = 'Label';
+    this.dialogConfig.height = '245px';
+    this.dialogConfig.width = '550px';
+    this.dialogConfig.panelClass = 'dialog';
+
+    this.dialogConfig.closeOnNavigation = false;
+    this.dialogConfig.position = {
+      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
+    }
+  }
+
+  private isAMandatoryComponent() {
+    return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY;
+  }
+
+  private displayFileErrors () {
+    this.valid = false;
+    this.uploadError = WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED;
+  }
+
+  private  validateFormUploadedDocument():  boolean {
+    if (!this.uploadedDocument ) {
+      return true;
+    }
+
+    let validation = !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).valid &&
+      !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).valid &&
+      !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).valid;
+
+    return validation;
+  }
+
+  private updateDocumentForm(url: string, binaryUrl: string, filename: string): void {
+    this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).setValue(url);
+    this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).setValue(binaryUrl);
+    this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).setValue(filename);
+  }
+  private createDocumentFormWithValidator(url: string, binaryUrl: string, filename: string) {
+    this.uploadedDocument = this.registerControl(new FormGroup({
+      document_url: new FormControl(url, Validators.required),
+      document_binary_url: new FormControl(binaryUrl, Validators.required),
+      document_filename: new FormControl(filename, Validators.required)
+    }));
+  }
+
+  private createDocumentForm(url: string, binaryUrl: string, filename: string) {
+    this.uploadedDocument = this.registerControl(new FormGroup({
+      document_url: new FormControl(url),
+      document_binary_url: new FormControl(binaryUrl),
+      document_filename: new FormControl(filename)
+    }));
+  }
+
+  private getErrorMessage(error: HttpError): string {
+    // Document Management unavailable
+    if (0 === error.status || 502 === error.status) {
+      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    }
+
+    return error.error;
   }
 }
