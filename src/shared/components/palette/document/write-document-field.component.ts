@@ -169,7 +169,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.uploadError = WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED;
   }
 
-  private  validateFormUploadedDocument():  boolean {
+  private validateFormUploadedDocument():  boolean {
     if (!this.uploadedDocument ) {
       return true;
     }
