@@ -60,20 +60,34 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.initDialog();
     let document = this.caseField.value;
-
     if (document) {
-      this.createDocumentGroup(
-        document.document_url,
-        document.document_binary_url,
-        document.document_filename,
-      )
+      if (this.isAMandatoryComponent()) {
+        this.setDocumentFormValuesWithValidator(document.document_url, document.document_binary_url, document.document_filename);
+      } else {
+        this.setDocumentFormValues(document.document_url, document.document_binary_url, document.document_filename);
+      }
     } else {
-      this.createDocumentGroup(
-        WriteDocumentFieldComponent.DOCUMENT_URL,
-        WriteDocumentFieldComponent.DOCUMENT_BINARY_URL,
-        WriteDocumentFieldComponent.DOCUMENT_FILENAME);
-      this.setMandatoryDocumentToEmtpyValues();
+      if (this.isAMandatoryComponent()) {
+        this.setDocumentFormValuesWithValidator(null, null, null);
+        this.selectedFile = null;
+      }
     }
+  }
+
+  private setDocumentFormValuesWithValidator(url: string, binaryUrl: string, filename: string) {
+    this.uploadedDocument = this.registerControl(new FormGroup({
+      document_url: new FormControl(url, Validators.required),
+      document_binary_url: new FormControl(binaryUrl, Validators.required),
+      document_filename: new FormControl(filename, Validators.required)
+    }));
+  }
+
+  private setDocumentFormValues(url: string, binaryUrl: string, filename: string) {
+    this.uploadedDocument = this.registerControl(new FormGroup({
+      document_url: new FormControl(url),
+      document_binary_url: new FormControl(binaryUrl),
+      document_filename: new FormControl(filename)
+    }));
   }
 
   fileValidations () {
