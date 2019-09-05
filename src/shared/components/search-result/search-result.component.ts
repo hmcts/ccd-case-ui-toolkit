@@ -48,6 +48,9 @@ export class SearchResultComponent implements OnChanges {
   @Output()
   changePage: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  clickCase: EventEmitter<any> = new EventEmitter();
+
   paginationPageSize: number;
 
   hideRows: boolean;
@@ -264,5 +267,11 @@ export class SearchResultComponent implements OnChanges {
   }
   private numberOfDrafts(): number {
     return this.resultView.results.filter(_ => _.case_id.startsWith(DRAFT_PREFIX)).length;
+  }
+
+  goToCase(caseId: string) {
+    this.clickCase.emit({
+      caseId: caseId
+    });
   }
 }
