@@ -9,7 +9,7 @@ import { CaseView, CasePrintDocument } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
 import { PaletteUtilsModule } from '../../palette';
 import { attr, text } from '../../../test/helpers';
-import { CaseService, CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { AlertService } from '../../../services';
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -63,7 +63,7 @@ describe('CasePrinterComponent', () => {
   let component: CasePrinterComponent;
   let de: DebugElement;
 
-  let caseService: CaseService;
+  let caseService: CaseNotifier;
   let casesService;
   let alertService;
 
@@ -74,7 +74,7 @@ describe('CasePrinterComponent', () => {
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
     appConfig.getRemotePrintServiceUrl.and.returnValue(REMOTE_PRINT_SERVICE_URL);
 
-    caseService = new CaseService();
+    caseService = new CaseNotifier();
     caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     casesService = createSpyObj('CasesService', ['getPrintDocuments']);
     casesService.getPrintDocuments.and.returnValue(DOCUMENT_OBS);
@@ -92,7 +92,7 @@ describe('CasePrinterComponent', () => {
           CaseHeaderComponent
         ],
         providers: [
-          { provide: CaseService, useValue: caseService },
+          { provide: CaseNotifier, useValue: caseService },
           { provide: CasesService, useValue: casesService },
           { provide: AlertService, useValue: alertService },
           { provide: AbstractAppConfig, useValue: appConfig }

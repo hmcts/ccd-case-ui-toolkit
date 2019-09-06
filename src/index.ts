@@ -24,7 +24,10 @@ export { FieldTypeSanitiser,
          WindowService,
          WorkbasketInputFilterService,
          JurisdictionService,
-         SearchResultViewItemComparatorFactory } from './shared/services';
+         SearchResultViewItemComparatorFactory,
+         NavigationNotifierService,
+         NavigationOrigin,
+} from './shared/services';
 export { DocumentData,
          AddressModel,
          CaseEventData,

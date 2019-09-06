@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren, OnDestroy } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -10,13 +10,14 @@ import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileNotifier } from '../../../services';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-write-collection-field',
   templateUrl: './write-collection-field.html',
   styleUrls: ['./collection-field.scss']
 })
-export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   @Input()
   caseFields: CaseField[] = [];
 
@@ -26,6 +27,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   formArray: FormArray;
 
   profile: Profile;
+  profileSubscription: Subscription;
 
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
@@ -40,11 +42,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   ngOnInit(): void {
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
-      this.profileNotifier.profile.subscribe(_ => this.profile = _);
+      this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
 
     this.formArray = this.registerControl(new FormArray([]));
+  }
+
+  ngOnDestroy() {
+    if (typeof this.profileSubscription !== 'undefined') {
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   buildCaseField(item, index: number): CaseField {
