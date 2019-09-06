@@ -11,8 +11,6 @@ import { Profile } from '../../../domain/profile';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileNotifier } from '../../../services';
 import { Subscription } from 'rxjs';
-import { CollectionCreateCheckerService } from './collection-create-checker.service';
-
 
 @Component({
   selector: 'ccd-write-collection-field',
