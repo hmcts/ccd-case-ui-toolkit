@@ -39,6 +39,7 @@ export class DocumentManagementService {
         document_binary_url: this.transformDocumentUrl(caseField.value.document_binary_url),
         document_filename: caseField.value.document_filename,
         content_type: this.getContentType(caseField),
+        annotation_api_url: this.appConfig.getAnnotationApiUrl(),
       }
     }
     return JSON.stringify(mediaViewer);
