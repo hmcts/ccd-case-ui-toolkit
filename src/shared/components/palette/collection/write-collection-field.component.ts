@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -8,9 +8,9 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
-import { ActivatedRoute } from '@angular/router';
 import { ProfileNotifier } from '../../../services';
 import { Subscription } from 'rxjs';
+import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -36,6 +36,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
               private dialog: MatDialog,
               private scrollToService: ScrollToService,
               private profileNotifier: ProfileNotifier,
+              private createChecker: CollectionCreateCheckerService
   ) {
     super();
   }
@@ -99,6 +100,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     this.caseField.value.push({ value: null });
+    // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
     let lastIndex = this.caseField.value.length - 1;
 
