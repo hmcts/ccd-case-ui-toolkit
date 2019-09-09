@@ -100,7 +100,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     this.caseField.value.push({ value: null });
-    this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
+    //this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
     let lastIndex = this.caseField.value.length - 1;
 
