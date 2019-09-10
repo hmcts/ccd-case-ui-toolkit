@@ -38,7 +38,7 @@ export class NavigationListenerService {
           });
         case NavigationOrigin.EVENT_TRIGGERED:
           return this.router.navigate(['trigger', navigation.etid], {
-            queryParams: navigation.theQueryParams,
+            queryParams: navigation.queryParams,
             relativeTo: navigation.relativeTo
           }).catch(error => {
             this.handleError(error, navigation.etid);
