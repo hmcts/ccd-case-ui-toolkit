@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -9,6 +9,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
 import { ProfileNotifier } from '../../../services';
+import { Subscription } from 'rxjs';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 @Component({
@@ -16,7 +17,7 @@ import { CollectionCreateCheckerService } from './collection-create-checker.serv
   templateUrl: './write-collection-field.html',
   styleUrls: ['./collection-field.scss']
 })
-export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   @Input()
   caseFields: CaseField[] = [];
 
@@ -26,6 +27,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   formArray: FormArray;
 
   profile: Profile;
+  profileSubscription: Subscription;
 
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
@@ -41,11 +43,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   ngOnInit(): void {
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
-      this.profileNotifier.profile.subscribe(_ => this.profile = _);
+      this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
+
     this.formArray = this.registerControl(new FormArray([]));
-    this.formArray.setErrors(null);
+  }
+
+  ngOnDestroy() {
+    if (typeof this.profileSubscription !== 'undefined') {
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   buildCaseField(item, index: number): CaseField {
@@ -92,7 +100,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     this.caseField.value.push({ value: null });
-    this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
+    // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
     let lastIndex = this.caseField.value.length - 1;
 

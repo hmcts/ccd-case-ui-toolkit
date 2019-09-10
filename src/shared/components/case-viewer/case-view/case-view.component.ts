@@ -1,17 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AlertService } from '../../../services/alert';
 import { CaseView, Draft } from '../../../domain';
-import { CaseService, CasesService } from '../../case-editor';
+import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService } from '../../../services';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-view',
   templateUrl: 'case-view.component.html'
 })
-export class CaseViewComponent implements OnInit {
+export class CaseViewComponent implements OnInit, OnDestroy {
 
   @Input()
   case: string;
@@ -20,10 +21,15 @@ export class CaseViewComponent implements OnInit {
   @Input()
   hasEventSelector = true;
 
+  @Output()
+  navigationTriggered: EventEmitter<any> = new EventEmitter();
+
+  navigationSubscription: Subscription;
   caseDetails: CaseView;
 
   constructor(
-    private caseService: CaseService,
+    private navigationNotifierService: NavigationNotifierService,
+    private caseNofitier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,
     private alertService: AlertService,
@@ -34,11 +40,18 @@ export class CaseViewComponent implements OnInit {
       .pipe(
         map(caseView => {
           this.caseDetails = plainToClassFromExist(new CaseView(), caseView);
-          this.caseService.announceCase(this.caseDetails);
+          this.caseNofitier.announceCase(this.caseDetails);
         })
       )
       .toPromise()
       .catch(error => this.checkAuthorizationError(error));
+    this.navigationSubscription = this.navigationNotifierService.navigation.subscribe(navigation => {
+      this.navigationTriggered.emit(navigation);
+    });
+  }
+
+  ngOnDestroy() {
+    this.navigationSubscription.unsubscribe();
   }
 
   isDataLoaded(): boolean {
