@@ -1,5 +1,26 @@
 ## RELEASE NOTES
 
+### Version 2.59.4 - August 19 2019
+Revert 5398 - Document in collections
+
+### Version 2.59.3 - August 19 2019
+REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type 
+
+### Version 2.59.2 - August 19 2019
+**RDM-5072** remove some bad code introduced in WriteAddressFieldComponent
+
+### Version 2.59.1 - August 15 2019
+**RDM-5398** Allow file upload document type whitelist
+
+### Version 2.59.0 - August 15 2019
+**RDM-4544** Allow file upload document type whitelist
+
+### Version 2.58.19 - August 15 2019
+**RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type
+
+### Version 2.58.18 - August 14 2019
+**CLEAN RELEASE OF v2.58.13** Pay Component Upgrade
+
 ### Version 2.58.16 - August 13 2019
 **RDM-4068** CRUD permissions on elements within complex types
 

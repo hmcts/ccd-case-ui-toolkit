@@ -41,19 +41,19 @@ export class OrderService {
 
   public deepSort(case_fields: CaseField[]): CaseField[] {
     case_fields.forEach((caseField: CaseField) => {
-      if (caseField.isComplex()) {
+      if (this.isComplex(caseField)) {
         let sorted = this.deepSort(caseField.field_type.complex_fields);
         caseField.field_type.complex_fields = sorted;
       }
-      if (caseField.isCollection()) {
+      if (this.isCollection(caseField)) {
         let sorted = this.deepSort(caseField.field_type.collection_field_type.complex_fields);
         caseField.field_type.collection_field_type.complex_fields = sorted;
       }
       if (caseField.hidden !== true && !caseField.order) {
-        if (caseField.isComplex()) {
+        if (this.isComplex(caseField)) {
           this.deriveOrderFromChildComplexFields(caseField, caseField.field_type);
         }
-        if (caseField.isCollection()) {
+        if (this.isCollection(caseField)) {
           this.deriveOrderFromChildComplexFields(caseField, caseField.field_type.collection_field_type);
         }
       }
@@ -63,6 +63,14 @@ export class OrderService {
     });
 
     return this.sort(case_fields);
+  }
+
+  private isCollection(caseField: CaseField) {
+    return caseField.field_type.type === 'Collection';
+  }
+
+  private isComplex(caseField: CaseField) {
+    return caseField.field_type.type === 'Complex';
   }
 
   private isOneOfFixedListTypes(caseField: CaseField) {

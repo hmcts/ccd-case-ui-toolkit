@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -11,7 +11,6 @@ import { Profile } from '../../../domain/profile';
 import { ProfileNotifier } from '../../../services';
 import { Subscription } from 'rxjs';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
-
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -101,7 +100,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     this.caseField.value.push({ value: null });
-    this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
+    // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
     let lastIndex = this.caseField.value.length - 1;
 
