@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.58.13-DynamicListFix - October 09 2019
+**RDM-5696** Dynamic list incorrect format for mid event callbacks 
+
 ### Version 2.58.13 - July 30 2019
 **RDM-5318** Changes to make Workbasket tolerant of missing defaults
 

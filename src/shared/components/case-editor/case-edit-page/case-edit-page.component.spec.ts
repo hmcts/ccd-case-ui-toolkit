@@ -22,6 +22,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { FieldType, FieldTypeEnum } from '../../../domain/definition';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
@@ -41,9 +42,6 @@ describe('CaseEditPageComponent', () => {
   let pageValidationService = new PageValidationService(caseFieldService);
   let route: any;
   let snapshot: any;
-  const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
-  });
   const WIZARD = new Wizard([wizardPage]);
   let someObservable = {
     'subscribe': () => new Draft()
@@ -57,12 +55,76 @@ describe('CaseEditPageComponent', () => {
   let caseField2 = new CaseField();
   let eventData = new CaseEventData();
 
+  let getDynamicListJsonValue = (code, label) => {
+    return JSON.parse(`{
+        "value": {
+            "code": "${code}",
+            "label":  "${label}"
+        },
+        "list_items": [
+          {
+            "code": "List1",
+            "label": " List 1"
+          },
+          {
+            "code": "List2",
+            "label": " List 2"
+          },
+          {
+            "code": "List3",
+            "label": " List 3"
+          },
+          {
+            "code": "List4",
+            "label": " List 4"
+          },
+          {
+            "code": "List5",
+            "label": " List 5"
+          },
+          {
+            "code": "List6",
+            "label": " List 6"
+          },
+          {
+            "code": "List7",
+            "label": " List 7"
+          }
+        ]
+    }`);
+  }
+
+  let dynamicList = getDynamicListJsonValue('List3', ' List 3');
+  let dynamicList2 = getDynamicListJsonValue('List5', ' List 5');
+  let formService = {
+    filterCurrentPageFields: function (a, b) {
+      return pageFormFields;
+    },
+    sanitise: function () {
+      return eventData;
+    },
+    sanitiseDynamicLists: function () {
+      return eventData;
+    }
+  };
+  let pageFormFields = {
+    'data': {
+      'field1': 'EX12345678',
+      'dynamicList': dynamicList,
+      'dynamicList2': dynamicList2
+    }
+  };
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
+      let formGroup = new FormGroup({
+        'data': new FormGroup({'field1': new FormControl('SOME_VALUE')
+          , 'dynamicList': new FormControl('List3')
+          , 'dynamicList2': new FormControl('List5')})
+      });
       caseEditComponentStub = {
-        'form': FORM_GROUP,
+        'form': formGroup,
         'wizard': WIZARD,
         'data': '',
         'eventTrigger': {'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true},
@@ -248,11 +310,11 @@ describe('CaseEditPageComponent', () => {
       expect(cancelled.emit)
         .toHaveBeenCalledWith({
           status: CaseEditPageComponent.RESUMED_FORM_SAVE,
-          data: {data: {'field1': 'SOME_VALUE'}}
+          data: {data: {'field1': 'SOME_VALUE', 'dynamicList': 'List3', 'dynamicList2': 'List5'}}
         });
     });
 
-    it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
+    it('should emit NEW_FORM_SAVE on create case if discard triggered with no value changed', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
@@ -262,7 +324,7 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageComponent.NEW_FORM_SAVE,
-        data: {data: {'field1': 'SOME_VALUE'}}
+        data: {data: {'field1': 'SOME_VALUE', 'dynamicList': 'List3', 'dynamicList2': 'List5'}}
       });
     });
 
@@ -324,8 +386,13 @@ describe('CaseEditPageComponent', () => {
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
+      let formGroup = new FormGroup({
+        'data': new FormGroup({'field1': new FormControl('SOME_VALUE')
+          , 'dynamicList': new FormControl('List3')
+          , 'dynamicList2': new FormControl('List5')})
+      });
       caseEditComponentStub = {
-        'form': FORM_GROUP,
+        'form': formGroup,
         'wizard': WIZARD,
         'data': '',
         'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false},
@@ -412,7 +479,7 @@ describe('CaseEditPageComponent', () => {
       hasPages: () => true
     };
 
-    let formGroup: FormGroup = new FormGroup({
+    let formGroup = new FormGroup({
       'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
     });
 
@@ -457,7 +524,7 @@ describe('CaseEditPageComponent', () => {
 
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
       comp.wizard = new Wizard([wizardPage]);
-      comp.editForm = FORM_GROUP;
+      comp.editForm = formGroup;
     });
 
     it('should update CaseEventTrigger field value from the MidEvent callback', () => {
@@ -479,19 +546,36 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('submit the form', () => {
+
+    let formGroup;
+
     beforeEach(async(() => {
+      formGroup = new FormGroup({
+        'data': new FormGroup({'field1': new FormControl('SOME_VALUE')
+          , 'dynamicList': new FormControl('List3')
+          , 'dynamicList2': new FormControl('List5')})
+      });
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       let validateResult = {
         'data': {
-          'field1': 'EX12345678'
+          'field1': 'EX12345678',
+          'dynamicList': getDynamicListJsonValue('List2', ' List 2'),
+          'dynamicList2': getDynamicListJsonValue('List4', ' List 4'),
+        },
+        'subscribe': function () {
         }
       };
 
-      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+      let dynamicListCaseField = createCaseFieldFieldType('dynamicList', getDynamicListJsonValue('List3', ' List 3'), 'DynamicList');
+      let dynamicListCaseField2 = createCaseFieldFieldType('dynamicList2', getDynamicListJsonValue('List5', ' List 5'), 'DynamicList');
+
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value'), dynamicListCaseField, dynamicListCaseField2];
+
+      eventData = new CaseEventData();
 
       caseEditComponentStub = {
-        'form': FORM_GROUP,
+        'form': formGroup,
         'wizard': WIZARD,
         'data': '',
         'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
@@ -522,16 +606,19 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       spyOn(caseEditComponentStub, 'form');
-      spyOn(caseEditComponentStub, 'validate').and.returnValue(of(validateResult));
-      spyOn(formValueService, 'sanitise').and.returnValue(eventData);
-      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(eventData);
+      spyOn(caseEditComponentStub, 'validate').and.returnValue(validateResult);
+
+      spyOn(formService, 'sanitise').and.returnValue(eventData);
+      spyOn(formService, 'filterCurrentPageFields').and.returnValue(pageFormFields);
+
+      spyOn(formService, 'sanitiseDynamicLists').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          {provide: FormValueService, useValue: formValueService},
+          {provide: FormValueService, useValue: formService},
           {provide: FormErrorService, useValue: formErrorService},
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
@@ -553,19 +640,45 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should call validate', async () => {
+
+      fixture.detectChanges();
+
+      comp.submit();
+
+      fixture.whenStable().then(() => {
+        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
+      });
+    });
+
+    it('should call sanitize dynamic lists', async () => {
+
+      fixture.detectChanges();
+
+      comp.submit();
+
+      fixture.whenStable().then(() => {
+        expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(wizardPage.case_fields, formGroup.value);
+      });
+    });
+
+    it('should set event data', async () => {
+
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
+      expect(eventData.event_data).toBeUndefined();
+      expect(formGroup.value.data['dynamicList']).toEqual('List3');
+      expect(formGroup.value.data['dynamicList2']).toEqual('List5');
 
       comp.submit();
 
       fixture.whenStable().then(() => {
         expect(eventData.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
-        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
-        expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
+        expect(eventData.event_data['field1']).toEqual('EX12345678');
+        expect(eventData.event_data['dynamicList']).toEqual(getDynamicListJsonValue('List3', ' List 3'));
+        expect(eventData.event_data['dynamicList2']).toEqual(getDynamicListJsonValue('List5', ' List 5'));
         expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
-        expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
     });
 
@@ -594,6 +707,39 @@ describe('CaseEditPageComponent', () => {
     cf.id = id;
     cf.value = value;
     cf.display_context = display_context;
+    return cf;
+  }
+
+  function createCaseFieldFieldType(id: string, value: any, fieldTypeEnum: FieldTypeEnum, display_context = 'READONLY'): CaseField {
+    let cf = new CaseField();
+    cf.id = id;
+    cf.value = value;
+    cf.list_items = [{
+      'code': 'List1',
+      'label': ' List 1'
+    }, {
+      'code': 'List2',
+      'label': ' List 2'
+    }, {
+      'code': 'List3',
+      'label': ' List 3'
+    }, {
+      'code': 'List4',
+      'label': ' List 4'
+    }, {
+      'code': 'List5',
+      'label': ' List 5'
+    }, {
+      'code': 'List6',
+      'label': ' List 6'
+    }, {
+      'code': 'List7',
+      'label': ' List 7'
+    }];
+    cf.display_context = display_context;
+    let fieldType = new FieldType();
+    fieldType.type = fieldTypeEnum;
+    cf.field_type = fieldType;
     return cf;
   }
 
