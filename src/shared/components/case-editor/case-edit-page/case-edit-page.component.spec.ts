@@ -22,6 +22,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { FieldType, FieldTypeEnum } from '../../../domain/definition';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
@@ -42,7 +43,7 @@ describe('CaseEditPageComponent', () => {
   let route: any;
   let snapshot: any;
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
+    'data': new FormGroup({'field1': new FormControl('SOME_VALUE'), 'dynamicList': new FormControl('List1')})
   });
   const WIZARD = new Wizard([wizardPage]);
   let someObservable = {
@@ -248,7 +249,7 @@ describe('CaseEditPageComponent', () => {
       expect(cancelled.emit)
         .toHaveBeenCalledWith({
           status: CaseEditPageComponent.RESUMED_FORM_SAVE,
-          data: {data: {'field1': 'SOME_VALUE'}}
+          data: {data: {'field1': 'SOME_VALUE', 'dynamicList': 'List1'}}
         });
     });
 
@@ -262,7 +263,7 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageComponent.NEW_FORM_SAVE,
-        data: {data: {'field1': 'SOME_VALUE'}}
+        data: {data: {'field1': 'SOME_VALUE', 'dynamicList': 'List1'}}
       });
     });
 
@@ -488,7 +489,10 @@ describe('CaseEditPageComponent', () => {
         }
       };
 
-      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value'), createCaseFieldFieldType('dynamicList', {
+        'code': 'List1',
+        'label': ' List 1'
+      }, 'DynamicList')];
 
       caseEditComponentStub = {
         'form': FORM_GROUP,
@@ -594,6 +598,39 @@ describe('CaseEditPageComponent', () => {
     cf.id = id;
     cf.value = value;
     cf.display_context = display_context;
+    return cf;
+  }
+
+  function createCaseFieldFieldType(id: string, value: any, fieldTypeEnum: FieldTypeEnum, display_context = 'READONLY'): CaseField {
+    let cf = new CaseField();
+    cf.id = id;
+    cf.value = value;
+    cf.list_items = [{
+      'code': 'List1',
+      'label': ' List 1'
+    }, {
+      'code': 'List2',
+      'label': ' List 2'
+    }, {
+      'code': 'List3',
+      'label': ' List 3'
+    }, {
+      'code': 'List4',
+      'label': ' List 4'
+    }, {
+      'code': 'List5',
+      'label': ' List 5'
+    }, {
+      'code': 'List6',
+      'label': ' List 6'
+    }, {
+      'code': 'List7',
+      'label': ' List 7'
+    }];
+    cf.display_context = display_context;
+    let fieldType = new FieldType();
+    fieldType.type = fieldTypeEnum;
+    cf.field_type = fieldType;
     return cf;
   }
 
