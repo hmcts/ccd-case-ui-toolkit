@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.60.5-RDM-5696-DynamicListFix - October 24 2019
+**RDM-5696** Dynamic list incorrect format for mid event callbacks 
+
 ### Version 2.60.2-RDM-5928-RC1-prerelease
 **RDM-6055** [Immigration and Asylum]- PDF file format is not supported by MV
 

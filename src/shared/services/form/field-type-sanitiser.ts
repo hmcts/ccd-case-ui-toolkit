@@ -6,21 +6,20 @@ export class FieldTypeSanitiser {
 
   /**
    * This method finds dynamiclists in a form and replaces its string value, with
-   * following example JSON format
-   * @return {value: {code:'xyz',label:'XYZ'}, list_items: [{code:'xyz',label:'XYZ'},{code:'abc',label:'ABC'}]}
+   * following example JSON format:
+   *  {value: {code:'xyz',label:'XYZ'}, list_items: [{code:'xyz',label:'XYZ'},{code:'abc',label:'ABC'}]}
    * @param caseFields
    * @param editForm
    */
-   sanitiseLists(caseFields: CaseField[], editForm: any) {
-
+   sanitiseDynamicLists(caseFields: CaseField[], editForm: any) {
     this.getDynamicListsFromCaseFields(caseFields).forEach(dynamicField => {
       this.getListOfKeysFromEditForm(editForm).forEach((key) => {
-        this.createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField, key, editForm);
+        this.sanitizeDynamicList(dynamicField, key, editForm);
       });
     });
   }
 
-  private createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField: CaseField, key, editForm: any) {
+  private sanitizeDynamicList(dynamicField: CaseField, key, editForm: any) {
     if (dynamicField.id === key) {
       editForm['data'][key] = {
           value: this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),

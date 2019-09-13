@@ -127,8 +127,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
+      this.updateMainFormWithChangesFromPageForm(this.editForm.value.data, pageFormFields);
       caseEventData.event_data = this.editForm.value.data;
-
       if (this.caseEdit.caseDetails) {
         caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
       }
@@ -146,6 +146,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (document.getElementById('main-content')) {
       document.getElementById('main-content').focus();
     }
+  }
+
+  private updateMainFormWithChangesFromPageForm(editFormFields, pageFormFields) {
+    Object.keys(pageFormFields.data).forEach((key) => {
+      editFormFields[key] = pageFormFields.data[key];
+    });
   }
 
   updateFormData(jsonData: CaseEventData): void {
