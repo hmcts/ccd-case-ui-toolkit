@@ -46,7 +46,7 @@
                     <ng-container  *ngIf="vLabel.key == name.key" >
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
-                      <th ><span class="text-16">{{vLabel.value.label}}</span></th>
+                      <th><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
                         <ccd-field-read [caseField]="{
                               id: name.key,
@@ -72,7 +72,7 @@
                                 [contextFields]="vLabel.value.caseField  | ccdFieldsFilter">
                               <th><span class="text-16">{{field.label}}</span></th>
                               <td>
-                                <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
+                                <span class="text-16"><ccd-field-read [caseField]="addValue(field, name.value)" [context]="context"></ccd-field-read></span>
                               </td>
                             </tr>
                           </ng-template>

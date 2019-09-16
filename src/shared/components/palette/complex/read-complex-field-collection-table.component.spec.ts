@@ -1,10 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { By } from '@angular/platform-browser';
 import { FieldsFilterPipe } from './fields-filter.pipe';
-import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
@@ -22,31 +21,22 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
   const FIRST_COLUMN = 'AddressLine1';
   const SECOND_COLUMN = 'AddressLine2';
 
-  let FieldReadComponent = MockComponent({
+  @Component({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'context']
-  });
+    template: ''
+  })
+  class MockFieldReadComponent {
+    @Input()
+    caseField: CaseField;
+    @Input()
+    context: PaletteContext;
+  }
 
   let fixture: ComponentFixture<ReadComplexFieldCollectionTableComponent>;
   let component: ReadComplexFieldCollectionTableComponent;
   let de: DebugElement;
 
-  describe('when values split accross children fields', () => {
-    const FIELD_TYPE_WITHOUT_FIELDS: FieldType = {
-      id: 'IAmVeryComplex',
-      type: 'Complex',
-      complex_fields: []
-    };
-
-    const FIELD_TYPE_WITH_MISSING_VALUE: FieldType = {
-      id: 'IAmVeryComplex',
-      type: 'Complex',
-      complex_fields: [
-        newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').withValue('').build(),
-        newCaseField('AddressLine2', 'Line 2', null, textFieldType(), 'OPTIONAL').withValue('111 East India road').build(),
-      ]
-    };
-
+  describe('when values split across children fields', () => {
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'IAmVeryComplex',
       type: 'Complex',
@@ -79,7 +69,6 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
 
     const LINE_1 = 0;
     const LINE_2 = 1;
-    const POSTCODE = 2;
 
     beforeEach(async(() => {
       TestBed
@@ -93,7 +82,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             FieldsFilterPipe,
 
             // Mock
-            FieldReadComponent,
+            MockFieldReadComponent,
           ],
           providers: []
         })
@@ -166,6 +155,148 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[1].value[SECOND_COLUMN]);
       component.sortRowsByColumns('AddressLine2');
       expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
+    });
+  });
+
+});
+
+describe('ReadComplexFieldCollectionTableComponent - nested complex field values', () => {
+
+  const NAME_COLUMN = 'Name';
+  const ADDRESS_LINE1_COLUMN = 'AddressLine1';
+  const ADDRESS_LINE2_COLUMN = 'AddressLine2';
+  const CASE_REFERENCE_COLUMN = 'CaseReference';
+
+  @Component({
+    selector: 'ccd-field-read',
+    template: ''
+  })
+  class MockFieldReadComponent {
+    @Input()
+    caseField: CaseField;
+    @Input()
+    context: PaletteContext;
+  }
+
+  let fixture: ComponentFixture<ReadComplexFieldCollectionTableComponent>;
+  let component: ReadComplexFieldCollectionTableComponent;
+  let de: DebugElement;
+
+  describe('when values split across nested children fields', () => {
+    const BUSINESS_ADDRESS_FIELD_TYPE: FieldType = {
+      id: 'BusinessAddress',
+      type: 'Complex',
+      complex_fields: [
+        newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').build(),
+        newCaseField('AddressLine2', 'Line 2', null, textFieldType(), 'OPTIONAL').build()
+      ]
+    };
+
+    const CASE_LINK_FIELD_TYPE: FieldType = {
+      id: 'CaseLink',
+      type: 'Complex',
+      complex_fields: [
+        newCaseField('CaseReference', 'Case Reference', null, textFieldType(), 'OPTIONAL').withValue('').build()
+      ]
+    };
+
+    const COMPLEX_FIELD_TYPE: FieldType = {
+      id: 'Company',
+      type: 'Complex',
+      complex_fields: [
+        newCaseField('Name', 'Name', null, textFieldType(), 'OPTIONAL').build(),
+        newCaseField('SomeCaseLink', 'Some caseLink', null, CASE_LINK_FIELD_TYPE, 'OPTIONAL')
+          .withValue('{CaseReference: "1568320010666976"}').build(),
+        newCaseField('BusinessAddress', 'Business Address', null, BUSINESS_ADDRESS_FIELD_TYPE, 'OPTIONAL')
+          .withValue('{AddressLine1: "45 Edric House", AddressLine2: "Page Street"}')
+          .build(),
+      ]
+    };
+
+    const COMPANY_DETAILS_CASE_FIELD: CaseField = newCaseField('Company Details', 'Company Details', null, COMPLEX_FIELD_TYPE, 'OPTIONAL')
+      .withValue([
+        {
+          id: '8df48243-bdc6-4ecc-a7ae-9aceef8a387c',
+          value: {
+            Name: 'Company1',
+            SomeCaseLink: {
+              CaseReference: '1568320010661111'
+            },
+            BusinessAddress: {
+              AddressLine1: '45 Edric House',
+              AddressLine2: 'Page Street',
+            }
+          }
+        },
+        {
+          id: 'e4721576-4776-409c-973d-dbd91575893e',
+          value: {
+            Name: 'Company2',
+            SomeCaseLink: {
+              CaseReference: '1568320010662222'
+            },
+            BusinessAddress: {
+              AddressLine1: '150 Boyson Road',
+              AddressLine2: 'Bradenham',
+            }
+          }
+        }
+      ]).withDisplayContextParameter('#TABLE(Name)').build();
+
+    beforeEach(async(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [
+            PaletteUtilsModule,
+            ConditionalShowModule
+          ],
+          declarations: [
+            ReadComplexFieldCollectionTableComponent,
+            FieldsFilterPipe,
+
+            // Mock
+            MockFieldReadComponent,
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ReadComplexFieldCollectionTableComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = COMPANY_DETAILS_CASE_FIELD;
+      component.context = PaletteContext.TABLE_VIEW;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should render all ccd-field-read elements', () => {
+      let fieldReadElements = fixture.debugElement.queryAll(By.directive(MockFieldReadComponent));
+      let fieldReads = fieldReadElements.map(de => de.injector.get(MockFieldReadComponent));
+
+      expect(fieldReads).toBeTruthy();
+      expect(fieldReads.length).toBe(8);
+
+      // console.log(JSON.stringify(fieldReads, null, 2));
+      expect(fieldReads[0].caseField.id).toEqual(NAME_COLUMN);
+      expect(fieldReads[0].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[NAME_COLUMN]);
+      expect(fieldReads[1].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
+      expect(fieldReads[1].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
+      expect(fieldReads[2].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[2].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      expect(fieldReads[3].caseField.id).toEqual(CASE_REFERENCE_COLUMN);
+      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink[CASE_REFERENCE_COLUMN]);
+
+      expect(fieldReads[4].caseField.id).toEqual(NAME_COLUMN);
+      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
+      expect(fieldReads[5].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
+      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
+      expect(fieldReads[6].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      expect(fieldReads[7].caseField.id).toEqual(CASE_REFERENCE_COLUMN);
+      expect(fieldReads[7].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink[CASE_REFERENCE_COLUMN]);
+
     });
   });
 

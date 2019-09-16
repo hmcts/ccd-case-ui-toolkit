@@ -91,6 +91,11 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     }
   }
 
+  addValue(field, value: any) {
+    field.value = value[field.id];
+    return field;
+  }
+
   private isVerticleDataNotEmpty(row) {
     let result = false
     for (let key in this.columnsVerticalLabel) {
