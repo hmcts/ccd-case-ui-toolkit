@@ -4,6 +4,7 @@ import { AbstractFieldReadComponent } from './abstract-field-read.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+import { FieldsUtils } from '../../../services/fields';
 
 @Component({
   selector: 'ccd-field-read',
@@ -28,6 +29,8 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   }
 
   ngOnInit(): void {
+    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
+    this.caseField = FieldsUtils.convertToCaseField(this.caseField);
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
       let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
@@ -45,5 +48,4 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       this.fieldContainer.insert(component.hostView);
     });
   }
-
 }

@@ -13,16 +13,16 @@
                         <li>caseType
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-type.model.ts" target="_blank">CaseType model</a></p>
                         </li>
-                        <li>caseState                            
+                        <li>caseState
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/definition/case-state.model.ts" target="_blank">CaseState model</a></p>
                         </li>
                         <li>caseFilterFG
                             <p><a href="https://angular.io/api/forms/FormGroup" target="_blank">FormGroup</a></p>
                         </li>
-                        <li>resultView                            
+                        <li>resultView
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/search/search-result-view.model.ts" target="_blank">SearchResultView model</a></p>
                         </li>
-                        <li>paginationMetadata                            
+                        <li>paginationMetadata
                             <p><a href="https://github.com/hmcts/ccd-case-ui-toolkit/blob/master/src/shared/domain/pagination-metadata.model.ts" target="_blank">PaginationMetadata model</a></p>
                         </li>
                         <li>metadataFields - a collection of strings
@@ -35,7 +35,7 @@
                     <ul class="list list-bullet text">
                         <li>changePage - a notification event about paging navigation containing:
                             <ul class="list list-bullet text">
-                                <li>selected: 
+                                <li>selected:
                                     <ul class="list list-bullet text">
                                         <li>init?: boolean</li>
                                         <li>jurisdiction?: Jurisdiction</li>
@@ -75,6 +75,7 @@
                 [paginationMetadata]="paginationMetadata"
                 [metadataFields]="metadataFields"
                 (changePage)="apply($event)"
+                (clickCase)="gotoCase($event)"
             ></ccd-search-result>
         </div>
     </main>

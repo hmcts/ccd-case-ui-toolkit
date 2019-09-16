@@ -14,7 +14,7 @@ import { PaletteUtilsModule } from '../palette';
 import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
 import { createCaseHistory } from '../../fixture';
-import { CaseService } from '../case-editor';
+import { CaseNotifier } from '../case-editor';
 import { CaseHistoryService } from './services';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -74,7 +74,7 @@ describe('CaseHistoryComponent', () => {
 
   let router: any;
   let orderService;
-  let caseService;
+  let caseNotifier;
   let caseHistoryService;
   let alertService;
 
@@ -93,8 +93,8 @@ describe('CaseHistoryComponent', () => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
-    caseService = new CaseService();
-    caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+    caseNotifier = new CaseNotifier();
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));
     caseHistoryService = createSpyObj<CaseHistoryService>('caseHistoryService', ['get']);
@@ -121,7 +121,7 @@ describe('CaseHistoryComponent', () => {
           { provide: AlertService, useValue: alertService },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
-          { provide: CaseService, useValue: caseService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           { provide: CaseHistoryService, useValue: caseHistoryService },
           { provide: Router, useValue: router }
         ]

@@ -15,6 +15,7 @@ import { ProfileNotifier } from '../../../services';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 const FIELD_ID = 'Values';
 const SIMPLE_FIELD_TYPE: FieldType = {
@@ -74,6 +75,7 @@ describe('WriteCollectionFieldComponent', () => {
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -106,6 +108,8 @@ describe('WriteCollectionFieldComponent', () => {
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -123,6 +127,7 @@ describe('WriteCollectionFieldComponent', () => {
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
         ]
       })
@@ -324,6 +329,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -356,6 +362,8 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -373,6 +381,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
         ]
       })
@@ -442,6 +451,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -474,6 +484,8 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     profileNotifier = new ProfileNotifier();
     profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
 
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -491,6 +503,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
           { provide: MatDialog, useValue: dialog },
           { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
         ]
       })
