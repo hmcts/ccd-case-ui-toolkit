@@ -273,7 +273,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
 
     it('should render all ccd-field-read elements', () => {
       let fieldReadElements = fixture.debugElement.queryAll(By.directive(MockFieldReadComponent));
-      let fieldReads = fieldReadElements.map(de => de.injector.get(MockFieldReadComponent));
+      let fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
 
       expect(fieldReads).toBeTruthy();
       expect(fieldReads.length).toBe(8);
