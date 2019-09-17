@@ -9,6 +9,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
+import { CaseReferencePipe } from '../../../pipes/case-reference';
 
 describe('ReadComplexFieldCollectionTableComponent', () => {
 
@@ -80,11 +81,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
+            CaseReferencePipe,
 
             // Mock
             MockFieldReadComponent,
           ],
-          providers: []
+          providers: [
+            { provide: CaseReferencePipe, useValue: new CaseReferencePipe() },
+          ]
         })
         .compileComponents();
 
@@ -165,7 +169,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
   const NAME_COLUMN = 'Name';
   const ADDRESS_LINE1_COLUMN = 'AddressLine1';
   const ADDRESS_LINE2_COLUMN = 'AddressLine2';
-  const CASE_REFERENCE_COLUMN = 'CaseReference';
+  const $COMPLEX_PANEL_CASE_LINKS = By.css('.caselink');
+  const $COMPLEX_PANEL_CASE_LINK_VALUES = By.css('.caselink span');
 
   @Component({
     selector: 'ccd-field-read',
@@ -253,11 +258,14 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
+            CaseReferencePipe,
 
             // Mock
             MockFieldReadComponent,
           ],
-          providers: []
+          providers: [
+            { provide: CaseReferencePipe, useValue: new CaseReferencePipe() },
+          ]
         })
         .compileComponents();
 
@@ -276,7 +284,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       let fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
 
       expect(fieldReads).toBeTruthy();
-      expect(fieldReads.length).toBe(8);
+      expect(fieldReads.length).toBe(6);
 
       // console.log(JSON.stringify(fieldReads, null, 2));
       expect(fieldReads[0].caseField.id).toEqual(NAME_COLUMN);
@@ -285,18 +293,33 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       expect(fieldReads[1].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
       expect(fieldReads[2].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
       expect(fieldReads[2].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
-      expect(fieldReads[3].caseField.id).toEqual(CASE_REFERENCE_COLUMN);
-      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink[CASE_REFERENCE_COLUMN]);
 
-      expect(fieldReads[4].caseField.id).toEqual(NAME_COLUMN);
-      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
-      expect(fieldReads[5].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
-      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
-      expect(fieldReads[6].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
-      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
-      expect(fieldReads[7].caseField.id).toEqual(CASE_REFERENCE_COLUMN);
-      expect(fieldReads[7].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink[CASE_REFERENCE_COLUMN]);
+      expect(fieldReads[3].caseField.id).toEqual(NAME_COLUMN);
+      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
+      expect(fieldReads[4].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
+      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
+      expect(fieldReads[5].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+    });
 
+    it('should render all case links', () => {
+      let caseLinks = de.queryAll($COMPLEX_PANEL_CASE_LINKS);
+      expect(caseLinks.length).toBe(2);
+
+      console.log(caseLinks[0].properties);
+      expect(caseLinks[0].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference);
+      expect(caseLinks[1].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink.CaseReference);
+    });
+
+    it('should render all case link values', () => {
+      let caseLinkValues = de.queryAll($COMPLEX_PANEL_CASE_LINK_VALUES);
+      expect(caseLinkValues.length).toBe(2);
+
+      console.log(caseLinkValues[0].nativeElement.textContent);
+      expect(caseLinkValues[0].nativeElement.textContent.trim())
+        .toBe(COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference.replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, '$1-$2-$3-$4'));
+      expect(caseLinkValues[1].nativeElement.textContent.trim())
+        .toBe(COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink.CaseReference.replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, '$1-$2-$3-$4'));
     });
   });
 

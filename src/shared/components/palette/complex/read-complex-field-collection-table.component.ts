@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { SortOrder } from './sort-order'
+import { CaseReferencePipe } from '../../../pipes/case-reference';
 
 @Component({
   selector: 'ccd-read-complex-field-collection-table',
@@ -9,7 +10,6 @@ import { SortOrder } from './sort-order'
 })
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
 
-  public isDisplayContextParameterAvailable = false;
   public columns: String[];
   public columnsLabel: String[];
   public columnsVerticalLabel: any;
@@ -18,11 +18,14 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public rows: any[] = [];
   public isHidden: boolean[] = [];
 
+  constructor (private caseReferencePipe: CaseReferencePipe) {
+    super();
+  }
+
   ngOnInit(): void {
     if (this.caseField.display_context_parameter
       && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
 
-      this.isDisplayContextParameterAvailable = true;
       let displayContextParameter = this.caseField.display_context_parameter.trim();
       let result: string = displayContextParameter.replace('#TABLE(', '');
       this.columns = result.replace(')', '').split(',');
@@ -94,6 +97,10 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   addValue(field, value: any) {
     field.value = value[field.id];
     return field;
+  }
+
+  transformReference(reference: string): string {
+    return this.caseReferencePipe.transform(reference);
   }
 
   private isVerticleDataNotEmpty(row) {
