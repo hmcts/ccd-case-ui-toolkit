@@ -90,7 +90,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   isComplexWithHiddenFields() {
-    if (this.caseField.field_type.type === 'Complex' && this.caseField.field_type.complex_fields
+    if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
       && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
       return true;
     }

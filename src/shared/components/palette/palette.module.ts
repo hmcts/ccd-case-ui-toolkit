@@ -43,6 +43,7 @@ import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.com
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { FixedRadioListModule } from './fixed-radio-list';
 import { CaseHistoryViewerModule } from './history';
+import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
 
 @NgModule({
   imports: [
@@ -144,6 +145,7 @@ import { CaseHistoryViewerModule } from './history';
     WriteDateFieldComponent,
   ],
   providers: [
+    CollectionCreateCheckerService,
     PaletteService,
     FormValidatorsService,
   ]
