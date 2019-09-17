@@ -57,7 +57,51 @@ describe('CaseEditPageComponent', () => {
   let caseField1 = new CaseField();
   let caseField2 = new CaseField();
   let eventData = new CaseEventData();
-
+  let dynamicList = {
+    value: {
+      'code': 'List1',
+      'label': ' List 1'
+    },
+    list_items: [{
+      'code': 'List1',
+      'label': ' List 1'
+    }, {
+      'code': 'List2',
+      'label': ' List 2'
+    }, {
+      'code': 'List3',
+      'label': ' List 3'
+    }, {
+      'code': 'List4',
+      'label': ' List 4'
+    }, {
+      'code': 'List5',
+      'label': ' List 5'
+    }, {
+      'code': 'List6',
+      'label': ' List 6'
+    }, {
+      'code': 'List7',
+      'label': ' List 7'
+    }]
+  };
+  let formService = {
+    filterCurrentPageFields: function (a, b) {
+      return pageFormFields;
+    },
+    sanitise: function () {
+      return eventData;
+    },
+    sanitiseDynamicLists: function () {
+      return eventData;
+    }
+  };
+  let pageFormFields = {
+    'data': {
+      'field1': 'EX12345678',
+      'dynamicList': dynamicList
+    }
+  };
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
       firstPage.id = 'first page';
@@ -480,19 +524,24 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('submit the form', () => {
+
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       let validateResult = {
         'data': {
           'field1': 'EX12345678'
+        },
+        'subscribe': function () {
         }
       };
 
-      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value'), createCaseFieldFieldType('dynamicList', {
+      let dynamicListCaseField = createCaseFieldFieldType('dynamicList', {
         'code': 'List1',
         'label': ' List 1'
-      }, 'DynamicList')];
+      }, 'DynamicList');
+
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value'), dynamicListCaseField];
 
       caseEditComponentStub = {
         'form': FORM_GROUP,
@@ -526,16 +575,19 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       spyOn(caseEditComponentStub, 'form');
-      spyOn(caseEditComponentStub, 'validate').and.returnValue(of(validateResult));
-      spyOn(formValueService, 'sanitise').and.returnValue(eventData);
-      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(eventData);
+      spyOn(caseEditComponentStub, 'validate').and.returnValue(validateResult);
+
+      spyOn(formService, 'sanitise').and.returnValue(eventData);
+      spyOn(formService, 'filterCurrentPageFields').and.returnValue(pageFormFields);
+
+      spyOn(formService, 'sanitiseDynamicLists').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          {provide: FormValueService, useValue: formValueService},
+          {provide: FormValueService, useValue: formService},
           {provide: FormErrorService, useValue: formErrorService},
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
@@ -557,6 +609,7 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should call validate', async () => {
+
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
@@ -566,10 +619,11 @@ describe('CaseEditPageComponent', () => {
       fixture.whenStable().then(() => {
         expect(eventData.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
         expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
-        expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
+        expect(eventData.event_data['field1']).toEqual('EX12345678');
+        expect(eventData.event_data['dynamicList']).toEqual(dynamicList);
         expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
-        expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
+        expect(formService.sanitiseDynamicLists).toHaveBeenCalled();
       });
     });
 
