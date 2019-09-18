@@ -306,7 +306,6 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       let caseLinks = de.queryAll($COMPLEX_PANEL_CASE_LINKS);
       expect(caseLinks.length).toBe(2);
 
-      console.log(caseLinks[0].properties);
       expect(caseLinks[0].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference);
       expect(caseLinks[1].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink.CaseReference);
     });
@@ -315,7 +314,6 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       let caseLinkValues = de.queryAll($COMPLEX_PANEL_CASE_LINK_VALUES);
       expect(caseLinkValues.length).toBe(2);
 
-      console.log(caseLinkValues[0].nativeElement.textContent);
       expect(caseLinkValues[0].nativeElement.textContent.trim())
         .toBe(COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference.replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, '$1-$2-$3-$4'));
       expect(caseLinkValues[1].nativeElement.textContent.trim())
