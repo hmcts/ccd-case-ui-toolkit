@@ -5,11 +5,16 @@ import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
+import { CaseField } from '../../domain/definition';
 
 @Injectable()
 export class DocumentManagementService {
   private static readonly HEADER_ACCEPT = 'Accept';
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
+  private static readonly PDF = 'pdf';
+  private static readonly IMAGE = 'image';
+
+  imagesList: string[] = ['JPEG', 'GIF', 'PNG', 'TIF', 'JPG'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -25,5 +30,42 @@ export class DocumentManagementService {
       .pipe(
         map(response => response.json())
       );
+  }
+
+  createMediaViewer(caseField: CaseField): string {
+    let mediaViewer = {};
+    if (caseField.value) {
+      mediaViewer = {
+        document_binary_url: this.transformDocumentUrl(caseField.value.document_binary_url),
+        document_filename: caseField.value.document_filename,
+        content_type: this.getContentType(caseField),
+        annotation_api_url: this.appConfig.getAnnotationApiUrl(),
+      }
+    }
+    return JSON.stringify(mediaViewer);
+  }
+
+  getContentType(caseField: CaseField): string {
+    let fileExtension = '';
+    if (caseField.value && caseField.value.document_filename) {
+      fileExtension = caseField.value.document_filename
+        .slice(caseField.value.document_filename.lastIndexOf('.') + 1);
+    }
+    if (this.isImage(fileExtension)) {
+      return DocumentManagementService.IMAGE;
+    } else if (fileExtension === 'pdf') {
+      return DocumentManagementService.PDF;
+    } else {
+      return null;
+    }
+  }
+
+  isImage(imageType: string) {
+    return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
+  }
+
+  transformDocumentUrl(value: string): string {
+    let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
+    return value.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
   }
 }
