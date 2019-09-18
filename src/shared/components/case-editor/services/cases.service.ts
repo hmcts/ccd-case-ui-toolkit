@@ -24,6 +24,8 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CREATE_EVENT =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_CREATE_CASE =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
 
   /**
    *
@@ -152,17 +154,22 @@ export class CasesService {
       );
   }
 
-  createCase(jid: string, ctid: string, eventData: CaseEventData): Observable<object> {
+  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
       ignoreWarning = 'true';
     }
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
+      + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
+
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
+    });
 
     return this.http
-      .post(url, eventData)
+      .post(url, eventData, {headers})
       .pipe(
         map(response => this.processResponse(response)),
         catchError(error => {

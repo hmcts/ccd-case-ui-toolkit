@@ -19,7 +19,6 @@ let CaseEditComponent: any = MockComponent({
 
 describe('CaseProgressComponent event trigger resolved and draft does not exist', () => {
 
-  const JID_UNDEFINED = undefined;
   const CTID_UNDEFINED = undefined;
   const JID = 'PROBATE';
   const CTID = 'ComplexTestType';
