@@ -5,6 +5,7 @@ import { DatePipe } from '../../components/palette/utils';
 import { WizardPage } from '../../components/case-editor/domain';
 import { Predicate } from '../../domain/predicate.model';
 import { CaseView } from '../../domain/case-view';
+import { plainToClassFromExist } from 'class-transformer';
 
 // @dynamic
 @Injectable()
@@ -13,6 +14,13 @@ export class FieldsUtils {
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
   private static readonly datePipe: DatePipe = new DatePipe();
   public static readonly LABEL_SUFFIX = '-LABEL';
+
+  public static convertToCaseField(obj: any): CaseField {
+    if (!(obj instanceof CaseField)) {
+      return plainToClassFromExist(new CaseField(), obj);
+    }
+    return obj;
+  }
 
   public static toValuesMap(caseFields: CaseField[]): any {
     let valueMap = {};
@@ -25,7 +33,7 @@ export class FieldsUtils {
   private static prepareValue(field: CaseField) {
     if (field.value) {
       return field.value;
-    } else if (field.field_type.type === 'Complex') {
+    } else if (field.isComplex()) {
       let valueMap = {};
       field.field_type.complex_fields.forEach(complexField => {
         valueMap[complexField.id] = FieldsUtils.prepareValue(complexField);

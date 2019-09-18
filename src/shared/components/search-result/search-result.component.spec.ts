@@ -6,12 +6,12 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { FormGroup } from '@angular/forms';
-import createSpyObj = jasmine.createSpyObj;
-import { Jurisdiction, CaseType, CaseState, PaginationMetadata, SearchResultView, DRAFT_PREFIX, SearchResultViewItem } from '../../domain';
+import { CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, SearchResultViewItemComparatorFactory, FieldsUtils } from '../../services';
+import { ActivityService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   selector: 'ccd-field-read',
@@ -142,7 +142,7 @@ describe('SearchResultComponent', () => {
       activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
 
-      searchHandler = createSpyObj('searchHandler', ['applyFilters']);
+      searchHandler = createSpyObj('searchHandler', ['applyFilters', 'navigateToCase']);
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
@@ -178,6 +178,7 @@ describe('SearchResultComponent', () => {
       component = fixture.componentInstance;
 
       component.changePage.subscribe(searchHandler.applyFilters);
+      component.clickCase.subscribe(searchHandler.navigateToCase);
       component.jurisdiction = JURISDICTION;
       component.caseType = CASE_TYPE;
       component.resultView = RESULT_VIEW;
@@ -335,6 +336,15 @@ describe('SearchResultComponent', () => {
         selected: selected,
         queryParams: {jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id}
       });
+    });
+
+    it('should emit correct ID when go to case is triggered', () => {
+      let id = 'ID001'
+      component.goToCase(id);
+      expect(searchHandler.navigateToCase).toHaveBeenCalledWith({
+        caseId: id
+      });
+
     });
 
     it('should select correct page if new page triggered from outside', () => {

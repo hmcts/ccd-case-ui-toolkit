@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseViewEvent, CaseView, HttpError } from '../../domain';
 import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { CasesService, CaseService } from '../case-editor';
+import { CasesService, CaseNotifier } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import { AlertService } from '../../services';
 
@@ -73,7 +73,7 @@ describe('CaseTimelineComponent', () => {
 
   let EventLogComponent;
   let CaseHistoryComponent;
-  let caseService;
+  let caseNotifier;
   let casesService;
   let alertService: any;
 
@@ -101,8 +101,8 @@ describe('CaseTimelineComponent', () => {
       alertService = createSpyObj('alertService', ['error']);
       alertService.error.and.returnValue(Observable.of({}));
 
-      caseService = new CaseService();
-      caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+      caseNotifier = new CaseNotifier();
+      caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
       TestBed
         .configureTestingModule({
@@ -115,7 +115,7 @@ describe('CaseTimelineComponent', () => {
             CaseHistoryComponent,
           ],
           providers: [
-            { provide: CaseService, useValue: caseService },
+            { provide: CaseNotifier, useValue: caseNotifier },
             { provide: CasesService, useValue: casesService },
             { provide: AlertService, useValue: alertService },
           ]
@@ -213,7 +213,7 @@ describe('CaseTimelineComponent', () => {
             CaseHistoryComponent,
           ],
           providers: [
-            { provide: CaseService, useValue: caseService },
+            { provide: CaseNotifier, useValue: caseNotifier },
             { provide: CasesService, useValue: casesService },
             { provide: AlertService, useValue: alertService },
           ]

@@ -1,28 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CaseView, CasePrintDocument, HttpError } from '../../../domain';
-import { CaseService, CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { catchError, map } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { throwError, Subscription } from 'rxjs';
 import { AlertService } from '../../../services';
 
 @Component({
   templateUrl: './case-printer.html'
 })
-export class CasePrinterComponent implements OnInit {
+export class CasePrinterComponent implements OnInit, OnDestroy {
 
   private static readonly ERROR_MESSAGE = 'No documents to print';
 
   caseDetails: CaseView;
   documents: CasePrintDocument[];
+  caseSubscription: Subscription;
 
   constructor(
-    private caseService: CaseService,
+    private caseNotifier: CaseNotifier,
     private casesService: CasesService,
     private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
-    this.caseService.caseView.subscribe(caseDetails => {
+    this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
       this.casesService
         .getPrintDocuments(this.caseDetails.case_type.jurisdiction.id,
@@ -45,6 +46,10 @@ export class CasePrinterComponent implements OnInit {
           })
         ).toPromise();
     });
+  }
+
+  ngOnDestroy() {
+    this.caseSubscription.unsubscribe();
   }
 
   isDataLoaded() {

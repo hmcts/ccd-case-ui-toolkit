@@ -1,12 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseHistory } from './domain';
 import { catchError, map } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { throwError, Subscription } from 'rxjs';
 import { CaseView, CaseTab, HttpError } from '../../domain';
 import { AlertService, OrderService } from '../../services';
 import { CaseHistoryService } from './services/case-history.service';
-import { CaseService } from '../case-editor';
+import { CaseNotifier } from '../case-editor';
 import { ShowCondition } from '../../directives';
 
 @Component({
@@ -14,7 +14,7 @@ import { ShowCondition } from '../../directives';
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss']
 })
-export class CaseHistoryComponent implements OnInit {
+export class CaseHistoryComponent implements OnInit, OnDestroy {
 
   private static readonly ERROR_MESSAGE = 'No case history to show';
   public static readonly PARAM_EVENT_ID = 'eid';
@@ -25,16 +25,17 @@ export class CaseHistoryComponent implements OnInit {
   caseHistory: CaseHistory;
   caseDetails: CaseView;
   tabs: CaseTab[];
+  caseSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private alertService: AlertService,
     private orderService: OrderService,
-    private caseService: CaseService,
+    private caseNotifier: CaseNotifier,
     private caseHistoryService: CaseHistoryService) { }
 
   ngOnInit() {
-    this.caseService.caseView.subscribe(caseDetails => {
+    this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
       let eventId = this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID) || this.event;
       this.caseHistoryService
@@ -60,6 +61,10 @@ export class CaseHistoryComponent implements OnInit {
             })
         ).toPromise();
     });
+  }
+
+  ngOnDestroy() {
+    this.caseSubscription.unsubscribe();
   }
 
   isDataLoaded() {
