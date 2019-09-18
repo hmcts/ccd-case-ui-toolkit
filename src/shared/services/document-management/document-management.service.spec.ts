@@ -16,7 +16,8 @@ describe('DocumentManagementService', () => {
   let documentManagementService: DocumentManagementService;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
+      'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl', 'getAnnotationApiUrl']);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
 
