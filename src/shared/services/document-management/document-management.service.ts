@@ -5,7 +5,6 @@ import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
-import { CaseField } from '../../domain/definition';
 
 @Injectable()
 export class DocumentManagementService {
@@ -32,29 +31,30 @@ export class DocumentManagementService {
       );
   }
 
-  createMediaViewer(caseField: CaseField): string {
+  getMediaViewerInfo(caseFieldValue: any): string {
     let mediaViewer = {};
-    if (caseField.value) {
+    if (caseFieldValue) {
       mediaViewer = {
-        document_binary_url: this.transformDocumentUrl(caseField.value.document_binary_url),
-        document_filename: caseField.value.document_filename,
-        content_type: this.getContentType(caseField),
+        document_binary_url: this.transformDocumentUrl(caseFieldValue.document_binary_url),
+        document_filename: caseFieldValue.document_filename,
+        content_type: this.getContentType(caseFieldValue),
       }
     }
     return JSON.stringify(mediaViewer);
   }
 
-  getContentType(caseField: CaseField): string {
+  getContentType(caseFieldValue: any): string {
     let fileExtension = '';
-    if (caseField.value && caseField.value.document_filename) {
-      fileExtension = caseField.value.document_filename
-        .slice(caseField.value.document_filename.lastIndexOf('.') + 1);
+    if (caseFieldValue.document_filename) {
+      fileExtension = caseFieldValue.document_filename
+        .slice(caseFieldValue.document_filename.lastIndexOf('.') + 1);
     }
     if (this.isImage(fileExtension)) {
       return DocumentManagementService.IMAGE;
     } else if (fileExtension === 'pdf') {
       return DocumentManagementService.PDF;
     } else {
+      console.warn(`Unknown content type with the file extension: ${fileExtension}`);
       return null;
     }
   }
