@@ -32,15 +32,12 @@ export class DocumentManagementService {
   }
 
   getMediaViewerInfo(caseFieldValue: any): string {
-    let mediaViewer = {};
-    if (caseFieldValue) {
-      mediaViewer = {
+    let mediaViewerInfo = {
         document_binary_url: this.transformDocumentUrl(caseFieldValue.document_binary_url),
         document_filename: caseFieldValue.document_filename,
         content_type: this.getContentType(caseFieldValue),
-      }
-    }
-    return JSON.stringify(mediaViewer);
+      };
+    return JSON.stringify(mediaViewerInfo);
   }
 
   getContentType(caseFieldValue: any): string {
