@@ -19,11 +19,17 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent {
   }
 
   showMediaViewer(): void {
-    let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
     if (this.caseField && this.caseField.value) {
       this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(this.caseField.value));
     }
-    this.windowService.openOnNewTab(routerMediaViewer);
+    this.windowService.openOnNewTab(this.getMediaViewerUrl());
+  }
+
+  getMediaViewerUrl(): string {
+    let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
+    if (routerMediaViewer) {
+      return routerMediaViewer.toString();
+    }
   }
 }

@@ -23,9 +23,7 @@ export class WindowService {
     window.localStorage.removeItem(key);
   }
 
-  openOnNewTab(urlTree: UrlTree): void {
-    if (urlTree) {
-      window.open(urlTree.toString(), '_blank');
-    }
+  openOnNewTab(url: string): void {
+    window.open(url, '_blank');
   }
 }
