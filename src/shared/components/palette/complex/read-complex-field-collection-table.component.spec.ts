@@ -9,7 +9,6 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
-import { CaseReferencePipe } from '../../../pipes/case-reference';
 
 describe('ReadComplexFieldCollectionTableComponent', () => {
 
@@ -81,14 +80,11 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
-            CaseReferencePipe,
 
             // Mock
             MockFieldReadComponent,
           ],
-          providers: [
-            { provide: CaseReferencePipe, useValue: new CaseReferencePipe() },
-          ]
+          providers: []
         })
         .compileComponents();
 
@@ -169,6 +165,9 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
   const NAME_COLUMN = 'Name';
   const ADDRESS_LINE1_COLUMN = 'AddressLine1';
   const ADDRESS_LINE2_COLUMN = 'AddressLine2';
+  const ADDRESS_LINE3_COLUMN = 'AddressLine3';
+  const CASE_REFERENCE_COLUMN = 'CaseReference';
+  const VAT_NUMBER_COLUMN = 'VATNumber';
   const $COMPLEX_PANEL_CASE_LINKS = By.css('.caselink');
   const $COMPLEX_PANEL_CASE_LINK_VALUES = By.css('.caselink span');
 
@@ -193,7 +192,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       type: 'Complex',
       complex_fields: [
         newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').build(),
-        newCaseField('AddressLine2', 'Line 2', null, textFieldType(), 'OPTIONAL').build()
+        newCaseField('AddressLine2', 'Line 2', null, textFieldType(), 'OPTIONAL').build(),
+        newCaseField('AddressLine3', 'Line 3', null, textFieldType(), 'OPTIONAL').build()
       ]
     };
 
@@ -215,6 +215,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
         newCaseField('BusinessAddress', 'Business Address', null, BUSINESS_ADDRESS_FIELD_TYPE, 'OPTIONAL')
           .withValue('{AddressLine1: "45 Edric House", AddressLine2: "Page Street"}')
           .build(),
+        newCaseField('VATNumber', 'VAT Number', null, textFieldType(), 'OPTIONAL').build(),
       ]
     };
 
@@ -230,7 +231,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             BusinessAddress: {
               AddressLine1: '45 Edric House',
               AddressLine2: 'Page Street',
-            }
+            },
+            VATNumber: 'GB123456789'
           }
         },
         {
@@ -241,9 +243,11 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
               CaseReference: '1568320010662222'
             },
             BusinessAddress: {
-              AddressLine1: '150 Boyson Road',
-              AddressLine2: 'Bradenham',
-            }
+              AddressLine1: null,
+              AddressLine2: '150 Boyson Road',
+              AddressLine3: 'Blue door',
+            },
+            VATNumber: ''
           }
         }
       ]).withDisplayContextParameter('#TABLE(Name)').build();
@@ -258,14 +262,11 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
-            CaseReferencePipe,
 
             // Mock
             MockFieldReadComponent,
           ],
-          providers: [
-            { provide: CaseReferencePipe, useValue: new CaseReferencePipe() },
-          ]
+          providers: []
         })
         .compileComponents();
 
@@ -284,22 +285,28 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       let fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
 
       expect(fieldReads).toBeTruthy();
-      expect(fieldReads.length).toBe(6);
+      expect(fieldReads.length).toBe(7);
 
-      // console.log(JSON.stringify(fieldReads, null, 2));
       expect(fieldReads[0].caseField.id).toEqual(NAME_COLUMN);
       expect(fieldReads[0].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[NAME_COLUMN]);
       expect(fieldReads[1].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
       expect(fieldReads[1].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
       expect(fieldReads[2].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
       expect(fieldReads[2].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      // expect(fieldReads[3].caseField.id).toEqual(CASE_REFERENCE_COLUMN);
+      // expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink[CASE_REFERENCE_COLUMN]);
+      expect(fieldReads[3].caseField.id).toEqual(VAT_NUMBER_COLUMN);
+      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[VAT_NUMBER_COLUMN]);
 
-      expect(fieldReads[3].caseField.id).toEqual(NAME_COLUMN);
-      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
-      expect(fieldReads[4].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
-      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
+      expect(fieldReads[4].caseField.id).toEqual(NAME_COLUMN);
+      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
       expect(fieldReads[5].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
       expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      expect(fieldReads[6].caseField.id).toEqual(ADDRESS_LINE3_COLUMN);
+      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
+      // expect(fieldReads[8].caseField.id).toEqual(CASE_REFERENCE_COLUMN);
+      // expect(fieldReads[8].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink[CASE_REFERENCE_COLUMN]);
+
     });
 
     it('should render all case links', () => {

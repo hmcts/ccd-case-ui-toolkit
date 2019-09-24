@@ -42,8 +42,8 @@
               <table class="complex-panel-table">
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
-                  <ng-container  *ngFor="let name of item | keyvalue">
-                    <ng-container  *ngIf="vLabel.key == name.key" >
+                  <ng-container *ngFor="let name of item | keyvalue">
+                    <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th><span class="text-16">{{vLabel.value.label}}</span></th>
@@ -56,7 +56,7 @@
                             }" [context]="context"></ccd-field-read>
                       </td>
                     </tr>
-                    <tr *ngIf="vLabel.value.type === 'Complex'">
+                    <tr *ngIf="vLabel.value.type === 'Complex' && addCaseFieldValue(vLabel.value.caseField, name.value)">
                       <td colspan="2">
                         <ng-container *ngFor="let field of vLabel.value.caseField | ccdFieldsFilter">
                           <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
@@ -72,7 +72,7 @@
                                 [contextFields]="vLabel.value.caseField  | ccdFieldsFilter">
                               <th><span class="text-16">{{field.label}}</span></th>
                               <td *ngIf="!name.value.hasOwnProperty('CaseReference')">
-                                <span class="text-16"><ccd-field-read [caseField]="addValue(field, name.value)" [context]="context"></ccd-field-read></span>
+                                <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
                               </td>
                               <td *ngIf="name.value.hasOwnProperty('CaseReference')">
                                 <a href="/v2/case/{{name.value.CaseReference}}" target="_blank" class="caselink">

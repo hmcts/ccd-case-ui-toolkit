@@ -11,7 +11,6 @@ import { CaseReferencePipe } from '../../../pipes/case-reference';
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
 
   public columns: String[];
-  public columnsLabel: String[];
   public columnsVerticalLabel: any;
   public columnsHorizontalLabel: any;
   public columnsAllLabels: any;
@@ -30,7 +29,6 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       let result: string = displayContextParameter.replace('#TABLE(', '');
       this.columns = result.replace(')', '').split(',');
 
-      let labels = '';
       let labelsVertical: { [k: string]: any } = {};
       let labelsHorizontal: { [k: string]: any } = {};
       let allLabels: { [k: string]: any } = {};
@@ -38,7 +36,6 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       this.populateLabels(labelsVertical, allLabels);
       this.populateHorizontalLabels(labelsHorizontal, allLabels, labelsVertical);
 
-      this.columnsLabel = labels.split(',');
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
       this.columnsAllLabels = allLabels;
@@ -64,7 +61,6 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
         labelsVertical[obj.id] = {label: obj.label, type: obj.field_type, caseField: obj};
         allLabels[obj.id] = {label: obj.label, type: obj.field_type};
       } else if (obj.isComplex()) {
-        obj.value = this.rows[0][obj.id];
         labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
         allLabels[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
       } else {
@@ -94,9 +90,16 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     }
   }
 
-  addValue(field, value: any) {
-    field.value = value[field.id];
-    return field;
+  /**
+   * Needs to be called before 'ccdFieldsFilter' pipe is used, as it needs a caseField value.
+   */
+  addCaseFieldValue(field, value) {
+    field.value = value;
+    return true;
+  }
+
+  isNotBlank(value: string) {
+    return value !== null && value !== '';
   }
 
   transformReference(reference: string): string {
