@@ -31,20 +31,20 @@ export class DocumentManagementService {
       );
   }
 
-  getMediaViewerInfo(caseFieldValue: any): string {
+  getMediaViewerInfo(documentFieldValue: any): string {
     let mediaViewerInfo = {
-        document_binary_url: this.transformDocumentUrl(caseFieldValue.document_binary_url),
-        document_filename: caseFieldValue.document_filename,
-        content_type: this.getContentType(caseFieldValue),
+        document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
+        document_filename: documentFieldValue.document_filename,
+        content_type: this.getContentType(documentFieldValue),
       };
     return JSON.stringify(mediaViewerInfo);
   }
 
-  getContentType(caseFieldValue: any): string {
+  getContentType(documentFieldValue: any): string {
     let fileExtension = '';
-    if (caseFieldValue.document_filename) {
-      fileExtension = caseFieldValue.document_filename
-        .slice(caseFieldValue.document_filename.lastIndexOf('.') + 1);
+    if (documentFieldValue.document_filename) {
+      fileExtension = documentFieldValue.document_filename
+        .slice(documentFieldValue.document_filename.lastIndexOf('.') + 1);
     }
     if (this.isImage(fileExtension)) {
       return DocumentManagementService.IMAGE;
@@ -60,8 +60,8 @@ export class DocumentManagementService {
     return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
   }
 
-  transformDocumentUrl(value: string): string {
+  transformDocumentUrl(documentBinaryUrl: string): string {
     let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
-    return value.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
+    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
   }
 }
