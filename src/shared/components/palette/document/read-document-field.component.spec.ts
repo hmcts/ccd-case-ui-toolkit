@@ -100,7 +100,6 @@ describe('ReadDocumentFieldComponent', () => {
       expect(linkElement).toBeTruthy();
       linkElement.triggerEventHandler('click', null);
       fixture.detectChanges();
-      component.showMediaViewer();
       expect(component.showMediaViewer).toHaveBeenCalled();
     });
 
