@@ -26,6 +26,8 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CREATE_CASE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_CASE_DOCUMENTS =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-documents.v2+json;charset=UTF-8';
 
   /**
    *
@@ -179,18 +181,20 @@ export class CasesService {
       );
   }
 
-  getPrintDocuments(jurisdictionId: string, caseTypeId: string, caseId: string): Observable<CasePrintDocument[]> {
+  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`
       + `/cases/${caseId}`
       + `/documents`;
 
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
+    });
+
     return this.http
-      .get(url)
+      .get(url, {headers})
       .pipe(
-        map(response => response.json()),
+        map(response => response.json().documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
