@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { SortOrder } from './sort-order'
-import { CaseReferencePipe } from '../../../pipes/case-reference';
 
 @Component({
   selector: 'ccd-read-complex-field-collection-table',
@@ -16,10 +15,6 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public columnsAllLabels: any;
   public rows: any[] = [];
   public isHidden: boolean[] = [];
-
-  constructor (private caseReferencePipe: CaseReferencePipe) {
-    super();
-  }
 
   ngOnInit(): void {
     if (this.caseField.display_context_parameter
@@ -102,8 +97,9 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     return value !== null && value !== '';
   }
 
-  transformReference(reference: string): string {
-    return this.caseReferencePipe.transform(reference);
+  addCaseReferenceValue(field, value: any) {
+    field.value = { CaseReference: value};
+    return field;
   }
 
   private isVerticleDataNotEmpty(row) {

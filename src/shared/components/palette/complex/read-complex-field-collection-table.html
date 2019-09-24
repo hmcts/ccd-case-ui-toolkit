@@ -75,9 +75,7 @@
                                 <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
                               </td>
                               <td *ngIf="name.value.hasOwnProperty('CaseReference')">
-                                <a href="/v2/case/{{name.value.CaseReference}}" target="_blank" class="caselink">
-                                  <span class="text-16">{{name.value.CaseReference ? (transformReference(name.value.CaseReference)) : ''}}</span>
-                                </a>
+                                <ccd-read-case-link-field [caseField]="addCaseReferenceValue(field, name.value.CaseReference)" [context]="context"></ccd-read-case-link-field>
                               </td>
                             </tr>
                           </ng-template>
