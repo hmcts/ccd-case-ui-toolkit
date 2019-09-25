@@ -13,6 +13,7 @@ export class AppConfig extends AbstractAppConfig {
     'oauth2_client_id': 'ccd_gateway',
     'postcode_lookup_url': '/addresses/?postcode=${postcode}',
     'remote_document_management_url': '/documents',
+    'annotation_api_url': '/em-anno',
     'payments_url': '/payments',
     'activity_batch_collection_delay_ms': 1,
     'activity_next_poll_request_ms': 5000,
@@ -50,6 +51,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRemoteDocumentManagementUrl() {
     return this.config.remote_document_management_url;
+  }
+
+  public getAnnotationApiUrl() {
+    return this.config.annotation_api_url;
   }
 
   public getPostcodeLookupUrl() {
