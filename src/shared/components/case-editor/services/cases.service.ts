@@ -12,7 +12,7 @@ import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-fi
 
 @Injectable()
 export class CasesService {
-
+  // Internal (UI) API
   public static readonly V2_MEDIATYPE_CASE_VIEW = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json';
   public static readonly V2_MEDIATYPE_START_CASE_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-case-trigger.v2+json;charset=UTF-8';
@@ -20,6 +20,9 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_START_DRAFT_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
+
+  // External (Data Store) API
+  public static readonly V2_MEDIATYPE_CASE_DOCUMENTS = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-documents.v2+json';
   public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CREATE_EVENT =
@@ -172,16 +175,18 @@ export class CasesService {
       );
   }
 
-  getPrintDocuments(jurisdictionId: string, caseTypeId: string, caseId: string): Observable<CasePrintDocument[]> {
+  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`
       + `/cases/${caseId}`
       + `/documents`;
 
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
+    });
+
     return this.http
-      .get(url)
+      .get(url, {headers})
       .pipe(
         map(response => response.json()),
         catchError(error => {

@@ -113,6 +113,10 @@ describe('CasePrinterComponent', () => {
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });
 
+  it('should call get print documents on init', () => {
+    expect(casesService.getPrintDocuments).toHaveBeenCalledWith(CASE_VIEW.case_id);
+  });
+
   it('should retrieve documents from route data', () => {
     caseService.announceCase(CASE_VIEW);
     expect(component.documents).toEqual(DOCUMENTS);
