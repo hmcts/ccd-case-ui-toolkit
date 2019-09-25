@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
 
-const MEDIA_VIEWER = 'media-viewer';
+const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
 @Component({
   selector: 'ccd-read-document-field',
@@ -19,12 +19,17 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent {
   }
 
   showMediaViewer(): void {
-    let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
-    this.windowService.removeLocalStorage(MEDIA_VIEWER);
-    this.windowService.setLocalStorage(MEDIA_VIEWER, this.documentManagement.createMediaViewer(this.caseField));
-    if (routerMediaViewer) {
-      window.open(routerMediaViewer.toString(), '_blank');
+    this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
+    if (this.caseField && this.caseField.value) {
+      this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(this.caseField.value));
     }
+    this.windowService.openOnNewTab(this.getMediaViewerUrl());
   }
 
+  getMediaViewerUrl(): string {
+    let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
+    if (routerMediaViewer) {
+      return routerMediaViewer.toString();
+    }
+  }
 }

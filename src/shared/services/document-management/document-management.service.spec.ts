@@ -98,30 +98,30 @@ describe('DocumentManagementService', () => {
 
     it('should return contentType as pdf for the PDF document', () => {
       CASE_FIELD.value.document_filename = 'media.pdf';
-      expect(documentManagementService.getContentType(CASE_FIELD)).toBe('pdf');
+      expect(documentManagementService.getContentType(CASE_FIELD.value)).toBe('pdf');
     });
 
     it('should return contentType as image for the non-PDF', () => {
       CASE_FIELD.value.document_filename = 'media.jpeg';
-      expect(documentManagementService.getContentType(CASE_FIELD)).toBe('image');
+      expect(documentManagementService.getContentType(CASE_FIELD.value)).toBe('image');
     });
 
     it('should return media viewer data for image contentType', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.jpeg';
-      expect(documentManagementService.createMediaViewer(CASE_FIELD)).toBe(JSON.stringify(MEDIA_VIEWER_IMAGE));
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_IMAGE));
     });
 
     it('should return media viewer data for PDF contentType', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.pdf';
-      expect(documentManagementService.createMediaViewer(CASE_FIELD)).toBe(JSON.stringify(MEDIA_VIEWER_PDF));
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_PDF));
     });
 
     it('should return media viewer data for other contentType', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.doc';
-      expect(documentManagementService.createMediaViewer(CASE_FIELD)).toBe(JSON.stringify(MEDIA_VIEWER_OTHER));
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_OTHER));
     });
   });
 });

@@ -5,7 +5,6 @@ import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
-import { CaseField } from '../../domain/definition';
 
 @Injectable()
 export class DocumentManagementService {
@@ -32,30 +31,28 @@ export class DocumentManagementService {
       );
   }
 
-  createMediaViewer(caseField: CaseField): string {
-    let mediaViewer = {};
-    if (caseField.value) {
-      mediaViewer = {
-        document_binary_url: this.transformDocumentUrl(caseField.value.document_binary_url),
-        document_filename: caseField.value.document_filename,
-        content_type: this.getContentType(caseField),
-        annotation_api_url: this.appConfig.getAnnotationApiUrl(),
-      }
-    }
-    return JSON.stringify(mediaViewer);
+  getMediaViewerInfo(documentFieldValue: any): string {
+    let mediaViewerInfo = {
+        document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
+        document_filename: documentFieldValue.document_filename,
+        content_type: this.getContentType(documentFieldValue),
+        annotation_api_url: this.appConfig.getAnnotationApiUrl()
+      };
+    return JSON.stringify(mediaViewerInfo);
   }
 
-  getContentType(caseField: CaseField): string {
+  getContentType(documentFieldValue: any): string {
     let fileExtension = '';
-    if (caseField.value && caseField.value.document_filename) {
-      fileExtension = caseField.value.document_filename
-        .slice(caseField.value.document_filename.lastIndexOf('.') + 1);
+    if (documentFieldValue.document_filename) {
+      fileExtension = documentFieldValue.document_filename
+        .slice(documentFieldValue.document_filename.lastIndexOf('.') + 1);
     }
     if (this.isImage(fileExtension)) {
       return DocumentManagementService.IMAGE;
     } else if (fileExtension === 'pdf') {
       return DocumentManagementService.PDF;
     } else {
+      console.warn(`Unknown content type with the file extension: ${fileExtension}`);
       return null;
     }
   }
@@ -64,8 +61,8 @@ export class DocumentManagementService {
     return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
   }
 
-  transformDocumentUrl(value: string): string {
+  transformDocumentUrl(documentBinaryUrl: string): string {
     let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
-    return value.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
+    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
   }
 }
