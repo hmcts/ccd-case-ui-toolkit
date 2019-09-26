@@ -188,7 +188,7 @@ export class CasesService {
     return this.http
       .get(url, {headers})
       .pipe(
-        map(response => response.json()),
+        map(response => response.json().documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
