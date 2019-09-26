@@ -472,12 +472,16 @@ describe('CasesService', () => {
         name: 'Doc1',
         type: 'application/pdf',
         url: 'https://test.service.reform.hmcts.net/doc1'
-      }
-    ];
+      }]
+
+    const DOCUMENT_RESOURCES = {
+      documentResources: DOCUMENTS,
+        _links: 'http://data-store-api/cases/123456789012345/documents'
+      };
 
     beforeEach(() => {
       httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(DOCUMENTS)
+        body: JSON.stringify(DOCUMENT_RESOURCES)
       }))));
     });
 
