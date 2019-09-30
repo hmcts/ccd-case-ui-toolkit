@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.60.0-RC1-MV-prerelease
+### Version 2.60.1-RDM-5582-RC1-prerelease
 **RDM-5196** change the way search result component handles routing to case details(#406)
 **RDM-4617** emitter for case view and draft store
 **RDM-5310 ** ComplexElementsOnEvent: Proceed button does not render correctly when a Collection in a Complex is referenced
