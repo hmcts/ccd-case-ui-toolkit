@@ -38,6 +38,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
+    this.caseField = FieldsUtils.convertToCaseField(this.caseField);
     if (this.caseField.show_condition) {
       this.condition = new ShowCondition(this.caseField.show_condition);
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);

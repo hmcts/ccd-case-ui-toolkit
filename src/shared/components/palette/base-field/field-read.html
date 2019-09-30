@@ -1,3 +1,5 @@
-<ccd-field-read-label [caseField]="caseField" [withLabel]="withLabel">
-  <ng-container #fieldContainer></ng-container>
-</ccd-field-read-label>
+<div [hidden]="caseField.hidden">
+  <ccd-field-read-label [caseField]="caseField" [withLabel]="withLabel">
+    <ng-container #fieldContainer></ng-container>
+  </ccd-field-read-label>
+</div>
