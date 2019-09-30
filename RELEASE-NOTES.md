@@ -1,5 +1,12 @@
 ## RELEASE NOTES
 
+### Version 2.60.0-RC1-MV-prerelease
+**RDM-5196** change the way search result component handles routing to case details(#406)
+**RDM-4617** emitter for case view and draft store
+**RDM- ** ComplexElementsOnEvent: Proceed button does not render correctly when a Collection in a Complex is referenced
+**RDM- ** UI refactoring: introduce utility methods on CaseField isCollection and isCollectionOfComplex
+**RDM-4135** Integrate Media Viewer
+**RDM-5582** Upgrade MV to new version (Annotations support)
 ### Version 2.59.4 - August 19 2019
 Revert 5398 - Document in collections
 
