@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+
+### Version 2.60.2-RDM-5928-RC1-prerelease
+**RDM-5928** [RC15.01] Show/Hide field within a Complextype field having value is not displayed
+
 ### Version 2.60.1-RDM-5582-RC1-prerelease
 **RDM-5196** change the way search result component handles routing to case details(#406)
 **RDM-4617** emitter for case view and draft store
