@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
-import { CaseService, CasesService } from '../../case-editor';
+import { CasesService, CaseNotifier } from '../../case-editor';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService } from '../../../services';
 import createSpyObj = jasmine.createSpyObj;
@@ -124,13 +124,13 @@ describe('CaseEventTriggerComponent', () => {
 
   let router: any;
   let alertService: any;
-  let caseService: any;
+  let caseNotifier: any;
   let casesService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
 
   beforeEach(async(() => {
-    caseService = createSpyObj<CaseService>('caseService', ['announceCase']);
+    caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
     casesService.createEvent.and.returnValue(Observable.of());
     casesService.validateCase.and.returnValue(Observable.of());
@@ -163,7 +163,7 @@ describe('CaseEventTriggerComponent', () => {
         ],
         providers: [
           { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: CaseService, useValue: caseService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           { provide: CasesService, useValue: casesService },
           { provide: Router, useValue: router },
           { provide: AlertService, useValue: alertService },
