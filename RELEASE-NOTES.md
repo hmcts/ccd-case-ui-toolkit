@@ -1,5 +1,17 @@
 ## RELEASE NOTES
 
+
+### Version 2.60.2-RDM-5928-RC1-prerelease
+**RDM-5928** [RC15.01] Show/Hide field within a Complextype field having value is not displayed
+
+### Version 2.60.1-RDM-5582-RC1-prerelease
+**RDM-5196** change the way search result component handles routing to case details(#406)
+**RDM-4617** emitter for case view and draft store
+**RDM-5310 ** ComplexElementsOnEvent: Proceed button does not render correctly when a Collection in a Complex is referenced
+**RDM-4073 ** UI refactoring: introduce utility methods on CaseField isCollection and isCollectionOfComplex
+**RDM-4135** Integrate Media Viewer
+**RDM-5582** Upgrade MV to new version (Annotations support)
+
 ### Version 2.59.4 - August 19 2019
 Revert 5398 - Document in collections
 
