@@ -42,7 +42,6 @@ export class DocumentManagementService {
   }
 
   getContentType(documentFieldValue: any): string {
-<<<<<<< HEAD
     let fileExtension = '<unknown>';
     if (documentFieldValue.document_filename) {
       let position = documentFieldValue.document_filename.lastIndexOf('.');
@@ -59,20 +58,6 @@ export class DocumentManagementService {
     } else {
       console.warn(`Unknown content type with the file extension: ${fileExtension}`);
       return fileExtension;
-=======
-    let fileExtension = '';
-    if (documentFieldValue.document_filename) {
-      fileExtension = documentFieldValue.document_filename
-        .slice(documentFieldValue.document_filename.lastIndexOf('.') + 1);
-    }
-    if (this.isImage(fileExtension)) {
-      return DocumentManagementService.IMAGE;
-    } else if (fileExtension === 'pdf') {
-      return DocumentManagementService.PDF;
-    } else {
-      console.warn(`Unknown content type with the file extension: ${fileExtension}`);
-      return null;
->>>>>>> refs/heads/RC1+MV
     }
   }
 
