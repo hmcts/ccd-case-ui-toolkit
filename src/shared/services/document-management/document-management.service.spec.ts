@@ -90,10 +90,20 @@ describe('DocumentManagementService', () => {
       document_filename: 'sample.jpeg',
       content_type: 'image'
     };
-    const MEDIA_VIEWER_OTHER = {
+    const MEDIA_VIEWER_DOC = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.doc',
-      content_type: null
+      content_type: 'doc'
+    };
+    const MEDIA_VIEWER_NONE = {
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.',
+      content_type: ''
+    };
+    const MEDIA_VIEWER_NULL = {
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample',
+      content_type: '<unknown>'
     };
 
     it('should return contentType as pdf for the PDF document', () => {
@@ -118,10 +128,14 @@ describe('DocumentManagementService', () => {
       expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_PDF));
     });
 
-    it('should return media viewer data for other contentType', () => {
+    it('should return media viewer data for other content types', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.doc';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_OTHER));
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_DOC));
+      CASE_FIELD.value.document_filename = 'sample.';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      CASE_FIELD.value.document_filename = 'sample';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NULL));
     });
   });
 });
