@@ -42,18 +42,22 @@ export class DocumentManagementService {
   }
 
   getContentType(documentFieldValue: any): string {
-    let fileExtension = '';
+    let fileExtension = '<unknown>';
     if (documentFieldValue.document_filename) {
-      fileExtension = documentFieldValue.document_filename
-        .slice(documentFieldValue.document_filename.lastIndexOf('.') + 1);
+      let position = documentFieldValue.document_filename.lastIndexOf('.');
+      if (position === documentFieldValue.document_filename.length) {
+        fileExtension = '';
+      } else if (position >= 0) {
+        fileExtension = documentFieldValue.document_filename.slice(position + 1);
+      }
     }
     if (this.isImage(fileExtension)) {
       return DocumentManagementService.IMAGE;
-    } else if (fileExtension === 'pdf') {
+    } else if (fileExtension.toLowerCase() === 'pdf') {
       return DocumentManagementService.PDF;
     } else {
       console.warn(`Unknown content type with the file extension: ${fileExtension}`);
-      return null;
+      return fileExtension;
     }
   }
 
