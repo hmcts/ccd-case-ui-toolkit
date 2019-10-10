@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseViewerComponent } from './case-viewer.component';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 import { attr, text } from '../../test/helpers';
@@ -11,7 +11,7 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
 import { PaletteUtilsModule } from '../../components/palette/utils';
 import { CaseField } from '../../domain/definition';
 import { PlaceholderService } from '../../directives/substitutor/services';
-import { FieldsUtils } from '../../services/';
+import { FieldsUtils, NavigationNotifierService, NavigationOrigin } from '../../services/';
 import { LabelSubstitutorDirective } from '../../directives/substitutor';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
@@ -22,7 +22,7 @@ import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
-import { CaseService } from '../case-editor';
+import { CaseNotifier } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 
@@ -31,7 +31,8 @@ import any = jasmine.any;
   selector: 'cut-tabs',
   template: '<ng-content></ng-content>'
 })
-class TabsComponent { }
+class TabsComponent {
+}
 
 @Component({
   // tslint:disable-next-line
@@ -435,16 +436,16 @@ let component: CaseViewerComponent;
 let de: DebugElement;
 
 let orderService;
-let router: any;
 let mockCallbackErrorSubject: any;
 let activityService: any;
 let draftService: any;
 let alertService: any;
 let dialog: any;
 let matDialogRef: any;
-let caseService: any;
+let caseNotifier: any;
+let navigationNotifierService: NavigationNotifierService;
 
- describe('CaseViewerComponent', () => {
+describe('CaseViewerComponent', () => {
 
   const FIELDS = CASE_VIEW.tabs[0].fields;
   const SIMPLE_FIELDS = CASE_VIEW.tabs[0].fields.slice(0, 2);
@@ -460,12 +461,15 @@ let caseService: any;
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(Observable.of({}));
 
-    caseService = createSpyObj('caseService', ['announceCase']);
+    caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
     alertService.success.and.returnValue(Observable.of({}));
     alertService.warning.and.returnValue(Observable.of({}));
+
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -473,8 +477,6 @@ let caseService: any;
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
     activityService.postViewActivity.and.returnValue(Observable.of());
 
-    router = createSpyObj<Router>('router', ['navigate']);
-    router.navigate.and.returnValue(new Promise(any));
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
     TestBed
@@ -501,16 +503,16 @@ let caseService: any;
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: CaseService, useValue: caseService },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
-          { provide: Router, useValue: router },
-          { provide: ActivityPollingService, useValue: activityService },
-          { provide: DraftService, useValue: draftService },
-          { provide: AlertService, useValue: alertService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          {provide: NavigationNotifierService, useValue: navigationNotifierService},
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          {provide: OrderService, useValue: orderService},
+          {provide: ActivityPollingService, useValue: activityService},
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -660,8 +662,10 @@ let caseService: any;
 
   it('should navigate to event trigger view on trigger emit', () => {
     component.applyTrigger(TRIGGERS[0]);
-    expect(router.navigate).toHaveBeenCalledWith(['trigger', TRIGGERS[0].id], {
+    expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({
+      action: NavigationOrigin.EVENT_TRIGGERED,
       queryParams: {},
+      etid: TRIGGERS[0].id,
       relativeTo: mockRoute
     });
   });
@@ -669,9 +673,15 @@ let caseService: any;
   it('should navigate to resume draft trigger view on trigger emit', () => {
     component.ignoreWarning = true;
     component.caseDetails.case_id = 'DRAFT123';
+    component.caseDetails.case_type.jurisdiction.id = 'TESTJURISDICTION';
+    component.caseDetails.case_type.id = 'TEST';
     component.applyTrigger(TRIGGERS[1]);
-    expect(router.navigate).toHaveBeenCalledWith(['create/case', 'TEST', 'TestAddressBookCase', TRIGGERS[1].id], {
-      queryParams: { ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft' }
+    expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({
+      action: NavigationOrigin.DRAFT_RESUMED,
+      jid: 'TESTJURISDICTION',
+      ctid: 'TEST',
+      etid: TRIGGERS[1].id,
+      queryParams : { ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft' }
     });
   });
 
@@ -699,24 +709,6 @@ let caseService: any;
 
     expect(componentDialog.result).toEqual('Cancel');
     fixture.detectChanges();
-  });
-
-  it('should notify user about errors/warnings when trigger applied and response with callback warnings/errors', () => {
-    const VALID_ERROR = {
-      callbackErrors: ['error1', 'error2'],
-      callbackWarnings: ['warning1', 'warning2']
-    };
-    router.navigate.and.returnValue({ catch: (error) => error(VALID_ERROR) });
-
-    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    let eventTrigger = eventTriggerElement.componentInstance;
-    eventTrigger.onTriggerSubmit.emit(TRIGGERS[0]);
-
-    expect(router.navigate).toHaveBeenCalledWith(['trigger', TRIGGERS[0].id], {
-      queryParams: {},
-      relativeTo: mockRoute
-    });
-    expect(mockCallbackErrorSubject.next).toHaveBeenCalledWith(VALID_ERROR);
   });
 
   it('should change button label when notified about callback errors', () => {
@@ -846,12 +838,15 @@ describe('CaseViewerComponent - no tabs available', () => {
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(Observable.of({}));
 
-    caseService = createSpyObj('caseService', ['announceCase']);
+    caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
     alertService.success.and.returnValue(Observable.of({}));
     alertService.warning.and.returnValue(Observable.of({}));
+
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -859,8 +854,6 @@ describe('CaseViewerComponent - no tabs available', () => {
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
     activityService.postViewActivity.and.returnValue(Observable.of());
 
-    router = createSpyObj<Router>('router', ['navigate']);
-    router.navigate.and.returnValue(new Promise(any));
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
     CASE_VIEW.tabs = [];
@@ -889,16 +882,16 @@ describe('CaseViewerComponent - no tabs available', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: CaseService, useValue: caseService },
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
-          { provide: Router, useValue: router },
-          { provide: ActivityPollingService, useValue: activityService },
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
           { provide: MatDialog, useValue: dialog },
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ActivityPollingService, useValue: activityService },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -927,12 +920,15 @@ describe('CaseViewerComponent - print and event selector disabled', () => {
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(Observable.of({}));
 
-    caseService = createSpyObj('caseService', ['announceCase']);
+    caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
     alertService.success.and.returnValue(Observable.of({}));
     alertService.warning.and.returnValue(Observable.of({}));
+
+     navigationNotifierService = new NavigationNotifierService();
+     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -940,8 +936,6 @@ describe('CaseViewerComponent - print and event selector disabled', () => {
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
     activityService.postViewActivity.and.returnValue(Observable.of());
 
-    router = createSpyObj<Router>('router', ['navigate']);
-    router.navigate.and.returnValue(new Promise(any));
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
     CASE_VIEW.tabs = [];
@@ -970,10 +964,10 @@ describe('CaseViewerComponent - print and event selector disabled', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: CaseService, useValue: caseService },
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
-          { provide: Router, useValue: router },
           { provide: ActivityPollingService, useValue: activityService },
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },

@@ -16,7 +16,7 @@ export class GreyBarService {
   }
 
   public showGreyBar(field: CaseField, el: ElementRef) {
-    if (field.field_type.type !== 'Collection') {
+    if (!field.isCollection()) {
       this.addGreyBar(el);
     }
   }
