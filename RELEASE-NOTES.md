@@ -1,5 +1,7 @@
 ## RELEASE NOTES
 
+### Version 2.60.2-RDM-5928-RC1-prerelease
+**RDM-6055** [Immigration and Asylum]- PDF file format is not supported by MV
 
 ### Version 2.60.2-RDM-5928-RC1-prerelease
 **RDM-5928** [RC15.01] Show/Hide field within a Complextype field having value is not displayed
