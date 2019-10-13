@@ -85,12 +85,22 @@ describe('DocumentManagementService', () => {
       document_filename: 'sample.pdf',
       content_type: 'pdf'
       };
-    const MEDIA_VIEWER_IMAGE = {
-      document_binary_url: 'https://www.example.com/binary',
-      document_filename: 'sample.jpeg',
-      content_type: 'image'
-    };
-    const MEDIA_VIEWER_DOC = {
+      const MEDIA_VIEWER_IMAGE_JPEG = {
+        document_binary_url: 'https://www.example.com/binary',
+        document_filename: 'sample.jpeg',
+        content_type: 'image'
+      };
+      const MEDIA_VIEWER_IMAGE_GIF = {
+        document_binary_url: 'https://www.example.com/binary',
+        document_filename: 'sample.gif',
+        content_type: 'image'
+      };
+      const MEDIA_VIEWER_IMAGE_PNG = {
+        document_binary_url: 'https://www.example.com/binary',
+        document_filename: 'sample.png',
+        content_type: 'image'
+      };
+      const MEDIA_VIEWER_DOC = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.doc',
       content_type: 'doc'
@@ -116,10 +126,22 @@ describe('DocumentManagementService', () => {
       expect(documentManagementService.getContentType(CASE_FIELD.value)).toBe('image');
     });
 
-    it('should return media viewer data for image contentType', () => {
+    it('should return media viewer data for jpeg contentType', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.jpeg';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_IMAGE));
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_IMAGE_JPEG));
+    });
+
+    it('should return media viewer data for gif contentType', () => {
+      CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
+      CASE_FIELD.value.document_filename = 'sample.gif';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_IMAGE_GIF));
+    });
+
+    it('should return media viewer data for png contentType', () => {
+      CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
+      CASE_FIELD.value.document_filename = 'sample.png';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_IMAGE_PNG));
     });
 
     it('should return media viewer data for PDF contentType', () => {
@@ -136,6 +158,22 @@ describe('DocumentManagementService', () => {
       expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
       CASE_FIELD.value.document_filename = 'sample';
       expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NULL));
+    });
+
+    it('should return media viewer data for tif content types', () => {
+      CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
+      CASE_FIELD.value.document_filename = 'sample.tif';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      CASE_FIELD.value.document_filename = 'sample.TiF';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      CASE_FIELD.value.document_filename = 'sample.TFF';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      CASE_FIELD.value.document_filename = 'sample.tiff';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      CASE_FIELD.value.document_filename = 'sample.TiFf';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      CASE_FIELD.value.document_filename = 'sample.TIFF';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
     });
   });
 });

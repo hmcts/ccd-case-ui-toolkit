@@ -13,7 +13,7 @@ export class DocumentManagementService {
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
 
-  imagesList: string[] = ['JPEG', 'GIF', 'PNG', 'TIF', 'JPG'];
+  imagesList: string[] = [ 'GIF', 'JPG', 'JPEG', 'PNG'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
