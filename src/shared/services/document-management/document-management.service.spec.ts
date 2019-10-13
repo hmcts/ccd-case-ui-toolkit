@@ -84,23 +84,23 @@ describe('DocumentManagementService', () => {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.pdf',
       content_type: 'pdf'
-      };
-      const MEDIA_VIEWER_IMAGE_JPEG = {
+    };
+    const MEDIA_VIEWER_IMAGE_JPEG = {
         document_binary_url: 'https://www.example.com/binary',
         document_filename: 'sample.jpeg',
         content_type: 'image'
-      };
-      const MEDIA_VIEWER_IMAGE_GIF = {
+    };
+    const MEDIA_VIEWER_IMAGE_GIF = {
         document_binary_url: 'https://www.example.com/binary',
         document_filename: 'sample.gif',
         content_type: 'image'
-      };
-      const MEDIA_VIEWER_IMAGE_PNG = {
+    };
+    const MEDIA_VIEWER_IMAGE_PNG = {
         document_binary_url: 'https://www.example.com/binary',
         document_filename: 'sample.png',
         content_type: 'image'
-      };
-      const MEDIA_VIEWER_DOC = {
+    };
+    const MEDIA_VIEWER_DOC = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.doc',
       content_type: 'doc'
@@ -109,6 +109,11 @@ describe('DocumentManagementService', () => {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.',
       content_type: ''
+    };
+    const MEDIA_VIEWER_UNKNOWN = {
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.<tbc>',
+      content_type: '<tbc>'
     };
     const MEDIA_VIEWER_NULL = {
       document_binary_url: 'https://www.example.com/binary',
@@ -162,18 +167,36 @@ describe('DocumentManagementService', () => {
 
     it('should return media viewer data for tif content types', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
+
       CASE_FIELD.value.document_filename = 'sample.tif';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.tif';
+      MEDIA_VIEWER_UNKNOWN.content_type = 'tif';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
+
       CASE_FIELD.value.document_filename = 'sample.TiF';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.TiF';
+      MEDIA_VIEWER_UNKNOWN.content_type = 'TiF';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
+
       CASE_FIELD.value.document_filename = 'sample.TFF';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.TFF';
+      MEDIA_VIEWER_UNKNOWN.content_type = 'TFF';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
+
       CASE_FIELD.value.document_filename = 'sample.tiff';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.tiff';
+      MEDIA_VIEWER_UNKNOWN.content_type = 'tiff';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
+
       CASE_FIELD.value.document_filename = 'sample.TiFf';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.TiFf';
+      MEDIA_VIEWER_UNKNOWN.content_type = 'TiFf';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
+
       CASE_FIELD.value.document_filename = 'sample.TIFF';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_NONE));
+      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.TIFF';
+      MEDIA_VIEWER_UNKNOWN.content_type = 'TIFF';
+      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
     });
   });
 });
