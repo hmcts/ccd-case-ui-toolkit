@@ -76,7 +76,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }
     }
   }
-
+tetetet
   fileChangeEvent(fileInput: any) {
 
     if (fileInput.target.files[0]) {
