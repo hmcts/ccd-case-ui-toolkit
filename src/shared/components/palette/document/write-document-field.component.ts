@@ -17,6 +17,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly DOCUMENT_FILENAME = 'document_filename';
   static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
+  static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
+
   private uploadedDocument: FormGroup;
   private selectedFile: File;
   private dialogConfig: MatDialogConfig;
@@ -76,12 +78,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }
     }
   }
-tetetet
+
   fileChangeEvent(fileInput: any) {
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
-
+      this.displayFileWaitingStatus();
       // Perform the file upload immediately on file selection
       let documentUpload: FormData = new FormData();
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
@@ -209,5 +211,11 @@ tetetet
     }
 
     return error.error;
+  }
+
+  private displayFileWaitingStatus () {
+
+    this.valid = false;
+    this.uploadError = WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS;
   }
 }
