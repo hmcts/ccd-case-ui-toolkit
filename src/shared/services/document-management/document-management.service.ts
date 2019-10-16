@@ -13,7 +13,8 @@ export class DocumentManagementService {
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
-  // This delay has been added in order to be able to display any temporally status messages in the GUI component that uses this service.
+  // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
+  // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 2000;
 
   imagesList: string[] = ['JPEG', 'GIF', 'PNG', 'TIF', 'JPG'];
