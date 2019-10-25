@@ -41,30 +41,23 @@ ___
                                 if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
                                     && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, colItemIndex)) {
 
-                                        if (fieldIdToSubstitute.split('.').length > 1) {
-                                            let newNumberOfCollectionItemsAsPlaceholder =
-                                                this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
-                                                numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
-                                                    newNumberOfCollectionItemsAsPlaceholder,
-                                                    numberCollectionItemsAsPlaceholder);
-                                        }
+                                        numberCollectionItemsAsPlaceholder = this.getNumberOfCollectionItemsAsPlaceholder(
+                                            fieldIdToSubstitute, pageFormFields, numberCollectionItemsAsPlaceholder);
 
                                         if (this.isFieldIdToSubstituteReferringItself(pageFormFields, fieldIdToSubstitute, colItemIndex)) {
                                             stringToResolve = this.substituteWithEmptyString(stringToResolve, fieldIdToSubstitute,
-                                                startSubstitutionIndex)
+                                                startSubstitutionIndex);
+                                            scanIndex = startSubstitutionIndex;
                                         } else {
-                                            stringToResolve = this.substitute(pageFormFields, stringToResolve,
+                                            stringToResolve = this.substituteFromFormFields(pageFormFields, stringToResolve,
                                                 startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
+                                            scanIndex = this.resetScanIndexAfterSubstitution(
+                                                startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, colItemIndex);
                                         }
-
-                                        scanIndex = this.resetScanIndexAfterSubstitution(
-                                            startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, colItemIndex);
                                 } else {
-                                    stringToResolve = this.substitute(
-                                        {}, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
-
-                                    scanIndex = this.resetScanIndexAfterSubstitution(
-                                        startSubstitutionIndex, {}, fieldIdToSubstitute, colItemIndex);
+                                    stringToResolve = this.substituteWithEmptyString(stringToResolve, fieldIdToSubstitute,
+                                        startSubstitutionIndex);
+                                    scanIndex = startSubstitutionIndex;
                                 }
                                 isCollecting = false;
                                 fieldIdToSubstitute = '';
@@ -76,14 +69,24 @@ ___
                     }
 
                     if (colItemIndex < numberCollectionItemsAsPlaceholder - 1) {
-                        stringToResolve += PlaceholderService.NEW_LINE;
-                        stringToResolve += originalStringToResolve;
+                        stringToResolve += PlaceholderService.NEW_LINE + originalStringToResolve;
                         colItemIndex += 1;
                     }
                 }
             }
         }
         return stringToResolve;
+    }
+
+    private getNumberOfCollectionItemsAsPlaceholder(fieldIdToSubstitute, pageFormFields, numberCollectionItemsAsPlaceholder) {
+        if (fieldIdToSubstitute.split('.').length > 1) {
+            let newNumberOfCollectionItemsAsPlaceholder =
+                this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
+            numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
+                newNumberOfCollectionItemsAsPlaceholder,
+                numberCollectionItemsAsPlaceholder);
+        }
+        return numberCollectionItemsAsPlaceholder;
     }
 
     private substituteWithEmptyString(stringToResolve, fieldIdToSubstitute, startSubstitutionIndex) {
@@ -158,7 +161,8 @@ ___
         return stringToResolve.charAt(scanIndex) === PlaceholderService.OPENING_PLACEHOLDER;
     }
 
-    private substitute(pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, collectionItemIndex): string {
+    private substituteFromFormFields(pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute,
+        collectionItemIndex): string {
         let replacedString = stringToResolve.substring(startSubstitutionIndex)
             .replace('${'.concat(fieldIdToSubstitute).concat('}'),
                 this.getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute, collectionItemIndex));

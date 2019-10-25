@@ -94,12 +94,12 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
     });
 
     it('should not substitute if value of a field to substitute refers itself', () => {
-      let pageFormFields = { '_1_one': '${_1_one}' };
-      let stringToResolve = '${_1_one}';
+      let pageFormFields = { '_1_one': '${_1_one}', '_2_two': 'two' };
+      let stringToResolve = '${_1_one} ${_2_two}';
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('');
+      expect(actual).toBe(' two');
     });
 
     it('should substitute fields with multi select values', () => {
