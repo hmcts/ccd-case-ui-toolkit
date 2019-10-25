@@ -57,7 +57,7 @@ ___
                                         } else {
                                             this.substituteFromFormFields(pt);
                                         }
-                                    } else {
+                                } else {
                                         this.substituteWithEmptyString(pt);
                                 }
                                 isCollecting = false;
@@ -95,7 +95,7 @@ ___
         if (progressTracker.fieldIdToSubstitute.split('.').length > 1) {
             let newNumberOfCollectionItemsAsPlaceholder =
                 this.getNumberOfCollectionItemsIfAny(progressTracker.pageFormFields, progressTracker.fieldIdToSubstitute);
-                progressTracker.numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
+            progressTracker.numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
                 newNumberOfCollectionItemsAsPlaceholder,
                 progressTracker.numberCollectionItemsAsPlaceholder);
         }
