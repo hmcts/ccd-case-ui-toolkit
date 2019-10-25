@@ -36,7 +36,7 @@ ___
 
     resolvePlaceholders(pageFormFields, stringToResolve): string {
         let pt = new PlaceholderService.ProgressTracker({pageFormFields: pageFormFields, stringToResolve: stringToResolve});
-        while (this.hasUnresolvedPlaceholder(pt.stringToResolve)) {
+        while (this.hasUnresolvedPlaceholder(pt)) {
             this.resetProgressTracker(pt);
             let originalStringToResolve = pt.stringToResolve;
             let isCollecting = false;
@@ -68,7 +68,6 @@ ___
                         }
                         pt.scanIndex++
                     }
-
                     this.incrementCollectionItemIndex(pt, originalStringToResolve);
                 }
             }
@@ -76,47 +75,50 @@ ___
         return pt.stringToResolve;
     }
 
-    private incrementCollectionItemIndex(progressTracker, originalStringToResolve) {
-        if (progressTracker.collectionItemIndex < progressTracker.numberCollectionItemsAsPlaceholder - 1) {
-            progressTracker.stringToResolve += PlaceholderService.NEW_LINE + originalStringToResolve;
-            progressTracker.collectionItemIndex += 1;
+    private incrementCollectionItemIndex(pt, originalStringToResolve) {
+        if (pt.collectionItemIndex < pt.numberCollectionItemsAsPlaceholder - 1) {
+            pt.stringToResolve += PlaceholderService.NEW_LINE + originalStringToResolve;
+            pt.collectionItemIndex += 1;
         }
     }
 
-    private resetProgressTracker(progressTracker) {
-        progressTracker.scanIndex = 0;
-        progressTracker.numberCollectionItemsAsPlaceholder = 1;
-        progressTracker.collectionItemIndex = 0;
-        progressTracker.fieldIdToSubstitute = '';
-        progressTracker.startSubstitutionIndex = -1;
+    private resetProgressTracker(pt) {
+        pt.scanIndex = 0;
+        pt.numberCollectionItemsAsPlaceholder = 1;
+        pt.collectionItemIndex = 0;
+        pt.fieldIdToSubstitute = '';
+        pt.startSubstitutionIndex = -1;
     }
 
-    private updateNumberOfCollectionItemsAsPlaceholder(progressTracker) {
-        if (progressTracker.fieldIdToSubstitute.split('.').length > 1) {
-            let newNumberOfCollectionItemsAsPlaceholder =
-                this.getNumberOfCollectionItemsIfAny(progressTracker.pageFormFields, progressTracker.fieldIdToSubstitute);
-            progressTracker.numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
-                newNumberOfCollectionItemsAsPlaceholder,
-                progressTracker.numberCollectionItemsAsPlaceholder);
+    private updateNumberOfCollectionItemsAsPlaceholder(pt) {
+        if (pt.fieldIdToSubstitute.split('.').length > 1) {
+            let newNumberOfCollectionItemsAsPlaceholder = this.getNumberOfCollectionItemsIfAny(pt.pageFormFields, pt.fieldIdToSubstitute);
+            pt.numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder,
+                pt.numberCollectionItemsAsPlaceholder);
         }
     }
 
-    private substituteWithEmptyString(progressTracker) {
-        let replacedString = progressTracker.stringToResolve.substring(progressTracker.startSubstitutionIndex)
-                                                .replace('${'.concat(progressTracker.fieldIdToSubstitute).concat('}'), '');
-        progressTracker.stringToResolve = progressTracker.stringToResolve.substring(0, progressTracker.startSubstitutionIndex)
-            .concat(replacedString);
-        progressTracker.scanIndex = progressTracker.startSubstitutionIndex;
+    private substituteWithEmptyString(pt) {
+        let replacedString = pt.stringToResolve.substring(pt.startSubstitutionIndex)
+            .replace('${'.concat(pt.fieldIdToSubstitute).concat('}'), '');
+        pt.stringToResolve = pt.stringToResolve.substring(0, pt.startSubstitutionIndex).concat(replacedString);
+        pt.scanIndex = pt.startSubstitutionIndex;
     }
 
-    private isFieldIdToSubstituteReferringItself(progressTracker) {
-        let value = this.getSubstitutionValueOrEmpty(progressTracker.pageFormFields, progressTracker.fieldIdToSubstitute,
-            progressTracker.collectionItemIndex);
-        return '${'.concat(progressTracker.fieldIdToSubstitute).concat('}') === value;
+    private substituteFromFormFields(pt) {
+        let replacedString = pt.stringToResolve.substring(pt.startSubstitutionIndex)
+            .replace('${'.concat(pt.fieldIdToSubstitute).concat('}'), this.getSubstitutionValueOrEmpty(pt));
+        pt.stringToResolve = pt.stringToResolve.substring(0, pt.startSubstitutionIndex).concat(replacedString);
+        this.resetScanIndexAfterSubstitution(pt);
     }
 
-    private hasUnresolvedPlaceholder(stringToResolve) {
-        return stringToResolve && stringToResolve.match(PlaceholderService.PLACEHOLDER_PATTERN);
+    private isFieldIdToSubstituteReferringItself(pt) {
+        let value = this.getSubstitutionValueOrEmpty(pt);
+        return '${'.concat(pt.fieldIdToSubstitute).concat('}') === value;
+    }
+
+    private hasUnresolvedPlaceholder(pt) {
+        return pt.stringToResolve && pt.stringToResolve.match(PlaceholderService.PLACEHOLDER_PATTERN);
     }
 
     private getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder, numberCollectionItemsAsPlaceholder) {
@@ -143,13 +145,13 @@ ___
         return numberCollectionItemsAsPlaceholder;
     }
 
-    private isMatchingPlaceholderPattern(progressTracker) {
-        return progressTracker.fieldIdToSubstitute.match(PlaceholderService.PLACEHOLDER_CONTENT_PATTERN);
+    private isMatchingPlaceholderPattern(pt) {
+        return pt.fieldIdToSubstitute.match(PlaceholderService.PLACEHOLDER_CONTENT_PATTERN);
     }
 
-    private isFieldIdInFormFields(progressTracker) {
-        let fieldValue = this.getFieldValue(progressTracker.pageFormFields, progressTracker.fieldIdToSubstitute,
-            progressTracker.collectionItemIndex);
+    private isFieldIdInFormFields(pt) {
+        let fieldValue = this.getFieldValue(pt.pageFormFields, pt.fieldIdToSubstitute,
+            pt.collectionItemIndex);
         return fieldValue ? this.isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) : fieldValue !== undefined;
     }
 
@@ -161,39 +163,28 @@ ___
         return !this.isObject(fieldValue[0]) && !Array.isArray(fieldValue[0]) && fieldValue[0] !== undefined;
     }
 
-    private isStartingPlaceholder(progressTracker): boolean {
-        return progressTracker.stringToResolve.charAt(progressTracker.scanIndex) === PlaceholderService.STARTING_PLACEHOLDER;
+    private isStartingPlaceholder(pt): boolean {
+        return pt.stringToResolve.charAt(pt.scanIndex) === PlaceholderService.STARTING_PLACEHOLDER;
     }
 
-    private isStartPlaceholderAndNotCollecting(progressTracker, isCollectingPlaceholder): boolean {
-        return this.isStartingPlaceholder(progressTracker) && !isCollectingPlaceholder;
+    private isStartPlaceholderAndNotCollecting(pt, isCollectingPlaceholder): boolean {
+        return this.isStartingPlaceholder(pt) && !isCollectingPlaceholder;
     }
 
-    private isClosingPlaceholder(progressTracker): boolean {
-        return progressTracker.stringToResolve.charAt(progressTracker.scanIndex) === PlaceholderService.CLOSING_PLACEHOLDER;
+    private isClosingPlaceholder(pt): boolean {
+        return pt.stringToResolve.charAt(pt.scanIndex) === PlaceholderService.CLOSING_PLACEHOLDER;
     }
 
-    private isOpeningPlaceholder(progressTracker): boolean {
-        return progressTracker.stringToResolve.charAt(progressTracker.scanIndex) === PlaceholderService.OPENING_PLACEHOLDER;
+    private isOpeningPlaceholder(pt): boolean {
+        return pt.stringToResolve.charAt(pt.scanIndex) === PlaceholderService.OPENING_PLACEHOLDER;
     }
 
-    private substituteFromFormFields(progressTracker) {
-        let replacedString = progressTracker.stringToResolve.substring(progressTracker.startSubstitutionIndex)
-            .replace('${'.concat(progressTracker.fieldIdToSubstitute).concat('}'),
-                this.getSubstitutionValueOrEmpty(progressTracker.pageFormFields, progressTracker.fieldIdToSubstitute,
-                    progressTracker.collectionItemIndex));
-        progressTracker.stringToResolve = progressTracker.stringToResolve.substring(0, progressTracker.startSubstitutionIndex)
-            .concat(replacedString);
-        this.resetScanIndexAfterSubstitution(progressTracker);
+    private resetScanIndexAfterSubstitution(pt) {
+        pt.scanIndex = pt.startSubstitutionIndex + this.getSubstitutionValueLengthOrZero(pt);
     }
 
-    private resetScanIndexAfterSubstitution(progreesTracker) {
-        progreesTracker.scanIndex = progreesTracker.startSubstitutionIndex + this.getSubstitutionValueLengthOrZero(
-            progreesTracker.pageFormFields, progreesTracker.fieldIdToSubstitute, progreesTracker.collectionItemIndex);
-    }
-
-    private getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex);
+    private getSubstitutionValueOrEmpty(pt) {
+        let fieldValue = this.getFieldValue(pt.pageFormFields, pt.fieldIdToSubstitute, pt.collectionItemIndex);
         if (fieldValue instanceof Array) {
             fieldValue = fieldValue.join(', ');
         }
@@ -242,10 +233,8 @@ ___
         return pageFormFields[0]['value'];
     }
 
-    private getSubstitutionValueLengthOrZero(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        return pageFormFields[fieldIdToSubstitute] ? this.getSubstitutionValueOrEmpty(
-            pageFormFields, fieldIdToSubstitute, collectionItemIndex)
-            .toString().length : 0;
+    private getSubstitutionValueLengthOrZero(pt) {
+        return pt.pageFormFields[pt.fieldIdToSubstitute] ? this.getSubstitutionValueOrEmpty(pt).toString().length : 0;
     }
 
     private getType(elem): string {
@@ -260,4 +249,3 @@ ___
         return this.getType(elem) === 'Array';
     };
 }
-export type SubstitutionProgress = InstanceType<typeof PlaceholderService.ProgressTracker>;
