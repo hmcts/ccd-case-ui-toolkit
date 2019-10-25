@@ -9,7 +9,7 @@ describe('PlaceholderService', () => {
     placeholderService = new PlaceholderService(fieldsUtils);
   });
 
-  fdescribe('simple types', () => {
+  describe('simple types', () => {
 
     it('should not substitute if no page form fields', () => {
       let pageFormFields = [{}];
@@ -84,7 +84,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       expect(actual).toBe('one    {_5}');
     });
 
-    xit('should not substitute nested fields', () => {
+    it('should not substitute nested fields', () => {
       let pageFormFields = { '_1': 'one' };
       let stringToResolve = 'This ${_1} but not this ${${_1}} and not this ${field${_1}field} but this ${_1} too';
 
@@ -93,13 +93,13 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       expect(actual).toBe('This one but not this  and not this  but this one too');
     });
 
-    xit('should not substitute if value of a field to substitute refers itself', () => {
+    it('should not substitute if value of a field to substitute refers itself', () => {
       let pageFormFields = { '_1_one': '${_1_one}' };
       let stringToResolve = '${_1_one}';
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${_1_one}');
+      expect(actual).toBe('');
     });
 
     it('should substitute fields with multi select values', () => {
@@ -125,7 +125,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('nested value and nested value2 and ${complex.nested3} and double nested');
+      expect(actual).toBe('nested value and nested value2 and  and double nested');
     });
 
     it('should substitute if complex nested field refers existent field', () => {
@@ -134,7 +134,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, s);
 
-      expect(actual).toBe('${complex} and ${complex.nested} and ${complex.nested.} and ${complex.nested.double} and double nested');
+      expect(actual).toBe(' and  and  and  and double nested');
     });
   });
 
@@ -174,7 +174,7 @@ value and nested value3 and tripple nested9`);
 
       expect(actual).toBe(`value and nested value1 and tripple nested7
 ___
-value and \${topComplex.collection.complex.nested} and tripple nested8
+value and  and tripple nested8
 ___
 value and nested value3 and tripple nested9`);
     });
@@ -190,7 +190,7 @@ value and nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${topComplex.collection.complex} and ${topComplex.collection.complex.nested2.doubleNested}');
+      expect(actual).toBe(' and ');
     });
   });
 
@@ -220,7 +220,7 @@ value and nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${_1_one} simpleValue');
+      expect(actual).toBe(' simpleValue');
     });
 
     it('should not substitute fields with collection of collection values', () => {
@@ -232,7 +232,7 @@ value and nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${_1_one} simpleValue');
+      expect(actual).toBe(' simpleValue');
     });
   });
 
@@ -267,7 +267,7 @@ nested value3 and tripple nested9`);
 
       expect(actual).toBe(`nested value1 and tripple nested7
 ___
-\${collection.complex.nested} and tripple nested8
+ and tripple nested8
 ___
 nested value3 and tripple nested9`);
     });
@@ -282,7 +282,7 @@ nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${collection.complex} and ${collection.complex.nested2.doubleNested}');
+      expect(actual).toBe(' and ');
     });
   });
 });

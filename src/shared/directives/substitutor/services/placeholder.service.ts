@@ -19,15 +19,16 @@ ___
       ) { }
 
     resolvePlaceholders(pageFormFields, stringToResolve): string {
-        let startSubstitutionIndex = -1;
-        let fieldIdToSubstitute = '';
-        let isCollecting = false;
-        let originalStringToResolve = stringToResolve;
-        let numberCollectionItemsAsPlaceholder = 1;
-        let colItemIndex = 0;
-        let scanIndex = 0;
 
-        while (this.hasPlaceholder(stringToResolve)) {
+        while (this.hasUnresolvedPlaceholder(stringToResolve)) {
+            let numberCollectionItemsAsPlaceholder = 1;
+            let scanIndex = 0;
+            let colItemIndex = 0;
+            let isCollecting = false;
+            let fieldIdToSubstitute = '';
+            let startSubstitutionIndex = -1;
+            let originalStringToResolve = stringToResolve;
+
             if (stringToResolve && typeof stringToResolve === 'string') {
                 while (numberCollectionItemsAsPlaceholder-- > 0) {
 
@@ -39,34 +40,31 @@ ___
                             if (this.isClosingPlaceholder(stringToResolve, scanIndex)) {
                                 if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
                                     && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, colItemIndex)) {
-                                        console.log('MATCHED OR FIELDS IN FORM=', fieldIdToSubstitute);
-                                        console.log('fieldIdToSubsitute=', fieldIdToSubstitute);
 
                                         if (fieldIdToSubstitute.split('.').length > 1) {
                                             let newNumberOfCollectionItemsAsPlaceholder =
                                                 this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
-                                            // console.log('newNumberOfCollectionItemsAsPlaceholder=',
-                                            //     newNumberOfCollectionItemsAsPlaceholder);
                                                 numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
                                                     newNumberOfCollectionItemsAsPlaceholder,
                                                     numberCollectionItemsAsPlaceholder);
-                                            // console.log('numberCollectionItemsAsPlaceholder=', numberCollectionItemsAsPlaceholder);
                                         }
-                                        stringToResolve = this.substitute(
-                                            pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
+
+                                        if (this.isFieldIdToSubstituteReferringItself(pageFormFields, fieldIdToSubstitute, colItemIndex)) {
+                                            stringToResolve = this.substituteWithEmptyString(stringToResolve, fieldIdToSubstitute,
+                                                startSubstitutionIndex)
+                                        } else {
+                                            stringToResolve = this.substitute(pageFormFields, stringToResolve,
+                                                startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
+                                        }
 
                                         scanIndex = this.resetScanIndexAfterSubstitution(
                                             startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, colItemIndex);
-                                        console.log('scanIndex=', scanIndex);
                                 } else {
-                                    console.log('NO MATCH OR NO FIELDS IN FORM=', fieldIdToSubstitute);
-                                    console.log('fieldIdToSubsitute=', fieldIdToSubstitute);
                                     stringToResolve = this.substitute(
                                         {}, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
 
                                     scanIndex = this.resetScanIndexAfterSubstitution(
                                         startSubstitutionIndex, {}, fieldIdToSubstitute, colItemIndex);
-                                        console.log('scanIndex=', scanIndex);
                                 }
                                 isCollecting = false;
                                 fieldIdToSubstitute = '';
@@ -85,13 +83,21 @@ ___
                 }
             }
         }
-        console.log('stringToResolve=', stringToResolve);
-        console.log('stringToResolve.match(PlaceholderService.PLACEHOLDER_PATTERN)=',
-            stringToResolve ? stringToResolve.match(PlaceholderService.PLACEHOLDER_PATTERN) : 'null');
         return stringToResolve;
     }
 
-    private hasPlaceholder(stringToResolve) {
+    private substituteWithEmptyString(stringToResolve, fieldIdToSubstitute, startSubstitutionIndex) {
+        let replacedString = stringToResolve.substring(startSubstitutionIndex)
+                                                .replace('${'.concat(fieldIdToSubstitute).concat('}'), '');
+        return stringToResolve.substring(0, startSubstitutionIndex).concat(replacedString);
+    }
+
+    private isFieldIdToSubstituteReferringItself(pageFormFields, fieldIdToSubstitute, colItemIndex) {
+        let value = this.getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute, colItemIndex);
+        return '${'.concat(fieldIdToSubstitute).concat('}') === value;
+    }
+
+    private hasUnresolvedPlaceholder(stringToResolve) {
         return stringToResolve && stringToResolve.match(PlaceholderService.PLACEHOLDER_PATTERN);
     }
 
@@ -164,16 +170,10 @@ ___
     }
 
     private getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        console.log('-----------');
-        console.log('pageFormFields=', pageFormFields);
-        console.log('fieldIdToSubstitute=', fieldIdToSubstitute);
-        // console.log('collectionItemIndex=', collectionItemIndex);
         let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex);
         if (fieldValue instanceof Array) {
             fieldValue = fieldValue.join(', ');
         }
-        console.log('fieldValue=', fieldValue);
-        console.log('-----------');
         return fieldValue ? fieldValue : '';
     }
 
