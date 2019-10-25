@@ -17,7 +17,7 @@ export class DocumentManagementService {
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 2000;
 
-  imagesList: string[] = ['JPEG', 'GIF', 'PNG', 'TIF', 'JPG'];
+  imagesList: string[] = [ 'GIF', 'JPG', 'JPEG', 'PNG'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
