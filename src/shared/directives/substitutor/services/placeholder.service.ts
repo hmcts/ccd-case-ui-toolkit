@@ -23,15 +23,15 @@ export namespace PlaceholderService {
 ___
 `;
 
-        stringToResolve: string;
-        pageFormFields: object;
-        scanIndex: number;
-        numberCollectionItemsAsPlaceholder: number;
-        collectionItemIndex: number;
-        fieldIdToSubstitute: string;
-        startSubstitutionIndex: number;
-        isCollecting: boolean;
-        originalStringToResolve: string;
+        private stringToResolve: string;
+        private pageFormFields: object;
+        private scanIndex: number;
+        private numberCollectionItemsAsPlaceholder: number;
+        private collectionItemIndex: number;
+        private fieldIdToSubstitute: string;
+        private startSubstitutionIndex: number;
+        private isCollecting: boolean;
+        private originalStringToResolve: string;
         constructor(values: {
             stringToResolve: string,
             pageFormFields: any}) {
