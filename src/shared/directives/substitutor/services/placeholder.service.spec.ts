@@ -1,12 +1,11 @@
 import { PlaceholderService } from './placeholder.service';
 import { FieldsUtils } from '../../../services';
 
-describe('PlaceholderService', () => {
+fdescribe('PlaceholderService', () => {
 
   let placeholderService: PlaceholderService;
-  let fieldsUtils: FieldsUtils = new FieldsUtils();
   beforeEach(() => {
-    placeholderService = new PlaceholderService(fieldsUtils);
+    placeholderService = new PlaceholderService();
   });
 
   describe('simple types', () => {
