@@ -15,7 +15,7 @@ export class DocumentManagementService {
   private static readonly IMAGE = 'image';
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
-  private static readonly RESPONSE_DELAY = 2000;
+  private static readonly RESPONSE_DELAY = 1000;
 
   imagesList: string[] = [ 'GIF', 'JPG', 'JPEG', 'PNG'];
 
