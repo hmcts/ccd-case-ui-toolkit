@@ -31,7 +31,7 @@ ___
         private fieldIdToSubstitute: string;
         private startSubstitutionIndex: number;
         private isCollecting: boolean;
-        private originalStringToResolve: string;
+        private readonly originalStringToResolve: string;
         constructor(values: {
             stringToResolve: string,
             pageFormFields: any}) {
