@@ -24,14 +24,15 @@ ___
 `;
 
         private stringToResolve: string;
-        private pageFormFields: object;
         private scanIndex: number;
         private numberCollectionItemsAsPlaceholder: number;
         private collectionItemIndex: number;
         private fieldIdToSubstitute: string;
         private startSubstitutionIndex: number;
         private isCollecting: boolean;
+        private readonly pageFormFields: object;
         private readonly originalStringToResolve: string;
+
         constructor(values: {
             stringToResolve: string,
             pageFormFields: any}) {
