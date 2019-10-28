@@ -66,7 +66,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   fileValidations () {
 
     if (this.isAMandatoryComponent()) {
-      if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() ) {
+      if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
@@ -173,6 +173,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.fileUploadMessages = fileUploadMessage;
   }
 
+  private isUpLoadingAFile(): boolean {
+    return this.fileUploadMessages === WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS
+  }
   private validateFormUploadedDocument():  boolean {
     if (!this.uploadedDocument ) {
       return true;
