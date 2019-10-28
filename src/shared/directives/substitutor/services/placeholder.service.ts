@@ -6,14 +6,14 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 export class PlaceholderService {
 
     resolvePlaceholders(pageFormFields, stringToResolve): string {
-        let pt = new PlaceholderService.ProgressTracker({pageFormFields: pageFormFields, stringToResolve: stringToResolve});
-        return pt.resolvePlaceholders();
+        let ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields: pageFormFields, stringToResolve: stringToResolve});
+        return ps.resolvePlaceholders();
     }
 
 }
 
 export namespace PlaceholderService {
-    export class ProgressTracker {
+    export class PlaceholderSubstitutor {
         private static readonly PLACEHOLDER_CONTENT_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
         private static readonly PLACEHOLDER_PATTERN = /\$\{[a-zA-Z0-9_.\]\[]+\}/;
         private static readonly STARTING_PLACEHOLDER = '$';
@@ -42,7 +42,7 @@ ___
 
         public resolvePlaceholders(): string {
             while (this.hasUnresolvedPlaceholder()) {
-                this.resetProgressTracker();
+                this.resetPlaceholderSubstitutor();
                 while (this.doesPlaceholderContainCollectionItems()) {
                     while (this.isScanningStringToResolve()) {
                         if (this.isStartPlaceholderAndNotCollecting()) {
@@ -71,7 +71,7 @@ ___
         }
 
         private hasUnresolvedPlaceholder() {
-            return this.stringToResolve && this.stringToResolve.match(ProgressTracker.PLACEHOLDER_PATTERN);
+            return this.stringToResolve && this.stringToResolve.match(PlaceholderSubstitutor.PLACEHOLDER_PATTERN);
         }
 
         private isStartPlaceholderAndNotCollecting(): boolean {
@@ -79,14 +79,14 @@ ___
         }
 
         private isOpeningPlaceholder(): boolean {
-            return this.stringToResolve.charAt(this.scanIndex) === ProgressTracker.OPENING_PLACEHOLDER;
+            return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.OPENING_PLACEHOLDER;
         }
 
         private isClosingPlaceholder(): boolean {
-            return this.stringToResolve.charAt(this.scanIndex) === ProgressTracker.CLOSING_PLACEHOLDER;
+            return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.CLOSING_PLACEHOLDER;
         }
 
-        private resetProgressTracker() {
+        private resetPlaceholderSubstitutor() {
             this.scanIndex = 0;
             this.numberCollectionItemsAsPlaceholder = 1;
             this.collectionItemIndex = 0;
@@ -112,7 +112,7 @@ ___
 
         private appendOriginalStringIfCollectionItemAsPlaceholder() {
             if (this.collectionItemIndex < this.numberCollectionItemsAsPlaceholder - 1) {
-                this.stringToResolve += ProgressTracker.NEW_LINE + this.originalStringToResolve;
+                this.stringToResolve += PlaceholderSubstitutor.NEW_LINE + this.originalStringToResolve;
                 this.collectionItemIndex += 1;
             }
         }
@@ -127,7 +127,7 @@ ___
         }
 
         private isMatchingPlaceholderPattern() {
-            return this.fieldIdToSubstitute.match(ProgressTracker.PLACEHOLDER_CONTENT_PATTERN);
+            return this.fieldIdToSubstitute.match(PlaceholderSubstitutor.PLACEHOLDER_CONTENT_PATTERN);
         }
 
         private isFieldIdInFormFields() {
@@ -197,7 +197,7 @@ ___
         }
 
         private isStartingPlaceholder(): boolean {
-            return this.stringToResolve.charAt(this.scanIndex) === ProgressTracker.STARTING_PLACEHOLDER;
+            return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.STARTING_PLACEHOLDER;
         }
 
         private isMultiSelectValue(pageFormFields, fieldIds, index) {
