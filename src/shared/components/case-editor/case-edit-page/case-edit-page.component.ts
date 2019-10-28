@@ -125,6 +125,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       let pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
       this.sanitiseDynamicListsForEvent(this.editForm.value);
       this.sanitiseDynamicListsForPage(pageFormFields);
+      this.updateMainFormWithChangesFromPageForm(this.editForm.value.data, pageFormFields);
       let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
@@ -146,6 +147,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (document.getElementById('main-content')) {
       document.getElementById('main-content').focus();
     }
+  }
+
+  private updateMainFormWithChangesFromPageForm(editFormFields, pageFormFields) {
+    Object.keys(pageFormFields.data).forEach((key) => {
+      editFormFields[key] = pageFormFields.data[key];
+    });
   }
 
   private sanitiseDynamicListsForEvent(eventFormFields) {

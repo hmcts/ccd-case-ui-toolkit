@@ -24,6 +24,7 @@ import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { FieldType, FieldTypeEnum } from '../../../domain/definition';
 import createSpyObj = jasmine.createSpyObj;
+import { WizardPageField } from '../domain';
 
 describe('CaseEditPageComponent', () => {
 
@@ -555,7 +556,7 @@ describe('CaseEditPageComponent', () => {
           , 'dynamicList': new FormControl('List3')
           , 'dynamicList2': new FormControl('List5')})
       });
-      firstPage.id = 'first page';
+
       cancelled = createSpyObj('cancelled', ['emit']);
       let validateResult = {
         'data': {
@@ -571,6 +572,9 @@ describe('CaseEditPageComponent', () => {
       let dynamicListCaseField2 = createCaseFieldFieldType('dynamicList2', getDynamicListJsonValue('List5', ' List 5'), 'DynamicList');
 
       let caseFields: CaseField[] = [createCaseField('field1', 'field1Value'), dynamicListCaseField, dynamicListCaseField2];
+
+      firstPage.id = 'first page';
+      firstPage.case_fields = caseFields;
 
       eventData = new CaseEventData();
 
@@ -594,7 +598,7 @@ describe('CaseEditPageComponent', () => {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
-        params: of({id: 123}),
+        params: of({id: 123, page: 'some-page'}),
         snapshot: snapshot
       };
 
@@ -646,22 +650,28 @@ describe('CaseEditPageComponent', () => {
       comp.submit();
 
       fixture.whenStable().then(() => {
-        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
+        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, firstPage.id);
       });
     });
 
-    it('should call sanitize dynamic lists', async () => {
+    it('should call sanitize dynamic lists on page and event form fields', async () => {
 
       fixture.detectChanges();
 
       comp.submit();
 
+      console.log('caseEditComponentStub.eventTrigger.case_fields=' + caseEditComponentStub.eventTrigger.case_fields);
+      console.log('comp.editForm.value=' + comp.editForm.value);
+      console.log('firstPage.case_fields=' + firstPage.case_fields);
+      console.log('formGroup.value=' + formGroup.value);
+
       fixture.whenStable().then(() => {
-        expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(wizardPage.case_fields, formGroup.value);
+        expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(caseEditComponentStub.eventTrigger.case_fields, comp.editForm.value);
+        expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(firstPage.case_fields, formGroup.value);
       });
     });
 
-    it('should set event data', async () => {
+    fit('should set event data', async () => {
 
       fixture.detectChanges();
 
@@ -707,6 +717,9 @@ describe('CaseEditPageComponent', () => {
     cf.id = id;
     cf.value = value;
     cf.display_context = display_context;
+    let wizardProps = new WizardPageField();
+    wizardProps.page_column_no = 1;
+    cf.wizardProps = wizardProps;
     return cf;
   }
 
@@ -740,6 +753,9 @@ describe('CaseEditPageComponent', () => {
     let fieldType = new FieldType();
     fieldType.type = fieldTypeEnum;
     cf.field_type = fieldType;
+    let wizardProps = new WizardPageField();
+    wizardProps.page_column_no = 1;
+    cf.wizardProps = wizardProps;
     return cf;
   }
 
