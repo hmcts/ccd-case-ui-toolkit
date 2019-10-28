@@ -1,7 +1,7 @@
 import { PlaceholderService } from './placeholder.service';
 import { FieldsUtils } from '../../../services';
 
-fdescribe('PlaceholderService', () => {
+describe('PlaceholderService', () => {
 
   let placeholderService: PlaceholderService;
   beforeEach(() => {
