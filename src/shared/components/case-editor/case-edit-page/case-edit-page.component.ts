@@ -123,9 +123,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.isSubmitting = true;
       this.error = null;
       let pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
-      this.sanitiseDynamicListsForEvent(this.editForm.value);
-      this.sanitiseDynamicListsForPage(pageFormFields);
-      this.updateMainFormWithChangesFromPageForm(this.editForm.value.data, pageFormFields);
+      this.sanitiseDynamicListsAndUpdateMainForm(pageFormFields);
       let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
       caseEventData.event_token = this.eventTrigger.event_token;
       caseEventData.ignore_warning = this.ignoreWarning;
@@ -147,6 +145,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (document.getElementById('main-content')) {
       document.getElementById('main-content').focus();
     }
+  }
+
+  private sanitiseDynamicListsAndUpdateMainForm(pageFormFields) {
+    this.sanitiseDynamicListsForEvent(this.editForm.value);
+    this.sanitiseDynamicListsForPage(pageFormFields);
+    this.updateMainFormWithChangesFromPageForm(this.editForm.value.data, pageFormFields);
   }
 
   private updateMainFormWithChangesFromPageForm(editFormFields, pageFormFields) {
