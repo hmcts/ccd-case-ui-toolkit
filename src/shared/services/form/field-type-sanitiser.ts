@@ -21,8 +21,9 @@ export class FieldTypeSanitiser {
 
   private sanitizeDynamicList(dynamicField: CaseField, key, editForm: any) {
     if (dynamicField.id === key) {
+      let currentValue = editForm['data'][key].value || undefined;
       editForm['data'][key] = {
-          value: this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
+          value: currentValue ? currentValue : this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
           list_items: dynamicField.list_items
         };
     }

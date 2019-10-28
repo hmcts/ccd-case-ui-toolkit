@@ -87,6 +87,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.isSubmitting = true;
+    this.sanitiseDynamicListsForEvent(this.editForm.value);
     let caseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
@@ -110,6 +111,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
           this.isSubmitting = false;
         }
       );
+  }
+
+  private sanitiseDynamicListsForEvent(eventFormFields) {
+    this.sanitiseDynamicLists(this.eventTrigger.case_fields, eventFormFields);
+  }
+
+  private sanitiseDynamicLists(caseFields, formFields) {
+    this.formValueService.sanitiseDynamicLists(caseFields, formFields);
   }
 
   isDisabled(): boolean {
