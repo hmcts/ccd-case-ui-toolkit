@@ -72,7 +72,7 @@ describe('FormValueService', () => {
     } as object);
   });
 
-  it('should fiter current page fields and process DynamicList values back to Json', () => {
+  it('should filter current page fields and process DynamicList values back to Json', () => {
     let formFields = {data: {dynamicList: 'L2', thatTimeOfTheDay: {}}};
     let caseField = new CaseField();
     let fieldType = new FieldType();

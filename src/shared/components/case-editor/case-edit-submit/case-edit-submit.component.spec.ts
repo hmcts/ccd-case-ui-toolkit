@@ -21,8 +21,9 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
-import { Profile } from '../../../domain';
+import { Profile, FieldTypeEnum, FieldType, CaseEventData } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { WizardPageField } from '../domain';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -51,7 +52,11 @@ describe('CaseEditSubmitComponent', () => {
   let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 1);
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
+  let submitted: any;
   let snapshot: any;
+  let formService: any;
+  let firstPage: any;
+  let eventData: any;
 
   let USER = {
     idam: {
@@ -100,7 +105,7 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page2', 'Page 2', 2),
       aWizardPage('page3', 'Page 3', 3)
     ];
-    let firstPage = pages[0];
+    firstPage = pages[0];
     wizard = new Wizard(pages);
     beforeEach(async(() => {
       orderService = new OrderService();
@@ -366,7 +371,7 @@ describe('CaseEditSubmitComponent', () => {
     pages = [
       aWizardPage('page1', 'Page 1', 1),
     ];
-    let firstPage = pages[0];
+    firstPage = pages[0];
     wizard = new Wizard(pages);
     let queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
     let snapshotNoProfile = {
@@ -497,5 +502,261 @@ describe('CaseEditSubmitComponent', () => {
       let result = comp.getCancelText();
       expect(result).toBe('Return to case list');
     });
+  });
+
+  describe('submit the form', () => {
+
+    let formGroup;
+
+    let getDynamicListJsonValue = (code, label) => {
+      return JSON.parse(`{
+          "value": {
+              "code": "${code}",
+              "label":  "${label}"
+          },
+          "list_items": [
+            {
+              "code": "List1",
+              "label": " List 1"
+            },
+            {
+              "code": "List2",
+              "label": " List 2"
+            },
+            {
+              "code": "List3",
+              "label": " List 3"
+            },
+            {
+              "code": "List4",
+              "label": " List 4"
+            },
+            {
+              "code": "List5",
+              "label": " List 5"
+            },
+            {
+              "code": "List6",
+              "label": " List 6"
+            },
+            {
+              "code": "List7",
+              "label": " List 7"
+            }
+          ]
+      }`);
+    }
+
+    beforeEach(async(() => {
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
+      formGroup = new FormGroup({
+        'data': new FormGroup({'field1': new FormControl('SOME_VALUE')
+          , 'dynamicList': new FormControl('List3')
+          , 'dynamicList2': new FormControl('List5')})
+      });
+
+      cancelled = createSpyObj('cancelled', ['emit']);
+
+      eventData = new CaseEventData();
+      let dynamicList = getDynamicListJsonValue('List3', ' List 3');
+      let dynamicList2 = getDynamicListJsonValue('List5', ' List 5');
+      let pageFormFields = {
+        'data': {
+          'field1': 'EX12345678',
+          'dynamicList': dynamicList,
+          'dynamicList2': dynamicList2
+        }
+      };
+
+      formService = {
+        filterCurrentPageFields: function (a, b) {
+          return pageFormFields;
+        },
+        sanitise: function () {
+          return eventData;
+        },
+        sanitiseDynamicLists: function () {
+          return pageFormFields;
+        }
+      };
+
+      let dynamicListCaseField = createCaseFieldFieldType('dynamicList', getDynamicListJsonValue('List3', ' List 3'), 'DynamicList');
+      let dynamicListCaseField2 = createCaseFieldFieldType('dynamicList2', getDynamicListJsonValue('List5', ' List 5'), 'DynamicList');
+
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value'), dynamicListCaseField, dynamicListCaseField2];
+
+      eventData = new CaseEventData();
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      pages = [
+        aWizardPage('page1', 'Page 1', 1),
+      ];
+      submitted = createSpyObj('submitted', ['emit'])
+      caseEditComponent = {
+        'form': formGroup,
+        'data': '',
+        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'navigateToPage': () => undefined,
+        'cancel': () => undefined,
+        'submitted': submitted,
+        'cancelled': cancelled,
+        'submit': (caseEventData: CaseEventData) => of(caseEventData),
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+      };
+      snapshot = {
+        queryParamMap: createSpyObj('queryParamMap', ['get']),
+        pathFromRoot: [
+          {},
+          {
+            data: {
+              profile: PROFILE
+            }
+          }
+        ]
+      };
+      let route = {
+        params: of({id: 123, page: 'some-page'}),
+        snapshot: snapshot
+      };
+
+      spyOn(caseEditComponent, 'form');
+
+      spyOn(formService, 'sanitise').and.returnValue(eventData);
+      spyOn(formService, 'sanitiseDynamicLists').and.returnValue(pageFormFields);
+
+      TestBed.configureTestingModule({
+        declarations: [CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: route },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should call sanitize dynamic lists on event form fields', async () => {
+
+      fixture.detectChanges();
+
+      comp.submit();
+
+      fixture.whenStable().then(() => {
+        expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(caseEditComponent.eventTrigger.case_fields, comp.editForm.value);
+      });
+    });
+
+    it('should set event data', async () => {
+
+      fixture.detectChanges();
+
+      expect(eventData.case_reference).toBeUndefined();
+      expect(eventData.event_data).toBeUndefined();
+      expect(formGroup.value.data['field1']).toEqual('SOME_VALUE');
+      expect(formGroup.value.data['dynamicList']).toEqual('List3');
+      expect(formGroup.value.data['dynamicList2']).toEqual('List5');
+
+      comp.submit();
+
+      fixture.whenStable().then(() => {
+        expect(eventData.data['field1']).toEqual('EX12345678');
+        expect(eventData.data['dynamicList']).toEqual(getDynamicListJsonValue('List3', ' List 3'));
+        expect(eventData.data['dynamicList2']).toEqual(getDynamicListJsonValue('List5', ' List 5'));
+        expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
+      });
+    });
+
+    // it('should change button label when callback warnings notified ', () => {
+    //   let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    //   callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_START;
+    //   comp.callbackErrorsNotify(callbackErrorsContext);
+
+    //   fixture.detectChanges();
+    //   let button = de.query($SELECT_SUBMIT_BUTTON);
+    //   expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_START);
+    //   expect(comp.ignoreWarning).toBeFalsy();
+
+    //   callbackErrorsContext.ignore_warning = true;
+    //   callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
+    //   comp.callbackErrorsNotify(callbackErrorsContext);
+
+    //   fixture.detectChanges();
+    //   expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_CONTINUE);
+    //   expect(comp.ignoreWarning).toBeTruthy();
+    // });
+
+    function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+      let cf = new CaseField();
+      cf.id = id;
+      cf.value = value;
+      cf.display_context = display_context;
+      let wizardProps = new WizardPageField();
+      wizardProps.page_column_no = 1;
+      cf.wizardProps = wizardProps;
+      return cf;
+    }
+
+    function createCaseFieldFieldType(id: string, value: any, fieldTypeEnum: FieldTypeEnum, display_context = 'READONLY'): CaseField {
+      let cf = new CaseField();
+      cf.id = id;
+      cf.value = value;
+      cf.list_items = [{
+        'code': 'List1',
+        'label': ' List 1'
+      }, {
+        'code': 'List2',
+        'label': ' List 2'
+      }, {
+        'code': 'List3',
+        'label': ' List 3'
+      }, {
+        'code': 'List4',
+        'label': ' List 4'
+      }, {
+        'code': 'List5',
+        'label': ' List 5'
+      }, {
+        'code': 'List6',
+        'label': ' List 6'
+      }, {
+        'code': 'List7',
+        'label': ' List 7'
+      }];
+      cf.display_context = display_context;
+      let fieldType = new FieldType();
+      fieldType.type = fieldTypeEnum;
+      cf.field_type = fieldType;
+      let wizardProps = new WizardPageField();
+      wizardProps.page_column_no = 1;
+      cf.wizardProps = wizardProps;
+      return cf;
+    }
   });
 });

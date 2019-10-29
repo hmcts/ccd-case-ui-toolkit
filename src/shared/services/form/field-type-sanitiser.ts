@@ -17,6 +17,7 @@ export class FieldTypeSanitiser {
         this.sanitizeDynamicList(dynamicField, key, editForm);
       });
     });
+    return editForm;
   }
 
   private sanitizeDynamicList(dynamicField: CaseField, key, editForm: any) {

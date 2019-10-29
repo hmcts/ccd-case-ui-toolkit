@@ -615,7 +615,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(formService, 'sanitise').and.returnValue(eventData);
       spyOn(formService, 'filterCurrentPageFields').and.returnValue(pageFormFields);
 
-      spyOn(formService, 'sanitiseDynamicLists').and.returnValue(eventData);
+      spyOn(formService, 'sanitiseDynamicLists').and.returnValue(pageFormFields);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
@@ -660,23 +660,19 @@ describe('CaseEditPageComponent', () => {
 
       comp.submit();
 
-      console.log('caseEditComponentStub.eventTrigger.case_fields=' + caseEditComponentStub.eventTrigger.case_fields);
-      console.log('comp.editForm.value=' + comp.editForm.value);
-      console.log('firstPage.case_fields=' + firstPage.case_fields);
-      console.log('formGroup.value=' + formGroup.value);
-
       fixture.whenStable().then(() => {
         expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(caseEditComponentStub.eventTrigger.case_fields, comp.editForm.value);
         expect(formService.sanitiseDynamicLists).toHaveBeenCalledWith(firstPage.case_fields, formGroup.value);
       });
     });
 
-    fit('should set event data', async () => {
+    it('should set event data', async () => {
 
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
       expect(eventData.event_data).toBeUndefined();
+      expect(formGroup.value.data['field1']).toEqual('SOME_VALUE');
       expect(formGroup.value.data['dynamicList']).toEqual('List3');
       expect(formGroup.value.data['dynamicList2']).toEqual('List5');
 
