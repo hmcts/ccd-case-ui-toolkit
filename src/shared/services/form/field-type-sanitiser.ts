@@ -22,12 +22,16 @@ export class FieldTypeSanitiser {
 
   private sanitizeDynamicList(dynamicField: CaseField, key, editForm: any) {
     if (dynamicField.id === key) {
-      let currentValue = editForm['data'][key].value || undefined;
+      let currentValue = this.ifFormValueExists(editForm, key) ? editForm['data'][key].value || undefined : undefined;
       editForm['data'][key] = {
           value: currentValue ? currentValue : this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
           list_items: dynamicField.list_items
         };
     }
+  }
+
+  private ifFormValueExists(form, key) {
+    return form['data'][key];
   }
 
   private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
