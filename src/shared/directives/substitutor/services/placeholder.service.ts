@@ -194,10 +194,6 @@ ___
             return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.STARTING_PLACEHOLDER;
         }
 
-        private isComplex(pageFormFields, fieldIds, index) {
-            return pageFormFields[fieldIds[index]];
-        }
-
         private updateNumberOfCollectionItemsAsPlaceholder() {
             if (this.fieldIdToSubstitute.split('.').length > 1) {
                 let newNumberOfCollectionItemsAsPlaceholder = this.getNumberOfCollectionItemsIfAny();
