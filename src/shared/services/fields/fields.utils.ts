@@ -54,6 +54,10 @@ export class FieldsUtils {
       return this.isCollection(fieldValue) &&  this.areCollectionValuesSimpleFields(fieldValue);
   }
 
+  public static isMultiSelectValue(form) {
+    return this.isNonEmptyArray(form) && !this.isCollectionWithValue(form);
+  }
+
   public static isNonEmptyArray(pageFormFields): boolean {
       return Array.isArray(pageFormFields) && pageFormFields[0] !== undefined;
   }

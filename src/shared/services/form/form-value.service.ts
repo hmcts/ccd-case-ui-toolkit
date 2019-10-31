@@ -1,9 +1,28 @@
 import { Injectable } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
+import { FieldsUtils } from '../fields';
 
 @Injectable()
 export class FormValueService {
+  public static readonly LABEL_SUFFIX = '-LABEL';
+
+  public static getFieldValue(pageFormFields, fieldIdToSubstitute, collectionIndex) {
+    let fieldIds = fieldIdToSubstitute.split('.');
+    let currentFieldId = fieldIds[0];
+    let currentForm = pageFormFields[currentFieldId];
+    if (FieldsUtils.isMultiSelectValue(currentForm)) {
+        return pageFormFields[currentFieldId + FormValueService.LABEL_SUFFIX];
+    } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
+        return currentForm.map(fieldValue => fieldValue['value']);
+    } else if (FieldsUtils.isCollection(currentForm)) {
+        return this.getFieldValue(currentForm[collectionIndex]['value'], fieldIds.slice(1).join('.'), collectionIndex);
+    } else if (FieldsUtils.isNonEmptyObject(currentForm)) {
+        return this.getFieldValue(currentForm, fieldIds.slice(1).join('.'), collectionIndex);
+    } else {
+        return currentForm;
+    }
+  }
 
   constructor(private fieldTypeSanitiser: FieldTypeSanitiser) {
   }

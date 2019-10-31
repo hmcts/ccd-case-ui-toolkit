@@ -1,5 +1,4 @@
 import { PlaceholderService } from './placeholder.service';
-import { FieldsUtils } from '../../../services';
 
 describe('PlaceholderService', () => {
 

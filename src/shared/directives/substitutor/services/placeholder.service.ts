@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { FormValueService } from '../../../services';
 
 // @dynamic
 @Injectable()
@@ -151,32 +152,10 @@ ___
             if (this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute]) {
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
             } else {
-                let fieldValue = this.retrieveFieldValue();
+                let fieldValue = FormValueService.getFieldValue(this.pageFormFields, this.fieldIdToSubstitute, this.collectionItemIndex);
                 this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute] = fieldValue;
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
             }
-        }
-
-        private retrieveFieldValue() {
-            let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
-            let fieldIds = this.fieldIdToSubstitute.split('.');
-            for (let index = 0; index < fieldIds.length; index++) {
-                if (this.isMultiSelectValue(pageFormFieldsClone, fieldIds, index)) {
-                    pageFormFieldsClone = pageFormFieldsClone[fieldIds[index] + FieldsUtils.LABEL_SUFFIX];
-                } else if (FieldsUtils.isCollection(pageFormFieldsClone)) {
-                    pageFormFieldsClone = pageFormFieldsClone[this.collectionItemIndex]['value'][fieldIds[index]];
-                } else if (this.isComplex(pageFormFieldsClone, fieldIds, index)) {
-                    pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
-                } else {
-                    return pageFormFieldsClone[fieldIds[index]];
-                }
-            }
-            if (FieldsUtils.isCollectionOfSimpleTypes(pageFormFieldsClone)) {
-                pageFormFieldsClone = pageFormFieldsClone.map(fieldValue => fieldValue['value']);
-            } else if (FieldsUtils.isNonEmptyObject(pageFormFieldsClone) || FieldsUtils.isCollection(pageFormFieldsClone)) {
-                return undefined;
-            }
-            return pageFormFieldsClone;
         }
 
         private getSubstitutionValueOrEmpty() {
@@ -213,11 +192,6 @@ ___
 
         private isStartingPlaceholder(): boolean {
             return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.STARTING_PLACEHOLDER;
-        }
-
-        private isMultiSelectValue(pageFormFields, fieldIds, index) {
-            let field = pageFormFields[fieldIds[index]];
-            return FieldsUtils.isNonEmptyArray(field) && !FieldsUtils.isCollectionWithValue(field);
         }
 
         private isComplex(pageFormFields, fieldIds, index) {
