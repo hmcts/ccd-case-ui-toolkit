@@ -7,18 +7,126 @@ import { FieldsUtils } from '../fields';
 export class FormValueService {
   public static readonly LABEL_SUFFIX = '-LABEL';
 
-  public static getFieldValue(pageFormFields, fieldIdToSubstitute, collectionIndex) {
-    let fieldIds = fieldIdToSubstitute.split('.');
+  /**
+   * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
+   * There are two exeptions:
+   * 1) In case of a multiselect being identified as a leaf a '-LABEL' suffix is appended to the key and values og that key are returned
+   *      form= { 'list': ['code1', 'code2'],
+   *              'list-LABEL': ['label1', 'label2'] },
+   *      fieldKey=list,
+   *      colIndex=0,
+   *      value=label1, label2
+   * 2) In case of a collection of simple fields is identified as a leaf all values are joined seperated by a comma
+   *      form= { 'collection': [{ 'value': 'value1' }, { 'value': 'value2' }] }
+   *      fieldKey=collection
+   *      colIndex=1
+   *      value=value1, value2
+   *
+   * Other examples:
+   * 1) simple field reference: form={ 'PersonFirstName': 'John' }, fieldKey=PersonFirstName, value=John
+   * 2) complex field reference:
+   *      form= { complex1': {
+                    'simple11': 'value11',
+                    'simple12': 'value12',
+                    'complex2': {
+                      'simple21': 'value21'
+                    }
+                }},
+   *      fieldKey=complex1.complex2.simple21
+   *      colIndex=0,
+   *      value=value21
+   * 3) complex field with collection field with complex field reference:
+   *      form= { 'complex1': {
+   *               'collection1': [
+   *               { 'value': {
+   *                   'complex2': {
+   *                     'simple1': 'value1',
+   *                     'complex3': {
+   *                       'complex4': {
+   *                         'simple2': 'value12'
+   *                       }
+   *                     }
+   *                   }
+   *                 }
+   *               },
+   *               { 'value': {
+   *                   'complex2': {
+   *                     'simple1': 'value2',
+   *                     'complex3': {
+   *                       'complex4': {
+   *                         'simple2': 'value21'
+   *                       }
+   *                     }
+   *                   }
+   *                 }
+   *               },
+   *               { 'value': {
+   *                   'complex2': {
+   *                     'simple1': 'value3',
+   *                     'complex3': {
+   *                       'complex4': {
+   *                         'simple2': 'value31'
+   *                       }
+   *                     }
+   *                   }
+   *                 }
+   *               }
+   *             ]}}
+   *      fieldKey=complex1.collection1.complex2.complex3.complex4.simple2
+   *      colIndex=2,
+   *      value=value21
+   * 4) collection of complex types
+   *      form= { 'collection1': [
+   *               { 'value': {'complex1': {
+   *                             'simple1': 'value11',
+   *                             'complex2': {
+   *                               'complex3': {
+   *                                 'simple2': 'value12'
+   *                               }
+   *                             }
+   *                         }}
+   *               },
+   *               { 'value': {'complex1': {
+   *                             'simple1': 'value21',
+   *                             'complex2': {
+   *                               'complex3': {
+   *                                 'simple2': 'value22'
+   *                               }
+   *                             }
+   *                         }}
+   *               },
+   *               { 'value': {'complex1': {
+   *                             'simple1': 'value31',
+   *                             'complex2': {
+   *                               'complex3': {
+   *                                 'simple2': 'value32'
+   *                               }
+   *                             }
+   *                           }}
+   *               }
+   *             ]}
+   *      fieldKey=collection1.complex1.complex2.complex3.simple2
+   *      colIndex=2
+   *      value=value32
+   *
+   * If key is pointing at a complex or collection leaf (not simple, collection of simple or multiselect types) then undefined is returned.
+   * @param form form
+   * @param fieldKey dot separated reference to value
+   * @param colIndex index of collection item being referenced or 0 otherwise
+   * @returns {string} simple or combined value of a field
+   **/
+  public static getFieldValue(form, fieldKey, colIndex) {
+    let fieldIds = fieldKey.split('.');
     let currentFieldId = fieldIds[0];
-    let currentForm = pageFormFields[currentFieldId];
+    let currentForm = form[currentFieldId];
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
-        return pageFormFields[currentFieldId + FormValueService.LABEL_SUFFIX];
+        return form[currentFieldId + FormValueService.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
-        return currentForm.map(fieldValue => fieldValue['value']);
+        return currentForm.map(fieldValue => fieldValue['value']).join(', ');
     } else if (FieldsUtils.isCollection(currentForm)) {
-        return this.getFieldValue(currentForm[collectionIndex]['value'], fieldIds.slice(1).join('.'), collectionIndex);
+        return this.getFieldValue(currentForm[colIndex]['value'], fieldIds.slice(1).join('.'), colIndex);
     } else if (FieldsUtils.isNonEmptyObject(currentForm)) {
-        return this.getFieldValue(currentForm, fieldIds.slice(1).join('.'), collectionIndex);
+        return this.getFieldValue(currentForm, fieldIds.slice(1).join('.'), colIndex);
     } else {
         return currentForm;
     }

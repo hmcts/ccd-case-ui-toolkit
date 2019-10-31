@@ -160,9 +160,6 @@ ___
 
         private getSubstitutionValueOrEmpty() {
             let fieldValue = this.getFieldValue();
-            if (fieldValue instanceof Array) {
-                fieldValue = fieldValue.join(', ');
-            }
             return fieldValue ? fieldValue : '';
         }
 
