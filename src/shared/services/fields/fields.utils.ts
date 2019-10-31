@@ -38,28 +38,32 @@ export class FieldsUtils {
       return this.getType(elem) === 'Object';
   };
 
+  public static isNonEmptyObject(elem) {
+      return this.isObject(elem) && Object.keys(elem).length !== 0;
+  };
+
   public static isArray(elem) {
       return this.getType(elem) === 'Array';
   };
 
-  public static isSimpleArray(fieldValue) {
-      return !this.isObject(fieldValue[0]) && !Array.isArray(fieldValue[0]) && fieldValue[0] !== undefined;
+  public static areCollectionValuesSimpleFields(fieldValue) {
+      return !this.isObject(fieldValue[0]['value']) && !Array.isArray(fieldValue[0]['value']) && fieldValue[0]['value'] !== undefined;
   }
 
-  public static isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) {
-      return !this.isObject(fieldValue) && (this.isArray(fieldValue) ? this.isSimpleArray(fieldValue) : true);
+  public static isCollectionOfSimpleTypes(fieldValue) {
+      return this.isCollection(fieldValue) &&  this.areCollectionValuesSimpleFields(fieldValue);
   }
 
-  public static isNonEmptyArray(pageFormFields) {
-      return Array.isArray(pageFormFields) && pageFormFields[0];
+  public static isNonEmptyArray(pageFormFields): boolean {
+      return Array.isArray(pageFormFields) && pageFormFields[0] !== undefined;
   }
 
-  public static isCollection(pageFormFields) {
+  public static isCollection(pageFormFields): boolean {
       return this.isNonEmptyArray(pageFormFields) && this.isCollectionWithValue(pageFormFields);
   }
 
-  public static isCollectionWithValue(pageFormFields) {
-      return pageFormFields[0]['value'];
+  public static isCollectionWithValue(pageFormFields): boolean {
+      return pageFormFields[0]['value'] !== undefined;
   }
 
   public static cloneObject(obj: any): any {

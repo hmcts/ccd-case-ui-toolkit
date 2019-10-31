@@ -30,6 +30,7 @@ ___
         private fieldIdToSubstitute: string;
         private startSubstitutionIndex: number;
         private isCollecting: boolean;
+        private resolvedFormValues = [];
         private readonly pageFormFields: object;
         private readonly originalStringToResolve: string;
 
@@ -94,6 +95,7 @@ ___
             this.fieldIdToSubstitute = '';
             this.startSubstitutionIndex = -1;
             this.isCollecting = false;
+            this.resolvedFormValues[this.collectionItemIndex] = {};
         }
 
         private substitute() {
@@ -115,6 +117,7 @@ ___
             if (this.collectionItemIndex < this.numberCollectionItemsAsPlaceholder - 1) {
                 this.stringToResolve += PlaceholderSubstitutor.NEW_LINE + this.originalStringToResolve;
                 this.collectionItemIndex += 1;
+                this.resolvedFormValues[this.collectionItemIndex] = {};
             }
         }
 
@@ -132,8 +135,7 @@ ___
         }
 
         private isFieldIdInFormFields() {
-            let fieldValue = this.getFieldValue();
-            return fieldValue ? FieldsUtils.isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) : fieldValue !== undefined;
+            return this.getFieldValue() !== undefined;
         }
 
         private isFieldIdToSubstituteReferringItself() {
@@ -146,6 +148,16 @@ ___
         }
 
         private getFieldValue() {
+            if (this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute]) {
+                return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
+            } else {
+                let fieldValue = this.retrieveFieldValue();
+                this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute] = fieldValue;
+                return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
+            }
+        }
+
+        private retrieveFieldValue() {
             let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
             let fieldIds = this.fieldIdToSubstitute.split('.');
             for (let index = 0; index < fieldIds.length; index++) {
@@ -159,8 +171,10 @@ ___
                     return undefined;
                 }
             }
-            if (FieldsUtils.isCollection(pageFormFieldsClone)) {
+            if (FieldsUtils.isCollectionOfSimpleTypes(pageFormFieldsClone)) {
                 pageFormFieldsClone = pageFormFieldsClone.map(fieldValue => fieldValue['value']);
+            } else if (FieldsUtils.isNonEmptyObject(pageFormFieldsClone) || FieldsUtils.isCollection(pageFormFieldsClone)) {
+                return undefined;
             }
             return pageFormFieldsClone;
         }
