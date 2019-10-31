@@ -204,7 +204,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url, Validators.required),
       document_binary_url: new FormControl(binaryUrl, Validators.required),
       document_filename: new FormControl(filename, Validators.required),
-      // ver como mejorar
       [this.caseValueComponentId]: new FormControl(null, null )
     }));
   }
@@ -214,7 +213,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url),
       document_binary_url: new FormControl(binaryUrl),
       document_filename: new FormControl(filename),
-      // ver como mejorar
       [this.caseValueComponentId]: new FormControl(null)
     }));
   }
