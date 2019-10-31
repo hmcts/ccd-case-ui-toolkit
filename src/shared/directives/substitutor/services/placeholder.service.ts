@@ -168,7 +168,7 @@ ___
                 } else if (this.isComplex(pageFormFieldsClone, fieldIds, index)) {
                     pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
                 } else {
-                    return undefined;
+                    return pageFormFieldsClone[fieldIds[index]];
                 }
             }
             if (FieldsUtils.isCollectionOfSimpleTypes(pageFormFieldsClone)) {
