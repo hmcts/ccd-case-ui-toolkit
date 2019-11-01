@@ -1,5 +1,5 @@
 <div [hidden]="caseField.hidden">
-  <dl class="case-field" *ngIf="withLabel && !isLabel() && !isComplex(); else caseFieldValue">
+  <dl class="case-field" *ngIf="withLabel && !isLabel() && (!isComplex() || isCaseLink()); else caseFieldValue">
     <dt class="case-field__label">{{caseField.label}}</dt>
     <dd class="case-field__value">
       <ng-container *ngTemplateOutlet="caseFieldValue"></ng-container>
