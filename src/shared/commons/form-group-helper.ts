@@ -3,14 +3,15 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 export class FormGroupHelper {
   constructor() {}
   /**
-   * This function is going to find a component's value from the top level FormGroup.
-   * @param componentName this is the component name that is going to be used to find the component's value.
-   * @param group this is the top level FormGroup.
-   * @return not-Defined if the component's value could not be found. componentValue:any
-   * if there is a value for the component name passed as parameter.
+   * This function is going to find a component's value by a component id. It will search the component's value
+   * in the FormGroup container.
+   * @param componentId this is the component id that is going to be used to find the component's value.
+   * @param group this is the top level FormGroup container.
+   * @return not-Defined if the component'value could not be found. componentValue:any
+   * if there is a component's value is found.
    */
-  findControlValueFromFromGroup(componentName: string, group: AbstractControl): any {
-    let result = this.getControlValueFromTopLevelForm(componentName, group);
+  findControlValueFromFromGroup(componentId: string, group: AbstractControl): any {
+    let result = this.getControlValueFromTopLevelForm(componentId, group);
     if (result.length === 0) {
       return null;
     }
@@ -22,11 +23,9 @@ export class FormGroupHelper {
     return false;
   }
 
-  private getControlValueFromTopLevelForm(componentName: string, group: AbstractControl): any {
+  private getControlValueFromTopLevelForm(componentId: string, group: AbstractControl): any {
     let formGroup: FormGroup = <FormGroup>  group;
     let control;
-    // This function filterFx is going to be used to clean all empty result comming from map executions.
-    const filterFx = function (el) { return el != null; }
     // If the formGroup is empty it means that there is no any control.
     if (this.isAValidForm(group)) { return Array(); }
     // map through the FormGroup controls.
@@ -36,28 +35,32 @@ export class FormGroupHelper {
       // If the control is an instance of FormGroup i.e a nested FormGroup
       // then recursively call this same method (logKeyValuePairs) passing it
       if (abstractControl instanceof FormGroup) {
-        return this.getControlValueFromTopLevelForm(componentName, abstractControl);
+        return this.getControlValueFromTopLevelForm(componentId, abstractControl);
         // If the control is not a FormGroup then we know it's a FormControl or a FormArray
       } else {
         if (abstractControl instanceof  FormArray) {
           // map through the FormArray controls.
           return abstractControl.controls.map((formControl) => {
-            return this.getControlValueFromTopLevelForm(componentName, formControl)
-          }).filter(filterFx);
+            return this.getControlValueFromTopLevelForm(componentId, formControl)
+          }).filter(this.filterElement);
           // If the control is not a FormGroup then we know it's a FormControl
         } else {
-          if (key === componentName) {
+          if (key === componentId) {
             return abstractControl.value;
           }
         }
       }
       return control;
-    }).filter(filterFx);
-    const flattenedArray = this.flat(formControls);
-    return this.flat(Array.from(new Set(flattenedArray).values()));
+    }).filter(this.filterElement);
+    const flattenedArray = this.flatAnArray(formControls);
+    return this.flatAnArray(Array.from(new Set(flattenedArray).values()));
   }
 
-  flat(array) {
+  private filterElement (el) {
+    return el != null;
+  }
+
+  private flatAnArray (array) {
     return array.reduce((acc, item) => {
       return acc.concat(item);
     }, []);
