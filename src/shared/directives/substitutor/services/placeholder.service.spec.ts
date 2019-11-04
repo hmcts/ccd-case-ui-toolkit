@@ -100,6 +100,15 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
       expect(actual).toBe(' two');
     });
 
+    it('should not substitute if placeholder is missing characters', () => {
+      let pageFormFields = { '_1_one': '${_1_one}', '_2_two': 'two' , 'three' : 'three'};
+      let stringToResolve = '${_1_one ${_2_two} {three}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe('${_1_one two {three}');
+    });
+
     it('should substitute fields with multi select values', () => {
       let pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one-LABEL': ['label1', 'label2'], '_3_three': 'simpleValue' };
       let stringToResolve = '${_1_one} ${_3_three}';
