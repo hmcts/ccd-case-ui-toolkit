@@ -19,6 +19,7 @@ import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
 import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
+import { ErrorNotifierService } from '../../services/error';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -47,6 +48,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ignoreWarning = false;
   activitySubscription: Subscription;
   caseSubscription: Subscription;
+  errorSubscription: Subscription;
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
@@ -60,7 +62,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private alertService: AlertService,
     private draftService: DraftService,
-    private caseNotifier: CaseNotifier
+    private caseNotifier: CaseNotifier,
+    private errorNotifierService: ErrorNotifierService
   ) {}
 
   ngOnInit() {
@@ -78,6 +81,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
+    this.errorSubscription = this.errorNotifierService.error.subscribe(error => {
+      if (error.status && error.status !== 401 && error.status !== 403) {
+        this.error = error;
+        this.callbackErrorsSubject.next(this.error);
+      }
+    });
   }
 
   isPrintEnabled(): boolean {
@@ -92,6 +101,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     if (!this.route.snapshot.data.case) {
       this.caseSubscription.unsubscribe();
     }
+    this.errorSubscription.unsubscribe();
   }
 
   postViewActivity(): Observable<Activity[]> {
@@ -218,15 +228,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.dialogConfig.closeOnNavigation = false;
     this.dialogConfig.position = {
       top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
-  }
-
-  private handleError(error: HttpError, trigger: CaseViewTrigger) {
-    if (error.status !== 401 && error.status !== 403) {
-      this.error = error;
-      console.log('error during triggering event:', trigger.id);
-      console.log(error);
-      this.callbackErrorsSubject.next(this.error);
     }
   }
 

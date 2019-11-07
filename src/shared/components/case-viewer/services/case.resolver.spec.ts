@@ -22,7 +22,6 @@ describe('CaseResolver', () => {
     let draftService: DraftService;
     let casesService: any;
     let caseNotifier: any;
-    let alertService: AlertService;
     let navigationNotifierService: NavigationNotifierService;
     let route: any;
 
@@ -36,10 +35,9 @@ describe('CaseResolver', () => {
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
-      alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, alertService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       route = {
         firstChild: {
@@ -177,7 +175,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, alertService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -201,7 +199,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, alertService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -260,7 +258,7 @@ describe('CaseResolver', () => {
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, alertService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       route = {
         firstChild: {
