@@ -28,6 +28,18 @@ app.use(function (req, res) {
         response = db.get('event-trigger_EnterCaseIntoLegacy').value();
       } else if (req.url.indexOf('event-triggers/stopCase') !== -1) {
         response = db.get('event-trigger_StopCase').value();
+      } else if (req.url.indexOf('event-triggers/failCallback') !== -1) {
+        res.status(422).send({
+          message: 'Unable to proceed because there are one or more callback Errors or Warnings',
+          callbackWarnings : [
+            "warning1",
+            "warning2"
+          ],
+          callbackErrors: [
+            "error1",
+            "error2"
+          ]
+       });;
       } else if (req.url.indexOf('internal/cases/1111222233334444/events') !== -1) {
         response = db.get('history').value();
       } else if (req.url.indexOf('internal/cases/1111222233334444') !== -1) {

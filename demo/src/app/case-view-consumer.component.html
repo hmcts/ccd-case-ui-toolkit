@@ -10,6 +10,12 @@
                         <li>case - an id of a case (e.g. 1111222233334444)</li>
                         <li>hasPrint - optionally display/hide print button (true by default)</li>
                         <li>hasEventSelector - optionally display/hide event selector dropdown (true by default)</li>
+                        <li>error - http error as a result of failed navigation (e.g. callback warnings or errors)</li>
+                    </ul>
+                </li>
+                <li>Output fields:
+                    <ul class="list list-bullet text">
+                        <li>navigationTriggered - notification about triggered navigation</li>
                     </ul>
                 </li>
             </ul>
@@ -21,7 +27,8 @@
         </pre>
 
         <div class="example">
-            <ccd-case-view [case]="caseId" [hasPrint]="false" [hasEventSelector]="false"></ccd-case-view>
+            <ccd-case-view [case]="caseId" [hasPrint]="false" [hasEventSelector]="true" [error]="error"
+                (navigationTriggered)="navigationTriggered($event)"></ccd-case-view>
         </div>
     </main>
 </div>

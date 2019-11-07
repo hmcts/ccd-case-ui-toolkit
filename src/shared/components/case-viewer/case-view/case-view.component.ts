@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AlertService } from '../../../services/alert';
-import { CaseView, Draft } from '../../../domain';
+import { CaseView, Draft, HttpError } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError, Subscription } from 'rxjs';
@@ -20,6 +20,8 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   hasPrint = true;
   @Input()
   hasEventSelector = true;
+  @Input()
+  error: HttpError;
 
   @Output()
   navigationTriggered: EventEmitter<any> = new EventEmitter();

@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
@@ -25,7 +25,7 @@ import { ErrorNotifierService } from '../../services/error';
   templateUrl: './case-viewer.component.html',
   styleUrls: ['./case-viewer.scss']
 })
-export class CaseViewerComponent implements OnInit, OnDestroy {
+export class CaseViewerComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
@@ -34,13 +34,14 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   hasPrint = true;
   @Input()
   hasEventSelector = true;
+  @Input()
+  error;
 
   BANNER = DisplayMode.BANNER;
 
   caseDetails: CaseView;
   sortedTabs: CaseTab[];
   caseFields: CaseField[];
-  error: any;
   triggerTextStart = CaseViewerComponent.TRIGGER_TEXT_START;
   triggerTextIgnoreWarnings = CaseViewerComponent.TRIGGER_TEXT_CONTINUE;
   triggerText: string = CaseViewerComponent.TRIGGER_TEXT_START;
@@ -86,6 +87,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         this.callbackErrorsSubject.next(this.error);
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.error && changes.error.currentValue) {
+      this.error = changes.error.currentValue;
+      this.callbackErrorsSubject.next(this.error);
+    }
   }
 
   isPrintEnabled(): boolean {
