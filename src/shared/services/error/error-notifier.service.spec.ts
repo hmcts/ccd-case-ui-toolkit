@@ -13,7 +13,7 @@ describe('ErrorNotifierService', () => {
     errorNotifierService.errorSource = spyErrorSource;
   });
 
-  it('should map simple error to associated form control', () => {
+  it('should push the error out through the error source', () => {
     let error = new HttpError();
     errorNotifierService.announceError(error);
     expect(spyErrorSource.next).toHaveBeenCalledWith(error);
