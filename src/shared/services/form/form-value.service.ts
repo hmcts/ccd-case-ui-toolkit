@@ -110,6 +110,8 @@ export class FormValueService {
    *      value=value32
    *
    * If key is pointing at a complex or collection leaf (not simple, collection of simple or multiselect types) then undefined is returned.
+   * Also no key referring a leaf that is contained within collection will contain index number. The index is passed as an argument to the
+   * method.
    * @param form form
    * @param fieldKey dot separated reference to value
    * @param colIndex index of collection item being referenced or 0 otherwise
