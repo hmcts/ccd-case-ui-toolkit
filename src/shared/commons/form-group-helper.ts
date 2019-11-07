@@ -1,4 +1,5 @@
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { CollectionsHelpers } from './collections-helpers';
 
 export class FormGroupHelper {
   constructor() {}
@@ -26,6 +27,7 @@ export class FormGroupHelper {
   private getControlValueFromTopLevelForm(componentId: string, group: AbstractControl): any {
     let formGroup: FormGroup = <FormGroup>  group;
     let control;
+    let collectionsHelpers = new CollectionsHelpers();
     // If the formGroup is empty it means that there is no any control.
     if (this.isAValidForm(group)) { return Array(); }
     // map through the FormGroup controls.
@@ -42,7 +44,7 @@ export class FormGroupHelper {
           // map through the FormArray controls.
           return abstractControl.controls.map((formControl) => {
             return this.getControlValueFromTopLevelForm(componentId, formControl)
-          }).filter(this.filterElement);
+          }).filter(collectionsHelpers.filterElement);
           // If the control is not a FormGroup then we know it's a FormControl
         } else {
           if (key === componentId) {
@@ -51,19 +53,9 @@ export class FormGroupHelper {
         }
       }
       return control;
-    }).filter(this.filterElement);
-    const flattenedArray = this.flatAnArray(formControls);
-    return this.flatAnArray(Array.from(new Set(flattenedArray).values()));
-  }
-
-  private filterElement (el) {
-    return el != null;
-  }
-
-  private flatAnArray (array) {
-    return array.reduce((acc, item) => {
-      return acc.concat(item);
-    }, []);
+    }).filter(collectionsHelpers.filterElement);
+    const flattenedArray = collectionsHelpers.flatAnArray(formControls);
+    return collectionsHelpers.flatAnArray(Array.from(new Set(flattenedArray).values()));
   }
 
 }
