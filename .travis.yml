@@ -7,9 +7,8 @@ node_js:
 matrix:
   # Allow node 12.x to fail until dependencies start working
   allow_failures:
-    node_js:
-      - "node"
-      - "lts/*"
+    - node_js: "node"
+    - node_js: "lts/*"
 cache: yarn
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
