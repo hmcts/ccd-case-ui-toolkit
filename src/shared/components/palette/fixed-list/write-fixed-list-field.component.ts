@@ -26,9 +26,15 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
 
   private sortListItems() {
     if (this.hasADefinedDisplayOrder()) {
-      this.caseField.list_items.sort((param1, param2) => param1.order.localeCompare(param2.order));
+      this.caseField.list_items.sort( (param1, param2) => {
+        if (param1 > param2) { return -1; }
+        if ( param1  < param2) { return 1; }
+        return 0;
+      });
+
+    } else {
+      this.caseField.list_items.reverse();
     }
-    this.caseField.list_items.reverse();
   }
 
   private hasADefinedDisplayOrder(): boolean {
