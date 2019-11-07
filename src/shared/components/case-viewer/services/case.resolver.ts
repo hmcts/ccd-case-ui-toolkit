@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { AlertService, DraftService, NavigationOrigin } from '../../../services';
+import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
@@ -24,8 +24,7 @@ export class CaseResolver implements Resolve<CaseView> {
               private casesService: CasesService,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
-              private router: Router,
-              private alertService: AlertService) {
+              private router: Router) {
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
