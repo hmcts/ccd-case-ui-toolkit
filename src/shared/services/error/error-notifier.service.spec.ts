@@ -1,15 +1,15 @@
 import { ErrorNotifierService } from './error-notifier.service';
 import createSpyObj = jasmine.createSpyObj;
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { HttpError } from '../../domain';
 
 describe('ErrorNotifierService', () => {
   let errorNotifierService: ErrorNotifierService;
-  let spyErrorSource: BehaviorSubject<any>;
+  let spyErrorSource: Subject<any>;
 
   beforeEach(() => {
     errorNotifierService = new ErrorNotifierService();
-    spyErrorSource = createSpyObj<BehaviorSubject<any>>('errorSource', ['asObservable', 'next']);
+    spyErrorSource = createSpyObj<Subject<any>>('errorSource', ['asObservable', 'next']);
     errorNotifierService.errorSource = spyErrorSource;
   });
 

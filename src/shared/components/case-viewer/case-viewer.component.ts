@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { CaseField } from '../../domain/definition';
 import { ShowCondition } from '../../directives/conditional-show/domain';
 import { Draft, DRAFT_QUERY_PARAM } from '../../domain';
-import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { CaseView, CaseViewTrigger } from '../../domain/case-view';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
@@ -102,7 +101,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.caseSubscription.unsubscribe();
     }
     this.errorSubscription.unsubscribe();
-    this.errorNotifierService.announceError(null);
   }
 
   postViewActivity(): Observable<Activity[]> {

@@ -1,9 +1,9 @@
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ErrorNotifierService {
-  errorSource: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  errorSource: Subject<any> = new Subject<any>();
   error = this.errorSource.asObservable();
 
   announceError(error: any) {
