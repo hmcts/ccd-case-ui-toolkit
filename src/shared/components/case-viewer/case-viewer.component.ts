@@ -1,5 +1,5 @@
 import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { CaseField } from '../../domain/definition';
 import { ShowCondition } from '../../directives/conditional-show/domain';
 import { Draft, DRAFT_QUERY_PARAM } from '../../domain';
-import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
 import { CaseView, CaseViewTrigger } from '../../domain/case-view';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
@@ -17,7 +16,9 @@ import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { CaseService } from '../case-editor';
+import { CaseNotifier } from '../case-editor';
+import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
+import { ErrorNotifierService } from '../../services/error';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -44,7 +45,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   triggerTextIgnoreWarnings = CaseViewerComponent.TRIGGER_TEXT_CONTINUE;
   triggerText: string = CaseViewerComponent.TRIGGER_TEXT_START;
   ignoreWarning = false;
-  subscription: Subscription;
+  activitySubscription: Subscription;
+  caseSubscription: Subscription;
+  errorSubscription: Subscription;
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
@@ -52,20 +55,20 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   constructor(
     private ngZone: NgZone,
     private route: ActivatedRoute,
-    private router: Router,
+    private navigationNotifierService: NavigationNotifierService,
     private orderService: OrderService,
     private activityPollingService: ActivityPollingService,
     private dialog: MatDialog,
     private alertService: AlertService,
     private draftService: DraftService,
-    private caseService: CaseService
-  ) {
-  }
+    private caseNotifier: CaseNotifier,
+    private errorNotifierService: ErrorNotifierService
+  ) {}
 
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
-      this.caseService.caseView.subscribe(caseDetails => {
+      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.init();
       });
@@ -77,6 +80,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
+    this.errorSubscription = this.errorNotifierService.error.subscribe(error => {
+      if (error && error.status !== 401 && error.status !== 403) {
+        this.error = error;
+        this.callbackErrorsSubject.next(this.error);
+      }
+    });
   }
 
   isPrintEnabled(): boolean {
@@ -85,9 +94,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
-      this.subscription.unsubscribe();
+      this.activitySubscription.unsubscribe();
     }
     this.callbackErrorsSubject.unsubscribe();
+    if (!this.route.snapshot.data.case) {
+      this.caseSubscription.unsubscribe();
+    }
+    this.errorSubscription.unsubscribe();
   }
 
   postViewActivity(): Observable<Activity[]> {
@@ -100,7 +113,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.triggerText = CaseViewerComponent.TRIGGER_TEXT_START;
   }
 
-  applyTrigger(trigger: CaseViewTrigger): Promise<boolean | void> {
+  applyTrigger(trigger: CaseViewTrigger) {
     this.error = null;
 
     let theQueryParams: Params = {};
@@ -116,33 +129,27 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              return this.router.navigate(['list/case'])
-                .then(() => {
-                  this.alertService.setPreserveAlerts(true);
-                  this.alertService.success(`The draft has been successfully deleted`);
-                });
+              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
             }, _ => {
-              return this.router.navigate(['list/case']);
+              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
             });
         }
       });
     } else if (this.isDraft() && trigger.id !== CaseViewTrigger.DELETE) {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
-      return this.router.navigate(
-        ['create/case',
-          this.caseDetails.case_type.jurisdiction.id,
-          this.caseDetails.case_type.id,
-          trigger.id], {queryParams: theQueryParams}).catch(error => {
-        this.handleError(error, trigger)
-      });
+      this.navigationNotifierService.announceNavigation(
+        {action: NavigationOrigin.DRAFT_RESUMED,
+          jid: this.caseDetails.case_type.jurisdiction.id,
+          ctid: this.caseDetails.case_type.id,
+          etid: trigger.id,
+          queryParams : theQueryParams});
     } else {
-      return this.router.navigate(['trigger', trigger.id], {
-        queryParams: theQueryParams,
-        relativeTo: this.route
-      }).catch(error => {
-        this.handleError(error, trigger)
-      });
+      this.navigationNotifierService.announceNavigation(
+        {action: NavigationOrigin.EVENT_TRIGGERED,
+          queryParams: theQueryParams,
+          etid: trigger.id,
+          relativeTo: this.route});
     }
   }
 
@@ -183,7 +190,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular(() => {
-        this.subscription = this.postViewActivity().subscribe((_resolved) => {
+        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
           // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
         });
       });
@@ -220,15 +227,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.dialogConfig.closeOnNavigation = false;
     this.dialogConfig.position = {
       top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
-  }
-
-  private handleError(error: HttpError, trigger: CaseViewTrigger) {
-    if (error.status !== 401 && error.status !== 403) {
-      this.error = error;
-      console.log('error during triggering event:', trigger.id);
-      console.log(error);
-      this.callbackErrorsSubject.next(this.error);
     }
   }
 

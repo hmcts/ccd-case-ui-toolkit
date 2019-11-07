@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { CaseService, CasesService } from '../../case-editor';
-import { AlertService, DraftService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
+import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -19,11 +20,11 @@ export class CaseResolver implements Resolve<CaseView> {
   // we cache the case view to avoid retrieving it for each child route
   public cachedCaseView: CaseView;
   previousUrl: string;
-  constructor(private caseService: CaseService,
+  constructor(private caseNotifier: CaseNotifier,
               private casesService: CasesService,
               private draftService: DraftService,
-              private router: Router,
-              private alertService: AlertService) {
+              private navigationNotifierService: NavigationNotifierService,
+              private router: Router) {
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -47,8 +48,7 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private navigateToCaseList() {
-    this.router.navigate(['/list/case'])
-    .then(() => this.alertService.success(CaseResolver.CASE_CREATED_MSG));
+    this.navigationNotifierService.announceNavigation({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
   }
 
   private isRootCaseViewRoute(route: ActivatedRouteSnapshot) {
@@ -70,7 +70,7 @@ export class CaseResolver implements Resolve<CaseView> {
         .pipe(
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-            this.caseService.announceCase(this.cachedCaseView);
+            this.caseNotifier.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))
@@ -84,7 +84,7 @@ export class CaseResolver implements Resolve<CaseView> {
       .pipe(
         map(caseView => {
           this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-          this.caseService.announceCase(this.cachedCaseView);
+          this.caseNotifier.announceCase(this.cachedCaseView);
           return this.cachedCaseView;
         }),
         catchError(error => this.checkAuthorizationError(error))
