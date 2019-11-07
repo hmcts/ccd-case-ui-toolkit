@@ -11,7 +11,7 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
 import { PaletteUtilsModule } from '../../components/palette/utils';
 import { CaseField } from '../../domain/definition';
 import { PlaceholderService } from '../../directives/substitutor/services';
-import { FieldsUtils, NavigationNotifierService, NavigationOrigin } from '../../services/';
+import { FieldsUtils, NavigationNotifierService, NavigationOrigin, ErrorNotifierService } from '../../services/';
 import { LabelSubstitutorDirective } from '../../directives/substitutor';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
@@ -444,6 +444,7 @@ let dialog: any;
 let matDialogRef: any;
 let caseNotifier: any;
 let navigationNotifierService: NavigationNotifierService;
+let errorNotifierService: ErrorNotifierService;
 
 describe('CaseViewerComponent', () => {
 
@@ -470,6 +471,7 @@ describe('CaseViewerComponent', () => {
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+    errorNotifierService = new ErrorNotifierService();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -504,6 +506,7 @@ describe('CaseViewerComponent', () => {
           PlaceholderService,
           CaseReferencePipe,
           {provide: NavigationNotifierService, useValue: navigationNotifierService},
+          {provide: ErrorNotifierService, useValue: errorNotifierService},
           {provide: CaseNotifier, useValue: caseNotifier},
           {provide: ActivatedRoute, useValue: mockRoute},
           {provide: OrderService, useValue: orderService},
@@ -748,7 +751,8 @@ describe('CaseViewerComponent', () => {
   });
 
   it('should display error when form error get set', () => {
-    component.error = ERROR;
+    ERROR.status = 200;
+    errorNotifierService.announceError(ERROR);
     fixture.detectChanges();
 
     let error = de.query($ERROR_SUMMARY);
@@ -847,6 +851,8 @@ describe('CaseViewerComponent - no tabs available', () => {
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+    errorNotifierService = new ErrorNotifierService();
+    spyOn(errorNotifierService, 'announceError').and.callThrough();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -883,6 +889,7 @@ describe('CaseViewerComponent - no tabs available', () => {
           PlaceholderService,
           CaseReferencePipe,
           { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
           { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
@@ -929,6 +936,8 @@ describe('CaseViewerComponent - print and event selector disabled', () => {
 
      navigationNotifierService = new NavigationNotifierService();
      spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+     errorNotifierService = new ErrorNotifierService();
+     spyOn(errorNotifierService, 'announceError').and.callThrough();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -965,6 +974,7 @@ describe('CaseViewerComponent - print and event selector disabled', () => {
           PlaceholderService,
           CaseReferencePipe,
           { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
           { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
