@@ -82,7 +82,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.error = errorEvent;
     });
     this.errorSubscription = this.errorNotifierService.error.subscribe(error => {
-      if (error.status && error.status !== 401 && error.status !== 403) {
+      if (error && error.status !== 401 && error.status !== 403) {
         this.error = error;
         this.callbackErrorsSubject.next(this.error);
       }
@@ -102,6 +102,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.caseSubscription.unsubscribe();
     }
     this.errorSubscription.unsubscribe();
+    this.errorNotifierService.announceError(null);
   }
 
   postViewActivity(): Observable<Activity[]> {
