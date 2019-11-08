@@ -81,6 +81,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, OnChanges {
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
+    // This is designed to be used by CCD UI that will use CaseViewerComponent directly via app.routing root path.
     this.errorSubscription = this.errorNotifierService.error.subscribe(error => {
       if (error && error.status !== 401 && error.status !== 403) {
         this.error = error;
@@ -89,6 +90,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  // This is designed to be used by external UI like ExUI that will import and use CaseViewComponent to use case view functionality.
   ngOnChanges(changes: SimpleChanges) {
     if (changes.error && changes.error.currentValue) {
       this.error = changes.error.currentValue;
