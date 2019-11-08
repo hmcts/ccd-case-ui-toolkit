@@ -31,14 +31,12 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
         if ( param1  < param2) { return 1; }
         return 0;
       });
-
     } else {
       this.caseField.list_items.reverse();
     }
   }
 
   private hasADefinedDisplayOrder(): boolean {
-
     const isDifferentToNull = function (element) { return (element.order !== null); }
     return this.caseField.list_items.every(isDifferentToNull);
   }
