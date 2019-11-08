@@ -47,7 +47,7 @@ describe('CaseViewComponent', () => {
 
   let CaseViewerComponent: any = MockComponent({
     selector: 'ccd-case-viewer',
-    inputs: ['hasPrint', 'hasEventSelector']
+    inputs: ['hasPrint', 'hasEventSelector', 'error']
   });
 
   describe('Case', () => {

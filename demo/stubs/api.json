@@ -2447,6 +2447,12 @@
         "name": "Put the case on hold",
         "description": "This is to put a case on hold",
         "order": 3
+      },
+      {
+        "id": "failCallback",
+        "name": "Fail callback",
+        "description": "This is to fail callback",
+        "order": 4
       }
     ],
     "events": [
