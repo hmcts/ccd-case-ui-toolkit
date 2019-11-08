@@ -1,10 +1,5 @@
 export class CollectionsHelpers {
-  constructor() {
-  }
-
-  filterElement(el) {
-    return el != null;
-  }
+  constructor() { }
 
   flatAnArray(array) {
     return array.reduce((acc, item) => {

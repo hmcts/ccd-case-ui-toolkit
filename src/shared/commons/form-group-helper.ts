@@ -25,6 +25,8 @@ export class FormGroupHelper {
   }
 
   private getControlValueFromTopLevelForm(componentId: string, group: AbstractControl): any {
+    // This inner function filterNullElement is going to be used to clean all empty result coming from map executions.
+    const filterNullElement = function (el) { return el != null; }
     let formGroup: FormGroup = <FormGroup>  group;
     let control;
     let collectionsHelpers = new CollectionsHelpers();
@@ -44,7 +46,7 @@ export class FormGroupHelper {
           // map through the FormArray controls.
           return abstractControl.controls.map((formControl) => {
             return this.getControlValueFromTopLevelForm(componentId, formControl)
-          }).filter(collectionsHelpers.filterElement);
+          }).filter(filterNullElement);
           // If the control is not a FormGroup then we know it's a FormControl
         } else {
           if (key === componentId) {
@@ -53,7 +55,7 @@ export class FormGroupHelper {
         }
       }
       return control;
-    }).filter(collectionsHelpers.filterElement);
+    }).filter(filterNullElement);
     const flattenedArray = collectionsHelpers.flatAnArray(formControls);
     return collectionsHelpers.flatAnArray(Array.from(new Set(flattenedArray).values()));
   }

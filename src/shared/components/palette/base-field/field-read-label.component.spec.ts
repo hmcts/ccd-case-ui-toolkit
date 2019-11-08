@@ -1,13 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
 import { text } from '../../../test/helpers';
 import { FieldReadLabelComponent } from './field-read-label.component';
 import { newCaseField, createFieldType } from '../../../fixture';
 
 const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL')
+  .withValue('Johnny').build();
+
+const CASE_REFERENCE_TYPE: FieldType = createFieldType('TextCaseReference', 'Text', [], null);
+const CASE_REFERENCE: CaseField = newCaseField('CaseReference', 'Case Reference', null, CASE_REFERENCE_TYPE, 'READONLY').build();
+const CASE_LINK_TYPE: FieldType = createFieldType('CaseLink', 'Complex', [CASE_REFERENCE], null);
+const CASE_LINK_FIELD: CaseField = newCaseField('CaseLinkField', 'Case Link', null, CASE_LINK_TYPE, 'OPTIONAL')
   .withValue('Johnny').build();
 
 const CASE_FIELD_OF_LABEL_TYPE: CaseField = newCaseField('PersonFirstName', 'First name', null,
@@ -68,5 +74,15 @@ describe('FieldReadLabelComponent', () => {
 
     let label = de.query(BY_FIELD_LABEL);
     expect(label).toBeFalsy();
+  });
+
+  it('should display label for a CaseLink', () => {
+    component.caseField = CASE_LINK_FIELD;
+    component.withLabel = true;
+    fixture.detectChanges();
+
+    let label = de.query(BY_FIELD_LABEL);
+    expect(label).toBeTruthy();
+    expect(text(label)).toEqual(CASE_LINK_FIELD.label);
   });
 });
