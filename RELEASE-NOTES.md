@@ -1,5 +1,12 @@
 ## RELEASE NOTES
 
+### Version 2.62.18-RDM-5296-prerelease
+**RDM-5296** Table Collection View - Case Link is not displayed as a link
+**RDM-5293** Table Collection View - Data from the first complex type is repeated for all collection items
+
+### Version 2.60.5-RDM-6350-RC1-prerelease
+**RDM-6350** - Fix for AboutToStart callback not showing errors correctly in UI
+
 ### Version 2.60.2-RDM-5928-RC1-prerelease
 **RDM-6055** [Immigration and Asylum]- PDF file format is not supported by MV
 
