@@ -44,6 +44,7 @@ import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.c
 import { FixedRadioListModule } from './fixed-radio-list';
 import { CaseHistoryViewerModule } from './history';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
+import { CaseLinkModule } from './case-link/case-link.module';
 
 @NgModule({
   imports: [
@@ -71,6 +72,7 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
+    CaseLinkModule
   ],
   declarations: [
     UnsupportedFieldComponent,
@@ -84,7 +86,6 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
-    ReadCaseLinkFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -94,7 +95,6 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
-    WriteCaseLinkFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
