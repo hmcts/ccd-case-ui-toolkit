@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.19-RDM-6084-prerelease November 8 2019
+**RDM-6084** - Unable to open case in new tab from filter/search results pages
+
 ### Version 2.60.5-RDM-6350-RC1-prerelease
 **RDM-6350** - Fix for AboutToStart callback not showing errors correctly in UI
 
