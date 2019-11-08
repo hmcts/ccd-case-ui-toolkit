@@ -31,33 +31,21 @@ export class CaseViewConsumerComponent implements OnInit {
         if (navigation) {
             switch (navigation.action) {
                 case NavigationOrigin.DRAFT_DELETED:
-                return this.router.navigate(['list/case'])
-                    .then(() => {
-                    this.alertService.setPreserveAlerts(true);
-                    this.alertService.success(CaseViewConsumerComponent.DRAFT_DELETED_MSG);
-                    });
+                    // navigation after a sucessful deletion of a draft
                 case NavigationOrigin.ERROR_DELETING_DRAFT:
-                return this.router.navigate(['list/case']);
+                    // navigation after an error occurs on trying to delete draft
                 case NavigationOrigin.DRAFT_RESUMED:
-                return this.router.navigate(
-                    ['create/case',
-                    navigation.jid,
-                    navigation.ctid,
-                    navigation.etid], { queryParams: navigation.queryParams }).catch(error => {
-                    this.handleError(error, navigation.etid);
-                });
+                    // navigation after a draft is resumed
                 case NavigationOrigin.EVENT_TRIGGERED:
-                return this.router.navigate(['trigger', navigation.etid], {
-                    queryParams: navigation.queryParams,
-                    relativeTo: navigation.relativeTo
-                }).catch(error => {
-                    this.handleError(error, navigation.etid);
-                });
-                case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
-                return this.router.navigate((['/list/case']))
-                    .then(() => {
-                    this.alertService.success(CaseViewConsumerComponent.CASE_CREATED_MSG);
+                    // navigation after event is triggered
+                    return this.router.navigate(['trigger', navigation.etid], {
+                        queryParams: navigation.queryParams,
+                        relativeTo: navigation.relativeTo
+                    }).catch(error => {
+                        this.handleError(error, navigation.etid);
                     });
+                case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
+                    // navigation after user has no READ access when redirected to case view after a case created
             }
         }
     }
