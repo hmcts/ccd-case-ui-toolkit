@@ -17,13 +17,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly DOCUMENT_FILENAME = 'document_filename';
   static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
+  static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
+
   private uploadedDocument: FormGroup;
   private selectedFile: File;
   private dialogConfig: MatDialogConfig;
   @ViewChild('fileInput') fileInput: ElementRef;
 
   valid = true;
-  uploadError: string;
+  fileUploadMessages: string;
   confirmReplaceResult: string;
   clickInsideTheDocument: boolean;
 
@@ -62,8 +64,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   fileValidations () {
 
     if (this.isAMandatoryComponent()) {
-      if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() ) {
-        this.displayFileErrors();
+      if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
+        this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
   }
@@ -72,7 +74,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     if (this.isAMandatoryComponent()) {
       if ( this.validateFormUploadedDocument() ) {
-        this.displayFileErrors();
+        this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
   }
@@ -81,7 +83,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
-
+      this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS);
       // Perform the file upload immediately on file selection
       let documentUpload: FormData = new FormData();
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
@@ -99,14 +101,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
         this.valid = true;
       }, (error: HttpError) => {
-        this.uploadError = this.getErrorMessage(error);
+        this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
       });
     } else {
       if (this.isAMandatoryComponent()) {
         this.selectedFile = null;
         this.updateDocumentForm(null, null, null);
-        this.displayFileErrors();
+        this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
   }
@@ -164,11 +166,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY;
   }
 
-  private displayFileErrors () {
+  private displayFileUploadMessages ( fileUploadMessage: string ) {
     this.valid = false;
-    this.uploadError = WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED;
+    this.fileUploadMessages = fileUploadMessage;
   }
 
+  private isUpLoadingAFile(): boolean {
+    return this.fileUploadMessages === WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS
+  }
   private validateFormUploadedDocument():  boolean {
     if (!this.uploadedDocument ) {
       return true;
@@ -207,7 +212,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (0 === error.status || 502 === error.status) {
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     }
-
     return error.error;
   }
 }
