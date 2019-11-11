@@ -26,9 +26,7 @@ export class CasePrinterComponent implements OnInit, OnDestroy {
     this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
       this.casesService
-        .getPrintDocuments(this.caseDetails.case_type.jurisdiction.id,
-                           this.caseDetails.case_type.id,
-                           this.caseDetails.case_id)
+        .getPrintDocuments(this.caseDetails.case_id)
         .pipe(
           map(documents => {
 
