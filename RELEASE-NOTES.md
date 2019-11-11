@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.21-RDM-4335-prerelease
+**RDM-4335** - Implement and consume external POST Create Case endpoint in API v2
+
 ### Version 2.62.18-RDM-5296-prerelease
 **RDM-5296** Table Collection View - Case Link is not displayed as a link
 **RDM-5293** Table Collection View - Data from the first complex type is repeated for all collection items
