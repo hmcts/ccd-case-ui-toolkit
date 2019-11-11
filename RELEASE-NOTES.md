@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.20-RDM-5883-prerelease - November 11 2019
+Revert 5883 - Implement and consume external GET Printable Documents endpoint in API v2
+
 ### Version 2.59.4 - August 19 2019
 Revert 5398 - Document in collections
 
