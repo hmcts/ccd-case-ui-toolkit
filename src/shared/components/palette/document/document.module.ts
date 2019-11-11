@@ -5,7 +5,6 @@ import { ReadDocumentFieldComponent } from './read-document-field.component';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { PaletteUtilsModule } from '../utils/utils.module';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -19,10 +18,10 @@ import { PaletteUtilsModule } from '../utils/utils.module';
   ],
   entryComponents: [
     ReadDocumentFieldComponent,
-    WriteDocumentFieldComponent
+    WriteDocumentFieldComponent,
   ],
   exports: [
-    DocumentUrlPipe
+    DocumentUrlPipe,
   ]
 })
-export class DocumentModule {}
+export class DocumentModule { }

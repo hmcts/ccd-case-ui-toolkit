@@ -8,7 +8,8 @@ import {
   OrderService,
   DraftService,
   HttpService,
-  NavigationNotifierService
+  NavigationNotifierService,
+  ErrorNotifierService
 } from '../../services';
 import { ErrorsModule } from '../error/errors.module';
 import { ActivityModule } from '../activity/activity.module';
@@ -64,6 +65,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
     DraftService,
     HttpService,
     CaseResolver,
+    ErrorNotifierService,
   ]
 })
 export class CaseViewerModule {

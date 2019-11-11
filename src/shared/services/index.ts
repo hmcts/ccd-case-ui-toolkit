@@ -5,6 +5,7 @@ export * from './auth';
 export * from './case-fields';
 export * from './document-management';
 export * from './draft';
+export * from './error';
 export * from './eventStatusService';
 export * from './fields';
 export * from './form';
