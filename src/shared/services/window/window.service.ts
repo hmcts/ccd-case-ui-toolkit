@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UrlTree } from '@angular/router';
 
 @Injectable()
 export class WindowService {
@@ -17,7 +18,12 @@ export class WindowService {
   clearLocalStorage() {
     window.localStorage.clear();
   }
+
   removeLocalStorage(key: string) {
     window.localStorage.removeItem(key);
+  }
+
+  openOnNewTab(url: string): void {
+    window.open(url, '_blank');
   }
 }

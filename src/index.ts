@@ -25,6 +25,7 @@ export { FieldTypeSanitiser,
          WorkbasketInputFilterService,
          JurisdictionService,
          SearchResultViewItemComparatorFactory,
+         ErrorNotifierService,
          NavigationNotifierService,
          NavigationOrigin,
 } from './shared/services';
