@@ -142,7 +142,7 @@ describe('SearchResultComponent', () => {
       activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
 
-      searchHandler = createSpyObj('searchHandler', ['applyFilters', 'navigateToCase']);
+      searchHandler = createSpyObj('searchHandler', ['applyFilters']);
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
@@ -178,7 +178,7 @@ describe('SearchResultComponent', () => {
       component = fixture.componentInstance;
 
       component.changePage.subscribe(searchHandler.applyFilters);
-      component.clickCase.subscribe(searchHandler.navigateToCase);
+      component.caseLinkUrlTemplate = '/case/jurisdiction_id/caseType_id/case_id';
       component.jurisdiction = JURISDICTION;
       component.caseType = CASE_TYPE;
       component.resultView = RESULT_VIEW;
@@ -338,13 +338,10 @@ describe('SearchResultComponent', () => {
       });
     });
 
-    it('should emit correct ID when go to case is triggered', () => {
-      let id = 'ID001'
-      component.goToCase(id);
-      expect(searchHandler.navigateToCase).toHaveBeenCalledWith({
-        caseId: id
-      });
-
+    it('should replace the caseLink url placeholders with a valid data', () => {
+      let id = 'ID001';
+      let url = component.prepareCaseLinkUrl(id);
+      expect(url).toBe('/case/' + JURISDICTION.id + '/' + CASE_TYPE.id + '/' + id);
     });
 
     it('should select correct page if new page triggered from outside', () => {
