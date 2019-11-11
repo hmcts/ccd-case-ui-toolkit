@@ -3,6 +3,9 @@
 ### Version 2.62.21-RDM-4335-prerelease
 **RDM-4335** - Implement and consume external POST Create Case endpoint in API v2
 
+### Version 2.62.19-RDM-6084-prerelease November 8 2019
+**RDM-6084** - Unable to open case in new tab from filter/search results pages
+
 ### Version 2.62.18-RDM-5296-prerelease
 **RDM-5296** Table Collection View - Case Link is not displayed as a link
 **RDM-5293** Table Collection View - Data from the first complex type is repeated for all collection items
