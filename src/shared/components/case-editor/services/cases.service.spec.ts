@@ -472,16 +472,20 @@ describe('CasesService', () => {
 
   describe('getPrintDocuments()', () => {
 
-    const DOCUMENTS: CasePrintDocument[] = [
-      {
-        name: 'Doc1',
-        type: 'application/pdf',
-        url: 'https://test.service.reform.hmcts.net/doc1'
-      }
-    ];
+    const DOCUMENTS = {
+      documentResources: [
+        {
+          name: 'Doc1',
+          type: 'application/pdf',
+          url: 'https://test.service.reform.hmcts.net/doc1'
+        }
+      ]
+    };
+    const HEADERS = new Headers({'content-type': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS});
 
     beforeEach(() => {
       httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+        headers: HEADERS,
         body: JSON.stringify(DOCUMENTS)
       }))));
     });
@@ -504,7 +508,7 @@ describe('CasesService', () => {
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe(
-          eventTrigger => expect(eventTrigger).toEqual(DOCUMENTS)
+          eventTrigger => expect(eventTrigger).toEqual(DOCUMENTS.documentResources)
         );
     });
 
@@ -514,7 +518,7 @@ describe('CasesService', () => {
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe(data => {
-          expect(data).toEqual(DOCUMENTS);
+          expect(data).toEqual(DOCUMENTS.documentResources);
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
