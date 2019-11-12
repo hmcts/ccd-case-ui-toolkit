@@ -14,7 +14,6 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
     let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
     this.fixedListControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null));
     this.sortListItems();
-    console.log('hasADefinedDisplayOrder: ' + this.hasADefinedDisplayOrder());
     if (this.hasSanitisedDynamicListData()) {
       this.fixedListControl.setValue(this.caseField.value);
     }
