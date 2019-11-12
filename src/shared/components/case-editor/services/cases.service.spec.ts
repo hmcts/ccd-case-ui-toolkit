@@ -491,7 +491,6 @@ describe('CasesService', () => {
     });
 
     it('should use HttpService::get with correct url', () => {
-
       const headers = new Headers({
         'experimental': 'true',
         'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
