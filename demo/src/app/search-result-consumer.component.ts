@@ -31,6 +31,7 @@ export class SearchResultConsumerComponent implements OnInit {
         [paginationMetadata]="paginationMetadata"
         [metadataFields]="metadataFields"
         (changePage)="apply($event)"
+        (clickCase)="gotoCase($event)"
     ></ccd-search-result>`;
 
     constructor(
@@ -42,7 +43,7 @@ export class SearchResultConsumerComponent implements OnInit {
 
         for (let i = 0; i < 27; i++) {
             this.resultsArr.push({
-                case_id: '1',
+                case_id: '' + (i + 1),
                 case_fields: {
                     TextField: 'Text field ' + (i + 1)
                 }
@@ -132,7 +133,7 @@ export class SearchResultConsumerComponent implements OnInit {
 
     apply(selected) {
         const startingPoint = (selected.page - 1) * this.appConfig.getPaginationPageSize();
-        const endingPoint = startingPoint + this.appConfig.getPaginationPageSize()
+        const endingPoint = startingPoint + this.appConfig.getPaginationPageSize();
         const newArr = this.resultsArr.slice(startingPoint, endingPoint);
 
         this.resultView = {
@@ -158,5 +159,9 @@ export class SearchResultConsumerComponent implements OnInit {
         console.log(selected);
 
     }
+
+  gotoCase(data) {
+    console.log('data: ', data);
+  }
 
 }
