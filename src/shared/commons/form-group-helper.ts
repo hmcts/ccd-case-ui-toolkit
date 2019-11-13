@@ -1,8 +1,9 @@
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CollectionsHelpers } from './collections-helpers';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class FormGroupHelper {
-  constructor() {}
   /**
    * This function is going to find a component's value by a component id. It will search the component's value
    * in the FormGroup container.

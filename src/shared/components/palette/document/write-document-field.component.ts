@@ -41,7 +41,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog) {
+  constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog,
+              private formGroupHelper: FormGroupHelper) {
     super();
   }
 
@@ -192,12 +193,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).setValue(url);
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).setValue(binaryUrl);
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).setValue(filename);
+    this.uploadedDocument.get(this.caseValueComponentId).setValue(this.createDocument(url, binaryUrl, filename));
+  }
+
+  private createDocument(url: string, binaryUrl: string, filename: string): any {
     const value = {
       'document_url': url,
       'document_binary_url': binaryUrl,
       'document_filename': filename
     };
-    this.uploadedDocument.get(this.caseValueComponentId).setValue(value);
+    return value;
   }
   private createDocumentFormWithValidator(url: string, binaryUrl: string, filename: string) {
     this.uploadedDocument = this.registerControl(new FormGroup({
@@ -228,7 +233,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private getDocument (): any {
     // caseValue: Document values coming from not submitted case.
     // this.caseField.value;: Document values coming from submitted case.
-    let caseValue = new FormGroupHelper().findControlValueFromFromGroup(this.caseValueComponentId, this.formGroup);
+    let caseValue = this.formGroupHelper.findControlValueFromFromGroup(this.caseValueComponentId, this.formGroup);
     let document =  caseValue || this.caseField.value;
     return document;
   }

@@ -14,6 +14,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { FormGroupHelper } from '../../../commons/form-group-helper';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -73,6 +74,7 @@ describe('WriteDocumentFieldComponent', () => {
     return control;
   };
   const DIALOG_CONFIG = new MatDialogConfig();
+  const formGroupHelper = new FormGroupHelper();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 
@@ -116,6 +118,7 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: FormGroupHelper, useValue: formGroupHelper},
           DocumentDialogComponent
         ]
       })
@@ -329,6 +332,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let componentDialog: DocumentDialogComponent;
   let deDialog: DebugElement;
   let dialog: any;
+  const formGroupHelper = new FormGroupHelper();
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
 
   beforeEach(() => {
@@ -355,6 +359,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: FormGroupHelper, useValue: formGroupHelper},
           DocumentDialogComponent
         ]
       })
