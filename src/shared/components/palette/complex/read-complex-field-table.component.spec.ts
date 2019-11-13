@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
-import { DebugElement } from '@angular/core';
+import { DebugElement, Directive, Input } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { By } from '@angular/platform-browser';
 import { FieldsFilterPipe } from './fields-filter.pipe';
@@ -9,6 +9,17 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
+import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
+
+@Directive({
+  selector: '[ccdConditionalShow]'
+})
+export class StubConditionalShowDirective {
+  @Input() caseField: CaseField;
+  @Input() contextFields: CaseField[] = [];
+}
 
 describe('ReadComplexFieldTableComponent', () => {
 
@@ -141,11 +152,16 @@ describe('ReadComplexFieldTableComponent', () => {
           declarations: [
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
+            StubConditionalShowDirective,
 
             // Mock
             FieldReadComponent,
           ],
-          providers: []
+          providers: [
+            FieldsUtils,
+            ConditionalShowRegistrarService,
+            GreyBarService
+          ]
         })
         .compileComponents();
 
@@ -322,17 +338,21 @@ describe('ReadComplexFieldTableComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            PaletteUtilsModule,
-            ConditionalShowModule
+            PaletteUtilsModule
           ],
           declarations: [
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
+            StubConditionalShowDirective,
 
             // Mock
             FieldReadComponent,
           ],
-          providers: []
+          providers: [
+            FieldsUtils,
+            ConditionalShowRegistrarService,
+            GreyBarService
+          ]
         })
         .compileComponents();
 
@@ -344,6 +364,43 @@ describe('ReadComplexFieldTableComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
+
+    it('should pass a valid caseField and contextFields to the ccdConditionalShow directive', () => {
+
+      let ccdConditionalShowElements = fixture.debugElement
+        .queryAll(By.directive(StubConditionalShowDirective));
+
+      let directiveElements = ccdConditionalShowElements.map(element => element.injector.get(StubConditionalShowDirective));
+
+      expect(directiveElements.length).toBe(3);
+
+      expect(directiveElements[0].caseField.id).toBe('AddressLine1');
+      expect(directiveElements[0].caseField.value).toBe('Flat 9');
+      expect(directiveElements[1].caseField.id).toBe('AddressLine2');
+      expect(directiveElements[1].caseField.value).toBe('111 East India road');
+      expect(directiveElements[2].caseField.id).toBe('AddressPostcode');
+      expect(directiveElements[2].caseField.field_type.complex_fields[0].id).toBe('PostcodeCity');
+      expect(directiveElements[2].caseField.field_type.complex_fields[1].id).toBe('PostcodeCountry');
+      expect(directiveElements[2].caseField.value).toEqual({
+        PostcodeCity: 'London',
+        PostcodeCountry: 'UK'
+      });
+
+      // all fields should have the same contextFields on the ccdConditionalShow directive
+      for (let i = 0; i < directiveElements.length; i++) {
+        expect(directiveElements[i].contextFields[0].id).toBe('AddressLine1');
+        expect(directiveElements[i].contextFields[0].value).toBe('Flat 9');
+        expect(directiveElements[i].contextFields[1].id).toBe('AddressLine2');
+        expect(directiveElements[i].contextFields[1].value).toBe('111 East India road');
+        expect(directiveElements[i].contextFields[2].id).toBe('AddressPostcode');
+        expect(directiveElements[i].contextFields[2].field_type.complex_fields[0].id).toBe('PostcodeCity');
+        expect(directiveElements[i].contextFields[2].field_type.complex_fields[1].id).toBe('PostcodeCountry');
+        expect(directiveElements[i].contextFields[2].value).toEqual({
+          PostcodeCity: 'London',
+          PostcodeCountry: 'UK'
+        });
+      }
+    });
 
     it('should render a table with a row containing 2 columns for each simple type', () => {
       let values = de
