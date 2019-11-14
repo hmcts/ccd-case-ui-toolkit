@@ -142,7 +142,7 @@ describe('SearchResultComponent', () => {
       activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
 
-      searchHandler = createSpyObj('searchHandler', ['applyFilters']);
+      searchHandler = createSpyObj('searchHandler', ['applyFilters', 'navigateToCase']);
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
