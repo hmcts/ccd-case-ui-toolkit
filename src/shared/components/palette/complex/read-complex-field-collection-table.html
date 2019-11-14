@@ -43,10 +43,10 @@
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue:keepOriginalOrder">
                   <ng-container  *ngFor="let name of item | keyvalue:keepOriginalOrder">
-                    <ng-container  *ngIf="vLabel.key == name.key" >
+                    <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
-                      <th ><span class="text-16">{{vLabel.value.label}}</span></th>
+                      <th><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
                         <ccd-field-read [caseField]="{
                               id: name.key,
@@ -56,7 +56,7 @@
                             }" [context]="context"></ccd-field-read>
                       </td>
                     </tr>
-                    <tr *ngIf="vLabel.value.type === 'Complex'">
+                    <tr *ngIf="vLabel.value.type === 'Complex' && addCaseFieldValue(vLabel.value.caseField, name.value)">
                       <td colspan="2">
                         <ng-container *ngFor="let field of vLabel.value.caseField | ccdFieldsFilter">
                           <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
@@ -71,8 +71,11 @@
                             <tr class="complex-panel-nested-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
                                 [contextFields]="vLabel.value.caseField  | ccdFieldsFilter">
                               <th><span class="text-16">{{field.label}}</span></th>
-                              <td>
+                              <td *ngIf="!name.value.hasOwnProperty('CaseReference')">
                                 <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
+                              </td>
+                              <td *ngIf="name.value.hasOwnProperty('CaseReference')">
+                                <ccd-read-case-link-field [caseField]="addCaseReferenceValue(field, name.value.CaseReference)" [context]="context"></ccd-read-case-link-field>
                               </td>
                             </tr>
                           </ng-template>

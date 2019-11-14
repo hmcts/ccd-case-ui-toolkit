@@ -22,7 +22,6 @@ let CaseEditComponent: any = MockComponent({
 
 describe('CaseCreateComponent event trigger resolved and draft does not exist', () => {
 
-  const JID_UNDEFINED = undefined;
   const ETID = 'TEST_TRIGGER';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     ETID,
@@ -152,7 +151,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     casesService.createCase.and.returnValue(CREATED_CASE_OBS);
     component.submit()(SANITISED_EDIT_FORM);
 
-    expect(casesService.createCase).toHaveBeenCalledWith(JID, CTID, SANITISED_EDIT_FORM);
+    expect(casesService.createCase).toHaveBeenCalledWith(CTID, SANITISED_EDIT_FORM);
   });
 
   it('should validate case details with sanitised data when validated', () => {
