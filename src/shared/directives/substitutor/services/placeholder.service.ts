@@ -74,7 +74,9 @@ ___
         }
 
         private hasUnresolvedPlaceholder() {
-            return this.stringToResolve && this.stringToResolve.match(PlaceholderSubstitutor.PLACEHOLDER_PATTERN);
+            return this.stringToResolve
+                && typeof this.stringToResolve === 'string'
+                && this.stringToResolve.match(PlaceholderSubstitutor.PLACEHOLDER_PATTERN);
         }
 
         private isStartPlaceholderAndNotCollecting(): boolean {
