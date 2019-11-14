@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.22-RDM-4837-prerelease
+**RDM-4837** - Field interpolation syntax is displayed if the source field is NULL
+
 ### Version 2.62.21-RDM-4335-prerelease
 **RDM-4335** - Implement and consume external POST Create Case endpoint in API v2
 
