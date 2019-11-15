@@ -67,7 +67,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             label: 'SomeLabel',
             AddressLine1: 'Flat 9',
             AddressLine2: 222,
-​​​            AddressPostcode: { postcode: 'TE45ED' }
+            AddressPostcode: { postcode: 'TE45ED' }
           }
         },
         {
@@ -75,7 +75,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
               label: 'Label 1',
               AddressLine1: 'AAFlat 10',
               AddressLine2: 111,
-        ​​​      AddressPostcode: { postcode: 'TE45ED' }
+              AddressPostcode: { postcode: 'TE45ED' }
           }
         }
       ]).withDisplayContextParameter('#TABLE(AddressLine1, AddressLine2)').build();

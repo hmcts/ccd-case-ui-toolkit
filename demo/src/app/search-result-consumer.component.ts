@@ -32,6 +32,7 @@ export class SearchResultConsumerComponent implements OnInit {
         [metadataFields]="metadataFields"
         [caseLinkUrlTemplate]="'/v2/case/case_id'"
         (changePage)="apply($event)"
+        (clickCase)="gotoCase($event)"
     ></ccd-search-result>`;
 
     constructor(
@@ -159,5 +160,9 @@ export class SearchResultConsumerComponent implements OnInit {
         console.log(selected);
 
     }
+
+  gotoCase(data) {
+    console.log('data: ', data);
+  }
 
 }
