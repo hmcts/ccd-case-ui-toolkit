@@ -30,6 +30,62 @@ export class FieldsUtils {
     return valueMap;
   }
 
+  public static getType(elem): string {
+    return Object.prototype.toString.call(elem).slice(8, -1);
+  }
+
+  public static isObject(elem) {
+      return this.getType(elem) === 'Object';
+  };
+
+  public static isNonEmptyObject(elem) {
+      return this.isObject(elem) && Object.keys(elem).length !== 0;
+  };
+
+  public static isArray(elem) {
+      return this.getType(elem) === 'Array';
+  };
+
+  public static areCollectionValuesSimpleFields(fieldValue) {
+      return !this.isObject(fieldValue[0]['value']) && !Array.isArray(fieldValue[0]['value']) && fieldValue[0]['value'] !== undefined;
+  }
+
+  public static isCollectionOfSimpleTypes(fieldValue) {
+      return this.isCollection(fieldValue) &&  this.areCollectionValuesSimpleFields(fieldValue);
+  }
+
+  public static isMultiSelectValue(form) {
+    return this.isNonEmptyArray(form) && !this.isCollectionWithValue(form);
+  }
+
+  public static isNonEmptyArray(pageFormFields): boolean {
+      return Array.isArray(pageFormFields) && pageFormFields[0] !== undefined;
+  }
+
+  public static isCollection(pageFormFields): boolean {
+      return this.isNonEmptyArray(pageFormFields) && this.isCollectionWithValue(pageFormFields);
+  }
+
+  public static isCollectionWithValue(pageFormFields): boolean {
+      return pageFormFields[0]['value'] !== undefined;
+  }
+
+  public static cloneObject(obj: any): any {
+    return Object.assign({}, obj);
+  }
+
+  // temporary function until this can be moved to CaseView class (RDM-2681)
+  public static getCaseFields(caseView: CaseView): CaseField[] {
+    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
+      return acc.concat(tab.fields);
+    }, []);
+
+    let metadataFields = caseView.metadataFields;
+    return metadataFields.concat(caseDataFields.filter(function (caseField) {
+      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
+    }));
+  }
+
   private static prepareValue(field: CaseField) {
     if (field.value) {
       return field.value;
@@ -117,46 +173,31 @@ export class FieldsUtils {
     return `{ Invalid ${type}: ${invalidValue} }`;
   }
 
-  // temporary function until this can be moved to CaseView class (RDM-2681)
-  public static getCaseFields(caseView: CaseView): CaseField[] {
-    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
-      return acc.concat(tab.fields);
-    }, []);
-
-    let metadataFields = caseView.metadataFields;
-    return metadataFields.concat(caseDataFields.filter(function (caseField) {
-      return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
-    }));
-  }
-
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
     let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
     };
   }
+
   public getCurrentEventState(eventTrigger, form): any {
     return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
-  }
-
-  public cloneObject(obj: any): any {
-    return Object.assign({}, obj);
   }
 
   public cloneCaseField(obj: any): CaseField {
     return Object.assign(new CaseField(), obj);
   }
 
-  mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
+  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
     return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
   }
 
-  mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
+  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
     return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
   }
 
   private mergeFields(caseFields: CaseField[], formFields: any, mergeFunction: (CaseField, any) => void) {
-    let result = this.cloneObject(formFields);
+    let result = FieldsUtils.cloneObject(formFields);
     caseFields.forEach(field => {
       mergeFunction(field, result);
       if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {

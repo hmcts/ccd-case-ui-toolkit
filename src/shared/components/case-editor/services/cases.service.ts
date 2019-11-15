@@ -12,7 +12,7 @@ import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-fi
 
 @Injectable()
 export class CasesService {
-
+  // Internal (UI) API
   public static readonly V2_MEDIATYPE_CASE_VIEW = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json';
   public static readonly V2_MEDIATYPE_START_CASE_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-case-trigger.v2+json;charset=UTF-8';
@@ -20,10 +20,15 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_START_DRAFT_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
+
+  // External (Data Store) API
+  public static readonly V2_MEDIATYPE_CASE_DOCUMENTS = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-documents.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CREATE_EVENT =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json;charset=UTF-8';
+  public static readonly V2_MEDIATYPE_CREATE_CASE =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
 
   /**
    *
@@ -152,17 +157,22 @@ export class CasesService {
       );
   }
 
-  createCase(jid: string, ctid: string, eventData: CaseEventData): Observable<object> {
+  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
       ignoreWarning = 'true';
     }
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid/jurisdictions/${jid}/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
+      + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
+
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
+    });
 
     return this.http
-      .post(url, eventData)
+      .post(url, eventData, {headers})
       .pipe(
         map(response => this.processResponse(response)),
         catchError(error => {
@@ -172,18 +182,20 @@ export class CasesService {
       );
   }
 
-  getPrintDocuments(jurisdictionId: string, caseTypeId: string, caseId: string): Observable<CasePrintDocument[]> {
+  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = this.appConfig.getCaseDataUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`
       + `/cases/${caseId}`
       + `/documents`;
 
+    let headers = new Headers({
+      'experimental': 'true',
+      'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
+    });
+
     return this.http
-      .get(url)
+      .get(url, {headers})
       .pipe(
-        map(response => response.json()),
+        map(response => response.json().documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);

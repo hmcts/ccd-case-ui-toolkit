@@ -11,6 +11,7 @@ import { ConditionalShowModule } from '../../../directives/conditional-show/cond
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
+import { CaseLinkModule } from '../case-link/case-link.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { ReadComplexFieldComponent } from './read-complex-field.component';
     BaseFieldModule,
     PaletteUtilsModule,
     ConditionalShowModule,
-    MarkdownModule
+    MarkdownModule,
+    CaseLinkModule
   ],
   providers: [
     IsCompoundPipe,

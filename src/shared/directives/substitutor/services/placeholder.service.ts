@@ -1,208 +1,223 @@
 import { Injectable } from '@angular/core';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { FormValueService } from '../../../services';
 
 // @dynamic
 @Injectable()
 export class PlaceholderService {
 
-    private static readonly PLACEHOLDER_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
-    private static readonly STARTING_PLACEHOLDER = '$';
-    private static readonly OPENING_PLACEHOLDER = '{';
-    private static readonly CLOSING_PLACEHOLDER = '}';
-    private static readonly NEW_LINE = `
+    resolvePlaceholders(pageFormFields, stringToResolve): string {
+        let ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields: pageFormFields, stringToResolve: stringToResolve});
+        return ps.resolvePlaceholders();
+    }
+
+}
+
+export namespace PlaceholderService {
+    export class PlaceholderSubstitutor {
+        private static readonly PLACEHOLDER_CONTENT_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
+        private static readonly PLACEHOLDER_PATTERN = /\$\{[a-zA-Z0-9_.\]\[]+\}/;
+        private static readonly STARTING_PLACEHOLDER = '$';
+        private static readonly CLOSING_PLACEHOLDER = '}';
+        private static readonly OPENING_PLACEHOLDER = '{';
+        private static readonly NEW_LINE = `
 ___
 `;
 
-    constructor(
-        private fieldsUtils: FieldsUtils
-      ) { }
+        private stringToResolve: string;
+        private scanIndex: number;
+        private numberCollectionItemsAsPlaceholder: number;
+        private collectionItemIndex: number;
+        private fieldIdToSubstitute: string;
+        private startSubstitutionIndex: number;
+        private isCollecting: boolean;
+        private resolvedFormValues = [];
+        private readonly pageFormFields: object;
+        private readonly originalStringToResolve: string;
 
-    resolvePlaceholders(pageFormFields, stringToResolve): string {
-        let startSubstitutionIndex = -1;
-        let fieldIdToSubstitute = '';
-        let isCollecting = false;
-        let originalStringToResolve = stringToResolve;
-        let numberCollectionItemsAsPlaceholder = 1;
-        let colItemIndex = 0;
-        let scanIndex = 0;
+        constructor(values: {
+            stringToResolve: string,
+            pageFormFields: any}) {
+              this.stringToResolve = values.stringToResolve;
+              this.originalStringToResolve = values.stringToResolve;
+              this.pageFormFields = values.pageFormFields;
+        }
 
-        if (stringToResolve && typeof stringToResolve === 'string') {
-            while (numberCollectionItemsAsPlaceholder-- > 0) {
-
-                while (scanIndex < stringToResolve.length) {
-                    if (this.isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollecting)) {
-                        startSubstitutionIndex = scanIndex;
-                        isCollecting = true;
-                    } else if (isCollecting) {
-                        if (this.isClosingPlaceholder(stringToResolve, scanIndex)) {
-                            if (this.isMatchingPlaceholderPattern(fieldIdToSubstitute)
-                                && this.isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, colItemIndex)) {
-
-                                    if (fieldIdToSubstitute.split('.').length > 1) {
-                                        let newNumberOfCollectionItemsAsPlaceholder =
-                                            this.getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute);
-                                            numberCollectionItemsAsPlaceholder = this.getNewNumberOfCollectionItemsIfHigher(
-                                                newNumberOfCollectionItemsAsPlaceholder,
-                                                numberCollectionItemsAsPlaceholder)
-                                    }
-                                    stringToResolve = this.substitute(
-                                        pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, colItemIndex);
-
-                                    scanIndex = this.resetScanIndexAfterSubstitution(
-                                        startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, colItemIndex);
+        public resolvePlaceholders(): string {
+            while (this.hasUnresolvedPlaceholder()) {
+                this.resetPlaceholderSubstitutor();
+                while (this.doesPlaceholderContainCollectionItems()) {
+                    while (this.isScanningStringToResolve()) {
+                        if (this.isStartPlaceholderAndNotCollecting()) {
+                            this.setStartCollecting();
+                        } else if (this.isCollecting) {
+                            if (this.isClosingPlaceholder()) {
+                                this.substitute();
+                            } else if (!this.isOpeningPlaceholder()) {
+                                this.appendCharacter();
                             }
-                            isCollecting = false;
-                            fieldIdToSubstitute = '';
-                        } else if (!this.isOpeningPlaceholder(stringToResolve, scanIndex)) {
-                            fieldIdToSubstitute += stringToResolve.charAt(scanIndex);
                         }
+                        this.scanIndex++
                     }
-                    scanIndex++
-                }
-
-                if (colItemIndex < numberCollectionItemsAsPlaceholder - 1) {
-                    stringToResolve += PlaceholderService.NEW_LINE;
-                    stringToResolve += originalStringToResolve;
-                    colItemIndex += 1;
+                    this.appendOriginalStringIfCollectionItemAsPlaceholder();
                 }
             }
+            return this.stringToResolve;
         }
-        return stringToResolve;
-    }
 
-    private getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder, numberCollectionItemsAsPlaceholder) {
-        return newNumberOfCollectionItemsAsPlaceholder > numberCollectionItemsAsPlaceholder ?
-                                                    newNumberOfCollectionItemsAsPlaceholder :
-                                                    numberCollectionItemsAsPlaceholder;
-    }
-
-    private getNumberOfCollectionItemsIfAny(pageFormFields, fieldIdToSubstitute) {
-        let fieldIds = fieldIdToSubstitute.split('.');
-        let pageFormFieldsClone = this.fieldsUtils.cloneObject(pageFormFields);
-        let numberCollectionItemsAsPlaceholder = 1;
-
-        for (let index = 0; index < fieldIds.length; index++) {
-            if (this.isNonEmptyCollection(pageFormFieldsClone)) {
-                numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
-                break;
-            } else if (pageFormFieldsClone[fieldIds[index]] === undefined) {
-                break;
-            } else {
-                pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
-            }
+        private isScanningStringToResolve() {
+            return this.scanIndex < this.stringToResolve.length;
         }
-        return numberCollectionItemsAsPlaceholder;
-    }
 
-    private isMatchingPlaceholderPattern(fieldIdToSubstitute) {
-        return fieldIdToSubstitute.match(PlaceholderService.PLACEHOLDER_PATTERN);
-    }
-
-    private isFieldIdInFormFields(fieldIdToSubstitute, pageFormFields, collectionItemIndex) {
-        let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex);
-        return fieldValue ? this.isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) : fieldValue !== undefined;
-    }
-
-    private isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) {
-        return !this.isObject(fieldValue) && (this.isArray(fieldValue) ? this.isSimpleArray(fieldValue) : true);
-    }
-
-    private isSimpleArray(fieldValue) {
-        return !this.isObject(fieldValue[0]) && !Array.isArray(fieldValue[0]) && fieldValue[0] !== undefined;
-    }
-
-    private isStartingPlaceholder(stringToResolve, scanIndex): boolean {
-        return stringToResolve.charAt(scanIndex) === PlaceholderService.STARTING_PLACEHOLDER;
-    }
-
-    private isStartPlaceholderAndNotCollecting(stringToResolve, scanIndex, isCollectingPlaceholder): boolean {
-        return this.isStartingPlaceholder(stringToResolve, scanIndex) && !isCollectingPlaceholder;
-    }
-
-    private isClosingPlaceholder(stringToResolve, scanIndex): boolean {
-        return stringToResolve.charAt(scanIndex) === PlaceholderService.CLOSING_PLACEHOLDER;
-    }
-
-    private isOpeningPlaceholder(stringToResolve, scanIndex): boolean {
-        return stringToResolve.charAt(scanIndex) === PlaceholderService.OPENING_PLACEHOLDER;
-    }
-
-    private substitute(pageFormFields, stringToResolve, startSubstitutionIndex, fieldIdToSubstitute, collectionItemIndex): string {
-        let replacedString = stringToResolve.substring(startSubstitutionIndex)
-            .replace('${'.concat(fieldIdToSubstitute).concat('}'),
-                this.getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute, collectionItemIndex));
-        return stringToResolve.substring(0, startSubstitutionIndex).concat(replacedString);
-    }
-
-    private resetScanIndexAfterSubstitution(startSubstitutionIndex, pageFormFields, fieldIdToSubstitute, collectionItemIndex): number {
-        return startSubstitutionIndex + this.getSubstitutionValueLengthOrZero(pageFormFields, fieldIdToSubstitute, collectionItemIndex);
-    }
-
-    private getSubstitutionValueOrEmpty(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        let fieldValue = this.getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex);
-        if (fieldValue instanceof Array) {
-            fieldValue = fieldValue.join(', ');
+        private doesPlaceholderContainCollectionItems() {
+            return this.numberCollectionItemsAsPlaceholder-- > 0;
         }
-        return fieldValue ? fieldValue : '';
-    }
 
-    private getFieldValue(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        let fieldIds = fieldIdToSubstitute.split('.');
-        for (let index = 0; index < fieldIds.length; index++) {
-            if (this.isNonEmptyCollection(pageFormFields) && this.isLeaf(fieldIds.length, index)) {
-                let placeholderSuffix = fieldIds[fieldIds.length - 1];
-                pageFormFields = pageFormFields[collectionItemIndex]['value'][placeholderSuffix];
-                return pageFormFields;
-            } else {
-                if (pageFormFields !== undefined && this.isNonEmptyArray(pageFormFields[fieldIds[index]])
-                    && !this.isCollection(pageFormFields[fieldIds[index]])) {
-                    pageFormFields = pageFormFields[fieldIds[index] + FieldsUtils.LABEL_SUFFIX];
-                } else if (this.isNonEmptyCollection(pageFormFields)) {
-                    pageFormFields = pageFormFields[collectionItemIndex]['value'][fieldIds[index]];
-                } else if (pageFormFields !== undefined  && pageFormFields[fieldIds[index]] !== undefined) {
-                    pageFormFields = pageFormFields[fieldIds[index]];
+        private hasUnresolvedPlaceholder() {
+            return this.stringToResolve
+                && typeof this.stringToResolve === 'string'
+                && this.stringToResolve.match(PlaceholderSubstitutor.PLACEHOLDER_PATTERN);
+        }
+
+        private isStartPlaceholderAndNotCollecting(): boolean {
+            return this.isStartingPlaceholder() && !this.isCollecting;
+        }
+
+        private isOpeningPlaceholder(): boolean {
+            return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.OPENING_PLACEHOLDER;
+        }
+
+        private isClosingPlaceholder(): boolean {
+            return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.CLOSING_PLACEHOLDER;
+        }
+
+        private resetPlaceholderSubstitutor() {
+            this.scanIndex = 0;
+            this.numberCollectionItemsAsPlaceholder = 1;
+            this.collectionItemIndex = 0;
+            this.fieldIdToSubstitute = '';
+            this.startSubstitutionIndex = -1;
+            this.isCollecting = false;
+            this.resolvedFormValues[this.collectionItemIndex] = {};
+        }
+
+        private substitute() {
+            if (this.isMatchingPlaceholderPattern() && this.isFieldIdInFormFields()) {
+                this.updateNumberOfCollectionItemsAsPlaceholder();
+                if (this.isFieldIdToSubstituteReferringItself()) {
+                    this.substituteWithEmptyString();
                 } else {
-                    return undefined;
+                    this.substituteFromFormFields();
                 }
+            } else {
+                this.substituteWithEmptyString();
+            }
+            this.isCollecting = false;
+            this.fieldIdToSubstitute = '';
+        }
+
+        private appendOriginalStringIfCollectionItemAsPlaceholder() {
+            if (this.collectionItemIndex < this.numberCollectionItemsAsPlaceholder - 1) {
+                this.stringToResolve += PlaceholderSubstitutor.NEW_LINE + this.originalStringToResolve;
+                this.collectionItemIndex += 1;
+                this.resolvedFormValues[this.collectionItemIndex] = {};
             }
         }
-        if (this.isNonEmptyArray(pageFormFields) && this.isCollection(pageFormFields)) {
-            pageFormFields = pageFormFields.map(fieldValue => fieldValue['value']);
+
+        private setStartCollecting() {
+            this.isCollecting = true;
+            this.startSubstitutionIndex = this.scanIndex;
         }
-        return pageFormFields;
-    }
 
-    private isLeaf(length, currentIndex) {
-        return length === currentIndex + 1;
-    }
+        private appendCharacter() {
+            this.fieldIdToSubstitute += this.stringToResolve.charAt(this.scanIndex);
+        }
 
-    private isNonEmptyCollection(pageFormFields) {
-        return this.isNonEmptyArray(pageFormFields) && this.isCollection(pageFormFields);
-    }
+        private isMatchingPlaceholderPattern() {
+            return this.fieldIdToSubstitute.match(PlaceholderSubstitutor.PLACEHOLDER_CONTENT_PATTERN);
+        }
 
-    private isNonEmptyArray(pageFormFields) {
-        return Array.isArray(pageFormFields) && pageFormFields[0];
-    }
+        private isFieldIdInFormFields() {
+            return this.getFieldValue() !== undefined;
+        }
 
-    private isCollection(pageFormFields) {
-        return pageFormFields[0]['value'];
-    }
+        private isFieldIdToSubstituteReferringItself() {
+            let value = this.getSubstitutionValueOrEmpty();
+            return '${'.concat(this.fieldIdToSubstitute).concat('}') === value;
+        }
 
-    private getSubstitutionValueLengthOrZero(pageFormFields, fieldIdToSubstitute, collectionItemIndex) {
-        return pageFormFields[fieldIdToSubstitute] ? this.getSubstitutionValueOrEmpty(
-            pageFormFields, fieldIdToSubstitute, collectionItemIndex)
-            .toString().length : 0;
-    }
+        private getSubstitutionValueLengthOrZero() {
+            return this.pageFormFields[this.fieldIdToSubstitute] ? this.getSubstitutionValueOrEmpty().toString().length : 0;
+        }
 
-    private getType(elem): string {
-        return Object.prototype.toString.call(elem).slice(8, -1);
-    }
+        private getFieldValue() {
+            if (this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute]) {
+                return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
+            } else {
+                let fieldValue = FormValueService.getFieldValue(this.pageFormFields, this.fieldIdToSubstitute, this.collectionItemIndex);
+                this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute] = fieldValue;
+                return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
+            }
+        }
 
-    private isObject(elem) {
-        return this.getType(elem) === 'Object';
-    };
+        private getSubstitutionValueOrEmpty() {
+            let fieldValue = this.getFieldValue();
+            return fieldValue ? fieldValue : '';
+        }
 
-    private isArray(elem) {
-        return this.getType(elem) === 'Array';
+        private getNumberOfCollectionItemsIfAny() {
+            let fieldIds = this.fieldIdToSubstitute.split('.');
+            let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
+            let numberCollectionItemsAsPlaceholder = 1;
+
+            for (let index = 0; index < fieldIds.length; index++) {
+                if (FieldsUtils.isCollection(pageFormFieldsClone)) {
+                    numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
+                    break;
+                } else if (pageFormFieldsClone[fieldIds[index]] === undefined) {
+                    break;
+                } else {
+                    pageFormFieldsClone = pageFormFieldsClone[fieldIds[index]];
+                }
+            }
+            return numberCollectionItemsAsPlaceholder;
+        }
+
+        private getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder, numberCollectionItemsAsPlaceholder) {
+            return newNumberOfCollectionItemsAsPlaceholder > numberCollectionItemsAsPlaceholder ?
+                                                        newNumberOfCollectionItemsAsPlaceholder :
+                                                        numberCollectionItemsAsPlaceholder;
+        }
+
+        private isStartingPlaceholder(): boolean {
+            return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.STARTING_PLACEHOLDER;
+        }
+
+        private updateNumberOfCollectionItemsAsPlaceholder() {
+            if (this.fieldIdToSubstitute.split('.').length > 1) {
+                let newNumberOfCollectionItemsAsPlaceholder = this.getNumberOfCollectionItemsIfAny();
+                this.numberCollectionItemsAsPlaceholder =
+                    this.getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder,
+                        this.numberCollectionItemsAsPlaceholder);
+            }
+        }
+
+        private substituteFromFormFields() {
+            let replacedString = this.stringToResolve.substring(this.startSubstitutionIndex)
+                .replace('${'.concat(this.fieldIdToSubstitute).concat('}'), this.getSubstitutionValueOrEmpty());
+            this.stringToResolve = this.stringToResolve.substring(0, this.startSubstitutionIndex).concat(replacedString);
+            this.resetScanIndexAfterSubstitution();
+        }
+
+        private substituteWithEmptyString() {
+            let replacedString = this.stringToResolve.substring(this.startSubstitutionIndex)
+                .replace('${'.concat(this.fieldIdToSubstitute).concat('}'), '');
+            this.stringToResolve = this.stringToResolve.substring(0, this.startSubstitutionIndex).concat(replacedString);
+            this.scanIndex = this.startSubstitutionIndex;
+        }
+
+        private resetScanIndexAfterSubstitution() {
+            this.scanIndex = this.startSubstitutionIndex + this.getSubstitutionValueLengthOrZero();
+        }
     };
 }

@@ -24,4 +24,7 @@ export class FieldReadLabelComponent {
     return this.caseField.isComplex();
   }
 
+  public isCaseLink(): boolean {
+    return this.caseField.isCaseLink();
+  }
 }
