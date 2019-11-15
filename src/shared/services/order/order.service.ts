@@ -27,6 +27,23 @@ export class OrderService {
     return a.order - b.order;
   };
 
+  public static sortListItems(caseField: CaseField) {
+    if ( OrderService.hasADefinedDisplayOrder(caseField)) {
+      caseField.list_items.sort( (param1, param2) => {
+        if (param1 > param2) { return -1; }
+        if ( param1  < param2) { return 1; }
+        return 0;
+      });
+    } else {
+      caseField.list_items.reverse();
+    }
+  }
+
+  public static hasADefinedDisplayOrder(caseField: CaseField): boolean {
+    const isDifferentToNull = function (element) { return (element.order !== null); }
+    return caseField.list_items.every(isDifferentToNull);
+  }
+
   /**
    * Clone and sort array. Ascending order used by default.
    *
