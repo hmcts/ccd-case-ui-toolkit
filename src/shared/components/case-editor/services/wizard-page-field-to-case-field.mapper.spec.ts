@@ -119,31 +119,6 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(caseLink.show_condition).toBeUndefined('caseLink.show_condition should be undefined');
   });
 
-  it('should set order on all caseFields', () => {
-    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
-
-    let debtorName = caseFields.find(e => e.id === 'debtorName');
-    let finalReturn = caseFields.find(e => e.id === 'finalReturn');
-    let addressAttended = finalReturn.field_type.complex_fields.find(e => e.id === 'addressAttended');
-    let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
-    let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
-    let addressLine3 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine3');
-    let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
-    let caseLink = finalReturn.field_type.complex_fields.find(e => e.id === 'testCaseLink');
-
-    expect(finalReturn.order).toEqual(1); // overridden from 2
-    expect(debtorName.order).toEqual(2); // overridden from 1
-
-    expect(addressAttended.order).toEqual(1);
-
-    expect(addressLine1.order).toEqual(3); // overridden from 1
-    expect(addressLine2.order).toEqual(2);
-    expect(addressLine3.order).toEqual(3);
-    expect(postCode.order).toEqual(1); // overridden from 3
-
-    expect(caseLink.order).toEqual(2);
-  });
-
   it('should hide caseLink both parent and a child', () => {
 
     let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
@@ -231,7 +206,6 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
     let defendantTimeLineEvents = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'defendantTimeLineEvents');
 
     expect(responseSubject.hidden).toBeFalsy('responseSubject.hidden should be undefined');
-    expect(responseSubject.order).toEqual(1);
     expect(responseSubject.display_context).toEqual('OPTIONAL');
     expect(responseSubject.label).toEqual('Subject');
     expect(responseSubject.hint_text).toEqual('Altered hint text');
