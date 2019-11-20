@@ -1,6 +1,9 @@
 ## RELEASE NOTES
 
 ### Version 2.60.5-RDM-6350-RC1-prerelease
+**RDM-5875** -  bulk-scanning integration withCCD
+
+### Version 2.60.5-RDM-6350-RC1-prerelease
 **RDM-6350** - Fix for AboutToStart callback not showing errors correctly in UI
 
 ### Version 2.60.2-RDM-5928-RC1-prerelease
