@@ -16,7 +16,7 @@
         <ng-container *ngFor="let item of rows;  let i = index;trackBy:trackByIndex;" >
           <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
             <ng-container *ngFor="let heading of columns">
-              <ng-container  *ngFor="let name of item | keyvalue:keepOriginalOrder">
+              <ng-container  *ngFor="let name of item | keyvalue">
                 <td *ngIf="heading.trim() == name.key" class="text-16">
                   <div *ngIf="name.value;else showEmptyTd">
                   <ccd-field-read [caseField]="{
@@ -42,7 +42,7 @@
               <table class="complex-panel-table">
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue:keepOriginalOrder">
-                  <ng-container  *ngFor="let name of item | keyvalue:keepOriginalOrder">
+                  <ng-container  *ngFor="let name of item | keyvalue">
                     <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
