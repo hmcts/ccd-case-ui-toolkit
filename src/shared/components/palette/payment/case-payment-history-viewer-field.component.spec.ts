@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
@@ -36,7 +36,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
-        'CCD_CASE_NUMBER'
+        'CCD_CASE_NUMBER',
+        'ISBSENABLE',
+        'SELECTED_OPTION'
       ]});
 
     TestBed
@@ -48,7 +50,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
           // Mocks
           PaymentWebComponent
         ],
-        schemas: [NO_ERRORS_SCHEMA],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
         ]
@@ -73,5 +74,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     let paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual(PAYMENTS_URL);
     expect(paymentComponent.CCD_CASE_NUMBER).toEqual(CASE_REFERENCE);
+    expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException');
+    expect(paymentComponent.ISBSENABLE).toEqual('Enable');
   });
 });
