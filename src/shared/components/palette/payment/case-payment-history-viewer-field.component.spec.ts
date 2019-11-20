@@ -36,7 +36,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
-        'CCD_CASE_NUMBER'
+        'CCD_CASE_NUMBER',
+        'ISBSENABLE',
+        'SELECTED_OPTION'
       ]});
 
     TestBed
@@ -72,5 +74,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     let paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual(PAYMENTS_URL);
     expect(paymentComponent.CCD_CASE_NUMBER).toEqual(CASE_REFERENCE);
+    expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException');
+    expect(paymentComponent.ISBSENABLE).toEqual('Enable');
   });
 });
