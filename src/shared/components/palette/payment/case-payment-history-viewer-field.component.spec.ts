@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
@@ -48,6 +48,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
           // Mocks
           PaymentWebComponent
         ],
+        schemas: [NO_ERRORS_SCHEMA],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
         ]
