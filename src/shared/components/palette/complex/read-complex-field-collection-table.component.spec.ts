@@ -136,7 +136,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(panelTitle.nativeElement.textContent).toBe(CASE_FIELD.label);
     });
 
-    it('should render a table with a row containing 2 columns for each simple type', () => {
+    it('should render a table with a row containing 2 columns for each simple type and 3 columns for each row', () => {
       let simpleRowsHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
@@ -219,6 +219,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
   const ADDRESS_LINE1_COLUMN = 'AddressLine1';
   const ADDRESS_LINE2_COLUMN = 'AddressLine2';
   const ADDRESS_LINE3_COLUMN = 'AddressLine3';
+  const ADDRESS_LINE4_COLUMN = 'AddressLine4';
+  const ADDRESS_LINE5_COLUMN = 'AddressLine5';
   const VAT_NUMBER_COLUMN = 'VATNumber';
   const $COMPLEX_PANEL_CASE_LINKS = By.css('ccd-read-case-link-field>a');
   const $COMPLEX_PANEL_CASE_LINK_VALUES = By.css('ccd-read-case-link-field>a>span');
@@ -233,8 +235,10 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       type: 'Complex',
       complex_fields: [
         newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').build(),
-        newCaseField('AddressLine2', 'Line 2', null, textFieldType(), 'OPTIONAL').build(),
-        newCaseField('AddressLine3', 'Line 3', null, textFieldType(), 'OPTIONAL').build()
+        newCaseField('AddressLine5', 'Line 2', null, textFieldType(), 'OPTIONAL').build(),
+        newCaseField('AddressLine4', 'Line 3', null, textFieldType(), 'OPTIONAL').build(),
+        newCaseField('AddressLine3', 'Line 2', null, textFieldType(), 'OPTIONAL').build(),
+        newCaseField('AddressLine2', 'Line 3', null, textFieldType(), 'OPTIONAL').build()
       ]
     };
 
@@ -272,6 +276,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             BusinessAddress: {
               AddressLine1: '45 Edric House',
               AddressLine2: 'Page Street',
+              AddressLine4: 'Street4',
+              AddressLine5: 'Street5',
             },
             VATNumber: 'GB123456789'
           }
@@ -287,6 +293,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
               AddressLine1: null,
               AddressLine2: '150 Boyson Road',
               AddressLine3: 'Blue door',
+              AddressLine4: 'Street6',
+              AddressLine5: 'Street7',
             },
             VATNumber: ''
           }
@@ -327,23 +335,31 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       let fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
 
       expect(fieldReads).toBeTruthy();
-      expect(fieldReads.length).toBe(7);
+      expect(fieldReads.length).toBe(11);
 
       expect(fieldReads[0].caseField.id).toEqual(NAME_COLUMN);
       expect(fieldReads[0].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[NAME_COLUMN]);
       expect(fieldReads[1].caseField.id).toEqual(ADDRESS_LINE1_COLUMN);
       expect(fieldReads[1].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE1_COLUMN]);
-      expect(fieldReads[2].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
-      expect(fieldReads[2].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
-      expect(fieldReads[3].caseField.id).toEqual(VAT_NUMBER_COLUMN);
-      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[VAT_NUMBER_COLUMN]);
+      expect(fieldReads[2].caseField.id).toEqual(ADDRESS_LINE5_COLUMN);
+      expect(fieldReads[2].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE5_COLUMN]);
+      expect(fieldReads[3].caseField.id).toEqual(ADDRESS_LINE4_COLUMN);
+      expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE4_COLUMN]);
+      expect(fieldReads[4].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      expect(fieldReads[5].caseField.id).toEqual(VAT_NUMBER_COLUMN);
+      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[VAT_NUMBER_COLUMN]);
 
-      expect(fieldReads[4].caseField.id).toEqual(NAME_COLUMN);
-      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
-      expect(fieldReads[5].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
-      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
-      expect(fieldReads[6].caseField.id).toEqual(ADDRESS_LINE3_COLUMN);
-      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
+      expect(fieldReads[6].caseField.id).toEqual(NAME_COLUMN);
+      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
+      expect(fieldReads[7].caseField.id).toEqual(ADDRESS_LINE5_COLUMN);
+      expect(fieldReads[7].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE5_COLUMN]);
+      expect(fieldReads[8].caseField.id).toEqual(ADDRESS_LINE4_COLUMN);
+      expect(fieldReads[8].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE4_COLUMN]);
+      expect(fieldReads[9].caseField.id).toEqual(ADDRESS_LINE3_COLUMN);
+      expect(fieldReads[9].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
+      expect(fieldReads[10].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[10].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
     });
 
     it('should render all case links', () => {
