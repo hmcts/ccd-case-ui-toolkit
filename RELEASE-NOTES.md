@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+
+### Version 2.63.3-16.1-latest-BulkScanPay - January 15 2020
+**RDM-6635** - Bulk Scan/Offline Pay CCD Integration
+
 ### Version 2.62.22-RDM-4837-prerelease
 **RDM-4837** - Field interpolation syntax is displayed if the source field is NULL
 
@@ -15,6 +19,9 @@
 ### Version 2.62.18-RDM-5296-prerelease
 **RDM-5296** Table Collection View - Case Link is not displayed as a link
 **RDM-5293** Table Collection View - Data from the first complex type is repeated for all collection items
+
+### Version 2.60.5-RDM-6350-RC1-prerelease
+**RDM-6635** -  bulk-scanning integration withCCD
 
 ### Version 2.60.5-RDM-6350-RC1-prerelease
 **RDM-6350** - Fix for AboutToStart callback not showing errors correctly in UI
