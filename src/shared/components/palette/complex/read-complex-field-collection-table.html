@@ -2,7 +2,7 @@
       <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
       <table class="complex-panel-table">
         <tbody>
-        <!-- <COMPLEX table field label>-->
+        <!-- <COMPLEX table field header>-->
         <tr>
           <ng-container *ngFor="let heading of columns">
             <ng-container *ngFor="let name of columnsAllLabels | keyvalue:keepOriginalOrder">
@@ -14,7 +14,7 @@
           </ng-container>
           <th></th>
         </tr>
-        <!-- </COMPLEX table field label>-->
+        <!-- </COMPLEX table field header>-->
         <ng-container *ngFor="let item of rows; let i = index;trackBy:trackByIndex;" >
           <!-- <COMPLEX table collapsed view>-->
           <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
