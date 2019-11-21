@@ -41,9 +41,13 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK = By.css('div>table>tbody>tr>th>a');
   const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('div>table>tbody>tr>td>div>ccd-field-read');
+  const $COMPLEX_PANEL_EXPANDED_ROWS_HEADERS = By.css('div>table>tbody>tr>td>table>tbody>tr>th>span');
+  const $COMPLEX_PANEL_EXPANDED_ROWS_VALUES = By.css('div>table>tbody>tr>td>table>tbody>tr>td>ccd-field-read');
   const UNORDERED = '&#9650;';
   const FIRST_COLUMN = 'AddressLine1';
   const SECOND_COLUMN = 'AddressLine2';
+  const FOURTH_COLUMN = 'AddressLine4';
+  const FIFTH_COLUMN = 'AddressLine3';
 
   let fixture: ComponentFixture<ReadComplexFieldCollectionTableComponent>;
   let component: ReadComplexFieldCollectionTableComponent;
@@ -54,10 +58,13 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').withValue('Flat 9').build(),
         newCaseField('AddressLine2', 'Line 2', null, createFieldType('Number', 'Number'), 'OPTIONAL')
           .withValue('111 East India road').build(),
-        newCaseField('AddressPostcode', 'Post code', null, createFieldType('Complex', 'Complex'), 'OPTIONAL').withValue('tw45ed').build(),
+        newCaseField('AddressLine1', 'Line 1', null, textFieldType(), 'OPTIONAL').withValue('Flat 9').build(),
+        newCaseField('AddressPostcode', 'Post code', null, createFieldType('Complex', 'Complex'), 'OPTIONAL')
+          .withValue('tw45ed').build(),
+        newCaseField('AddressLine4', 'Line 4', null, textFieldType(), 'OPTIONAL').withValue('Flat 6').build(),
+        newCaseField('AddressLine3', 'Line 3', null, textFieldType(), 'OPTIONAL').withValue('Flat 7').build(),
       ]
     };
     const CASE_FIELD: CaseField = newCaseField('', 'Complex Field', null, FIELD_TYPE_WITH_VALUES, 'OPTIONAL')
@@ -67,6 +74,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             label: 'SomeLabel',
             AddressLine1: 'Flat 9',
             AddressLine2: 222,
+            AddressLine3: 333,
+            AddressLine4: 555,
             AddressPostcode: { postcode: 'TE45ED' }
           }
         },
@@ -75,6 +84,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
               label: 'Label 1',
               AddressLine1: 'AAFlat 10',
               AddressLine2: 111,
+              AddressLine3: 444,
+              AddressLine4: 666,
               AddressPostcode: { postcode: 'TE45ED' }
           }
         }
@@ -82,6 +93,10 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
 
     const LINE_1 = 0;
     const LINE_2 = 1;
+    const LINE_3 = 2;
+    const LINE_4 = 3;
+    const LINE_5 = 4;
+    const LINE_6 = 5;
 
     beforeEach(async(() => {
       TestBed
@@ -126,8 +141,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
       expect(simpleRowsHeaders.length).toBe(2);
-      expect(simpleRowsHeaders[LINE_1].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label);
-      expect(simpleRowsHeaders[LINE_2].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
+      expect(simpleRowsHeaders[LINE_1].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
+      expect(simpleRowsHeaders[LINE_2].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label);
 
       let simpleRowsValues = de
         .query($COMPLEX_PANEL)
@@ -152,7 +167,31 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.id).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.type).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.value).toEqual({postcode: 'TE45ED'});
-      // );
+
+      let expandedRowsVerticalHeaders = de
+        .query($COMPLEX_PANEL)
+        .queryAll($COMPLEX_PANEL_EXPANDED_ROWS_HEADERS);
+      expect(expandedRowsVerticalHeaders.length).toBe(6);
+      // row 1
+      expect(expandedRowsVerticalHeaders[LINE_1].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_3].label);
+      expect(expandedRowsVerticalHeaders[LINE_2].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_4].label);
+      expect(expandedRowsVerticalHeaders[LINE_3].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_5].label);
+      // row 2
+      expect(expandedRowsVerticalHeaders[LINE_4].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_3].label);
+      expect(expandedRowsVerticalHeaders[LINE_5].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_4].label);
+      expect(expandedRowsVerticalHeaders[LINE_6].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_5].label);
+
+      let expandedRowsValues = de
+        .query($COMPLEX_PANEL)
+        .queryAll($COMPLEX_PANEL_EXPANDED_ROWS_VALUES);
+      expect(expandedRowsValues.length).toBe(4);
+      // row 1
+      expect(expandedRowsValues[0].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value[FOURTH_COLUMN]);
+      expect(expandedRowsValues[1].componentInstance.caseField.value).toEqual(CASE_FIELD.value[0].value[FIFTH_COLUMN]);
+      // row 2
+      expect(expandedRowsValues[2].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[FOURTH_COLUMN]);
+      expect(expandedRowsValues[3].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[FIFTH_COLUMN]);
+
     });
 
     it('should sort rows based on column name', () => {

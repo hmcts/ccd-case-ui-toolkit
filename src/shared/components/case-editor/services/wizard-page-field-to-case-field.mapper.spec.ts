@@ -119,6 +119,16 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(caseLink.show_condition).toBeUndefined('caseLink.show_condition should be undefined');
   });
 
+  it('should set order on all top level caseFields', () => {
+    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
+
+    let debtorName = caseFields.find(e => e.id === 'debtorName');
+    let finalReturn = caseFields.find(e => e.id === 'finalReturn');
+
+    expect(finalReturn.order).toEqual(1); // overridden from 2
+    expect(debtorName.order).toEqual(2); // overridden from 1
+  });
+
   it('should hide caseLink both parent and a child', () => {
 
     let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);

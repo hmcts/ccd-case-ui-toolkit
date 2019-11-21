@@ -5,9 +5,10 @@
         <tr>
           <ng-container *ngFor="let heading of columns">
             <ng-container *ngFor="let name of columnsAllLabels | keyvalue:keepOriginalOrder">
+                name: {{ name.value.label }}
               <th *ngIf="heading.trim() == name.key">
                 <span class="text-16">{{name.value.label}}</span>
-                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value  )"></a>
+                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value)"></a>
               </th>
             </ng-container>
           </ng-container>
@@ -42,12 +43,14 @@
               <table class="complex-panel-table">
                 <tbody>
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue:keepOriginalOrder">
+                  label: {{ vLabel }}
                   <ng-container  *ngFor="let name of item | keyvalue">
                     <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
+                        ccd-field-read {{ name.value }}
                         <ccd-field-read [caseField]="{
                               id: name.key,
                               label: vLabel.value.label,

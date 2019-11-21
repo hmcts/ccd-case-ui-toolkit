@@ -66,4 +66,46 @@ describe('OrderService', () => {
     });
   });
 
+  describe('should sort caseFields', () => {
+    it('should sort fields if unordered', () => {
+      const CASE_FIELDS = [
+        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5),
+        createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3)];
+
+      let caseFieldsOrdered = orderService.sort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField1');
+      expect(caseFieldsOrdered[1].order).toEqual(5);
+      expect(caseFieldsOrdered[1].id).toEqual('testField2');
+
+    });
+
+    it('should keep the order of the fields if already sorted', () => {
+      const CASE_FIELDS = [
+        createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3),
+        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5)];
+
+      let caseFieldsOrdered = orderService.sort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField1');
+      expect(caseFieldsOrdered[1].order).toEqual(5);
+      expect(caseFieldsOrdered[1].id).toEqual('testField2');
+    });
+
+    it('fields without order should end up on the bottom', () => {
+      const CASE_FIELDS = [
+        createCaseField('testField1', 'Debtor name', '', textFieldType(), null),
+        createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3)];
+
+      let caseFieldsOrdered = orderService.sort(CASE_FIELDS);
+
+      expect(caseFieldsOrdered[0].order).toEqual(3);
+      expect(caseFieldsOrdered[0].id).toEqual('testField2');
+      expect(caseFieldsOrdered[1].order).toBeUndefined();
+      expect(caseFieldsOrdered[1].id).toEqual('testField1');
+    });
+
+  });
 });
