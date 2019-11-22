@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 2.60.5-RDM-6350-RC1-prerelease
-**RDM-6635** -  bulk-scanning integration withCCD
+**RDM-6635** - Bulk scanning transaction page integration into CCD web component
 
 ### Version 2.60.5-RDM-6350-RC1-prerelease
 **RDM-6350** - Fix for AboutToStart callback not showing errors correctly in UI
