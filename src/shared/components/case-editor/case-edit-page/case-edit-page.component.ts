@@ -118,6 +118,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
   }
 
+  toPreviousPage() {
+    let pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
+    let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
+    this.updateFormData(caseEventData as CaseEventData);
+    this.previous();
+  }
+
   submit() {
     if (!this.isSubmitting) {
       this.isSubmitting = true;
