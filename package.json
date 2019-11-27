@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.60.6-RDM-6635-RC1-prerelease",
+  "version": "2.62.23-RDM-6635-RC15.2-PAY-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

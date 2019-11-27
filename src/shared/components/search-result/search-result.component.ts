@@ -22,6 +22,9 @@ export class SearchResultComponent implements OnChanges {
   ICON = DisplayMode.ICON;
 
   @Input()
+  caseLinkUrlTemplate: string;
+
+  @Input()
   jurisdiction: Jurisdiction;
 
   @Input()
@@ -262,9 +265,19 @@ export class SearchResultComponent implements OnChanges {
     return this.paginationMetadata.total_results_count + this.draftsCount;
   }
 
+  prepareCaseLinkUrl(caseId: string): string {
+    let url = this.caseLinkUrlTemplate;
+    url = url.replace('jurisdiction_id', this.jurisdiction.id);
+    url = url.replace('caseType_id', this.caseType.id);
+    url = url.replace('case_id', caseId);
+
+    return url;
+  }
+
   private getDraftsCountIfNotPageOne(currentPage): number {
     return currentPage > 1 ? this.draftsCount : 0;
   }
+
   private numberOfDrafts(): number {
     return this.resultView.results.filter(_ => _.case_id.startsWith(DRAFT_PREFIX)).length;
   }
