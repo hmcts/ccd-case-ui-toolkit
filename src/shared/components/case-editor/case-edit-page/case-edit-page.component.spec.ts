@@ -589,6 +589,90 @@ describe('CaseEditPageComponent', () => {
     });
   });
 
+  describe('previous the form', () => {
+    beforeEach(async(() => {
+      firstPage.id = 'first page';
+      cancelled = createSpyObj('cancelled', ['emit']);
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+
+      caseEditComponentStub = {
+        'form': FORM_GROUP,
+        'wizard': WIZARD,
+        'data': '',
+        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'first': () => true,
+        'next': () => true,
+        'previous': () => true,
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
+        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+      };
+      snapshot = {
+        queryParamMap: createSpyObj('queryParamMap', ['get']),
+      };
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
+      };
+
+      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
+      dialog = createSpyObj<MatDialog>('dialog', ['open']);
+      dialog.open.and.returnValue(matDialogRef);
+      const jsonData: CaseEventData = {
+        'data': {
+          'field1': 'Updated value'
+        },
+        'event': {'id': '', 'summary': '', 'description': ''},
+        'event_token': '',
+        'ignore_warning': true
+      };
+      spyOn(caseEditComponentStub, 'previous');
+      spyOn(caseEditComponentStub, 'form');
+      spyOn(formValueService, 'sanitise').and.returnValue(jsonData);
+      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(jsonData);
+
+      TestBed.configureTestingModule({
+        declarations: [CaseEditPageComponent,
+          CaseReferencePipe],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog}
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditPageComponent);
+      comp = fixture.componentInstance;
+
+      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
+      comp.currentPage = wizardPage;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should call update after toPreviousPage.', async () => {
+      fixture.detectChanges();
+
+      comp.toPreviousPage();
+
+      fixture.whenStable().then(() => {
+        expect(formValueService.sanitise).toHaveBeenCalled();
+        expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
+      });
+    });
+  });
+
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
     let cf = new CaseField();
     cf.id = id;
