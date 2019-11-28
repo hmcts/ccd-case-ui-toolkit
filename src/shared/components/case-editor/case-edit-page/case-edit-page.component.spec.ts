@@ -56,6 +56,14 @@ describe('CaseEditPageComponent', () => {
   let caseField1 = new CaseField();
   let caseField2 = new CaseField();
   let eventData = new CaseEventData();
+  const caseEventDataPrevious: CaseEventData = {
+    'data': {
+      'field1': 'Updated value'
+    },
+    'event': {'id': '', 'summary': '', 'description': ''},
+    'event_token': '',
+    'ignore_warning': true
+  };
 
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
@@ -622,18 +630,11 @@ describe('CaseEditPageComponent', () => {
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
       dialog = createSpyObj<MatDialog>('dialog', ['open']);
       dialog.open.and.returnValue(matDialogRef);
-      const jsonData: CaseEventData = {
-        'data': {
-          'field1': 'Updated value'
-        },
-        'event': {'id': '', 'summary': '', 'description': ''},
-        'event_token': '',
-        'ignore_warning': true
-      };
+
       spyOn(caseEditComponentStub, 'previous');
       spyOn(caseEditComponentStub, 'form');
-      spyOn(formValueService, 'sanitise').and.returnValue(jsonData);
-      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(jsonData);
+      spyOn(formValueService, 'sanitise').and.returnValue(caseEventDataPrevious);
+      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(caseEventDataPrevious);
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
@@ -665,6 +666,10 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
       comp.toPreviousPage();
       fixture.whenStable().then(() => {
+        expect(caseEventDataPrevious.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
+        expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP.value.data);
+        expect(caseEventDataPrevious.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(caseEventDataPrevious.event_token).toEqual(comp.eventTrigger.event_token);
         expect(formValueService.sanitise).toHaveBeenCalled();
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
