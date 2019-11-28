@@ -663,9 +663,7 @@ describe('CaseEditPageComponent', () => {
 
     it('should call update after toPreviousPage.', async () => {
       fixture.detectChanges();
-
       comp.toPreviousPage();
-
       fixture.whenStable().then(() => {
         expect(formValueService.sanitise).toHaveBeenCalled();
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
