@@ -19,7 +19,6 @@ export class WizardPageFieldToCaseFieldMapper {
 
     let caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
     caseField.wizardProps = wizardPageField;
-    caseField.display_context = wizardPageField.display_context;
     caseField.order = wizardPageField.order;
 
     this.initializeNaturalOrder(caseField);

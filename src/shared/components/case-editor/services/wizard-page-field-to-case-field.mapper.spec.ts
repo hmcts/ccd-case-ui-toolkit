@@ -19,7 +19,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
   const INCOMPLETE_SHOW_CONDITION = INCOMPLETE_SHOW_CONDITION_ONE + ' AND ' + INCOMPLETE_SHOW_CONDITION_TWO;
 
   const CASE_FIELDS = [
-    createCaseField('debtorName', 'Debtor name', '', textFieldType(), null),
+    createCaseField('debtorName', 'Debtor name', '', textFieldType(), 'MANDATORY'),
     createCaseField('finalReturn', 'Final return', '',
       createFieldType('Return', 'Complex', [
         createCaseField('addressAttended',
@@ -186,7 +186,7 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
     [PARTY_NAME_TEXT_FIELD, RESPONSE_SUBJECT_LIST_ITEM, TIMELINE_EVENTS_COLLECTION]);
 
   const CASE_FIELDS = [
-    createCaseField('reason', 'Reason', '', textFieldType(), null),
+    createCaseField('reason', 'Reason', '', textFieldType(), 'MANDATORY'),
     createCaseField('respondents', 'Defendants', '',
       createFieldType('respondents-33e0ff77', 'Collection', [], RESPONDENT_COMPLEX_FIELD_TYPE), 'COMPLEX')];
 
