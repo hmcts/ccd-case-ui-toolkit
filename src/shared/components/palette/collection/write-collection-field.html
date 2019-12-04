@@ -5,7 +5,10 @@
     <h2 class="heading-h2">
       {{caseField | ccdFieldLabel}}
     </h2>
-    <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate()">Add new</button>
+    <ng-container *ngIf="!isNotAuthorisedToCreate()">
+      <button class="button" type="button" (click)="addItem(true)">Add new</button>
+    </ng-container>
+    
     <h2 class="heading-h2 error-spacing">
       <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
       <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError}}</span>
@@ -19,9 +22,10 @@
             <label [for]="buildIdPrefix(i) + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
           </div>
           <div class="float-right">
-            <button class="button button-secondary" type="button" (click)="openModal(i)"
-                    [disabled]="isNotAuthorisedToDelete(i)"
+              <ng-container *ngIf="!isNotAuthorisedToDelete(i)">
+                <button class="button button-secondary" type="button" (click)="openModal(i)"
                     attr.aria-label="Remove {{ itemLabel(i) }}">Remove</button>
+              </ng-container>
           </div>
         </div>
         <ccd-field-write [caseField]="buildCaseField(item, i)"
@@ -40,9 +44,9 @@
       </div>
 
     </div>
-
-    <button class="button" type="button" (click)="addItem()" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
-
+    <ng-container *ngIf="!isNotAuthorisedToCreate()">
+      <button class="button" type="button" (click)="addItem()" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
+    </ng-container>
   </div>
 
 </div>
