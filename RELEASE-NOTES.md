@@ -1,5 +1,21 @@
 ## RELEASE NOTES
 
+### Version 2.62.22-RDM-4837-prerelease
+**RDM-4837** - Field interpolation syntax is displayed if the source field is NULL
+
+### Version 2.62.21-RDM-4335-prerelease
+**RDM-4335** - Implement and consume external POST Create Case endpoint in API v2
+
+### Version 2.62.20-RDM-5883-prerelease - November 11 2019
+**RDM-5883** - Implement and consume external GET Printable Documents endpoint in API v2
+
+### Version 2.62.19-RDM-6084-prerelease November 8 2019
+**RDM-6084** - Unable to open case in new tab from filter/search results pages
+
+### Version 2.62.18-RDM-5296-prerelease
+**RDM-5296** Table Collection View - Case Link is not displayed as a link
+**RDM-5293** Table Collection View - Data from the first complex type is repeated for all collection items
+
 ### Version 2.60.5-RDM-6350-RC1-prerelease
 **RDM-6350** - Fix for AboutToStart callback not showing errors correctly in UI
 

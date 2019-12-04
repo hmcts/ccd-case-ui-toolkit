@@ -5,6 +5,7 @@ import { HttpService } from '../http';
 import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
+import { delay } from 'rxjs/internal/operators';
 
 @Injectable()
 export class DocumentManagementService {
@@ -12,6 +13,9 @@ export class DocumentManagementService {
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
+  // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
+  // field for cases when uploads are very fast.
+  private static readonly RESPONSE_DELAY = 1000;
 
   imagesList: string[] = [ 'GIF', 'JPG', 'JPEG', 'PNG'];
 
@@ -26,8 +30,11 @@ export class DocumentManagementService {
     headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
     return this.http
       .post(url, formData, { headers })
+      .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
       .pipe(
-        map(response => response.json())
+        map(response => {
+          return response.json();
+        })
       );
   }
 
