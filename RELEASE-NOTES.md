@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.22-RDM-4324-prerelease - December 5 2019
+**RDM-4324** DisplayOrder required for ComplexType elements
+
 ### Version 2.62.21-RDM-4335-prerelease
 **RDM-4335** - Implement and consume external POST Create Case endpoint in API v2
 
