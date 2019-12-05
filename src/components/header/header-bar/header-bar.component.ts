@@ -3,10 +3,10 @@ import { EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'cut-header-bar',
-    templateUrl: './header.html',
-    styleUrls: ['./header.scss']
+    templateUrl: './header-bar.html',
+    styleUrls: ['./header-bar.scss']
 })
-export class HeaderComponent {
+export class HeaderBarComponent {
 
   @Input()
   public title: string;

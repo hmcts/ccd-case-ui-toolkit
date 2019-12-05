@@ -27,8 +27,8 @@ describe('CasesService', () => {
   const EVENT_TRIGGER_DRAFT_URL = API_URL + `/internal/drafts/${DRAFT_ID}/event-trigger?ignore-warning=true`;
   const CREATE_EVENT_URL = API_URL + `/cases/${CASE_ID}/events`;
   const VALIDATE_CASE_URL = API_URL + `/case-types/${CTID}/validate?pageId=${PAGE_ID}`;
-  const PRINT_DOCUMENTS_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}/documents`;
-  const CREATE_CASE_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases?ignore-warning=false`;
+  const PRINT_DOCUMENTS_URL = API_URL + `/cases/${CASE_ID}/documents`;
+  const CREATE_CASE_URL = API_URL + `/case-types/${CTID}/cases?ignore-warning=false`;
   const CASE_VIEW: CaseView = {
     case_id: '1',
     case_type: {
@@ -425,15 +425,20 @@ describe('CasesService', () => {
 
     it('should use HttpService::post with correct url', () => {
       casesService
-        .createCase(JID, CTID, CASE_EVENT_DATA)
+        .createCase(CTID, CASE_EVENT_DATA)
         .subscribe();
 
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA);
+      const headers = new Headers({
+        'experimental': 'true',
+        'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
+      });
+
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, {headers});
     });
 
     it('should create case on server', () => {
       casesService
-        .createCase(JID, CTID, CASE_EVENT_DATA)
+        .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(
           data => expect(data).toEqual(CASE_RESPONSE)
         );
@@ -445,7 +450,7 @@ describe('CasesService', () => {
       }))));
 
       casesService
-        .createCase(JID, CTID, CASE_EVENT_DATA)
+        .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(
           data => expect(data).toEqual(EMPTY_RESPONSE)
         );
@@ -455,7 +460,7 @@ describe('CasesService', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
       casesService
-        .createCase(JID, CTID, CASE_EVENT_DATA)
+        .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(data => {
           expect(data).toEqual(CASE_RESPONSE);
         }, err => {
@@ -467,33 +472,42 @@ describe('CasesService', () => {
 
   describe('getPrintDocuments()', () => {
 
-    const DOCUMENTS: CasePrintDocument[] = [
-      {
-        name: 'Doc1',
-        type: 'application/pdf',
-        url: 'https://test.service.reform.hmcts.net/doc1'
-      }
-    ];
+    const DOCUMENTS = {
+      documentResources: [
+        {
+          name: 'Doc1',
+          type: 'application/pdf',
+          url: 'https://test.service.reform.hmcts.net/doc1'
+        }
+      ]
+    };
+    const HEADERS = new Headers({'content-type': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS});
 
     beforeEach(() => {
       httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+        headers: HEADERS,
         body: JSON.stringify(DOCUMENTS)
       }))));
     });
 
     it('should use HttpService::get with correct url', () => {
+      const headers = new Headers({
+        'experimental': 'true',
+        'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
+      });
+
       casesService
-        .getPrintDocuments(JID, CTID, CASE_ID)
+        .getPrintDocuments(CASE_ID)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL);
+      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, {headers});
     });
 
     it('should retrieve document list from server', () => {
       casesService
-        .getPrintDocuments(JID, CTID, CASE_ID)
+        .getPrintDocuments(CASE_ID)
         .subscribe(
-          eventTrigger => expect(eventTrigger).toEqual(DOCUMENTS)
+          eventTrigger => expect(eventTrigger).toEqual(DOCUMENTS.documentResources)
         );
     });
 
@@ -501,9 +515,9 @@ describe('CasesService', () => {
       httpService.get.and.returnValue(throwError(ERROR));
 
       casesService
-        .getPrintDocuments(JID, CTID, CASE_ID)
+        .getPrintDocuments(CASE_ID)
         .subscribe(data => {
-          expect(data).toEqual(DOCUMENTS);
+          expect(data).toEqual(DOCUMENTS.documentResources);
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);

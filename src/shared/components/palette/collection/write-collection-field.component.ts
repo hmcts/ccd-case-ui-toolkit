@@ -64,7 +64,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return Object.assign(new CaseField(), {
       id: index.toString(),
       field_type: this.caseField.field_type.collection_field_type,
-      display_context: this.caseField.display_context,
+      display_context: this.isNotAuthorisedToUpdate(index) ? 'READONLY' : this.caseField.display_context,
       hidden: this.caseField.hidden,
       value: item.value,
       label: null,
@@ -174,8 +174,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   hasDeleteAccess(role: any): boolean {
-    return !!this.caseField.acls.find( acl => acl.role === role && acl.delete === true);
-}
+    return !!this.caseField.acls.find(acl => acl.role === role && acl.delete === true);
+  }
 
   openModal(i: number) {
     const dialogConfig = new MatDialogConfig();
