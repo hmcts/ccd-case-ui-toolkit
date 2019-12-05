@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { HeadersModule } from './headers.module';
-import { FootersModule } from './footers.module';
-import { BodyModule } from './body.module';
+import { HeadersModule } from './components/header/headers.module';
+import { FootersModule } from './components/footer/footers.module';
+import { BodyModule } from './components/body/body.module';
 
-import { PhaseComponent } from './components/phase/phase.component';
-import { HeaderComponent } from './components/header/header.component';
-import { NavigationComponent } from './components/navigation/navigation.component';
-import { NavigationItemComponent } from './components/navigation/navigation-item.component';
+import { PhaseComponent } from './components/header/phase/phase.component';
+import { HeaderBarComponent } from './components/header/header-bar/header-bar.component';
+import { NavigationComponent } from './components/header/navigation/navigation.component';
+import { NavigationItemComponent } from './components/header/navigation/navigation-item.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { BodyComponent } from './components/body/body.component';
 import { FormModule } from './components/form/form.module';
@@ -61,7 +61,7 @@ import { CaseHistoryModule } from './shared/components/case-history';
     exports: [
       AlertComponent,
       PhaseComponent,
-      HeaderComponent,
+      HeaderBarComponent,
       NavigationComponent,
       NavigationItemComponent,
       FooterComponent,

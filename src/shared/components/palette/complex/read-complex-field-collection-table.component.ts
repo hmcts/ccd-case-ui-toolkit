@@ -112,6 +112,8 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     return result;
   }
 
+  keepOriginalOrder = (a, b) => a.key;
+
   sortRowsByColumns(column) {
     let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
       || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
