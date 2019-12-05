@@ -21,7 +21,6 @@ export class WizardPageFieldToCaseFieldMapper {
     caseField.wizardProps = wizardPageField;
     caseField.order = wizardPageField.order;
 
-    this.initializeNaturalOrder(caseField);
     this.fixShowConditionPath(caseField, '');
 
     if (wizardPageField.complex_field_overrides && wizardPageField.complex_field_overrides.length > 0) {
@@ -52,9 +51,6 @@ export class WizardPageFieldToCaseFieldMapper {
     if (override.display_context !== 'HIDDEN') {
       case_field_leaf.hidden = false;
       case_field_leaf.display_context = override.display_context;
-      if (override.order) {
-        case_field_leaf.order = override.order;
-      }
       if (override.label && override.label.length > 0) {
         case_field_leaf.label = override.label;
       }
@@ -116,16 +112,6 @@ export class WizardPageFieldToCaseFieldMapper {
     if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
       caseField.hidden = true;
     }
-  }
-
-  private initializeNaturalOrder(caseField: CaseField) {
-    let childrenCaseFields = this.getCaseFieldChildren(caseField);
-    let orderCounter = 1;
-    childrenCaseFields.forEach(e => {
-      e.order = orderCounter;
-      orderCounter = orderCounter + 1;
-      this.initializeNaturalOrder(e);
-    });
   }
 
   private getCaseFieldChildren(caseField: CaseField) {
