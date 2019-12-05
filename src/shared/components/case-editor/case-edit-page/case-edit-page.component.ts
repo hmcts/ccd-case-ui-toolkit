@@ -120,7 +120,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   toPreviousPage() {
     let caseEventData: CaseEventData = this.buildCaseEventData();
-    this.updateFormData(caseEventData as CaseEventData);
+    this.updateFormData(caseEventData);
     this.previous();
   }
 
