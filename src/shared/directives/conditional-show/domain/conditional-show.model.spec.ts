@@ -182,6 +182,19 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
+    it('field starts with a string and does not exist', () => {
+      let sc = new ShowCondition('claimantDetails.NamePrefix=""');
+      let fields = {
+        claimantDetails: {
+          NamePrefix: ''
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(true);
+    });
+
   });
 
   describe('matchByContextFields when', () => {
