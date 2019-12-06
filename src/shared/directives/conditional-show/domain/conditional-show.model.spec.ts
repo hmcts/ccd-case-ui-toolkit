@@ -286,6 +286,19 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
+    it('field starts with a string and does not exist', () => {
+      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let fields = {
+        claimantDetails: {
+          OtherPrefix: 'Mr.'
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
+
     it('should return false when multiple values does not match exactly', () => {
       let sc = new ShowCondition('field="s1,s2"');
       let fields = {
@@ -622,6 +635,7 @@ describe('conditional-show', () => {
         'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2CONTAINS"s1"');
     });
   });
+
   describe('NOT EQUALS', () => {
     it('Scenario1 show: comparator match with specific value', () => {
       let sc = new ShowCondition('field!="MOJ"');
