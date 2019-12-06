@@ -80,27 +80,35 @@ export class ShowCondition {
 
   private checkValueEquals(expectedValue, currentValue, conditionSeparaor): boolean {
     if (expectedValue.search('[,]') > -1) { // for  multi-select list
-      let expectedValues = expectedValue.split(',').sort().toString();
-      let values = currentValue ? currentValue.sort().toString() : '';
-      if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
-        return expectedValues !== values;
-      } else {
-        return expectedValues === values;
-      }
+      return this.checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor);
     } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== ShowCondition.CONDITION_NOT_EQUALS) {
       return currentValue.startsWith(this.removeStarChar(expectedValue));
     } else {
       // changed from '===' to '==' to cover number field conditions
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
-        let formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
-        if ('*' === expectedValue && formatCurrentValue !== '') {
-          return false;
-        }
-        let formatExpectedValue = expectedValue ? expectedValue.toString().trim() : '';
-        return formatCurrentValue != formatExpectedValue; // tslint:disable-line
+        return this.checkValueNotEquals(expectedValue, currentValue);
       } else {
         return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
       }
+    }
+  }
+
+  private checkValueNotEquals(expectedValue, currentValue) {
+    let formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
+    if ('*' === expectedValue && formatCurrentValue !== '') {
+      return false;
+    }
+    let formatExpectedValue = expectedValue ? expectedValue.toString().trim() : '';
+    return formatCurrentValue != formatExpectedValue; // tslint:disable-line
+  }
+
+  private checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor) {
+    let expectedValues = expectedValue.split(',').sort().toString();
+    let values = currentValue ? currentValue.sort().toString() : '';
+    if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
+      return expectedValues !== values;
+    } else {
+      return expectedValues === values;
     }
   }
 
@@ -120,37 +128,49 @@ export class ShowCondition {
       return undefined;
     }
     if (tail.length === 0) {
-      if (this.isDynamicList(fields[head])) {
-        return fields[head].value.code;
+      return this.getValue(fields, head);
+    } else {
+      if (FieldsUtils.isArray(fields[head])) {
+        return this.findValueForComplexConditionInArray(fields, head, tail, path);
       } else {
-        return fields[head];
+        return this.findValueForComplexConditionForPathIfAny(fields, head, tail, path);
+      }
+    }
+  }
+
+  private findValueForComplexConditionForPathIfAny(fields: any, head: string, tail: string[], path?: string) {
+    if (path) {
+      const [_, ...pathTail] = path.split(/[_]+/g);
+      return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), pathTail.join('_'));
+    } else {
+      return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), path);
+    }
+  }
+
+  private findValueForComplexConditionInArray(fields: any, head: string, tail: string[], path?: string) {
+    // use the path to resolve which array element we refer to
+    if (path.startsWith(head)) {
+      const [_, ...pathTail] = path.split(/[_]+/g);
+      if (pathTail.length > 0) {
+        try {
+          let arrayIndex = Number.parseInt(pathTail[0], 10);
+          const [__, ...dropNumberPath] = pathTail;
+          return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
+            fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
+        } catch (e) {
+          console.log('Error while parsing number', pathTail[0], e);
+        }
       }
     } else {
-      if (Array.isArray(fields[head])) {
-        // use the path to resolve which array element we refer to
-        if (path.startsWith(head)) {
-          const [_, ...pathTail] = path.split(/[_]+/g);
-          if (pathTail.length > 0) {
-            try {
-              let arrayIndex = Number.parseInt(pathTail[0], 10);
-              const [__, ...dropNumberPath] = pathTail;
-              return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
-                fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
-            } catch (e) {
-              console.log('Error while parsing number', pathTail[0], e);
-            }
-          }
-        } else {
-          console.log('Path in formArray should start with ', head, ', full path: ', path);
-        }
-      } else {
-        if (path) {
-          const [_, ...pathTail] = path.split(/[_]+/g);
-          return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), pathTail.join('_'));
-        } else {
-          return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), path);
-        }
-      }
+      console.log('Path in formArray should start with ', head, ', full path: ', path);
+    }
+  }
+
+  private getValue(fields, head) {
+    if (this.isDynamicList(fields[head])) {
+      return fields[head].value.code;
+    } else {
+      return fields[head];
     }
   }
 
