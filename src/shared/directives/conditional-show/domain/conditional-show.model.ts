@@ -9,7 +9,6 @@ export class ShowCondition {
   private static CONDITION_NOT_EQUALS = '!=';
   private static CONDITION_EQUALS = '=';
   private static readonly CONTAINS = 'CONTAINS';
-  private static readonly EMPTY = '';
 
   static addPathPrefixToCondition(showCondition: string, pathPrefix): string {
     if (!pathPrefix || pathPrefix === '') {
@@ -118,7 +117,7 @@ export class ShowCondition {
 
   private findValueForComplexCondition(fields: any, head: string, tail: string[], path?: string) {
     if (!fields) {
-      return undefined;
+      return fields;
     }
     if (tail.length === 0) {
       if (this.isDynamicList(fields[head])) {
