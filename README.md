@@ -76,30 +76,62 @@ yarn start
 
 ```
 case-ui-toolkit
-  |
-  ├─ src                          * Library sources home folder
-  |  ├─ components                * Example of library components with tests
-  |  ├─ services                  * Example of library services with tests
-  |  ├─ index.ts                  * Library entry point that is used by builders
-  |  └─ footers.module.ts         * Example of library module
-  |  └─ headers-module.ts         * Example of library module
-  |
-  ├─ .editorconfig                * Common IDE configuration
-  ├─ .gitignore	                  * List of files that are ignored while publishing to git repo
-  ├─ .npmignore                   * List of files that are ignored while publishing to npmjs
-  ├─ .travis.yml                  * Travic CI configuration
-  ├─ LICENSE.md                   * License details
-  ├─ README.md                    * README for you library
-  ├─ gulpfile.js                  * Gulp helper scripts
-  ├─ karma-test-entry.ts          * Entry script for Karma tests
-  ├─ karma.conf.ts                * Karma configuration for our unit tests
-  ├─ package.json                 * yarn dependencies, scripts and package configuration
-  ├─ tsconfig-aot.json            * TypeScript configuration for AOT build
-  ├─ tsconfig.json                * TypeScript configuration for UMD and Test builds
-  ├─ tslint.json                  * TypeScript linting configuration
-  ├─ webpack-test.config.ts       * Webpack configuration for building test version of the library
-  ├─ webpack-umd.config.ts        * Webpack configuration for building UMD bundle
-  └─ yarn.lock                    * yarn lock file that locks dependency versions
+|
+├─ demo                         - Self documenting application consuming components from src/shared/components
+| ├─ src                        - Application sources folder
+| | ├─ app                      - Components and modules implementing application
+| | ├─ public                   - Fonts and images for application
+| | ├─ style                    - Styles for application
+| | ├─ index.html               - Index page of application
+| | ├─ main.ts                  - Application initialisation logic
+| | └─ tsconfig.app.js          - Src folder typescript options to compile with
+| ├─ stubs                      - Back end stubs the application starts off
+| ├─ angular.js                 - Angular options to configure the application
+| ├─ gulpfile.js                - Gulp tasks to copy the built ui toolkit library to demo application
+| ├─ heroku-publish.js          - Script that deploys demo application latest master to Heroku
+| ├─ package.json               - yarn dependencies, scripts and package configuration for demo application
+| ├─ README.md                  - README for the demo app
+| ├─ server.js                  - Demo application startup script.
+| ├─ tsconfig.js                - Typescript base options that different config files derive from
+| └─ yarn.lock                  - File storing locked down dependencies for consistent installs
+|
+├─ src                          - Library sources home folder
+| ├─ scripts                    - Contains CI/Release related scripts
+| ├─ components                 - Basic building blocks components with tests for CCD
+| ├─ shared                     - Folder containing exportable components and directives that are shared with library consumers
+| | ├─ components               - Components that are meant to be shared with library consumers (e.g. ExUI)
+| | | ├─<component>             - Example component
+| | | | ├─ domain               - Component specific domain structures
+| | | | ├─ services             - Component specific services
+| | | | └─ <component files>    - Template, Component, Module and index files
+| | ├─ directives               - Directives that are meant to be shared with library consumers (e.g. ExUI)
+| | | ├─<directive>             - Example directive
+| | | | ├─ domain               - Directive specific domain structures
+| | | | ├─ services             - Directive specific services
+| | | | └─ <directive files>    - Template, Component, Module and index files
+| | ├─ domain                   - Domain structures that are used by shared components and directives
+| | ├─ fixture                  - Test domain builders and fixtures for shared components and directives
+| | ├─ pipes                    - Pipes for shared components and directives
+| | ├─ services                 - Common services for shared components and directives
+| | └─ test                     - Other test helpers
+| └─ index.ts                   - Library entry point that is used by builders
+|
+├─ .editorconfig                - Common IDE configuration
+├─ .gitignore                   - List of files that are ignored while publishing to git repo
+├─ .npmignore                   - List of files that are ignored while publishing to npmjs
+├─ .travis.yml                  - Travis CI configuration
+├─ LICENSE.md                   - License details
+├─ README.md                    - README for the library
+├─ gulpfile.js                  - Gulp helper scripts
+├─ karma-test-entry.ts          - Entry script for Karma tests
+├─ karma.conf.ts                - Karma configuration for our unit tests
+├─ package.json                 - yarn dependencies, scripts and package configuration
+├─ tsconfig-aot.json            - TypeScript configuration for AOT build
+├─ tsconfig.json                - TypeScript configuration for UMD and Test builds
+├─ tslint.json                  - TypeScript linting configuration
+├─ webpack-test.config.ts       - Webpack configuration for building test version of the library
+├─ webpack-umd.config.ts        - Webpack configuration for building UMD bundle
+└─ yarn.lock                    - yarn lock file that locks dependency versions
 ```
 
 # Getting Started

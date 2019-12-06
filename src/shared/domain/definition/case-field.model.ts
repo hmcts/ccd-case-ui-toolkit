@@ -72,4 +72,11 @@ export class CaseField implements Orderable {
   isComplex(): boolean {
     return this.field_type && this.field_type.type === 'Complex';
   }
+
+  @Expose()
+  isCaseLink(): boolean {
+    return this.isComplex()
+      && this.field_type.id === 'CaseLink'
+      && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
+  }
 }
