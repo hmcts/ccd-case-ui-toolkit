@@ -182,7 +182,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
-    it('field starts with a string and does not exist', () => {
+    it('field starts with a string and has empty value', () => {
       let sc = new ShowCondition('claimantDetails.NamePrefix=""');
       let fields = {
         claimantDetails: {

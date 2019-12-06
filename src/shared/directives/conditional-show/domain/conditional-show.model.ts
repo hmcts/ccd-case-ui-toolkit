@@ -117,7 +117,7 @@ export class ShowCondition {
 
   private findValueForComplexCondition(fields: any, head: string, tail: string[], path?: string) {
     if (!fields) {
-      return fields;
+      return undefined;
     }
     if (tail.length === 0) {
       if (this.isDynamicList(fields[head])) {
