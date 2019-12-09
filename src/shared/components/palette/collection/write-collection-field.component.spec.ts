@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { WriteCollectionFieldComponent } from './write-collection-field.component';
 import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
@@ -404,24 +404,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     fixture.detectChanges();
   }));
 
-  it('should disable remove buttons when user does not have DELETE right', () => {
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
-
-    expect(removeButtons[0].nativeElement.disabled).toBe(true);
-  });
-
-  it('should not disable remove buttons for newly added items even when user does not have DELETE right', () => {
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
-
-    expect(removeButtons[1].nativeElement.disabled).toBe(false);
-  });
-
-  it('should disable add button when user does not have CREATE right', () => {
-    let addButton = de.query($ADD_BUTTON_TOP);
-
-    expect(addButton.nativeElement.disabled).toBe(true);
-  });
-
   it('should render a row with a write field for each items', () => {
     let writeFields = de.queryAll($WRITE_FIELDS);
 
@@ -532,4 +514,134 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     expect(writeFields.length).toEqual(0);
     expect(readFields.length).toEqual(2);
   });
+});
+
+describe('WriteCollectionFieldComponent Show hide button', () => {
+  const collectionValues = [
+    {
+      id: '123',
+      value: 'v1'
+    },
+    {
+      value: 'v2'
+    }
+  ];
+
+  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
+  let component: WriteCollectionFieldComponent;
+  let de: DebugElement;
+  let formValidatorService: any;
+  let dialog: any;
+  let dialogRef: any;
+  let scrollToService: any;
+  let caseField: CaseField;
+  let formGroup: FormGroup;
+  let profileNotifier: any;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
+
+  beforeEach(async(() => {
+    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of());
+    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+    dialog.open.and.returnValue(dialogRef);
+    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+    scrollToService.scrollTo.and.returnValue(of());
+    caseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'X',
+      field_type: SIMPLE_FIELD_TYPE,
+      display_context: 'OPTIONAL',
+      value: collectionValues.slice(),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: false,
+          read: true,
+          update: true,
+          delete: false
+        }
+      ]
+    });
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
+  profileNotifier = new ProfileNotifier();
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          PaletteUtilsModule
+        ],
+        declarations: [
+          WriteCollectionFieldComponent,
+          // Mock
+          FieldWriteComponent,
+          FieldReadComponent
+        ],
+        providers: [
+          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: ScrollToService, useValue: scrollToService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
+          RemoveDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+    component = fixture.componentInstance;
+    component.registerControl = REGISTER_CONTROL;
+    component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
+  }));
+
+  it('should hide remove buttons when user does not have DELETE right', () => {
+    const isNotAuthorisedToDeleteSpy = spyOn(component, 'isNotAuthorisedToDelete');
+    isNotAuthorisedToDeleteSpy.and.returnValue(false);
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+
+    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    expect(removeButtons.length).toBeGreaterThan(0);
+  });
+
+  it('should not hide remove buttons for newly added items even when user does not have DELETE right', () => {
+    const isNotAuthorisedToDeleteSpy = spyOn(component, 'isNotAuthorisedToDelete');
+    isNotAuthorisedToDeleteSpy.and.returnValue(true);
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    expect(removeButtons.length).toEqual(0);
+  });
+
+  it('should hide add button when user does not have CREATE right', () => {
+    const isNotAuthorisedToDeleteSpy = spyOn(component, 'isNotAuthorisedToCreate');
+    isNotAuthorisedToDeleteSpy.and.returnValue(true);
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    let addButton = de.query($ADD_BUTTON_TOP);
+    expect(addButton).toBeFalsy();
+  });
+
+  it('should show add button when user does have CREATE right', () => {
+    const isNotAuthorisedToDeleteSpy = spyOn(component, 'isNotAuthorisedToCreate');
+    isNotAuthorisedToDeleteSpy.and.returnValue(false);
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    let addButton = de.query($ADD_BUTTON_TOP);
+    expect(addButton).toBeTruthy();
+  });
+
 });
