@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.25-RDM-5007-prerelease - December 10 2019
+**RDM-5007** CaseField must be READONLY if user has no UPDATE rights
+
 ### Version 2.62.24-RDM-5303-prerelease - December 9 2019
 **RDM-5303** Document file name disappears when you come back to the page from a previous page
 **RDM-6135** Collection item is hidden when navigating back from Previous page
