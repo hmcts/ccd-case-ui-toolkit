@@ -87,6 +87,26 @@ describe('WriteFixedListFieldComponent', () => {
     expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
   });
 
+  it('should select default value', () => {
+    let options = de.queryAll($OPTION);
+
+    expect(options.length).toEqual(4);
+    expect(attr(options[0], 'value')).toEqual('');
+    expect(text(options[0])).toEqual('--Select a value--');
+    expect(attr(options[1], 'value')).toEqual('M');
+    expect(text(options[1])).toEqual('Male');
+    expect(attr(options[2], 'value')).toEqual('F');
+    expect(text(options[2])).toEqual('Female');
+    expect(attr(options[3], 'value')).toEqual('O');
+    expect(text(options[3])).toEqual('Other');
+
+    let select = de.query($SELECT);
+    fixture.detectChanges();
+
+    expect(select.nativeElement.value).toEqual('');
+
+  });
+
   it('should render all options', () => {
     let options = de.queryAll($OPTION);
 
