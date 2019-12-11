@@ -89,6 +89,7 @@ describe('WriteFixedListFieldComponent', () => {
 
   it('should select default value', () => {
     component.caseField.value = null;
+    fixture.detectChanges();
     let options = de.queryAll($OPTION);
 
     expect(options.length).toEqual(4);
