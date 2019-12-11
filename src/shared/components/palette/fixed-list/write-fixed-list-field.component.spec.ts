@@ -88,6 +88,7 @@ describe('WriteFixedListFieldComponent', () => {
   });
 
   it('should select default value', () => {
+    component.caseField.value = null;
     let options = de.queryAll($OPTION);
 
     expect(options.length).toEqual(4);
