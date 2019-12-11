@@ -88,8 +88,6 @@ describe('WriteFixedListFieldComponent', () => {
   });
 
   it('should select default value', () => {
-    component.caseField.value = null;
-    fixture.detectChanges();
     let options = de.queryAll($OPTION);
 
     expect(options.length).toEqual(4);
@@ -101,6 +99,9 @@ describe('WriteFixedListFieldComponent', () => {
     expect(text(options[2])).toEqual('Female');
     expect(attr(options[3], 'value')).toEqual('O');
     expect(text(options[3])).toEqual('Other');
+
+    component.fixedListControl.setValue('');
+    fixture.detectChanges();
 
     let select = de.query($SELECT);
     fixture.detectChanges();
