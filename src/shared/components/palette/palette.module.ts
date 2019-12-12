@@ -32,9 +32,9 @@ import { OrderSummaryModule } from './order-summary/order-summary.module';
 import { CasePaymentHistoryViewerModule } from './payment/case-payment-history-viewer.module';
 import { PipesModule } from '../../pipes/pipes.module';
 import { BannersModule } from '../../../components/banners/banners.module';
-import { HeadersModule } from '../../../headers.module';
-import { FootersModule } from '../../../footers.module';
-import { BodyModule } from '../../../body.module';
+import { HeadersModule } from '../../../components/header/headers.module';
+import { FootersModule } from '../../../components/footer/footers.module';
+import { BodyModule } from '../../../components/body/body.module';
 import { FormModule } from '../../../components/form/form.module';
 import { TabsModule } from '../../../components/tabs/tabs.module';
 import { LabelFieldComponent } from './label';
@@ -44,6 +44,7 @@ import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.c
 import { FixedRadioListModule } from './fixed-radio-list';
 import { CaseHistoryViewerModule } from './history';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
+import { CaseLinkModule } from './case-link/case-link.module';
 
 @NgModule({
   imports: [
@@ -71,6 +72,7 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
+    CaseLinkModule
   ],
   declarations: [
     UnsupportedFieldComponent,
@@ -84,7 +86,6 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
-    ReadCaseLinkFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -94,7 +95,6 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
-    WriteCaseLinkFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
