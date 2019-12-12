@@ -56,6 +56,14 @@ describe('CaseEditPageComponent', () => {
   let caseField1 = new CaseField();
   let caseField2 = new CaseField();
   let eventData = new CaseEventData();
+  const caseEventDataPrevious: CaseEventData = {
+    'data': {
+      'field1': 'Updated value'
+    },
+    'event': {'id': '', 'summary': '', 'description': ''},
+    'event_token': '',
+    'ignore_warning': true
+  };
 
   describe('Save and Resume enabled', () => {
     beforeEach(async(() => {
@@ -586,6 +594,85 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
       expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_CONTINUE);
       expect(comp.ignoreWarning).toBeTruthy();
+    });
+  });
+
+  describe('previous the form', () => {
+    beforeEach(async(() => {
+      firstPage.id = 'first page';
+      cancelled = createSpyObj('cancelled', ['emit']);
+      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+
+      caseEditComponentStub = {
+        'form': FORM_GROUP,
+        'wizard': WIZARD,
+        'data': '',
+        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'first': () => true,
+        'next': () => true,
+        'previous': () => true,
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
+        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+      };
+      snapshot = {
+        queryParamMap: createSpyObj('queryParamMap', ['get']),
+      };
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
+      };
+
+      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
+      dialog = createSpyObj<MatDialog>('dialog', ['open']);
+      dialog.open.and.returnValue(matDialogRef);
+
+      spyOn(caseEditComponentStub, 'previous');
+      spyOn(caseEditComponentStub, 'form');
+      spyOn(formValueService, 'sanitise').and.returnValue(caseEventDataPrevious);
+      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(caseEventDataPrevious);
+
+      TestBed.configureTestingModule({
+        declarations: [CaseEditPageComponent,
+          CaseReferencePipe],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog}
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditPageComponent);
+      comp = fixture.componentInstance;
+
+      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
+      comp.currentPage = wizardPage;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should call update after toPreviousPage.', async () => {
+      fixture.detectChanges();
+      comp.toPreviousPage();
+      fixture.whenStable().then(() => {
+        expect(caseEventDataPrevious.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
+        expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP.value.data);
+        expect(caseEventDataPrevious.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(caseEventDataPrevious.event_token).toEqual(comp.eventTrigger.event_token);
+        expect(formValueService.sanitise).toHaveBeenCalled();
+        expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
+      });
     });
   });
 
