@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.27-RDM-6555-prerelease - December 12 2019
+***RDM-6555** Address Current known security vulnerabilities in ccd-case-ui-toolkit
+
 ### Version 2.62.25-RDM-5007-prerelease - December 10 2019
 **RDM-5007** CaseField must be READONLY if user has no UPDATE rights
 
