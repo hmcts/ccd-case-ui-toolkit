@@ -64,13 +64,11 @@ export let createWizardPage = (id: string,
 export let createWizardPageField = (id: string,
                                     order: number,
                                     pageColumnNumber: number,
-                                    displayContext: string,
                                     complexFieldOverrides: ComplexFieldOverride[] = []): WizardPageField => {
   const wizardPageField = new WizardPageField();
   wizardPageField.case_field_id = id;
   wizardPageField.order = order;
   wizardPageField.page_column_no = pageColumnNumber;
-  wizardPageField.display_context = displayContext;
   wizardPageField.complex_field_overrides = complexFieldOverrides;
   return wizardPageField;
 };
