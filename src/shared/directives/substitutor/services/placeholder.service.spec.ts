@@ -1,12 +1,10 @@
 import { PlaceholderService } from './placeholder.service';
-import { FieldsUtils } from '../../../services';
 
 describe('PlaceholderService', () => {
 
   let placeholderService: PlaceholderService;
-  let fieldsUtils: FieldsUtils = new FieldsUtils();
   beforeEach(() => {
-    placeholderService = new PlaceholderService(fieldsUtils);
+    placeholderService = new PlaceholderService();
   });
 
   describe('simple types', () => {
@@ -17,7 +15,7 @@ describe('PlaceholderService', () => {
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe(stringToResolve);
+      expect(actual).toBe('Email for  is');
     });
 
     it('should not substitute if stringToResolve is null', () => {
@@ -72,7 +70,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('First Name is  years old  and markdown is  and address is ${Address} and document photo.jpg');
+      expect(actual).toBe('First Name is  years old  and markdown is  and address is  and document photo.jpg');
     });
 
     it('should not substitute fields ids with special characters but _', () => {
@@ -81,7 +79,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('one ${%2} ${?3} ${$4} {_5}');
+      expect(actual).toBe('one    {_5}');
     });
 
     it('should not substitute nested fields', () => {
@@ -90,16 +88,25 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('This one but not this ${${_1}} and not this ${field${_1}field} but this one too');
+      expect(actual).toBe('This one but not this  and not this  but this one too');
     });
 
     it('should not substitute if value of a field to substitute refers itself', () => {
-      let pageFormFields = { '_1_one': '${_1_one}' };
-      let stringToResolve = '${_1_one}';
+      let pageFormFields = { '_1_one': '${_1_one}', '_2_two': 'two' };
+      let stringToResolve = '${_1_one} ${_2_two}';
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${_1_one}');
+      expect(actual).toBe(' two');
+    });
+
+    it('should not substitute if placeholder is missing characters', () => {
+      let pageFormFields = { '_1_one': '${_1_one}', '_2_two': 'two' , 'three' : 'three'};
+      let stringToResolve = '${_1_one ${_2_two} {three}';
+
+      let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
+
+      expect(actual).toBe('${_1_one two {three}');
     });
 
     it('should substitute fields with multi select values', () => {
@@ -125,7 +132,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('nested value and nested value2 and ${complex.nested3} and double nested');
+      expect(actual).toBe('nested value and nested value2 and  and double nested');
     });
 
     it('should substitute if complex nested field refers existent field', () => {
@@ -134,7 +141,7 @@ and markdown is \${Markdownlabel} and address is \${Address} and document \${D8D
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, s);
 
-      expect(actual).toBe('${complex} and ${complex.nested} and ${complex.nested.} and ${complex.nested.double} and double nested');
+      expect(actual).toBe(' and  and  and  and double nested');
     });
   });
 
@@ -174,7 +181,7 @@ value and nested value3 and tripple nested9`);
 
       expect(actual).toBe(`value and nested value1 and tripple nested7
 ___
-value and \${topComplex.collection.complex.nested} and tripple nested8
+value and  and tripple nested8
 ___
 value and nested value3 and tripple nested9`);
     });
@@ -190,7 +197,7 @@ value and nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${topComplex.collection.complex} and ${topComplex.collection.complex.nested2.doubleNested}');
+      expect(actual).toBe(' and ');
     });
   });
 
@@ -220,7 +227,7 @@ value and nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${_1_one} simpleValue');
+      expect(actual).toBe(' simpleValue');
     });
 
     it('should not substitute fields with collection of collection values', () => {
@@ -232,7 +239,7 @@ value and nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${_1_one} simpleValue');
+      expect(actual).toBe(' simpleValue');
     });
   });
 
@@ -267,7 +274,7 @@ nested value3 and tripple nested9`);
 
       expect(actual).toBe(`nested value1 and tripple nested7
 ___
-\${collection.complex.nested} and tripple nested8
+ and tripple nested8
 ___
 nested value3 and tripple nested9`);
     });
@@ -282,7 +289,7 @@ nested value3 and tripple nested9`);
 
       let actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe('${collection.complex} and ${collection.complex.nested2.doubleNested}');
+      expect(actual).toBe(' and ');
     });
   });
 });
