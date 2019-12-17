@@ -38,45 +38,4 @@ export class OrderService {
       .slice()
       .sort(sortingFunction);
   }
-
-  public deepSort(case_fields: CaseField[]): CaseField[] {
-    case_fields.forEach((caseField: CaseField) => {
-      if (caseField.isComplex()) {
-        let sorted = this.deepSort(caseField.field_type.complex_fields);
-        caseField.field_type.complex_fields = sorted;
-      }
-      if (caseField.isCollection()) {
-        let sorted = this.deepSort(caseField.field_type.collection_field_type.complex_fields);
-        caseField.field_type.collection_field_type.complex_fields = sorted;
-      }
-      if (caseField.hidden !== true && !caseField.order) {
-        if (caseField.isComplex()) {
-          this.deriveOrderFromChildComplexFields(caseField, caseField.field_type);
-        }
-        if (caseField.isCollection()) {
-          this.deriveOrderFromChildComplexFields(caseField, caseField.field_type.collection_field_type);
-        }
-      }
-      if (this.isOneOfFixedListTypes(caseField)) {
-        caseField.field_type.fixed_list_items = this.sort(caseField.field_type.fixed_list_items);
-      }
-    });
-
-    return this.sort(case_fields);
-  }
-
-  private isOneOfFixedListTypes(caseField: CaseField) {
-    return caseField.field_type.type === 'FixedList' ||
-      caseField.field_type.type === 'MultiSelectList' ||
-      caseField.field_type.type === 'FixedRadioList';
-  }
-
-  private deriveOrderFromChildComplexFields(caseField: CaseField, fieldType: FieldType) {
-    if (fieldType && fieldType.complex_fields && fieldType.complex_fields.length > 0) {
-      let caseFieldOptional = fieldType.complex_fields.find(e => e.order !== undefined);
-      if (caseFieldOptional !== undefined) {
-        caseField.order = caseFieldOptional.order;
-      }
-    }
-  }
 }

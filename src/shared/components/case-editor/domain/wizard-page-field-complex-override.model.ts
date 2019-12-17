@@ -1,8 +1,5 @@
-import { Orderable } from '../../../domain/order/orderable.model';
-
-export class ComplexFieldOverride implements Orderable {
+export class ComplexFieldOverride {
   complex_field_element_id: string;
-  order?: number;
   display_context: string;
   label?: string;
   hint_text?: string;

@@ -83,7 +83,6 @@ export let createComplexFieldOverride = (id: string,
                                          showCondition: string): ComplexFieldOverride => {
   const complexFieldOverride = new ComplexFieldOverride();
   complexFieldOverride.complex_field_element_id = id;
-  complexFieldOverride.order = order;
   complexFieldOverride.display_context = displayContext;
   complexFieldOverride.label = label;
   complexFieldOverride.hint_text = hint;
