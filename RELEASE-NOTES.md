@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.28-RDM-6061-prerelease - December 17 2019
+**RDM-6061** - JS error when a non-available case field is used in showCondition
+
 ### Version 2.62.26-RDM-6716-prerelease - December 17 2019 
 **RDM-6716** default '--select a value--' bug fix for fixed list 
 
@@ -15,6 +18,7 @@
 
 ### Version 2.62.23-RDM-4324-prerelease - December 5 2019
 **RDM-4324** DisplayOrder required for ComplexType elements
+
 
 ### Version 2.62.22-RDM-4837-prerelease
 **RDM-4837** - Field interpolation syntax is displayed if the source field is NULL
