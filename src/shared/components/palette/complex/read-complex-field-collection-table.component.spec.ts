@@ -360,6 +360,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       expect(fieldReads[9].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
       expect(fieldReads[10].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
       expect(fieldReads[10].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+
     });
 
     it('should render all case links', () => {
