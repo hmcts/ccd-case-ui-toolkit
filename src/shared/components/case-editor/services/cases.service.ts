@@ -22,7 +22,10 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
 
   // External (Data Store) API
-  public static readonly V2_MEDIATYPE_CASE_DOCUMENTS = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-documents.v2+json;charset=UTF-8';
+
+  public static readonly V2_MEDIATYPE_CASE_DOCUMENTS =
+    'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-documents.v2+json;charset=UTF-8';
+
   public static readonly V2_MEDIATYPE_CASE_DATA_VALIDATE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-data-validate.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_CREATE_EVENT =
@@ -240,8 +243,8 @@ export class CasesService {
 
     eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
       wizardPage.parsedShowCondition = new ShowCondition(wizardPage.show_condition);
-      wizardPage.case_fields = this.orderService
-        .deepSort(this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
+      wizardPage.case_fields = this.orderService.sort(
+        this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });
   }
 

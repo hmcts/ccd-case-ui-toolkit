@@ -1,5 +1,25 @@
 ## RELEASE NOTES
 
+### Version 2.62.28-RDM-6061-prerelease - December 17 2019
+**RDM-6061** - JS error when a non-available case field is used in showCondition
+
+### Version 2.62.26-RDM-6716-prerelease - December 17 2019 
+**RDM-6716** default '--select a value--' bug fix for fixed list 
+
+### Version 2.62.27-RDM-6555-prerelease - December 12 2019
+***RDM-6555** Address Current known security vulnerabilities in ccd-case-ui-toolkit
+
+### Version 2.62.25-RDM-5007-prerelease - December 10 2019
+**RDM-5007** CaseField must be READONLY if user has no UPDATE rights
+
+### Version 2.62.24-RDM-5303-prerelease - December 9 2019
+**RDM-5303** Document file name disappears when you come back to the page from a previous page
+**RDM-6135** Collection item is hidden when navigating back from Previous page
+
+### Version 2.62.23-RDM-4324-prerelease - December 5 2019
+**RDM-4324** DisplayOrder required for ComplexType elements
+
+
 ### Version 2.62.22-RDM-4837-prerelease
 **RDM-4837** - Field interpolation syntax is displayed if the source field is NULL
 
