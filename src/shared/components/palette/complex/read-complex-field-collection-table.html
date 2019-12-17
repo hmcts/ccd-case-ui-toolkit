@@ -46,10 +46,12 @@
             <td [colSpan]="columns.length +1">
               <table class="complex-panel-table">
                 <tbody>
+                  
                 <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue:keepOriginalOrder">
                   <ng-container  *ngFor="let name of item | keyvalue">
                     <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
                     <!-- <COMPLEX table expandable body simple field>-->
+
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th><span class="text-16">{{vLabel.value.label}}</span></th>
@@ -62,8 +64,10 @@
                             }" [context]="context"></ccd-field-read>
                       </td>
                     </tr>
+                      
                     <!-- </COMPLEX table expandable body simple field>-->
                     <!-- <COMPLEX table expandable body complex field>-->
+
                     <tr *ngIf="vLabel.value.type === 'Complex' && addCaseFieldValue(vLabel.value.caseField, name.value)">
                       <td colspan="2">
                         <ng-container *ngFor="let field of vLabel.value.caseField | ccdFieldsFilter">
