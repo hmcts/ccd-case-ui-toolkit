@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.29-RDM-6887-prerelease - December 17 2019
+***RDM-6887** Remove duplicate display context from data store endpoint
+
 ### Version 2.62.28-RDM-6061-prerelease - December 17 2019
 **RDM-6061** - JS error when a non-available case field is used in showCondition
 
