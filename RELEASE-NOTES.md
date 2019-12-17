@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.62.29-RDM-6887-prerelease - December 17 2019
+***RDM-6887** Remove duplicate display context from data store endpoint
+
 ### Version 2.62.27-RDM-6555-prerelease - December 12 2019
 ***RDM-6555** Address Current known security vulnerabilities in ccd-case-ui-toolkit
 
