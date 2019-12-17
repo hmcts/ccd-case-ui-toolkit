@@ -26,6 +26,7 @@ addons:
 script:
   - yarn --version
   - yarn lint
+  - yarn test:audit
   - yarn test
   - yarn build
   - yarn install:demo
