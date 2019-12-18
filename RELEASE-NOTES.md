@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.63.0 - December 18 2019
+release from master branch
+
 ### Version 2.62.29-RDM-6887-prerelease - December 17 2019
 ***RDM-6887** Remove duplicate display context from data store endpoint
 
