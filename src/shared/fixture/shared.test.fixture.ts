@@ -64,13 +64,11 @@ export let createWizardPage = (id: string,
 export let createWizardPageField = (id: string,
                                     order: number,
                                     pageColumnNumber: number,
-                                    displayContext: string,
                                     complexFieldOverrides: ComplexFieldOverride[] = []): WizardPageField => {
   const wizardPageField = new WizardPageField();
   wizardPageField.case_field_id = id;
   wizardPageField.order = order;
   wizardPageField.page_column_no = pageColumnNumber;
-  wizardPageField.display_context = displayContext;
   wizardPageField.complex_field_overrides = complexFieldOverrides;
   return wizardPageField;
 };
@@ -83,7 +81,6 @@ export let createComplexFieldOverride = (id: string,
                                          showCondition: string): ComplexFieldOverride => {
   const complexFieldOverride = new ComplexFieldOverride();
   complexFieldOverride.complex_field_element_id = id;
-  complexFieldOverride.order = order;
   complexFieldOverride.display_context = displayContext;
   complexFieldOverride.label = label;
   complexFieldOverride.hint_text = hint;

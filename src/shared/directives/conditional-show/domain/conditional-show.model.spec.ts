@@ -182,6 +182,19 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
+    it('field starts with a string and has empty value', () => {
+      let sc = new ShowCondition('claimantDetails.NamePrefix=""');
+      let fields = {
+        claimantDetails: {
+          NamePrefix: ''
+        }
+      };
+
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(true);
+    });
+
   });
 
   describe('matchByContextFields when', () => {
@@ -281,6 +294,19 @@ describe('conditional-show', () => {
       let sc = new ShowCondition('field="te*"');
       let fields = {
       };
+      let matched = sc.match(fields);
+
+      expect(matched).toBe(false);
+    });
+
+    it('field starts with a string and does not exist', () => {
+      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let fields = {
+        claimantDetails: {
+          OtherPrefix: 'Mr.'
+        }
+      };
+
       let matched = sc.match(fields);
 
       expect(matched).toBe(false);
@@ -622,6 +648,7 @@ describe('conditional-show', () => {
         'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2CONTAINS"s1"');
     });
   });
+
   describe('NOT EQUALS', () => {
     it('Scenario1 show: comparator match with specific value', () => {
       let sc = new ShowCondition('field!="MOJ"');

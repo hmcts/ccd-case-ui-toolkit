@@ -2,18 +2,21 @@
       <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
       <table class="complex-panel-table">
         <tbody>
+        <!-- <COMPLEX table field header>-->
         <tr>
           <ng-container *ngFor="let heading of columns">
-            <ng-container *ngFor="let name of columnsAllLabels | keyvalue">
+            <ng-container *ngFor="let name of columnsAllLabels | keyvalue:keepOriginalOrder">
               <th *ngIf="heading.trim() == name.key">
                 <span class="text-16">{{name.value.label}}</span>
-                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value  )"></a>
+                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value)"></a>
               </th>
             </ng-container>
           </ng-container>
           <th></th>
         </tr>
-        <ng-container *ngFor="let item of rows;  let i = index;trackBy:trackByIndex;" >
+        <!-- </COMPLEX table field header>-->
+        <ng-container *ngFor="let item of rows; let i = index;trackBy:trackByIndex;" >
+          <!-- <COMPLEX table collapsed view>-->
           <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
             <ng-container *ngFor="let heading of columns">
               <ng-container  *ngFor="let name of item | keyvalue">
@@ -37,13 +40,18 @@
                 </div>
                </td>
           </tr>
+          <!-- </COMPLEX table collapsed view>-->
+          <!-- <COMPLEX table expanded view>-->
           <tr [hidden]="isHidden[i]">
             <td [colSpan]="columns.length +1">
               <table class="complex-panel-table">
                 <tbody>
-                <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue">
-                  <ng-container *ngFor="let name of item | keyvalue">
+                  
+                <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue:keepOriginalOrder">
+                  <ng-container  *ngFor="let name of item | keyvalue">
                     <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
+                    <!-- <COMPLEX table expandable body simple field>-->
+
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th><span class="text-16">{{vLabel.value.label}}</span></th>
@@ -56,6 +64,10 @@
                             }" [context]="context"></ccd-field-read>
                       </td>
                     </tr>
+                      
+                    <!-- </COMPLEX table expandable body simple field>-->
+                    <!-- <COMPLEX table expandable body complex field>-->
+
                     <tr *ngIf="vLabel.value.type === 'Complex' && addCaseFieldValue(vLabel.value.caseField, name.value)">
                       <td colspan="2">
                         <ng-container *ngFor="let field of vLabel.value.caseField | ccdFieldsFilter">
@@ -80,8 +92,9 @@
                             </tr>
                           </ng-template>
                         </ng-container>
-                    </td>
-                   </tr>
+                      </td>
+                    </tr>
+                    <!-- <COMPLEX table expandable body complex field>-->
                   </ng-container>
                   </ng-container>
                 </ng-container>
@@ -89,6 +102,7 @@
               </table>
             </td>
           </tr>
+          <!-- </COMPLEX table expanded view>-->
         </ng-container>
         </tbody>
       </table>
