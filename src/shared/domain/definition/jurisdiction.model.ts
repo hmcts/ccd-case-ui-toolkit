@@ -6,5 +6,4 @@ export class Jurisdiction {
   name: string;
   description: string;
   caseTypes: CaseTypeLite[];
-  banners: Banner[];
 }
