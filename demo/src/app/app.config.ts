@@ -116,4 +116,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.pagination_page_size;
   }
 
+  public getBannersUrl() {
+    return this.getCaseDataUrl() + `/internal/banners/`;
+  }
+
 }
