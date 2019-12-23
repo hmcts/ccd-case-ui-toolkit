@@ -44,8 +44,8 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
 
   const WIZARD_PAGE = createWizardPage('FinalReturnfinalReturn', 'Final Return', 1,
       [
-        createWizardPageField('debtorName', 2, null, 'MANDATORY', []),
-        createWizardPageField('finalReturn', 1, null, 'COMPLEX', [
+        createWizardPageField('debtorName', 2, null, []),
+        createWizardPageField('finalReturn', 1, null, [
           createComplexFieldOverride('finalReturn.addressAttended.AddressLine1',
             3,
             'MANDATORY',
@@ -66,8 +66,8 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
 
   const WIZARD_PAGE_WITH_HIDDEN_CASE_LINK = createWizardPage('FinalReturnfinalReturn', 'Final Return', 1,
       [
-        createWizardPageField('debtorName', 2, null, 'MANDATORY', []),
-        createWizardPageField('finalReturn', 1, null, 'COMPLEX', [
+        createWizardPageField('debtorName', 2, null, []),
+        createWizardPageField('finalReturn', 1, null, [
           createHiddenComplexFieldOverride('finalReturn.testCaseLink.CaseReference')
         ])
       ],
@@ -177,8 +177,8 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
 
   const WIZARD_PAGE = createWizardPage('AdmitAllPaper1', '', 1,
     [
-      createWizardPageField('reason', 1, null, 'MANDATORY', []),
-      createWizardPageField('respondents', 1, null, 'COMPLEX', [
+      createWizardPageField('reason', 1, null, []),
+      createWizardPageField('respondents', 1, null, [
         createComplexFieldOverride('respondents.responseSubject',
           1,
           'OPTIONAL',

@@ -5,6 +5,5 @@ export class WizardPageField implements Orderable {
   case_field_id: string;
   order?: number;
   page_column_no?: number;
-  display_context?: string;
   complex_field_overrides?: ComplexFieldOverride[];
 }
