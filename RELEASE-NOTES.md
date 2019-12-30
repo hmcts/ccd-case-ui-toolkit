@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.62.29-RDM-6887-paydemo
+### Version 2.63.0-RDM-5875-paydemo
 **RDM-6635** - Bulk scanning transaction page integration into CCD web component
 
 ### Version 2.62.29-RDM-6887-prerelease - December 17 2019
