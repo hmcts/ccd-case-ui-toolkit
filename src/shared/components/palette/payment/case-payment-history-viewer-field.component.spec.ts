@@ -22,6 +22,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   });
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
+  const BULKSCAN_API_URL = 'http://bulkscant-api:123';
 
   let appConfig;
   let PaymentWebComponent;
@@ -31,12 +32,17 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let de: DebugElement;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
+    appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
         'CCD_CASE_NUMBER'
+        'CCD_CASE_NUMBER',
+        'BULKSCAN_API_ROOT',
+        'ISBSENABLE',
+        'SELECTED_OPTION'
       ]});
 
     TestBed
@@ -72,5 +78,8 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     let paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual(PAYMENTS_URL);
     expect(paymentComponent.CCD_CASE_NUMBER).toEqual(CASE_REFERENCE);
+    expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException')
+    expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
+    expect(paymentComponent.ISBSENABLE).toEqual('true');
   });
 });
