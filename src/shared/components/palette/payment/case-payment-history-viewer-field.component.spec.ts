@@ -38,7 +38,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
-        'CCD_CASE_NUMBER'
         'CCD_CASE_NUMBER',
         'BULKSCAN_API_ROOT',
         'ISBSENABLE',
