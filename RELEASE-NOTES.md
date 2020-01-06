@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.63.1-RDM-6719-prerelease - January 6 2020
+***RDM-6719** Add Banner Feature to CCD UI
+
 ### Version 2.63.0 - December 18 2019
 release from master branch
 
