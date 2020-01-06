@@ -37,7 +37,7 @@ const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
-  value: VALUE
+  value: null
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
@@ -84,7 +84,7 @@ describe('WriteFixedListFieldComponent', () => {
   });
 
   it('should initialise formControl with provided value', () => {
-    expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+    expect(FORM_GROUP.controls[FIELD_ID].value).toBe(null);
   });
 
   it('should select default value', () => {
@@ -107,6 +107,23 @@ describe('WriteFixedListFieldComponent', () => {
     fixture.detectChanges();
 
     expect(select.nativeElement.value).toEqual('');
+
+  });
+
+  it('should return null when nothing selected', () => {
+    let options = de.queryAll($OPTION);
+
+    expect(options.length).toEqual(4);
+    expect(attr(options[0], 'value')).toEqual('');
+    expect(text(options[0])).toEqual('--Select a value--');
+    expect(attr(options[1], 'value')).toEqual('M');
+    expect(text(options[1])).toEqual('Male');
+    expect(attr(options[2], 'value')).toEqual('F');
+    expect(text(options[2])).toEqual('Female');
+    expect(attr(options[3], 'value')).toEqual('O');
+    expect(text(options[3])).toEqual('Other');
+
+    expect(component.fixedListControl.value).toEqual(null);
 
   });
 
