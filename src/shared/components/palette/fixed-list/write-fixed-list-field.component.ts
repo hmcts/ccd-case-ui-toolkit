@@ -7,18 +7,10 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
   templateUrl: './write-fixed-list-field.html'
 })
 export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
-  fixedListControl: FormControl;
-
   ngOnInit() {
-    let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
-    this.fixedListControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null));
-    if (this.hasSanitisedDynamicListData()) {
-      this.fixedListControl.setValue(this.caseField.value);
+    let isNull = this.caseField.value === undefined || this.caseField.value === '';
+    if (isNull) {
+      this.caseField.value = null;
     }
-  }
-
-  private hasSanitisedDynamicListData() {
-    return this.fixedListControl.value && this.fixedListControl.value.value;
   }
 }
