@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.63.4 - January 10 2020
+**RDM-6635** - Bulk scanning transaction page integration into CCD web component
+**RDM-7120** - fix for fixed list no selected value giving empty string to bank end
+
 ### Version 2.63.0 - December 18 2019
 release from master branch
 
