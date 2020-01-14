@@ -1,4 +1,4 @@
-export class JurisdictionConfig {
+export class JurisdictionUIConfig {
   id: string;
   shuttered: boolean;
 }

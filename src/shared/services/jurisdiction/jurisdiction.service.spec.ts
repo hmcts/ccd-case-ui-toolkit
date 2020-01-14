@@ -1,10 +1,11 @@
 import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { HttpService } from '../http/http.service';
 import { Observable } from 'rxjs';
 import { Response, ResponseOptions, Headers } from '@angular/http';
 import { JurisdictionService } from './jurisdiction.service';
-import { JurisdictionConfig } from '../../domain';
+import { JurisdictionUIConfig } from '../../domain';
 
 describe('JurisdictionService', () => {
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';
@@ -16,40 +17,35 @@ describe('JurisdictionService', () => {
   let windowService;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-    appConfig.getCaseDataUrl.and.returnValue(API_DATA_URL);
+    appConfig = createSpyObj<AppConfig>('appConfig', ['getJurisdictionUiConfigsUrl']);
+    appConfig.getJurisdictionUiConfigsUrl.and.returnValue(JURISDICTION_UI_CONFIGS_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get']);
     jurisdictionService = new JurisdictionService(httpService, appConfig);
     windowService = appConfig = createSpyObj<any>('windowService', ['setLocalStorage', 'getLocalStorage']);
   });
 
-  describe('getJurisdictionConfigs()', () => {
+  describe('getJurisdictionUIConfigs()', () => {
     beforeEach(() => {
       httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(createJurisdictionConfigs())
+        body: { configs: createJurisdictionConfigs() }
       }))));
     });
 
     it('should use HttpService::get with correct url', () => {
       jurisdictionService
-        .getJurisdictionConfigs(JurisdictionIds)
+        .getJurisdictionUIConfigs(JurisdictionIds)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(JURISDICTION_UI_CONFIGS_URL, {
-        headers: new Headers({
-          'experimental': 'true',
-          'Accept': JurisdictionService.V2_MEDIATYPE_JURISDICTION_CONFIGS
-        })});
+      expect(httpService.get).toHaveBeenCalledWith(JURISDICTION_UI_CONFIGS_URL, any(Object));
     });
 
     it('should retrieve jurisdiction UI configs array from server', () => {
-      jurisdictionService
-        .getJurisdictionConfigs(JurisdictionIds)
-        .subscribe(configs => expect(configs).toEqual(createJurisdictionConfigs())
-        );
+      jurisdictionService.getJurisdictionUIConfigs(JurisdictionIds).subscribe(result => {
+        expect(result).toEqual(createJurisdictionConfigs());
+      });
     });
 
-    function createJurisdictionConfigs(): JurisdictionConfig[] {
+    function createJurisdictionConfigs(): JurisdictionUIConfig[] {
       return [
         {
           id: 'AUTOTEST1',
@@ -60,6 +56,58 @@ describe('JurisdictionService', () => {
           shuttered: false
         }
       ];
+    }
+  }
+  );
+
+  describe('isShuttered()', () => {
+    it('should be false when no configs available', () => {
+      const noOfJurisdictions = 1;
+      const jurisdictionUiConfigs = [];
+
+      const result = jurisdictionService.isShuttered(jurisdictionUiConfigs, noOfJurisdictions);
+
+      expect(result).toBeFalsy();
+    });
+
+    it('should be true when all jurisdictions are shuttered', () => {
+      const noOfJurisdictions = 2;
+      const jurisdictionUiConfigs = [
+        createJurisdictionConfig('AUTOTEST1', true),
+        createJurisdictionConfig('AUTOTEST2', true)
+      ];
+
+      const result = jurisdictionService.isShuttered(jurisdictionUiConfigs, noOfJurisdictions);
+
+      expect(result).toBeTruthy();
+    });
+
+    it('should be false when at least one jurisdiction is not shuttered', () => {
+      const noOfJurisdictions = 3;
+      const jurisdictionUiConfigs = [
+        createJurisdictionConfig('AUTOTEST1', true),
+        createJurisdictionConfig('AUTOTEST2', true),
+        createJurisdictionConfig('AUTOTEST3', false)
+      ];
+
+      const result = jurisdictionService.isShuttered(jurisdictionUiConfigs, noOfJurisdictions);
+
+      expect(result).toBeFalsy();
+    });
+
+    it('should be false when not all jurisdictions have a config yet', () => {
+      const noOfJurisdictions = 2;
+      const jurisdictionUiConfigs = [
+        createJurisdictionConfig('AUTOTEST1', true)
+      ];
+
+      const result = jurisdictionService.isShuttered(jurisdictionUiConfigs, noOfJurisdictions);
+
+      expect(result).toBeFalsy();
+    });
+
+    function createJurisdictionConfig(id: string, shuttered: boolean): JurisdictionUIConfig {
+      return { id, shuttered };
     }
   }
   );
