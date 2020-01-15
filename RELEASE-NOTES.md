@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 
-### Version 2.63.3-16.1-latest-BulkScanPay - January 15 2020
+### Version 2.63.3-latest-16.1-BulkScanPay - January 15 2020
 **RDM-6635** - Bulk Scan/Offline Pay CCD Integration
 
 ### Version 2.62.22-RDM-4837-prerelease
