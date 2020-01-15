@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { Jurisdiction, JurisdictionConfig } from '../../domain';
+import { Jurisdiction, JurisdictionUIConfig } from '../../domain';
 import { HttpService } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
@@ -22,7 +22,7 @@ export class JurisdictionService {
     this.selectedJurisdictionSource.next(jurisdiction);
   }
 
-  getJurisdictionConfigs(jurisdictionReferences: string[]): Observable<JurisdictionConfig[]> {
+  getJurisdictionUIConfigs(jurisdictionReferences: string[]): Observable<JurisdictionUIConfig[]> {
     let url = this.appConfig.getJurisdictionUiConfigsUrl();
     let headers = new Headers({
       'experimental': 'true',
@@ -37,6 +37,10 @@ export class JurisdictionService {
         let configs = jsonResponse.configs;
         return configs;
       });
+  }
+
+  isShuttered(configs: JurisdictionUIConfig[], noOfJurisdictions: number): boolean {
+    return (noOfJurisdictions === configs.length) && configs.every(c => c.shuttered);
   }
 
 }
