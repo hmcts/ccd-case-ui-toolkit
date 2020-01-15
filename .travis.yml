@@ -17,12 +17,9 @@ install:
   - npm install -g codecov
   - NG_CLI_ANALYTICS=false npm install -g @angular/cli
   - yarn install --frozen-lockfile
-addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+sudo: true
+addons:	before_install:
+  apt:	  - sudo apt-get -y --allow-unauthenticated google-chrome-stable
 script:
   - yarn --version
   - yarn lint
