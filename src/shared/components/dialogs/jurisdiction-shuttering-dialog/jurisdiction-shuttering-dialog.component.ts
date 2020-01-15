@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Jurisdiction, JurisdictionConfig } from '../../../domain';
+import { Jurisdiction, JurisdictionUIConfig } from '../../../domain';
 
 @Component({
   selector: 'app-jurisdiction-shuttering-dialog',
@@ -10,7 +10,7 @@ import { Jurisdiction, JurisdictionConfig } from '../../../domain';
 export class JurisdictionShutteringDialogComponent implements OnInit {
 
   result: string;
-  jurisdictions: JurisdictionConfig[];
+  jurisdictions: JurisdictionUIConfig[];
 
   constructor(private matDialogRef: MatDialogRef<JurisdictionShutteringDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public dialogData: any) {
