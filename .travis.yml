@@ -12,14 +12,16 @@ matrix:
 cache: yarn
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
-  - export PATH="$HOME/.yarn/bin:$PATH"
+  - export PATH="$HOME/.yarn/bin:$PATH"  
+  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  - sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+  - sudo apt-get update -q
+  - sudo apt-get install -q google-chrome-stable
 install:
   - npm install -g codecov
   - NG_CLI_ANALYTICS=false npm install -g @angular/cli
   - yarn install --frozen-lockfile
-sudo: true
-addons:	before_install:
-  apt:	  - sudo apt-get -y --allow-unauthenticated google-chrome-stable
+sudo: required
 script:
   - yarn --version
   - yarn lint
