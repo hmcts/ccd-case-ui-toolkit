@@ -1,0 +1,30 @@
+<div class="dialogContainer">
+  <div>
+    <h2 *ngIf="jurisdictions.length == 1" class="heading-h2 dialog-title">A Jurisdiction Moved</h2>
+
+    <h2 *ngIf="jurisdictions.length > 1" class="heading-h2 dialog-title">{{jurisdictions.length}} Jurisdictions Moved</h2>
+  </div>
+  <div class="dialog-info">
+    <span *ngIf="jurisdictions.length == 1" class="text-info">
+      This application is no longer supporting the below jurisdiction on this address.
+      If you would like to work on cases in this jurisdiction, please proceed to the new address of the application.
+    </span>
+
+    <span *ngIf="jurisdictions.length > 1" class="text-info">
+      This application is no longer supporting the below jurisdictions on this address.
+      If you would like to work on cases in these jurisdictions, please proceed to the new address of the application.
+    </span>
+
+    <br>
+    <ul class="jurisdiction-list">
+      <li *ngFor="let jurisdiction of jurisdictions">
+        {{jurisdiction.id}}
+      </li>
+    </ul>
+  </div>
+  <div class="button-container">
+    <button type="button" title="NewApplication" class="button action-button" (click)="newAddress()">Proceed with the New Address</button>
+    <button type="button" title="OldApplication" class="button button-secondary" (click)="continueAsItIs()">Continue on This Address as Usual</button>
+  </div>
+</div>
+

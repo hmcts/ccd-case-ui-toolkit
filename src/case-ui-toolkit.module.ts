@@ -36,6 +36,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, FocusElementModule,
   FocusElementDirective } from './shared';
 import { CaseHistoryModule } from './shared/components/case-history';
+import { JurisdictionShutteringDialogComponent } from './shared/components/dialogs/jurisdiction-shuttering-dialog/jurisdiction-shuttering-dialog.component';
 
 @NgModule({
     imports: [
@@ -79,6 +80,7 @@ import { CaseHistoryModule } from './shared/components/case-history';
       DocumentDialogComponent,
       DeleteOrCancelDialogComponent,
       SaveOrDiscardDialogComponent,
+      JurisdictionShutteringDialogComponent,
       RemoveDialogComponent,
       CaseReferencePipe,
       MarkdownComponent,
