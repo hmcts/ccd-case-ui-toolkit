@@ -3,7 +3,7 @@
     <label class="form-label" for="cc-jurisdiction">Jurisdiction</label>
     <select class="form-control ccd-dropdown" id="cc-jurisdiction" name="jurisdiction" [formControl]="filterJurisdictionControl" (change)="onJurisdictionIdChange()">
       <option value="">--Select a value--</option>
-      <option *ngFor="let j of jurisdictions" [value]="j.id">{{j.name}}</option>
+      <option *ngFor="let j of jurisdictions" [disabled]="isJurisdictionShuttered(j)" [value]="j.id">{{j.name}}</option>
     </select>
   </div>
 
