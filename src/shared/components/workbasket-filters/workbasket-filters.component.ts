@@ -4,7 +4,6 @@ import { FormGroup } from '@angular/forms';
 import 'rxjs/add/operator/do';
 import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel, JurisdictionUIConfig } from '../../domain';
 import { JurisdictionService, AlertService, WindowService, OrderService, WorkbasketInputFilterService } from '../../services';
-import { config } from 'rxjs';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
