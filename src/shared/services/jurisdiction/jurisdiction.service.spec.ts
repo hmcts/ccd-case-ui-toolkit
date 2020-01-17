@@ -49,11 +49,13 @@ describe('JurisdictionService', () => {
       return [
         {
           id: 'AUTOTEST1',
-          shuttered: true
+          shuttered: true,
+          name: 'Auto Test1'
         },
         {
           id: 'AUTOTEST2',
-          shuttered: false
+          shuttered: false,
+          name: 'Auto Test2'
         }
       ];
     }
@@ -107,7 +109,11 @@ describe('JurisdictionService', () => {
     });
 
     function createJurisdictionConfig(id: string, shuttered: boolean): JurisdictionUIConfig {
-      return { id, shuttered };
+      return createJurisdictionConfigObj(id, shuttered, id);
+    }
+
+    function createJurisdictionConfigObj(id: string, shuttered: boolean, name: string): JurisdictionUIConfig {
+      return { id, shuttered, name};
     }
   }
   );

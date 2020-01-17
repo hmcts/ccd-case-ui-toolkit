@@ -12,15 +12,18 @@ describe('JurisdictionShutteringDialogComponent', () => {
   let jurisdictionConfigsArr: JurisdictionUIConfig[] = [
     {
       id: 'Test1',
-      shuttered: true
+      shuttered: true,
+      name: 'Test1'
     },
     {
       id: 'Test2',
-      shuttered: true
+      shuttered: true,
+      name: 'Test2'
     },
     {
       id: 'Test3',
-      shuttered: false
+      shuttered: false,
+      name: 'Test3'
     }
   ]
   let mockedDialogData: any = {
