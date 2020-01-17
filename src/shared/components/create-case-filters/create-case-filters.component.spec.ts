@@ -8,7 +8,8 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { Observable } from 'rxjs';
-import { DefinitionsService, OrderService, AlertService } from '../../services';
+import { DefinitionsService, OrderService, AlertService, JurisdictionService } from '../../services';
+import { JurisdictionUIConfig } from '../../domain';
 
 const EVENT_ID_1 = 'ID_1';
 const EVENT_NAME_1 = 'Event one';
@@ -231,6 +232,7 @@ const SORTED_CASE_EVENTS: CaseEvent[] = [...CASE_EVENTS_NO_PRE_STATES];
 let mockDefinitionsService: any;
 let mockOrderService: any;
 let mockAlertService: any;
+let mockJurisdictionService: any;
 
 const TEST_FORM_GROUP = new FormGroup({});
 
@@ -247,9 +249,13 @@ const changeDummy = (jurisdictions) => {
 
 describe('CreateCaseFiltersComponent', () => {
 
+  const JURISDICTION_CONFIG: JurisdictionUIConfig = createSpyObj<any>('jurisdictionConfig', ['toString']);
+
   let fixture: ComponentFixture<CreateCaseFiltersComponent>;
   let component: CreateCaseFiltersComponent;
   let de: DebugElement;
+  let jurisdictionConfigs: JurisdictionUIConfig[];
+  let jurisdictionConfigsObs: Observable<JurisdictionUIConfig[]>;
 
   const $SELECT_JURISDICTION = By.css('#cc-jurisdiction');
   const $SELECT_CASE_TYPE = By.css('#cc-case-type');
@@ -257,11 +263,15 @@ describe('CreateCaseFiltersComponent', () => {
   const $SELECT_BUTTON = By.css('button');
 
   beforeEach(async(() => {
+    jurisdictionConfigs = createJurisdictionUIConfigs([true]);
+    jurisdictionConfigsObs = Observable.of(jurisdictionConfigs);
     mockOrderService = createSpyObj<OrderService>('orderService', ['sort']);
     mockOrderService.sort.and.returnValue(SORTED_CASE_EVENTS);
     mockAlertService = createSpyObj<AlertService>('alertService', ['clear']);
     mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
     mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockJurisdictionService = createSpyObj('jurisdictionService', ['getJurisdictionUIConfigs', 'isShuttered']);
+    mockJurisdictionService.getJurisdictionUIConfigs.and.returnValue(jurisdictionConfigsObs);
 
     TestBed
       .configureTestingModule({
@@ -274,7 +284,8 @@ describe('CreateCaseFiltersComponent', () => {
         ], providers: [
           { provide: OrderService, useValue: mockOrderService },
           { provide: AlertService, useValue: mockAlertService },
-          { provide: DefinitionsService, useValue: mockDefinitionsService }
+          { provide: DefinitionsService, useValue: mockDefinitionsService },
+          { provide: JurisdictionService, useValue: mockJurisdictionService }
         ]
       })
       .compileComponents();
@@ -288,6 +299,10 @@ describe('CreateCaseFiltersComponent', () => {
     fixture.detectChanges();
     component.initControls();
   }));
+
+  function createJurisdictionUIConfigs(shuttered: boolean[]): JurisdictionUIConfig[] {
+    return shuttered.map(shut => ({ ...JURISDICTION_CONFIG, shuttered: shut }));
+  }
 
   it('should select the jurisdiction if there is only one jurisdiction', () => {
     mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));

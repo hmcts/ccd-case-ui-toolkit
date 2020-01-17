@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import 'rxjs/add/operator/do';
-import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel } from '../../domain';
+import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel, JurisdictionUIConfig } from '../../domain';
 import { JurisdictionService, AlertService, WindowService, OrderService, WorkbasketInputFilterService } from '../../services';
+import { config } from 'rxjs';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
@@ -20,6 +21,8 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   @Input()
   jurisdictions: Jurisdiction[];
+
+  jurisdcitionUIConfigs: JurisdictionUIConfig[] = [];
 
   @Input()
   defaults;
@@ -63,10 +66,17 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   ngOnInit(): void {
     this.selected = {};
-    this.route.queryParams.subscribe(params => {
-      if (!this.initialised || !params || !Object.keys(params).length) {
-        this.initFilters();
-        this.initialised = true;
+    this.jurisdictionService.getJurisdictionUIConfigs
+    (this.jurisdictions.map(j => j.id))
+    .subscribe(value => {
+      if (value) {
+        this.jurisdcitionUIConfigs = value;
+        this.route.queryParams.subscribe(params => {
+          if (!this.initialised || !params || !Object.keys(params).length) {
+            this.initFilters();
+            this.initialised = true;
+          }
+        });
       }
     });
   }
@@ -198,7 +208,13 @@ export class WorkbasketFiltersComponent implements OnInit {
     let selectedJurisdictionId = routeSnapshot.queryParams[WorkbasketFiltersComponent.PARAM_JURISDICTION] ||
       (this.defaults && this.defaults.jurisdiction_id);
     if (selectedJurisdictionId) {
-      this.selected.jurisdiction = this.jurisdictions.find(j => selectedJurisdictionId === j.id);
+      var tmpJurisdiction = this.jurisdictions.find(j => j.id === selectedJurisdictionId);
+      if (!this.isJurisdictionShuttered(tmpJurisdiction)) {
+        this.selected.jurisdiction = tmpJurisdiction;
+      } else {
+        this.selected.jurisdiction = this.getNonShutteredJurisdcitionId();
+      }
+      
       if (this.selected.jurisdiction && this.selected.jurisdiction.caseTypes.length > 0) {
         this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
@@ -212,6 +228,15 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.selected.jurisdiction = null;
     }
     this.apply(false);
+  }
+
+  private getNonShutteredJurisdcitionId() {
+    for(var i = 0; i < this.jurisdictions.length; i++) {
+      var jurisdiction = this.jurisdictions[i];
+      if(!this.isJurisdictionShuttered(jurisdiction)) {
+        return jurisdiction;
+      }
+    }
   }
 
   private selectCaseState(caseType: CaseTypeLite, routeSnapshot: ActivatedRouteSnapshot): CaseState {
@@ -268,5 +293,10 @@ export class WorkbasketFiltersComponent implements OnInit {
   private resetCaseType() {
     this.selected.caseType = null;
     this.selectedJurisdictionCaseTypes = null;
+  }
+
+  isJurisdictionShuttered(j: Jurisdiction) {
+    var config = j && this.jurisdcitionUIConfigs.find(jc => jc.id === j.id);
+    return config && config.shuttered;
   }
 }
