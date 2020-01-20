@@ -25,7 +25,7 @@ export class HttpErrorService {
       return error;
   }
 
-  handle(error: Response | any, redirectIfNotAuthorised = true): Observable<never> {
+  handle(error: Response | any, redirectIfNotAuthorised = true, data?: Object): Observable<never> {
     let httpError = new HttpError();
     if (error instanceof Response) {
       if (error.headers
@@ -39,6 +39,9 @@ export class HttpErrorService {
       }
       if (!httpError.status) {
         httpError.status = error.status;
+      }
+      if (data) {
+        httpError.callbackErrorFields = data;
       }
     } else if (error) {
       if (error.message) {

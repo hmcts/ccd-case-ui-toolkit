@@ -136,12 +136,28 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           }
           this.saveDraft();
           this.next();
-        }, error => this.handleError(error));
+        }, error => {
+          this.doFieldsExist(error, caseEventData) ?
+            this.handleError(error):
+            this.next();
+        });
       this.scrollToTop();
     }
     if (document.getElementById('main-content')) {
       document.getElementById('main-content').focus();
     }
+  }
+
+  private doFieldsExist(error, caseEventData: CaseEventData): boolean {
+    const callbackErrorFields = error.callbackErrorFields ? error.callbackErrorFields : null;
+    const formFields = caseEventData.data ? Object.keys(caseEventData.data) : null;
+
+    if (callbackErrorFields && formFields) {
+      console.log(callbackErrorFields, formFields);
+      return callbackErrorFields.every(item => formFields.indexOf(item) !== -1);
+    }
+
+    return false;
   }
 
   updateFormData(jsonData: CaseEventData): void {
