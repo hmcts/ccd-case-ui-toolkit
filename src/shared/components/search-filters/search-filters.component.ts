@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SearchInput } from './domain/search-input.model';
 import { SearchService, WindowService, OrderService, JurisdictionService } from '../../services';
-import { Jurisdiction, CaseTypeLite, CaseState } from '../../domain';
+import { Jurisdiction, CaseTypeLite, CaseState, JurisdictionUIConfig } from '../../domain';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
 const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
@@ -49,6 +49,8 @@ export class SearchFiltersComponent implements OnInit {
 
   formGroup: FormGroup = new FormGroup({});
 
+  jurisdcitionUIConfigs: JurisdictionUIConfig[] = [];
+
   constructor(private searchService: SearchService,
     private orderService: OrderService,
     private jurisdictionService: JurisdictionService,
@@ -57,24 +59,44 @@ export class SearchFiltersComponent implements OnInit {
 
   ngOnInit(): void {
     this.selected = {};
-    const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
-    if (this.jurisdictions.length === 1 || jurisdiction) {
-      this.selected.jurisdiction = this.jurisdictions[0];
-      if (jurisdiction) {
-        const localStorageJurisdiction = JSON.parse(jurisdiction);
-        this.selected.jurisdiction = this.jurisdictions.filter(j => j.id === localStorageJurisdiction.id)[0];
+    this.jurisdictionService.getJurisdictionUIConfigs
+    (this.jurisdictions.map(j => j.id))
+    .subscribe(value => {
+      if (value) {
+        this.jurisdcitionUIConfigs = value;
+        const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
+        if (this.jurisdictions.length === 1 || jurisdiction) {
+          this.selected.jurisdiction = this.jurisdictions[0];
+          if (jurisdiction) {
+            const localStorageJurisdiction = JSON.parse(jurisdiction);
+            let tmpJurisdiction = this.jurisdictions.filter(j => j.id === localStorageJurisdiction.id)[0];
+            if (!this.isJurisdictionShuttered(tmpJurisdiction)) {
+              this.selected.jurisdiction = tmpJurisdiction;
+            } else {
+              this.selected.jurisdiction = this.getNonShutteredJurisdcitionId();
+            }
+          }
+          this.onJurisdictionIdChange();
+        }
+        if (this.autoApply === true) {
+          this.selected.formGroup = this.formGroup;
+          this.selected.page = 1;
+          this.selected.metadataFields = this.getMetadataFields();
+          this.onApply.emit({
+            selected: this.selected,
+            queryParams: this.getQueryParams()
+          });
+        }
       }
-      this.onJurisdictionIdChange();
-    }
+    });
+  }
 
-    if (this.autoApply === true) {
-      this.selected.formGroup = this.formGroup;
-      this.selected.page = 1;
-      this.selected.metadataFields = this.getMetadataFields();
-      this.onApply.emit({
-        selected: this.selected,
-        queryParams: this.getQueryParams()
-      });
+  private getNonShutteredJurisdcitionId() {
+    for (let i = 0; i < this.jurisdictions.length; i++) {
+      let jurisdiction = this.jurisdictions[i];
+      if (!this.isJurisdictionShuttered(jurisdiction)) {
+        return jurisdiction;
+      }
     }
   }
 
@@ -208,5 +230,10 @@ export class SearchFiltersComponent implements OnInit {
       }
       this.onCaseTypeIdChange();
     }
+  }
+
+  isJurisdictionShuttered(j: Jurisdiction) {
+    let config = j && this.jurisdcitionUIConfigs.find(jc => jc.id === j.id);
+    return config && config.shuttered;
   }
 }

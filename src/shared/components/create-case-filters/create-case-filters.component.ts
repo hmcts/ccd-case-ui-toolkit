@@ -192,7 +192,7 @@ export class CreateCaseFiltersComponent implements OnInit {
   }
 
   isJurisdictionShuttered(j: Jurisdiction) {
-    var config = j && this.jurisdictionUIConfigs.find(jc => jc.id === j.id);
+    let config = j && this.jurisdictionUIConfigs.find(jc => jc.id === j.id);
     return config && config.shuttered;
   }
 }
