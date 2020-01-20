@@ -207,13 +207,12 @@ export class WorkbasketFiltersComponent implements OnInit {
     let selectedJurisdictionId = routeSnapshot.queryParams[WorkbasketFiltersComponent.PARAM_JURISDICTION] ||
       (this.defaults && this.defaults.jurisdiction_id);
     if (selectedJurisdictionId) {
-      var tmpJurisdiction = this.jurisdictions.find(j => j.id === selectedJurisdictionId);
+      let tmpJurisdiction = this.jurisdictions.find(j => j.id === selectedJurisdictionId);
       if (!this.isJurisdictionShuttered(tmpJurisdiction)) {
         this.selected.jurisdiction = tmpJurisdiction;
       } else {
         this.selected.jurisdiction = this.getNonShutteredJurisdcitionId();
       }
-      
       if (this.selected.jurisdiction && this.selected.jurisdiction.caseTypes.length > 0) {
         this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
@@ -230,9 +229,9 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private getNonShutteredJurisdcitionId() {
-    for(var i = 0; i < this.jurisdictions.length; i++) {
-      var jurisdiction = this.jurisdictions[i];
-      if(!this.isJurisdictionShuttered(jurisdiction)) {
+    for (let i = 0; i < this.jurisdictions.length; i++) {
+      let jurisdiction = this.jurisdictions[i];
+      if  (!this.isJurisdictionShuttered(jurisdiction)) {
         return jurisdiction;
       }
     }
@@ -295,7 +294,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   isJurisdictionShuttered(j: Jurisdiction) {
-    var config = j && this.jurisdcitionUIConfigs.find(jc => jc.id === j.id);
+    let config = j && this.jurisdcitionUIConfigs.find(jc => jc.id === j.id);
     return config && config.shuttered;
   }
 }
