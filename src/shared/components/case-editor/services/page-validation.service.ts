@@ -32,7 +32,7 @@ export class PageValidationService {
   }
 
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
-    return (!theControl && this.caseFieldService.isOptional(caseField)) || theControl.valid || theControl.disabled;
+    return (!theControl && this.caseFieldService.isOptional(caseField)) || (theControl && theControl.valid) || (theControl && theControl.disabled);
   }
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {
