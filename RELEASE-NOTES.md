@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.63.5-RDM-7287-prerelease - January 21 2020
+***RDM-7287** Disable Features of Shuttered Jurisdictions
+***RDM-7134** Optional Redirection of Users with Multiple Roles to Expert UI
+
 ### Version 2.63.1-RDM-6719-prerelease - January 6 2020
 ***RDM-6719** Add Banner Feature to CCD UI
 
