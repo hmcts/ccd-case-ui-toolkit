@@ -45,7 +45,7 @@ export class HttpService {
       .post(url, body, this.sanitiseOptions(options))
       .pipe(
         catchError(res => {
-          return this.httpErrorService.handle(res, redirectIfNotAuthorised, res.data);
+          return this.httpErrorService.handle(res, redirectIfNotAuthorised);
         })
       );
   }

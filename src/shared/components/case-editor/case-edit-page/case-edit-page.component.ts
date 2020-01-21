@@ -120,7 +120,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   toPreviousPage() {
     let caseEventData: CaseEventData = this.buildCaseEventData();
-    this.updateFormData(caseEventData);
+    this.updateFormData(caseEventData, true);
     this.previous();
   }
 
@@ -132,15 +132,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
           if (jsonData) {
-            this.updateFormData(jsonData as CaseEventData);
+            this.updateFormData(jsonData as CaseEventData, false);
           }
           this.saveDraft();
           this.next();
-        }, error => {
-          this.doFieldsExist(error, caseEventData) ?
-            this.handleError(error):
-            this.next();
-        });
+        }, error => this.handleError(error));
       this.scrollToTop();
     }
     if (document.getElementById('main-content')) {
@@ -148,23 +144,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private doFieldsExist(error, caseEventData: CaseEventData): boolean {
-    const callbackErrorFields = error.callbackErrorFields ? error.callbackErrorFields : null;
-    const formFields = caseEventData.data ? Object.keys(caseEventData.data) : null;
-
-    if (callbackErrorFields && formFields) {
-      console.log(callbackErrorFields, formFields);
-      return callbackErrorFields.every(item => formFields.indexOf(item) !== -1);
-    }
-
-    return false;
-  }
-
-  updateFormData(jsonData: CaseEventData): void {
+  updateFormData(jsonData: CaseEventData, previous: boolean): void {
     for (const caseFieldId of Object.keys(jsonData.data)) {
       if (this.pageWithFieldExists(caseFieldId)) {
         this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
-        this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
+        previous && this.error ? this.resetFormControls(this.editForm, caseFieldId) : this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
       }
     }
   }
@@ -188,6 +172,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       theControl.patchValue(value);
     }
   }
+
+  resetFormControls(formGroup: FormGroup, caseFieldId: string): void {
+    let theControl = formGroup.controls['data'].get(caseFieldId);
+    if (theControl && this.error) {
+      theControl.reset();
+    }
+  }
+
 
   callbackErrorsNotify(errorContext: CallbackErrorsContext) {
     this.ignoreWarning = errorContext.ignore_warning;

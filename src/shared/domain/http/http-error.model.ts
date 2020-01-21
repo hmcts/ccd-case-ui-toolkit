@@ -10,7 +10,6 @@ export class HttpError {
   path: string;
   details?: any;
   callbackErrors?: any;
-  callbackErrorFields?: any;
   callbackWarnings?: any;
 
   static from(data: object): HttpError {
@@ -32,7 +31,6 @@ export class HttpError {
     this.path = null;
     this.details = null;
     this.callbackErrors = null;
-    this.callbackErrorFields = null;
     this.callbackWarnings = null;
   }
 }
