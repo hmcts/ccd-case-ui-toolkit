@@ -480,7 +480,7 @@ describe('CaseEditPageComponent', () => {
         'ignore_warning': true
       };
 
-      comp.updateFormData(jsonData);
+      comp.updateFormData(jsonData, false);
 
       expect(eventTrigger.case_fields.filter(element => element.id === id).pop().value).toBe(updatedValue);
     });
