@@ -48,11 +48,11 @@ describe('UrlTransformationService', () => {
 
     it('should return mapped app\'s external prod URL when on internal prod URL', () => {
       urlTransformationService = new UrlTransformationService(mockDocument(CCD_INTERNAL_PROD_URL));
-      const testUrl = CCD_EXTERNAL_PROD_URL;
+      const testUrl = XUI_EXTERNAL_PROD_URL;
 
       const result = urlTransformationService.getPreferredEquivalentOf(testUrl);
 
-      expect(result).toEqual(CCD_INTERNAL_PROD_URL);
+      expect(result).toEqual(XUI_INTERNAL_PROD_URL);
     });
 
     it('should return non-mapped app\'s internal URL when on external URL', () => {
