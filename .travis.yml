@@ -37,6 +37,7 @@ after_success:
 before_deploy:
   - if [[ "$TRAVIS_TAG" == *"-prerelease" ]]; then export PRERELEASE=true; else export PRERELEASE=false; fi
 deploy:
+- edge: true
 - provider: releases
   api_key: $GH_TOKEN
   file: "RELEASE-NOTES.md"
