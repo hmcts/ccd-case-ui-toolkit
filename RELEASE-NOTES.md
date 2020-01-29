@@ -4,6 +4,9 @@
 ***RDM-7293** Introduce Smart Translation btw Internal & External Equivalents of Expert UI URLs
 ***RDM-6965** Jurisdiction-Level Shuttering of CCD UI & Redirection to Expert UI
 
+### Version 2.63.1-RDM-6719-prerelease - January 6 2020
+***RDM-6719** Add Banner Feature to CCD UI
+
 ### Version 2.63.0 - December 18 2019
 release from master branch
 
