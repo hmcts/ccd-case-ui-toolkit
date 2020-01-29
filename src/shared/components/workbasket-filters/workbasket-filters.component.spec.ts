@@ -12,6 +12,8 @@ import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction,
   JurisdictionService, WindowService, HttpService } from '../..';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { Response, ResponseOptions, Headers } from '@angular/http';
+import { JurisdictionUIConfig } from '../../domain';
 
 @Component({
   selector: 'ccd-field-write',
@@ -24,6 +26,8 @@ class FieldWriteComponent extends AbstractFieldWriteComponent {
 }
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
+const API_DATA_URL = 'http://data.ccd.reform/aggregated';
+const JURISDICTION_UI_CONFIGS_URL = API_DATA_URL + `/internal/jurisdiction-ui-configs`;
 
 const workbasketvalue = `{\"PersonLastName\":\"LastName\",\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\"`
@@ -180,6 +184,30 @@ describe('WorkbasketFiltersComponent', () => {
   let windowService;
   const TEST_FORM_GROUP = new FormGroup({});
 
+  beforeEach(async(() => {
+    httpService = createSpyObj<HttpService>('httpService', ['get']);
+    appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl', 'getJurisdictionUiConfigsUrl']);
+    appConfig.getJurisdictionUiConfigsUrl.and.returnValue(JURISDICTION_UI_CONFIGS_URL);
+    httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      body: { configs: createJurisdictionConfigs() }
+    }))));
+  }));
+
+  function createJurisdictionConfigs(): JurisdictionUIConfig[] {
+    return [
+      {
+        id: 'AUTOTEST1',
+        shuttered: true,
+        name: 'Auto Test1'
+      },
+      {
+        id: 'AUTOTEST2',
+        shuttered: false,
+        name: 'Auto Test2'
+      }
+    ];
+  }
+
   describe('Clear localStorage for workbasket filters', () => {
     let windowMockService: WindowService;
     beforeEach(async(() => {
@@ -190,8 +218,6 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-      httpService = createSpyObj<HttpService>('httpService', ['get']);
       jurisdictionService = new JurisdictionService(httpService, appConfig);
       windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'removeLocalStorage']);
@@ -260,8 +286,6 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-      httpService = createSpyObj<HttpService>('httpService', ['get']);
       jurisdictionService = new JurisdictionService(httpService, appConfig);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
@@ -642,8 +666,6 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-      httpService = createSpyObj<HttpService>('httpService', ['get']);
       jurisdictionService = new JurisdictionService(httpService, appConfig);
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -740,9 +762,6 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-      httpService = createSpyObj<HttpService>('httpService', ['get']);
       jurisdictionService = new JurisdictionService(httpService, appConfig);
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -814,8 +833,6 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-      httpService = createSpyObj<HttpService>('httpService', ['get']);
       jurisdictionService = new JurisdictionService(httpService, appConfig);
       activatedRoute = {
         queryParams: Observable.of({}),
@@ -1051,8 +1068,6 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
-      httpService = createSpyObj<HttpService>('httpService', ['get']);
       jurisdictionService = new JurisdictionService(httpService, appConfig);
       windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
