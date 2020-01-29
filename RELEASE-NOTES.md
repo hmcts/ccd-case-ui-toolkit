@@ -1,10 +1,8 @@
 ## RELEASE NOTES
 
-### Version 2.63.6-RDM-7293-prerelease - January 27 2019
-***RDM-7293** Introduce Smart Translation btw Internal & External Equivalents of Expert UI URLs
+### Version 2.63.7-RDM-6965-prerelease - January 29 2020
 ***RDM-6965** Jurisdiction-Level Shuttering of CCD UI & Redirection to Expert UI
-
-### Version 2.63.5-RDM-7287-prerelease - January 21 2020
+***RDM-7293** Introduce Smart Translation btw Internal & External Equivalents of Expert UI URLs
 ***RDM-7287** Disable Features of Shuttered Jurisdictions
 ***RDM-7134** Optional Redirection of Users with Multiple Roles to Expert UI
 
