@@ -21,6 +21,7 @@ export abstract class AbstractAppConfig {
   abstract getPrintServiceUrl(): string;
   abstract getRemotePrintServiceUrl(): string;
   abstract getPaginationPageSize(): number;
+  abstract getBannersUrl(): string;
 }
 
 export class CaseEditorConfig {
