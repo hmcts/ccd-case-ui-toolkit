@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { Component, DebugElement, Input } from '@angular/core';
 import { SearchFiltersComponent } from './search-filters.component';
 import { By } from '@angular/platform-browser';
@@ -6,8 +7,8 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { Observable } from 'rxjs/Rx';
 import createSpyObj = jasmine.createSpyObj;
 import { createSearchInputs } from './domain/search-input.test.fixture';
-import { JurisdictionService, SearchService, OrderService, WindowService } from '../../services';
-import { Jurisdiction, CaseType } from '../../domain';
+import { JurisdictionService, SearchService, OrderService, WindowService, HttpService } from '../../services';
+import { Jurisdiction, CaseType, JurisdictionUIConfig } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
 
@@ -145,18 +146,31 @@ const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFi
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
   + `\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`
 describe('SearchFiltersComponent', () => {
-
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
   let de: DebugElement;
-  let jurisdictionService: JurisdictionService;
   let windowService;
+  let mockJurisdictionService: any;
+  let jurisdictionConfigs: JurisdictionUIConfig[];
   beforeEach(async(() => {
-
+    jurisdictionConfigs = [{
+      id: 'Test1',
+      shuttered: true,
+      name: 'Test Jur1'
+    },
+    {
+      id: 'Test2',
+      shuttered: false,
+      name: 'Test Jur2'
+    }
+  ];
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'resetFilters']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    jurisdictionService = new JurisdictionService();
+    mockJurisdictionService = createSpyObj('jurisdictionService',
+                              ['getJurisdictionUIConfigs', 'isShuttered',
+                              'announceSelectedJurisdiction']);
+    mockJurisdictionService.getJurisdictionUIConfigs.and.returnValue(createObservableFrom(jurisdictionConfigs));
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
 
     onJurisdictionHandler = createSpyObj('onJurisdictionHandler', ['applyJurisdiction']);
@@ -174,7 +188,7 @@ describe('SearchFiltersComponent', () => {
         ], providers: [
           { provide: SearchService, useValue: mockSearchService },
           { provide: OrderService, useValue: orderService },
-          { provide: JurisdictionService, useValue: jurisdictionService },
+          { provide: JurisdictionService, useValue: mockJurisdictionService },
           { provide: WindowService, useValue: windowService }
         ]
       })
@@ -543,15 +557,30 @@ describe('Clear localStorage', () => {
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
   let de: DebugElement;
-  let jurisdictionService: JurisdictionService;
   let windowService: WindowService;
+  let mockJurisdictionService: any;
+  let jurisdictionConfigs: JurisdictionUIConfig[];
 
   beforeEach(async(() => {
+    jurisdictionConfigs = [{
+      id: 'Test1',
+      shuttered: true,
+      name: 'Test Jur1'
+    },
+    {
+      id: 'Test2',
+      shuttered: false,
+      name: 'Test Jur2'
+    }
+  ];
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'applyReset']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    jurisdictionService = new JurisdictionService();
     windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
+    mockJurisdictionService = createSpyObj('jurisdictionService',
+                              ['getJurisdictionUIConfigs', 'isShuttered',
+                              'announceSelectedJurisdiction']);
+    mockJurisdictionService.getJurisdictionUIConfigs.and.returnValue(createObservableFrom(jurisdictionConfigs));
     TestBed
       .configureTestingModule({
         imports: [
@@ -564,7 +593,7 @@ describe('Clear localStorage', () => {
         ], providers: [
           { provide: SearchService, useValue: mockSearchService },
           { provide: OrderService, useValue: orderService },
-          { provide: JurisdictionService, useValue: jurisdictionService },
+          { provide: JurisdictionService, useValue: mockJurisdictionService },
           { provide: WindowService, useValue: windowService }
         ]
       })

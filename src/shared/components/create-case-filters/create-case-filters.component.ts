@@ -5,7 +5,8 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
-import { DefinitionsService, OrderService } from '../../services';
+import { DefinitionsService, OrderService, JurisdictionService } from '../../services';
+import { JurisdictionUIConfig } from '../../domain';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -32,6 +33,7 @@ export class CreateCaseFiltersComponent implements OnInit {
   };
 
   jurisdictions: Jurisdiction[];
+  jurisdictionUIConfigs: JurisdictionUIConfig[] = [];
   selectedJurisdictionCaseTypes?: CaseTypeLite[];
   selectedCaseTypeEvents?: CaseEvent[];
 
@@ -42,6 +44,7 @@ export class CreateCaseFiltersComponent implements OnInit {
   constructor(
     private orderService: OrderService,
     private definitionsService: DefinitionsService,
+    private jurisdictionService: JurisdictionService
   ) { }
 
   ngOnInit() {
@@ -51,6 +54,13 @@ export class CreateCaseFiltersComponent implements OnInit {
       .subscribe(jurisdictions => {
         this.jurisdictions = jurisdictions;
         this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
+        this.jurisdictionService.getJurisdictionUIConfigs
+          (this.jurisdictions.map(j => j.id))
+          .subscribe(value => {
+            if (value) {
+              this.jurisdictionUIConfigs = value;
+            }
+          });
       });
     if (document.getElementById('cc-jurisdiction')) {
       document.getElementById('cc-jurisdiction').focus();
@@ -179,5 +189,10 @@ export class CreateCaseFiltersComponent implements OnInit {
 
   private isEmpty(value: any): boolean {
     return value === null || value === undefined;
+  }
+
+  isJurisdictionShuttered(j: Jurisdiction) {
+    let config = j && this.jurisdictionUIConfigs.find(jc => jc.id === j.id);
+    return config && config.shuttered;
   }
 }
