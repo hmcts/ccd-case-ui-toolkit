@@ -6,13 +6,13 @@
   </div>
   <div class="dialog-info">
     <span *ngIf="jurisdictions.length == 1" class="text-info">
-      This application is no longer supporting the below jurisdiction on this address.
-      If you would like to work on cases in this jurisdiction, please proceed to the new address of the application.
+      This application is no longer supporting the below jurisdiction on this URL.
+      If you would like to work on cases in this jurisdiction, please proceed to the new URL of the application.
     </span>
 
     <span *ngIf="jurisdictions.length > 1" class="text-info">
-      This application is no longer supporting the below jurisdictions on this address.
-      If you would like to work on cases in these jurisdictions, please proceed to the new address of the application.
+      This application is no longer supporting the below jurisdictions on this URL.
+      If you would like to work on cases in these jurisdictions, please proceed to the new URL of the application.
     </span>
 
     <br>
@@ -23,8 +23,8 @@
     </ul>
   </div>
   <div class="button-container">
-    <button type="button" title="NewApplication" class="button action-button" (click)="newAddress()">Proceed with the new address</button>
-    <button type="button" title="OldApplication" class="button button-secondary" (click)="continueAsItIs()">Continue on this address as usual</button>
+    <button type="button" title="NewApplication" class="button action-button" (click)="newAddress()">Go to new URL</button>
+    <button type="button" title="OldApplication" class="button button-secondary" (click)="continueAsItIs()">Continue on this URL</button>
   </div>
 </div>
 
