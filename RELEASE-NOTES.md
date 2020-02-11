@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.1-RDM-7524-prerelease - February 11 2020
+***RDM-7524** Wording Updates to CCD Shuttering and Redirection to Expert UI
+
 ### Version 2.63.7-RDM-6965-prerelease - January 29 2020
 ***RDM-6965** Jurisdiction-Level Shuttering of CCD UI & Redirection to Expert UI
 ***RDM-7293** Introduce Smart Translation btw Internal & External Equivalents of Expert UI URLs
