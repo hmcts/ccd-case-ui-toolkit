@@ -1,7 +1,17 @@
 ## RELEASE NOTES
 
+### Version 2.64.0-prerelease - January 30 2020
+***CCD-17.1**
+
+### Version 2.63.1-RDM-6719-prerelease - January 6 2020
+***RDM-6719** Add Banner Feature to CCD UI
+2.64.0-prerelease
+
 ### Version 2.63.0 - December 18 2019
 release from master branch
+
+### Version 2.63.0-RDM-5875-paydemo
+**RDM-6635** - Bulk scanning transaction page integration into CCD web component
 
 ### Version 2.62.29-RDM-6887-prerelease - December 17 2019
 ***RDM-6887** Remove duplicate display context from data store endpoint

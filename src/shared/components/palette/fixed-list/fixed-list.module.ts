@@ -4,7 +4,7 @@ import { FixedListPipe } from './fixed-list.pipe';
 import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 import { WriteFixedListFieldComponent } from './write-fixed-list-field.component';
 import { PaletteUtilsModule } from '../utils/utils.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MarkdownModule } from '../../markdown/markdown.module';
 
 @NgModule({
@@ -12,7 +12,8 @@ import { MarkdownModule } from '../../markdown/markdown.module';
     CommonModule,
     PaletteUtilsModule,
     ReactiveFormsModule,
-    MarkdownModule
+    MarkdownModule,
+    FormsModule
   ],
   declarations: [
     FixedListPipe,

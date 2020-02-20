@@ -9,6 +9,7 @@ export abstract class AbstractAppConfig {
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
   abstract getPaymentsUrl(): string;
+  abstract getPayBulkScanBaseUrl(): string;
   abstract getCreateOrUpdateDraftsUrl(ctid: string): string
   abstract getViewOrDeleteDraftsUrl(did: string): string
   abstract getActivityUrl(): string;
@@ -20,6 +21,7 @@ export abstract class AbstractAppConfig {
   abstract getPrintServiceUrl(): string;
   abstract getRemotePrintServiceUrl(): string;
   abstract getPaginationPageSize(): number;
+  abstract getBannersUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -32,6 +34,7 @@ export class CaseEditorConfig {
   remote_document_management_url: string;
   annotation_api_url: string;
   payments_url: string;
+  pay_bulk_scan_url: string;
   activity_batch_collection_delay_ms: number;
   activity_next_poll_request_ms: number;
   activity_retry: number;
