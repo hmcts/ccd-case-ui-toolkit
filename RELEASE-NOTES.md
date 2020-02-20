@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.2-RDM-7479-prerelease - February 20 2020
+***RDM-7479** Fix unknown vulnerabilities in toolkit Travis build
+
 ### Version 2.64.1-RDM-7524-prerelease - February 11 2020
 ***RDM-7524** Wording Updates to CCD Shuttering and Redirection to Expert UI
 
