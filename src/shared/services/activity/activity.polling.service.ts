@@ -5,7 +5,6 @@ import { Observable, Subscription, empty, Subject } from 'rxjs';
 import { NgZone } from '@angular/core';
 import polling, { IOptions } from 'rx-polling';
 import { AbstractAppConfig } from '../../../app.config';
-import { ActivityComponent } from '../../components/activity/activity.component';
 
 // @dynamic
 @Injectable()
@@ -118,7 +117,10 @@ export class ActivityPollingService {
       return Observable.empty();
     }
 
-    return polling(this.activityService.postActivity(caseId, activityType), this.pollConfig);
+    return Observable.interval(this.pollConfig.interval)
+            .timeInterval()
+            .flatMap(() => this.activityService.postActivity(caseId, activityType))
+            .retryWhen((error) => error.take(this.pollConfig.attempts));
   }
 
   get isEnabled(): boolean {

@@ -56,8 +56,11 @@ describe('ActivityPollingService', () => {
   });
 
   it('should accesss activityService to post view activities', () => {
-    activityPollingService.postViewActivity(CASE_ID);
-    expect(activityService.postActivity).toHaveBeenCalledWith(CASE_ID, ActivityService.ACTIVITY_VIEW);
+    const res = activityPollingService.postViewActivity(CASE_ID);
+    const subscription = res.subscribe(() => {
+      expect(activityService.postActivity).toHaveBeenCalledWith(CASE_ID, ActivityService.ACTIVITY_VIEW);
+    });
+    subscription ? subscription.unsubscribe() : null;
   });
 
   it('should not accesss activityService to post view activities if disabled', () => {
@@ -68,8 +71,11 @@ describe('ActivityPollingService', () => {
   });
 
   it('should accesss activityService to post edit activities', () => {
-    activityPollingService.postEditActivity(CASE_ID);
-    expect(activityService.postActivity).toHaveBeenCalledWith(CASE_ID, ActivityService.ACTIVITY_EDIT);
+    const res = activityPollingService.postEditActivity(CASE_ID);
+    const subscription = res.subscribe(() => {
+      expect(activityService.postActivity).toHaveBeenCalledWith(CASE_ID, ActivityService.ACTIVITY_EDIT);
+    });
+    subscription ? subscription.unsubscribe() : null;
   });
 
   it('should not accesss activityService to post edit activities if disabled', () => {
