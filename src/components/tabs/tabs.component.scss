@@ -52,7 +52,7 @@ $module: "tabs";
     &-panel {
       border-top: 1px solid $border-colour;
       clear: both;
-      overflow: hidden;
+      overflow: auto;
     }
 
     &-list {
