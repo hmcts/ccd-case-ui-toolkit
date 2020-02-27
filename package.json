@@ -43,7 +43,8 @@
     "install:demo": "yarn --cwd demo install",
     "build:demo": "yarn --cwd demo build",
     "start": "yarn --cwd demo start",
-    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
+    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
+    "postinstall": "cd ./node_modules/rx-polling && npm install && npm run build"
   },
   "dependencies": {
     "@angular/cli": "^6.0.8",
@@ -135,7 +136,7 @@
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^1.0.0",
-    "rx-polling": "~1.0.0",
+    "rx-polling": "git+https://git@github.com/hmcts/rx-polling.git",
     "rxjs": "^6.2.1",
     "rxjs-compat": "^6.0.0-rc.0",
     "sass-loader": "^7.1.0",
@@ -161,7 +162,7 @@
     "mem": "^6.0.0",
     "minimatch": "^3.0.2",
     "marked": "^0.7.0",
-    "serialize-javascript" : "^2.1.1"
+    "serialize-javascript": "^2.1.1"
   },
   "publishConfig": {
     "access": "public"
