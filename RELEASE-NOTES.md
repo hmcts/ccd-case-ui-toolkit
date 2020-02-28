@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.63.1 - February 28 2020
+### Version 2.64.1 - February 28 2020
 **EUI-1476** - Continued activity logging when browser inactive
 
 ### Version 2.64.0-prerelease - January 30 2020
