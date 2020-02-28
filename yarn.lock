@@ -9267,7 +9267,7 @@ run-queue@^1.0.0, run-queue@^1.0.3:
 
 "rx-polling@git://github.com/hmcts/rx-polling.git":
   version "1.0.1"
-  resolved "git://github.com/hmcts/rx-polling.git#b2ecc7955a91da9d8cea9ed57d844e6e689eff1d"
+  resolved "git://github.com/hmcts/rx-polling.git#5c90bbb5d5574ae71906bf17de99ad881ea574be"
 
 rxjs-compat@^6.0.0-rc.0:
   version "6.5.4"
