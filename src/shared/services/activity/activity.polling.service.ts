@@ -5,7 +5,6 @@ import { Observable, Subscription, empty, Subject } from 'rxjs';
 import { NgZone } from '@angular/core';
 import polling, { IOptions } from 'rx-polling';
 import { AbstractAppConfig } from '../../../app.config';
-import { ActivityComponent } from '../../components/activity/activity.component';
 
 // @dynamic
 @Injectable()
@@ -22,6 +21,7 @@ export class ActivityPollingService {
     this.pollConfig = {
       interval: config.getActivityNexPollRequestMs(),
       attempts: config.getActivityRetry(),
+      backgroundPolling: true
     };
     this.batchCollectionDelayMs = config.getActivityBatchCollectionDelayMs();
     this.maxRequestsPerBatch = config.getActivityMaxRequestPerBatch();

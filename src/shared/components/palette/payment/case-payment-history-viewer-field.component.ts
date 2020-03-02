@@ -18,4 +18,8 @@ export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadCom
     return this.appConfig.getPaymentsUrl();
   }
 
+  getPayBulkScanBaseURL() {
+    return this.appConfig.getPayBulkScanBaseUrl();
+  }
+
 }

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.2-RDM-7479-prerelease",
+  "version": "2.64.3-RDM-7479-EUI-1476-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -53,6 +53,7 @@
     "json-server": "^0.14.0",
     "karma-jasmine-html-reporter": "^1.2.0",
     "mocha": "^5.0.5",
+    "rx-polling": "git://github.com/hmcts/rx-polling.git",
     "typescript": "3.1.1",
     "underscore": "^1.9.1"
   },
@@ -135,7 +136,6 @@
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^1.0.0",
-    "rx-polling": "~1.0.0",
     "rxjs": "^6.2.1",
     "rxjs-compat": "^6.0.0-rc.0",
     "sass-loader": "^7.1.0",
