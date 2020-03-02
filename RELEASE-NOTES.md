@@ -1,17 +1,31 @@
 ## RELEASE NOTES
 
+### Version 2.64.4-EUI+Shuttering-prerelease - March 2 2020
+**EUI+Shuttering** 
+
 ### Version 2.64.2-EUI-1610-prerelease - March 2 2020
 **EUI-1610** - Changed import strategy for rx-polling
 
 ### Version 2.64.1-EUI-1476-prerelease - February 28 2020
 **EUI-1476** - Continued activity logging when browser inactive
 
+### Version 2.64.1-RDM-7524-prerelease - February 11 2020
+***RDM-7524** Wording Updates to CCD Shuttering and Redirection to Expert UI
+
+### Version 2.63.7-RDM-6965-prerelease - January 29 2020
+***RDM-6965** Jurisdiction-Level Shuttering of CCD UI & Redirection to Expert UI
+***RDM-7293** Introduce Smart Translation btw Internal & External Equivalents of Expert UI URLs
+***RDM-7287** Disable Features of Shuttered Jurisdictions
+***RDM-7134** Optional Redirection of Users with Multiple Roles to Expert UI
+
+### Version 2.63.1-RDM-6719-prerelease - January 6 2020
+***RDM-6719** Add Banner Feature to CCD UI
+
 ### Version 2.64.0-prerelease - January 30 2020
 ***CCD-17.1**
 
 ### Version 2.63.1-RDM-6719-prerelease - January 6 2020
 ***RDM-6719** Add Banner Feature to CCD UI
-2.64.0-prerelease
 
 ### Version 2.63.0 - December 18 2019
 release from master branch

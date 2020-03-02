@@ -124,5 +124,8 @@ export class AppConfig extends AbstractAppConfig {
   public getBannersUrl() {
     return this.getCaseDataUrl() + `/internal/banners/`;
   }
-
+  
+  public getJurisdictionUiConfigsUrl() {
+    return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
+  }
 }
