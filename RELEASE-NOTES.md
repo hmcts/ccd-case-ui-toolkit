@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.2-EUI-1610-prerelease - March 2 2020
+**EUI-1610** - Changed import strategy for rx-polling
+
 ### Version 2.64.1-EUI-1476-prerelease - February 28 2020
 **EUI-1476** - Continued activity logging when browser inactive
 
