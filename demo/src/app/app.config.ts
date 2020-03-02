@@ -15,6 +15,7 @@ export class AppConfig extends AbstractAppConfig {
     'remote_document_management_url': '/documents',
     'annotation_api_url': '/em-anno',
     'payments_url': '/payments',
+    'pay_bulk_scan_url': '/pay-bulkscan',
     'activity_batch_collection_delay_ms': 1,
     'activity_next_poll_request_ms': 5000,
     'activity_retry': 5,
@@ -68,6 +69,10 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentsUrl() {
     return this.config.payments_url;
   }
+  
+  public getPayBulkScanBaseUrl() {
+    return this.config.pay_bulk_scan_url;
+  }
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
     return this.getCaseDataUrl()
@@ -119,9 +124,8 @@ export class AppConfig extends AbstractAppConfig {
   public getBannersUrl() {
     return this.getCaseDataUrl() + `/internal/banners/`;
   }
-
+  
   public getJurisdictionUiConfigsUrl() {
     return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
   }
-
 }
