@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.2-EUI-1610-prerelease",
+  "version": "2.64.4-EUI+Shuttering-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
