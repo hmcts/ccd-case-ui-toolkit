@@ -125,4 +125,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.getCaseDataUrl() + `/internal/banners/`;
   }
 
+  public getJurisdictionUiConfigsUrl() {
+    return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
+  }
+
 }

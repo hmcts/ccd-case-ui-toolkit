@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { Component, DebugElement, Input } from '@angular/core';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import { By } from '@angular/platform-browser';
@@ -8,9 +9,11 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction, CaseType, AlertService,
-  JurisdictionService, WindowService } from '../..';
+  JurisdictionService, WindowService, HttpService } from '../..';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { Response, ResponseOptions, Headers } from '@angular/http';
+import { JurisdictionUIConfig } from '../../domain';
 
 @Component({
   selector: 'ccd-field-write',
@@ -23,6 +26,8 @@ class FieldWriteComponent extends AbstractFieldWriteComponent {
 }
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
+const API_DATA_URL = 'http://data.ccd.reform/aggregated';
+const JURISDICTION_UI_CONFIGS_URL = API_DATA_URL + `/internal/jurisdiction-ui-configs`;
 
 const workbasketvalue = `{\"PersonLastName\":\"LastName\",\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\"`
@@ -170,12 +175,38 @@ describe('WorkbasketFiltersComponent', () => {
   let workbasketHandler;
   let router: any;
   let activatedRoute: any;
+  let appConfig: any;
+  let httpService: any;
   let jurisdictionService: JurisdictionService;
   let workbasketInputFilterService: any;
   let orderService: any;
   let alertService: AlertService;
   let windowService;
   const TEST_FORM_GROUP = new FormGroup({});
+
+  beforeEach(async(() => {
+    httpService = createSpyObj<HttpService>('httpService', ['get']);
+    appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl', 'getJurisdictionUiConfigsUrl']);
+    appConfig.getJurisdictionUiConfigsUrl.and.returnValue(JURISDICTION_UI_CONFIGS_URL);
+    httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      body: { configs: createJurisdictionConfigs() }
+    }))));
+  }));
+
+  function createJurisdictionConfigs(): JurisdictionUIConfig[] {
+    return [
+      {
+        id: 'AUTOTEST1',
+        shuttered: true,
+        name: 'Auto Test1'
+      },
+      {
+        id: 'AUTOTEST2',
+        shuttered: false,
+        name: 'Auto Test2'
+      }
+    ];
+  }
 
   describe('Clear localStorage for workbasket filters', () => {
     let windowMockService: WindowService;
@@ -187,7 +218,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService, appConfig);
       windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'removeLocalStorage']);
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
@@ -255,7 +286,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService, appConfig);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
@@ -635,7 +666,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService, appConfig);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -731,8 +762,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService, appConfig);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -803,7 +833,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService, appConfig);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -1038,7 +1068,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService, appConfig);
       windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');

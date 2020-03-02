@@ -17,6 +17,7 @@ export * from './order';
 export * from './profile';
 export * from './request';
 export * from './search';
+export * from './url-transformation';
 export * from './router';
 export * from './window';
 export * from './workbasket';

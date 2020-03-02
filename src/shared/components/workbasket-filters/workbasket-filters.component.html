@@ -6,7 +6,7 @@
             name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
             (change)="onJurisdictionIdChange()">
       <option *ngIf="!workbasketDefaults" [ngValue]="null">Select a value</option>
-      <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name}}</option>
+      <option *ngFor="let j of jurisdictions" [disabled]="isJurisdictionShuttered(j)" [ngValue]="j">{{j.name}}</option>
     </select>
   </div>
 
