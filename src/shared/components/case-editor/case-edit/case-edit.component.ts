@@ -1,17 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { FieldsUtils, FieldsPurger } from '../../../services/fields';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { WizardFactoryService } from '../services/wizard-factory.service';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Draft } from '../../../domain/draft.model';
 import { CaseView } from '../../../domain/case-view/case-view.model';
-import { Wizard } from '../domain/wizard.model';
+import { Draft } from '../../../domain/draft.model';
+import { ProfileNotifier, ProfileService } from '../../../services';
+import { FieldsPurger, FieldsUtils } from '../../../services/fields';
 import { Confirmation } from '../domain/confirmation.model';
 import { WizardPage } from '../domain/wizard-page.model';
-import { ProfileService, ProfileNotifier } from '../../../services';
+import { Wizard } from '../domain/wizard.model';
+import { CaseNotifier } from '../services';
+import { WizardFactoryService } from '../services/wizard-factory.service';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -61,6 +62,7 @@ export class CaseEditComponent implements OnInit {
     private wizardFactory: WizardFactoryService,
     private profileService: ProfileService,
     private profileNotifier: ProfileNotifier,
+    private caseNotifier: CaseNotifier
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +81,8 @@ export class CaseEditComponent implements OnInit {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
     this.announceProfile(this.route);
+
+    this.caseNotifier.announceCase(this.caseDetails);
   }
 
   getPage(pageId: string): WizardPage {
