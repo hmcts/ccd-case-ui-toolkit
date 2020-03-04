@@ -48,7 +48,7 @@ export class CaseCreateComponent implements OnInit {
         this.alertService.error(error.message);
         return throwError(error);
       });
-    
+
     const caseView = new CaseView();
     caseView.case_type.jurisdiction.id = this.jurisdiction;
     caseView.case_type.id = this.caseType;
