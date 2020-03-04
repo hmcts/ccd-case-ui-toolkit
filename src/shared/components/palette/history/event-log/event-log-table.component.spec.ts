@@ -116,7 +116,7 @@ describe('EventLogTableComponent', () => {
       let secondEvent = EVENTS[1];
 
       expect(secondRowCells[COL_EVENT].nativeElement.textContent).toBe(secondEvent.event_name);
-      expect(secondRowCells[COL_DATE].nativeElement.textContent).toBe('9 May 2017, 5:07:03 PM UTC: 9 May 2017, 4:07:03 PM');
+      expect(secondRowCells[COL_DATE].nativeElement.textContent).toBe('9 May 2017, 4:07:03 PM UTC: 9 May 2017, 4:07:03 PM');
       expect(secondRowCells[COL_AUTHOR].nativeElement.textContent).toEqual('Phillip CHAN');
     });
 
