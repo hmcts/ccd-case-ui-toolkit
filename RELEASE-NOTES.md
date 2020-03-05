@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.5-EUI-1610-prerelease - March 5 2020
+**EUI-1610** - Importing rx-polling directly from source npmjs, not github
+
 ### Version 2.64.4-EUI+Shuttering-prerelease - March 2 2020
 **EUI+Shuttering** 
 
