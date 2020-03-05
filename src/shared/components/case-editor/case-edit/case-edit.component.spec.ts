@@ -20,6 +20,7 @@ import { Wizard } from '../domain/wizard.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Profile } from '../../../domain';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseNotifier } from '../services/case.notifier';
 
 describe('CaseEditComponent', () => {
 
@@ -221,7 +222,8 @@ describe('CaseEditComponent', () => {
             { provide: Router, useValue: routerStub },
             { provide: ActivatedRoute, useValue: route },
             { provide: ProfileService, useValue: profileService },
-            { provide: ProfileNotifier, useValue: profileNotifier }
+            { provide: ProfileNotifier, useValue: profileNotifier },
+            CaseNotifier
           ]
         })
         .compileComponents();
@@ -869,7 +871,8 @@ describe('CaseEditComponent', () => {
             { provide: Router, useValue: routerStub },
             { provide: ActivatedRoute, useValue: mockRouteNoProfile },
             { provide: ProfileService, useValue: profileService },
-            { provide: ProfileNotifier, useValue: profileNotifier }
+            { provide: ProfileNotifier, useValue: profileNotifier },
+            CaseNotifier
           ]
         })
         .compileComponents();

@@ -1,17 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CasesService } from '../services/cases.service';
-import { CaseCreateComponent } from './case-create.component';
-import { CaseEventTrigger, CaseField, DRAFT_PREFIX } from '../../../domain';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { DraftService } from '../../../services/draft';
-import { AlertService } from '../../../services/alert';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpError } from '../../../domain/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { EventTriggerService } from '../services/event-trigger.service';
+import { Observable, of, throwError } from 'rxjs';
+import { CaseEventTrigger, CaseField, DRAFT_PREFIX } from '../../../domain';
 import { CaseDetails } from '../../../domain/case-details.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
+import { HttpError } from '../../../domain/http';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { AlertService } from '../../../services/alert';
+import { DraftService } from '../../../services/draft';
+import { CaseNotifier } from '../services/case.notifier';
+import { CasesService } from '../services/cases.service';
+import { EventTriggerService } from '../services/event-trigger.service';
+import { CaseCreateComponent } from './case-create.component';
 import createSpyObj = jasmine.createSpyObj;
 
 let CaseEditComponent: any = MockComponent({
@@ -110,6 +111,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
           { provide: EventTriggerService, useValue: eventTriggerService },
+          CaseNotifier
         ]
       })
       .compileComponents();
@@ -252,6 +254,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
           { provide: EventTriggerService, useValue: eventTriggerService },
+          CaseNotifier
         ]
       })
       .compileComponents();
@@ -318,6 +321,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
           { provide: DraftService, useValue: draftsService },
           { provide: AlertService, useValue: alertService },
           { provide: EventTriggerService, useValue: eventTriggerService },
+          CaseNotifier
         ]
       })
       .compileComponents();

@@ -50,8 +50,14 @@ export class CaseCreateComponent implements OnInit {
       });
 
     const caseView = new CaseView();
-    caseView.case_type.id = this.caseType;
-    caseView.case_type.jurisdiction.id = this.jurisdiction;
+    caseView.case_type = {
+      id: this.caseType,
+      name: this.caseType,
+      jurisdiction: {
+        id: this.jurisdiction,
+        name: this.jurisdiction
+      }
+    };
     this.caseNotifier.announceCase(caseView);
   }
 
