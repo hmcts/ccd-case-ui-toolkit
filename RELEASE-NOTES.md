@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.3-EUI-1610-prerelease - March 3 2020
+**EUI-1610** - Importing rx-polling from npmjs rather than github
+
 ### Version 2.64.2-EUI-1610-prerelease - March 2 2020
 **EUI-1610** - Changed import strategy for rx-polling
 **EUI-1476** - Continued activity logging when browser inactive
