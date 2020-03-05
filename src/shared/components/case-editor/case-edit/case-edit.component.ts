@@ -12,6 +12,7 @@ import { Wizard } from '../domain/wizard.model';
 import { Confirmation } from '../domain/confirmation.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { ProfileService, ProfileNotifier } from '../../../services';
+import { CaseNotifier } from '../services/case.notifier';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -61,6 +62,7 @@ export class CaseEditComponent implements OnInit {
     private wizardFactory: WizardFactoryService,
     private profileService: ProfileService,
     private profileNotifier: ProfileNotifier,
+    private caseNotifier: CaseNotifier
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +81,8 @@ export class CaseEditComponent implements OnInit {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
     this.announceProfile(this.route);
+
+    this.caseNotifier.announceCase(this.caseDetails);
   }
 
   getPage(pageId: string): WizardPage {

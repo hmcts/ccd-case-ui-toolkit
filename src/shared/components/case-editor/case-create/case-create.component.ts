@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
+import { CaseEventData, CaseView } from '../../../domain';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { Draft } from '../../../domain/draft.model';
-import { CasesService } from '../services/cases.service';
 import { HttpError } from '../../../domain/http';
 import { AlertService } from '../../../services/alert';
-import { CaseEventData } from '../../../domain';
 import { DraftService } from '../../../services/draft/draft.service';
+import { CaseNotifier } from '../services/case.notifier';
+import { CasesService } from '../services/cases.service';
 import { EventTriggerService } from '../services/event-trigger.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class CaseCreateComponent implements OnInit {
     private alertService: AlertService,
     private draftService: DraftService,
     private eventTriggerService: EventTriggerService,
+    private caseNotifier: CaseNotifier
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +48,11 @@ export class CaseCreateComponent implements OnInit {
         this.alertService.error(error.message);
         return throwError(error);
       });
+
+    const caseView = new CaseView();
+    caseView.case_type.id = this.caseType;
+    caseView.case_type.jurisdiction.id = this.jurisdiction;
+    this.caseNotifier.announceCase(caseView);
   }
 
   submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
