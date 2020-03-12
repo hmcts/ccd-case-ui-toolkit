@@ -177,7 +177,7 @@ describe('WriteDocumentFieldComponent', () => {
         ]
       }
     });
-
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
     expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
   });
 
@@ -194,6 +194,7 @@ describe('WriteDocumentFieldComponent', () => {
         ]
       }
     });
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
     expect(component.valid).toBeFalsy();
   });
 

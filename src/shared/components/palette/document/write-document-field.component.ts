@@ -71,10 +71,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   ngOnDestroy() {
-    if (this.fileUploadSubscription){
+    if (this.fileUploadSubscription) {
       this.fileUploadSubscription.unsubscribe();
     }
-    if (this.dialogSubscription){
+    if (this.dialogSubscription) {
       this.dialogSubscription.unsubscribe();
     }
   }
@@ -123,6 +123,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }, (error: HttpError) => {
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
+        this.fileUploadStateService.setUploadInProgress(false);
       });
     } else {
       if (this.isAMandatoryComponent()) {

@@ -26,4 +26,8 @@ export class WindowService {
   openOnNewTab(url: string): void {
     window.open(url, '_blank');
   }
+
+  confirm(message: string): boolean {
+    return window.confirm(message);
+  }
 }
