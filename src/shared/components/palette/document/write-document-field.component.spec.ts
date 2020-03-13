@@ -143,8 +143,6 @@ describe('WriteDocumentFieldComponent', () => {
     component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
 
-
-
     de = fixture.debugElement;
     fixture.detectChanges();
   });
