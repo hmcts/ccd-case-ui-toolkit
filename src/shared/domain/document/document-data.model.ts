@@ -10,6 +10,7 @@ export class DocumentLinks {
 export class Document {
   _links: DocumentLinks;
   originalDocumentName: string;
+  hashedToken?: string;
 }
 
 export class Embedded {

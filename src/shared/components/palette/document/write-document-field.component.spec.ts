@@ -14,6 +14,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { CaseNotifier } from '../../case-editor';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -22,7 +23,8 @@ const FIELD_TYPE: FieldType = {
 const VALUE = {
   'document_url': 'https://www.example.com',
   'document_binary_url': 'https://www.example.com/binary',
-  'document_filename': 'evidence_document.evd'
+  'document_filename': 'evidence_document.evd',
+  'hashedToken': '1234567890ABCDEF'
 };
 const CASE_FIELD: CaseField = <CaseField>({
   id: 'x',
@@ -37,6 +39,7 @@ const RESPONSE_FIRST_DOCUMENT: DocumentData = {
   _embedded: {
     documents: [{
       originalDocumentName: 'howto.pdf',
+      hashedToken: '1234567890ABCDEF',
       _links: {
         self: {
           href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
@@ -52,6 +55,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   _embedded: {
     documents: [{
       originalDocumentName: 'plop.pdf',
+      hashedToken: '1234567890ABCDEF',
       _links: {
         self: {
           href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
@@ -91,6 +95,7 @@ describe('WriteDocumentFieldComponent', () => {
   let deDialog: DebugElement;
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
+  let caseNotifierMock: CaseNotifier;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -100,6 +105,16 @@ describe('WriteDocumentFieldComponent', () => {
     );
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
+
+    caseNotifierMock = new CaseNotifier();
+    caseNotifierMock.caseView = of({
+        case_type: {id: '1', name: '', jurisdiction: { id: '1', name: ''}},
+        state: null,
+        channels: null,
+        tabs: null,
+        triggers: null,
+        events: null
+      });
 
     TestBed
       .configureTestingModule({
@@ -116,7 +131,8 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DocumentDialogComponent
+          DocumentDialogComponent,
+          { provide: CaseNotifier, useValue: caseNotifierMock }
         ]
       })
       .compileComponents();
@@ -126,6 +142,8 @@ describe('WriteDocumentFieldComponent', () => {
 
     component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
+
+
 
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -279,6 +297,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     _embedded: {
       documents: [{
         originalDocumentName: 'howto.pdf',
+        hashedToken: '1234567890ABCDEF',
         _links: {
           self: {
             href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123'
@@ -294,6 +313,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     _embedded: {
       documents: [{
         originalDocumentName: 'plop.pdf',
+        hashedToken: '1234567890ABCDEF',
         _links: {
           self: {
             href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567'
@@ -355,7 +375,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DocumentDialogComponent
+          DocumentDialogComponent,
+          CaseNotifier
         ]
       })
       .compileComponents();

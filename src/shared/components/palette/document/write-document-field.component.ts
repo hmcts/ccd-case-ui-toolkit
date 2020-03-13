@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Constants } from '../../../commons/constants';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { HttpError } from '../../../domain/http/http-error.model';
+import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
-import { Constants } from '../../../commons/constants'
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -15,6 +17,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly DOCUMENT_URL = 'document_url';
   static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   static readonly DOCUMENT_FILENAME = 'document_filename';
+  static readonly HASHED_TOKEN = 'hashedToken';
   static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
@@ -22,6 +25,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private uploadedDocument: FormGroup;
   private selectedFile: File;
   private dialogConfig: MatDialogConfig;
+  private case: CaseView;
   @ViewChild('fileInput') fileInput: ElementRef;
 
   valid = true;
@@ -40,7 +44,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog) {
+  constructor(
+    private documentManagement: DocumentManagementService,
+    private dialog: MatDialog,
+    private caseNotifier: CaseNotifier
+  ) {
     super();
   }
 
@@ -59,6 +67,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.selectedFile = null;
       }
     }
+    this.caseNotifier.caseView.subscribe(cv => this.case = cv);
   }
 
   fileValidations () {
@@ -88,15 +97,18 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       let documentUpload: FormData = new FormData();
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
       documentUpload.append('classification', 'PUBLIC');
+      documentUpload.append('caseTypeId', this.case.case_type.id);
+      documentUpload.append('jurisdictionId', this.case.case_type.jurisdiction.id);
       this.documentManagement.uploadFile(documentUpload).subscribe(result => {
         if (!this.uploadedDocument) {
-          this.createDocumentForm(null, null, null);
+          this.createDocumentForm(null, null, null, null);
         }
         let document = result._embedded.documents[0];
         this.updateDocumentForm(
           document._links.self.href,
           document._links.binary.href,
           document.originalDocumentName,
+          document.hashedToken
         );
 
         this.valid = true;
@@ -107,7 +119,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     } else {
       if (this.isAMandatoryComponent()) {
         this.selectedFile = null;
-        this.updateDocumentForm(null, null, null);
+        this.updateDocumentForm(null, null, null, null);
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
@@ -186,24 +198,27 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     return validation;
   }
 
-  private updateDocumentForm(url: string, binaryUrl: string, filename: string): void {
+  private updateDocumentForm(url: string, binaryUrl: string, filename: string, hashedToken: string): void {
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).setValue(url);
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).setValue(binaryUrl);
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).setValue(filename);
+    this.uploadedDocument.get(WriteDocumentFieldComponent.HASHED_TOKEN).setValue(hashedToken);
   }
-  private createDocumentFormWithValidator(url: string, binaryUrl: string, filename: string) {
+  private createDocumentFormWithValidator(url: string, binaryUrl: string, filename: string, hashedToken?: string) {
     this.uploadedDocument = this.registerControl(new FormGroup({
       document_url: new FormControl(url, Validators.required),
       document_binary_url: new FormControl(binaryUrl, Validators.required),
-      document_filename: new FormControl(filename, Validators.required)
+      document_filename: new FormControl(filename, Validators.required),
+      hashedToken: new FormControl(hashedToken)
     }));
   }
 
-  private createDocumentForm(url: string, binaryUrl: string, filename: string) {
+  private createDocumentForm(url: string, binaryUrl: string, filename: string, hashedToken?: string) {
     this.uploadedDocument = this.registerControl(new FormGroup({
       document_url: new FormControl(url),
       document_binary_url: new FormControl(binaryUrl),
-      document_filename: new FormControl(filename)
+      document_filename: new FormControl(filename),
+      hashedToken: new FormControl(hashedToken)
     }));
   }
 
