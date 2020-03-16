@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, OnDestroy } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
@@ -6,12 +6,14 @@ import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import { Constants } from '../../../commons/constants'
+import { Subscription } from 'rxjs';
+import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
   selector: 'ccd-write-document-field',
   templateUrl: './write-document-field.html'
 })
-export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   static readonly DOCUMENT_URL = 'document_url';
   static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   static readonly DOCUMENT_FILENAME = 'document_filename';
@@ -29,6 +31,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   confirmReplaceResult: string;
   clickInsideTheDocument: boolean;
 
+  fileUploadSubscription: Subscription;
+  dialogSubscription: Subscription;
+
   @HostListener('document:click', ['$event'])
   clickout(event) {
     // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
@@ -40,7 +45,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  constructor(private documentManagement: DocumentManagementService, private dialog: MatDialog) {
+  constructor(
+    private documentManagement: DocumentManagementService,
+    private dialog: MatDialog,
+    private fileUploadStateService: FileUploadStateService,
+  ) {
     super();
   }
 
@@ -58,6 +67,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.createDocumentFormWithValidator(null, null, null);
         this.selectedFile = null;
       }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.fileUploadSubscription) {
+      this.fileUploadSubscription.unsubscribe();
+    }
+    if (this.dialogSubscription) {
+      this.dialogSubscription.unsubscribe();
     }
   }
 
@@ -88,7 +106,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       let documentUpload: FormData = new FormData();
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
       documentUpload.append('classification', 'PUBLIC');
-      this.documentManagement.uploadFile(documentUpload).subscribe(result => {
+      this.fileUploadStateService.setUploadInProgress(true);
+      this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe(result => {
         if (!this.uploadedDocument) {
           this.createDocumentForm(null, null, null);
         }
@@ -100,9 +119,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         );
 
         this.valid = true;
+        this.fileUploadStateService.setUploadInProgress(false);
       }, (error: HttpError) => {
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
+        this.fileUploadStateService.setUploadInProgress(false);
       });
     } else {
       if (this.isAMandatoryComponent()) {
@@ -127,7 +148,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   openDialog(dialogConfig) {
     const dialogRef = this.dialog.open(DocumentDialogComponent, dialogConfig);
-    dialogRef.beforeClose().subscribe(result => {
+    this.dialogSubscription = dialogRef.beforeClose().subscribe(result => {
       this.confirmReplaceResult = result;
       this.triggerReplace();
     });

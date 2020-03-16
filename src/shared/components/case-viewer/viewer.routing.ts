@@ -5,6 +5,7 @@ import { EventTriggerResolver } from './services';
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
+import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
 
 export const viewerRouting: Routes = [
     {
@@ -21,7 +22,8 @@ export const viewerRouting: Routes = [
         eventTrigger: EventTriggerResolver
       },
       component: CaseEventTriggerComponent,
-      children: editorRouting
+      children: editorRouting,
+      canDeactivate: [FileUploadProgressGuard]
     },
     {
       path: 'event/:eid/history',

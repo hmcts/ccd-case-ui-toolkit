@@ -14,6 +14,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { FileUploadStateService } from './file-upload-state.service';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -85,6 +86,7 @@ describe('WriteDocumentFieldComponent', () => {
   let component: WriteDocumentFieldComponent;
   let de: DebugElement;
   let mockDocumentManagementService: any;
+  let mockFileUploadStateService: any;
 
   let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
   let componentDialog: DocumentDialogComponent;
@@ -101,6 +103,8 @@ describe('WriteDocumentFieldComponent', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
 
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress']);
+
     TestBed
       .configureTestingModule({
         imports: [],
@@ -116,6 +120,7 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           DocumentDialogComponent
         ]
       })
@@ -172,7 +177,7 @@ describe('WriteDocumentFieldComponent', () => {
         ]
       }
     });
-
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
     expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
   });
 
@@ -189,6 +194,7 @@ describe('WriteDocumentFieldComponent', () => {
         ]
       }
     });
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
     expect(component.valid).toBeFalsy();
   });
 
@@ -324,6 +330,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let component: WriteDocumentFieldComponent;
   let de: DebugElement;
   let mockDocumentManagementService: any;
+  let mockFileUploadStateService: any;
 
   let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
   let componentDialog: DocumentDialogComponent;
@@ -340,6 +347,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
 
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress']);
+
     TestBed
       .configureTestingModule({
         imports: [],
@@ -355,6 +364,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           DocumentDialogComponent
         ]
       })
