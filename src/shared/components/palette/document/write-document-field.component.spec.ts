@@ -5,7 +5,7 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { DebugElement } from '@angular/core';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { DocumentData } from '../../../domain/document/document-data.model';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subscription } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { FormGroup } from '@angular/forms';
@@ -103,7 +103,7 @@ describe('WriteDocumentFieldComponent', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
 
-    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress']);
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress', 'isUploadInProgress']);
 
     TestBed
       .configureTestingModule({
@@ -259,6 +259,11 @@ describe('WriteDocumentFieldComponent', () => {
     expect(fileElement.nativeElement.accept).toBe(FIELD_TYPE_WITH_REGEX.regular_expression);
   });
 
+  it('should return file upload state', () => {
+    mockFileUploadStateService.isUploadInProgress.and.returnValue(true);
+    expect(component.isUploadInProgress()).toBeTruthy();
+  });
+
 });
 
 describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
@@ -347,7 +352,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
 
-    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress']);
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress', 'isUploadInProgress']);
 
     TestBed
       .configureTestingModule({
@@ -408,5 +413,15 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       }
     });
     expect(component.valid).toBeTruthy();
+  });
+
+  it('should cancel file upload', () => {
+    component.fileUploadSubscription = new Subscription();
+    const fileUploadSubscriptionSpy = spyOn(component.fileUploadSubscription, 'unsubscribe');
+    component.cancelUpload();
+
+    expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
+
   });
 });

@@ -90,7 +90,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     
     this.fileUploadStateService.setUploadInProgress(false);
     this.fileInput.nativeElement.value = '';
-    
+    this.resetUpload();
+  }
+
+  resetUpload() {
     if (this.isAMandatoryComponent()) {
       this.selectedFile = null;
       this.updateDocumentForm(null, null, null);
@@ -145,11 +148,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.fileUploadStateService.setUploadInProgress(false);
       });
     } else {
-      if (this.isAMandatoryComponent()) {
-        this.selectedFile = null;
-        this.updateDocumentForm(null, null, null);
-        this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
-      }
+      this.resetUpload();
     }
   }
 
