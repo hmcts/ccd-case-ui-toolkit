@@ -103,7 +103,10 @@ describe('WriteDocumentFieldComponent', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
 
-    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress', 'isUploadInProgress']);
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
+      'setUploadInProgress',
+      'isUploadInProgress'
+    ]);
 
     TestBed
       .configureTestingModule({
@@ -352,7 +355,10 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
 
-    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', ['setUploadInProgress', 'isUploadInProgress']);
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
+      'setUploadInProgress',
+      'isUploadInProgress'
+    ]);
 
     TestBed
       .configureTestingModule({

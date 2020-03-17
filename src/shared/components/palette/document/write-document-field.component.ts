@@ -87,7 +87,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (this.fileUploadSubscription) {
       this.fileUploadSubscription.unsubscribe();
     }
-    
+
     this.fileUploadStateService.setUploadInProgress(false);
     this.fileInput.nativeElement.value = '';
     this.resetUpload();
