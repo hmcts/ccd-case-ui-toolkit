@@ -79,6 +79,25 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  isUploadInProgress() {
+    return this.fileUploadStateService.isUploadInProgress();
+  }
+
+  cancelUpload() {
+    if (this.fileUploadSubscription) {
+      this.fileUploadSubscription.unsubscribe();
+    }
+    
+    this.fileUploadStateService.setUploadInProgress(false);
+    this.fileInput.nativeElement.value = '';
+    
+    if (this.isAMandatoryComponent()) {
+      this.selectedFile = null;
+      this.updateDocumentForm(null, null, null);
+      this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
+    }
+  }
+
   fileValidations () {
 
     if (this.isAMandatoryComponent()) {
