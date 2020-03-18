@@ -94,10 +94,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   resetUpload() {
+    this.selectedFile = null;
     if (this.isAMandatoryComponent()) {
-      this.selectedFile = null;
       this.updateDocumentForm(null, null, null);
       this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
+    } else {
+      this.valid = true;
     }
   }
 

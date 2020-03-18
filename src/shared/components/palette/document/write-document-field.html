@@ -1,4 +1,4 @@
-<div class="form-group" [ngClass]="{'form-group-error': !valid}">
+<div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
   <label [for]="id()">
     <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{caseField | ccdFieldLabel}}</span>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
@@ -17,6 +17,6 @@
            accept="{{caseField.field_type.regular_expression}}" #fileInput/>
   </div>
 </div>
-<div class="form-group">
+<div class="form-group bottom-30">
   <button class="button button-secondary" type="button" aria-label="Cancel upload" (click)="cancelUpload()" [disabled]="!isUploadInProgress()">Cancel upload</button>
 </div>

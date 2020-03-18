@@ -267,6 +267,17 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.isUploadInProgress()).toBeTruthy();
   });
 
+  it('should cancel file upload', () => {
+    component.fileUploadSubscription = new Subscription();
+    const fileUploadSubscriptionSpy = spyOn(component.fileUploadSubscription, 'unsubscribe');
+    component.cancelUpload();
+
+    expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
+    expect(component.valid).toBeTruthy();
+
+  });
+
 });
 
 describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
