@@ -7,7 +7,7 @@ import { HttpService } from '../http';
 import { CaseField, DocumentData, FieldType } from '../../domain';
 
 describe('DocumentManagementService', () => {
-  const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
+  const DOCUMENT_MANAGEMENT_URL = 'https://www.gatewayexample.com/binary';
   const REMOTE_DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
 
   let appConfig: any;

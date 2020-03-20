@@ -74,6 +74,9 @@ export class DocumentManagementService {
 
   transformDocumentUrl(documentBinaryUrl: string): string {
     let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
+    console.log(`documentBinaryUrl: ${documentBinaryUrl}`);
+    console.log(`remoteDocumentManagementPattern: ${remoteDocumentManagementPattern}`);
+    console.log(`final url : ${documentBinaryUrl.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl())}`);
     return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
   }
 }
