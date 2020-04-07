@@ -39,6 +39,18 @@ export class SearchService {
       );
   }
 
+  public searchCases(caseTypeIds: string[],
+                metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
+    const url = this.appConfig.getApiUrl() + `/searchCases?ctid=${caseTypeIds}`;
+
+    let body: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+
+    return this.httpService
+      .post(url, {jsonSearchRequest: body})
+      .pipe(
+        map(response => response.json())
+      );
+  }
   getSearchInputUrl(caseTypeId: string): string {
     return `${this.appConfig.getCaseDataUrl()}/internal/case-types/${caseTypeId}/search-inputs`;
   }
