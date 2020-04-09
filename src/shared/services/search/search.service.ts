@@ -43,10 +43,10 @@ export class SearchService {
                 metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
     const url = this.appConfig.getApiUrl() + `/searchCases?ctid=${caseTypeIds}`;
 
-    let body: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+    let {options, body} = this.requestOptionsBuilder.buildOptionsAndBody(metaCriteria, caseCriteria, view);
 
     return this.httpService
-      .post(url, {jsonSearchRequest: body})
+      .post(url, body, options)
       .pipe(
         map(response => response.json())
       );
