@@ -132,16 +132,16 @@ export class FieldsUtils {
         break;
       }
       case 'Collection': {
-        let elements = (result[field.id] || field.value);
+        let elements = field.value;
         if (elements) {
           elements.forEach(elem => {
             switch (field.field_type.collection_field_type.type) {
               case 'MoneyGBP': {
-                elem.value = FieldsUtils.getMoneyGBP(elem.value);
+                result[field.id][elem.id] = FieldsUtils.getMoneyGBP(elem.value);
                 break;
               }
               case 'Date': {
-                elem.value = FieldsUtils.getDate(elem.value);
+                result[field.id][elem.id] = FieldsUtils.getDate(elem.value);
                 break;
               }
             }
