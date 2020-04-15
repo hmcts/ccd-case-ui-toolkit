@@ -34,7 +34,7 @@ export class RequestOptionsBuilder {
 
     buildOptionsAndBody(metaCriteria: object, caseCriteria: object, view?: SearchView): {options: RequestOptionsArgs, body: any} {
       let params: URLSearchParams = new URLSearchParams();
-      let body: any = {jsonSearchRequest: this.prepareElasticQuery(metaCriteria)};
+      let body: object = this.prepareElasticQuery(metaCriteria);
 
       if (view) {
         params.set('view', view);
@@ -60,22 +60,28 @@ export class RequestOptionsBuilder {
 
     prepareElasticQuery(criteria: object): object {
       let query: object = {};
+      let matchList: object[] = [];
 
       if (criteria) {
-        let matchList: object[] = [];
         for (let criterion of Object.keys(criteria)) {
           const match = { match: { ['data.' + criterion]: criteria[criterion] } };
           matchList.push(match);
         }
 
-        query = {
-          bool: {
-            filter: matchList
-          }
-        }
       }
 
-      return { query };
+      // query = {
+      //   bool: {
+      //     filter: matchList
+      //   }
+      // }
+
+      query = {
+        match_all: {}
+      };
+
+
+      return { query, size: 5 };
     }
 }
 
