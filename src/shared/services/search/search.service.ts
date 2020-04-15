@@ -41,12 +41,12 @@ export class SearchService {
 
   public searchCases(caseTypeIds: string[],
                 metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
-    const url = this.appConfig.getApiUrl() + `/searchCases?ctid=${caseTypeIds}`;
+    const url = this.appConfig.getCaseDataUrl() + `/searchCases?ctid=${caseTypeIds}`;
 
     let {options, body} = this.requestOptionsBuilder.buildOptionsAndBody(metaCriteria, caseCriteria, view);
 
     return this.httpService
-      .post(url, body, options)
+      .post(url, body)
       .pipe(
         map(response => response.json())
       );
