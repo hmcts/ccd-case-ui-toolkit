@@ -64,21 +64,24 @@ export class RequestOptionsBuilder {
 
       if (criteria) {
         for (let criterion of Object.keys(criteria)) {
-          const match = { match: { ['data.' + criterion]: criteria[criterion] } };
+          const match = { match: { [criterion]: {
+            query: criteria[criterion],
+            operator: 'and'
+          } } };
           matchList.push(match);
         }
 
       }
 
-      // query = {
-      //   bool: {
-      //     filter: matchList
-      //   }
-      // }
-
       query = {
-        match_all: {}
-      };
+        bool: {
+          must: matchList
+        }
+      }
+
+      // query = {
+      //   match_all: {}
+      // };
 
 
       return { query, size: 5 };
