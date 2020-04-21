@@ -34,7 +34,7 @@ export class RequestOptionsBuilder {
 
     buildOptionsAndBody(metaCriteria: object, caseCriteria: object, view?: SearchView): {options: RequestOptionsArgs, body: any} {
       let params: URLSearchParams = new URLSearchParams();
-      let body: object = this.prepareElasticQuery(metaCriteria);
+      let body: object = this.prepareElasticQuery(metaCriteria, caseCriteria);
 
       if (view) {
         params.set('view', view);
@@ -58,17 +58,34 @@ export class RequestOptionsBuilder {
       return {options, body};
     }
 
-    prepareElasticQuery(criteria: object): object {
+    prepareElasticQuery(metaCriteria: object, caseCriteria: object): object {
       let query: object = {};
       let matchList: object[] = [];
 
-      if (criteria) {
-        for (let criterion of Object.keys(criteria)) {
-          const match = { match: { [criterion]: {
-            query: criteria[criterion],
-            operator: 'and'
-          } } };
-          matchList.push(match);
+      if (metaCriteria) {
+        for (let criterion of Object.keys(metaCriteria)) {
+
+          if (metaCriteria[criterion] && criterion !== 'page') {
+            const match = { match: { [criterion]: {
+              query: metaCriteria[criterion],
+              operator: 'and'
+            } } };
+            matchList.push(match);
+          }
+        }
+
+      }
+
+      if (caseCriteria) {
+        for (let criterion of Object.keys(caseCriteria)) {
+
+          if (caseCriteria[criterion] && criterion !== 'page') {
+            const match = { match: { ['data.' + criterion]: {
+              query: caseCriteria[criterion],
+              operator: 'and'
+            } } };
+            matchList.push(match);
+          }
         }
 
       }
