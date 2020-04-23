@@ -1,6 +1,6 @@
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
-import { _ as _score } from 'underscore';
+import * as _score from 'underscore';
 
 export class ShowCondition {
 
