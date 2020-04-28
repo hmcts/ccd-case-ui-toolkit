@@ -174,6 +174,7 @@ To do so you need to:
 
 As a result once you change library source code it will be automatically re-compiled and in turn your JIT consuming project (e.g. case-management-web) will be automatically re-built and you will be able to see that changes in your browser instantly.
 
+
 ### Library Release
 
 Travis build system automatically publish NPM packages including GitHub releases whenever there is a version change in package.json
