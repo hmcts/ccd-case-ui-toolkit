@@ -7,6 +7,7 @@ export class Field {
     public elementPath?: string,
     public value?: string,
     public label?: string,
-    public metadata?: boolean
+    public metadata?: boolean,
+    public show_condition?: string
   ) { }
 }

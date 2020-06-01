@@ -53,7 +53,7 @@
                     <!-- <COMPLEX table expandable body simple field>-->
 
                     <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
-                        ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
+                        ccdConditionalShow ccdLabelSubstitutor [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
                         <ccd-field-read [caseField]="{
