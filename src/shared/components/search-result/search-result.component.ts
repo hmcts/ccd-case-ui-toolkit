@@ -1,12 +1,10 @@
-import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { DisplayMode, Jurisdiction, CaseType, CaseState, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, CaseField, DRAFT_PREFIX, PaginationMetadata, SortParameters,
-  SearchResultViewItemComparator, SortOrder } from '../../domain';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
-import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
+import { CaseField, CaseState, CaseType, CaseView, DisplayMode, DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn, SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseReferencePipe } from '../../pipes';
+import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -48,6 +46,18 @@ export class SearchResultComponent implements OnChanges {
   @Input()
   metadataFields: string[];
 
+  @Input()
+  public selectionEnabled = false;
+
+  @Input()
+  public showOnlySelected = false;
+
+  @Input()
+  public preSelectedCases: string[]=[];;
+
+  @Output()
+  public selection = new EventEmitter<SearchResultViewItem[]>();
+
   @Output()
   changePage: EventEmitter<any> = new EventEmitter();
 
@@ -71,6 +81,8 @@ export class SearchResultComponent implements OnChanges {
   sortParameters: SortParameters;
   searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
   draftsCount: number;
+
+  private selectedCases: SearchResultViewItem[] = [];
 
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
@@ -107,6 +119,71 @@ export class SearchResultComponent implements OnChanges {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
+  }
+
+  public clearSelection(): void {
+    this.selectedCases = [];
+    this.selection.emit(this.selectedCases);
+  }
+
+  public canBeShared(caseView: CaseView): boolean {
+    return true;
+  }
+
+  public selectAll(): void {
+    if (this.allOnPageSelected()) {
+      // all cases already selected, so unselect all on this page
+      this.resultView.results.forEach(c => {
+        this.selectedCases.forEach((s, i) => {
+          if (c.case_id === s.case_id) {
+            delete this.selectedCases[i];
+          }
+        });
+      });
+    } else {
+      this.resultView.results.forEach(c => {
+        if (!this.isSelected(c)) {
+          this.selectedCases.push(c);
+        }
+      });
+    }
+    this.selection.emit(this.selectedCases);
+  }
+
+  public changeSelection(c: SearchResultViewItem): void {
+    if (this.isSelected(c)) {
+      this.selectedCases.forEach((s, i) => {
+        if (c.case_id === s.case_id) {
+          delete this.selectedCases[i];
+        }
+      });
+    } else {
+      this.selectedCases.push(c);
+    }
+  }
+
+  public isSelected(c: SearchResultViewItem): boolean {
+
+    if(this.preSelectedCases.indexOf(c.case_id)!=-1){
+      return true;
+    }
+    
+    for (let i = 0, l = this.selectedCases.length; i < l; i++) {
+      console.log('case row ' +i)
+      if (c.case_id === this.selectedCases[i].case_id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public allOnPageSelected(): boolean {
+    this.resultView.results.forEach(r => {
+      if (!this.isSelected(r)) {
+        return false;
+      }
+    });
+    return true;
   }
 
   /**
