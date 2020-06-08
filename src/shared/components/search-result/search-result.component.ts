@@ -53,7 +53,7 @@ export class SearchResultComponent implements OnChanges {
   public showOnlySelected = false;
 
   @Input()
-  public preSelectedCases: string[]=[];;
+  private preSelectedCases: SearchResultViewItem[] = [];
 
   @Output()
   public selection = new EventEmitter<SearchResultViewItem[]>();
@@ -162,14 +162,15 @@ export class SearchResultComponent implements OnChanges {
     }
   }
 
-  public isSelected(c: SearchResultViewItem): boolean {
-
-    if(this.preSelectedCases.indexOf(c.case_id)!=-1){
-      return true;
+  ngOnInit(): void {
+    if(this.preSelectedCases.length>0){
+      this.selectedCases.concat(this.preSelectedCases)
     }
+  }
+
+  public isSelected(c: SearchResultViewItem): boolean {
     
     for (let i = 0, l = this.selectedCases.length; i < l; i++) {
-      console.log('case row ' +i)
       if (c.case_id === this.selectedCases[i].case_id) {
         return true;
       }
