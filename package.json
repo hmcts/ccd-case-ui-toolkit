@@ -157,6 +157,7 @@
     "handlebars": "^4.5.3",
     "lodash": "^4.17.4",
     "braces": "^2.3.1",
+    "http-proxy": "^1.18.1",
     "https-proxy-agent": "^2.2.3",
     "mem": "^6.0.0",
     "minimatch": "^3.0.2",
