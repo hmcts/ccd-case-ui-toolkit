@@ -8,8 +8,12 @@
   </caption>
   <thead>
   <tr>
-    <th *ngIf="selectionEnabled">
-      <input type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" />
+    <th *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" />
+        <label class="govuk-label govuk-checkboxes__label" for="select-all">
+        </label>
+      </div>
     </th>
     <th *ngFor="let col of resultView.columns">
       <table class="search-result-column-header"
@@ -27,8 +31,13 @@
   </thead>
   <tbody>
   <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
-    <td *ngIf="selectionEnabled">
-      <input type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" />
+    <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
+               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" />
+        <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
+        </label>
+      </div>
     </td>
     <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index">
 

@@ -136,7 +136,7 @@ export class SearchResultComponent implements OnChanges {
       this.resultView.results.forEach(c => {
         this.selectedCases.forEach((s, i) => {
           if (c.case_id === s.case_id) {
-            delete this.selectedCases[i];
+            this.selectedCases.splice(i, 1);
           }
         });
       });
@@ -154,22 +154,22 @@ export class SearchResultComponent implements OnChanges {
     if (this.isSelected(c)) {
       this.selectedCases.forEach((s, i) => {
         if (c.case_id === s.case_id) {
-          delete this.selectedCases[i];
+          this.selectedCases.splice(i, 1);
         }
       });
     } else {
       this.selectedCases.push(c);
     }
+    this.selection.emit(this.selectedCases);
   }
 
   ngOnInit(): void {
-    if(this.preSelectedCases.length>0){
+    if (this.preSelectedCases.length > 0) {
       this.selectedCases.concat(this.preSelectedCases)
     }
   }
 
   public isSelected(c: SearchResultViewItem): boolean {
-    
     for (let i = 0, l = this.selectedCases.length; i < l; i++) {
       if (c.case_id === this.selectedCases[i].case_id) {
         return true;
@@ -179,11 +179,9 @@ export class SearchResultComponent implements OnChanges {
   }
 
   public allOnPageSelected(): boolean {
-    this.resultView.results.forEach(r => {
-      if (!this.isSelected(r)) {
-        return false;
-      }
-    });
+    if (this.resultView.results.some(r => !this.isSelected(r))) {
+      return false;
+    }
     return true;
   }
 
