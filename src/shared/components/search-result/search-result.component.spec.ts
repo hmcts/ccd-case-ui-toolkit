@@ -433,9 +433,19 @@ describe('SearchResultComponent', () => {
     });
 
     it('can be shared', () => {
-      const caseView:CaseView  = new CaseView();
+      const caseView:SearchResultViewItem  = new SearchResultViewItem();
       expect(component.canBeShared(caseView)).toEqual(true);
     });
+
+    it('can any be shared', () => {
+      component.resultView.results=[{
+        case_id: '1',
+        case_fields: null
+      }]
+      expect(component.canAnyBeShared()).toEqual(true);
+    });
+
+
 
     it('check if case is selected', () => {
       component.selectedCases = [{
