@@ -2,7 +2,9 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
-import { CaseField, CaseState, CaseType, CaseView, DisplayMode, DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn, SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseField, CaseState, CaseType, CaseView, DisplayMode,
+  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
+  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
 import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 
@@ -174,7 +176,7 @@ export class SearchResultComponent implements OnChanges {
     this.selection.emit(this.selectedCases);
   }
 
-  ngOnInit(): void {
+  OnInit(): void {
     if (this.preSelectedCases.length > 0) {
       this.selectedCases.concat(this.preSelectedCases)
     }

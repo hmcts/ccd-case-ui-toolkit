@@ -433,22 +433,20 @@ describe('SearchResultComponent', () => {
     });
 
     it('can be shared', () => {
-      const caseView:SearchResultViewItem  = new SearchResultViewItem();
+      const caseView: SearchResultViewItem  = new SearchResultViewItem();
       expect(component.canBeShared(caseView)).toEqual(true);
     });
 
     it('can any be shared', () => {
-      component.resultView.results=[{
+        component.resultView.results = [{
         case_id: '1',
         case_fields: null
       }]
       expect(component.canAnyBeShared()).toEqual(true);
     });
 
-
-
     it('check if case is selected', () => {
-      component.selectedCases = [{
+        component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -456,17 +454,15 @@ describe('SearchResultComponent', () => {
         case_fields: null
       }]
 
-      const tempCaseItem:SearchResultViewItem={
+      const tempCaseItem: SearchResultViewItem = {
         case_id: '1',
         case_fields: null
       }
-
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
-
     });
 
     it('check if case is not selected', () => {
-      component.selectedCases = [{
+        component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -474,23 +470,19 @@ describe('SearchResultComponent', () => {
         case_fields: null
       }]
 
-      const tempCaseItem:SearchResultViewItem={
+      const tempCaseItem: SearchResultViewItem = {
         case_id: '3',
         case_fields: null
       }
-
       expect(component.isSelected(tempCaseItem)).toBeFalsy();
 
     });
 
-
-
     it('select all cases is enabled', () => {
-      component.selectedCases = [{
+       component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }]
-
       const tempCaseItem: SearchResultViewItem = {
         case_id: '1',
         case_fields: null
@@ -666,8 +658,5 @@ describe('SearchResultComponent', () => {
       let pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeFalsy();
     });
-
-
-
   });
 });
