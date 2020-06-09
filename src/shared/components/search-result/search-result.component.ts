@@ -190,8 +190,11 @@ export class SearchResultComponent implements OnChanges {
   }
 
   public allOnPageSelected(): boolean {
-    if (this.resultView.results.some(r => !this.isSelected(r))) {
-      return false;
+    for (let i = 0, l = this.resultView.results.length; i < l; i++) {
+      let r = this.resultView.results[i];
+      if (!this.isSelected(r) && this.canBeShared(r)) {
+        return false;
+      }
     }
     return true;
   }
