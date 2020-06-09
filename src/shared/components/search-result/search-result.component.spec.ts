@@ -604,14 +604,38 @@ describe('SearchResultComponent', () => {
     });
 
     it('check if case is selected', () => {
-      const searchResultViewItem1:SearchResultViewItem = new SearchResultViewItem();
-      searchResultViewItem1.case_id='1';
-      searchResultViewItem1.case_fields=null;
-      const searchResultViewItem2:SearchResultViewItem = new SearchResultViewItem();
-      searchResultViewItem2.case_id='2';
-      searchResultViewItem2.case_fields=null;
+      component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }, {
+        case_id: '2',
+        case_fields: null
+      }]
 
-      
+      const tempCaseItem:SearchResultViewItem={
+        case_id: '1',
+        case_fields: null
+      }
+
+      expect(component.isSelected(tempCaseItem)).toBeTruthy();
+
+    });
+
+    it('check if case is not selected', () => {
+      component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }, {
+        case_id: '2',
+        case_fields: null
+      }]
+
+      const tempCaseItem:SearchResultViewItem={
+        case_id: '3',
+        case_fields: null
+      }
+
+      expect(component.isSelected(tempCaseItem)).toBeFalsy();
 
     });
 
