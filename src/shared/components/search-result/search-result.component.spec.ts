@@ -426,6 +426,70 @@ describe('SearchResultComponent', () => {
       let firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) a'));
       expect(firstRowFirstCol.nativeElement.textContent.trim()).toBe(DRAFT_PREFIX);
     });
+
+    it('should de select the cases', () => {
+      component.clearSelection();
+      expect(component.selectedCases.length).toEqual(0);
+    });
+
+    it('can be shared', () => {
+      const caseView:CaseView  = new CaseView();
+      expect(component.canBeShared(caseView)).toEqual(true);
+    });
+
+    it('check if case is selected', () => {
+      component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }, {
+        case_id: '2',
+        case_fields: null
+      }]
+
+      const tempCaseItem:SearchResultViewItem={
+        case_id: '1',
+        case_fields: null
+      }
+
+      expect(component.isSelected(tempCaseItem)).toBeTruthy();
+
+    });
+
+    it('check if case is not selected', () => {
+      component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }, {
+        case_id: '2',
+        case_fields: null
+      }]
+
+      const tempCaseItem:SearchResultViewItem={
+        case_id: '3',
+        case_fields: null
+      }
+
+      expect(component.isSelected(tempCaseItem)).toBeFalsy();
+
+    });
+
+
+
+    it('select all cases is enabled', () => {
+      component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }]
+
+      const tempCaseItem: SearchResultViewItem = {
+        case_id: '1',
+        case_fields: null
+      }
+      component.isSelected(tempCaseItem);
+      component.allOnPageSelected();
+      component.selectAll();
+    });
+
   });
 
   describe('without results', () => {
@@ -593,61 +657,7 @@ describe('SearchResultComponent', () => {
       expect(pagination).toBeFalsy();
     });
 
-    it('should de select the cases', () => {
-      component.clearSelection();
-      expect(component.selectedCases.length).toEqual(0);
-    });
-
-    it('can be shared', () => {
-      const caseView:CaseView  = new CaseView();
-      expect(component.canBeShared(caseView)).toEqual(true);
-    });
-
-    it('check if case is selected', () => {
-      component.selectedCases = [{
-        case_id: '1',
-        case_fields: null
-      }, {
-        case_id: '2',
-        case_fields: null
-      }]
-
-      const tempCaseItem:SearchResultViewItem={
-        case_id: '1',
-        case_fields: null
-      }
-
-      expect(component.isSelected(tempCaseItem)).toBeTruthy();
-
-    });
-
-    it('check if case is not selected', () => {
-      component.selectedCases = [{
-        case_id: '1',
-        case_fields: null
-      }, {
-        case_id: '2',
-        case_fields: null
-      }]
-
-      const tempCaseItem:SearchResultViewItem={
-        case_id: '3',
-        case_fields: null
-      }
-
-      expect(component.isSelected(tempCaseItem)).toBeFalsy();
-
-    });
-
-    it('all cases not selected', () => {
-
-    });
-
-
-
 
 
   });
-
-
 });

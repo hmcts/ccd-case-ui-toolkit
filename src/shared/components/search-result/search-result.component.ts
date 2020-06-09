@@ -53,7 +53,7 @@ export class SearchResultComponent implements OnChanges {
   public showOnlySelected = false;
 
   @Input()
-  private preSelectedCases: SearchResultViewItem[] = [];
+  public preSelectedCases: SearchResultViewItem[] = [];
 
   @Output()
   public selection = new EventEmitter<SearchResultViewItem[]>();
