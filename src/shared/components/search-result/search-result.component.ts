@@ -126,8 +126,17 @@ export class SearchResultComponent implements OnChanges {
     this.selection.emit(this.selectedCases);
   }
 
-  public canBeShared(caseView: CaseView): boolean {
+  public canBeShared(caseView: SearchResultViewItem): boolean {
     return true;
+  }
+
+  public canAnyBeShared(): boolean {
+    for (let i = 0, l = this.resultView.results.length; i < l; i++) {
+      if (this.canBeShared(this.resultView.results[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public selectAll(): void {
@@ -142,7 +151,7 @@ export class SearchResultComponent implements OnChanges {
       });
     } else {
       this.resultView.results.forEach(c => {
-        if (!this.isSelected(c)) {
+        if (!this.isSelected(c) && this.canBeShared(c)) {
           this.selectedCases.push(c);
         }
       });
@@ -158,7 +167,9 @@ export class SearchResultComponent implements OnChanges {
         }
       });
     } else {
-      this.selectedCases.push(c);
+      if (this.canBeShared(c)) {
+        this.selectedCases.push(c);
+      }
     }
     this.selection.emit(this.selectedCases);
   }
@@ -179,8 +190,11 @@ export class SearchResultComponent implements OnChanges {
   }
 
   public allOnPageSelected(): boolean {
-    if (this.resultView.results.some(r => !this.isSelected(r))) {
-      return false;
+    for (let i = 0, l = this.resultView.results.length; i < l; i++) {
+      let r = this.resultView.results[i];
+      if (!this.isSelected(r) && this.canBeShared(r)) {
+        return false;
+      }
     }
     return true;
   }
