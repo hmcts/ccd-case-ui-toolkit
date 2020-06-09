@@ -82,7 +82,7 @@ export class SearchResultComponent implements OnChanges {
   searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
   draftsCount: number;
 
-  private selectedCases: SearchResultViewItem[] = [];
+  public selectedCases: SearchResultViewItem[] = [];
 
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
