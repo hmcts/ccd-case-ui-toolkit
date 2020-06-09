@@ -6,7 +6,16 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem } from '../../domain';
+import {
+  CaseState,
+  CaseType,
+  CaseView,
+  DRAFT_PREFIX,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultView,
+  SearchResultViewItem
+} from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
 import { ActivityService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
@@ -584,6 +593,37 @@ describe('SearchResultComponent', () => {
       expect(pagination).toBeFalsy();
     });
 
+    it('should de select the cases', () => {
+      component.clearSelection();
+      expect(component.selectedCases.length).toEqual(0);
+    });
+
+    it('can be shared', () => {
+      const caseView:CaseView  = new CaseView();
+      expect(component.canBeShared(caseView)).toEqual(true);
+    });
+
+    it('check if case is selected', () => {
+      const searchResultViewItem1:SearchResultViewItem = new SearchResultViewItem();
+      searchResultViewItem1.case_id='1';
+      searchResultViewItem1.case_fields=null;
+      const searchResultViewItem2:SearchResultViewItem = new SearchResultViewItem();
+      searchResultViewItem2.case_id='2';
+      searchResultViewItem2.case_fields=null;
+
+      
+
+    });
+
+    it('all cases not selected', () => {
+
+    });
+
+
+
+
+
   });
+
 
 });
