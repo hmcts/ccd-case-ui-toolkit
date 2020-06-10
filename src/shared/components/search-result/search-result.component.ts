@@ -125,6 +125,9 @@ export class SearchResultComponent implements OnChanges {
 
   public clearSelection(): void {
     this.selectedCases = [];
+    if (this.preSelectedCases.length > 0) {
+      this.selectedCases.concat(this.preSelectedCases)
+    }
     this.selection.emit(this.selectedCases);
   }
 
