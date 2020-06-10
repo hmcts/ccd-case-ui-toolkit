@@ -7,7 +7,7 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
 import { MockComponent } from 'ng2-mock-component';
 import { Activity, DisplayMode } from '../../domain/activity';
 
-describe('CcdActivityComponent', () => {
+xdescribe('CcdActivityComponent', () => {
   let BANNER: any = DisplayMode.BANNER;
   let ICON: any = DisplayMode.ICON;
   let CASE_ID = '1507217479821551';
