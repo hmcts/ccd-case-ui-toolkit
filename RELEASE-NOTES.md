@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.4-EUI-1940-prerelease - March 3 2020
+**EUI-1940** - Case list selection for sharing a case
+
 ### Version 2.64.3-EUI-1610-prerelease - March 3 2020
 **EUI-1610** - Importing rx-polling from npmjs rather than github
 

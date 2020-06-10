@@ -8,6 +8,13 @@
   </caption>
   <thead>
   <tr>
+    <th *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
+        <label class="govuk-label govuk-checkboxes__label" for="select-all">
+        </label>
+      </div>
+    </th>
     <th *ngFor="let col of resultView.columns">
       <table class="search-result-column-header"
              attr.aria-label="Sort by {{col.label}} {{ isSortAscending(col)? 'ascending' : 'descending' }}">
@@ -24,7 +31,14 @@
   </thead>
   <tbody>
   <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
-
+    <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
+               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
+        <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
+        </label>
+      </div>
+    </td>
     <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index">
 
       <a *ngIf="colIndex == 0" [routerLink]="prepareCaseLinkUrl(result.case_id)"
