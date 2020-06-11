@@ -39,7 +39,7 @@ table {
   a {
     color: $blue_pagination;
   }
- 
+
   .current {
     background-color: $white;
     color: #4C2C92;
@@ -57,6 +57,12 @@ table {
 }
 a:hover {
   color: $blue_table;
+}
+
+.govuk-link-with-padding {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 30px;
 }
 .search-result-column-header {
   width: unset;
