@@ -204,7 +204,7 @@ describe('SearchResultComponent', () => {
     it('should render pagination header', () => {
       let pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeTruthy();
-      expect(pagination.nativeElement.textContent.trim()).toBe('Displaying 1 - 4 out of 4 results   Reset case selection');
+      expect(pagination.nativeElement.textContent.trim()).toBe('Displaying 1 - 4 out of 4 results');
     });
 
     it('should render a table <thead> and <tbody>', () => {
