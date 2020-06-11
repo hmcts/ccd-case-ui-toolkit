@@ -4,9 +4,7 @@
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
          attr.aria-label="{{ getTotalResults() }} results have been found">
       <span class="text-16">Displaying {{ getFirstResult() }} - {{ getLastResult() }} out of {{ getTotalResults() }} results</span>
-      <span class="cline-any cline-neutral">&nbsp;</span>
-      <span class="cline-any cline-neutral">&nbsp;</span>
-      <span class="cline-any cline-neutral">&nbsp;</span>
+      <span class="cline-any cline-neutral">&nbsp;&nbsp;&nbsp;</span>
       <span><a class="govuk-link" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
     </div>
   </caption>
