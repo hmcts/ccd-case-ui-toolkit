@@ -3,14 +3,12 @@
     <h2 class="heading-h2">{{ caseState ? 'Case List' : 'Search result' }}</h2>
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
          attr.aria-label="{{ getTotalResults() }} results have been found">
-      <table>
-        <tr>
-          <td><span class="text-16">Displaying {{ getFirstResult() }} - {{ getLastResult() }} out of {{ getTotalResults() }} results</span></td>
-          <td> <span><a class="govuk-link" href="" (click)="clearSelection()">Reset case selection</a></span></td>
-        </tr>
-      </table>
+      <span class="text-16">Displaying {{ getFirstResult() }} - {{ getLastResult() }} out of {{ getTotalResults() }} results</span>
+      <span class="cline-any cline-no">&nbsp;</span>
+      <span class="cline-any cline-neutral">&nbsp;</span>
+      <span class="cline-any cline-neutral">&nbsp;</span>
+      <span><a class="govuk-link" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
     </div>
-
   </caption>
   <thead>
   <tr>
