@@ -97,7 +97,7 @@ describe('EventLogTableComponent', () => {
       expect(headers[COL_AUTHOR].nativeElement.textContent).toBe('Author');
     });
 
-    xit('should render a row for each event', () => {
+    it('should render a row for each event', () => {
       let rows = de.queryAll($TABLE_ROWS);
 
       expect(rows.length).toBe(EVENTS.length);
