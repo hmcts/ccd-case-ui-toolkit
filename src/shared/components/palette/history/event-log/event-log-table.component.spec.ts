@@ -97,7 +97,7 @@ describe('EventLogTableComponent', () => {
       expect(headers[COL_AUTHOR].nativeElement.textContent).toBe('Author');
     });
 
-    xit('should render a row for each event', () => {
+    it('should render a row for each event', () => {
       let rows = de.queryAll($TABLE_ROWS);
 
       expect(rows.length).toBe(EVENTS.length);
@@ -107,8 +107,10 @@ describe('EventLogTableComponent', () => {
       expect(firstRowCells.length).toBe(3);
       let firstEvent = EVENTS[0];
 
+      const timeZoneOffset = -(new Date().getTimezoneOffset());
+
       expect(firstRowCells[COL_EVENT].nativeElement.textContent).toBe(firstEvent.event_name + firstEvent.significant_item.description);
-      expect(firstRowCells[COL_DATE].nativeElement.textContent).toBe(moment(EVENTS[0].timestamp).tz('Europe/London').format('D MMM YYYY, h:mm:ss A') + ' UTC: 10 May 2017, 10:00:00 AM');
+      expect(firstRowCells[COL_DATE].nativeElement.textContent).toBe(moment(EVENTS[0].timestamp).utcOffset(timeZoneOffset).format('D MMM YYYY, h:mm:ss A') + ' UTC: 10 May 2017, 10:00:00 AM');
       expect(firstRowCells[COL_AUTHOR].nativeElement.textContent).toEqual('Justin SMITH');
 
       let secondRowCells = rows[1].queryAll(By.css('td'));
@@ -117,7 +119,7 @@ describe('EventLogTableComponent', () => {
       let secondEvent = EVENTS[1];
 
       expect(secondRowCells[COL_EVENT].nativeElement.textContent).toBe(secondEvent.event_name);
-      expect(secondRowCells[COL_DATE].nativeElement.textContent).toBe(moment(EVENTS[1].timestamp).tz('Europe/London').format('D MMM YYYY, h:mm:ss A') + ' UTC: 9 May 2017, 4:07:03 PM');
+      expect(secondRowCells[COL_DATE].nativeElement.textContent).toBe(moment(EVENTS[1].timestamp).utcOffset(timeZoneOffset).format('D MMM YYYY, h:mm:ss A') + ' UTC: 9 May 2017, 4:07:03 PM');
       expect(secondRowCells[COL_AUTHOR].nativeElement.textContent).toEqual('Phillip CHAN');
     });
 

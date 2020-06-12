@@ -480,16 +480,26 @@ describe('SearchResultComponent', () => {
 
     it('select all cases is enabled', () => {
        component.selectedCases = [{
-        case_id: '1',
-        case_fields: null
-      }]
+        case_id: 'DRAFT190',
+        case_fields: {
+          PersonFirstName: 'Jason',
+          PersonLastName: 'Smith',
+          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+        }
+      }];
       const tempCaseItem: SearchResultViewItem = {
-        case_id: '1',
-        case_fields: null
-      }
-      component.isSelected(tempCaseItem);
-      component.allOnPageSelected();
+        case_id: 'DRAFT190',
+        case_fields: {
+          PersonFirstName: 'Jason',
+          PersonLastName: 'Smith',
+          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+        }
+      };
+      expect(component.isSelected(tempCaseItem)).toBeTruthy();
+      expect(component.allOnPageSelected()).toBeFalsy();
       component.selectAll();
+      expect(component.allOnPageSelected()).toBeTruthy();
+      expect(component.selectedCases.length).toEqual(4);
     });
 
     it('should be able to unselect all', () => {
