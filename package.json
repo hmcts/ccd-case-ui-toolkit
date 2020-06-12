@@ -166,7 +166,8 @@
     "marked": "^0.7.0",
     "serialize-javascript": "^2.1.1",
     "tree-kill": "1.2.2",
-    "acorn": "5.7.4"
+    "acorn": "5.7.4",
+    "yargs-parser": "18.1.2"
   },
   "publishConfig": {
     "access": "public"
