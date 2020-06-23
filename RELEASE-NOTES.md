@@ -2,6 +2,8 @@
 
 ### Version 2.64.5-case-sharing-prerelease - June 23 2020
 **EUI-1938** - Only available to professional users - Case list selection - MC
+**EUI-2101** - Share case styling issue
+
 
 ### Version 2.64.4-EUI-1940-prerelease - March 3 2020
 **EUI-1940** - Case list selection for sharing a case
