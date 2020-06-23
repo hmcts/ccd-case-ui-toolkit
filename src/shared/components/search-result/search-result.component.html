@@ -7,7 +7,7 @@
     </div>
     <div *ngIf="(hasResults() || hasDrafts())" class="reset-selection"
          attr.aria-label="Reset selection">
-      <span><a class="govuk-link-with-padding" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
+      <span><a class="search-result-reset-link" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
     </div>
   </caption>
   <thead>
