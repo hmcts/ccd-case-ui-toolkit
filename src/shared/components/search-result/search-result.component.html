@@ -5,7 +5,7 @@
          attr.aria-label="{{ getTotalResults() }} results have been found">
       <span class="text-16">Displaying {{ getFirstResult() }} - {{ getLastResult() }} out of {{ getTotalResults() }} results</span>
     </div>
-    <div *ngIf="(hasResults() || hasDrafts())" class="reset-selection"
+    <div *ngIf="(hasResults() || hasDrafts()) && selectionEnabled" class="reset-selection"
          attr.aria-label="Reset selection">
       <span><a class="search-result-reset-link" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
     </div>
