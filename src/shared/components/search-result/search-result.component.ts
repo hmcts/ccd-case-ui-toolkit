@@ -57,9 +57,6 @@ export class SearchResultComponent implements OnChanges {
   @Input()
   public preSelectedCases: SearchResultViewItem[] = [];
 
-  @Input()
-  public showResetCaseSelection = false;
-
   @Output()
   public selection = new EventEmitter<SearchResultViewItem[]>();
 
@@ -280,10 +277,6 @@ export class SearchResultComponent implements OnChanges {
 
   hasDrafts(): boolean {
     return this.resultView.hasDrafts();
-  }
-
-  showResetSelection(): boolean {
-    return this.showResetCaseSelection;
   }
 
   comparator(column: SearchResultViewColumn): SearchResultViewItemComparator {
