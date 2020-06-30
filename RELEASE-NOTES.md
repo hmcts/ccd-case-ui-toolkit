@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.6-case-sharing-prerelease - June 30 2020
+**EUI-2185** - Reset case selection link shows for other jurisdictions eg: Probate. Fixed.
+
 ### Version 2.64.5-case-sharing-prerelease - June 23 2020
 **EUI-1938** - Only available to professional users - Case list selection - MC
 **EUI-2101** - Share case styling issue
