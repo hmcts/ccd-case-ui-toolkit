@@ -596,6 +596,27 @@ describe('SearchResultComponent', () => {
       component.changeSelection(aSelectedCase);
       expect(component.selectedCases.length).toEqual(3);
     });
+
+    it('should preselect cases', () => {
+      component.preSelectedCases = [{
+        case_id: '0000000000000001',
+        case_fields: {
+          PersonFirstName: 'Steve',
+          PersonLastName: 'Jobs',
+          PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
+        }
+      },
+        {
+          case_id: '0000000000000002',
+          case_fields: {
+            PersonFirstName: 'Bill',
+            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+          }
+        }];
+      component.ngOnInit();
+      expect(component.selectedCases.length).toEqual(2);
+    });
+
   });
 
   describe('without results', () => {
