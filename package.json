@@ -157,7 +157,7 @@
   },
   "resolutions": {
     "handlebars": "^4.5.3",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.18",
     "braces": "^2.3.1",
     "https-proxy-agent": "^2.2.3",
     "mem": "^6.0.0",
