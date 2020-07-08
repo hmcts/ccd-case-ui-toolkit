@@ -156,6 +156,7 @@
     "zone.js": "^0.8.26"
   },
   "resolutions": {
+    "npm-registry-fetch": "^4.0.5",
     "handlebars": "^4.5.3",
     "lodash": "^4.17.18",
     "braces": "^2.3.1",
