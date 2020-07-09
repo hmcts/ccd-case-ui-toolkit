@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.6-case-sharing-prerelease",
+  "version": "2.64.7-case-sharing-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -156,8 +156,9 @@
     "zone.js": "^0.8.26"
   },
   "resolutions": {
+    "npm-registry-fetch": "^4.0.5",
     "handlebars": "^4.5.3",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.18",
     "braces": "^2.3.1",
     "https-proxy-agent": "^2.2.3",
     "mem": "^6.0.0",

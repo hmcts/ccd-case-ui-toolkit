@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
@@ -13,7 +13,7 @@ import { ActivityService, SearchResultViewItemComparatorFactory } from '../../se
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss']
 })
-export class SearchResultComponent implements OnChanges {
+export class SearchResultComponent implements OnChanges, OnInit {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
@@ -98,6 +98,17 @@ export class SearchResultComponent implements OnChanges {
     this.hideRows = false;
   }
 
+  ngOnInit(): void {
+    if (this.preSelectedCases) {
+      for (const preSelectedCase of this.preSelectedCases) {
+        if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
+          this.selectedCases.push(preSelectedCase);
+        }
+      }
+    }
+    this.selection.emit(this.selectedCases);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
 
     if (changes['resultView']) {
@@ -125,9 +136,6 @@ export class SearchResultComponent implements OnChanges {
 
   public clearSelection(): void {
     this.selectedCases = [];
-    if (this.preSelectedCases.length > 0) {
-      this.selectedCases.concat(this.preSelectedCases)
-    }
     this.selection.emit(this.selectedCases);
   }
 
@@ -177,12 +185,6 @@ export class SearchResultComponent implements OnChanges {
       }
     }
     this.selection.emit(this.selectedCases);
-  }
-
-  OnInit(): void {
-    if (this.preSelectedCases.length > 0) {
-      this.selectedCases.concat(this.preSelectedCases)
-    }
   }
 
   public isSelected(c: SearchResultViewItem): boolean {
