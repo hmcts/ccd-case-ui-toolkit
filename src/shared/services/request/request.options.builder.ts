@@ -32,9 +32,9 @@ export class RequestOptionsBuilder {
       }
 
 
-    buildOptionsAndBody(metaCriteria: object, caseCriteria: object, view?: SearchView): {options: RequestOptionsArgs, body: any} {
+    buildOptionsAndBody(metaCriteria: {}, caseCriteria: {}, view?: SearchView): {options: RequestOptionsArgs, body: any} {
       let params: URLSearchParams = new URLSearchParams();
-      let body: object = this.prepareElasticQuery(metaCriteria, caseCriteria);
+      let body: {} = this.prepareElasticQuery(metaCriteria, caseCriteria);
 
       if (view) {
         params.set('view', view);
@@ -55,12 +55,12 @@ export class RequestOptionsBuilder {
       }
 
       let options: RequestOptionsArgs = { params };
-      return {options, body};
+      return { options, body };
     }
 
-    prepareElasticQuery(metaCriteria: object, caseCriteria: object): object {
-      let query: object = {};
-      let matchList: object[] = [];
+    prepareElasticQuery(metaCriteria: {}, caseCriteria: {}): {} {
+      let query: {} = {};
+      let matchList: {}[] = [];
 
       if (metaCriteria) {
         for (let criterion of Object.keys(metaCriteria)) {
@@ -96,12 +96,12 @@ export class RequestOptionsBuilder {
         }
       }
 
-      // query = {
-      //   match_all: {}
-      // };
+      query = {
+        match_all: {}
+      };
 
 
-      return { query, size: 5 };
+      return { query };
     }
 }
 

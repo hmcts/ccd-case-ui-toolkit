@@ -35,22 +35,45 @@ export class SearchService {
     return this.httpService
       .get(url, options)
       .pipe(
-        map(response => response.json())
+        map(response => {
+          console.log(response.json());
+          return response.json()
+        })
       );
   }
 
   public searchCases(caseTypeIds: string[],
-                metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
-    const url = this.appConfig.getCaseDataUrl() + `/searchCases?ctid=${caseTypeIds}`;
+                metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<{}> {
+    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}`;
 
     let {options, body} = this.requestOptionsBuilder.buildOptionsAndBody(metaCriteria, caseCriteria, view);
 
     return this.httpService
       .post(url, body)
       .pipe(
-        map(response => response.json())
+        map(response => {
+          return this.handleElasticSearchResponse(response.json());
+        })
       );
   }
+
+  handleElasticSearchResponse(json: {total: number, cases: {}[], headers: {fields: {}[]}[]}): {} {
+
+    const results = json.cases.map(caseObj => {
+      caseObj['case_fields'] = caseObj['fields'];
+      caseObj['case_fields_formatted'] = caseObj['fields_formatted'];
+      delete caseObj['fields'];
+      delete caseObj['fields_formatted'];
+      return caseObj;
+    });
+
+    const handledResponse = { total: json.total, results: results, columns: json.headers[0].fields }
+
+    console.log(handledResponse);
+
+    return handledResponse;
+  }
+
   getSearchInputUrl(caseTypeId: string): string {
     return `${this.appConfig.getCaseDataUrl()}/internal/case-types/${caseTypeId}/search-inputs`;
   }
