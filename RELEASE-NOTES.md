@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.9-RDM-8097-prerelease - July 15 2020
+**RDM-8097** - A collection item with just Date field is not displayed
+
 ### Version 2.64.6-case-sharing-prerelease - June 30 2020
 **EUI-2185** - Reset case selection link shows for other jurisdictions eg: Probate. Fixed.
 
