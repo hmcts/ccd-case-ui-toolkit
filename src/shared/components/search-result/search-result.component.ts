@@ -1,19 +1,19 @@
-import { Component, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { DisplayMode, Jurisdiction, CaseType, CaseState, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, CaseField, DRAFT_PREFIX, PaginationMetadata, SortParameters,
-  SearchResultViewItemComparator, SortOrder } from '../../domain';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
-import { CaseReferencePipe } from '../../pipes';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
+import { CaseField, CaseState, CaseType, CaseView, DisplayMode,
+  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
+  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseReferencePipe } from '../../pipes';
+import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss']
 })
-export class SearchResultComponent implements OnChanges {
+export class SearchResultComponent implements OnChanges, OnInit {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
@@ -48,6 +48,18 @@ export class SearchResultComponent implements OnChanges {
   @Input()
   metadataFields: string[];
 
+  @Input()
+  public selectionEnabled = false;
+
+  @Input()
+  public showOnlySelected = false;
+
+  @Input()
+  public preSelectedCases: SearchResultViewItem[] = [];
+
+  @Output()
+  public selection = new EventEmitter<SearchResultViewItem[]>();
+
   @Output()
   changePage: EventEmitter<any> = new EventEmitter();
 
@@ -72,6 +84,8 @@ export class SearchResultComponent implements OnChanges {
   searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
   draftsCount: number;
 
+  public selectedCases: SearchResultViewItem[] = [];
+
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
     appConfig: AbstractAppConfig,
@@ -82,6 +96,17 @@ export class SearchResultComponent implements OnChanges {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
     this.hideRows = false;
+  }
+
+  ngOnInit(): void {
+    if (this.preSelectedCases) {
+      for (const preSelectedCase of this.preSelectedCases) {
+        if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
+          this.selectedCases.push(preSelectedCase);
+        }
+      }
+    }
+    this.selection.emit(this.selectedCases);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -107,6 +132,78 @@ export class SearchResultComponent implements OnChanges {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
+  }
+
+  public clearSelection(): void {
+    this.selectedCases = [];
+    this.selection.emit(this.selectedCases);
+  }
+
+  public canBeShared(caseView: SearchResultViewItem): boolean {
+    return true;
+  }
+
+  public canAnyBeShared(): boolean {
+    for (let i = 0, l = this.resultView.results.length; i < l; i++) {
+      if (this.canBeShared(this.resultView.results[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public selectAll(): void {
+    if (this.allOnPageSelected()) {
+      // all cases already selected, so unselect all on this page
+      this.resultView.results.forEach(c => {
+        this.selectedCases.forEach((s, i) => {
+          if (c.case_id === s.case_id) {
+            this.selectedCases.splice(i, 1);
+          }
+        });
+      });
+    } else {
+      this.resultView.results.forEach(c => {
+        if (!this.isSelected(c) && this.canBeShared(c)) {
+          this.selectedCases.push(c);
+        }
+      });
+    }
+    this.selection.emit(this.selectedCases);
+  }
+
+  public changeSelection(c: SearchResultViewItem): void {
+    if (this.isSelected(c)) {
+      this.selectedCases.forEach((s, i) => {
+        if (c.case_id === s.case_id) {
+          this.selectedCases.splice(i, 1);
+        }
+      });
+    } else {
+      if (this.canBeShared(c)) {
+        this.selectedCases.push(c);
+      }
+    }
+    this.selection.emit(this.selectedCases);
+  }
+
+  public isSelected(c: SearchResultViewItem): boolean {
+    for (let i = 0, l = this.selectedCases.length; i < l; i++) {
+      if (c.case_id === this.selectedCases[i].case_id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public allOnPageSelected(): boolean {
+    for (let i = 0, l = this.resultView.results.length; i < l; i++) {
+      let r = this.resultView.results[i];
+      if (!this.isSelected(r) && this.canBeShared(r)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**

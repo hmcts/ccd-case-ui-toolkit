@@ -45,6 +45,8 @@ import { FixedRadioListModule } from './fixed-radio-list';
 import { CaseHistoryViewerModule } from './history';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
 import { CaseLinkModule } from './case-link/case-link.module';
+import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
+import { FileUploadStateService } from './document/file-upload-state.service';
 
 @NgModule({
   imports: [
@@ -148,6 +150,8 @@ import { CaseLinkModule } from './case-link/case-link.module';
     CollectionCreateCheckerService,
     PaletteService,
     FormValidatorsService,
+    FileUploadStateService,
+    FileUploadProgressGuard,
   ]
 })
 export class PaletteModule {}

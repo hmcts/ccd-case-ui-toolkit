@@ -6,7 +6,16 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem } from '../../domain';
+import {
+  CaseState,
+  CaseType,
+  CaseView,
+  DRAFT_PREFIX,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultView,
+  SearchResultViewItem
+} from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
 import { ActivityService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
@@ -417,6 +426,197 @@ describe('SearchResultComponent', () => {
       let firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) a'));
       expect(firstRowFirstCol.nativeElement.textContent.trim()).toBe(DRAFT_PREFIX);
     });
+
+    it('should de select the cases', () => {
+      component.clearSelection();
+      expect(component.selectedCases.length).toEqual(0);
+    });
+
+    it('can be shared', () => {
+      const caseView: SearchResultViewItem  = new SearchResultViewItem();
+      expect(component.canBeShared(caseView)).toEqual(true);
+    });
+
+    it('can any be shared', () => {
+        component.resultView.results = [{
+        case_id: '1',
+        case_fields: null
+      }]
+      expect(component.canAnyBeShared()).toEqual(true);
+    });
+
+    it('check if case is selected', () => {
+        component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }, {
+        case_id: '2',
+        case_fields: null
+      }]
+
+      const tempCaseItem: SearchResultViewItem = {
+        case_id: '1',
+        case_fields: null
+      }
+      expect(component.isSelected(tempCaseItem)).toBeTruthy();
+    });
+
+    it('check if case is not selected', () => {
+        component.selectedCases = [{
+        case_id: '1',
+        case_fields: null
+      }, {
+        case_id: '2',
+        case_fields: null
+      }]
+
+      const tempCaseItem: SearchResultViewItem = {
+        case_id: '3',
+        case_fields: null
+      }
+      expect(component.isSelected(tempCaseItem)).toBeFalsy();
+
+    });
+
+    it('select all cases is enabled', () => {
+       component.selectedCases = [{
+        case_id: 'DRAFT190',
+        case_fields: {
+          PersonFirstName: 'Jason',
+          PersonLastName: 'Smith',
+          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+        }
+      }];
+      const tempCaseItem: SearchResultViewItem = {
+        case_id: 'DRAFT190',
+        case_fields: {
+          PersonFirstName: 'Jason',
+          PersonLastName: 'Smith',
+          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+        }
+      };
+      expect(component.isSelected(tempCaseItem)).toBeTruthy();
+      expect(component.allOnPageSelected()).toBeFalsy();
+      component.selectAll();
+      expect(component.allOnPageSelected()).toBeTruthy();
+      expect(component.selectedCases.length).toEqual(4);
+    });
+
+    it('should be able to unselect all', () => {
+      component.selectedCases = [
+        {
+          case_id: 'DRAFT190',
+          case_fields: {
+            PersonFirstName: 'Jason',
+            PersonLastName: 'Smith',
+            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+          }
+        },
+        {
+          case_id: '0000000000000000',
+          case_fields: {
+            PersonFirstName: 'Janet',
+            PersonLastName: 'Parker',
+            PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+          }
+        },
+        {
+          case_id: '0000000000000001',
+          case_fields: {
+            PersonFirstName: 'Steve',
+            PersonLastName: 'Jobs',
+            PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
+          }
+        },
+        {
+          case_id: '0000000000000002',
+          case_fields: {
+            PersonFirstName: 'Bill',
+            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+          }
+        }
+      ]
+      component.selectAll();
+      expect(component.selectedCases.length).toEqual(0);
+    });
+
+    it('should be able to select a case', () => {
+      const aSelectedCase = {
+        case_id: '0000000000000002',
+        case_fields: {
+          PersonFirstName: 'Bill',
+          PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+        }
+      }
+      component.changeSelection(aSelectedCase);
+      expect(component.selectedCases.length).toEqual(1);
+    });
+
+    it('should be able to unselect a case', () => {
+      component.selectedCases = [
+        {
+          case_id: 'DRAFT190',
+          case_fields: {
+            PersonFirstName: 'Jason',
+            PersonLastName: 'Smith',
+            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+          }
+        },
+        {
+          case_id: '0000000000000000',
+          case_fields: {
+            PersonFirstName: 'Janet',
+            PersonLastName: 'Parker',
+            PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+          }
+        },
+        {
+          case_id: '0000000000000001',
+          case_fields: {
+            PersonFirstName: 'Steve',
+            PersonLastName: 'Jobs',
+            PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
+          }
+        },
+        {
+          case_id: '0000000000000002',
+          case_fields: {
+            PersonFirstName: 'Bill',
+            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+          }
+        }
+      ]
+      const aSelectedCase = {
+        case_id: '0000000000000002',
+        case_fields: {
+          PersonFirstName: 'Bill',
+          PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+        }
+      }
+      component.changeSelection(aSelectedCase);
+      expect(component.selectedCases.length).toEqual(3);
+    });
+
+    it('should preselect cases', () => {
+      component.preSelectedCases = [{
+        case_id: '0000000000000001',
+        case_fields: {
+          PersonFirstName: 'Steve',
+          PersonLastName: 'Jobs',
+          PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
+        }
+      },
+        {
+          case_id: '0000000000000002',
+          case_fields: {
+            PersonFirstName: 'Bill',
+            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+          }
+        }];
+      component.ngOnInit();
+      expect(component.selectedCases.length).toEqual(2);
+    });
+
   });
 
   describe('without results', () => {
@@ -583,7 +783,5 @@ describe('SearchResultComponent', () => {
       let pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeFalsy();
     });
-
   });
-
 });

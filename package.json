@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.0-RDM-8097-prerelease",
+  "version": "2.64.7-case-sharing-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -53,6 +53,9 @@
     "json-server": "^0.14.0",
     "karma-jasmine-html-reporter": "^1.2.0",
     "mocha": "^5.0.5",
+    "moment": "^2.26.0",
+    "moment-timezone": "^0.5.31",
+    "rx-polling": "1.1.0",
     "typescript": "3.1.1",
     "underscore": "^1.9.1"
   },
@@ -135,7 +138,6 @@
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^1.0.0",
-    "rx-polling": "~1.0.0",
     "rxjs": "^6.2.1",
     "rxjs-compat": "^6.0.0-rc.0",
     "sass-loader": "^7.1.0",
@@ -154,14 +156,19 @@
     "zone.js": "^0.8.26"
   },
   "resolutions": {
+    "npm-registry-fetch": "^4.0.5",
     "handlebars": "^4.5.3",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.18",
     "braces": "^2.3.1",
     "https-proxy-agent": "^2.2.3",
     "mem": "^6.0.0",
     "minimatch": "^3.0.2",
+    "minimist": "1.2.3",
     "marked": "^0.7.0",
-    "serialize-javascript" : "^2.1.1"
+    "serialize-javascript": "^2.1.1",
+    "tree-kill": "1.2.2",
+    "acorn": "5.7.4",
+    "yargs-parser": "18.1.2"
   },
   "publishConfig": {
     "access": "public"

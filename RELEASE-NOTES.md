@@ -1,16 +1,22 @@
 ## RELEASE NOTES
 
-### Version 2.64.1-RDM-7524-prerelease - February 11 2020
-***RDM-7524** Wording Updates to CCD Shuttering and Redirection to Expert UI
+### Version 2.64.6-case-sharing-prerelease - June 30 2020
+**EUI-2185** - Reset case selection link shows for other jurisdictions eg: Probate. Fixed.
 
-### Version 2.63.7-RDM-6965-prerelease - January 29 2020
-***RDM-6965** Jurisdiction-Level Shuttering of CCD UI & Redirection to Expert UI
-***RDM-7293** Introduce Smart Translation btw Internal & External Equivalents of Expert UI URLs
-***RDM-7287** Disable Features of Shuttered Jurisdictions
-***RDM-7134** Optional Redirection of Users with Multiple Roles to Expert UI
+### Version 2.64.5-case-sharing-prerelease - June 23 2020
+**EUI-1938** - Only available to professional users - Case list selection - MC
+**EUI-2101** - Share case styling issue
 
-### Version 2.63.1-RDM-6719-prerelease - January 6 2020
-***RDM-6719** Add Banner Feature to CCD UI
+
+### Version 2.64.4-EUI-1940-prerelease - March 3 2020
+**EUI-1940** - Case list selection for sharing a case
+
+### Version 2.64.3-EUI-1610-prerelease - March 3 2020
+**EUI-1610** - Importing rx-polling from npmjs rather than github
+
+### Version 2.64.2-EUI-1610-prerelease - March 2 2020
+**EUI-1610** - Changed import strategy for rx-polling
+**EUI-1476** - Continued activity logging when browser inactive
 
 ### Version 2.64.0-prerelease - January 30 2020
 ***CCD-17.1**
