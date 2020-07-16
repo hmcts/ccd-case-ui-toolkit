@@ -96,10 +96,9 @@ export class RequestOptionsBuilder {
         }
       }
 
-      query = {
-        match_all: {}
-      };
-
+      // query = {
+      //   match_all: {}
+      // };
 
       return { query };
     }

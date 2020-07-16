@@ -44,7 +44,7 @@ export class SearchService {
 
   public searchCases(caseTypeIds: string[],
                 metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<{}> {
-    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}`;
+    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}&use_case=WORKBASKET`;
 
     let {options, body} = this.requestOptionsBuilder.buildOptionsAndBody(metaCriteria, caseCriteria, view);
 
@@ -67,7 +67,7 @@ export class SearchService {
       return caseObj;
     });
 
-    const handledResponse = { total: json.total, results: results, columns: json.headers[0].fields }
+    const handledResponse = { total: json.total, results: results, columns: json.headers[0].fields, headers: json.headers }
 
     console.log(handledResponse);
 
