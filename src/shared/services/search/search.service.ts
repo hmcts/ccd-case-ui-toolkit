@@ -43,35 +43,24 @@ export class SearchService {
   }
 
   public searchCases(caseTypeIds: string[],
-                metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<{}> {
-    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}&use_case=WORKBASKET`;
+                metaCriteria: object, caseCriteria: object, view?: SearchView, page?: number, sort?: string): Observable<{}> {
+    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}&usecase=${view}`;
 
-    let {options, body} = this.requestOptionsBuilder.buildOptionsAndBody(metaCriteria, caseCriteria, view);
+    let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+    const body: {} = {
+      page,
+      sort,
+      size: this.appConfig.getPaginationPageSize()
+    };
 
     return this.httpService
-      .post(url, body)
+      .post(url, body, options)
       .pipe(
         map(response => {
-          return this.handleElasticSearchResponse(response.json());
+          console.log(response.json());
+          return response.json()
         })
       );
-  }
-
-  handleElasticSearchResponse(json: {total: number, cases: {}[], headers: {fields: {}[]}[]}): {} {
-
-    const results = json.cases.map(caseObj => {
-      caseObj['case_fields'] = caseObj['fields'];
-      caseObj['case_fields_formatted'] = caseObj['fields_formatted'];
-      delete caseObj['fields'];
-      delete caseObj['fields_formatted'];
-      return caseObj;
-    });
-
-    const handledResponse = { total: json.total, results: results, columns: json.headers[0].fields, headers: json.headers }
-
-    console.log(handledResponse);
-
-    return handledResponse;
   }
 
   getSearchInputUrl(caseTypeId: string): string {
