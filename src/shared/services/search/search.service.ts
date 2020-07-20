@@ -40,12 +40,11 @@ export class SearchService {
   }
 
   public searchCases(caseTypeIds: string[],
-                metaCriteria: object, caseCriteria: object, view?: SearchView, page?: number, sort?: string): Observable<{}> {
+                metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: string): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}&usecase=${view}`;
 
     let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {
-      page,
       sort,
       size: this.appConfig.getPaginationPageSize()
     };
