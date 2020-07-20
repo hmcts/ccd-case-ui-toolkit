@@ -35,10 +35,7 @@ export class SearchService {
     return this.httpService
       .get(url, options)
       .pipe(
-        map(response => {
-          console.log(response.json());
-          return response.json()
-        })
+        map(response => response.json())
       );
   }
 
@@ -56,10 +53,7 @@ export class SearchService {
     return this.httpService
       .post(url, body, options)
       .pipe(
-        map(response => {
-          console.log(response.json());
-          return response.json()
-        })
+        map(response => response.json())
       );
   }
 

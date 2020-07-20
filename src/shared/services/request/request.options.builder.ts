@@ -30,7 +30,6 @@ export class RequestOptionsBuilder {
         let options: RequestOptionsArgs = { params };
         return options;
       }
-
 }
 
 export type SearchView = 'SEARCH' | 'WORKBASKET';
