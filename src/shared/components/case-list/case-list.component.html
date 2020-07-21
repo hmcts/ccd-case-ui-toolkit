@@ -1,13 +1,13 @@
-<table class="govuk-table" *ngIf="hasResults() || hasDrafts()">
+<table class="govuk-table">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header" *ngFor="let col of resultView.columns">
-        {{col.label}}
+      <th class="govuk-table__header" *ngFor="let col of columnNames">
+        {{col}}
       </th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <tr class="govuk-table__row" *ngFor="let result of resultView.results">
+    <tr class="govuk-table__row" *ngFor="let item of caseListItems">
       <!-- <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
@@ -16,12 +16,8 @@
           </label>
         </div>
       </td> -->
-      <td class="govuk-table__cell" *ngFor="let col of resultView.columns">
-        <ccd-field-read ccdLabelSubstitutor
-                        [caseField]="result.columns[col.case_field_id]"
-                        [contextFields]="result.hydrated_case_fields"
-                        [elementsToSubstitute]="['value']">
-        </ccd-field-read>
+      <td class="govuk-table__cell" *ngFor="let key of Object.keys(item)">
+        {{item[key]}}
       </td>
     </tr>
   </tbody>
