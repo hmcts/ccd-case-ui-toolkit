@@ -1,0 +1,28 @@
+<table class="govuk-table" *ngIf="hasResults() || hasDrafts()">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" *ngFor="let col of resultView.columns">
+        {{col.label}}
+      </th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row" *ngFor="let result of resultView.results">
+      <!-- <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
+                 type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
+          <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
+          </label>
+        </div>
+      </td> -->
+      <td class="govuk-table__cell" *ngFor="let col of resultView.columns">
+        <ccd-field-read ccdLabelSubstitutor
+                        [caseField]="result.columns[col.case_field_id]"
+                        [contextFields]="result.hydrated_case_fields"
+                        [elementsToSubstitute]="['value']">
+        </ccd-field-read>
+      </td>
+    </tr>
+  </tbody>
+</table>
