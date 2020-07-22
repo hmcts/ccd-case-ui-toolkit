@@ -15,6 +15,8 @@ describe('SearchService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   const DATA_URL = 'http://data.ccd.reform';
   const SEARCH_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases`;
+  const VIEW = `WORKBASKET`;
+  const SEARCH_CASES_URL = DATA_URL + `/internal/searchCases?ctid=${CTID}&usecase=${VIEW}`;
   const SEARCH_INPUT_URL = DATA_URL + '/internal/case-types/0/search-inputs';
 
   const SEARCH_VIEW = {
@@ -224,6 +226,76 @@ describe('SearchService', () => {
         .subscribe(resultInputModel => {
           expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS.searchInputs[0].field.id);
         });
+    });
+
+  });
+  
+  describe('post()', () => {
+
+    beforeEach(() => {
+      function matchCall(value: any, expected: any): boolean {
+        return expected === value ||
+            JSON.stringify(expected) === JSON.stringify(value) ||
+            expected[0] === value[0] && JSON.stringify(expected[1]).trim() === JSON.stringify(value[1]).trim();
+      }
+
+      jasmine.addCustomEqualityTester(matchCall);
+
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getPaginationPageSize']);
+      appConfig.getApiUrl.and.returnValue(API_URL);
+      appConfig.getCaseDataUrl.and.returnValue(DATA_URL);
+      appConfig.getPaginationPageSize.and.returnValue(25);
+
+      httpService = createSpyObj<HttpService>('httpService', ['post']);
+      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+        body: JSON.stringify({})
+      }))));
+
+      params = new URLSearchParams();
+      requestOptionsArgs = { params };
+
+      requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);
+      requestOptionsBuilder.buildOptions.and.returnValue(requestOptionsArgs);
+
+      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder);
+    });
+
+    it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
+      searchService
+        .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
+        .subscribe();
+
+      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params});
+    });
+
+    it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
+      let metaCriteria = { 'caseState': 'testState'};
+      let caseCriteria = { 'firstName': 'testFirstName', 'lastName': 'testLastName'};
+
+      searchService
+        .searchCases(CTID, metaCriteria, caseCriteria)
+        .subscribe();
+
+      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria);
+    });
+
+    it('should set `view` param if required', () => {
+      searchService
+        .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
+        .subscribe();
+
+      params.set('view', SearchService.VIEW_WORKBASKET);
+      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params});
+    });
+
+    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
+      let metaCriteria = { 'caseState': 'testState'};
+      let caseCriteria = { 'firstName': 'testFirstName', 'lastName': 'testLastName'};
+      searchService
+        .searchCases(CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
+        .subscribe();
+
+      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
     });
 
   });

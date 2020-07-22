@@ -39,9 +39,9 @@ export class SearchService {
       );
   }
 
-  public searchCases(caseTypeIds: string[],
+  public searchCases(caseTypeId: string,
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: string): Observable<{}> {
-    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeIds}&usecase=${view}`;
+    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&usecase=${view}`;
 
     let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {
