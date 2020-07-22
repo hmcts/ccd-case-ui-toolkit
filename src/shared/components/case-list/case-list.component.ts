@@ -22,25 +22,14 @@ export class CaseListComponent implements OnInit, OnChanges {
 
   @Input() columnNames: string[]; // Need some validation to check number of columns equals number of item properties
 
-  private valueItems: Object[];
-
   constructor() { }
 
   ngOnInit(): void {
+    console.log('Case List items:');
+    console.log(this.caseListItems);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    /* if (changes['caseListData']) {
-      this.valueItems = [];
-
-      this.caseListItems.forEach(item => {
-        Object.keys(item).forEach(key => {
-
-        })
-        const valueItem = Object.assign({}, Object.values(item));
-        this.valueItems.push(valueItem);
-      });
-    } */
   }
 
   hasResults(): any {
