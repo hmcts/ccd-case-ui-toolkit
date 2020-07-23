@@ -1,14 +1,14 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { formatDate } from '@angular/common';
+import { Component, Input } from '@angular/core';
 
-export interface CaseListItem {
-  caseCreatedDate: Date;
-  caseDueDate: Date;
-  caseRef: string;
-  petFirstName: string;
-  petLastName: string;
-  respFirstName: string;
-  respLastName: string;
-  sRef: string;
+export class DateTimeFormatUtils {
+  public static formatDateAtTime(date: Date, is24Hour: boolean): string {
+    return `${formatDate(date, 'dd MMM yyyy', 'en-UK')} at ${DateTimeFormatUtils.formatTime(date, is24Hour)}`;
+  }
+
+  public static formatTime(date: Date, is24Hour: boolean): string {
+    return is24Hour ? formatDate(date, 'HH:mm', 'en-UK') : formatDate(date, 'h:mm a', 'en-UK').toLowerCase();
+  }
 }
 
 @Component({
@@ -16,23 +16,38 @@ export interface CaseListItem {
   templateUrl: './case-list.component.html',
   styleUrls: ['./case-list.component.scss']
 })
-export class CaseListComponent implements OnInit, OnChanges {
+export class CaseListComponent {
 
-  @Input() caseListItems: CaseListItem[];
+  @Input() classes = '';
 
-  @Input() columnNames: string[]; // Need some validation to check number of columns equals number of item properties
+  @Input() caption: string;
+  @Input() firstCellIsHeader = true;
+
+  @Input() rows: any[];
+
+  @Input() columnConfig: TableColumnConfig[] = [
+    { header: 'Date', key: 'date', type: 'text' },
+    { header: 'Amount', key: 'amount' }
+  ];
 
   constructor() { }
 
-  ngOnInit(): void {
-    console.log('Case List items:');
-    console.log(this.caseListItems);
+  public formatDate(date: Date): string {
+    return formatDate(date, 'dd/MM/yyyy', 'en-UK');
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public formatDateAtTime(date: Date): string {
+      return DateTimeFormatUtils.formatDateAtTime(date, false);
   }
+}
 
-  hasResults(): any {
-    return this.caseListItems.length;
+export class TableColumnConfig {
+  header: string;
+  key: string;
+  type?: string;
+  constructor() {
+    this.header = '';
+    this.key = '';
+    this.type = 'text';
   }
 }

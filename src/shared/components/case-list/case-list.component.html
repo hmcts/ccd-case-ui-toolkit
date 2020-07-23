@@ -1,24 +1,29 @@
-<table class="govuk-table">
+<table class="{{'govuk-table ' + classes}}" role="presentation">
+  <caption class="govuk-table__caption">{{caption}}</caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header" *ngFor="let col of columnNames">
-        {{col}}
-      </th>
+      <th class="govuk-table__header" scope="col" *ngFor="let h of columnConfig">{{h.header}}</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <tr class="govuk-table__row" *ngFor="let item of caseListItems">
-      <!-- <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-                 type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
-          <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
-          </label>
-        </div>
-      </td> -->
-      <td class="govuk-table__cell" *ngFor="let key of Object.keys(item)">
-        {{item[key]}}
-      </td>
+    <tr data-selector="table-row" class="govuk-table__row" *ngFor="let r of rows">
+      <ng-container *ngFor="let col of columnConfig; first as isFirst">
+        <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="isFirst && firstCellIsHeader">
+          <ng-container *ngIf="!col.type || col.type === 'text'">{{r[col.key]}}</ng-container>
+          <ng-container *ngIf="col.type === 'link' && r.routerLink">
+            <a class="govuk-link" [routerLink]="r.routerLink">{{r[col.key]}}</a>
+          </ng-container>
+        </th>
+        <td data-selector="table-cell" class="govuk-table__cell" *ngIf="!(isFirst && firstCellIsHeader)" [ngSwitch]="col?.type">
+          <ng-container *ngIf="col.type === 'link' && r.routerLink">
+            <a class="govuk-link" [routerLink]="r.routerLink">{{r[col.key]}}</a>
+          </ng-container>
+          <ng-container *ngSwitchCase="'money'">-{{ r[col.key] | currency:'GBP' }}</ng-container>
+          <ng-container *ngSwitchCase="'date'">{{formatDate(r[col.key])}}</ng-container>
+          <ng-container *ngSwitchCase="'dateAtTime'">{{formatDateAtTime(r[col.key])}}</ng-container>
+          <ng-container *ngSwitchDefault>{{r[col.key]}}</ng-container>
+        </td>
+      </ng-container>
     </tr>
   </tbody>
 </table>

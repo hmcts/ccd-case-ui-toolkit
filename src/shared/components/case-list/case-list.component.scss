@@ -1,4 +1,1 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+// Empty stylesheet to prevent yarn build:esm failure at "inline-templates" Gulp task
