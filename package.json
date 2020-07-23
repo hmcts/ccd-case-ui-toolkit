@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.7-case-sharing-prerelease",
+  "version": "2.64.8-elastic-search-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
