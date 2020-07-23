@@ -39,6 +39,23 @@ export class SearchService {
       );
   }
 
+  public searchCases(caseTypeId: string,
+                metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: string): Observable<{}> {
+    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&usecase=${view}`;
+
+    let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+    const body: {} = {
+      sort,
+      size: this.appConfig.getPaginationPageSize()
+    };
+
+    return this.httpService
+      .post(url, body, options)
+      .pipe(
+        map(response => response.json())
+      );
+  }
+
   getSearchInputUrl(caseTypeId: string): string {
     return `${this.appConfig.getCaseDataUrl()}/internal/case-types/${caseTypeId}/search-inputs`;
   }
