@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.64.10-elastic-search-prerelease - July 23 2020
+### Version 2.64.8-elastic-search-prerelease - July 23 2020
 **EUI-1753** - Elastic Search Endpoint
 
 ### Version 2.64.6-case-sharing-prerelease - June 30 2020
