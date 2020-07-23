@@ -229,7 +229,7 @@ describe('SearchService', () => {
     });
 
   });
-  
+
   describe('post()', () => {
 
     beforeEach(() => {
