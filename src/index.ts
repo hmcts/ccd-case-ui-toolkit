@@ -126,7 +126,9 @@ export { PaletteModule,
          SearchResultModule,
          SearchResultComponent,
          CaseListModule,
-         CaseListComponent } from './shared/components';
+         CaseListComponent,
+         TableColumnConfig,
+         TableConfig } from './shared/components';
 export { CaseReferencePipe,
          PipesModule,
          SortSearchResultPipe } from './shared/pipes';
