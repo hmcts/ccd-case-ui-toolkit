@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.12-case-sharing-prerelease - July 28 2020
+**EUI-2115** - CaseListComponent
+
 ### Version 2.64.10-elastic-search-prerelease - July 23 2020
 **EUI-1753** - Elastic Search Endpoint
 
