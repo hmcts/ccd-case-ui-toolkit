@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.10-elastic-search-prerelease",
+  "version": "2.64.11-case-sharing-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -156,6 +156,7 @@
     "zone.js": "^0.8.26"
   },
   "resolutions": {
+    "graceful-fs": "4.2.3",
     "npm-registry-fetch": "^4.0.5",
     "handlebars": "^4.5.3",
     "lodash": "^4.17.18",
