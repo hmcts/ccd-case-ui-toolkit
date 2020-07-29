@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.64.13-security-fix - July 29 2020
+**EUI-2115** - CaseListComponent
+
 ### Version 2.64.12-case-sharing-prerelease - July 28 2020
 **EUI-2115** - CaseListComponent
 
