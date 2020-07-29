@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.64.14-security-fix - July 29 2020
+**EUI-2115** - CaseListComponent
 
 ### Version 2.64.13-security-fix - July 29 2020
 **EUI-2115** - CaseListComponent
