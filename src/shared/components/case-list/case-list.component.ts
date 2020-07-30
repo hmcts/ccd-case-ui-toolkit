@@ -21,7 +21,7 @@ export class CaseListComponent {
   @Input() public classes = '';
 
   @Input() public caption: string;
-  @Input() public firstCellIsHeader = true;
+  @Input() public firstCellIsHeader = false;
 
   @Input() public cases: Object[];
 
@@ -37,7 +37,7 @@ export class CaseListComponent {
 
   @Output() public selection = new EventEmitter<any[]>();
 
-  private selectedCases: Object[] = [];
+  public selectedCases: Object[] = [];
 
   constructor() { }
 
