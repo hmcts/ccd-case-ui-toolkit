@@ -162,19 +162,20 @@
     "zone.js": "^0.8.26"
   },
   "resolutions": {
-    "graceful-fs": "4.2.3",
-    "npm-registry-fetch": "^4.0.5",
-    "handlebars": "^4.5.3",
-    "lodash": "^4.17.18",
+    "acorn": "5.7.4",
     "braces": "^2.3.1",
+    "elliptic": "^6.5.3",
+    "graceful-fs": "4.2.3",
+    "handlebars": "^4.5.3",
     "https-proxy-agent": "^2.2.3",
+    "lodash": "^4.17.18",
+    "marked": "^0.7.0",
     "mem": "^6.0.0",
     "minimatch": "^3.0.2",
     "minimist": "1.2.3",
-    "marked": "^0.7.0",
+    "npm-registry-fetch": "^4.0.5",
     "serialize-javascript": "^2.1.1",
     "tree-kill": "1.2.2",
-    "acorn": "5.7.4",
     "yargs-parser": "18.1.2"
   },
   "publishConfig": {
