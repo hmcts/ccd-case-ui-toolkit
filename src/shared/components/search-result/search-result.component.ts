@@ -57,6 +57,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
   @Input()
   public preSelectedCases: SearchResultViewItem[] = [];
 
+  @Input()
+  public consumerSortingEnabled: boolean = false;
+
   @Output()
   public selection = new EventEmitter<SearchResultViewItem[]>();
 
@@ -65,6 +68,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   @Output()
   clickCase: EventEmitter<any> = new EventEmitter();
+
+  @Output()
+  sortHandler: EventEmitter<SortParameters> = new EventEmitter();
 
   paginationPageSize: number;
 
@@ -286,12 +292,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   sort(column: SearchResultViewColumn) {
-    if (this.comparator(column) === undefined) {
-      return;
-    } else if (this.isSortAscending(column)) {
-      this.sortParameters = new SortParameters(this.comparator(column), SortOrder.ASCENDING);
+    if (this.isConsumerSortingEnabled()) {
+      this.sortParameters.sortOrder = this.sortParameters.sortOrder === SortOrder.DESCENDING ? 1 : -1
+      this.sortHandler.emit(this.sortParameters);
     } else {
-      this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
+      if (this.comparator(column) === undefined) {
+        return;
+      } else if (this.isSortAscending(column)) {
+        this.sortParameters = new SortParameters(this.comparator(column), SortOrder.ASCENDING);
+      } else {
+        this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
+      }
     }
   }
 
@@ -383,5 +394,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
     this.clickCase.emit({
       caseId: caseId
     });
+  }
+
+  isConsumerSortingEnabled() {
+    return this.consumerSortingEnabled;
   }
 }
