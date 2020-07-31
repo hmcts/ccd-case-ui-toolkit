@@ -16,7 +16,7 @@
   </thead>
   <tbody class="govuk-table__body">
     <tr data-selector="table-row" class="govuk-table__row" *ngFor="let c of cases">
-      <td class="govuk-table__header" scope="col" *ngIf="selectionEnabled">
+      <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="selectionEnabled">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] }}" name="select-{{ c[tableConfig.idField] }}"
                  type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" />
@@ -24,7 +24,7 @@
           <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] }}">
           </label>
         </div>
-      </td>
+      </th>
       <ng-container *ngFor="let col of tableConfig.columnConfigs; first as isFirst">
         <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="isFirst && firstCellIsHeader">
           <ng-container *ngIf="!col.type || col.type === 'text'">{{c[col.key]}}</ng-container>
