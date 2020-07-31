@@ -162,7 +162,6 @@
     "zone.js": "^0.8.26"
   },
   "resolutions": {
-    "acorn": "5.7.4",
     "braces": "^2.3.1",
     "elliptic": "^6.5.3",
     "graceful-fs": "4.2.3",
