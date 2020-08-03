@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.20-security-fix - August 03 2020
+**EUI-2312** - CaseListComponent - Dependency updates to fix security vulnerabilities (re-release)
+
 ### Version 2.64.19-security-fix - July 31 2020
 **EUI-2115** - CaseListComponent - Dependency updates to fix security vulnerabilities
 
