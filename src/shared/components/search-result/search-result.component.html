@@ -36,7 +36,7 @@
   <tbody>
 
   <!-- sorted by consumer -->
-    <ng-container *ngIf="isConsumerSortingEnabled()">
+    <ng-container *ngIf="consumerSortingEnabled">
       <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
         <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
           <div class="govuk-checkboxes__item">
@@ -73,7 +73,7 @@
       </tr>
     </ng-container>
   <!-- sorted by toolkit -->
-    <ng-container *ngIf="!isConsumerSortingEnabled()">
+    <ng-container *ngIf="!consumerSortingEnabled">
       <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
         <td *ngIf="selectionEnabled" class="govuk-table__header" scope="col">
           <div class="govuk-checkboxes__item">

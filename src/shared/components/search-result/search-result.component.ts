@@ -70,7 +70,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   clickCase: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  sortHandler: EventEmitter<SortParameters> = new EventEmitter();
+  sortHandler: EventEmitter<any> = new EventEmitter();
 
   paginationPageSize: number;
 
@@ -89,6 +89,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
   sortParameters: SortParameters;
   searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
   draftsCount: number;
+
+  consumerSortParameters: { column: string, order: SortOrder } = { column: null, order: null };
 
   public selectedCases: SearchResultViewItem[] = [];
 
@@ -292,9 +294,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   sort(column: SearchResultViewColumn) {
-    if (this.isConsumerSortingEnabled()) {
-      this.sortParameters.sortOrder = this.sortParameters.sortOrder === SortOrder.DESCENDING ? 1 : -1
-      this.sortHandler.emit(this.sortParameters);
+    if (this.consumerSortingEnabled) {
+      if (column.case_field_id !== this.consumerSortParameters.column) {
+        this.consumerSortParameters.order = SortOrder.ASCENDING;
+      } else {
+        this.consumerSortParameters.order = this.consumerSortParameters.order === SortOrder.DESCENDING ? SortOrder.ASCENDING : SortOrder.DESCENDING;
+      }
+      this.consumerSortParameters.column = column.case_field_id;
+      this.sortHandler.emit(this.consumerSortParameters);
     } else {
       if (this.comparator(column) === undefined) {
         return;
@@ -307,7 +314,16 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   sortWidget(column: SearchResultViewColumn) {
-    return this.isSortAscending(column) ? '&#9660;' : '&#9650;';
+    let condition = false;
+    if (this.consumerSortingEnabled) {
+      const isColumn = column.case_field_id === this.consumerSortParameters.column;
+      const isDescending = this.consumerSortParameters.order === SortOrder.DESCENDING;
+      condition = !isColumn || (isColumn && isDescending);
+    } else {
+      condition = this.isSortAscending(column);
+    }
+
+    return condition ? '&#9660;' : '&#9650;';
   }
 
   activityEnabled(): boolean {
@@ -394,9 +410,5 @@ export class SearchResultComponent implements OnChanges, OnInit {
     this.clickCase.emit({
       caseId: caseId
     });
-  }
-
-  isConsumerSortingEnabled() {
-    return this.consumerSortingEnabled;
   }
 }
