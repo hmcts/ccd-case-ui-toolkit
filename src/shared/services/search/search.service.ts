@@ -40,7 +40,7 @@ export class SearchService {
   }
 
   public searchCases(caseTypeId: string,
-                metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: string): Observable<{}> {
+                metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&usecase=${view}`;
 
     let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
