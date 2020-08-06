@@ -195,7 +195,7 @@ describe('SearchResultComponent', () => {
       component.paginationMetadata = PAGINATION_METADATA;
       component.caseFilterFG = new FormGroup({});
       component.metadataFields = METADATA_FIELDS;
-      component.ngOnChanges({ 
+      component.ngOnChanges({
         resultView: new SimpleChange(null, RESULT_VIEW, true),
         consumerSortingEnabled: new SimpleChange(null, false, true)
       });

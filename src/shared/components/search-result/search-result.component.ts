@@ -58,7 +58,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public preSelectedCases: SearchResultViewItem[] = [];
 
   @Input()
-  public consumerSortingEnabled: boolean = false;
+  public consumerSortingEnabled = false;
 
   @Output()
   public selection = new EventEmitter<SearchResultViewItem[]>();
@@ -298,7 +298,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
       if (column.case_field_id !== this.consumerSortParameters.column) {
         this.consumerSortParameters.order = SortOrder.ASCENDING;
       } else {
-        this.consumerSortParameters.order = this.consumerSortParameters.order === SortOrder.DESCENDING ? SortOrder.ASCENDING : SortOrder.DESCENDING;
+        this.consumerSortParameters.order = this.consumerSortParameters.order === SortOrder.DESCENDING ?
+                                            SortOrder.ASCENDING :
+                                            SortOrder.DESCENDING;
       }
       this.consumerSortParameters.column = column.case_field_id;
       this.sortHandler.emit(this.consumerSortParameters);
