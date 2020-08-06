@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.20-consumer-sorting - August 06 2020
+**EUI-1731** - Sort Behaviour in Manage Cases - Task 3
+
 ### Version 2.64.19-security-fix - July 31 2020
 **EUI-2115** - CaseListComponent - Dependency updates to fix security vulnerabilities
 
