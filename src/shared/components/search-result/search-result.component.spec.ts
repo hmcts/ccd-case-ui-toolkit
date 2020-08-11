@@ -96,7 +96,15 @@ describe('SearchResultComponent', () => {
           case_fields: {
             PersonFirstName: 'Jason',
             PersonLastName: 'Smith',
-            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW',
+            OrganisationPolicyField: {
+              Organisation: {
+                OrganisationID: 'ZS1AFP7',
+                OrganisationName: 'Rollins Slater Associates'
+              },
+              OrgPolicyReference: 'Travis and Arnold Inc',
+              OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+            }
           }
         },
         {
@@ -104,7 +112,15 @@ describe('SearchResultComponent', () => {
           case_fields: {
             PersonFirstName: 'Janet',
             PersonLastName: 'Parker',
-            PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+            PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG',
+            OrganisationPolicyField: {
+              Organisation: {
+                OrganisationID: 'ZS1AFP7',
+                OrganisationName: 'Rollins Slater Associates'
+              },
+              OrgPolicyReference: 'Travis and Arnold Inc',
+              OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+            }
           }
         },
         {
@@ -438,14 +454,44 @@ describe('SearchResultComponent', () => {
     });
 
     it('can be shared', () => {
-      const caseView: SearchResultViewItem  = new SearchResultViewItem();
+      const caseView = {
+        case_id: 'C111111',
+        case_fields: {
+          OrganisationPolicyField: {
+            Organisation: {
+              OrganisationID: 'ZS1AFP7',
+              OrganisationName: 'Rollins Slater Associates'
+            },
+            OrgPolicyReference: 'Travis and Arnold Inc',
+            OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+          }
+        }
+      };
       expect(component.canBeShared(caseView)).toEqual(true);
+    });
+
+    it('can not be shared', () => {
+      const caseView = {
+        case_id: 'C111111',
+        case_fields: {
+        }
+      };
+      expect(component.canBeShared(caseView)).toEqual(false);
     });
 
     it('can any be shared', () => {
         component.resultView.results = [{
         case_id: '1',
-        case_fields: null
+        case_fields: {
+          OrganisationPolicyField: {
+            Organisation: {
+              OrganisationID: 'ZS1AFP7',
+              OrganisationName: 'Rollins Slater Associates'
+            },
+            OrgPolicyReference: 'Travis and Arnold Inc',
+            OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+          }
+        }
       }]
       expect(component.canAnyBeShared()).toEqual(true);
     });
@@ -489,7 +535,15 @@ describe('SearchResultComponent', () => {
         case_fields: {
           PersonFirstName: 'Jason',
           PersonLastName: 'Smith',
-          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW',
+          OrganisationPolicyField: {
+            Organisation: {
+              OrganisationID: 'ZS1AFP7',
+              OrganisationName: 'Rollins Slater Associates'
+            },
+            OrgPolicyReference: 'Travis and Arnold Inc',
+            OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+          }
         }
       }];
       const tempCaseItem: SearchResultViewItem = {
@@ -497,14 +551,22 @@ describe('SearchResultComponent', () => {
         case_fields: {
           PersonFirstName: 'Jason',
           PersonLastName: 'Smith',
-          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+          PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW',
+          OrganisationPolicyField: {
+            Organisation: {
+              OrganisationID: 'ZS1AFP7',
+              OrganisationName: 'Rollins Slater Associates'
+            },
+            OrgPolicyReference: 'Travis and Arnold Inc',
+            OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+          }
         }
       };
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
       expect(component.allOnPageSelected()).toBeFalsy();
       component.selectAll();
       expect(component.allOnPageSelected()).toBeTruthy();
-      expect(component.selectedCases.length).toEqual(4);
+      expect(component.selectedCases.length).toEqual(2);
     });
 
     it('should be able to unselect all', () => {
@@ -514,7 +576,15 @@ describe('SearchResultComponent', () => {
           case_fields: {
             PersonFirstName: 'Jason',
             PersonLastName: 'Smith',
-            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW',
+            OrganisationPolicyField: {
+              Organisation: {
+                OrganisationID: 'ZS1AFP7',
+                OrganisationName: 'Rollins Slater Associates'
+              },
+              OrgPolicyReference: 'Travis and Arnold Inc',
+              OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+            }
           }
         },
         {
@@ -522,7 +592,15 @@ describe('SearchResultComponent', () => {
           case_fields: {
             PersonFirstName: 'Janet',
             PersonLastName: 'Parker',
-            PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+            PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG',
+            OrganisationPolicyField: {
+              Organisation: {
+                OrganisationID: 'ZS1AFP7',
+                OrganisationName: 'Rollins Slater Associates'
+              },
+              OrgPolicyReference: 'Travis and Arnold Inc',
+              OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+            }
           }
         },
         {
@@ -537,7 +615,15 @@ describe('SearchResultComponent', () => {
           case_id: '0000000000000002',
           case_fields: {
             PersonFirstName: 'Bill',
-            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA',
+            OrganisationPolicyField: {
+              Organisation: {
+                OrganisationID: 'ZS1AFP7',
+                OrganisationName: 'Rollins Slater Associates'
+              },
+              OrgPolicyReference: 'Travis and Arnold Inc',
+              OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+            }
           }
         }
       ]
@@ -550,7 +636,15 @@ describe('SearchResultComponent', () => {
         case_id: '0000000000000002',
         case_fields: {
           PersonFirstName: 'Bill',
-          PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+          PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA',
+          OrganisationPolicyField: {
+            Organisation: {
+              OrganisationID: 'ZS1AFP7',
+              OrganisationName: 'Rollins Slater Associates'
+            },
+            OrgPolicyReference: 'Travis and Arnold Inc',
+            OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+          }
         }
       }
       component.changeSelection(aSelectedCase);
@@ -564,7 +658,15 @@ describe('SearchResultComponent', () => {
           case_fields: {
             PersonFirstName: 'Jason',
             PersonLastName: 'Smith',
-            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW'
+            PersonAddress: 'Blackheath, Granville Park, Lewisham, England, SE13 7DW',
+            OrganisationPolicyField: {
+              Organisation: {
+                OrganisationID: 'ZS1AFP7',
+                OrganisationName: 'Rollins Slater Associates'
+              },
+              OrgPolicyReference: 'Travis and Arnold Inc',
+              OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
+            }
           }
         },
         {
