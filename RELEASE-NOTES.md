@@ -1,4 +1,21 @@
 ## RELEASE NOTES
+### Version 2.64.20-consumer-sorting - August 06 2020
+**EUI-1731** - Sort Behaviour in Manage Cases - Task 3
+
+### Version 2.64.19-security-fix - July 31 2020
+**EUI-2115** - CaseListComponent - Dependency updates to fix security vulnerabilities
+
+### Version 2.64.14-security-fix - July 29 2020
+**EUI-2115** - CaseListComponent
+
+### Version 2.64.13-security-fix - July 29 2020
+**EUI-2115** - CaseListComponent
+
+### Version 2.64.12-case-sharing-prerelease - July 28 2020
+**EUI-2115** - CaseListComponent
+
+### Version 2.64.10-elastic-search-prerelease - July 23 2020
+**EUI-1753** - Elastic Search Endpoint
 
 ### Version 2.64.6-case-sharing-prerelease - June 30 2020
 **EUI-2185** - Reset case selection link shows for other jurisdictions eg: Probate. Fixed.

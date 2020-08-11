@@ -1,6 +1,7 @@
 export * from './activity';
 export * from './case-editor';
 export * from './case-header';
+export * from './case-list';
 export * from './case-viewer';
 export * from './case-timeline';
 export * from './create-case-filters';

@@ -195,7 +195,10 @@ describe('SearchResultComponent', () => {
       component.paginationMetadata = PAGINATION_METADATA;
       component.caseFilterFG = new FormGroup({});
       component.metadataFields = METADATA_FIELDS;
-      component.ngOnChanges({ resultView: new SimpleChange(null, RESULT_VIEW, true) });
+      component.ngOnChanges({
+        resultView: new SimpleChange(null, RESULT_VIEW, true),
+        consumerSortingEnabled: new SimpleChange(null, false, true)
+      });
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -388,13 +391,15 @@ describe('SearchResultComponent', () => {
       // Check unordered
       assertOrder(new Array(0, 1, 2, 3));
 
-      sortFirstNameLink.triggerEventHandler('click', null);
-      fixture.detectChanges();
-      assertOrder(new Array(2, 0, 1, 3));
+      fixture.whenStable().then(() => {
+        sortFirstNameLink.triggerEventHandler('click', null);
+        fixture.detectChanges();
+        assertOrder(new Array(2, 0, 1, 3));
 
-      sortFirstNameLink.triggerEventHandler('click', null);
-      fixture.detectChanges();
-      assertOrder(new Array(3, 1, 0, 2));
+        sortFirstNameLink.triggerEventHandler('click', null);
+        fixture.detectChanges();
+        assertOrder(new Array(3, 1, 0, 2));
+      });
     });
 
     function assertOrder(order: Array<number>) {
