@@ -140,7 +140,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public canBeShared(caseView: SearchResultViewItem): boolean {
-    return true;
+    return caseView.case_fields && caseView.case_fields.hasOwnProperty('OrganisationPolicyField');
   }
 
   public canAnyBeShared(): boolean {
