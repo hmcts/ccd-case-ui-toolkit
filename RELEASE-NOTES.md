@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.21-case-sharing-prerelease - August 11 2020
+**EUI-2186** - Disabled case share selection if no organisation policy
+
 ### Version 2.64.20-consumer-sorting - August 06 2020
 **EUI-1731** - Sort Behaviour in Manage Cases - Task 3
 
