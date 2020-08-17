@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.21-case-sharing-prerelease",
+  "version": "2.64.22-consumer-sorting-prerelease",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -174,7 +174,7 @@
     "minimatch": "^3.0.2",
     "minimist": "1.2.3",
     "npm-registry-fetch": "^4.0.5",
-    "serialize-javascript": "^2.1.1",
+    "serialize-javascript": "^3.1.0",
     "tree-kill": "1.2.2",
     "yargs-parser": "18.1.2"
   },

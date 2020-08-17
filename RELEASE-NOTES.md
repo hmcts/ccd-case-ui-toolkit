@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.22-consumer-sorting-prerelease - August 17 2020
+**EUI-1731** - Fix for sort behaviour - passing type
+
 ### Version 2.64.21-case-sharing-prerelease - August 11 2020
 **EUI-2186** - Disabled case share selection if no organisation policy
 
