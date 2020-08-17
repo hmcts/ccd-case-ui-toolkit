@@ -90,7 +90,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
   draftsCount: number;
 
-  consumerSortParameters: { column: string, order: SortOrder } = { column: null, order: null };
+  consumerSortParameters: { column: string, order: SortOrder, type: string } = { column: null, order: null, type: null };
 
   public selectedCases: SearchResultViewItem[] = [];
 
@@ -303,6 +303,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
                                             SortOrder.DESCENDING;
       }
       this.consumerSortParameters.column = column.case_field_id;
+      this.consumerSortParameters.type = column.case_field_type.id;
       this.sortHandler.emit(this.consumerSortParameters);
     } else {
       if (this.comparator(column) === undefined) {
