@@ -296,7 +296,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   sort(column: SearchResultViewColumn) {
     if (this.consumerSortingEnabled) {
       if (column.case_field_id !== this.consumerSortParameters.column) {
-        this.consumerSortParameters.order = SortOrder.ASCENDING;
+        this.consumerSortParameters.order = SortOrder.DESCENDING;
       } else {
         this.consumerSortParameters.order = this.consumerSortParameters.order === SortOrder.DESCENDING ?
                                             SortOrder.ASCENDING :
@@ -320,7 +320,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     let condition = false;
     if (this.consumerSortingEnabled) {
       const isColumn = column.case_field_id === this.consumerSortParameters.column;
-      const isDescending = this.consumerSortParameters.order === SortOrder.DESCENDING;
+      const isDescending = this.consumerSortParameters.order === SortOrder.ASCENDING;
       condition = !isColumn || (isColumn && isDescending);
     } else {
       condition = this.isSortAscending(column);
