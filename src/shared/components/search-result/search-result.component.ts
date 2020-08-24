@@ -303,7 +303,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
                                             SortOrder.DESCENDING;
       }
       this.consumerSortParameters.column = column.case_field_id;
-      this.consumerSortParameters.type = column.case_field_type.id;
+      this.consumerSortParameters.type = column.case_field_type.type;
       this.sortHandler.emit(this.consumerSortParameters);
     } else {
       if (this.comparator(column) === undefined) {
