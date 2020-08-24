@@ -320,8 +320,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     let condition = false;
     if (this.consumerSortingEnabled) {
       const isColumn = column.case_field_id === this.consumerSortParameters.column;
-      const isDescending = this.consumerSortParameters.order === SortOrder.ASCENDING;
-      condition = !isColumn || (isColumn && isDescending);
+      const isAscending = this.consumerSortParameters.order === SortOrder.ASCENDING;
+      condition = !isColumn || (isColumn && isAscending);
     } else {
       condition = this.isSortAscending(column);
     }
