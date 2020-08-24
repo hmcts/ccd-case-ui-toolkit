@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.24-case-sharing-prerelease - August 24 2020
+**EUI-2500** - type.type instead of type.id
+
 ### Version 2.64.22-consumer-sorting-prerelease - August 17 2020
 **EUI-1731** - Fix for sort behaviour - passing type
 
