@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.25-case-sharing-prerelease - August 27 2020
+**EUI-2532** - removed org-policy dependency when sharing a case
+
 ### Version 2.64.24-case-sharing-prerelease - August 24 2020
 **EUI-2500** - type.type instead of type.id
 
