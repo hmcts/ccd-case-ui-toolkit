@@ -4,6 +4,7 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { DatePipe, DashPipe } from '../../utils';
+import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 
 describe('EventLogDetails', () => {
 
@@ -79,7 +80,7 @@ describe('EventLogDetails', () => {
           DatePipe,
           DashPipe
         ],
-        providers: []
+        providers: [FormatTranslatorService]
       })
       .compileComponents();
 

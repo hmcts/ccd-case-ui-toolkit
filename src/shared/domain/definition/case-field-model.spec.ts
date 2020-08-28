@@ -52,5 +52,30 @@ describe('CaseField', () => {
     component.display_context = 'REAdOnlY';
     expect(component.isReadonly()).toBe(true);
   });
+  it ( 'should be able to extract display format from list of display context params ', () => {
+    component.display_context_parameter = 'foo, bar, #DATETIMEDISPLAY(wibble), thud '
+    expect(component.dateTimeDisplayFormat).toBe('wibble');
+  })
+  it ('should be able to extract display format from a single display context param', () => {
+    component.display_context_parameter = '#DATETIMEDISPLAY(DDMMYYHHMMSS)';
+    expect(component.dateTimeDisplayFormat).toBe('DDMMYYHHMMSS');
+  })
+  it ('should be able to extract the first param where there are more than one', () => {
+    component.display_context_parameter = 'fish, cheese, steak, #DATETIMEDISPLAY(GRAPES), bananas, #DATETIMEDISPLAY(CHOCOLATE)';
+    expect(component.dateTimeDisplayFormat).toBe('GRAPES');
+  })
+
+  it ('should be return null for null/undef/empty display context parameterm', () => {
+    component.display_context_parameter = null;
+    expect(component.dateTimeDisplayFormat).toBeNull();
+    component.display_context_parameter = undefined;
+    expect(component.dateTimeDisplayFormat).toBeNull();
+    component.display_context_parameter = '';
+    expect(component.dateTimeDisplayFormat).toBeNull();
+  })
+  it ('should handle empty brackets', () => {
+    component.display_context_parameter = '#DATETIMEDISPLAY()'
+    expect(component.dateTimeDisplayFormat).toBeNull();
+  })
 
 });

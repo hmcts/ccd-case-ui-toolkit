@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { DatePipe } from '../../utils';
 import createSpyObj = jasmine.createSpyObj;
+import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 
 describe('EventLogComponent', () => {
 
@@ -92,7 +93,7 @@ describe('EventLogComponent', () => {
             EventLogDetailsComponent,
             DatePipe
           ],
-          providers: []
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 
@@ -173,7 +174,7 @@ describe('EventLogComponent', () => {
             EventLogDetailsComponent,
             DatePipe
           ],
-          providers: []
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 

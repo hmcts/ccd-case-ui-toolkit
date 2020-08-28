@@ -1,4 +1,6 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Optional, Pipe, PipeTransform } from '@angular/core';
+import { formatDate } from '@angular/common';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 @Pipe({
   name: 'ccdDate'
@@ -12,6 +14,13 @@ export class DatePipe implements PipeTransform {
     ['Jan'], ['Feb'], ['Mar'], ['Apr'], ['May'], ['Jun'], ['Jul'], ['Aug'], ['Sep'], ['Oct'], ['Nov'], ['Dec'],
   ];
 
+  /**
+   * constructor to allow format translator to be injected
+   * @param formatTrans
+   */
+  constructor(private formatTrans: FormatTranslatorService) {
+  }
+
   transform(value: string, zone: string, format: string): string {
     let resultDate = null;
     let offsetDate = null;
@@ -24,18 +33,33 @@ export class DatePipe implements PipeTransform {
       } else {
         offsetDate = this.getDate(match);
       }
-      // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
-
-      resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
-      if (match[4] && match[5] && match[6] && format !== 'short') {
-        resultDate += ', ';
-        resultDate += this.getHour(offsetDate.getHours().toString()) + ':';
-        resultDate += this.pad(offsetDate.getMinutes()) + ':';
-        resultDate += this.pad(offsetDate.getSeconds()) + ' ';
-        resultDate += (this.toInt(offsetDate.getHours().toString()) >= 12) ? 'PM' : 'AM' ;
+      // 'short' format is meaningful to formatDate, but not the same meaning as in the unit tests
+      if (this.formatTrans && format && format !== 'short') {
+        // support for java style formatting strings for dates
+        format = this.translateDateFormat(format);
+        // we specify UTC because we've already done timezone offsetting if the zone === local
+        resultDate = formatDate(offsetDate, format, 'en-UK', null)
+      } else {
+        // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
+        resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
+        if (match[4] && match[5] && match[6] && format !== 'short') {
+          resultDate += ', ';
+          resultDate += this.getHour(offsetDate.getHours().toString()) + ':';
+          resultDate += this.pad(offsetDate.getMinutes()) + ':';
+          resultDate += this.pad(offsetDate.getSeconds()) + ' ';
+          resultDate += (this.toInt(offsetDate.getHours().toString()) >= 12) ? 'PM' : 'AM';
+        }
       }
     }
     return resultDate;
+  }
+
+  private translateDateFormat(format: string) {
+    if (this.formatTrans) {
+      return this.formatTrans.translate(format);
+    } else {
+      return format;
+    }
   }
 
   private getOffsetDate(date: Date): Date {

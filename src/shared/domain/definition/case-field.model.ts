@@ -58,6 +58,19 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
+  get dateTimeEntryFormat(): string {
+    // TODO not yet implemented
+    return null;
+  }
+  @Expose()
+  get dateTimeDisplayFormat(): string {
+    if (this.display_context_parameter) {
+      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
+    }
+    return null;
+  }
+
+  @Expose()
   public isReadonly() {
     return !_.isEmpty(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
@@ -78,5 +91,17 @@ export class CaseField implements Orderable {
     return this.isComplex()
       && this.field_type.id === 'CaseLink'
       && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
+  }
+  private extractBracketValue(fmt: string, paramName: string, leftBracket= '(', rightBracket= ')' ): string {
+      fmt.split(',')
+        .find(a => a.trim().startsWith(paramName));
+      if (fmt) {
+        let s = fmt.indexOf(leftBracket) + 1;
+        let e = fmt.indexOf(rightBracket, s);
+        if (e > s && s >= 0) {
+          return fmt.substr(s, (e - s));
+        }
+      }
+      return null;
   }
 }

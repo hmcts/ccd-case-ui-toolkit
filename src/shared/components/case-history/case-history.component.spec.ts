@@ -17,6 +17,7 @@ import { createCaseHistory } from '../../fixture';
 import { CaseNotifier } from '../case-editor';
 import { CaseHistoryService } from './services';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 
 describe('CaseHistoryComponent', () => {
 
@@ -118,6 +119,7 @@ describe('CaseHistoryComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
+          FormatTranslatorService,
           { provide: AlertService, useValue: alertService },
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: OrderService, useValue: orderService },
