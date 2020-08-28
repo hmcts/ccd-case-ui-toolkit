@@ -6,13 +6,14 @@ import { WizardPage } from '../../components/case-editor/domain';
 import { Predicate } from '../../domain/predicate.model';
 import { CaseView } from '../../domain/case-view';
 import { plainToClassFromExist } from 'class-transformer';
+import { FormatTranslatorService } from '../case-fields/format-translator.service';
 
 // @dynamic
 @Injectable()
 export class FieldsUtils {
 
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
-  private static readonly datePipe: DatePipe = new DatePipe();
+  private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
   public static readonly LABEL_SUFFIX = '-LABEL';
 
   public static convertToCaseField(obj: any): CaseField {
@@ -158,7 +159,10 @@ export class FieldsUtils {
 
   private static getDate(fieldValue) {
     try {
-      return FieldsUtils.datePipe.transform(fieldValue, null, 'dd-MM-yyyy');
+      // Format specified here wasn't previously working and lots of tests depend on it not working
+      // Now that formats work correctly many test would break - and this could affect services which may depend on
+      // the orginal behaviour of returning dates in "d MMM yyyy"
+      return FieldsUtils.datePipe.transform(fieldValue, null, 'd MMM yyyy');
     } catch (e) {
       return this.textForInvalidField('Date', fieldValue);
     }

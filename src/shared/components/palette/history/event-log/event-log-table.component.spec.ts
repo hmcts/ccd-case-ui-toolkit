@@ -7,6 +7,7 @@ import { CaseViewEvent } from '../../../../domain/case-view';
 import { DatePipe } from '../../utils';
 import createSpyObj = jasmine.createSpyObj;
 import * as moment from 'moment-timezone';
+import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 
 describe('EventLogTableComponent', () => {
 
@@ -72,7 +73,7 @@ describe('EventLogTableComponent', () => {
             EventLogTableComponent,
             DatePipe
           ],
-          providers: []
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 
@@ -191,7 +192,7 @@ describe('EventLogTableComponent', () => {
             EventLogTableComponent,
             DatePipe
           ],
-          providers: []
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 
