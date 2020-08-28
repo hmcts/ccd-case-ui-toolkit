@@ -566,7 +566,7 @@ describe('SearchResultComponent', () => {
       expect(component.allOnPageSelected()).toBeFalsy();
       component.selectAll();
       expect(component.allOnPageSelected()).toBeTruthy();
-      expect(component.selectedCases.length).toEqual(2);
+      expect(component.selectedCases.length).toEqual(4);
     });
 
     it('should be able to unselect all', () => {
