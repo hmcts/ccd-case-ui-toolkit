@@ -205,11 +205,18 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public allOnPageSelected(): boolean {
+    let canBeSharedCount = 0;
     for (let i = 0, l = this.resultView.results.length; i < l; i++) {
       let r = this.resultView.results[i];
+      if (this.canBeShared(r)) {
+        canBeSharedCount ++;
+      }
       if (!this.isSelected(r) && this.canBeShared(r)) {
         return false;
       }
+    }
+    if (canBeSharedCount === 0) {
+      return false;
     }
     return true;
   }
@@ -296,14 +303,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
   sort(column: SearchResultViewColumn) {
     if (this.consumerSortingEnabled) {
       if (column.case_field_id !== this.consumerSortParameters.column) {
-        this.consumerSortParameters.order = SortOrder.ASCENDING;
+        this.consumerSortParameters.order = SortOrder.DESCENDING;
       } else {
         this.consumerSortParameters.order = this.consumerSortParameters.order === SortOrder.DESCENDING ?
                                             SortOrder.ASCENDING :
                                             SortOrder.DESCENDING;
       }
       this.consumerSortParameters.column = column.case_field_id;
-      this.consumerSortParameters.type = column.case_field_type.id;
+      this.consumerSortParameters.type = column.case_field_type.type;
       this.sortHandler.emit(this.consumerSortParameters);
     } else {
       if (this.comparator(column) === undefined) {
@@ -320,8 +327,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     let condition = false;
     if (this.consumerSortingEnabled) {
       const isColumn = column.case_field_id === this.consumerSortParameters.column;
-      const isDescending = this.consumerSortParameters.order === SortOrder.DESCENDING;
-      condition = !isColumn || (isColumn && isDescending);
+      const isAscending = this.consumerSortParameters.order === SortOrder.ASCENDING;
+      condition = !isColumn || (isColumn && isAscending);
     } else {
       condition = this.isSortAscending(column);
     }
