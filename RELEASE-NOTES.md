@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.27-mv-upgrade-prerelease - September 2 2020
+**EUI-2370** - fixing previous release
+
 ### Version 2.64.26-mv-upgrade-prerelease - September 2 2020
 **EUI-2370** - passed case id into media viewer
 
