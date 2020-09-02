@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
 
 export class DateTimeFormatUtils {
   public static formatDateAtTime(date: Date, is24Hour: boolean): string {
@@ -16,7 +16,7 @@ export class DateTimeFormatUtils {
   templateUrl: './case-list.component.html',
   styleUrls: ['./case-list.component.scss']
 })
-export class CaseListComponent {
+export class CaseListComponent implements OnChanges {
 
   @Input() public classes = '';
 
@@ -40,6 +40,11 @@ export class CaseListComponent {
   public selectedCases: Object[] = [];
 
   constructor() { }
+
+  public ngOnChanges() {
+    this.selectedCases = [];
+    this.selection.emit(this.selectedCases);
+  }
 
   public formatDate(date: Date): string {
     return formatDate(date, 'dd/MM/yyyy', 'en-GB');
