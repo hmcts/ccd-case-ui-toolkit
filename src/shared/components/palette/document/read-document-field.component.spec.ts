@@ -11,7 +11,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { FormGroup } from '@angular/forms';
 import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import any = jasmine.any;
 
 describe('ReadDocumentFieldComponent', () => {
@@ -68,7 +68,8 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: AbstractAppConfig, useValue: mockAppConfig },
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
-            { provide: Router, useValue: router }
+            { provide: Router, useValue: router },
+            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}}
           ]
         })
         .compileComponents();
@@ -158,7 +159,8 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: AbstractAppConfig, useValue: mockAppConfig },
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
-            { provide: Router, useValue: router }
+            { provide: Router, useValue: router },
+            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}}
           ]
         })
         .compileComponents();
