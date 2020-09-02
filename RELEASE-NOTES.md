@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.28-case-list-component-reset-sel-cases - September 2 2020
+**EUI-2168** - reset selected cases on model change
+
 ### Version 2.64.27-mv-upgrade-prerelease - September 2 2020
 **EUI-2370** - fixing previous release
 
