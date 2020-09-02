@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.26-mv-upgrade-prerelease - September 2 2020
+**EUI-2370** - passed case id into media viewer
+
 ### Version 2.64.25-case-sharing-prerelease - August 27 2020
 **EUI-2532** - removed org-policy dependency when sharing a case
 
