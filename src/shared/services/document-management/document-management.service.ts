@@ -43,7 +43,7 @@ export class DocumentManagementService {
         document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
         document_filename: documentFieldValue.document_filename,
         content_type: this.getContentType(documentFieldValue),
-        annotation_api_url: this.appConfig.getAnnotationApiUrl(),
+        annotation_api_url: this.appConfig.getAnnotationApiUrl()
       };
     return JSON.stringify(mediaViewerInfo);
   }
