@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.29-case-list-selection - September 4 2020
+**EUI-2103** - case selection
+
 ### Version 2.64.28-case-list-component-reset-sel-cases - September 2 2020
 **EUI-2168** - reset selected cases on model change
 
