@@ -37,7 +37,7 @@ export class CaseListComponent {
 
   @Output() public selection = new EventEmitter<any[]>();
 
-  public selectedCases: Object[] = [];
+  @Input() public selectedCases: Object[] = [];
 
   constructor() { }
 
