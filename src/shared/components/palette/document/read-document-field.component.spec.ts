@@ -13,6 +13,8 @@ import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
 import { Router, ActivatedRoute } from '@angular/router';
 import any = jasmine.any;
+import { CasesService } from '../../case-editor';
+import { of } from 'rxjs';
 
 describe('ReadDocumentFieldComponent', () => {
 
@@ -45,6 +47,7 @@ describe('ReadDocumentFieldComponent', () => {
     let component: ReadDocumentFieldComponent;
     let de: DebugElement;
     let mockAppConfig: any;
+    let mockCasesService: any;
 
     beforeEach(() => {
       mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig',
@@ -56,6 +59,7 @@ describe('ReadDocumentFieldComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
+      mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
 
       TestBed
         .configureTestingModule({
@@ -69,11 +73,20 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}}
+            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}},
+            { provide: CasesService, useValue: mockCasesService }
           ]
         })
         .compileComponents();
 
+      mockCasesService.getCaseViewV2.and.returnValue(of({
+        case_id: 'dummy',
+        case_type: {
+          jurisdiction: {
+            id: 'd'
+          }
+        }
+      }));
       fixture = TestBed.createComponent(ReadDocumentFieldComponent);
       component = fixture.componentInstance;
 
@@ -138,6 +151,7 @@ describe('ReadDocumentFieldComponent', () => {
     let component: ReadDocumentFieldComponent;
     let de: DebugElement;
     let mockAppConfig: any;
+    let mockCasesService: any;
 
     beforeEach(() => {
       mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
@@ -147,6 +161,7 @@ describe('ReadDocumentFieldComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(new Promise(any));
+      mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
 
       TestBed
         .configureTestingModule({
@@ -160,10 +175,20 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}}
+            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}},
+            { provide: CasesService, useValue: mockCasesService }
           ]
         })
         .compileComponents();
+
+      mockCasesService.getCaseViewV2.and.returnValue(of({
+        case_id: 'dummy',
+        case_type: {
+          jurisdiction: {
+            id: 'd'
+          }
+        }
+      }));
 
       fixture = TestBed.createComponent(ReadDocumentFieldComponent);
       component = fixture.componentInstance;
@@ -176,8 +201,10 @@ describe('ReadDocumentFieldComponent', () => {
     });
 
     it('should register readonly case field value with form group', () => {
-      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
-      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+      mockCasesService.getCaseViewV2().subscribe(() => {
+        expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+        expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+      });
     });
 
   });
