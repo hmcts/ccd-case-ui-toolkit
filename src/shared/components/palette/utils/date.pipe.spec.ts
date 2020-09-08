@@ -124,6 +124,32 @@ describe('DatePipe', () => {
     expect(message).toBe('26 July 2017 19:09:05.000')
   })
 
+  /**
+   * GMT to BST (from 00:59:59 GMT going forward to 02:00:00 BST) on the last Sunday in March
+   */
+  it ('should handle GMT to BST transition', () => {
+    let endOfWinter = new Date(2020, 2, 29, 0, 59, 59)
+    let message = datePipe.transform (endOfWinter.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('29 March 2020 00:59:59.000')
+    // tick on 1 second
+    endOfWinter.setTime(endOfWinter.getTime() + 1000);
+    message = datePipe.transform (endOfWinter.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('29 March 2020 02:00:00.000')
+  })
+  /*
+   * BST to GMT (from 01:59:59 BST going back to 01:00:00 GMT) on the last Sunday in October
+   */
+  it ('should handle BST to GMT transition', () => {
+    let endOfSummer = new Date(2020, 9, 25, 1, 59, 59)
+    let message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('25 October 2020 00:59:59.000')
+    // tick on 1 second
+    endOfSummer.setTime(endOfSummer.getTime() + 1000);
+    message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('25 October 2020 01:00:00.000')
+    endOfSummer.setTime(endOfSummer.getTime() + (1000 * 60 * 60));
+    expect(message).toBe('25 October 2020 02:00:00.000')
+  })
   function getExpectedHour(hour): number {
     let expectedHour = hour + EXPECTED_OFFSET;
     if (expectedHour > 12) {

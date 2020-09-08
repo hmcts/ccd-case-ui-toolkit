@@ -1,4 +1,4 @@
-import { Optional, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
@@ -37,8 +37,7 @@ export class DatePipe implements PipeTransform {
       if (this.formatTrans && format && format !== 'short') {
         // support for java style formatting strings for dates
         format = this.translateDateFormat(format);
-        // we specify UTC because we've already done timezone offsetting if the zone === local
-        resultDate = formatDate(offsetDate, format, 'en-UK', null)
+        resultDate = formatDate(offsetDate, format, 'en-GB', null)
       } else {
         // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
         resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
