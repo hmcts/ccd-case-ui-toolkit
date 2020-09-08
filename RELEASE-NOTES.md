@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.30-cacheable-org-service - Sept 8 2020
+**EUI-2229** - cacheable organisation Service
+
 ### Version 2.64.29-case-list-selection - September 4 2020
 **EUI-2103** - case selection
 
