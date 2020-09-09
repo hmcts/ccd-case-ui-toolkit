@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, timer } from 'rxjs';
+import { Observable, timer, of } from 'rxjs';
 import { publishReplay, refCount, take, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 
@@ -80,7 +80,11 @@ export class OrganisationService {
             const cacheTimeOut = this.appconfig.getCacheTimeOut();
             this.organisations$ = this.http.get<Organisation[]>(url)
             .pipe(map((orgs) => OrganisationService.mapOrganisation(orgs)),
-            publishReplay(1), refCount(), take(1));
+            publishReplay(1), refCount(), take(1)).catch(e => {
+                console.log(e);
+                // Handle error and return blank Observable array
+                return of([]);
+            });
             timer(cacheTimeOut).subscribe(() => {
                 console.log('subscribe');
                 this.organisations$ = null;

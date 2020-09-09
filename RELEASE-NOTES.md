@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.32-org-service-handle-error
+**EUI-2086** - unhappy path
+
 ### Version 2.64.31-mv-upgrade-prerelease - September 9 2020
 **EUI-2370** - added case jurisdiction to media viewer controller
 
