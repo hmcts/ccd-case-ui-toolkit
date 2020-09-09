@@ -15,6 +15,7 @@ export * from './money-gbp';
 export * from './multi-select-list';
 export * from './number';
 export * from './order-summary';
+export * from './organisation';
 export * from './payment';
 export * from './phone-uk';
 export * from './text';

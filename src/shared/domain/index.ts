@@ -6,6 +6,7 @@ export * from './definition';
 export * from './document';
 export * from './http';
 export * from './order';
+export * from './organisation';
 export * from './profile';
 export * from './search';
 export * from './predicate.model';
