@@ -44,7 +44,8 @@ export class DocumentManagementService {
         document_filename: documentFieldValue.document_filename,
         content_type: this.getContentType(documentFieldValue),
         annotation_api_url: this.appConfig.getAnnotationApiUrl(),
-        case_id: documentFieldValue.id
+        case_id: documentFieldValue.id,
+        case_jurisdiction: documentFieldValue.jurisdiction
       };
     return JSON.stringify(mediaViewerInfo);
   }
