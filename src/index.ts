@@ -29,6 +29,7 @@ export { FieldTypeSanitiser,
          ErrorNotifierService,
          NavigationNotifierService,
          NavigationOrigin,
+         OrganisationService,
 } from './shared/services';
 export { DocumentData,
          AddressModel,
