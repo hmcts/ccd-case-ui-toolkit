@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
 
 export class DateTimeFormatUtils {
   public static formatDateAtTime(date: Date, is24Hour: boolean): string {
@@ -37,7 +37,7 @@ export class CaseListComponent {
 
   @Output() public selection = new EventEmitter<any[]>();
 
-  public selectedCases: Object[] = [];
+  @Input() public selectedCases: Object[] = [];
 
   constructor() { }
 
@@ -64,7 +64,7 @@ export class CaseListComponent {
     } else {
       this.cases.forEach(c => {
         if (!this.isSelected(c) && this.canBeShared(c)) {
-          this.selectedCases.push(c);
+          this.selectedCases = [... this.selectedCases, c];
         }
       });
     }
@@ -75,20 +75,20 @@ export class CaseListComponent {
     if (this.isSelected(c)) {
       this.selectedCases.forEach((s, i) => {
         if (c[this.tableConfig.idField] === s[this.tableConfig.idField]) {
-          this.selectedCases.splice(i, 1);
+          this.selectedCases = this.selectedCases.slice(0, i).concat(this.selectedCases.slice(i + 1));
         }
       });
     } else {
       if (this.canBeShared(c)) {
-        this.selectedCases.push(c);
+        this.selectedCases = [...this.selectedCases, c];
       }
     }
     this.selection.emit(this.selectedCases);
   }
 
   public isSelected(c: any): boolean {
-    for (let i = 0, l = this.selectedCases.length; i < l; i++) {
-      if (c[this.tableConfig.idField] === this.selectedCases[i][this.tableConfig.idField]) {
+    for (let index = 0, length = this.selectedCases.length; index < length; index++) {
+      if (c[this.tableConfig.idField] === this.selectedCases[index][this.tableConfig.idField]) {
         return true;
       }
     }
