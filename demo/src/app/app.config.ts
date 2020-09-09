@@ -25,7 +25,7 @@ export class AppConfig extends AbstractAppConfig {
     'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
     'prd_url': 'api/caseshare/orgs',
-    'timeout': 45000
+    'cache_time_out': 45000
   };
 
   constructor(private http: Http) {
@@ -132,6 +132,6 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCacheTimeOut(): number {
-    return this.config.timeout;
+    return this.config.cache_time_out;
   }
 }
