@@ -23,7 +23,9 @@ export class AppConfig extends AbstractAppConfig {
     'activity_max_request_per_batch': 25,
     'print_service_url': '/print',
     'remote_print_service_url': '/remote_print',
-    'pagination_page_size': 25
+    'pagination_page_size': 25,
+    'prd_url': 'api/caseshare/orgs',
+    'timeout': 45000
   };
 
   constructor(private http: Http) {
@@ -125,4 +127,11 @@ export class AppConfig extends AbstractAppConfig {
     return this.getCaseDataUrl() + `/internal/banners/`;
   }
 
+  public getPrdUrl(): string {
+    return this.config.prd_url;
+  }
+
+  public getCacheTimeOut(): number {
+    return this.config.timeout;
+  }
 }
