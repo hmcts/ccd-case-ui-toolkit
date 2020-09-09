@@ -147,7 +147,9 @@ describe('DatePipe', () => {
     endOfSummer.setTime(endOfSummer.getTime() + 1000);
     message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
     expect(message).toBe('25 October 2020 01:00:00.000')
+    // move an hour forward
     endOfSummer.setTime(endOfSummer.getTime() + (1000 * 60 * 60));
+    message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
     expect(message).toBe('25 October 2020 02:00:00.000')
   })
   function getExpectedHour(hour): number {
