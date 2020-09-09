@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { WindowService } from '../../../services/window';
@@ -12,9 +12,8 @@ const MEDIA_VIEWER_INFO = 'media-viewer-info';
   selector: 'ccd-read-document-field',
   templateUrl: './read-document-field.html'
 })
-export class ReadDocumentFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
+export class ReadDocumentFieldComponent extends AbstractFieldReadComponent implements OnDestroy {
 
-  caseId: string = '';
   caseViewSubscription: Subscription;
 
   constructor(
@@ -27,13 +26,10 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     super();
   }
 
-  ngOnInit() {
-    this.caseId = this.route.snapshot.params['cid'];
-  }
-
   showMediaViewer(): void {
+    const caseId = this.route.snapshot.params['cid'];
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
-    this.caseViewSubscription = this.casesService.getCaseViewV2(this.caseId).subscribe(caseView => {
+    this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
       if (this.caseField && this.caseField.value) {
         const mergedInfo = {
           ...this.caseField.value,

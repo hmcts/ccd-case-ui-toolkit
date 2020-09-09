@@ -13,7 +13,7 @@ import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
 import { Router, ActivatedRoute } from '@angular/router';
 import any = jasmine.any;
-import { CasesService } from '../../case-editor';
+import { CasesService } from '../../case-editor/services/cases.service';
 import { of } from 'rxjs';
 
 describe('ReadDocumentFieldComponent', () => {
@@ -79,14 +79,6 @@ describe('ReadDocumentFieldComponent', () => {
         })
         .compileComponents();
 
-      mockCasesService.getCaseViewV2.and.returnValue(of({
-        case_id: 'dummy',
-        case_type: {
-          jurisdiction: {
-            id: 'd'
-          }
-        }
-      }));
       fixture = TestBed.createComponent(ReadDocumentFieldComponent);
       component = fixture.componentInstance;
 
@@ -201,10 +193,8 @@ describe('ReadDocumentFieldComponent', () => {
     });
 
     it('should register readonly case field value with form group', () => {
-      mockCasesService.getCaseViewV2().subscribe(() => {
-        expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
-        expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
-      });
+      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
     });
 
   });
