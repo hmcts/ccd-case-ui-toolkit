@@ -22,6 +22,8 @@ export abstract class AbstractAppConfig {
   abstract getRemotePrintServiceUrl(): string;
   abstract getPaginationPageSize(): number;
   abstract getBannersUrl(): string;
+  abstract getPrdUrl(): string;
+  abstract getCacheTimeOut(): number;
 }
 
 export class CaseEditorConfig {
@@ -43,4 +45,6 @@ export class CaseEditorConfig {
   print_service_url: string;
   remote_print_service_url: string;
   pagination_page_size: number;
+  prd_url: string;
+  cache_time_out: number;
 }

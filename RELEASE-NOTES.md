@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 2.64.31-mv-upgrade-prerelease - September 9 2020
+**EUI-2370** - added case jurisdiction to media viewer controller
+
+### Version 2.64.30-cacheable-org-service - Sept 8 2020
+**EUI-2229** - cacheable organisation Service
+
 ### Version 2.64.29-case-list-selection - September 4 2020
 **EUI-2103** - case selection
 
