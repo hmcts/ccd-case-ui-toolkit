@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.33-internal-search-api-url-update
+**EUI-2575** - Update query param in Internal Search API URL from `usecase` to `use_case` (see RDM-8932)
+
 ### Version 2.64.32-org-service-handle-error
 **EUI-2086** - unhappy path
 
