@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.34-utc-local-date-fix
+**EUI-1844** - Changed UTC to Local date view in event log
+
 ### Version 2.64.33-internal-search-api-url-update
 **EUI-2575** - Update query param in Internal Search API URL from `usecase` to `use_case` (see RDM-8932)
 
