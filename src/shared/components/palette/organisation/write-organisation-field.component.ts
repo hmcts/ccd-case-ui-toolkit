@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WindowService } from '../../../services/window';
-import { OrganisationModel } from '../../../domain/organisation';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SimpleOrganisationModel } from '../../../domain/organisation/simple-organisation.model';
 import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { OrganisationService, OrganisationVm } from '../../../services/organisation';
 
 @Component({
   selector: 'ccd-write-organisation-field',
@@ -21,20 +20,21 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public organisationID: FormControl;
   public organisationName: FormControl;
 
-  public organisations: OrganisationModel[];
+  public organisations$: Observable<OrganisationVm[]>;
+  public organisations: OrganisationVm[];
 
   public simpleOrganisations: SimpleOrganisationModel[];
 
   public selectedOrg$: BehaviorSubject<SimpleOrganisationModel>;
 
-  constructor(private windowService: WindowService, private organisationConverter: OrganisationConverter) {
+  constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter) {
     super();
   }
 
   ngOnInit() {
     this.searchOrgText = new FormControl('');
-    const organisations = this.windowService.getLocalStorage('organisations');
-    this.organisations = JSON.parse(organisations);
+    this.organisations$ = this.organisationService.getActiveOrganisations();
+    this.organisations$.subscribe(organisations => this.organisations = organisations);
 
     this.organisationFormGroup = this.registerControl(new FormGroup({}));
 
@@ -68,7 +68,6 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   selectOrg(selectedOrg: SimpleOrganisationModel) {
     this.organisationID.setValue(selectedOrg.organisationIdentifier);
     this.organisationName.setValue(selectedOrg.name);
-    // this.selectedOrg = selectedOrg;
     this.selectedOrg$.next(selectedOrg);
     this.simpleOrganisations = [...[], selectedOrg];
     this.searchOrgText.setValue('');
@@ -77,7 +76,6 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   deSelectOrg(selectedOrg) {
     this.organisationID.setValue('');
     this.organisationName.setValue('');
-    // this.selectedOrg = null;
     this.selectedOrg$.next({'organisationIdentifier': '', 'name': '', 'address': ''})
     this.simpleOrganisations = [];
     this.searchOrgText.setValue('');

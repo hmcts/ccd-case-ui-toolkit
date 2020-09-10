@@ -74,6 +74,7 @@ export class OrganisationService {
 
     constructor(private readonly http: HttpClient,
                 private readonly appconfig: AbstractAppConfig) {}
+
     public getActiveOrganisations(): Observable<OrganisationVm[]> {
         if (!this.organisations$) {
             const url = this.appconfig.getPrdUrl();

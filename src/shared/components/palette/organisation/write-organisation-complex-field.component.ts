@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { SimpleOrganisationModel } from '../../../domain/organisation';
 import { BehaviorSubject } from 'rxjs';

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { OrganisationModel } from './organisation.model';
 import { SimpleOrganisationModel } from './simple-organisation.model';
+import { OrganisationVm } from '../../services/organisation';
 
 @Injectable()
 export class OrganisationConverter {
 
-  private static toSimpleAddress(organisationModel: OrganisationModel): string {
+  private static toSimpleAddress(organisationModel: OrganisationVm): string {
     let simpleAddress = '';
     if (organisationModel.addressLine1) { simpleAddress += organisationModel.addressLine1 + '<br>' }
     if (organisationModel.addressLine2) { simpleAddress += organisationModel.addressLine2 + '<br>' }
@@ -17,7 +17,7 @@ export class OrganisationConverter {
     return simpleAddress;
   }
 
-  public toSimpleOrganisationModel(organisationModel: OrganisationModel): SimpleOrganisationModel {
+  public toSimpleOrganisationModel(organisationModel: OrganisationVm): SimpleOrganisationModel {
     return {
       organisationIdentifier: organisationModel.organisationIdentifier,
       name: organisationModel.name,
