@@ -4,7 +4,10 @@
 .hmcts-banner {
   border: 0 solid;
   margin-bottom: 10px;
-  color: #bfc1c3;
+  color: #000000;
+  .warning-message {
+    font-weight: bold;
+  }
 }
 
 .govuk-hint {
