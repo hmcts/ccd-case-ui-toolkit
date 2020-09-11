@@ -141,16 +141,16 @@ describe('DatePipe', () => {
    */
   it ('should handle BST to GMT transition', () => {
     let endOfSummer = new Date(2020, 9, 25, 1, 59, 59)
-    let message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    let message = datePipe.transform (endOfSummer.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS')
     expect(message).toBe('25 October 2020 00:59:59.000')
     // tick on 1 second
     endOfSummer.setTime(endOfSummer.getTime() + 1000);
-    message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    message = datePipe.transform (endOfSummer.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS')
     expect(message).toBe('25 October 2020 01:00:00.000')
     // move an hour forward
     endOfSummer.setTime(endOfSummer.getTime() + (1000 * 60 * 60));
-    message = datePipe.transform (endOfSummer.toISOString(), null, 'dd MMMM yyyy HH:mm:ss.SSS')
-    expect(message).toBe('25 October 2020 02:00:00.000')
+    message = datePipe.transform (endOfSummer.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('25 October 2020 03:00:00.000')
   })
   function getExpectedHour(hour): number {
     let expectedHour = hour + EXPECTED_OFFSET;

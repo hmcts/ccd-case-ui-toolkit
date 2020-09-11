@@ -37,7 +37,7 @@ export class DatePipe implements PipeTransform {
       if (this.formatTrans && format && format !== 'short') {
         // support for java style formatting strings for dates
         format = this.translateDateFormat(format);
-        resultDate = formatDate(offsetDate, format, 'en-GB', null)
+        resultDate = formatDate(offsetDate, format, 'en-GB', zone)
       } else {
         // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
         resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
