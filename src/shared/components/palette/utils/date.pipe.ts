@@ -27,8 +27,8 @@ export class DatePipe implements PipeTransform {
 
     if (value) {
       let match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
+      let date = this.getDate(match);
       if (zone === 'local') {
-        let date = this.getDate(match);
         offsetDate = this.getOffsetDate(date);
       } else {
         offsetDate = this.getDate(match);
@@ -37,7 +37,7 @@ export class DatePipe implements PipeTransform {
       if (this.formatTrans && format && format !== 'short') {
         // support for java style formatting strings for dates
         format = this.translateDateFormat(format);
-        resultDate = formatDate(offsetDate, format, 'en-GB', zone)
+        resultDate = formatDate(date, format, 'en-GB', zone)
       } else {
         // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
         resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
