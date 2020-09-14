@@ -1,5 +1,5 @@
 <div class="form-group">
-  <fieldset *ngIf="organisations && organisations.length === 0" class="govuk-fieldset">
+  <fieldset *ngIf="(organisations$ | async)?.length === 0" class="govuk-fieldset">
     <div class="hmcts-banner">
       <svg class="hmcts-banner__icon" fill="currentColor" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25">
         <path d="M13.7,18.5h-2.4v-2.4h2.4V18.5z M12.5,13.7c-0.7,0-1.2-0.5-1.2-1.2V7.7c0-0.7,0.5-1.2,1.2-1.2s1.2,0.5,1.2,1.2v4.8
@@ -15,7 +15,7 @@
       </div>
     </div>
   </fieldset>
-  <fieldset *ngIf="organisations && organisations.length > 0" class="govuk-fieldset">
+  <fieldset *ngIf="(organisations$ | async)?.length > 0" class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h2 class="heading-h2">
         Search for an organisation
@@ -27,14 +27,14 @@
           You can only search for organisations already registered with MyHMCTS. For example, you can search by organisation name or address.
         </span>
       </label>
-      <input id="search-org-text" #searchOrg class="form-control" type="text" [formControl]="searchOrgTextFormControl" (keyup)="onSearchOrg(searchOrg.value)"/>
+      <input id="search-org-text" class="form-control" type="text" [formControl]="searchOrgTextFormControl" />
     </div>
     <div class="govuk-form-group">
       <label class="govuk-label" for="organisation-table">
         <h2 class="heading-h2">Organisation name and address</h2>
       </label>
       <hr class="govuk-section-break govuk-section-break--visible">
-      <div *ngIf="(selectedOrg$ | async).organisationIdentifier ===''">
+      <div *ngIf="(selectedOrg$ | async).organisationIdentifier ===''" [ngClass]="{'scroll-container ': (simpleOrganisations$ | async)?.length > 10}">
         <table id="organisation-table" *ngFor="let organisation of (simpleOrganisations$ | async)">
           <caption><h3 class="name-header">{{organisation.name}}</h3></caption>
           <tbody>
@@ -48,6 +48,11 @@
           </tr>
           </tbody>
         </table>
+        <div *ngIf="(simpleOrganisations$ | async)?.length === 0 && (searchOrgValue$ | async)?.length > 2">
+          <div class="no-result-message">
+            No results found.
+          </div>
+        </div>
       </div>
       <div *ngIf="(selectedOrg$ | async).organisationIdentifier">
         <table id="organisation-selected-table" *ngIf="(selectedOrg$ | async) as selectedOrg">

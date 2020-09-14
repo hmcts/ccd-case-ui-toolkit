@@ -1,10 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { OrganisationService, OrganisationVm } from '../../../services/organisation';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-write-organisation-field',
@@ -22,8 +22,8 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public organisationIDFormControl: FormControl;
   public organisationNameFormControl: FormControl;
 
+  public searchOrgValue$: Observable<string>;
   public organisations$: Observable<OrganisationVm[]>;
-  public organisations: OrganisationVm[];
 
   public simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
 
@@ -34,9 +34,12 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   ngOnInit() {
-    this.searchOrgTextFormControl = new FormControl('');
     this.organisations$ = this.organisationService.getActiveOrganisations();
-    this.organisations$.subscribe(organisations => this.organisations = organisations);
+
+    this.searchOrgTextFormControl = new FormControl('');
+    this.searchOrgValue$ = this.searchOrgTextFormControl.valueChanges;
+    this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
+
     this.organisationFormGroup = this.registerControl(new FormGroup({}));
     if (this.caseField.value && this.caseField.value.OrganisationID) {
       this.organisationIDFormControl = new FormControl(this.caseField.value.OrganisationID);
@@ -61,18 +64,25 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   onSearchOrg(orgSearchText) {
     if (orgSearchText && orgSearchText.length >= 2) {
       const lowerOrgSearchText = orgSearchText.toLowerCase();
-      this.simpleOrganisations$ = of(this.organisations.filter(organisation => {
-        if (organisation.postCode && organisation.postCode.toLowerCase().includes(lowerOrgSearchText)) {
-          return true;
-        }
-        // noinspection RedundantIfStatementJS
-        if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
-          return true;
-        }
-        return false;
-      })
-        .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
-        .slice(0, 10));
+      this.simpleOrganisations$ = this.organisations$.pipe(
+        switchMap(organisations => of(
+          organisations.filter(organisation => {
+          if (organisation.postCode && organisation.postCode.toLowerCase().includes(lowerOrgSearchText)) {
+            return true;
+          }
+          if (organisation.postCode && this.trimAll(organisation.postCode).toLowerCase().includes(lowerOrgSearchText)) {
+            return true;
+          }
+          // noinspection RedundantIfStatementJS
+          if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
+            return true;
+          }
+          return false;
+          })
+          .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
+          .slice(0, 100)
+          )
+        ));
     } else {
       this.simpleOrganisations$ = of([]);
     }
@@ -98,5 +108,9 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgTextFormControl.enable();
     this.caseField.value = {'OrganisationID': null, 'OrganisationName': null};
     this.organisationFormGroup.setValue(this.caseField.value);
+  }
+
+  public trimAll(oldText: string): string {
+    return oldText.replace(/\s+/g, '');
   }
 }

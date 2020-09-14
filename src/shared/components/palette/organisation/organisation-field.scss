@@ -52,6 +52,23 @@
   }
 }
 
-.complex-field-title{
+.complex-field-title {
   width: 300px;;
+}
+
+.label-width-small {
+  width: 100px;
+}
+
+.label-width-medium {
+  width: 150px;
+}
+
+.scroll-container {
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.no-result-message {
+  margin-top: 15px;
 }
