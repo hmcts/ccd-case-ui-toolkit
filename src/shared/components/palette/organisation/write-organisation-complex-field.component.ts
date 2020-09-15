@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { SimpleOrganisationModel } from '../../../domain/organisation';
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'ccd-write-organisation-complex-field',
@@ -11,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 export class WriteOrganisationComplexFieldComponent extends AbstractFormFieldComponent {
 
   @Input()
-  public selectedOrg$: BehaviorSubject<SimpleOrganisationModel>;
+  public selectedOrg$: Observable<SimpleOrganisationModel>;
 
   constructor() {
     super();

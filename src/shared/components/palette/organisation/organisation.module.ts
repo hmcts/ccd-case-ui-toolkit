@@ -12,7 +12,7 @@ import { WriteOrganisationComplexFieldComponent } from './write-organisation-com
 import { BaseFieldModule } from '../base-field/base-field.module';
 import { ReadOrganisationFieldComponent } from './read-organisation-field.component';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
-import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
+import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
 
 @NgModule({

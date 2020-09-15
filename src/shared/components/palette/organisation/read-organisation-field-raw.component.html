@@ -5,10 +5,6 @@
         <td>
           <table class="complex-field-table" *ngIf="(selectedOrg$ | async) as selectedOrg">
             <tr class="complex-panel-compound-field">
-              <td class="label-width-small"><span class="text-16">ID:</span></td>
-              <td><span class="text-16">{{selectedOrg.organisationIdentifier}}</span></td>
-            </tr>
-            <tr class="complex-panel-compound-field">
               <td class="label-width-small"><span class="text-16">Name:</span></td>
               <td><span class="text-16">{{selectedOrg.name}}</span></td>
             </tr>

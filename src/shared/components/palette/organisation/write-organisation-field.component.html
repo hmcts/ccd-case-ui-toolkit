@@ -1,4 +1,4 @@
-<div class="form-group">
+<div class="form-group" [formGroup]="organisationFormGroup">
   <fieldset *ngIf="(organisations$ | async)?.length === 0" class="govuk-fieldset">
     <div class="hmcts-banner">
       <svg class="hmcts-banner__icon" fill="currentColor" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25">
@@ -72,8 +72,7 @@
     </div>
     <ccd-write-organisation-complex-field [caseField]="caseField"
                                           [formGroup]="formGroup"
-                                          [selectedOrg$]="selectedOrg$"
-    >
+                                          [selectedOrg$]="selectedOrg$">
     </ccd-write-organisation-complex-field>
     <details id="find-organisation-help" class="govuk-details" data-module="govuk-details">
       <summary class="govuk-details__summary">

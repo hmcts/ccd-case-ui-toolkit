@@ -27,8 +27,11 @@ export class ReadOrganisationFieldRawComponent extends AbstractFieldReadComponen
     if (this.caseField.value && this.caseField.value.OrganisationID) {
       this.organisations$ = this.organisationService.getActiveOrganisations();
       this.selectedOrg$ = this.organisations$.pipe(
-        switchMap((organisations: OrganisationVm[]) => of(this.organisationConverter.toSimpleOrganisationModel(
-          organisations.find(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)))
+        switchMap((organisations: OrganisationVm[]) => of(
+            this.organisationConverter.toSimpleOrganisationModel(
+              organisations.find(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)
+            )
+          )
         )
       );
     }

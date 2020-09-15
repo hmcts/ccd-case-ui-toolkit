@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
 import { MarkdownModule } from '../../markdown';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConditionalShowModule } from '../../../directives/conditional-show';
@@ -13,10 +12,11 @@ import { MockComponent } from 'ng2-mock-component';
 import { OrganisationService } from '../../../services/organisation';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { of } from 'rxjs';
+import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
 
-describe('ReadOrganisationFieldTableComponent', () => {
-  let component: ReadOrganisationFieldTableComponent;
-  let fixture: ComponentFixture<ReadOrganisationFieldTableComponent>;
+describe('ReadOrganisationFieldRawComponent', () => {
+  let component: ReadOrganisationFieldRawComponent;
+  let fixture: ComponentFixture<ReadOrganisationFieldRawComponent>;
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
@@ -106,7 +106,7 @@ describe('ReadOrganisationFieldTableComponent', () => {
         PaletteUtilsModule
       ],
       declarations: [
-        ReadOrganisationFieldTableComponent,
+        ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
         FieldReadComponent
       ],
@@ -120,7 +120,7 @@ describe('ReadOrganisationFieldTableComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReadOrganisationFieldTableComponent);
+    fixture = TestBed.createComponent(ReadOrganisationFieldRawComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
     component.caseFields = [CASE_FIELD];

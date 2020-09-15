@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
@@ -13,20 +13,17 @@ import { map, switchMap } from 'rxjs/operators';
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  private EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {'organisationIdentifier': '', 'name': '', 'address': ''};
+  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {'organisationIdentifier': '', 'name': '', 'address': ''};
+  private static readonly MAX_RESULT_COUNT = 100;
 
-  @Input()
   public organisationFormGroup: FormGroup;
-
   public searchOrgTextFormControl: FormControl;
   public organisationIDFormControl: FormControl;
   public organisationNameFormControl: FormControl;
 
-  public searchOrgValue$: Observable<string>;
   public organisations$: Observable<OrganisationVm[]>;
-
+  public searchOrgValue$: Observable<string>;
   public simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
-
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
   constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter) {
@@ -41,7 +38,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
     this.organisationFormGroup = this.registerControl(new FormGroup({}));
-    if (this.caseField.value && this.caseField.value.OrganisationID) {
+    if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
       this.organisationIDFormControl = new FormControl(this.caseField.value.OrganisationID);
       this.organisationFormGroup.addControl('OrganisationID', this.organisationIDFormControl);
       this.organisationNameFormControl = new FormControl(this.caseField.value.OrganisationName);
@@ -57,38 +54,54 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       this.organisationFormGroup.addControl('OrganisationID', this.organisationIDFormControl);
       this.organisationNameFormControl = new FormControl(null);
       this.organisationFormGroup.addControl('OrganisationName', this.organisationNameFormControl);
-      this.selectedOrg$ = of(this.EMPTY_SIMPLE_ORG);
+      this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
     }
   }
 
-  onSearchOrg(orgSearchText) {
+  public onSearchOrg(orgSearchText) {
     if (orgSearchText && orgSearchText.length >= 2) {
       const lowerOrgSearchText = orgSearchText.toLowerCase();
       this.simpleOrganisations$ = this.organisations$.pipe(
         switchMap(organisations => of(
-          organisations.filter(organisation => {
-          if (organisation.postCode && organisation.postCode.toLowerCase().includes(lowerOrgSearchText)) {
-            return true;
-          }
-          if (organisation.postCode && this.trimAll(organisation.postCode).toLowerCase().includes(lowerOrgSearchText)) {
-            return true;
-          }
-          // noinspection RedundantIfStatementJS
-          if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
-            return true;
-          }
-          return false;
-          })
-          .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
-          .slice(0, 100)
+          this.searchOrg(organisations, lowerOrgSearchText)
           )
-        ));
+        )
+      );
     } else {
       this.simpleOrganisations$ = of([]);
     }
   }
 
-  selectOrg(selectedOrg: SimpleOrganisationModel) {
+  public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
+    return organisations.filter(organisation => {
+        return this.searchCriteria(organisation, lowerOrgSearchText);
+      })
+      .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
+      .slice(0, WriteOrganisationFieldComponent.MAX_RESULT_COUNT);
+  }
+
+  private searchCriteria(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
+    if (organisation.postCode && organisation.postCode.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    if (organisation.postCode && this.trimAll(organisation.postCode).toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    if (organisation.postCode && organisation.postCode.toLowerCase().includes(this.trimAll(lowerOrgSearchText))) {
+      return true;
+    }
+    // noinspection RedundantIfStatementJS
+    if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    return false;
+  }
+
+  public trimAll(oldText: string): string {
+    return oldText.replace(/\s+/g, '');
+  }
+
+  public selectOrg(selectedOrg: SimpleOrganisationModel) {
     this.organisationIDFormControl.setValue(selectedOrg.organisationIdentifier);
     this.organisationNameFormControl.setValue(selectedOrg.name);
     this.selectedOrg$ = of(selectedOrg);
@@ -99,10 +112,10 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
-  deSelectOrg(selectedOrg) {
+  public deSelectOrg(selectedOrg) {
     this.organisationIDFormControl.reset();
     this.organisationNameFormControl.reset();
-    this.selectedOrg$ = of(this.EMPTY_SIMPLE_ORG);
+    this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
     this.simpleOrganisations$ = of([]);
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.enable();
@@ -110,7 +123,4 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
-  public trimAll(oldText: string): string {
-    return oldText.replace(/\s+/g, '');
-  }
 }

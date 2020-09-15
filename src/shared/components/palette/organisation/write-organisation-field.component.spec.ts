@@ -4,9 +4,10 @@ import { WriteOrganisationFieldComponent } from './write-organisation-field.comp
 import { MarkdownModule } from '../../markdown';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationService } from '../../../services/organisation';
 import { of } from 'rxjs';
+import { CaseField } from '../../../domain/definition';
 
 describe('WrieteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
@@ -19,6 +20,49 @@ describe('WrieteOrganisationFieldComponent', () => {
     FORM_GROUP.addControl('OrganisationName', control);
     return control;
   };
+
+  const ORGANISATIONS = [{
+    organisationIdentifier: 'O111111',
+    name: 'Woodford solicitor',
+    addressLine1: '12',
+    addressLine2: 'Nithdale Role',
+    addressLine3: '',
+    townCity: 'Liverpool',
+    county: 'Merseyside',
+    country: 'UK',
+    postCode: 'L15 5AX'
+  }, {
+    organisationIdentifier: 'O222222',
+    name: 'Broker solicitor',
+    addressLine1: '33',
+    addressLine2: 'The square',
+    addressLine3: '',
+    townCity: 'Swindon',
+    county: 'Wiltshire',
+    country: 'UK',
+    postCode: 'SN1 3EB'
+  }, {
+    organisationIdentifier: 'O333333',
+    name: 'The Ethical solicitor',
+    addressLine1: 'Davidson House',
+    addressLine2: '33',
+    addressLine3: 'The square',
+    townCity: 'Reading',
+    county: 'Berkshire',
+    country: 'UK',
+    postCode: 'RG11EB'
+  }, {
+      organisationIdentifier: 'O444444',
+      name: 'The SN1 solicitor',
+      addressLine1: 'Davidson House',
+      addressLine2: '44',
+      addressLine3: 'The square',
+      townCity: 'Reading',
+      county: 'Berkshire',
+      country: 'UK',
+      postCode: 'RG11EX'
+  }];
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -42,11 +86,125 @@ describe('WrieteOrganisationFieldComponent', () => {
     component = fixture.componentInstance;
     component.registerControl = REGISTER_CONTROL;
     mockOrganisationService.getActiveOrganisations.and.returnValue(of([]));
+    component.organisations$ = of(ORGANISATIONS);
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    component.organisations = [];
+    component.organisations$ = of([]);
     expect(component).toBeTruthy();
+  });
+
+  it('should pre-select organisation', () => {
+    component.caseField = new CaseField();
+    component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    component.selectedOrg$.toPromise().then(selectedOrg => {
+      expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>')
+    });
+  });
+
+  it('should not search org if enter characters less than 2', () => {
+    component.onSearchOrg('a');
+    component.simpleOrganisations$.toPromise().then(orgs => {
+      expect(orgs.length).toEqual(0);
+    });
+  });
+
+  it('should search org if enter characters equal and greater than 2', () => {
+    component.organisations$ = of(ORGANISATIONS);
+    component.onSearchOrg('SN');
+    component.simpleOrganisations$.toPromise().then(orgs => {
+      expect(orgs.length).toEqual(2);
+    });
+  });
+
+  it('should replace space', () => {
+    const postCode = component.trimAll('L15 5AA');
+    expect(postCode).toBeTruthy('L155AA');
+  });
+
+  it('should search organisation with post code', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'l15 5ax');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O111111');
+    expect(searchedOrg[0].name).toEqual('Woodford solicitor');
+    expect(searchedOrg[0].address).toEqual('12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>');
+  });
+
+  it('should search organisation using post code without space', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'l155ax');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O111111');
+    expect(searchedOrg[0].name).toEqual('Woodford solicitor');
+    expect(searchedOrg[0].address).toEqual('12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>');
+  });
+
+  it('should search organisation using post code with/without space', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'rg1 1eb');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O333333');
+    expect(searchedOrg[0].name).toEqual('The Ethical solicitor');
+    expect(searchedOrg[0].address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
+  });
+
+  it('should search organisation using post code and org name', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'sn1');
+    expect(searchedOrg.length).toEqual(2);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
+    expect(searchedOrg[0].name).toEqual('Broker solicitor');
+    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+    expect(searchedOrg[1].organisationIdentifier).toEqual('O444444');
+    expect(searchedOrg[1].name).toEqual('The SN1 solicitor');
+    expect(searchedOrg[1].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
+  });
+
+  it('should search organisation using org name', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'broker');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
+    expect(searchedOrg[0].name).toEqual('Broker solicitor');
+    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+  });
+
+  it('should return organisation if nothing match', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'atos');
+    expect(searchedOrg.length).toEqual(0);
+  });
+
+  it('should select organisation', () => {
+    component.organisationIDFormControl = new FormControl(null);
+    component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
+    component.organisationNameFormControl = new FormControl(null);
+    component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
+    component.caseField = new CaseField();
+    const selectedOrg = {
+      organisationIdentifier: 'O111111',
+      name: 'Woodford solicitor',
+      address: '12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>'
+    }
+    component.selectOrg(selectedOrg);
+    expect(component.searchOrgTextFormControl.value).toEqual('');
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    expect(component.caseField.value).toEqual({'OrganisationID': 'O111111', 'OrganisationName': 'Woodford solicitor'});
+  });
+
+  it('should deselect organisation', () => {
+    component.organisationIDFormControl = new FormControl(null);
+    component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
+    component.organisationNameFormControl = new FormControl(null);
+    component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
+    component.caseField = new CaseField();
+    const selectedOrg = {
+      organisationIdentifier: 'O111111',
+      name: 'Woodford solicitor',
+      address: '12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>'
+    }
+    component.deSelectOrg(selectedOrg);
+    expect(component.searchOrgTextFormControl.value).toEqual('');
+    expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
+    expect(component.caseField.value).toEqual({'OrganisationID': null, 'OrganisationName': null});
   });
 });
