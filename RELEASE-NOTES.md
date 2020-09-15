@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 2.64.35-organisation-complex-field-type
+**EUI-2086** - Search organisation
+**EUI-2087** - Select organisation
+**EUI-2089** - Save organisation
+
 ### Version 2.64.34-utc-local-date-fix
 **EUI-1844** - Changed UTC to Local date view in event log
 
