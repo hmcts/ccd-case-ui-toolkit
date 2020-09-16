@@ -43,7 +43,7 @@
               <ccd-markdown [content]="organisation.address"></ccd-markdown>
             </td>
             <td class="td-select">
-              <a *ngIf="(selectedOrg$ | async).organisationIdentifier === ''" href="javascript:void(0);" (click)="selectOrg(organisation)">Select</a>
+              <a *ngIf="(selectedOrg$ | async).organisationIdentifier === ''" href="javascript:void(0);" (click)="selectOrg(organisation)" title="Select the organisation {{organisation.name}}">Select</a>
             </td>
           </tr>
           </tbody>
@@ -63,7 +63,7 @@
               <ccd-markdown [content]="selectedOrg.address"></ccd-markdown>
             </td>
             <td class="td-select">
-              <a href="javascript:void(0);" (click)="deSelectOrg(selectedOrg)">Clear</a>
+              <a href="javascript:void(0);" (click)="deSelectOrg(selectedOrg)" title="Clear organisation selection for {{selectedOrg.name}}">Clear</a>
             </td>
           </tr>
           </tbody>
