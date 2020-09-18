@@ -74,7 +74,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
     return organisations.filter(organisation => {
-        return this.searchCriteria(organisation, lowerOrgSearchText);
+        return this.searchCriteria(organisation, lowerOrgSearchText) || this.searchWithSpace(organisation, lowerOrgSearchText);
       })
       .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
       .slice(0, WriteOrganisationFieldComponent.MAX_RESULT_COUNT);
@@ -95,6 +95,15 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       return true;
     }
     return false;
+  }
+
+  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string) {
+    const searchTextArray: string[] = lowerOrgSearchText.split(/\s+/g);
+    for (const singleSearchText of searchTextArray) {
+      if (singleSearchText && this.searchCriteria(organisation, singleSearchText)) {
+        return true;
+      }
+    }
   }
 
   public trimAll(oldText: string): string {

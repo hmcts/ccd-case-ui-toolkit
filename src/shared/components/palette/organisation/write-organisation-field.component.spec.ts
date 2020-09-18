@@ -144,10 +144,13 @@ describe('WrieteOrganisationFieldComponent', () => {
 
   it('should search organisation using post code with/without space', () => {
     const searchedOrg = component.searchOrg(ORGANISATIONS, 'rg1 1eb');
-    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg.length).toEqual(2);
     expect(searchedOrg[0].organisationIdentifier).toEqual('O333333');
     expect(searchedOrg[0].name).toEqual('The Ethical solicitor');
     expect(searchedOrg[0].address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
+    expect(searchedOrg[1].organisationIdentifier).toEqual('O444444');
+    expect(searchedOrg[1].name).toEqual('The SN1 solicitor');
+    expect(searchedOrg[1].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
   });
 
   it('should search organisation using post code and org name', () => {
@@ -167,6 +170,102 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
     expect(searchedOrg[0].name).toEqual('Broker solicitor');
     expect(searchedOrg[0].address).toEqual('33<br>The square<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+  });
+
+  it('should search organisation using both org name and postcode', () => {
+    const SIMILAR_ORGANISATION = [{
+        organisationIdentifier: 'O555555',
+        name: 'Smith LLP',
+        addressLine1: 'Davidson House',
+        addressLine2: '55',
+        addressLine3: 'The square',
+        townCity: 'Reading',
+        county: 'Berkshire',
+        country: 'UK',
+        postCode: 'RG11EY'
+    }, {
+      organisationIdentifier: 'O666666',
+      name: 'KMG solicitor',
+      addressLine1: '69',
+      addressLine2: 'Bay Crescent',
+      addressLine3: '',
+      townCity: 'Liverpool',
+      county: 'Merseyside',
+      country: 'UK',
+      postCode: 'LA1 4RA'
+    }];
+    const ORGANISATION_FOR_SEARCH = [...ORGANISATIONS, ...SIMILAR_ORGANISATION];
+    const searchedOrg = component.searchOrg(ORGANISATION_FOR_SEARCH, 'smith la1');
+    expect(searchedOrg.length).toEqual(2);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O555555');
+    expect(searchedOrg[0].name).toEqual('Smith LLP');
+    expect(searchedOrg[0].address).toEqual('Davidson House<br>55<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EY<br>');
+    expect(searchedOrg[1].organisationIdentifier).toEqual('O666666');
+    expect(searchedOrg[1].name).toEqual('KMG solicitor');
+    expect(searchedOrg[1].address).toEqual('69<br>Bay Crescent<br>Liverpool<br>Merseyside<br>UK<br>LA1 4RA<br>');
+  });
+
+  it('should search organisation using both org name and postcode split with n space', () => {
+    const SIMILAR_ORGANISATION = [{
+      organisationIdentifier: 'O555555',
+      name: 'Smith LLP',
+      addressLine1: 'Davidson House',
+      addressLine2: '55',
+      addressLine3: 'The square',
+      townCity: 'Reading',
+      county: 'Berkshire',
+      country: 'UK',
+      postCode: 'RG11EY'
+    }, {
+      organisationIdentifier: 'O666666',
+      name: 'KMG solicitor',
+      addressLine1: '69',
+      addressLine2: 'Bay Crescent',
+      addressLine3: '',
+      townCity: 'Liverpool',
+      county: 'Merseyside',
+      country: 'UK',
+      postCode: 'LA1 4RA'
+    }];
+    const ORGANISATION_FOR_SEARCH = [...ORGANISATIONS, ...SIMILAR_ORGANISATION];
+    const searchedOrg = component.searchOrg(ORGANISATION_FOR_SEARCH, 'smith               la1');
+    expect(searchedOrg.length).toEqual(2);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O555555');
+    expect(searchedOrg[0].name).toEqual('Smith LLP');
+    expect(searchedOrg[0].address).toEqual('Davidson House<br>55<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EY<br>');
+    expect(searchedOrg[1].organisationIdentifier).toEqual('O666666');
+    expect(searchedOrg[1].name).toEqual('KMG solicitor');
+    expect(searchedOrg[1].address).toEqual('69<br>Bay Crescent<br>Liverpool<br>Merseyside<br>UK<br>LA1 4RA<br>');
+  });
+
+  it('should search organisation if search text is end with space', () => {
+    const SIMILAR_ORGANISATION = [{
+      organisationIdentifier: 'O555555',
+      name: 'Smith LLP',
+      addressLine1: 'Davidson House',
+      addressLine2: '55',
+      addressLine3: 'The square',
+      townCity: 'Reading',
+      county: 'Berkshire',
+      country: 'UK',
+      postCode: 'RG11EY'
+    }, {
+      organisationIdentifier: 'O666666',
+      name: 'KMG solicitor',
+      addressLine1: '69',
+      addressLine2: 'Bay Crescent',
+      addressLine3: '',
+      townCity: 'Liverpool',
+      county: 'Merseyside',
+      country: 'UK',
+      postCode: 'LA1 4RA'
+    }];
+    const ORGANISATION_FOR_SEARCH = [...ORGANISATIONS, ...SIMILAR_ORGANISATION];
+    const searchedOrg = component.searchOrg(ORGANISATION_FOR_SEARCH, 'smith ');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O555555');
+    expect(searchedOrg[0].name).toEqual('Smith LLP');
+    expect(searchedOrg[0].address).toEqual('Davidson House<br>55<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EY<br>');
   });
 
   it('should return organisation if nothing match', () => {
