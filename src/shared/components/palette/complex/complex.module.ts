@@ -38,7 +38,8 @@ import { CaseLinkModule } from '../case-link/case-link.module';
     WriteComplexFieldComponent,
   ],
   exports: [
-    WriteComplexFieldComponent
+    WriteComplexFieldComponent,
+    FieldsFilterPipe
   ]
 })
 export class ComplexModule {}
