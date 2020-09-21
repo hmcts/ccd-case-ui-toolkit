@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.35-organisation-complex-field-type",
+  "version": "2.64.36-hide-generic-callback-error-message",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
