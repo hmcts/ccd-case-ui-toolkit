@@ -6,13 +6,24 @@
   #{{ getCaseId() | ccdCaseReference}}
 </h2>
 
-<div *ngIf="error" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+<!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
+<div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+  <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
+    Something went wrong
+  </h1>
+  <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
+    <p>We're working to fix the problem. Try again shortly.</p>
+    <p><a href="get-help" target="_blank">Contact us</a> if you're still having problems.</p>
+  </div>
+</div>
+<!-- Event error heading and error message to be displayed if there are specific error details -->
+<div *ngIf="error && error.details" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading">
     The event could not be created
   </h3>
   <p>{{error.message}}</p>
   <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-    <li *ngFor="let fieldError of error.details.field_errors" class=" ccd-error-summary-li">{{fieldError.message}}</li>
+    <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message}}</li>
   </ul>
 </div>
 <ccd-callback-errors

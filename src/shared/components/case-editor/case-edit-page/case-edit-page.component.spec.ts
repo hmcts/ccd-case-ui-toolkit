@@ -20,14 +20,29 @@ import { CaseFieldService } from '../../../services/case-fields/case-field.servi
 import { Draft } from '../../../domain/draft.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { HttpError } from '../../../domain/http/http-error.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
 
   let de: DebugElement;
   const $SELECT_SUBMIT_BUTTON = By.css('button[type=submit]');
+  const $SELECT_ERROR_SUMMARY = By.css('.error-summary');
+  const $SELECT_ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
+  const $SELECT_ERROR_MESSAGE_GENERIC = By.css('.govuk-error-summary__body>p:first-child');
+  const $SELECT_ERROR_HEADING_SPECIFIC = By.css('.error-summary>h3:first-child');
+  const $SELECT_ERROR_MESSAGE_SPECIFIC = By.css('.error-summary>p:nth-child(2)');
+  const $SELECT_CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
+  const $SELECT_FIRST_FIELD_ERROR = By.css('li:first-child');
+  const $SELECT_SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
+
+  const ERROR_HEADING_GENERIC = 'Something went wrong';
+  const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
+  const ERROR_HEADING_SPECIFIC = 'The event could not be created'
+  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors'
 
   let comp: CaseEditPageComponent;
   let fixture: ComponentFixture<CaseEditPageComponent>;
@@ -575,6 +590,95 @@ describe('CaseEditPageComponent', () => {
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
+    });
+
+    it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
+      comp.error = {
+        status: 200,
+        callbackErrors: null,
+        callbackWarnings: null,
+        details: null
+      } as HttpError;
+
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => {
+        const error = de.query($SELECT_ERROR_SUMMARY);
+        expect(error).toBeTruthy();
+
+        const errorHeading = error.query($SELECT_ERROR_HEADING_GENERIC);
+        expect(text(errorHeading)).toBe(ERROR_HEADING_GENERIC);
+
+        const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
+        expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+      });
+    });
+
+    it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
+      comp.error = {
+        status: 422,
+        callbackErrors: null,
+        callbackWarnings: null,
+        details: {
+          field_errors: [
+            {
+              message: 'First field error'
+            },
+            {
+              message: 'Second field error'
+            }
+          ]
+        },
+        message: 'There are field validation errors'
+      } as HttpError;
+
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => {
+        const error = de.query($SELECT_ERROR_SUMMARY);
+        expect(error).toBeTruthy();
+
+        const errorHeading = error.query($SELECT_ERROR_HEADING_SPECIFIC);
+        expect(text(errorHeading)).toBe(ERROR_HEADING_SPECIFIC);
+
+        const errorMessage = error.query($SELECT_ERROR_MESSAGE_SPECIFIC);
+        expect(text(errorMessage)).toBe(ERROR_MESSAGE_SPECIFIC);
+
+        const fieldErrorList = de.query($SELECT_CALLBACK_DATA_FIELD_ERROR_LIST);
+        expect(fieldErrorList).toBeTruthy();
+        const firstFieldError = fieldErrorList.query($SELECT_FIRST_FIELD_ERROR);
+        expect(text(firstFieldError)).toBe('First field error');
+        const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
+        expect(text(secondFieldError)).toBe('Second field error');
+      });
+    });
+
+    it('should not display generic error heading and message when there are specific callback errors', () => {
+      comp.error = {
+        status: 422,
+        callbackErrors: ['First error', 'Second error'],
+        callbackWarnings: null,
+        details: null
+      } as HttpError;
+
+      fixture.detectChanges();
+
+      const error = de.query($SELECT_ERROR_SUMMARY);
+      expect(error).toBeFalsy();
+    });
+
+    it('should not display generic error heading and message when there are specific callback warnings', () => {
+      comp.error = {
+        status: 422,
+        callbackErrors: null,
+        callbackWarnings: ['First warning', 'Second warning'],
+        details: null
+      } as HttpError;
+
+      fixture.detectChanges();
+
+      const error = de.query($SELECT_ERROR_SUMMARY);
+      expect(error).toBeFalsy();
     });
 
     it('should change button label when callback warnings notified ', () => {

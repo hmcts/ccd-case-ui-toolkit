@@ -10,6 +10,8 @@
       </li>
     </ul>
   </ng-container>
+  <!-- Add a break for spacing if there are both errors and warnings -->
+  <br *ngIf="hasErrors() && hasWarnings()">
   <ng-container *ngIf="hasWarnings()">
     <h3 class="heading-h3 error-summary-heading">
       Warnings
