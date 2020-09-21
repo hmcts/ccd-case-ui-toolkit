@@ -36,7 +36,7 @@ describe('WrieteOrganisationFieldComponent', () => {
     name: 'Broker solicitor',
     addressLine1: '33',
     addressLine2: 'The square',
-    addressLine3: '',
+    addressLine3: 'Apps street',
     townCity: 'Swindon',
     county: 'Wiltshire',
     country: 'UK',
@@ -158,7 +158,7 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(searchedOrg.length).toEqual(2);
     expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
     expect(searchedOrg[0].name).toEqual('Broker solicitor');
-    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Apps street<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
     expect(searchedOrg[1].organisationIdentifier).toEqual('O444444');
     expect(searchedOrg[1].name).toEqual('The SN1 solicitor');
     expect(searchedOrg[1].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
@@ -169,7 +169,39 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(searchedOrg.length).toEqual(1);
     expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
     expect(searchedOrg[0].name).toEqual('Broker solicitor');
-    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Apps street<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+  });
+
+  it('should search organisation using address 1', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, '12');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O111111');
+    expect(searchedOrg[0].name).toEqual('Woodford solicitor');
+    expect(searchedOrg[0].address).toEqual('12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>');
+  });
+
+  it('should search organisation using address 2', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, '44');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O444444');
+    expect(searchedOrg[0].name).toEqual('The SN1 solicitor');
+    expect(searchedOrg[0].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
+  });
+
+  it('should search organisation using address 3', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'apps');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
+    expect(searchedOrg[0].name).toEqual('Broker solicitor');
+    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Apps street<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
+  });
+
+  it('should search organisation using town city', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'swindon');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O222222');
+    expect(searchedOrg[0].name).toEqual('Broker solicitor');
+    expect(searchedOrg[0].address).toEqual('33<br>The square<br>Apps street<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
   });
 
   it('should search organisation using both org name and postcode', () => {
