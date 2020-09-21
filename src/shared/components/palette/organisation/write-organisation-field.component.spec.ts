@@ -204,6 +204,19 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(searchedOrg[0].address).toEqual('33<br>The square<br>Apps street<br>Swindon<br>Wiltshire<br>UK<br>SN1 3EB<br>');
   });
 
+  it('should search organisation using county', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'merseyside');
+    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg[0].organisationIdentifier).toEqual('O111111');
+    expect(searchedOrg[0].name).toEqual('Woodford solicitor');
+    expect(searchedOrg[0].address).toEqual('12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>');
+  });
+
+  it('should search organisation using country', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'uk');
+    expect(searchedOrg.length).toEqual(4);
+  });
+
   it('should search organisation using both org name and postcode', () => {
     const SIMILAR_ORGANISATION = [{
         organisationIdentifier: 'O555555',

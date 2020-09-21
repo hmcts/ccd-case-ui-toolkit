@@ -90,7 +90,6 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     if (organisation.postCode && organisation.postCode.toLowerCase().includes(this.trimAll(lowerOrgSearchText))) {
       return true;
     }
-    // noinspection RedundantIfStatementJS
     if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
@@ -109,6 +108,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     if (organisation.county && organisation.county.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
+    // noinspection RedundantIfStatementJS
     if (organisation.country && organisation.country.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
