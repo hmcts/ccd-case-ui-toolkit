@@ -103,6 +103,9 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     if (organisation.addressLine3 && organisation.addressLine3.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
+    if (organisation.townCity && organisation.townCity.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
     if (organisation.county && organisation.county.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
