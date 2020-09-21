@@ -94,6 +94,21 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
+    if (organisation.addressLine1 && organisation.addressLine1.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    if (organisation.addressLine2 && organisation.addressLine2.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    if (organisation.addressLine3 && organisation.addressLine3.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    if (organisation.county && organisation.county.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
+    if (organisation.country && organisation.country.toLowerCase().includes(lowerOrgSearchText)) {
+      return true;
+    }
     return false;
   }
 
