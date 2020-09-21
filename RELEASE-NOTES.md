@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.36-organisation-complex-field-type
+**EUI-2087** - Search organisation support full UK address fields
+
 ### Version 2.64.35-organisation-complex-field-type
 **EUI-2086** - Search organisation
 **EUI-2087** - Select organisation
