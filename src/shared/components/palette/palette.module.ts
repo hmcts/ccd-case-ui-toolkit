@@ -47,6 +47,8 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
 import { CaseLinkModule } from './case-link/case-link.module';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
+import { OrganisationModule } from './organisation/organisation.module';
+import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
 
 @NgModule({
   imports: [
@@ -74,7 +76,8 @@ import { FileUploadStateService } from './document/file-upload-state.service';
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
-    CaseLinkModule
+    CaseLinkModule,
+    OrganisationModule
   ],
   declarations: [
     UnsupportedFieldComponent,
@@ -111,6 +114,7 @@ import { FileUploadStateService } from './document/file-upload-state.service';
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
+    ReadOrganisationFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -121,6 +125,7 @@ import { FileUploadStateService } from './document/file-upload-state.service';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteCaseLinkFieldComponent,
+    WriteOrganisationFieldComponent
   ],
   exports: [
     BaseFieldModule,

@@ -318,7 +318,13 @@ const $CASE_TAB_HEADERS = By.css('cut-tabs>cut-tab:not(:first-child)');
 const $NAME_TAB_CONTENT = By.css('cut-tabs>cut-tab#NameTab');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
-const $ERROR_MESSAGE = By.css('p');
+const $ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
+const $ERROR_MESSAGE_GENERIC = By.css('.govuk-error-summary__body>p:first-child');
+const $ERROR_HEADING_SPECIFIC = By.css('.error-summary>h2:first-child');
+const $ERROR_MESSAGE_SPECIFIC = By.css('.error-summary>p:nth-child(2)');
+const $CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
+const $FIRST_FIELD_ERROR = By.css('li:first-child');
+const $SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
 
 const CASE_VIEW: CaseView = {
   case_id: CID,
@@ -454,6 +460,9 @@ describe('CaseViewerComponent', () => {
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
+  const ERROR_HEADING_GENERIC = 'Something went wrong';
+  const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
+  const ERROR_HEADING_SPECIFIC = 'The callback data failed validation';
 
   beforeEach(async(() => {
     orderService = new OrderService();
@@ -750,16 +759,76 @@ describe('CaseViewerComponent', () => {
     expect(component.ignoreWarning).toBeFalsy();
   });
 
-  it('should display error when form error get set', () => {
+  it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
     ERROR.status = 200;
+    ERROR.callbackErrors = null;
+    ERROR.callbackWarnings = null;
+    ERROR.details = null;
     errorNotifierService.announceError(ERROR);
     fixture.detectChanges();
 
-    let error = de.query($ERROR_SUMMARY);
+    const error = de.query($ERROR_SUMMARY);
     expect(error).toBeTruthy();
 
-    let errorMessage = error.query($ERROR_MESSAGE);
+    const errorHeading = error.query($ERROR_HEADING_GENERIC);
+    expect(text(errorHeading)).toBe(ERROR_HEADING_GENERIC);
+
+    const errorMessage = error.query($ERROR_MESSAGE_GENERIC);
+    expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+  });
+
+  it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
+    ERROR.status = 422;
+    ERROR.details = {
+      field_errors: [
+        {
+          message: 'First field error'
+        },
+        {
+          message: 'Second field error'
+        }
+      ]
+    };
+    errorNotifierService.announceError(ERROR);
+    fixture.detectChanges();
+
+    const error = de.query($ERROR_SUMMARY);
+    expect(error).toBeTruthy();
+
+    const errorHeading = error.query($ERROR_HEADING_SPECIFIC);
+    expect(text(errorHeading)).toBe(ERROR_HEADING_SPECIFIC);
+
+    const errorMessage = error.query($ERROR_MESSAGE_SPECIFIC);
     expect(text(errorMessage)).toBe(ERROR.message);
+
+    const fieldErrorList = de.query($CALLBACK_DATA_FIELD_ERROR_LIST);
+    expect(fieldErrorList).toBeTruthy();
+    const firstFieldError = fieldErrorList.query($FIRST_FIELD_ERROR);
+    expect(text(firstFieldError)).toBe('First field error');
+    const secondFieldError = fieldErrorList.query($SECOND_FIELD_ERROR);
+    expect(text(secondFieldError)).toBe('Second field error');
+  });
+
+  it('should not display generic error heading and message when there are specific callback errors', () => {
+    ERROR.status = 422;
+    ERROR.callbackErrors = ['First error', 'Second error'];
+    ERROR.details = null;
+    errorNotifierService.announceError(ERROR);
+    fixture.detectChanges();
+
+    const error = de.query($ERROR_SUMMARY);
+    expect(error).toBeFalsy();
+  });
+
+  it('should not display generic error heading and message when there are specific callback warnings', () => {
+    ERROR.status = 422;
+    ERROR.callbackWarnings = ['First warning', 'Second warning'];
+    ERROR.details = null;
+    errorNotifierService.announceError(ERROR);
+    fixture.detectChanges();
+
+    const error = de.query($ERROR_SUMMARY);
+    expect(error).toBeFalsy();
   });
 
   it('should contain a print link', () => {

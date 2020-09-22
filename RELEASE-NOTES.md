@@ -1,4 +1,15 @@
 ## RELEASE NOTES
+### Version 2.64.37-organisation-complex-field-type
+**EUI-2087** - Search organisation support full UK address fields
+
+### Version 2.64.36-hide-generic-callback-error-message
+**EUI-2344** - Hide generic callback error message when there is a custom configured message provided by a Service
+
+### Version 2.64.35-organisation-complex-field-type
+**EUI-2086** - Search organisation
+**EUI-2087** - Select organisation
+**EUI-2089** - Save organisation
+
 ### Version 2.64.34-utc-local-date-fix
 **EUI-1844** - Changed UTC to Local date view in event log
 

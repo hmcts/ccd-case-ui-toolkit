@@ -36,6 +36,8 @@ import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.com
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent } from './history';
+import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
+import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 
 @Injectable()
 export class PaletteService {
@@ -74,6 +76,8 @@ export class PaletteService {
             return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
           case 'CaseLink':
             return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
+          case 'Organisation':
+            return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
