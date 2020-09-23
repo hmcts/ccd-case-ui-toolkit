@@ -8,6 +8,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
 import createSpyObj = jasmine.createSpyObj;
+import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 
 @Component({
   template: `
@@ -64,7 +65,7 @@ describe('LabelSubstitutorDirective', () => {
 
     TestBed.configureTestingModule({
       declarations: [LabelSubstitutorDirective, TestHostComponent],
-      providers: [FieldsUtils,
+      providers: [FieldsUtils, FormatTranslatorService,
         {provide: PlaceholderService, useValue: placeholderService}]
     }).compileComponents();
 

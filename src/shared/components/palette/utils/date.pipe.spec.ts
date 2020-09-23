@@ -1,4 +1,5 @@
 import { DatePipe } from './date.pipe';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 describe('DatePipe', () => {
 
@@ -6,7 +7,7 @@ describe('DatePipe', () => {
   const EXPECTED_OFFSET = - new Date(2017, 6, 26).getTimezoneOffset() / 60;
 
   beforeEach(() => {
-    datePipe = new DatePipe();
+    datePipe = new DatePipe(new FormatTranslatorService());
   });
 
   it('should render correct date if UTC date in yyyy-mm-dd format', () => {
@@ -105,6 +106,36 @@ describe('DatePipe', () => {
     expect(message).toBe('26 Jul 2017');
   });
 
+  it ('should format dates according to format', () => {
+    let message = datePipe.transform('2017-07-26', null, 'DD MMM YY')
+    expect(message).toBe('26 Jul 17')
+  })
+  it ('should format times according to format 12h', () => {
+    let message = datePipe.transform('2017-07-26', null, 'hh:mm:ss.SSS')
+    expect(message).toBe('12:00:00.000')
+  })
+  it ('should format times according to format 24h', () => {
+    let message = datePipe.transform('2017-07-26', null, 'HH:mm:ss.SSS')
+    expect(message).toBe('00:00:00.000')
+  })
+
+  it ('should format date times according to format', () => {
+    let message = datePipe.transform('2017-07-26T19:09:05', null, 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('26 July 2017 19:09:05.000')
+  })
+
+  /**
+   * GMT to BST (from 00:59:59 GMT going forward to 02:00:00 BST) on the last Sunday in March
+   */
+  it ('should handle GMT to BST transition', () => {
+    let endOfWinter = new Date(2020, 2, 29, 0, 59, 59)
+    let message = datePipe.transform (endOfWinter.toISOString(), 'GMT', 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('29 March 2020 00:59:59.000')
+    // tick on 1 second
+    endOfWinter.setTime(endOfWinter.getTime() + 1000);
+    message = datePipe.transform (endOfWinter.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS')
+    expect(message).toBe('29 March 2020 02:00:00.000')
+  })
   function getExpectedHour(hour): number {
     let expectedHour = hour + EXPECTED_OFFSET;
     if (expectedHour > 12) {

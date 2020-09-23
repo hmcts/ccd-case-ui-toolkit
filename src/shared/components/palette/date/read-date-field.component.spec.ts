@@ -5,6 +5,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { DatePipe } from '../utils/date.pipe';
 import { FormGroup } from '@angular/forms';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 describe('ReadDateFieldComponent', () => {
 
@@ -35,9 +36,9 @@ describe('ReadDateFieldComponent', () => {
         .configureTestingModule({
           declarations: [
             ReadDateFieldComponent,
-            DatePipe
+            DatePipe,
           ],
-          providers: []
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 
@@ -105,7 +106,7 @@ describe('ReadDateFieldComponent', () => {
             ReadDateFieldComponent,
             DatePipe
           ],
-          providers: []
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 

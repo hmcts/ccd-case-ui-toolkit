@@ -4,6 +4,7 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { DatePipe, DashPipe } from '../../utils';
+import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 
 describe('EventLogDetails', () => {
 
@@ -79,7 +80,7 @@ describe('EventLogDetails', () => {
           DatePipe,
           DashPipe
         ],
-        providers: []
+        providers: [FormatTranslatorService]
       })
       .compileComponents();
 
@@ -97,8 +98,8 @@ describe('EventLogDetails', () => {
 
     expect(rows.length).toBe(6);
 
-    let resultDate = new DatePipe().transform(EVENT.timestamp, 'utc', null) +
-      ' Local: ' + new DatePipe().transform(EVENT.timestamp, 'local', null);
+    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'utc', null) +
+      ' Local: ' + new DatePipe(null).transform(EVENT.timestamp, 'local', null);
     expectRow(rows[0]).toEqual('Date', resultDate);
     expectRow(rows[1]).toEqual('Author', 'Justin SMITH');
     expectRow(rows[2]).toEqual('End state', EVENT.state_name);
