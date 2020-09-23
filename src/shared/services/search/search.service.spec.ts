@@ -16,7 +16,7 @@ describe('SearchService', () => {
   const DATA_URL = 'http://data.ccd.reform';
   const SEARCH_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases`;
   const VIEW = `WORKBASKET`;
-  const SEARCH_CASES_URL = DATA_URL + `/internal/searchCases?ctid=${CTID}&use_case=${VIEW}`;
+  const SEARCH_CASES_URL = DATA_URL + `/internal/searchCases?ctid=${CTID}&usecase=${VIEW}`;
   const SEARCH_INPUT_URL = DATA_URL + '/internal/case-types/0/search-inputs';
 
   const SEARCH_VIEW = {

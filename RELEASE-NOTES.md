@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.38-revert-EUI-2575
+**EUI-2649** - Revert EUI-2575 (which changed `usecase` query param to `use_case`), due to reversion in CCD Demo environment
+
 ### Version 2.64.37-organisation-complex-field-type
 **EUI-2087** - Search organisation support full UK address fields
 
