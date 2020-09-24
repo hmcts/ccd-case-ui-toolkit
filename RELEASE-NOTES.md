@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version EUI-2649-case-detail-is-broken
+**EUI-2649** - EUI-2649-case-detail-is-broken
+
 ### Version 2.64.38-revert-EUI-2575
 **EUI-2649** - Revert EUI-2575 (which changed `usecase` query param to `use_case`), due to reversion in CCD Demo environment
 
