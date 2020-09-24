@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { EventLogModule } from './event-log';
 import { DatePipe } from '../utils';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { DatePipe } from '../utils';
     CaseHistoryViewerFieldComponent,
   ],
   providers: [
-    DatePipe
+    DatePipe,
+    FormatTranslatorService
   ]
 })
 export class CaseHistoryViewerModule {}
