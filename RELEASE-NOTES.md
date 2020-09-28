@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.40-unasinged-cases-date-format
+**EUI-2590** - unassinged-cases list date format
+
 ### Version EUI-2649-case-detail-is-broken
 **EUI-2649** - EUI-2649-case-detail-is-broken
 
