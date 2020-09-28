@@ -42,7 +42,7 @@ export class CaseListComponent {
   constructor() { }
 
   public formatDate(date: Date): string {
-    return formatDate(date, 'dd/MM/yyyy', 'en-GB');
+    return formatDate(date, 'dd MMM yyyy', 'en-GB');
   }
 
   public formatDateAtTime(date: Date): string {
