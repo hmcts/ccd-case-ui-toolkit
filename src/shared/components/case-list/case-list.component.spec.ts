@@ -109,9 +109,9 @@ describe('CaseListComponent', () => {
 
       // Check the data rendered is as expected, bearing in mind the dates should be formatted to the en-GB locale
       expect(firstRowData[0].nativeElement.textContent.trim()).toEqual(
-        formatDate(firstRowExpectedResult.caseCreatedDate, 'dd/MM/yyyy', 'en-GB)'));
+        formatDate(firstRowExpectedResult.caseCreatedDate, 'dd MMM yyyy', 'en-GB)'));
       expect(firstRowData[1].nativeElement.textContent.trim()).toEqual(
-        formatDate(firstRowExpectedResult.caseDueDate, 'dd/MM/yyyy', 'en-GB'));
+        formatDate(firstRowExpectedResult.caseDueDate, 'dd MMM yyyy', 'en-GB'));
       expect(firstRowData[2].nativeElement.textContent.trim()).toEqual(firstRowExpectedResult.caseRef);
     });
 
