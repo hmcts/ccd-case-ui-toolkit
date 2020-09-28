@@ -1,8 +1,11 @@
 ## RELEASE NOTES
+### Version 2.64.41-reinstate-EUI-2575
+**EUI-2657** - Reinstate EUI-2575 (`use_case` query param), in line with the reversion in CCD Demo environment being undone
+
 ### Version 2.64.40-unasinged-cases-date-format
 **EUI-2590** - unassinged-cases list date format
 
-### Version EUI-2649-case-detail-is-broken
+### Version 2.64.39-fix-datepipe-error
 **EUI-2649** - EUI-2649-case-detail-is-broken
 
 ### Version 2.64.38-revert-EUI-2575
