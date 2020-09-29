@@ -118,25 +118,25 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
    * = `true`). This is necessary to allow hidden fields whose values are **not** to be retained, to be passed to the
    * backend to be updated.
    *
-   * @param fg The `FormGroup` instance whose raw values are to be filtered
-   * @returns `fg` with the filtered raw form value data (as key-value pairs) in place of the original value data
+   * @param formGroup The `FormGroup` instance whose raw values are to be filtered
+   * @returns `formGroup` with the filtered raw form value data (as key-value pairs) in place of the original value data
    */
-  private filterRawFormValues(fg: FormGroup): any {
+  private filterRawFormValues(formGroup: FormGroup): any {
     // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
-    const rawFormValueData = fg.getRawValue().data;
+    const rawFormValueData = formGroup.getRawValue().data;
 
     // Discard any value whose FormControl is hidden (status = DISABLED) AND corresponds to a case_field with the
     // retain_hidden_value flag set to true (these fields should not be updated in the backend)
     Object.keys(rawFormValueData).forEach((key) => {
       const case_field = this.eventTrigger.case_fields[key];
-      if ((fg.get('data') as FormGroup).get(key).status === 'DISABLED' && case_field && case_field.retain_hidden_value) {
+      if ((formGroup.get('data') as FormGroup).get(key).status === 'DISABLED' && case_field && case_field.retain_hidden_value) {
         delete rawFormValueData[key];
       }
     });
 
     // Set the filtered raw form value data back on the FormGroup
-    fg.value.data = rawFormValueData;
-    return fg;
+    formGroup.value.data = rawFormValueData;
+    return formGroup;
   }
 
   isDisabled(): boolean {
