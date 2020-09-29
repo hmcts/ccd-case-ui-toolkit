@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.42-retain-hidden-value-support
+**EUI-1783** Delete hidden field value except if `retain_hidden_value` flag is true
+
 ### Version 2.64.41-reinstate-EUI-2575
 **EUI-2657** - Reinstate EUI-2575 (`use_case` query param), in line with the reversion in CCD Demo environment being undone
 
