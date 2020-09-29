@@ -77,7 +77,7 @@ describe('CaseEditComponent', () => {
 
   const CASE_FIELD_2: CaseField = <CaseField>({
     id: 'PersonLastName',
-    label: 'First name',
+    label: 'Last name',
     field_type: null,
     display_context: 'READONLY'
   });
@@ -538,7 +538,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_3.id)).not.toBeNull();
         });
 
-        it('should navigate to next page when next is called and clear hidden simple form field', () => {
+        it('should navigate to next page when next is called and clear hidden simple form fields with retain_hidden_value true', () => {
           component.wizard = wizard;
           let currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
@@ -546,6 +546,10 @@ describe('CaseEditComponent', () => {
           wizard.getPage.and.returnValue(currentPage);
           let nextPage = new WizardPage();
           nextPage.show_condition = 'PersonFirstName=\"John\"';
+          // Ensure retain_hidden_value is true for fields that will be cleared but whose value is to be retained in
+          // the backend (i.e. form control removed to prevent backend update)
+          CASE_FIELD_2.retain_hidden_value = true;
+          CASE_FIELD_3.retain_hidden_value = true;
           nextPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3]
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.nextPage.and.returnValue(nextPage);
