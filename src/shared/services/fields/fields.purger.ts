@@ -70,7 +70,14 @@ export class FieldsPurger {
     // Removing the field means that it is *NOT* sent to the CCD backend, which means no changes are made in the data.
     // This is OK *if* the hidden value needs to be retained, i.e. field.retain_hidden_value = true, but the default
     // should be to set it to null and allow it to be sent as such.
-    if (field.retain_hidden_value) {
+    //
+    // *Complex* field types, i.e. those that contain other fields, should assume the same behaviour as before, which
+    // is to reset the `CaseField` value and remove the form control. The value of the *control* itself should be left
+    // alone.
+    //
+    // The only reliable check if a field is a complex type or not is to obtain its corresponding control and check
+    // whether it's a `FormControl` (simple field) or `FormGroup` (complex field) instance.
+    if (field.retain_hidden_value || (form.get('data') as FormGroup).get(field.id) instanceof FormGroup) {
       // Reset the field value and remove its control. This does NOT update it in the CCD backend, since it is just
       // removed from the JSON structure
       if (Array.isArray(field.value)) {
@@ -84,7 +91,9 @@ export class FieldsPurger {
     } else {
       // Set the value of the field's control to null. This DOES update the value in the CCD backend
       const fieldControl = (form.get('data') as FormGroup).get(field.id);
-      fieldControl.setValue(null);
+      if (fieldControl) {
+        fieldControl.setValue(null);
+      }
     }
   }
 
