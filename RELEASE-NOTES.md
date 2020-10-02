@@ -1,4 +1,16 @@
 ## RELEASE NOTES
+### Version 2.64.45-caselist-selected-check
+**EUI-2681** Fix bug for the caselist check
+
+### Version 2.64.44-retain-hidden-value-fix-for-complex-types
+**EUI-2681** Fix bug with check for complex field types
+
+### Version 2.64.43-retain-hidden-value-fix-for-complex-types
+**EUI-2681** Fix: Do not set a field control's value to `null` if it corresponds to a complex `CaseField` type
+
+### Version 2.64.42-retain-hidden-value-support
+**EUI-1783** Delete hidden field value except if `retain_hidden_value` flag is true
+
 ### Version 2.64.41-reinstate-EUI-2575
 **EUI-2657** - Reinstate EUI-2575 (`use_case` query param), in line with the reversion in CCD Demo environment being undone
 
