@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 2.64.45-caselist-selected-check
+**EUI-2681** Fix bug for the caselist check
+
 ### Version 2.64.41-reinstate-EUI-2575
 **EUI-2657** - Reinstate EUI-2575 (`use_case` query param), in line with the reversion in CCD Demo environment being undone
 
