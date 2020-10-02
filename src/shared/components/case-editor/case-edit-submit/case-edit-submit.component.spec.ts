@@ -43,11 +43,16 @@ describe('CaseEditSubmitComponent', () => {
   const FORM_GROUP = new FormGroup({
     'data': new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })
   });
+  const COMPLEX_ELEMENT_HIDDEN = new FormGroup({
+    'childField1': new FormControl('Child field of complex type')
+  });
+  COMPLEX_ELEMENT_HIDDEN.disable();
   const FORM_GROUP_WITH_HIDDEN_FIELDS = new FormGroup({
     'data': new FormGroup({
       'field1': new FormControl({ value: 'Hidden value to be retained', disabled: true }),
       'field2': new FormControl({ value: 'Hidden value not to be retained', disabled: true }),
-      'field3': new FormControl('Hide both')
+      'field3': new FormControl('Hide all'),
+      'complexField1': COMPLEX_ELEMENT_HIDDEN
     })
   });
   let caseEditComponent: any;
@@ -58,10 +63,12 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifier;
   let profileNotifierSpy;
   let casesReferencePipe: any;
-  let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 3);
-  let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 2);
-  let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 1);
-  let caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 3, null, true);
+  const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
+  const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3);
+  const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
+  const complexSubField: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1);
+  const complexCaseField: CaseField = aCaseField('complexField1', 'complexField1', 'Complex', 'OPTIONAL', 1, [complexSubField]);
+  const caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4, null, true);
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
   let snapshot: any;
@@ -341,16 +348,16 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should sort case fields with show_summary_content_option', () => {
-      expect(comp.eventTrigger.case_fields[0].show_summary_content_option).toBe(3);
-      expect(comp.eventTrigger.case_fields[1].show_summary_content_option).toBe(2);
-      expect(comp.eventTrigger.case_fields[2].show_summary_content_option).toBe(1);
+      expect(comp.eventTrigger.case_fields[0].show_summary_content_option).toBe(4);
+      expect(comp.eventTrigger.case_fields[1].show_summary_content_option).toBe(3);
+      expect(comp.eventTrigger.case_fields[2].show_summary_content_option).toBe(2);
       expect(orderService.sort).toHaveBeenCalledWith(
         comp.eventTrigger.case_fields,
         CaseEditSubmitComponent.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION);
       expect(comp.showSummaryFields.length).toBe(3);
-      expect(comp.showSummaryFields[0].show_summary_content_option).toBe(1);
-      expect(comp.showSummaryFields[1].show_summary_content_option).toBe(2);
-      expect(comp.showSummaryFields[2].show_summary_content_option).toBe(3);
+      expect(comp.showSummaryFields[0].show_summary_content_option).toBe(2);
+      expect(comp.showSummaryFields[1].show_summary_content_option).toBe(3);
+      expect(comp.showSummaryFields[2].show_summary_content_option).toBe(4);
     });
 
     it('should return "Cancel" text label for cancel button when save and resume disabled', () => {
@@ -709,12 +716,14 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    caseFieldRetainHiddenValue.show_condition = 'field3!="Hide both"';
-    caseField2.show_condition = 'field3!="Hide both"';
+    caseFieldRetainHiddenValue.show_condition = 'field3!="Hide all"';
+    caseField2.show_condition = 'field3!="Hide all"';
+    complexCaseField.show_condition = 'field3!="Hide all"';
     const WP_FIELD_1: WizardPageField = { case_field_id: caseFieldRetainHiddenValue.id };
     const WP_FIELD_2: WizardPageField = { case_field_id: caseField2.id };
     const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
-    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
+    const WP_FIELD_4: WizardPageField = { case_field_id: complexCaseField.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3, WP_FIELD_4];
     wizard = new Wizard(pages);
     const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
     const snapshotNoProfile = {
@@ -749,7 +758,7 @@ describe('CaseEditSubmitComponent', () => {
     beforeEach(async(() => {
       // Need to set the page case_fields here because, for some reason, if set initially then these get overridden
       // by some unknown default!
-      firstPage.case_fields = [caseFieldRetainHiddenValue, caseField2, caseField3];
+      firstPage.case_fields = [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField];
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -757,7 +766,10 @@ describe('CaseEditSubmitComponent', () => {
         'form': FORM_GROUP_WITH_HIDDEN_FIELDS,
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
-        'eventTrigger': { 'case_fields': [caseFieldRetainHiddenValue, caseField2, caseField3], 'can_save_draft': true },
+        'eventTrigger': {
+          'case_fields': [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
+          'can_save_draft': true
+        },
         'wizard': wizard,
         'hasPrevious': () => true,
         'getPage': () => firstPage,
@@ -812,7 +824,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with null for any hidden fields whose values are not to be retained', () => {
+    it('should submit CaseEventData with null for any hidden fields (excluding Complex types) whose values are not to be retained', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -821,7 +833,7 @@ describe('CaseEditSubmitComponent', () => {
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
           field2: null,
-          field3: 'Hide both'
+          field3: 'Hide all'
         },
         event_token: undefined,
         ignore_warning: false
