@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.42-retain-hidden-value-support",
+  "version": "2.64.43-retain-hidden-value-fix-for-complex-types",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
