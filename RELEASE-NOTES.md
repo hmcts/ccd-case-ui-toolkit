@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.44-retain-hidden-value-fix-for-complex-types
+**EUI-2681** Fix bug with check for complex field types
+
 ### Version 2.64.43-retain-hidden-value-fix-for-complex-types
 **EUI-2681** Fix: Do not set a field control's value to `null` if it corresponds to a complex `CaseField` type
 
