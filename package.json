@@ -173,11 +173,12 @@
     "mem": "^6.0.0",
     "minimatch": "^3.0.2",
     "minimist": "1.2.3",
+    "node-fetch": "2.6.1",
+    "node-forge": "^0.10.0",
     "npm-registry-fetch": "^4.0.5",
     "serialize-javascript": "^3.1.0",
     "tree-kill": "1.2.2",
-    "yargs-parser": "18.1.2",
-    "node-fetch": "2.6.1"
+    "yargs-parser": "18.1.2"
   },
   "publishConfig": {
     "access": "public"
