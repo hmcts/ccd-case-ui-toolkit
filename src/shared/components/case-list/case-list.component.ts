@@ -87,9 +87,11 @@ export class CaseListComponent {
   }
 
   public isSelected(c: any): boolean {
-    for (let index = 0, length = this.selectedCases.length; index < length; index++) {
-      if (c[this.tableConfig.idField] === this.selectedCases[index][this.tableConfig.idField]) {
-        return true;
+    if (this.selectedCases) {
+      for (let index = 0, length = this.selectedCases.length; index < length; index++) {
+        if (c[this.tableConfig.idField] === this.selectedCases[index][this.tableConfig.idField]) {
+          return true;
+        }
       }
     }
     return false;

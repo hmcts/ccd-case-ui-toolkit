@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.45-caselist-selected-check
+**EUI-2681** Fix bug for the caselist check
+
 ### Version 2.64.44-retain-hidden-value-fix-for-complex-types
 **EUI-2681** Fix bug with check for complex field types
 
