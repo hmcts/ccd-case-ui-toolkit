@@ -87,8 +87,8 @@ export class FieldsPurger {
     // alone.
     //
     // The only reliable check if a field is a complex type or not is to obtain its corresponding control and check
-    // whether it's a `FormControl` (simple field) or `FormGroup` (complex field) instance.
-    if (field.retain_hidden_value || (form.get('data') as FormGroup).get(field.id) instanceof FormGroup) {
+    // whether it's a `FormControl` (simple field) or something else.
+    if (field.retain_hidden_value || !((form.get('data') as FormGroup).get(field.id) instanceof FormControl)) {
       // Reset the field value and remove its control. This does NOT update it in the CCD backend, since it is just
       // removed from the JSON structure
       if (Array.isArray(field.value)) {
