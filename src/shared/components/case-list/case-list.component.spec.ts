@@ -8,6 +8,7 @@ import { CaseListComponent, TableConfig } from './case-list.component';
 describe('CaseListComponent', () => {
   const cases: any[] = [
     {
+      case_id: 'c111111',
       caseCreatedDate: '2020-03-19T07:13:35.151Z',
       caseDueDate: '2021-04-17T23:58:28.201Z',
       caseRef: 'd2e373c6-4e6a-4a01-88b1-983b4a6bdbd7',
@@ -18,6 +19,7 @@ describe('CaseListComponent', () => {
       sRef: 'a571547f-3e56-4905-aa57-d7870e18d1dd'
     },
     {
+      case_id: 'c222222',
       caseCreatedDate: '2019-12-14T16:19:29.379Z',
       caseDueDate: '2021-03-31T15:10:55.597Z',
       caseRef: '5f5f0779-a71f-49c7-991b-fb2bedd41a94',
