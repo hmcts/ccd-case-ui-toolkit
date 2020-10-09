@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.46-caselist-selected-check
+**EUI-2740** Fix bug for the caselist check
+
 ### Version 2.64.45-caselist-selected-check
 **EUI-2681** Fix bug for the caselist check
 
