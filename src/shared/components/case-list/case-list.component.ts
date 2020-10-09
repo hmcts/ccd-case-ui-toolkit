@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export class DateTimeFormatUtils {
   public static formatDateAtTime(date: Date, is24Hour: boolean): string {
@@ -37,7 +37,7 @@ export class CaseListComponent {
 
   @Output() public selection = new EventEmitter<any[]>();
 
-  @Input() public selectedCases: Object[] = [];
+  @Input() public selectedCases: any[] = [];
 
   constructor() { }
 
@@ -74,7 +74,7 @@ export class CaseListComponent {
   public changeSelection(c: any): void {
     if (this.isSelected(c)) {
       this.selectedCases.forEach((s, i) => {
-        if (c[this.tableConfig.idField] === s[this.tableConfig.idField]) {
+        if (c.case_id === s.case_id) {
           this.selectedCases = this.selectedCases.slice(0, i).concat(this.selectedCases.slice(i + 1));
         }
       });
@@ -89,7 +89,7 @@ export class CaseListComponent {
   public isSelected(c: any): boolean {
     if (this.selectedCases) {
       for (let index = 0, length = this.selectedCases.length; index < length; index++) {
-        if (c[this.tableConfig.idField] === this.selectedCases[index][this.tableConfig.idField]) {
+        if (c.case_id === this.selectedCases[index].case_id) {
           return true;
         }
       }
