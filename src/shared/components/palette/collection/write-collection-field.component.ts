@@ -143,6 +143,25 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return !this.profile.user.idam.roles.find(role => this.hasCreateAccess(role));
   }
 
+  isAuthorisedToCreate() {
+    if (this.isExpanded) {
+      return true;
+    }
+    return this.getCollectionCreatePermission(this.caseField);
+  }
+
+  getCollectionCreatePermission(field:CaseField) {
+
+    if (field.id === 'pensionCollection') {
+      console.log(field.display_context_parameter);
+
+      console.log(field.display_context_parameter.startsWith('#COLLECTION(') && field.display_context_parameter.includes('allowInsert'));
+    }
+
+    return field.display_context_parameter.startsWith('#COLLECTION(') && field.display_context_parameter.includes('allowInsert');
+  
+  }
+
   hasCreateAccess(role: any) {
     return !!this.caseField.acls.find( acl => acl.role === role && acl.create === true);
   }
