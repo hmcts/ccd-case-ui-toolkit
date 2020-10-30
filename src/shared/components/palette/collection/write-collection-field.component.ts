@@ -143,8 +143,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return !this.getCollectionPermission(this.caseField, 'allowInsert');
   }
 
-  getCollectionPermission(field:CaseField, type: string) {
-    return field.display_context_parameter && field.display_context_parameter.startsWith('#COLLECTION(') && field.display_context_parameter.includes(type);
+  getCollectionPermission(field: CaseField, type: string) {
+    return field.display_context_parameter &&
+            field.display_context_parameter.startsWith('#COLLECTION(') &&
+            field.display_context_parameter.includes(type);
   }
 
   isNotAuthorisedToUpdate(index: number) {
