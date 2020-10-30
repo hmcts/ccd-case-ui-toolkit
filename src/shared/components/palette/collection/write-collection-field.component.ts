@@ -140,30 +140,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    return !this.profile.user.idam.roles.find(role => this.hasCreateAccess(role));
+    return !this.getCollectionPermission(this.caseField, 'allowInsert');
   }
 
-  isAuthorisedToCreate() {
-    if (this.isExpanded) {
-      return true;
-    }
-    return this.getCollectionCreatePermission(this.caseField);
-  }
-
-  getCollectionCreatePermission(field:CaseField) {
-
-    if (field.id === 'pensionCollection') {
-      console.log(field.display_context_parameter);
-
-      console.log(field.display_context_parameter.startsWith('#COLLECTION(') && field.display_context_parameter.includes('allowInsert'));
-    }
-
-    return field.display_context_parameter.startsWith('#COLLECTION(') && field.display_context_parameter.includes('allowInsert');
-  
-  }
-
-  hasCreateAccess(role: any) {
-    return !!this.caseField.acls.find( acl => acl.role === role && acl.create === true);
+  getCollectionPermission(field:CaseField, type: string) {
+    return field.display_context_parameter && field.display_context_parameter.startsWith('#COLLECTION(') && field.display_context_parameter.includes(type);
   }
 
   isNotAuthorisedToUpdate(index: number) {
@@ -189,11 +170,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.formArray.at(index)) {
       id = this.formArray.at(index).get('id').value;
     }
-    return !!id && !this.profile.user.idam.roles.find(role => this.hasDeleteAccess(role));
-  }
-
-  hasDeleteAccess(role: any): boolean {
-    return !!this.caseField.acls.find(acl => acl.role === role && acl.delete === true);
+    return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
   }
 
   openModal(i: number) {
