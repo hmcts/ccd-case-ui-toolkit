@@ -73,8 +73,8 @@ export class CaseListComponent {
 
   public changeSelection(aCase: any): void {
     if (this.isSelected(aCase)) {
-      this.selectedCases.forEach((selectedCase, i) => {
-        if (aCase.case_id === selectedCase.case_id) {
+      this.selectedCases.forEach((aSelectedCase, i) => {
+        if (aCase.case_id === aSelectedCase.case_id) {
           this.selectedCases = this.selectedCases.slice(0, i).concat(this.selectedCases.slice(i + 1));
         }
       });
