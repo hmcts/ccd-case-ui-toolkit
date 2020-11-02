@@ -1,4 +1,12 @@
 ## RELEASE NOTES
+### Version 2.64.47-rebase
+* As requested rebase to version 2.64.41-reinstate-EUI-2575
+* drop 95d6ec8 EUI-1783: Support for deleting hidden field values (#591)
+* drop b48c8f0 EUI-2681: Fix retain hidden value support for complex field types
+* drop 1255b8f Fix bug with check for complex field types
+* drop b6bf9e6 Fix another bug with check for complex field types
+* drop 3ff194d Add missing release notes and bump version
+
 ### Version 2.64.46-caselist-selected-check
 **EUI-2740** Fix bug for the caselist check
 
