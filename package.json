@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.46-caselist-selected-check",
+  "version": "2.64.47-case-share-hot-fix",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
