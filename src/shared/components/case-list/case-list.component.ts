@@ -71,25 +71,25 @@ export class CaseListComponent {
     this.selection.emit(this.selectedCases);
   }
 
-  public changeSelection(c: any): void {
-    if (this.isSelected(c)) {
-      this.selectedCases.forEach((s, i) => {
-        if (c.case_id === s.case_id) {
+  public changeSelection(aCase: any): void {
+    if (this.isSelected(aCase)) {
+      this.selectedCases.forEach((selectedCase, i) => {
+        if (aCase.case_id === selectedCase.case_id) {
           this.selectedCases = this.selectedCases.slice(0, i).concat(this.selectedCases.slice(i + 1));
         }
       });
     } else {
-      if (this.canBeShared(c)) {
-        this.selectedCases = [...this.selectedCases, c];
+      if (this.canBeShared(aCase)) {
+        this.selectedCases = [...this.selectedCases, aCase];
       }
     }
     this.selection.emit(this.selectedCases);
   }
 
-  public isSelected(c: any): boolean {
+  public isSelected(aCase: any): boolean {
     if (this.selectedCases) {
       for (let index = 0, length = this.selectedCases.length; index < length; index++) {
-        if (c.case_id === this.selectedCases[index].case_id) {
+        if (aCase.case_id === this.selectedCases[index].case_id) {
           return true;
         }
       }
