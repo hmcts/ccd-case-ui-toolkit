@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of, Observable, BehaviorSubject } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
@@ -22,9 +23,11 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
-import { Profile } from '../../../domain';
+import { CaseEventData, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { text } from '../../../test/helpers';
+import { FieldsPurger } from '../../../services';
+import { WizardPageField } from '../domain';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -40,6 +43,18 @@ describe('CaseEditSubmitComponent', () => {
   const FORM_GROUP = new FormGroup({
     'data': new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })
   });
+  const COMPLEX_ELEMENT_HIDDEN = new FormGroup({
+    'childField1': new FormControl('Child field of complex type')
+  });
+  COMPLEX_ELEMENT_HIDDEN.disable();
+  const FORM_GROUP_WITH_HIDDEN_FIELDS = new FormGroup({
+    'data': new FormGroup({
+      'field1': new FormControl({ value: 'Hidden value to be retained', disabled: true }),
+      'field2': new FormControl({ value: 'Hidden value not to be retained', disabled: true }),
+      'field3': new FormControl('Hide all'),
+      'complexField1': COMPLEX_ELEMENT_HIDDEN
+    })
+  });
   let caseEditComponent: any;
   let pages: WizardPage[];
   let wizard: Wizard;
@@ -48,9 +63,12 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifier;
   let profileNotifierSpy;
   let casesReferencePipe: any;
-  let caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 3);
-  let caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 2);
-  let caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 1);
+  const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
+  const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3);
+  const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
+  const complexSubField: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1);
+  const complexCaseField: CaseField = aCaseField('complexField1', 'complexField1', 'Complex', 'OPTIONAL', 1, [complexSubField]);
+  const caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4, null, true);
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
   let snapshot: any;
@@ -330,16 +348,16 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should sort case fields with show_summary_content_option', () => {
-      expect(comp.eventTrigger.case_fields[0].show_summary_content_option).toBe(3);
-      expect(comp.eventTrigger.case_fields[1].show_summary_content_option).toBe(2);
-      expect(comp.eventTrigger.case_fields[2].show_summary_content_option).toBe(1);
+      expect(comp.eventTrigger.case_fields[0].show_summary_content_option).toBe(4);
+      expect(comp.eventTrigger.case_fields[1].show_summary_content_option).toBe(3);
+      expect(comp.eventTrigger.case_fields[2].show_summary_content_option).toBe(2);
       expect(orderService.sort).toHaveBeenCalledWith(
         comp.eventTrigger.case_fields,
         CaseEditSubmitComponent.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION);
       expect(comp.showSummaryFields.length).toBe(3);
-      expect(comp.showSummaryFields[0].show_summary_content_option).toBe(1);
-      expect(comp.showSummaryFields[1].show_summary_content_option).toBe(2);
-      expect(comp.showSummaryFields[2].show_summary_content_option).toBe(3);
+      expect(comp.showSummaryFields[0].show_summary_content_option).toBe(2);
+      expect(comp.showSummaryFields[1].show_summary_content_option).toBe(3);
+      expect(comp.showSummaryFields[2].show_summary_content_option).toBe(4);
     });
 
     it('should return "Cancel" text label for cancel button when save and resume disabled', () => {
@@ -690,6 +708,136 @@ describe('CaseEditSubmitComponent', () => {
 
       const error = de.query($SELECT_ERROR_SUMMARY);
       expect(error).toBeFalsy();
+    });
+  });
+
+  describe('Form submit test', () => {
+    pages = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    caseFieldRetainHiddenValue.show_condition = 'field3!="Hide all"';
+    caseField2.show_condition = 'field3!="Hide all"';
+    complexCaseField.show_condition = 'field3!="Hide all"';
+    const WP_FIELD_1: WizardPageField = { case_field_id: caseFieldRetainHiddenValue.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField2.id };
+    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_4: WizardPageField = { case_field_id: complexCaseField.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3, WP_FIELD_4];
+    wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+    let caseEditComponentSubmitSpy: any;
+
+    beforeEach(async(() => {
+      // Need to set the page case_fields here because, for some reason, if set initially then these get overridden
+      // by some unknown default!
+      firstPage.case_fields = [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField];
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_HIDDEN_FIELDS,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
+      formValueService.sanitise.and.callFake((rawValue: object) => {
+        return rawValue;
+      });
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with null for any hidden fields (excluding Complex types) whose values are not to be retained', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          field2: null,
+          field3: 'Hide all'
+        },
+        event_token: undefined,
+        ignore_warning: false
+      });
     });
   });
 });
