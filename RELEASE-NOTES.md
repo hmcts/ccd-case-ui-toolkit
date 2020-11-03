@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.48-case-share-hot-fix
+* Retriggering build
+
 ### Version 2.64.47-case-share-hot-fix
 * variant base on 2.64.41-reinstate-EUI-2575
 * add hot fix for case share for retaining case role
