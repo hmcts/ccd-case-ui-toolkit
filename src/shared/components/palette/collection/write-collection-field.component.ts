@@ -145,8 +145,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   getCollectionPermission(field: CaseField, type: string) {
     return field.display_context_parameter &&
-            field.display_context_parameter.startsWith('#COLLECTION(') &&
-            field.display_context_parameter.includes(type);
+            field.display_context_parameter.split('#')
+              .filter(item => item.startsWith('COLLECTION('))[0]
+                .includes(type);
   }
 
   isNotAuthorisedToUpdate(index: number) {
