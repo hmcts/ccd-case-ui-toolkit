@@ -27,7 +27,7 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
   }
 
   showMediaViewer(): void {
-    const caseId = this.route.snapshot.params['cid'];
+    const caseId = this.route.snapshot.params['cid'] || this.route.snapshot.parent.params['cid'];
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
     this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
       if (this.caseField && this.caseField.value) {
