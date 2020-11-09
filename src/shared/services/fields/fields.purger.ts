@@ -42,7 +42,18 @@ export class FieldsPurger {
           this.resetField(form, case_field);
         }
       }
+      this.retainHiddenValueByFieldType(case_field, form);
     });
+  }
+
+  private retainHiddenValueByFieldType(field, form) {
+    // so far only applies to the new field type OrganisationPolicy which needs to retain the default case role value
+    // for other case fields there should be no side effects
+    if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
+      const caseRoleFormControl = ((form.get('data') as FormGroup).get(field.id) as FormGroup)
+        .get('OrgPolicyCaseAssignedRole') as FormControl;
+      caseRoleFormControl.enable();
+    }
   }
 
   private isHidden(condition: ShowCondition, formFields: any): boolean {
