@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.50-case-share-hot-fix
+* correct and cherry-pick the right commits
+
 ### Version 2.64.48-case-share-hot-fix
 * determine whether a case sharable by supplementary_data
 

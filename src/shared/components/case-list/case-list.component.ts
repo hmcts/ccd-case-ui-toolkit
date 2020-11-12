@@ -62,9 +62,9 @@ export class CaseListComponent {
       // All cases already selected, so unselect all on this page
       this.selectedCases = [];
     } else {
-      this.cases.forEach(c => {
-        if (!this.isSelected(c) && this.canBeShared(c)) {
-          this.selectedCases = [... this.selectedCases, c];
+      this.cases.forEach(aCase => {
+        if (!this.isSelected(aCase) && this.canBeShared(aCase)) {
+          this.selectedCases = [... this.selectedCases, aCase];
         }
       });
     }
@@ -98,7 +98,7 @@ export class CaseListComponent {
   }
 
   public allOnPageSelected(): boolean {
-    return !this.cases.some(c => !this.isSelected(c))
+    return !this.cases.some(aCase => !this.isSelected(aCase));
   }
 }
 
