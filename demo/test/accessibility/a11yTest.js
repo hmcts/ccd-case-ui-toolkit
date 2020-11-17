@@ -1,3 +1,4 @@
+
 const co = require('co');
 const request = require('supertest');
 const fs = require('fs');
@@ -5,11 +6,8 @@ const jsonString = fs.readFileSync('stubs/routes.json');
 const routingInfo = JSON.parse(jsonString);
 const { expect } = require('test/utill/chai');
 const a11y = require('test/utill/a11y');
-
-// const { expect } = require('test/utill/chai');
-// const proxyquire = require('proxyquire');
-// let s = server.init();
-// let agent = request.agent(s.app);
+const express = require('express');
+//const urslSchema = require('src/app/app.routing.ts');
 
 const baseURL= "http://localhost:8080/";
 
@@ -69,7 +67,7 @@ for (let index in routingInfo.routes) {
 
         co(function* generator() {
 
-          results = yield a11y(baseURL+step.path);
+           results = yield a11y(baseURL+step.path);
 
         }).then(done, done);
       });

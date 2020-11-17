@@ -3,7 +3,9 @@ const pa11y = require('pa11y');
 module.exports = (testPage, method = 'GET') => {
   const [host] = /(^http.+:\d+\/)/.exec(testPage);
   const indexUrl = `${host}index`;
- console.log("method=GET::::::"+method)
+  console.log("testPage::::::"+testPage)
+  console.log("indexUrl::::::"+indexUrl)
+
   const pa11yRun = pa11y({
 
     hideElements: '.govuk-box-highlight, #logo, #footer, link[rel=mask-icon], .skipAccessTest',
