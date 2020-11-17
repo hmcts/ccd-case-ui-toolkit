@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.50-case-share-hot-fix",
+  "version": "2.64.51-retain-hidden-value-complex-and-collection-types-fix",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
