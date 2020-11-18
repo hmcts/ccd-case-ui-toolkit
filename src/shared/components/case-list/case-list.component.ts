@@ -98,7 +98,7 @@ export class CaseListComponent {
   }
 
   public allOnPageSelected(): boolean {
-    return !this.cases.some(aCase => !this.isSelected(aCase))
+    return !this.cases.some(aCase => !this.isSelected(aCase));
   }
 }
 

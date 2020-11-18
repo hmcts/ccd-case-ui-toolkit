@@ -8,4 +8,5 @@ export class SearchResultViewItem {
   @Type(() => CaseField)
   hydrated_case_fields?: CaseField[];
   columns?: object;
+  supplementary_data?: any;
 }

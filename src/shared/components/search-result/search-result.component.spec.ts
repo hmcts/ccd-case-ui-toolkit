@@ -105,6 +105,9 @@ describe('SearchResultComponent', () => {
               OrgPolicyReference: 'Travis and Arnold Inc',
               OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
             }
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         },
         {
@@ -121,6 +124,9 @@ describe('SearchResultComponent', () => {
               OrgPolicyReference: 'Travis and Arnold Inc',
               OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
             }
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         },
         {
@@ -129,6 +135,9 @@ describe('SearchResultComponent', () => {
             PersonFirstName: 'Steve',
             PersonLastName: 'Jobs',
             PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         },
         {
@@ -136,6 +145,9 @@ describe('SearchResultComponent', () => {
           case_fields: {
             PersonFirstName: 'Bill',
             PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         }
       ],
@@ -465,7 +477,10 @@ describe('SearchResultComponent', () => {
             OrgPolicyReference: 'Travis and Arnold Inc',
             OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
           }
-        }
+        },
+        supplementary_data: {
+          orgs_assigned_users: {'9QV1DT1': 3}
+        },
       };
       expect(component.canBeShared(caseView)).toEqual(true);
     });
@@ -474,9 +489,10 @@ describe('SearchResultComponent', () => {
       const caseView = {
         case_id: 'C111111',
         case_fields: {
-        }
+        },
+        supplementary_data: null
       };
-      expect(component.canBeShared(caseView)).toEqual(false);
+      expect(component.canBeShared(caseView)).toBeFalsy();
     });
 
     it('can any be shared', () => {
@@ -491,7 +507,10 @@ describe('SearchResultComponent', () => {
             OrgPolicyReference: 'Travis and Arnold Inc',
             OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
           }
-        }
+        },
+        supplementary_data: {
+          orgs_assigned_users: {'9QV1DT1': 3}
+        },
       }]
       expect(component.canAnyBeShared()).toEqual(true);
     });
@@ -507,7 +526,10 @@ describe('SearchResultComponent', () => {
 
       const tempCaseItem: SearchResultViewItem = {
         case_id: '1',
-        case_fields: null
+        case_fields: null,
+        supplementary_data: {
+          orgs_assigned_users: {'9QV1DT1': 3}
+        }
       }
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
     });
@@ -523,7 +545,8 @@ describe('SearchResultComponent', () => {
 
       const tempCaseItem: SearchResultViewItem = {
         case_id: '3',
-        case_fields: null
+        case_fields: null,
+        supplementary_data: null
       }
       expect(component.isSelected(tempCaseItem)).toBeFalsy();
 
@@ -544,6 +567,9 @@ describe('SearchResultComponent', () => {
             OrgPolicyReference: 'Travis and Arnold Inc',
             OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
           }
+        },
+        supplementary_data: {
+          orgs_assigned_users: {'9QV1DT1': 3}
         }
       }];
       const tempCaseItem: SearchResultViewItem = {
@@ -560,6 +586,9 @@ describe('SearchResultComponent', () => {
             OrgPolicyReference: 'Travis and Arnold Inc',
             OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
           }
+        },
+        supplementary_data: {
+          orgs_assigned_users: {'9QV1DT1': 3}
         }
       };
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
@@ -585,6 +614,9 @@ describe('SearchResultComponent', () => {
               OrgPolicyReference: 'Travis and Arnold Inc',
               OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
             }
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         },
         {
@@ -601,6 +633,9 @@ describe('SearchResultComponent', () => {
               OrgPolicyReference: 'Travis and Arnold Inc',
               OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
             }
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         },
         {
@@ -609,6 +644,9 @@ describe('SearchResultComponent', () => {
             PersonFirstName: 'Steve',
             PersonLastName: 'Jobs',
             PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         },
         {
@@ -624,6 +662,9 @@ describe('SearchResultComponent', () => {
               OrgPolicyReference: 'Travis and Arnold Inc',
               OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
             }
+          },
+          supplementary_data: {
+            orgs_assigned_users: {'9QV1DT1': 3}
           }
         }
       ]
@@ -645,6 +686,9 @@ describe('SearchResultComponent', () => {
             OrgPolicyReference: 'Travis and Arnold Inc',
             OrgPolicyCaseAssignedRole: '[PETSOLICITOR]'
           }
+        },
+        supplementary_data: {
+          orgs_assigned_users: {'9QV1DT1': 3}
         }
       }
       component.changeSelection(aSelectedCase);
