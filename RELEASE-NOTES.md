@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.52-collection-permission
+**EUI-1370** UI When using case role collection of complex types doesn't seem to work
+
 ### Version 2.64.50-case-share-hot-fix
 * correct and cherry-pick the right commits
 

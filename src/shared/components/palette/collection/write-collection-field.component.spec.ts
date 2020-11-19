@@ -90,6 +90,7 @@ describe('WriteCollectionFieldComponent', () => {
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
       display_context: 'OPTIONAL',
+      display_context_parameter: '#COLLECTION(allowInsert)',
       value: VALUES.slice(0),
       acls: [
         {
@@ -255,6 +256,13 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should display removal confirmation dialog when remove button is clicked', () => {
+    const tempCaseField = <CaseField>({
+      ...caseField,
+      display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
+    });
+    component.caseFields = [tempCaseField];
+    component.ngOnInit();
+    fixture.detectChanges();
     let removeButtons = de.queryAll($REMOVE_BUTTONS);
 
     let removeFirstButton = removeButtons[0];
@@ -265,6 +273,19 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should remove item from collection when remove button is clicked and confirmed', () => {
+    const tempCaseField = <CaseField>({
+      ...caseField,
+      display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
+    });
+    component.caseField = tempCaseField;
+    component.caseFields = [tempCaseField];
+    component.ngOnInit();
+    fixture.detectChanges();
+    // Manually populate the form array as item field are mocked and can't register themselves
+    VALUES.forEach((collectionItem, index) => {
+      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+    });
+    fixture.detectChanges();
     // Confirm removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Remove'));
 
