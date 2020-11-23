@@ -1,0 +1,62 @@
+
+  {
+    "routes":[
+      { 
+        "url": "/case/create/createCaseStartPage",
+        "component": "CaseCreateConsumerComponent"
+      },
+      { 
+        "url": "/case/create/createCaseInfoPage",
+        "component": "CaseCreateConsumerComponent"
+      },
+      { 
+        "url": "/case/create/createCaseAdditionalInfoPage2",
+        "component": "CaseCreateConsumerComponent"
+      },
+      { 
+        "url": "/case/create/submit",
+        "component": "CaseCreateConsumerComponent",
+        "children": "editorRouting"
+      },
+      { 
+        "url": "/case/progress/page2",
+        "component": "CaseProgressConsumerComponent"
+      },
+      { 
+        "url": "/case/progress/submit",
+        "component": "CaseProgressConsumerComponent"
+      },
+      { 
+        "url": "/case/view/TEST/TestAddressBookCase/1111222233334444",
+        "component": "CaseViewComponent"
+      },
+      { 
+        "url": "/case/view/:jid/:ctid/:cid",
+        "component": "CaseViewConsumerComponent"
+      },
+      { 
+        "url": "/search-wrapper",
+        "component": "SearchFiltersWrapperConsumerComponent"
+      },
+      { 
+        "url": "/case/create-filters",
+        "component": "CreateCaseFiltersConsumerComponent"
+      },
+      { 
+        "url": "/case/timeline",
+        "component": "CaseTimelineConsumerComponent"
+      },
+      { 
+        "url": "/case/case-list-filters",
+        "component": "CaseListFiltersConsumerComponent"
+      },
+      { 
+        "url": "/search/result",
+        "component": "SearchResultConsumerComponent"
+      },
+      { 
+        "url": "/case/FR/caseType1Id/1",
+        "component": "CaseTypeComponent"
+      }
+    ]
+  }

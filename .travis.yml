@@ -33,6 +33,7 @@ script:
 after_success:
   - yarn test:codacy-upload
   - yarn coverage
+  - yarn a11y:demo
   - '[ "$TRAVIS_BRANCH" = "master" -o "$TRAVIS_PULL_REQUEST" = "true" ] && ./scripts/create-release-tag.sh'
 before_deploy:
   - if [[ "$TRAVIS_TAG" == *"-prerelease" ]]; then export PRERELEASE=true; else export PRERELEASE=false; fi
