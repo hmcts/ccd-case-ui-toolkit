@@ -7,7 +7,7 @@
     "prebuild": "gulp copy-lib",
     "start": "node server.js",
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
-    "test:a11y": "NODE_ENV=testing LOG_LEVEL=OFF NODE_PATH=. mocha test/accessibility/ --reporter spec --recursive --timeout 15000 --exit --reporter mochawesome --reporter-options reportDir=functional-output,reportFilename=a11y"
+    "a11y": "NODE_ENV=testing LOG_LEVEL=OFF NODE_PATH=. mocha test/accessibility/ --reporter spec --recursive --timeout 15000 --exit --reporter mochawesome --reporter-options reportDir=functional-output,reportFilename=a11y"
   },
   "dependencies": {
     "@angular-devkit/build-angular": "0.10.5",
@@ -32,7 +32,6 @@
     "angular2-template-loader": "^0.6.0",
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
     "concurrently": "^4.0.1",
     "copyfiles": "^2.1.0",
     "core-js": "^2.4.1",
@@ -53,7 +52,6 @@
     "ngx-md": "~6.0.0",
     "ngx-pagination": "^3.2.1",
     "node-sass": "4.14.1",
-    "pa11y": "^4.0.1",
     "postcss": "7.0.5",
     "raw-loader": "^0.5.1",
     "rimraf": "^2.6.2",

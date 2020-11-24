@@ -16,7 +16,7 @@
       { "url": "/case/progress",
         "component": "CaseProgressConsumerComponent"
       },
-      { "url": "case/view/TEST/TestAddressBookCase/1111222233334444",
+      { "url": "/case/view/TEST/TestAddressBookCase/1111222233334444",
         "component": "CaseViewComponent"
       },
       { "url": "/case/view/:jid/:ctid/:cid",
