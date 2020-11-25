@@ -25,6 +25,7 @@ export class CaseField implements Orderable {
   acls?: AccessControlList[];
   metadata?: boolean;
   retain_hidden_value: boolean;
+  formatted_value?: any;
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
