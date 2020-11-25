@@ -1,45 +1,62 @@
 
-  {"routes":[
-      { "url": "/case/create/createCaseStartPage",
+  {
+    "routes":[
+      { 
+        "url": "/case/create/createCaseStartPage",
         "component": "CaseCreateConsumerComponent"
       },
-      { "url": "/case/create/createCaseInfoPage",
+      { 
+        "url": "/case/create/createCaseInfoPage",
         "component": "CaseCreateConsumerComponent"
       },
-      { "url": "/case/create/createCaseAdditionalInfoPage2",
+      { 
+        "url": "/case/create/createCaseAdditionalInfoPage2",
         "component": "CaseCreateConsumerComponent"
       },
-      { "url": "/case/create/submit",
+      { 
+        "url": "/case/create/submit",
         "component": "CaseCreateConsumerComponent",
         "children": "editorRouting"
       },
-      { "url": "/case/progress",
+      { 
+        "url": "/case/progress/page2",
         "component": "CaseProgressConsumerComponent"
       },
-      { "url": "/case/view/TEST/TestAddressBookCase/1111222233334444",
+      { 
+        "url": "/case/progress/submit",
+        "component": "CaseProgressConsumerComponent"
+      },
+      { 
+        "url": "/case/view/TEST/TestAddressBookCase/1111222233334444",
         "component": "CaseViewComponent"
       },
-      { "url": "/case/view/:jid/:ctid/:cid",
+      { 
+        "url": "/case/view/:jid/:ctid/:cid",
         "component": "CaseViewConsumerComponent"
       },
-      { "url": "/search-wrapper",
+      { 
+        "url": "/search-wrapper",
         "component": "SearchFiltersWrapperConsumerComponent"
       },
-      { "url": "/case/create-filters",
+      { 
+        "url": "/case/create-filters",
         "component": "CreateCaseFiltersConsumerComponent"
       },
-      { "url": "/case/timeline",
+      { 
+        "url": "/case/timeline",
         "component": "CaseTimelineConsumerComponent"
       },
-      { "url": "/case/case-list-filters",
+      { 
+        "url": "/case/case-list-filters",
         "component": "CaseListFiltersConsumerComponent"
       },
-      { "url": "/search/result",
+      { 
+        "url": "/search/result",
         "component": "SearchResultConsumerComponent"
       },
-      { "url": "/case/FR/caseType1Id/1",
-        "component": "CaseTypeComponent",
-        "redirectTo": "search/result"
+      { 
+        "url": "/case/FR/caseType1Id/1",
+        "component": "CaseTypeComponent"
       }
-    
-  ]}
+    ]
+  }

@@ -15,13 +15,12 @@ let agent = request.agent(app);
 const excludedErrors = [
   'WCAG2AA.Principle1.Guideline1_3.1_3_1.F92,ARIA4',
   'WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail',
-  'WCAG2AA.Principle3.Guideline3_2.3_2_2.H32.2', //testing ignore
-  'WCAG2AA.Principle4.Guideline4_1.4_1_1.F77',
+  'WCAG2AA.Principle3.Guideline3_2.3_2_2.H32.2', 
+  'WCAG2AA.Principle4.Guideline4_1.4_1_1.F77', 
   'WCAG2AA.Principle1.Guideline1_1.1_1_1.H30.2',
   'WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.Fieldset.Name',
   'WCAG2AA.Principle1.Guideline1_3.1_3_1.H71.NoLegend',
   'WCAG2AA.Principle1.Guideline1_3.1_3_1.H42.2'
-
 ];
 
 const filteredErrors = r => {
@@ -35,7 +34,7 @@ const excludedWarnings = [
   'WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage',
   'WCAG2AA.Principle1.Guideline1_3.1_3_1.H48',
   'WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141',
-  'WCAG2AA.Principle1.Guideline1_3.1_3_1.H85.2',//ref
+  'WCAG2AA.Principle1.Guideline1_3.1_3_1.H85.2',
   'WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.Select.Value',
   'WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.Placeholder',
   'WCAG2AA.Principle1.Guideline1_3.1_3_1.H39.3.NoCaption'
@@ -78,10 +77,6 @@ for (let index in routingInfo.routes) {
           .filter((res) => res.type === 'error')
           .filter(filteredErrors)
           .filter(ignorePa11yErrors);
-
-          // .filter((err) =>
-          //   !ignorePa11yErrors.includes(err.code)
-          // );
         expect(errors.length).to.equal(0, JSON.stringify(errors, null, 2));
       });
 
