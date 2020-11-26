@@ -87,24 +87,36 @@ export class CasesService {
       );
   }
 
+  /**
+   * handleNestedDynamicListsInComplexTypes()
+   * Reassigns list_item and value data to DymanicList children 
+   * down the tree. Server response returns data only in
+   * the `value` object of parent complex type
+   * 
+   * EUI-2530 Dynamic Lists for Elements in a Complex Type
+   *
+   * @param jsonResponse - {}
+   */
   private handleNestedDynamicListsInComplexTypes(jsonResponse) {
 
-    jsonResponse.case_fields.forEach(caseField => {
-      if (caseField.display_context === 'COMPLEX') {
+    if (jsonResponse.case_fields) {
+      jsonResponse.case_fields.forEach(caseField => {
+        if (caseField.display_context === 'COMPLEX') {
 
-        caseField.field_type.complex_fields.forEach(field => {
+          caseField.field_type.complex_fields.forEach(field => {
 
-          if (field.field_type.id === 'DynamicList') {
-            const list_items = caseField.value[field.id].list_items;
-            field.value = {
-              list_items: list_items,
-              value: list_items[0] ? list_items[0] : undefined
-            };
-            field.formatted_value = field.value;
-          }
-        });
-      }
-    });
+            if (field.field_type.id === 'DynamicList') {
+              const list_items = caseField.value[field.id].list_items;
+              field.value = {
+                list_items: list_items,
+                value: list_items[0] ? list_items[0] : undefined
+              };
+              field.formatted_value = field.value;
+            }
+          });
+        }
+      });
+    }
 
     return jsonResponse;
   }
