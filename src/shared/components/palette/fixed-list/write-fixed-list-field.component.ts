@@ -12,9 +12,8 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
 
   ngOnInit() {
 
-
     /**
-     * 
+     *
      * Reassigning list_items from formatted_list when list_items is empty for DynamicList's
      */
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
