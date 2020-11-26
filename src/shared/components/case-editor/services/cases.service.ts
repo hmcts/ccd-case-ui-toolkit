@@ -89,10 +89,10 @@ export class CasesService {
 
   /**
    * handleNestedDynamicListsInComplexTypes()
-   * Reassigns list_item and value data to DymanicList children 
+   * Reassigns list_item and value data to DymanicList children
    * down the tree. Server response returns data only in
    * the `value` object of parent complex type
-   * 
+   *
    * EUI-2530 Dynamic Lists for Elements in a Complex Type
    *
    * @param jsonResponse - {}
