@@ -93,7 +93,7 @@ export class CasesService {
       if (caseField.display_context === 'COMPLEX') {
 
         caseField.field_type.complex_fields.forEach(field => {
-            
+
           if (field.field_type.id === 'DynamicList') {
             const list_items = caseField.value[field.id].list_items;
             field.value = {
