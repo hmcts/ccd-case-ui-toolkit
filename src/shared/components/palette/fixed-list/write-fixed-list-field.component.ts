@@ -16,7 +16,6 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
-
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
     if (isNull) {
       this.caseField.value = null;
