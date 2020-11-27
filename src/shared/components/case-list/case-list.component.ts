@@ -54,7 +54,7 @@ export class CaseListComponent {
   }
 
   public canAnyBeShared(): boolean {
-    return this.cases.some(c => this.canBeShared(c))
+    return this.cases.some(c => this.canBeShared(c));
   }
 
   public selectAll(): void {
