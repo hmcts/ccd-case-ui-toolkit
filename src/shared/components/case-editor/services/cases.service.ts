@@ -34,7 +34,7 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
 
   // Handling of Dynamic Lists in Complex Types
-  public static readonly SERVER_RESPONSE_DISPLAY_CONTEXT_COMPLEX_TYPE = 'COMPLEX';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
 
   /**
@@ -105,11 +105,11 @@ export class CasesService {
 
     if (jsonResponse.case_fields) {
       jsonResponse.case_fields.forEach(caseField => {
-        if (caseField.display_context === CasesService.SERVER_RESPONSE_DISPLAY_CONTEXT_COMPLEX_TYPE) {
+        if (caseField.field_type && caseField.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
 
           caseField.field_type.complex_fields.forEach(field => {
 
-            if (field.field_type.id === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
+            if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
               const list_items = caseField.value[field.id].list_items;
               field.value = {
                 list_items: list_items,
