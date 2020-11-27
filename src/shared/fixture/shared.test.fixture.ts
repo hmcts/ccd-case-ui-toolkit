@@ -155,15 +155,6 @@ export let createFixedListFieldType = (typeId: string,
   };
 };
 
-export let createMultiSelectListFieldType = (typeId: string,
-                                             fixedListItems: FixedListItem[] = []): FieldType => {
-  return {
-    id: 'MultiSelectList-' + typeId,
-    type: 'MultiSelectList',
-    fixed_list_items: fixedListItems || []
-  };
-};
-
 export let textFieldType = (): FieldType => {
   return {
     id: 'Text',
