@@ -170,8 +170,13 @@ export class FormValueService {
     }
 
     let sanitisedObject = {};
+    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
     Object.keys(rawObject).forEach(key => {
-      if ('CaseReference' === key) {
+      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+      // properties is null, the entire sanitised object to be returned should be null
+      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
+        sanitisedObject = null;
+      } else if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
@@ -186,12 +191,14 @@ export class FormValueService {
     }
 
     rawArray.forEach(item => {
-      if (item.hasOwnProperty('value')) {
+      if (item && item.hasOwnProperty('value')) {
         item.value = this.sanitiseValue(item.value);
       }
     });
 
-    return rawArray;
+    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
+    // association of a value
+    return rawArray.filter(item => !!item);
   }
 
   private sanitiseValue(rawValue: any): any {
