@@ -532,18 +532,18 @@ describe('CasesService', () => {
       const response = (casesService as any).handleNestedDynamicListsInComplexTypes({
         case_fields: [
           {
-            display_context: 'COMPLEX',
             field_type: {
               complex_fields: [
                 {
                   field_type: {
-                    id: 'DynamicList'
+                    type: 'DynamicList'
                   },
                   id: 'complex_dl',
                   value: {},
                   formatted_value: {}
                 }
-              ]
+              ],
+              type: 'Complex'
             },
             value: {
               complex_dl: {
@@ -560,12 +560,11 @@ describe('CasesService', () => {
       const expected = {
         case_fields: [
           {
-            display_context: 'COMPLEX',
             field_type: {
               complex_fields: [
                 {
                   field_type: {
-                    id: 'DynamicList'
+                    type: 'DynamicList'
                   },
                   id: 'complex_dl',
                   value: {
@@ -581,7 +580,8 @@ describe('CasesService', () => {
                     value: {code: '1', value: '1'}
                   }
                 }
-              ]
+              ],
+              type: 'Complex'
             },
             value: {
               complex_dl: {
