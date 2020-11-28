@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FieldsUtils } from './fields.utils';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 import { Wizard, WizardPage, WizardPageField } from '../../components';
-import { CaseField, FieldTypeEnum } from '../../domain/definition';
+import { CaseField } from '../../domain/definition';
 import { CaseEventTrigger } from '../../domain/case-view/case-event-trigger.model';
 
 // @dynamic
@@ -78,60 +78,33 @@ export class FieldsPurger {
   }
 
   private resetField(form: FormGroup, field: CaseField) {
-    // If the hidden field's value is to be retained, do nothing (except if it is a Complex type or collection of
-    // Complex types). This is a change to the previous behaviour (which used to clear the field value but remove it
-    // from submission as an update to the back-end). The new behaviour is to leave the field as is, so if the field
-    // is hidden but then un-hidden before form submission, any previously entered value is retained.
+    // Removing the field means that it is *NOT* sent to the CCD backend, which means no changes are made in the data.
+    // This is OK *if* the hidden value needs to be retained, i.e. field.retain_hidden_value = true, but the default
+    // should be to set it to null and allow it to be sent as such.
     //
-    // For Complex field types, an additional check of sub-fields is required. The same applies to a collection of
-    // Complex types.
-    if (field.retain_hidden_value) {
-      const fieldType: FieldTypeEnum = field.field_type.type;
-      // If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for any sub-fields
-      // where retain_hidden_value is false
-      if (fieldType === 'Complex' && field.field_type.complex_fields.length > 0) {
-        for (const complexSubField of field.field_type.complex_fields) {
-          if (!complexSubField.retain_hidden_value) {
-            // Call deleteFieldValue() with the parent FormGroup (i.e. the Complex field itself) and the sub-field to
-            // be deleted
-            this.deleteFieldValue(form.get('data').get(field.id) as FormGroup, complexSubField);
-          }
-        }
-      } else if (fieldType === 'Collection' && field.field_type.collection_field_type.type === 'Complex' &&
-                field.field_type.collection_field_type.complex_fields.length > 0) {
-        // If the field is a collection of Complex types, loop through each one and call deleteFieldValue() for any
-        // sub-fields where retain_hidden_value is false
-
-        // Get the field controls corresponding to the Complex field values
-        const fieldControls = form.get('data').get(field.id) as FormArray;
-
-        // Get the array of Complex field values
-        const complexFieldValues = field.value as any[];
-
-        // For each Complex field value, get the ID of each sub-field within it and use as a key to find the
-        // corresponding sub-CaseField (which contains the field type information)
-        if (complexFieldValues) {
-          complexFieldValues.forEach((fieldValue, index) => Object.keys(fieldValue.value).forEach(subFieldId => {
-            // Find the sub-CaseField corresponding to the sub-field ID
-            let subCaseField: CaseField;
-            for (const caseField of field.field_type.collection_field_type.complex_fields) {
-              if (caseField.id === subFieldId) {
-                subCaseField = caseField;
-                break;
-              }
-            }
-
-            // Recursively delete the sub-field value if retain_hidden_value is false, passing in the parent FormGroup
-            if (subCaseField && !subCaseField.retain_hidden_value) {
-              const parentFormGroup: FormGroup = fieldControls.at(index).get('value') as FormGroup;
-              this.deleteFieldValue(parentFormGroup, subCaseField);
-            }
-          }));
-        }
+    // *Complex* field types, i.e. those that contain other fields, should assume the same behaviour as before, which
+    // is to reset the `CaseField` value and remove the form control. The value of the *control* itself should be left
+    // alone.
+    //
+    // The only reliable check if a field is a complex type or not is to obtain its corresponding control and check
+    // whether it's a `FormControl` (simple field) or something else.
+    if (field.retain_hidden_value || !((form.get('data') as FormGroup).get(field.id) instanceof FormControl)) {
+      // Reset the field value and remove its control. This does NOT update it in the CCD backend, since it is just
+      // removed from the JSON structure
+      if (Array.isArray(field.value)) {
+        field.value.splice(0, field.value.length);
+      } else if (this.isObject(field.value)) {
+        field.value = {};
+      } else {
+        field.value = '';
       }
+      (form.get('data') as FormGroup).removeControl(field.id);
     } else {
-      // Delete the field value
-      this.deleteFieldValue(form.get('data') as FormGroup, field);
+      // Set the value of the field's control to null. This DOES update the value in the CCD backend
+      const fieldControl = (form.get('data') as FormGroup).get(field.id);
+      if (fieldControl) {
+        fieldControl.setValue(null);
+      }
     }
   }
 
@@ -153,96 +126,5 @@ export class FieldsPurger {
   // TODO: call isReadOnly on CaseFields once we make it available
   private isReadonly(case_field: CaseField): boolean {
     return case_field.display_context.toUpperCase() === 'READONLY'
-  }
-
-  /**
-   * Deletes a field value by setting the value of the corresponding {@link FormControl} to null (or an empty array
-   * if the field type is `Collection`), except when the field type is `Complex` or `Document`. For `Complex` field
-   * types, this recursive method is called until simple or "base" field types are reached. For `Document` field
-   * types, its _sub-field_ `FormControl` values are set to null.
-   *
-   * @param formGroup The `FormGroup` instance containing the `FormControl` for the specified field
-   * @param field The `CaseField` whose value is to be deleted in the backend
-   */
-  public deleteFieldValue(formGroup: FormGroup, field: CaseField) {
-    const fieldType: FieldTypeEnum = field.field_type.type;
-    const fieldControl = formGroup.get(field.id);
-
-    if (fieldControl) {
-      switch (fieldType) {
-        case 'Complex':
-          if (field.field_type.complex_fields.length > 0) {
-            for (const complexSubField of field.field_type.complex_fields) {
-              // The fieldControl is cast to a FormGroup because a Complex field type uses this as its underlying
-              // implementation
-              this.deleteFieldValue(fieldControl as FormGroup, complexSubField);
-            }
-          }
-          break;
-        case 'Collection':
-          // If it is a collection of Complex types, loop through each one; else fall through to be handled as a
-          // collection of simple types (in the same way as MultiSelectList), unless it's a collection of Document
-          // types, which requires different handling
-          const collectionFieldType = field.field_type.collection_field_type;
-          if (collectionFieldType.type === 'Complex' && collectionFieldType.complex_fields.length > 0) {
-            // Get the array of Complex field values
-            const complexFieldValues = field.value as any[];
-
-            // For each Complex field value, get the ID of each sub-field within it and use as a key to find the
-            // corresponding sub-CaseField (which contains the field type information)
-            if (complexFieldValues) {
-              complexFieldValues.forEach((fieldValue, index) => Object.keys(fieldValue.value).forEach(subFieldId => {
-                // Find the sub-CaseField corresponding to the sub-field ID
-                let subCaseField: CaseField;
-                for (const caseField of collectionFieldType.complex_fields) {
-                  if (caseField.id === subFieldId) {
-                    subCaseField = caseField;
-                    break;
-                  }
-                }
-
-                // Recursively delete the sub-field value, passing in the parent FormGroup
-                const parentFormGroup: FormGroup = (fieldControl as FormArray).at(index).get('value') as FormGroup;
-                this.deleteFieldValue(parentFormGroup, subCaseField);
-              }));
-            }
-            break;
-          } else if (collectionFieldType.type === 'Document') {
-            // Get the array of Document field values
-            const documentFieldValues = field.value as any[];
-
-            // For each Document field value, set all its property values to null (this is not accepted by the
-            // back-end but will be handled by sanitiseObject() in FormValueService before sending - see below for
-            // the single Document case)
-            if (documentFieldValues) {
-              documentFieldValues.forEach((fieldValue, index) => Object.keys(fieldValue.value).forEach(subFieldId => {
-                // Get the FormGroup containing the FormControl for the sub-field and set its value to null
-                (fieldControl as FormArray).at(index).get(`value.${subFieldId}`).setValue(null);
-              }));
-            }
-            break;
-          }
-          // Omitted "break" is intentional because a collection should be handled as per MultiSelectList if it is
-          // not a collection of Complex types
-          // tslint:disable-next-line: no-switch-case-fall-through
-        case 'MultiSelectList':
-          // Field control should be a FormArray, so map each of its values to null
-          fieldControl.setValue(fieldControl.value.map(() => null));
-          break;
-        case 'Document':
-          const documentFieldValue = fieldControl.value;
-          for (const key in documentFieldValue) {
-            if (fieldControl.get(key)) {
-              // The back-end doesn't accept null as a valid value for any of the Document field type properties but
-              // this is handled by sanitiseObject() in FormValueService, returning a null object for the entire
-              // Document field, if any of its properties is null - which is accepted by the back-end
-              fieldControl.get(key).setValue(null);
-            }
-          }
-          break;
-        default:
-          fieldControl.setValue(null);
-      }
-    }
   }
 }
