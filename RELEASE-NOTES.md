@@ -1,6 +1,12 @@
 ## RELEASE NOTES
-### Version 2.65-performance-issue-tribunals
+### Version 2.66.0-performance-issue-tribunals
 **EUI-2741** Improve performance time when loading a case with large hearing and judgement collections
+
+### Version 2.65.1
+**EUI** Undoing retain hidden fields revert 
+
+### Version 2.65
+**EUI** Catching up with releases
 
 ### Version 2.64.52-collection-permission
 **EUI-1370** UI When using case role collection of complex types doesn't seem to work
