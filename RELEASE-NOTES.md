@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.65.1
+**EUI** Undoing retain hidden fields revert 
+
 ### Version 2.65
 **EUI** Catching up with releases
 
