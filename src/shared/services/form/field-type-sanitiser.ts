@@ -1,8 +1,11 @@
 import { CaseField } from '../../domain/definition';
 import { Injectable } from '@angular/core';
+import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FieldTypeSanitiser {
+  public static readonly FIELD_TYPE_COMPLEX: FieldTypeEnum = 'Complex';
+  public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
 
   /**
    * This method finds dynamiclists in a form and replaces its string value, with
@@ -14,11 +17,11 @@ export class FieldTypeSanitiser {
    sanitiseLists(caseFields: CaseField[], editForm: any) {
 
     caseFields.forEach(caseField => {
-      if (caseField.field_type.type === 'DynamicList') {
+      if (caseField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST) {
         this.getListOfKeysFromEditForm(editForm).forEach((key) => {
           this.createValueCodePairAlongWithListIfKeyExistsInForm(caseField, key, editForm);
         });
-      } else if (caseField.field_type.type === 'Complex') {
+      } else if (caseField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
         this.sanitiseLists(caseField.field_type.complex_fields, editForm[caseField.id]);
       }
     });
