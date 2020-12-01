@@ -5,6 +5,7 @@ import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { Subscription } from 'rxjs';
+import { RouterHelperService } from '../../../services/router';
 
 const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
@@ -21,25 +22,40 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     private documentManagement: DocumentManagementService,
     private router: Router,
     private route: ActivatedRoute,
+    private routerHelper: RouterHelperService,
     private casesService: CasesService
   ) {
     super();
   }
 
   showMediaViewer(): void {
-    const caseId = this.route.snapshot.params['cid'];
+    let caseId = this.route.snapshot.params['cid'];
+    const urlSegment = this.routerHelper.getUrlSegmentsFromRoot(this.route.snapshot);
+    if (!caseId) {
+      caseId = urlSegment.find(urlSeg => !isNaN(parseFloat(urlSeg)));
+    }
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
-    this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
+    if (caseId) {
+      this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
+        if (this.caseField && this.caseField.value) {
+          const mergedInfo = {
+            ...this.caseField.value,
+            id: caseView.case_id,
+            jurisdiction: caseView.case_type.jurisdiction.id
+          };
+          this.openMediaViewer(mergedInfo);
+        }
+      });
+    } else {
       if (this.caseField && this.caseField.value) {
-        const mergedInfo = {
-          ...this.caseField.value,
-          id: caseView.case_id,
-          jurisdiction: caseView.case_type.jurisdiction.id
-        };
-        this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(mergedInfo));
+        this.openMediaViewer(this.caseField.value);
       }
-      this.windowService.openOnNewTab(this.getMediaViewerUrl());
-    });
+    }
+  }
+
+  public openMediaViewer(documentFieldValue): void {
+    this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(documentFieldValue));
+    this.windowService.openOnNewTab(this.getMediaViewerUrl());
   }
 
   getMediaViewerUrl(): string {
