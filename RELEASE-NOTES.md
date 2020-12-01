@@ -1,4 +1,13 @@
 ## RELEASE NOTES
+### Version 2.65.11-hidden-fields-revert
+* reverted hidden fields to a point at which it was working
+
+### Version 2.64.52-collection-permission
+**EUI-1370** UI When using case role collection of complex types doesn't seem to work
+
+### Version 2.64.50-case-share-hot-fix
+* correct and cherry-pick the right commits
+
 ### Version 2.64.50-case-share-hot-fix
 * correct and cherry-pick the right commits
 
