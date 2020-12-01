@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.65.2
+**EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
+
 ### Version 2.65.1
 **EUI** Undoing retain hidden fields revert 
 

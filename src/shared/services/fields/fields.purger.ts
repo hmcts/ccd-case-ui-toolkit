@@ -88,10 +88,12 @@ export class FieldsPurger {
     if (field.retain_hidden_value) {
       const fieldType: FieldTypeEnum = field.field_type.type;
       // If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for any sub-fields
-      // where retain_hidden_value is false
+      // where retain_hidden_value is false, OR for any Complex sub-fields *regardless of retain_hidden_value* (in
+      // order to inspect the sub-fields of a Complex type within another Complex type)
       if (fieldType === 'Complex' && field.field_type.complex_fields.length > 0) {
         for (const complexSubField of field.field_type.complex_fields) {
-          if (!complexSubField.retain_hidden_value) {
+          if ((complexSubField.field_type.type === 'Complex' && complexSubField.field_type.complex_fields.length > 0) ||
+              !complexSubField.retain_hidden_value) {
             // Call deleteFieldValue() with the parent FormGroup (i.e. the Complex field itself) and the sub-field to
             // be deleted
             this.deleteFieldValue(form.get('data').get(field.id) as FormGroup, complexSubField);
@@ -100,13 +102,14 @@ export class FieldsPurger {
       } else if (fieldType === 'Collection' && field.field_type.collection_field_type.type === 'Complex' &&
                 field.field_type.collection_field_type.complex_fields.length > 0) {
         // If the field is a collection of Complex types, loop through each one and call deleteFieldValue() for any
-        // sub-fields where retain_hidden_value is false
+        // sub-fields where retain_hidden_value is false, OR for any Complex sub-fields *regardless of
+        // retain_hidden_value* (in order to inspect the sub-fields of a Complex type within another Complex type)
 
-        // Get the field controls corresponding to the Complex field values
-        const fieldControls = form.get('data').get(field.id) as FormArray;
+        // Get the array of field controls corresponding to the Complex field values
+        const fieldControl = form.get('data').get(field.id) as FormArray;
 
         // Get the array of Complex field values
-        const complexFieldValues = field.value as any[];
+        const complexFieldValues = fieldControl.value as any[];
 
         // For each Complex field value, get the ID of each sub-field within it and use as a key to find the
         // corresponding sub-CaseField (which contains the field type information)
@@ -121,9 +124,12 @@ export class FieldsPurger {
               }
             }
 
-            // Recursively delete the sub-field value if retain_hidden_value is false, passing in the parent FormGroup
-            if (subCaseField && !subCaseField.retain_hidden_value) {
-              const parentFormGroup: FormGroup = fieldControls.at(index).get('value') as FormGroup;
+            // Recursively delete the sub-field value if retain_hidden_value is false, OR if the sub-field type is
+            // Complex - regardless of retain_hidden_value, passing in the parent FormGroup
+            if (subCaseField &&
+                ((subCaseField.field_type.type === 'Complex' && subCaseField.field_type.complex_fields.length > 0) ||
+                !subCaseField.retain_hidden_value)) {
+              const parentFormGroup: FormGroup = fieldControl.at(index).get('value') as FormGroup;
               this.deleteFieldValue(parentFormGroup, subCaseField);
             }
           }));
@@ -171,11 +177,17 @@ export class FieldsPurger {
     if (fieldControl) {
       switch (fieldType) {
         case 'Complex':
+          // If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for any sub-fields
+          // where retain_hidden_value is false, OR for any Complex sub-fields *regardless of retain_hidden_value*
+          // (in order to inspect the sub-fields of a Complex type within another Complex type)
           if (field.field_type.complex_fields.length > 0) {
             for (const complexSubField of field.field_type.complex_fields) {
-              // The fieldControl is cast to a FormGroup because a Complex field type uses this as its underlying
-              // implementation
-              this.deleteFieldValue(fieldControl as FormGroup, complexSubField);
+              if ((complexSubField.field_type.type === 'Complex' && complexSubField.field_type.complex_fields.length > 0) ||
+                  !complexSubField.retain_hidden_value) {
+                // The fieldControl is cast to a FormGroup because a Complex field type uses this as its underlying
+                // implementation
+                this.deleteFieldValue(fieldControl as FormGroup, complexSubField);
+              }
             }
           }
           break;
@@ -186,7 +198,7 @@ export class FieldsPurger {
           const collectionFieldType = field.field_type.collection_field_type;
           if (collectionFieldType.type === 'Complex' && collectionFieldType.complex_fields.length > 0) {
             // Get the array of Complex field values
-            const complexFieldValues = field.value as any[];
+            const complexFieldValues = fieldControl.value as any[];
 
             // For each Complex field value, get the ID of each sub-field within it and use as a key to find the
             // corresponding sub-CaseField (which contains the field type information)
@@ -209,7 +221,7 @@ export class FieldsPurger {
             break;
           } else if (collectionFieldType.type === 'Document') {
             // Get the array of Document field values
-            const documentFieldValues = field.value as any[];
+            const documentFieldValues = fieldControl.value as any[];
 
             // For each Document field value, set all its property values to null (this is not accepted by the
             // back-end but will be handled by sanitiseObject() in FormValueService before sending - see below for

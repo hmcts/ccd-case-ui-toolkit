@@ -38,21 +38,7 @@ describe('deleteFieldValue() tests', () => {
       type: 'Collection',
       collection_field_type: ADDRESS_DETAILS_FIELD_TYPE
     },
-    display_context: 'READONLY',
-    value: [
-      {
-        id: '0',
-        value: {
-          AddressLine1: 'Street'
-        }
-      },
-      {
-        id: '1',
-        value: {
-          AddressLine1: 'Another street'
-        }
-      }
-    ]
+    display_context: 'READONLY'
   });
 
   const DUMMY_DOCUMENT_FIELD_TYPE: FieldType = {
@@ -68,25 +54,7 @@ describe('deleteFieldValue() tests', () => {
       type: 'Collection',
       collection_field_type: DUMMY_DOCUMENT_FIELD_TYPE
     },
-    display_context: 'READONLY',
-    value: [
-      {
-        id: '0',
-        value: {
-          document_binary_url: 'http://document_binary.url',
-          document_filename: 'document.dummy',
-          document_url: 'http://document.url'
-        }
-      },
-      {
-        id: '1',
-        value: {
-          document_binary_url: 'http://document_binary.url',
-          document_filename: 'document.dummy',
-          document_url: 'http://document.url'
-        }
-      }
-    ]
+    display_context: 'READONLY'
   });
 
   const COUNTRIES: FixedListItem[] = [{code: 'UK', label: 'United Kingdom'}, {code: 'US', label: 'United States'}];
