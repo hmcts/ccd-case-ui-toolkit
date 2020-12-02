@@ -1,9 +1,22 @@
 ## RELEASE NOTES
+
+### Version 2.65.2-hidden-fields-revert
+**EUI** Undoing retain hidden fields functionality
+
+### Version 2.65.1
+**EUI** Undoing retain hidden fields revert 
+
+### Version 2.65
+**EUI** Catching up with releases
+
 ### Version 2.64.52-collection-permission
 **EUI-1370** UI When using case role collection of complex types doesn't seem to work
 
 ### Version 2.64.50-case-share-hot-fix
 * correct and cherry-pick the right commits
+
+### Version 2.64.49-retain-hidden-value-complex-and-collection-types-fix
+**EUI-2739** Fix "retain hidden fields" functionality for all field types, including Complex and Collection types
 
 ### Version 2.64.48-case-share-hot-fix
 * determine whether a case sharable by supplementary_data
