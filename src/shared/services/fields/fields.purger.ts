@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FieldsUtils } from './fields.utils';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 import { Wizard, WizardPage, WizardPageField } from '../../components';
@@ -56,7 +56,7 @@ export class FieldsPurger {
     }
   }
 
-  private isHidden(condition: ShowCondition, formFields: any): boolean {
+  private isHidden(condition, formFields) {
     return !condition.match(formFields);
   }
 

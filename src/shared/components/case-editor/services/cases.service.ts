@@ -33,6 +33,10 @@ export class CasesService {
   public static readonly V2_MEDIATYPE_CREATE_CASE =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
 
+  // Handling of Dynamic Lists in Complex Types
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
+
   /**
    *
    * @type {(caseId:string)=>"../../Observable".Observable<Case>}
@@ -87,6 +91,40 @@ export class CasesService {
       );
   }
 
+  /**
+   * handleNestedDynamicListsInComplexTypes()
+   * Reassigns list_item and value data to DymanicList children
+   * down the tree. Server response returns data only in
+   * the `value` object of parent complex type
+   *
+   * EUI-2530 Dynamic Lists for Elements in a Complex Type
+   *
+   * @param jsonResponse - {}
+   */
+  private handleNestedDynamicListsInComplexTypes(jsonResponse) {
+
+    if (jsonResponse.case_fields) {
+      jsonResponse.case_fields.forEach(caseField => {
+        if (caseField.field_type && caseField.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
+
+          caseField.field_type.complex_fields.forEach(field => {
+
+            if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
+              const list_items = caseField.value[field.id].list_items;
+              field.value = {
+                list_items: list_items,
+                value: list_items[0] ? list_items[0] : undefined
+              };
+              field.formatted_value = field.value;
+            }
+          });
+        }
+      });
+    }
+
+    return jsonResponse;
+  }
+
   getEventTrigger(caseTypeId: string,
                   eventTriggerId: string,
                   caseId?: string,
@@ -109,7 +147,10 @@ export class CasesService {
     return this.http
       .get(url, {headers})
       .pipe(
-        map(response => response.json()),
+        map(response => {
+
+          return this.handleNestedDynamicListsInComplexTypes(response.json());
+        }),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
