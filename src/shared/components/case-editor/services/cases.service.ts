@@ -87,6 +87,28 @@ export class CasesService {
       );
   }
 
+  private handleNestedDynamicListsInComplexTypes(jsonResponse) {
+
+    jsonResponse.case_fields.forEach(caseField => {
+      if (caseField.display_context === 'COMPLEX') {
+
+        caseField.field_type.complex_fields.forEach(field => {
+            
+          if (field.field_type.id === 'DynamicList') {
+            const list_items = caseField.value[field.id].list_items;
+            field.value = {
+              list_items: list_items,
+              value: list_items[0] ? list_items[0] : undefined
+            };
+            field.formatted_value = field.value;
+          }
+        });
+      }
+    });
+
+    return jsonResponse;
+  }
+
   getEventTrigger(caseTypeId: string,
                   eventTriggerId: string,
                   caseId?: string,
@@ -109,7 +131,10 @@ export class CasesService {
     return this.http
       .get(url, {headers})
       .pipe(
-        map(response => response.json()),
+        map(response => {
+
+          return this.handleNestedDynamicListsInComplexTypes(response.json());
+        }),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
