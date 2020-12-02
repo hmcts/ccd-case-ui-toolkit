@@ -226,7 +226,10 @@ export class FormValueService {
    */
   private containsNonEmptyValues(object: object): boolean {
     const values = Object.keys(object).map(key => object[key]);
-    return values.some(x => (x !== null &&
-      (typeof x === 'object' && x.constructor === Object ? this.containsNonEmptyValues(x) : x !== '')));
+    const objectRefs = [];
+    // Note that pushing to an array is truthy (returns new length of the array), hence using ! to make it falsy
+    const hasNonNullPrimitive = values.some(x => (x !== null &&
+      (typeof x === 'object' && x.constructor === Object ? !objectRefs.push(x) : x !== '')));
+    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
   }
 }
