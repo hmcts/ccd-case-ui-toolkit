@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
@@ -99,7 +99,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     appConfig: AbstractAppConfig,
     private activityService: ActivityService,
     private caseReferencePipe: CaseReferencePipe,
-    private placeholderService: PlaceholderService
+    private placeholderService: PlaceholderService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -321,6 +322,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
       }
     }
+    this.cdr.detectChanges();
   }
 
   sortWidget(column: SearchResultViewColumn) {
@@ -360,7 +362,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return result.case_id.startsWith(DRAFT_PREFIX) ? DRAFT_PREFIX : this.hyphenateIfCaseReferenceOrGet(col, result);
   }
 
-  private isSortAscending(column: SearchResultViewColumn): boolean {
+  public isSortAscending(column: SearchResultViewColumn): boolean {
     let currentSortOrder = this.currentSortOrder(column);
 
     return currentSortOrder === SortOrder.UNSORTED || currentSortOrder === SortOrder.DESCENDING;
@@ -383,6 +385,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
       }
     }
     return isAscending ? SortOrder.ASCENDING : isDescending ? SortOrder.DESCENDING : SortOrder.UNSORTED;
+  }
+
+  public getAriaSort(column: SearchResultViewColumn): string {
+    switch (this.currentSortOrder(column)) {
+      case SortOrder.ASCENDING:
+        return 'ascending';
+      case SortOrder.DESCENDING:
+        return 'descending';
+      default:
+        return null;
+    }
   }
 
   getFirstResult(): number {

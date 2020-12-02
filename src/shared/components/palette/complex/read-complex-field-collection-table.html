@@ -6,9 +6,9 @@
         <tr>
           <ng-container *ngFor="let heading of columns">
             <ng-container *ngFor="let name of columnsAllLabels | keyvalue:keepOriginalOrder">
-              <th *ngIf="heading.trim() == name.key">
+              <th *ngIf="heading.trim() == name.key" [attr.aria-sort]="getAriaSorting(name.value)" role="columnheader">
                 <span class="text-16">{{name.value.label}}</span>
-                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value)"></a>
+                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value)" [attr.aria-label]="'Order by ' + name.value.label + (isSortAscending(name.value) ? ' descending' : ' ascending' )"></a>
               </th>
             </ng-container>
           </ng-container>
@@ -36,7 +36,7 @@
             </ng-container>
               <td>
                 <div style="float: right;">
-                  <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
+                  <a href="javascript:void(0)" aria-label="expand"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
                 </div>
                </td>
           </tr>

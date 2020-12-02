@@ -152,8 +152,12 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     }
   }
 
-  private isSortAscending(column: any): boolean {
+  public isSortAscending(column: any): boolean {
     return !(column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
+  }
+
+  public getAriaSorting(column: any): string {
+    return column.sortOrder === SortOrder.ASCENDING ? 'ascending' : column.sortOrder === SortOrder.DESCENDING ? 'descending' : null;
   }
 
   sortWidget(column: any) {

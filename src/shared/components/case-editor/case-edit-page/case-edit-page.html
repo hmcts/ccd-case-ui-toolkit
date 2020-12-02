@@ -53,7 +53,7 @@
       <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">{{triggerText}}</button>
     </div>
 
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
+    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" aria-label="Cancel editing case">{{getCancelText()}}</a></p>
 
   </form>
 </div>
