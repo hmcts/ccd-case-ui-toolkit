@@ -9,7 +9,6 @@ module.exports = (testPage, method = 'GET') => {
     hideElements: '.govuk-box-highlight, #logo, #footer, link[rel=mask-icon], .skipAccessTest',
 
     beforeScript(page, options, next) {
-      console.log("method::::::"+method)
 
       if (method === 'POST') {
 
