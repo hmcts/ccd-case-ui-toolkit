@@ -19,13 +19,16 @@
         </label>
       </div>
     </th>
-    <th *ngFor="let col of resultView.columns">
-      <table class="search-result-column-header"
-             attr.aria-label="Sort by {{col.label}} {{ isSortAscending(col)? 'ascending' : 'descending' }}">
+    <th
+        *ngFor="let col of resultView.columns"
+        [attr.aria-sort]="getAriaSort(col)"
+        role="columnheader"
+    >
+      <table class="search-result-column-header">
         <tr>
           <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
           <div *ngIf="comparator(col)" class="search-result-column-sort">
-            <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
+            <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)" attr.aria-label="Sort by {{col.label}} {{ isSortAscending(col)? 'ascending' : 'descending' }}"></a>
           </div>
         </tr>
       </table>

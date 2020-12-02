@@ -23,6 +23,6 @@
     </div>
   </div>
 
-  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" >Apply</button> &nbsp;&nbsp;&nbsp;
-  <button id="reset" type="button" (click)="reset()" class="button button-secondary">Reset</button>
+  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" aria-label="Apply filter">Apply</button> &nbsp;&nbsp;&nbsp;
+  <button id="reset" type="button" (click)="reset()" class="button button-secondary" aria-label="Reset filter">Reset</button>
 </form>
