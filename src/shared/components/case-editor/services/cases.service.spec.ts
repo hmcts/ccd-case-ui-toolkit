@@ -524,4 +524,78 @@ describe('CasesService', () => {
         });
     });
   });
+
+  describe('handleNestedDynamicListsInComplexTypes()', () => {
+
+    it('should set data for dynamic lists', () => {
+
+      const response = (casesService as any).handleNestedDynamicListsInComplexTypes({
+        case_fields: [
+          {
+            field_type: {
+              complex_fields: [
+                {
+                  field_type: {
+                    type: 'DynamicList'
+                  },
+                  id: 'complex_dl',
+                  value: {},
+                  formatted_value: {}
+                }
+              ],
+              type: 'Complex'
+            },
+            value: {
+              complex_dl: {
+                list_items: [
+                  {code: '1', value: '1'}
+                ],
+                value: '1'
+              }
+            }
+          }
+        ]
+      });
+
+      const expected = {
+        case_fields: [
+          {
+            field_type: {
+              complex_fields: [
+                {
+                  field_type: {
+                    type: 'DynamicList'
+                  },
+                  id: 'complex_dl',
+                  value: {
+                    list_items: [
+                      {code: '1', value: '1'}
+                    ],
+                    value: {code: '1', value: '1'}
+                  },
+                  formatted_value: {
+                    list_items: [
+                      {code: '1', value: '1'}
+                    ],
+                    value: {code: '1', value: '1'}
+                  }
+                }
+              ],
+              type: 'Complex'
+            },
+            value: {
+              complex_dl: {
+                list_items: [
+                  {code: '1', value: '1'}
+                ],
+                value: '1'
+              }
+            }
+          }
+        ]
+      };
+
+      expect(response).toEqual(expected);
+    });
+  });
 });
