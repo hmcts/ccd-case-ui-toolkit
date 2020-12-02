@@ -1,4 +1,14 @@
 ## RELEASE NOTES
+
+### Version 2.65.2-hidden-fields-revert
+**EUI** Undoing retain hidden fields functionality
+
+### Version 2.65.1
+**EUI** Undoing retain hidden fields revert 
+
+### Version 2.65
+**EUI** Catching up with releases
+
 ### Version 2.64.52-collection-permission
 **EUI-1370** UI When using case role collection of complex types doesn't seem to work
 

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.52-collection-permission",
+  "version": "2.65.2-hidden-fields-revert",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
