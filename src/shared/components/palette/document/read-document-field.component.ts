@@ -5,7 +5,6 @@ import { WindowService } from '../../../services/window';
 import { DocumentManagementService } from '../../../services/document-management';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { Subscription } from 'rxjs';
-import { RouterHelperService } from '../../../services/router';
 
 const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
@@ -22,18 +21,13 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     private documentManagement: DocumentManagementService,
     private router: Router,
     private route: ActivatedRoute,
-    private routerHelper: RouterHelperService,
     private casesService: CasesService
   ) {
     super();
   }
 
   showMediaViewer(): void {
-    let caseId = this.route.snapshot.params['cid'];
-    const urlSegment = this.routerHelper.getUrlSegmentsFromRoot(this.route.snapshot);
-    if (!caseId) {
-      caseId = urlSegment.find(urlSeg => !isNaN(parseFloat(urlSeg)));
-    }
+    const caseId = this.route.snapshot.params['cid'];
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
     if (caseId) {
       this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {

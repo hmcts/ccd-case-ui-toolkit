@@ -15,11 +15,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import any = jasmine.any;
 import { CasesService } from '../../case-editor/services/cases.service';
 import { of } from 'rxjs';
-import { RouterHelperService } from '../../../services/router';
 
 describe('ReadDocumentFieldComponent', () => {
-  const PARENT_URL = '/case/123/trigger/editEvent';
-  const PARENT_URL_SEGMENTS = PARENT_URL.split('/');
+
   const FIELD_ID = 'ReadOnlyFieldId';
   const FIELD_TYPE: FieldType = {
     id: 'Document',
@@ -33,7 +31,6 @@ describe('ReadDocumentFieldComponent', () => {
   let mockDocumentManagementService: any;
   let windowService;
   let router: any;
-  let routerHelper: any;
 
   describe('Non-persistable readonly document field', () => {
     const CASE_FIELD: CaseField = <CaseField>({
@@ -62,9 +59,6 @@ describe('ReadDocumentFieldComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
-      routerHelper = createSpyObj('RouterHelperService', ['getUrlSegmentsFromRoot']);
-      routerHelper.getUrlSegmentsFromRoot.and.returnValue(PARENT_URL_SEGMENTS);
-
       mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
 
       TestBed
@@ -79,7 +73,6 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: RouterHelperService, useValue: routerHelper },
             { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}},
             { provide: CasesService, useValue: mockCasesService }
           ]
@@ -160,9 +153,6 @@ describe('ReadDocumentFieldComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(new Promise(any));
-      routerHelper = createSpyObj('RouterHelperService', ['getUrlSegmentsFromRoot']);
-      routerHelper.getUrlSegmentsFromRoot.and.returnValue(PARENT_URL_SEGMENTS);
-
       mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
 
       TestBed
@@ -177,7 +167,6 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: RouterHelperService, useValue: routerHelper },
             { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}},
             { provide: CasesService, useValue: mockCasesService }
           ]
