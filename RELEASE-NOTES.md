@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 2.65.2-hidden-fields-revert
+**EUI** Undoing retain hidden fields functionality
+
 ### Version 2.65.1
 **EUI** Undoing retain hidden fields revert 
 
