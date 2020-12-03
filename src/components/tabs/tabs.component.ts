@@ -25,15 +25,12 @@ export class TabsComponent implements AfterContentInit {
     this.panels.forEach((panel) => this.panelIds.push(panel.id));
   }
 
-  public show(id: string, showPanel = true) {
+  public show(id: string) {
     const panels: TabComponent[] = this.panels.toArray();
     if (0 > this.panelIds.indexOf(id)) {
       id = panels[0].id;
     }
-
-    if (showPanel) {
-      panels.forEach(panel => panel.selected = id === panel.id);
-    }
+    panels.forEach(panel => panel.selected = id === panel.id);
   }
 
   setTabFocus(id: string) {
