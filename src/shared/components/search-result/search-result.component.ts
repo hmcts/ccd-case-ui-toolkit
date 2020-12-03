@@ -322,6 +322,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
       }
     }
+    // triggering chnage detection to fix expressionchangedafterithasbeencheckederror
     this.cdr.detectChanges();
   }
 
