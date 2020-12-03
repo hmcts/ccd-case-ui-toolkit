@@ -78,18 +78,20 @@ export class FieldsPurger {
   }
 
   private resetField(form: FormGroup, field: CaseField) {
-    // If the hidden field's value is to be retained, do nothing (except if it is a Complex type or collection of
-    // Complex types). This is a change to the previous behaviour (which used to clear the field value but remove it
-    // from submission as an update to the back-end). The new behaviour is to leave the field as is, so if the field
-    // is hidden but then un-hidden before form submission, any previously entered value is retained.
-    //
-    // For Complex field types, an additional check of sub-fields is required. The same applies to a collection of
-    // Complex types.
+    /**
+     * If the hidden field's value is to be retained, do nothing (except if it is a Complex type or collection of
+     * Complex types). This is a change to the previous behaviour (which used to clear the field value but remove it
+     * from submission as an update to the back-end). The new behaviour is to leave the field as is, so if the field
+     * is hidden but then un-hidden before form submission, any previously entered value is retained.
+     *
+     * For Complex field types, an additional check of sub-fields is required. The same applies to a collection of
+     * Complex types.
+     */
     if (field.retain_hidden_value) {
       const fieldType: FieldTypeEnum = field.field_type.type;
       // If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for any sub-fields
-      // where retain_hidden_value is false, OR for any Complex sub-fields *regardless of retain_hidden_value* (in
-      // order to inspect the sub-fields of a Complex type within another Complex type)
+      // where retain_hidden_value is false, OR for any Complex sub-fields *regardless of their retain_hidden_value*
+      // (in order to inspect the sub-fields of a Complex type within another Complex type)
       if (fieldType === 'Complex' && field.field_type.complex_fields.length > 0) {
         for (const complexSubField of field.field_type.complex_fields) {
           if ((complexSubField.field_type.type === 'Complex' && complexSubField.field_type.complex_fields.length > 0) ||
@@ -102,7 +104,7 @@ export class FieldsPurger {
       } else if (fieldType === 'Collection' && field.field_type.collection_field_type.type === 'Complex' &&
                 field.field_type.collection_field_type.complex_fields.length > 0) {
         // If the field is a collection of Complex types, loop through each one and call deleteFieldValue() for any
-        // sub-fields where retain_hidden_value is false, OR for any Complex sub-fields *regardless of
+        // sub-fields where retain_hidden_value is false, OR for any Complex sub-fields *regardless of their
         // retain_hidden_value* (in order to inspect the sub-fields of a Complex type within another Complex type)
 
         // Get the array of field controls corresponding to the Complex field values
@@ -125,7 +127,7 @@ export class FieldsPurger {
             }
 
             // Recursively delete the sub-field value if retain_hidden_value is false, OR if the sub-field type is
-            // Complex - regardless of retain_hidden_value, passing in the parent FormGroup
+            // Complex and regardless of retain_hidden_value, passing in the parent FormGroup
             if (subCaseField &&
                 ((subCaseField.field_type.type === 'Complex' && subCaseField.field_type.complex_fields.length > 0) ||
                 !subCaseField.retain_hidden_value)) {
@@ -177,13 +179,19 @@ export class FieldsPurger {
     if (fieldControl) {
       switch (fieldType) {
         case 'Complex':
-          // If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for any sub-fields
-          // where retain_hidden_value is false, OR for any Complex sub-fields *regardless of retain_hidden_value*
-          // (in order to inspect the sub-fields of a Complex type within another Complex type)
+          /**
+           * If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for:
+           *
+           * * Any sub-fields where retain_hidden_value is false, if the parent field has retain_hidden_value = true;
+           * * ALL sub-fields if the parent field has retain_hidden_value = false;
+           * * Any Complex sub-fields *regardless of their retain_hidden_value* (in order to inspect the sub-fields
+           * of a Complex type within another Complex type)
+           */
           if (field.field_type.complex_fields.length > 0) {
             for (const complexSubField of field.field_type.complex_fields) {
               if ((complexSubField.field_type.type === 'Complex' && complexSubField.field_type.complex_fields.length > 0) ||
-                  !complexSubField.retain_hidden_value) {
+                  (complexSubField.field_type.type !== 'Complex' &&
+                  (field.retain_hidden_value ? !complexSubField.retain_hidden_value : true))) {
                 // The fieldControl is cast to a FormGroup because a Complex field type uses this as its underlying
                 // implementation
                 this.deleteFieldValue(fieldControl as FormGroup, complexSubField);

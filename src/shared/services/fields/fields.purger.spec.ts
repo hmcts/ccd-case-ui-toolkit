@@ -19,6 +19,16 @@ describe('deleteFieldValue() tests', () => {
           type: 'Text'
         },
         display_context: 'READONLY'
+      } as CaseField,
+      {
+        id: 'Postcode',
+        label: 'Postcode',
+        field_type: {
+          id: 'Text',
+          type: 'Text'
+        },
+        display_context: 'READONLY',
+        retain_hidden_value: true
       } as CaseField
     ]
   }
@@ -28,6 +38,14 @@ describe('deleteFieldValue() tests', () => {
     label: 'Address',
     field_type: ADDRESS_DETAILS_FIELD_TYPE,
     display_context: 'READONLY'
+  });
+
+  const ADDRESS_FIELD_COMPLEX_RETAIN_HIDDEN: CaseField = <CaseField>({
+    id: 'Address',
+    label: 'Address',
+    field_type: ADDRESS_DETAILS_FIELD_TYPE,
+    display_context: 'READONLY',
+    retain_hidden_value: true
   });
 
   const ADDRESS_FIELD_COLLECTION: CaseField = <CaseField>({
@@ -67,28 +85,56 @@ describe('deleteFieldValue() tests', () => {
 
   it('should delete fields of a Complex type', () => {
     const formGroup = new FormGroup({
-      Address: new FormGroup({AddressLine1: new FormControl('Street')})
+      Address: new FormGroup({
+        AddressLine1: new FormControl('Street'),
+        Postcode: new FormControl('AB12 3CD')
+      })
     });
 
     fieldsPurger.deleteFieldValue(formGroup, ADDRESS_FIELD_COMPLEX);
     expect(formGroup.get('Address.AddressLine1').value).toBeNull();
+    // Postcode expected to be null - even though retain_hidden_value is true - because retain_hidden_value is false
+    // on the parent Complex field
+    expect(formGroup.get('Address.Postcode').value).toBeNull();
+  });
+
+  it('should delete only those fields not set to be retained of a Complex type, if the Complex type itself is to be retained', () => {
+    const formGroup = new FormGroup({
+      Address: new FormGroup({
+        AddressLine1: new FormControl('Street'),
+        Postcode: new FormControl('AB12 3CD')
+      })
+    });
+
+    fieldsPurger.deleteFieldValue(formGroup, ADDRESS_FIELD_COMPLEX_RETAIN_HIDDEN);
+    expect(formGroup.get('Address.AddressLine1').value).toBeNull();
+    // Postcode expected not to be null because retain_hidden_value is also true on the parent Complex field
+    expect(formGroup.get('Address.Postcode').value).not.toBeNull();
   });
 
   it('should delete fields of a collection of Complex types', () => {
     const formGroup = new FormGroup({
       AddressCollection: new FormArray([
         new FormGroup({
-          value: new FormGroup({AddressLine1: new FormControl('Street')})
+          value: new FormGroup({
+            AddressLine1: new FormControl('Street'),
+            Postcode: new FormControl('AB12 3CD')
+          })
         }),
         new FormGroup({
-          value: new FormGroup({AddressLine1: new FormControl('Another street')})
+          value: new FormGroup({
+            AddressLine1: new FormControl('Another street'),
+            Postcode: new FormControl('AB12 3CD')
+          })
         }),
       ])
     });
 
     fieldsPurger.deleteFieldValue(formGroup, ADDRESS_FIELD_COLLECTION);
     expect((formGroup.get('AddressCollection') as FormArray).at(0).get('value.AddressLine1').value).toBeNull();
+    expect((formGroup.get('AddressCollection') as FormArray).at(0).get('value.Postcode').value).toBeNull();
     expect((formGroup.get('AddressCollection') as FormArray).at(1).get('value.AddressLine1').value).toBeNull();
+    expect((formGroup.get('AddressCollection') as FormArray).at(1).get('value.Postcode').value).toBeNull();
   });
 
   it('should delete fields of a collection of Document types', () => {
