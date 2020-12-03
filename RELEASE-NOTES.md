@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version x.xx.x-focus-order
+**EUI-2020** Focus order for tabs, create a case and case list / search
+
 ### Version 2.65.2-hidden-fields-revert
 **EUI** Undoing retain hidden fields functionality
 

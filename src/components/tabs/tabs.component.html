@@ -1,6 +1,6 @@
 <div class="tabs">
 
-  <ul class="tabs-list" role="list">
+  <ul class="tabs-list" role="tablist">
     <li class="tabs-list-item" *ngFor="let panel of panels">
       <a
         class="tabs-toggle"
@@ -8,9 +8,10 @@
         [fragment]="panel.id"
         role="tab"
         (click)="show(panel.id)"
+        (keyup)="handleKeyUp($event, panel.id)"
         [attr.aria-controls]="panel.id"
         [attr.aria-selected]="panel.selected"
-        tabindex="0"
+        [attr.tabindex]="panel.selected ? 0 : -1"
         [ngClass]="{
           'tabs-toggle-selected': panel.selected
         }"
