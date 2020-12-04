@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 2.65.3-media-viewer-hotfix
+### Version 2.65.8-media-viewer-hotfix
 **EUI-2981** bug/EUI-2981-cannot-open-media-viewer-2
+
+### Version 2.65.6
+**EUI** bumping up
+
+### Version 2.65.5
+**EUI** bumping up
 
 ### Version 2.65.2-hidden-fields-revert
 **EUI** Undoing retain hidden fields functionality
