@@ -1,18 +1,18 @@
 ## RELEASE NOTES
-### Version 2.65.4-retain-hidden-fields-pre-release-2
+### Version 2.65.7-retain-hidden-fields-pre-release
 **EUI-2739** Bump version number to trigger npm release process (again)
-
-### Version 2.65.4-retain-hidden-fields-pre-release
-**EUI-2739** Bump version number to trigger npm release process
-
-### Version 2.65.3-retain-hidden-fields-pre-release
-**EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
 
 ### Version 2.65.6
 **EUI** bumping up
 
 ### Version 2.65.5
 **EUI** bumping up
+
+### Version 2.65.4-retain-hidden-fields-pre-release
+**EUI-2739** Bump version number to trigger npm release process
+
+### Version 2.65.3-retain-hidden-fields-pre-release
+**EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
 
 ### Version 2.65.2-hidden-fields-revert
 **EUI** Undoing retain hidden fields functionality
