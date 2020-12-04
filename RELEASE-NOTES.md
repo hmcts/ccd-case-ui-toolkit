@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.65.6
+**EUI** bumping up
+
+### Version 2.65.5
+**EUI** bumping up
+
 ### Version 2.65.2-hidden-fields-revert
 **EUI** Undoing retain hidden fields functionality
 
