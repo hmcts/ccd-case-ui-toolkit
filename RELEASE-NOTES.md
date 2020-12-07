@@ -2,6 +2,12 @@
 ### Version 2.66.0-performance-issue-tribunals
 **EUI-2741** Improve performance time when loading a case with large hearing and judgement collections
 
+### Version 2.65.6
+**EUI** bumping up
+
+### Version 2.65.5
+**EUI** bumping up
+
 ### Version 2.65.2-hidden-fields-revert
 **EUI** Undoing retain hidden fields functionality
 
