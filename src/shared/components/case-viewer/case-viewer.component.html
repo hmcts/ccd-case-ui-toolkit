@@ -42,8 +42,8 @@
   <div class="grid-row">
     <div class="column-full">
       <ng-container *ngIf="hasTabsPresent()">
-        <mat-tab-group>
-          <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [title]="tab.label">
+        <mat-tab-group animationDuration="0ms">
+          <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
             <table [class]="tab.id">
               <tbody>
               <ng-container *ngFor="let field of tab.fields">
