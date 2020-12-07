@@ -42,8 +42,8 @@
   <div class="grid-row">
     <div class="column-full">
       <ng-container *ngIf="hasTabsPresent()">
-        <cut-tabs>
-          <cut-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [title]="tab.label" [selected]="curIdx==0">
+        <mat-tab-group>
+          <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [title]="tab.label">
             <table [class]="tab.id">
               <tbody>
               <ng-container *ngFor="let field of tab.fields">
@@ -63,8 +63,8 @@
               </ng-container>
               </tbody>
             </table>
-          </cut-tab>
-        </cut-tabs>
+          </mat-tab>
+        </mat-tab-group>
       </ng-container>
     </div>
   </div>
