@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.65.7-retain-hidden-fields-pre-release
+**EUI-2739** Bump version number to trigger npm release process (again)
 
 ### Version 2.65.6
 **EUI** bumping up

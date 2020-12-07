@@ -56,7 +56,7 @@ export class FieldsPurger {
     }
   }
 
-  private isHidden(condition, formFields) {
+  private isHidden(condition: ShowCondition, formFields: any): boolean {
     return !condition.match(formFields);
   }
 
