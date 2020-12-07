@@ -106,15 +106,7 @@ describe('CaseEditComponent', () => {
       type: 'Collection',
       collection_field_type: PERSON_NAME_FIELD_TYPE
     },
-    display_context: 'READONLY',
-    value: [
-      {
-        id: '0',
-        value: {
-          PersonMiddleName: 'John'
-        }
-      }
-    ]
+    display_context: 'READONLY'
   });
 
   const CASE_FIELD_3: CaseField = <CaseField>({
@@ -158,15 +150,7 @@ describe('CaseEditComponent', () => {
       type: 'Collection',
       collection_field_type: ADDRESS_DETAILS_FIELD_TYPE
     },
-    display_context: 'READONLY',
-    value: [
-      {
-        id: '0',
-        value: {
-          AddressLine1: 'Street'
-        }
-      }
-    ]
+    display_context: 'READONLY'
   });
 
   const WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION: WizardPageField = {
