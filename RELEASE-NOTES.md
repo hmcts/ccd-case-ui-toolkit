@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.65.7
+**EUI-2741** Improve performance time when loading a case with large hearing and judgement collections
+
 ### Version 2.65.6
 **EUI** bumping up
 
