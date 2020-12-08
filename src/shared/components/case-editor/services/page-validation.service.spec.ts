@@ -36,6 +36,26 @@ describe('PageValidationService', () => {
     expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
   });
 
+  it('should allow empty values when field is MANDATORY and hidden', () => {
+    let field1 = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+    let field2 = aCaseField('field2', 'field2', 'Text', 'MANDATORY', null);
+    field2.show_condition = 'field1="SOME_OTHER_VALUE"';
+    wizardPage.case_fields.push(field1, field2);
+    wizardPage.isMultiColumn = () => false;
+
+    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+  });
+
+  it('should not allow empty values when field is MANDATORY and not hidden', () => {
+    let field1 = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+    let field2 = aCaseField('field2', 'field2', 'Text', 'MANDATORY', null);
+    field2.show_condition = 'field1="SOME_VALUE"';
+    wizardPage.case_fields.push(field1, field2);
+    wizardPage.isMultiColumn = () => false;
+
+    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
+  });
+
   it('should be invalid with empty document field when field is MANDATORY and not hidden', () => {
     let field1 = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
     let field2 = aCaseField('field2', 'field2', 'Document', 'MANDATORY', null);
