@@ -3,7 +3,6 @@ import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
-import { plainToClassFromExist } from 'class-transformer';
 import { FieldsUtils } from '../../../services/fields';
 
 @Component({
@@ -38,7 +37,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
       // Provide component @Inputs
-      component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
+      component.instance['caseField'] = this.caseField;
       component.instance['caseFields'] = this.caseFields;
       component.instance['formGroup'] = this.formGroup;
       component.instance['caseReference'] = this.caseReference;

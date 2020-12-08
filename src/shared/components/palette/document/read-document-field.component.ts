@@ -29,17 +29,27 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
   showMediaViewer(): void {
     const caseId = this.route.snapshot.params['cid'];
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
-    this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
+    if (caseId) {
+      this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
+        if (this.caseField && this.caseField.value) {
+          const mergedInfo = {
+            ...this.caseField.value,
+            id: caseView.case_id,
+            jurisdiction: caseView.case_type.jurisdiction.id
+          };
+          this.openMediaViewer(mergedInfo);
+        }
+      });
+    } else {
       if (this.caseField && this.caseField.value) {
-        const mergedInfo = {
-          ...this.caseField.value,
-          id: caseView.case_id,
-          jurisdiction: caseView.case_type.jurisdiction.id
-        };
-        this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(mergedInfo));
+        this.openMediaViewer(this.caseField.value);
       }
-      this.windowService.openOnNewTab(this.getMediaViewerUrl());
-    });
+    }
+  }
+
+  public openMediaViewer(documentFieldValue): void {
+    this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(documentFieldValue));
+    this.windowService.openOnNewTab(this.getMediaViewerUrl());
   }
 
   getMediaViewerUrl(): string {
