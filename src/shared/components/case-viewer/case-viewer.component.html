@@ -42,7 +42,7 @@
   <div class="grid-row">
     <div class="column-full">
       <ng-container *ngIf="hasTabsPresent()">
-        <mat-tab-group animationDuration="0ms">
+        <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true">
           <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
             <ng-template matTabContent>
             <table [class]="tab.id">
@@ -67,7 +67,7 @@
           </ng-template>
           </mat-tab>
         </mat-tab-group>
-      </ng-container>
+       </ng-container>
     </div>
   </div>
 </div>
