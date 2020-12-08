@@ -15,15 +15,17 @@ export class PageValidationService {
       .filter(caseField => !this.isHidden(caseField, editForm.getRawValue()))
       .every(caseField => {
         let theControl = editForm.controls['data'].get(caseField.id);
-        return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
+        return this.checkDocumentField(caseField)
+          && (this.caseFieldService.isOptional(caseField) || this.checkFormValidity(theControl));
       });
   }
 
-  private checkDocumentField(caseField: CaseField, theControl: AbstractControl): boolean {
+  private checkDocumentField(caseField: CaseField): boolean {
     if (caseField.field_type.id !== 'Document') {
       return true;
     }
-    return !(this.checkMandatoryField(caseField, theControl));
+
+    return !this.caseFieldService.isMandatory(caseField);
   }
 
   private isHidden(caseField, formFields) {
@@ -31,11 +33,7 @@ export class PageValidationService {
     return !condition.match(formFields.data);
   }
 
-  private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
-    return (!theControl && this.caseFieldService.isOptional(caseField)) || theControl.valid || theControl.disabled;
-  }
-
-  private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {
-    return this.caseFieldService.isMandatory(caseField) && theControl === null;
+  private checkFormValidity(theControl: AbstractControl): boolean {
+    return theControl != null && (theControl.valid || theControl.disabled);
   }
 }
