@@ -20,6 +20,7 @@ import { CaseNotifier } from '../case-editor';
 import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
 import { ErrorNotifierService } from '../../services/error';
 import { Location } from '@angular/common';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -219,7 +220,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getTabFields(): CaseField[] {
     const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
-      return acc.concat(tab.fields);
+      return acc.concat(plainToClass(CaseField, tab.fields));
     }, []);
 
     return caseDataFields.concat(this.caseDetails.metadataFields);

@@ -108,7 +108,8 @@ describe('EventLogTableComponent', () => {
       expect(firstRowCells.length).toBe(3);
       let firstEvent = EVENTS[0];
 
-      const timeZoneOffset = -(new Date().getTimezoneOffset());
+      const date = new Date(2017, 4, 10); // 10th May, 2017
+      const timeZoneOffset = - (new Date(date).getTimezoneOffset());
 
       expect(firstRowCells[COL_EVENT].nativeElement.textContent).toBe(firstEvent.event_name + firstEvent.significant_item.description);
       // expect(firstRowCells[COL_DATE].nativeElement.textContent)
