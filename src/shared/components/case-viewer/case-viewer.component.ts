@@ -206,7 +206,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngAfterViewInit() {
     const url = this.location.path(true);
     const hashValue = url.substring(url.indexOf('#') + 1);
-    this.tabGroup.selectedIndex = Number(hashValue);
+    if(hashValue && !isNaN(Number(hashValue))) {
+      this.tabGroup.selectedIndex = Number(hashValue);
+    }
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
