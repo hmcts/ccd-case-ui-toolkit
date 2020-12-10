@@ -1,5 +1,5 @@
-import { CaseField } from '../../../domain/definition';
-import { FieldsUtils } from '../../../services/fields';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { _ as _score } from 'underscore';
 
 export class ShowCondition {
@@ -9,6 +9,11 @@ export class ShowCondition {
   private static CONDITION_NOT_EQUALS = '!=';
   private static CONDITION_EQUALS = '=';
   private static readonly CONTAINS = 'CONTAINS';
+  private static instanceCache = new Map<string, ShowCondition>();
+
+  // private dumbCache = new Map<string, boolean>();
+  private orConditions: string[] = null;
+  private andConditions: string[] = null;
 
   static addPathPrefixToCondition(showCondition: string, pathPrefix): string {
     if (!pathPrefix || pathPrefix === '') {
@@ -34,25 +39,41 @@ export class ShowCondition {
     });
     return orConditions;
   }
+  // Cache instances so that we can cache results more effectively
+  public static getInstance(cond: string): ShowCondition {
+    const inst = this.instanceCache.get(cond);
+    if (inst) {
+      return inst;
+    } else {
+      const newInst = new ShowCondition(cond);
+      this.instanceCache.set(cond, newInst);
+      return newInst;
+    }
+  }
 
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
+    if (!!condition) {
+      if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
+        this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
+      } else {
+        this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
+      }
+    }
   }
-
   match(fields, path?: string): boolean {
     if (!this.condition) {
       return true;
     }
     return this.matchAndConditions(fields, this.condition, path);
   }
-
   private matchAndConditions(fields: any, condition: string, path?: string): boolean {
-    if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
-      let orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
-      return orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition, path));
+    if (!!this.orConditions)  {
+      return this.orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition, path));
+    } else if (!!this.andConditions) {
+      return this.andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
     } else {
-      let andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-      return andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
+      return false;
     }
   }
 

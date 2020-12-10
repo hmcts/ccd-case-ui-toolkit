@@ -242,7 +242,7 @@ export class CasesService {
     }
 
     eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
-      wizardPage.parsedShowCondition = new ShowCondition(wizardPage.show_condition);
+      wizardPage.parsedShowCondition = ShowCondition.getInstance(wizardPage.show_condition);
       wizardPage.case_fields = this.orderService.sort(
         this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });

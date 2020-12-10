@@ -7,7 +7,7 @@ export class CaseNotifier {
     private caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
     caseView = this.caseViewSource.asObservable();
 
-    announceCase(caseView: CaseView) {
-        this.caseViewSource.next(caseView);
+    announceCase(c: CaseView) {
+        this.caseViewSource.next(c);
     }
 }
