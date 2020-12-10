@@ -158,7 +158,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.formArray.at(index)) {
       id = this.formArray.at(index).get('id').value;
     }
-    return !!id && !this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+    if (!!id) {
+      if (!!this.profile.user && !!this.profile.user.idam) {
+        return !this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+      }
+    }
+    return true;
   }
 
   hasUpdateAccess(role: any): boolean {

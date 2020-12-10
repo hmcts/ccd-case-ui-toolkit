@@ -18,7 +18,9 @@ export class FieldsUtils {
 
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
-      return plainToClassFromExist(new CaseField(), obj);
+      const ret = plainToClassFromExist(new CaseField(), obj);
+      console.log ('calling plainToClassFromExist on ' + ret.id);
+      return ret;
     }
     return obj;
   }
@@ -36,7 +38,7 @@ export class FieldsUtils {
   }
 
   public static isObject(elem) {
-      return this.getType(elem) === 'Object';
+    return typeof elem === 'object' && elem !== null;
   };
 
   public static isNonEmptyObject(elem) {
@@ -44,7 +46,7 @@ export class FieldsUtils {
   };
 
   public static isArray(elem) {
-      return this.getType(elem) === 'Array';
+    return Array.isArray(elem);
   };
 
   public static areCollectionValuesSimpleFields(fieldValue) {

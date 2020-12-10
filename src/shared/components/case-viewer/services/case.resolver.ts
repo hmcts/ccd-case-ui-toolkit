@@ -2,7 +2,7 @@ import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CaseView, Draft } from '../../../domain';
+import { CaseField, CaseTab, CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
@@ -71,6 +71,21 @@ export class CaseResolver implements Resolve<CaseView> {
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
             this.caseNotifier.announceCase(this.cachedCaseView);
+            if (this.cachedCaseView instanceof CaseView) {
+              console.log('plainToClass made a CaseView');
+              this.cachedCaseView.tabs.forEach(t => {
+                  if (t instanceof CaseTab) {
+                    console.log('plainToClass made a CaseTab');
+                    t.fields.forEach(zz => {
+                      if (zz instanceof CaseField) {
+                        console.log('plainToClass made a CaseField');
+                      } else {
+                        console.log('plainToClass made ' + zz.protoy)
+                      }
+                    });
+                  }
+                });
+            }
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))

@@ -39,9 +39,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
-    this.caseField = FieldsUtils.convertToCaseField(this.caseField);
+    // this.caseField = FieldsUtils.convertToCaseField(this.caseField);
     if (this.caseField.show_condition) {
-      this.condition = new ShowCondition(this.caseField.show_condition);
+      this.condition = ShowCondition.getInstance(this.caseField.show_condition);
       // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.complexFormGroup = this.complexFormGroup || new FormGroup({});
@@ -70,7 +70,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     this.unsubscribeFromFormChanges();
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      // console.log('FIELD ' + this.caseField.id + ' reacting to form change');
+      if (!this.caseField.show_condition) {
+        console.log ('no show condition FIELD ' + this.caseField.id + ' reacting to form change');
+      }
       let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && shown !== undefined) {
         this.updateGreyBar(shown);
@@ -162,6 +164,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   // TODO This must be extracted to a generic service for traversing see RDM-2233
   private checkHideShowCondition(key: string, aControl: AbstractControl) {
+    console.log ('directive checking show hide for key: ' + key + ' control ' + aControl.toString())
     if (aControl instanceof FormArray) {  // We're in a collection
       // console.log('traversing array', aControl);
       aControl.controls.forEach((formControl, i) => {
@@ -184,7 +187,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       }
     } else if (aControl instanceof FormControl) {  // FormControl
       if (aControl.invalid) {
-        // console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
+        console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
         this.registry.refresh();
       }
     }
