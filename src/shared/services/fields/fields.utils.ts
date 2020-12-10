@@ -20,8 +20,7 @@ export class FieldsUtils {
 
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
-      const ret = plainToClassFromExist(new CaseField(), obj);
-      return ret;
+      return plainToClassFromExist(new CaseField(), obj);
     }
     return obj;
   }
@@ -41,12 +40,14 @@ export class FieldsUtils {
   public static isObject(elem) {
     return typeof elem === 'object' && elem !== null;
   }
+
   public static isNonEmptyObject(elem) {
       return this.isObject(elem) && Object.keys(elem).length !== 0;
   }
   public static isArray(elem) {
     return Array.isArray(elem);
   }
+
   public static areCollectionValuesSimpleFields(fieldValue) {
       return !this.isObject(fieldValue[0]['value']) && !Array.isArray(fieldValue[0]['value']) && fieldValue[0]['value'] !== undefined;
   }
