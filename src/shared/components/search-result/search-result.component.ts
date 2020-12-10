@@ -270,6 +270,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
       selected: this.selected,
       queryParams: queryParams
     });
+    
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      topContainer.focus();
+    }
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {

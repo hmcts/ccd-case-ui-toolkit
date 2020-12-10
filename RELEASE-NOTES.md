@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.67.1-focus-order
+**EUI-2020** Accessibility amends for tabs and page load
+
 ### Version 2.67.0-performance-tabs
 **EUI-2955** Improve performance time when loading by lazy loading
 
