@@ -13,6 +13,7 @@ import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 import { FormControl } from '@angular/forms';
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
+import { plainToClassFromExist } from 'class-transformer';	
 
 @Component({
   selector: 'ccd-field-write',
@@ -47,8 +48,14 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     let injector = Injector.create([], this.fieldContainer.parentInjector);
     let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
-    // Provide component @Inputs
-    component.instance['caseField'] =  this.caseField;
+    // Only Fixed list use plainToClassFromExist
+    // Better performance
+    if(this.caseField.field_type.type === 'FixedList') {
+      component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);	
+    } else {
+      component.instance['caseField'] =  this.caseField;
+    }
+
     component.instance['caseFields'] = this.caseFields;
     component.instance['formGroup'] = this.formGroup;
     component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
