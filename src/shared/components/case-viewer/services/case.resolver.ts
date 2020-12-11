@@ -80,7 +80,7 @@ export class CaseResolver implements Resolve<CaseView> {
                       if (zz instanceof CaseField) {
                         console.log('plainToClass made a CaseField');
                       } else {
-                        console.log('plainToClass made ' + zz.protoy)
+                        console.log('plainToClass made ' + zz)
                       }
                     });
                   }
