@@ -548,9 +548,10 @@ describe('CasesService', () => {
             value: {
               complex_dl: {
                 list_items: [
-                  {code: '1', value: '1'}
+                  {code: '1', value: '1'},
+                  {code: '2', value: '2'}
                 ],
-                value: '1'
+                value: {code: '2', value: '2'}
               }
             }
           }
@@ -569,15 +570,17 @@ describe('CasesService', () => {
                   id: 'complex_dl',
                   value: {
                     list_items: [
-                      {code: '1', value: '1'}
+                      {code: '1', value: '1'},
+                      {code: '2', value: '2'}
                     ],
-                    value: {code: '1', value: '1'}
+                    value: {code: '2', value: '2'}
                   },
                   formatted_value: {
                     list_items: [
-                      {code: '1', value: '1'}
+                      {code: '1', value: '1'},
+                      {code: '2', value: '2'}
                     ],
-                    value: {code: '1', value: '1'}
+                    value: {code: '2', value: '2'}
                   }
                 }
               ],
@@ -586,9 +589,10 @@ describe('CasesService', () => {
             value: {
               complex_dl: {
                 list_items: [
-                  {code: '1', value: '1'}
+                  {code: '1', value: '1'},
+                  {code: '2', value: '2'}
                 ],
-                value: '1'
+                value: {code: '2', value: '2'}
               }
             }
           }
