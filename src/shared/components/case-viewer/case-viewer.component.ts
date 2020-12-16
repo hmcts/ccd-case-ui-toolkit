@@ -31,6 +31,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
+  static readonly space = '%20';
 
   @Input()
   hasPrint = true;
@@ -53,7 +54,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
-  @ViewChild('tabGroup') public tabGroup: any;
+  @ViewChild('tabGroup') public tabGroup: MatTabGroup;
 
   constructor(
     private ngZone: NgZone,
@@ -206,9 +207,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngAfterViewInit() {
     const url = this.location.path(true);
-    const hashValue = url.substring(url.indexOf('#') + 1);
-    if(hashValue && !isNaN(Number(hashValue))) {
-      this.tabGroup.selectedIndex = Number(hashValue);
+    let hashValue = url.substring(url.indexOf('#') + 1);
+    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(reguarExp, ' ');
+    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    if(matTab && matTab.position) {
+      this.tabGroup.selectedIndex = matTab.position;
     }
   }
 
@@ -248,7 +252,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    window.location.hash = tabChangeEvent.index.toString();
+    window.location.hash = tabChangeEvent.tab.textLabel;
   }
 
 }

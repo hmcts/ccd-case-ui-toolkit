@@ -2,6 +2,12 @@
 ### Version 2.65.7-retain-hidden-fields-pre-release
 **EUI-2739** Bump version number to trigger npm release process (again)
 
+### Version 2.67.3-tab-name-replaceAll
+**EUI-3041** Use Tab names but use replaceAll
+
+### Version 2.67.2-tab-name
+**EUI-3041** Use Tab name instead of Index
+
 ### Version 2.67.1-focus-order
 **EUI-2020** Accessibility amends for tabs and page load
 
