@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.67.3-tab-name-replaceAll
+**EUI-3041** Use Tab names but use replaceAll
 
 ### Version 2.67.2-tab-name
 **EUI-3041** Use Tab name instead of Index

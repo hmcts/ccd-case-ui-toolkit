@@ -208,7 +208,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngAfterViewInit() {
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    hashValue = hashValue.replace(CaseViewerComponent.space, ' ');
+    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(reguarExp, ' ');
     const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
     if(matTab && matTab.position) {
       this.tabGroup.selectedIndex = matTab.position;
