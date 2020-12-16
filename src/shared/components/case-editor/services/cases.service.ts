@@ -111,9 +111,10 @@ export class CasesService {
 
             if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
               const list_items = caseField.value[field.id].list_items;
+              const value = caseField.value[field.id].value;
               field.value = {
                 list_items: list_items,
-                value: list_items[0] ? list_items[0] : undefined
+                value: value ? value : undefined
               };
               field.formatted_value = field.value;
             }
