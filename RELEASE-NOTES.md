@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.67.2-tab-name
+**EUI-3041** Use Tab name instead of Index
+
 ### Version 2.67.1-focus-order
 **EUI-2020** Accessibility amends for tabs and page load
 
