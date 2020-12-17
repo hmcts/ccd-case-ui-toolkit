@@ -13,4 +13,16 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
   ngOnInit() {
     this.textareaControl = this.registerControl(new FormControl(this.caseField.value));
   }
+
+  isIE(): boolean {
+    return /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
+  }
+
+autoGrow(event) {
+  if(this.isIE()){
+    event.target.style.height = 'auto';
+    event.target.style.height = event.target.scrollHeight+'px';
+    event.target.scrollTop = event.target.scrollHeight; }
+  }
+
 }
