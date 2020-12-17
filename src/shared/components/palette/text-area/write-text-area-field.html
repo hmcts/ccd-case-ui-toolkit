@@ -5,8 +5,7 @@
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
     <span class="error-message" *ngIf="textareaControl.errors && textareaControl.touched">{{textareaControl.errors | ccdFirstError}}</span>
   </label>
-  
-  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [id]="id()" rows="3" cols="5" [formControl]="textareaControl" resize="both"></textarea>
+  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [id]="id()" rows="3" cols="5" [formControl]="textareaControl" ></textarea>
 
 </div>
 
