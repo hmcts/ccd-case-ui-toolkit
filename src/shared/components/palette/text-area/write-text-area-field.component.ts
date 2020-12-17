@@ -22,7 +22,8 @@ autoGrow(event) {
   if(this.isIE()){
     event.target.style.height = 'auto';
     event.target.style.height = event.target.scrollHeight+'px';
-    event.target.scrollTop = event.target.scrollHeight; }
+    event.target.scrollTop = event.target.scrollHeight;
+   }
   }
 
 }
