@@ -1,6 +1,6 @@
-<ng-container *ngFor="let field of fields">
-  <div ccdConditionalShow ccdLabelSubstitutor
-       [caseField]="field" [formGroup]="formGroup" [contextFields]="caseFields" [greyBarEnabled]="true">
+<ng-container ccdConditionalShowForm [formGroup]="formGroup" [caseFields]="fields" [contextFields]="caseFields" *ngFor="let field of fields">
+  <div ccdLabelSubstitutor
+       [caseField]="field" [formGroup]="formGroup" [contextFields]="caseFields">
     <ng-container [ngSwitch]="field | ccdIsReadOnlyAndNotCollection ">
       <ccd-field-read *ngSwitchCase="true" [caseField]="field" [caseFields]="caseFields" [withLabel]="true"
                       [formGroup]="formGroup"></ccd-field-read>

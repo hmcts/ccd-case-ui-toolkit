@@ -13,16 +13,15 @@ import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 import { FormControl } from '@angular/forms';
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
-import { plainToClassFromExist } from 'class-transformer';	
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-field-write',
   template: `
-    <div [hidden]="caseField.hidden">
+    <div [hidden]="caseField.hidden" >
       <ng-container #fieldContainer></ng-container>
     </div>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
 
@@ -50,8 +49,8 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
 
     // Only Fixed list use plainToClassFromExist
     // Better performance
-    if(this.caseField.field_type.type === 'FixedList') {
-      component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);	
+    if (this.caseField.field_type.type === 'FixedList') {
+      component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
     } else {
       component.instance['caseField'] =  this.caseField;
     }

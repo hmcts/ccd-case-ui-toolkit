@@ -11,7 +11,7 @@
       <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError}}</span>
     </h2>
 
-    <div class="form-group" *ngIf="caseField.value && caseField.value.length">
+    <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
 
       <div class="form-group" *ngFor="let item of caseField.value; let i = index" #collectionItem>
         <div class="collection-title">
@@ -34,7 +34,7 @@
 
     </div>
 
-    <button class="button" type="button" (click)="addItem()" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
+    <button class="button" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
 
   </div>
 

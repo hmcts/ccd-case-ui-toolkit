@@ -24,7 +24,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   selector: 'ccd-field-read',
-  template: `{{caseField.value}}`
+  template: `{{caseField}}`
 })
 class FieldReadComponent {
   @Input()

@@ -29,6 +29,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   condition: ShowCondition;
   private formChangesSubscription: Subscription;
   formField: any;
+  formGroupRawValue: any;
 
   constructor(private el: ElementRef,
               private fieldsUtils: FieldsUtils,
@@ -70,9 +71,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     this.unsubscribeFromFormChanges();
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      if (!this.caseField.show_condition) {
-        console.log ('no show condition FIELD ' + this.caseField.id + ' reacting to form change');
-      }
       let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && shown !== undefined) {
         this.updateGreyBar(shown);
@@ -99,7 +97,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     if (this.formField) {
       this.unsubscribeFromFormChanges();
       // console.log('FIELD ' + this.caseField.id + ' disabling form field');
-      this.formField.disable();
+      this.formField.disable({emitEvent: false});
       this.subscribeToFormChanges();
     }
     this.hideField();
@@ -110,7 +108,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     if (this.formField) {
       this.unsubscribeFromFormChanges();
       // console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
-      this.formField.enable();
+      this.formField.enable({emitEvent: false});
       this.subscribeToFormChanges();
     }
     this.showField();
@@ -149,7 +147,11 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private getFormFieldsValuesIncludingDisabled() {
-    return this.formGroup.getRawValue();
+    if (this.formGroupRawValue) {
+      return this.formGroupRawValue;
+    }
+    this.formGroupRawValue = this.formGroup.getRawValue();
+    return this.formGroupRawValue;
   }
 
   private isHidden() {
@@ -164,7 +166,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   // TODO This must be extracted to a generic service for traversing see RDM-2233
   private checkHideShowCondition(key: string, aControl: AbstractControl) {
-    console.log ('directive checking show hide for key: ' + key + ' control ' + aControl.toString())
     if (aControl instanceof FormArray) {  // We're in a collection
       // console.log('traversing array', aControl);
       aControl.controls.forEach((formControl, i) => {
