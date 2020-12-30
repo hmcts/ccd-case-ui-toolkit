@@ -11,6 +11,7 @@ import { Profile } from '../../../domain/profile';
 import { ProfileNotifier } from '../../../services';
 import { Subscription } from 'rxjs';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
+import { FieldsUtils } from '../../../services';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -48,6 +49,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value = this.caseField.value || [];
 
     this.formArray = this.registerControl(new FormArray([]));
+    this.formArray['caseField'] = this.caseField;
   }
 
   ngOnDestroy() {
@@ -78,9 +80,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         return this.formArray.at(index).get('value');
       }
       this.formValidatorsService.addValidators(this.caseField, control);
+      const c = new FormControl(id);
+      FieldsUtils.addCaseFieldAndComponentReferences(c, this.caseField, this)
       this.formArray.push(
         new FormGroup({
-          id: new FormControl(id),
+          id: c,
           value: control
         })
       );

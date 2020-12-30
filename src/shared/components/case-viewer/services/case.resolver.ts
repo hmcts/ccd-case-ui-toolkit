@@ -71,21 +71,6 @@ export class CaseResolver implements Resolve<CaseView> {
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
             this.caseNotifier.announceCase(this.cachedCaseView);
-            if (this.cachedCaseView instanceof CaseView) {
-              console.log('plainToClass made a CaseView');
-              this.cachedCaseView.tabs.forEach(t => {
-                  if (t instanceof CaseTab) {
-                    console.log('plainToClass made a CaseTab');
-                    t.fields.forEach(zz => {
-                      if (zz instanceof CaseField) {
-                        console.log('plainToClass made a CaseField');
-                      } else {
-                        console.log('plainToClass made ' + zz)
-                      }
-                    });
-                  }
-                });
-            }
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))
