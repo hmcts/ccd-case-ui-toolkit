@@ -39,6 +39,34 @@ class TestHostComponent {
   }
 }
 
+@Component({
+  template: `
+    <div ccdConditionalShowForm [formGroup]="formGroup" [contextFields]="caseFields" >
+      <conditional-show-form-child id="child" [formGroup]="formGroup"></conditional-show-form-child>
+    </div>`
+})
+
+class TestHostGreyBarDisabledComponent {
+
+  @Input() caseField: CaseField;
+  @Input() idPrefix: string;
+  @Input() caseFields: CaseField[];
+  @Input() formGroup: FormGroup;
+  @Input() complexFormGroup: FormGroup;
+}
+
+@Component({
+  selector: 'conditional-show-form-child',
+  template: `
+        <div>child text field</div>`
+})
+
+class TestChildComponent {
+  @Input() caseField: CaseField;
+  @Input() idPrefix: string;
+  @Input() formGroup: FormGroup;
+}
+
 let field = (id, value, showCondition?) => {
     let caseField = new CaseField();
     let fieldType = new FieldType();
@@ -53,7 +81,6 @@ let field = (id, value, showCondition?) => {
 };
 
 describe('ConditionalShowFormDirective', () => {
-
     let comp:    TestHostComponent;
     let fixture: ComponentFixture<TestHostComponent>;
     let de:      DebugElement;
@@ -62,7 +89,8 @@ describe('ConditionalShowFormDirective', () => {
     let elRadioY: HTMLElement;
     let elMake: HTMLElement;
     let elModel: HTMLElement;
-
+    let deChild: DebugElement;
+    let elChild: HTMLElement;
     let conditionalShowForm: ConditionalShowFormDirective;
     let mockRegistrar: ConditionalShowRegistrarService = createSpyObj<ConditionalShowRegistrarService>(
       'conditionalShowRegistrarService',
@@ -98,6 +126,13 @@ describe('ConditionalShowFormDirective', () => {
   }
 
   it('should not trigger when hide condition is empty', () => {
+        deChild = fixture.debugElement.query(By.css('#child'))
+        el = de.nativeElement;
+        elChild = deChild.nativeElement;
+        conditionalShowForm = de.injector.get(ConditionalShowFormDirective) as ConditionalShowFormDirective;
+    });
+
+    it('should not trigger when hide condition is empty', () => {
       comp.caseFields = [ field('HasCar', 'Yes', ''),
         field('CarMake', 'Ford', ''),
         field('CarModel', 'Prefect', '')];
@@ -162,6 +197,31 @@ describe('ConditionalShowFormDirective', () => {
 
   /*
   it('should display not grey bar when toggled to show if grey bar disabled', () => {
+=======
+        HasCar: new FormControl('Yes'),
+        CarMake: new FormControl('Ford'),
+        CarModel: new FormControl( 'Prefect')
+      });
+
+        fixture.detectChanges();
+
+        expect(el.hidden).toBe(false);
+    });
+
+    it ('should hide when condition is false', () => {
+      comp.caseFields = [ field('HasCar', 'Yes', ''),
+        field('CarMake', 'Ford', 'HasCar="Yes"'),
+        field('CarModel', 'Prefect', '')];
+      comp.formGroup = new FormGroup({
+        HasCar: new FormControl('Yes'),
+        CarMake: new FormControl('Ford'),
+        CarModel: new FormControl( 'Prefect')
+      });
+
+    })
+
+    it('should display not grey bar when toggled to show if grey bar disabled', () => {
+>>>>>>> EUI-3055: More efficient show hide logic for write fields
       fixture = TestBed.createComponent(TestHostGreyBarDisabledComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement.query(By.directive(ConditionalShowDirective));
