@@ -1,6 +1,7 @@
 import { Input } from '@angular/core';
 import { CaseField } from '../../../domain/definition';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { FieldsUtils } from '../../../services';
 
 export abstract class AbstractFormFieldComponent {
 
@@ -23,6 +24,8 @@ export abstract class AbstractFormFieldComponent {
       }
       this.addValidators(this.caseField, control);
       this.formGroup.addControl(this.caseField.id, control);
+      // make sure we can get hold of the CaseField for this control when we are evaluating show conditions
+      FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this)
       return control;
     };
   }

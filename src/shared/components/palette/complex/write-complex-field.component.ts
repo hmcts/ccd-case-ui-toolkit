@@ -5,6 +5,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { Constants } from '../../../commons/constants';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FieldsUtils } from '../../../services';
 
 @Component({
   selector: 'ccd-write-complex-type-field',
@@ -51,6 +52,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
         this.formValidatorsService.addValidators(caseField, control);
       }
       this.complexGroup.addControl(caseField.id, control);
+      FieldsUtils.addCaseFieldAndComponentReferences(control, caseField, this);
       return control;
     };
   }

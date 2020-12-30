@@ -52,7 +52,7 @@ export class FieldsPurger {
     if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
       const caseRoleFormControl = ((form.get('data') as FormGroup).get(field.id) as FormGroup)
         .get('OrgPolicyCaseAssignedRole') as FormControl;
-      caseRoleFormControl.enable();
+      caseRoleFormControl.enable({emitEvent: false});
     }
   }
 
@@ -217,7 +217,7 @@ export class FieldsPurger {
             if (documentFieldValues) {
               documentFieldValues.forEach((fieldValue, index) => Object.keys(fieldValue.value).forEach(subFieldId => {
                 // Get the FormGroup containing the FormControl for the sub-field and set its value to null
-                (fieldControl as FormArray).at(index).get(`value.${subFieldId}`).setValue(null);
+                (fieldControl as FormArray).at(index).get(`value.${subFieldId}`).setValue(null, {emitEvent: false});
               }));
             }
             break;
@@ -236,12 +236,12 @@ export class FieldsPurger {
               // The back-end doesn't accept null as a valid value for any of the Document field type properties but
               // this is handled by sanitiseObject() in FormValueService, returning a null object for the entire
               // Document field, if any of its properties is null - which is accepted by the back-end
-              fieldControl.get(key).setValue(null);
+              fieldControl.get(key).setValue(null, {emitEvent: false});
             }
           }
           break;
         default:
-          fieldControl.setValue(null);
+          fieldControl.setValue(null, {emitEvent: false});
       }
     }
   }
