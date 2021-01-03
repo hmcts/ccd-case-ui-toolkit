@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import { AbstractFormFieldComponent } from '../../components/palette/base-field/
  *  to the page after the page has been left, the grey bar has to be redisplayed. If instead on initial page load the field renders as
  *  initially shown, the grey bar is not displayed.
  */
-export class ConditionalShowFormDirective implements AfterViewInit, OnDestroy {
+export class ConditionalShowFormDirective implements OnInit, OnDestroy {
 
   @Input() caseFields: CaseField[];
   @Input() contextFields: CaseField[] = [];
@@ -34,7 +34,7 @@ export class ConditionalShowFormDirective implements AfterViewInit, OnDestroy {
               private greyBarService: GreyBarService) {
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.formGroup = this.formGroup || new FormGroup({});
     this.evalAllShowHideConditions();
     this.subscribeToFormChanges();
