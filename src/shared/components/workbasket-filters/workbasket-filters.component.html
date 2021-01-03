@@ -25,7 +25,7 @@
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
             name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
             aria-controls="search-result">
-      <option value="">Any</option>
+      <!-- <option *ngIf="!workbasketDefaults" [ngValue]="null">Any</option> -->
       <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name}}</option>
     </select>
   </div>
