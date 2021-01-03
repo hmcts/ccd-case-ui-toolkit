@@ -12,7 +12,7 @@ import { ActivityService, SearchResultViewItemComparatorFactory, BrowserService 
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss'],
-  providers:[BrowserService]
+  providers: [BrowserService]
 })
 export class SearchResultComponent implements OnChanges, OnInit {
 
@@ -272,7 +272,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       selected: this.selected,
       queryParams: queryParams
     });
-    
+
     const topContainer = document.getElementById('top');
     if (topContainer) {
       if (document.activeElement instanceof HTMLElement) {
