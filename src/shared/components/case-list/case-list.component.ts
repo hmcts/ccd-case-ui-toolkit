@@ -103,9 +103,11 @@ export class CaseListComponent {
     return !this.cases.some(aCase => !this.isSelected(aCase));
   }
 
-  onKeydown(event: KeyboardEvent, aCase: any): void {
-    if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
-      this.changeSelection(aCase);
+  onKeyUp($event: KeyboardEvent, aCase: any): void {
+    if ($event.key === 'Space') {
+      if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
+        this.changeSelection(aCase);
+      }
     }
   }
 }

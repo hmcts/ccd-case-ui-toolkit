@@ -432,9 +432,11 @@ export class SearchResultComponent implements OnChanges, OnInit {
     });
   }
 
-  onKeydown(event: KeyboardEvent, c: SearchResultViewItem): void {
-    if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
-      this.changeSelection(c);
+  onKeyUp($event: KeyboardEvent, c: SearchResultViewItem): void {
+    if ($event.key === 'Space') {
+      if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
+        this.changeSelection(c);
+      }
     }
   }
 }
