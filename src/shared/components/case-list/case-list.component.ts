@@ -15,8 +15,7 @@ export class DateTimeFormatUtils {
 @Component({
   selector: 'ccd-case-list',
   templateUrl: './case-list.component.html',
-  styleUrls: ['./case-list.component.scss'],
-  providers: [BrowserService]
+  styleUrls: ['./case-list.component.scss']
 })
 export class CaseListComponent {
 

@@ -11,8 +11,7 @@ import { ActivityService, SearchResultViewItemComparatorFactory, BrowserService 
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss'],
-  providers: [BrowserService]
+  styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnChanges, OnInit {
 
