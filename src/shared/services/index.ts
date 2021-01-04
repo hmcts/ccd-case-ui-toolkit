@@ -23,3 +23,4 @@ export * from './workbasket';
 export * from './definitions';
 export * from './search-result/sorting/search-result-view-item-comparator-factory';
 export * from './organisation';
+export * from './browser';
