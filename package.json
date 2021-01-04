@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.67.3-tab-name-replaceAll",
+  "version": "2.67.4-description-of-the-changes",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
