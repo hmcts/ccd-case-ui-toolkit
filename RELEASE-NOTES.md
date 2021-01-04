@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version v2.64.5-EUI-CCD-RDM-8661-prerelease - January 4 2021
+**EUI-CCD-RDM-8661** 
+
 ### Version 2.64.4-EUI+Shuttering-prerelease - March 2 2020
 **EUI+Shuttering** 
 
