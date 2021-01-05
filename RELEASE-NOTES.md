@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.67.1-focus-order
+### Version 2.67.5-ie-textbox-expand-issue
 **EUI-2020** Accessibility amends for tabs and page load
 
 ### Version 2.67.0-performance-tabs
