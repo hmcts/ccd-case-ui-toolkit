@@ -29,8 +29,7 @@ export let createCaseEventTrigger = (id: string,
 };
 
 export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-                         show_summary_content_option: number, typeComplexFields: CaseField[] = [],
-                         retain_hidden_value?: boolean): CaseField => {
+                         show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
   return <CaseField>({
     id: id || 'personFirstName',
     field_type: {
@@ -40,8 +39,7 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
     },
     display_context: display_context || 'OPTIONAL',
     label: label || 'First name',
-    show_summary_content_option: show_summary_content_option,
-    retain_hidden_value: retain_hidden_value || false
+    show_summary_content_option: show_summary_content_option
   });
 };
 
@@ -151,15 +149,6 @@ export let createFixedListFieldType = (typeId: string,
   return {
     id: 'FixedList-' + typeId,
     type: 'FixedList',
-    fixed_list_items: fixedListItems || []
-  };
-};
-
-export let createMultiSelectListFieldType = (typeId: string,
-                                             fixedListItems: FixedListItem[] = []): FieldType => {
-  return {
-    id: 'MultiSelectList-' + typeId,
-    type: 'MultiSelectList',
     fixed_list_items: fixedListItems || []
   };
 };
