@@ -112,7 +112,17 @@
 
   </tbody>
 </table>
-<pagination-controls [style.visibility]="hideRows ? 'hidden' : 'visible'" *ngIf="hasResults()" class="pagination" (pageChange)="goToPage($event)" autoHide="true" maxSize="8" screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page"></pagination-controls>
+
+<ccd-pagination 
+  *ngIf="hasResults()"
+  (pageChange)="goToPage($event)"
+  [visibilityLabel]="hideRows ? 'hidden' : 'visible'" 
+  [autoHide]="true"
+  [maxSize]="8"
+  [screenReaderPaginationLabel]="Pagination"
+  [screenReaderPageLabel]="page"
+  [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
+
 <div *ngIf="!(hasResults() || hasDrafts())" class="notification"
      aria-label="No cases found. Try using different filters.">
   No cases found. Try using different filters.
