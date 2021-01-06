@@ -2,6 +2,10 @@
 ### Version 2.68.0-write-field-show-performance
 **EUI-3055** Better performance in edit forms through new show hide implementation
 
+### Version 2.67.4-reset-button-and-keyboard-fix
+**EUI-2989** GDS styles Checkbox: keyboard tab and spacebar not effective on Safari and Firefox
+**EUI-2987** reset button not working on x-ui
+
 ### Version 2.67.3-tab-name-replaceAll
 **EUI-3041** Use Tab names but use replaceAll
 

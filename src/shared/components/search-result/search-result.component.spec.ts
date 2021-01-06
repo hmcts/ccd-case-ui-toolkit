@@ -17,7 +17,7 @@ import {
   SearchResultViewItem
 } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
+import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import createSpyObj = jasmine.createSpyObj;
@@ -206,7 +206,8 @@ describe('SearchResultComponent', () => {
             { provide: ActivityService, useValue: activityService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
-            { provide: CaseReferencePipe, useValue: caseReferencePipe }
+            { provide: CaseReferencePipe, useValue: caseReferencePipe },
+            BrowserService
           ]
         })
         .compileComponents();
@@ -856,7 +857,8 @@ describe('SearchResultComponent', () => {
             { provide: ActivityService, useValue: activityService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
-            { provide: CaseReferencePipe, useValue: caseReferencePipe }
+            { provide: CaseReferencePipe, useValue: caseReferencePipe },
+            BrowserService
           ]
         })
         .compileComponents();
