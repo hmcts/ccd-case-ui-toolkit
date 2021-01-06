@@ -3,7 +3,6 @@ import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
-import { FieldsUtils } from '../../../services/fields';
 import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
@@ -29,14 +28,11 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   }
 
   ngOnInit(): void {
-    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
-    // this.caseField = FieldsUtils.convertToCaseField(this.caseField);
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
       let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
       let injector = Injector.create([], this.fieldContainer.parentInjector);
       let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
-
 
       // Provide component @Inputs
       // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist
