@@ -18,7 +18,7 @@ import { plainToClassFromExist } from 'class-transformer';
 @Component({
   selector: 'ccd-field-write',
   template: `
-    <div [hidden]="caseField.hidden" >
+    <div [hidden]="caseField.hidden">
       <ng-container #fieldContainer></ng-container>
     </div>
   `

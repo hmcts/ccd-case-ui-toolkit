@@ -2,7 +2,7 @@ import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CaseField, CaseTab, CaseView, Draft } from '../../../domain';
+import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
