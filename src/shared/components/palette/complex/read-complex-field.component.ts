@@ -8,6 +8,9 @@ import { CaseField } from '../../../domain/definition';
   templateUrl: './read-complex-field.html',
 })
 export class ReadComplexFieldComponent extends AbstractFieldReadComponent implements OnInit {
+
+  public static readonly FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
+
   @Input()
   caseFields: CaseField[] = [];
 
@@ -18,6 +21,13 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
     if (this.caseField.display_context_parameter) {
       this.context = PaletteContext.TABLE_VIEW;
     }
+
+    this.caseField.field_type.complex_fields.map(field => {
+      if (field.field_type.type === ReadComplexFieldComponent.FIELD_TYPE_DYNAMIC_LIST) {
+        field.value = this.caseField.value[field.id].value;
+      }
+    });
+
   }
 
 }
