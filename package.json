@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.65.2-hidden-fields-revert",
+  "version": "2.67.4-reset-button-and-keyboard-fix",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

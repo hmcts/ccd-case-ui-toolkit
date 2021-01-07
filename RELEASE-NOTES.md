@@ -1,4 +1,31 @@
 ## RELEASE NOTES
+### Version 2.67.4-reset-button-and-keyboard-fix
+**EUI-2989** GDS styles Checkbox: keyboard tab and spacebar not effective on Safari and Firefox
+**EUI-2987** reset button not working on x-ui
+
+### Version 2.67.3-tab-name-replaceAll
+**EUI-3041** Use Tab names but use replaceAll
+
+### Version 2.67.2-tab-name
+**EUI-3041** Use Tab name instead of Index
+
+### Version 2.67.1-focus-order
+**EUI-2020** Accessibility amends for tabs and page load
+
+### Version 2.67.0-performance-tabs
+**EUI-2955** Improve performance time when loading by lazy loading
+
+### Version 2.66.0
+**EUI-2741** Improve performance time when loading a case with large hearing and judgement collections
+
+### Version 2.65.8-media-viewer-hotfix
+**EUI-2981** bug/EUI-2981-cannot-open-media-viewer-2
+
+### Version 2.65.6
+**EUI** bumping up
+
+### Version 2.65.5
+**EUI** bumping up
 
 ### Version 2.65.2-hidden-fields-revert
 **EUI** Undoing retain hidden fields functionality

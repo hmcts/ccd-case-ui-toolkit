@@ -1,5 +1,5 @@
-import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { AfterViewInit, Component, DoCheck, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
@@ -15,20 +15,23 @@ import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
 import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
 import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
 import { ErrorNotifierService } from '../../services/error';
+import { Location } from '@angular/common';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html',
   styleUrls: ['./case-viewer.scss']
 })
-export class CaseViewerComponent implements OnInit, OnDestroy {
+export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
+  static readonly space = '%20';
 
   @Input()
   hasPrint = true;
@@ -51,6 +54,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
+  @ViewChild('tabGroup') public tabGroup: MatTabGroup;
 
   constructor(
     private ngZone: NgZone,
@@ -62,9 +66,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private draftService: DraftService,
     private caseNotifier: CaseNotifier,
-    private errorNotifierService: ErrorNotifierService
+    private errorNotifierService: ErrorNotifierService,
+    private readonly location: Location
   ) {}
-
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
@@ -201,6 +205,17 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     }
   }
 
+  public ngAfterViewInit() {
+    const url = this.location.path(true);
+    let hashValue = url.substring(url.indexOf('#') + 1);
+    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(reguarExp, ' ');
+    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    if (matTab && matTab.position) {
+      this.tabGroup.selectedIndex = matTab.position;
+    }
+  }
+
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
       .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
@@ -209,7 +224,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   private getTabFields(): CaseField[] {
     const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
-      return acc.concat(tab.fields);
+      return acc.concat(plainToClass(CaseField, tab.fields));
     }, []);
 
     return caseDataFields.concat(this.caseDetails.metadataFields);
@@ -234,6 +249,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
+  }
+
+  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    window.location.hash = tabChangeEvent.tab.textLabel;
   }
 
 }
