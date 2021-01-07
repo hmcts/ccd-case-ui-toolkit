@@ -245,14 +245,13 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private resetFieldsWhenNoDefaults() {
-    if (!(this.defaults && this.defaults.jurisdiction_id)) {
-      this.workbasketDefaults = false;
-      this.selected.jurisdiction = null;
-      this.selected.caseType = undefined; // option should be blank rather than "Select a value" in case of reset.
-      this.selectedJurisdictionCaseTypes = null;
-      this.resetCaseState();
-      this.clearWorkbasketInputs();
-    }
+    this.workbasketDefaults = false;
+    this.selected.jurisdiction = null;
+    this.initialised = false;
+    this.resetCaseState();
+    this.resetCaseType();
+    this.clearWorkbasketInputs();
+    this.ngOnInit();
   }
 
   private clearWorkbasketInputs() {
@@ -266,7 +265,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private resetCaseType() {
-    this.selected.caseType = null;
+    this.selected.caseType = undefined; // option should be blank rather than "Select a value" in case of reset.
     this.selectedJurisdictionCaseTypes = null;
   }
 }

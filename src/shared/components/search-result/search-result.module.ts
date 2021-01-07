@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SearchResultComponent } from './search-result.component';
-import { SearchResultViewItemComparatorFactory } from '../../services';
+import { BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PipesModule } from '../../pipes';
@@ -30,6 +30,7 @@ import { LabelSubstitutorModule } from '../../directives';
   ],
   providers: [
     SearchResultViewItemComparatorFactory,
+    BrowserService
   ]
 })
 export class SearchResultModule {}
