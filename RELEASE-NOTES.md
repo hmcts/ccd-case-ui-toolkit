@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.67.5-dynamiclist-fix-in-complex
+**EUI-2350** Dynamic Lists in Complex Types
+
 ### Version 2.67.4-reset-button-and-keyboard-fix
 **EUI-2989** GDS styles Checkbox: keyboard tab and spacebar not effective on Safari and Firefox
 **EUI-2987** reset button not working on x-ui
