@@ -3,6 +3,7 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { BrowserService } from '../../services';
 import { CaseListComponent, TableConfig } from './case-list.component';
 
 describe('CaseListComponent', () => {
@@ -52,7 +53,8 @@ describe('CaseListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ RouterModule ],
-      declarations: [ CaseListComponent ]
+      declarations: [ CaseListComponent ],
+      providers: [ BrowserService ]
     })
     .compileComponents();
   }));

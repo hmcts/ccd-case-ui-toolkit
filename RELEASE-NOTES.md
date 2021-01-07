@@ -1,7 +1,19 @@
 ## RELEASE NOTES
-
-### Version 2.67.5-ie-textbox-expand-issue
+### Version 2.67.6-ie-textbox-expand-issue
 **EUI-2020** Accessibility amends for tabs and page load
+
+### Version 2.67.5-dynamiclist-fix-in-complex
+**EUI-2350** Dynamic Lists in Complex Types
+
+### Version 2.67.4-reset-button-and-keyboard-fix
+**EUI-2989** GDS styles Checkbox: keyboard tab and spacebar not effective on Safari and Firefox
+**EUI-2987** reset button not working on x-ui
+
+### Version 2.67.3-tab-name-replaceAll
+**EUI-3041** Use Tab names but use replaceAll
+
+### Version 2.67.2-tab-name
+**EUI-3041** Use Tab name instead of Index
 
 ### Version 2.67.0-performance-tabs
 **EUI-2955** Improve performance time when loading by lazy loading

@@ -19,7 +19,7 @@
       <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="selectionEnabled">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] }}" name="select-{{ c[tableConfig.idField] }}"
-                 type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" />
+                 type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" (keyup)="onKeyUp($event, c)" />
           <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
           <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] }}">
           </label>
