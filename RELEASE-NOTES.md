@@ -2,6 +2,13 @@
 ### Version 2.65.7-retain-hidden-fields-pre-release
 **EUI-2739** Bump version number to trigger npm release process (again)
 
+### Version 2.67.5-dynamiclist-fix-in-complex
+**EUI-2350** Dynamic Lists in Complex Types
+
+### Version 2.67.4-reset-button-and-keyboard-fix
+**EUI-2989** GDS styles Checkbox: keyboard tab and spacebar not effective on Safari and Firefox
+**EUI-2987** reset button not working on x-ui
+
 ### Version 2.67.3-tab-name-replaceAll
 **EUI-3041** Use Tab names but use replaceAll
 
