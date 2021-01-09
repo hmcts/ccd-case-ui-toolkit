@@ -12,4 +12,8 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
   public id() {
     return this.idPrefix + this.caseField.id;
   }
+
+  createElementId(elementId: string): string {
+    return this.id() + '_' + elementId ;
+  }
 }
