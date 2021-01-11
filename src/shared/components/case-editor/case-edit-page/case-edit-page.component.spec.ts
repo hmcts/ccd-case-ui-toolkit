@@ -125,7 +125,8 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog}
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
         ]
       }).compileComponents();
     }));
@@ -388,7 +389,8 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog}
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
         ]
       }).compileComponents();
     }));
@@ -405,7 +407,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       let cancelText = comp.getCancelText();
-
+      console.log(cancelText);
       expect(cancelText).toEqual('Cancel');
     });
 
@@ -469,7 +471,8 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog}
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
         ]
       }).compileComponents();
     }));
@@ -559,7 +562,8 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog}
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
         ]
       }).compileComponents();
     }));
@@ -750,7 +754,8 @@ describe('CaseEditPageComponent', () => {
           {provide: CaseEditComponent, useValue: caseEditComponentStub},
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog}
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
         ]
       }).compileComponents();
     }));
