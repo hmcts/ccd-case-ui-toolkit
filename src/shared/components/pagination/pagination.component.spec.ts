@@ -1,10 +1,10 @@
-import { registerLocaleData } from "@angular/common";
-import { LOCALE_ID, DebugElement } from "@angular/core";
-import {TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { By } from "@angular/platform-browser";
-import { PaginationControlsComponent, PaginationControlsDirective, PaginatePipe, PaginationService } from "ngx-pagination";
-import { ComponentTestComponent, getPageLinkItems, getControlsDirective, overrideTemplate } from "./testing/testing-helpers";
-import { PaginationComponent } from "./pagination.component";
+import { registerLocaleData } from '@angular/common';
+import { LOCALE_ID, DebugElement } from '@angular/core';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { PaginationControlsComponent, PaginationControlsDirective, PaginatePipe, PaginationService } from 'ngx-pagination';
+import { ComponentTestComponent, getPageLinkItems, getControlsDirective, overrideTemplate } from './testing/testing-helpers';
+import { PaginationComponent } from './pagination.component';
 
 import locale from '@angular/common/locales/de';
 
@@ -14,8 +14,14 @@ describe('PaginationComponent:', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [PaginationControlsComponent, PaginationControlsDirective, PaginationComponent, ComponentTestComponent, PaginatePipe],
-            providers: [PaginationService, {provide: LOCALE_ID, useValue: 'en_US' }],
+            declarations: [
+                PaginationControlsComponent,
+                PaginationControlsDirective,
+                PaginationComponent,
+                ComponentTestComponent,
+                PaginatePipe
+            ],
+            providers: [PaginationService, { provide: LOCALE_ID, useValue: 'en_US' }],
         });
     });
 
@@ -30,7 +36,6 @@ describe('PaginationComponent:', () => {
         expect(getPageLinkItems(fixture)).toEqual(expected);
     }));
 
-
     it('should display the correct page links (formatted numbers over 1000) with comma', fakeAsync(() => {
         let fixture = TestBed.createComponent(ComponentTestComponent);
         let instance = fixture.componentInstance;
@@ -41,12 +46,11 @@ describe('PaginationComponent:', () => {
         let expected = ['1', '2', '3', '4', '5', '6', '7', '...', '1,000'];
         expect(getPageLinkItems(fixture)).toEqual(expected);
     }));
-    
-    
+
     it('should display the correct page links (formatted numbers over 1000) with dot', fakeAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PaginationControlsComponent, PaginationControlsDirective, ComponentTestComponent, PaginatePipe],
-            providers: [PaginationService, {provide: LOCALE_ID, useValue: 'de_DE' }],
+            providers: [PaginationService, { provide: LOCALE_ID, useValue: 'de_DE' }],
         });
 
         let fixture = TestBed.createComponent(ComponentTestComponent);
@@ -172,9 +176,9 @@ describe('PaginationComponent:', () => {
     });
 
     it('should allow multiple independent instances (controller test)', () => {
-        overrideTemplate(ComponentTestComponent, ` 
+        overrideTemplate(ComponentTestComponent, `
             <ul class="list1">
-               <li *ngFor="let item of collection | paginate: {id: 'test1', itemsPerPage: 10, currentPage: p1 }" 
+               <li *ngFor="let item of collection | paginate: {id: 'test1', itemsPerPage: 10, currentPage: p1 }"
                    class="list-item">{{ item }}</li>
             </ul>
             <ccd-pagination id="test1"></ccd-pagination>
@@ -206,9 +210,9 @@ describe('PaginationComponent:', () => {
     });
 
     it('should allow multiple independent instances (template test)', fakeAsync(() => {
-        overrideTemplate(ComponentTestComponent, ` 
+        overrideTemplate(ComponentTestComponent, `
             <ul class="list1">
-               <li *ngFor="let item of collection | paginate: {id: 'test1', itemsPerPage: 10, currentPage: p1 }" 
+               <li *ngFor="let item of collection | paginate: {id: 'test1', itemsPerPage: 10, currentPage: p1 }"
                    class="list-item">{{ item }}</li>
             </ul>
             <ccd-pagination id="test1" (pageChange)="p1 = $event"></ccd-pagination>
@@ -405,6 +409,5 @@ describe('PaginationComponent:', () => {
             let currentPage = fixture.debugElement.query(By.css('.ngx-pagination li.current .show-for-sr')).nativeElement;
             expect(currentPage.innerText).toContain(`${TEST_LABEL}`);
         }));
-
     });
 });

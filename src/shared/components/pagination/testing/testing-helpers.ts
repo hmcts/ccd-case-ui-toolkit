@@ -1,6 +1,6 @@
 import { Component, DebugElement, Type } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { TestBed, ComponentFixture} from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PaginationControlsDirective, PaginationInstance } from 'ngx-pagination';
 
 /**
@@ -36,8 +36,8 @@ export function getControlsDirective(fixture: ComponentFixture<ComponentTestComp
  * If includeAll is set to true, the boundary links will also be included.
  */
 export function getPageLinkItems(fixture: ComponentFixture<any>,
-                                 selector: string = 'ccd-pagination li',
-                                 includeAll: boolean = false): string[] {
+    selector = 'ccd-pagination li',
+    includeAll = false): string[] {
     let all = fixture.debugElement.queryAll(By.css(selector))
         .filter(el => (el.nativeElement as HTMLLIElement).classList.contains('small-screen') === false)
         .map((el: DebugElement) => el.nativeElement.innerText);
@@ -79,18 +79,18 @@ export function overrideTemplate<T>(component: Type<T>, templateString: string):
     </ccd-pagination>`
 })
 export class ComponentTestComponent {
-    maxSize: number = 9;
-    directionLinks: boolean = true;
-    autoHide: boolean = true;
-    responsive: boolean = false;
+    maxSize = 9;
+    directionLinks = true;
+    autoHide = true;
+    responsive = false;
     collection: string[] = [];
     config: PaginationInstance = {
         id: 'test',
         itemsPerPage: 10,
         currentPage: 1
     };
-    pageChanged() {}
-    pageChangedBoundsCorrection() {}
+    pageChanged() { }
+    pageChangedBoundsCorrection() { }
 
     constructor() {
         this.collection = Array.from(new Array(100), (x, i) => `item ${i + 1}`);

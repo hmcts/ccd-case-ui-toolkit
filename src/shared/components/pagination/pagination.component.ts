@@ -15,7 +15,7 @@ export class PaginationComponent {
     visibilityLabel: string;
 
     @Input() id: string;
-    @Input() maxSize: number = 7;
+    @Input() maxSize = 7;
     @Input()
     get directionLinks(): boolean {
         return this._directionLinks;
@@ -43,15 +43,15 @@ export class PaginationComponent {
         this._responsive = coerceToBoolean(value);
     }
 
-    @Input() previousLabel: string = 'Previous';
-    @Input() nextLabel: string = 'Next';
-    @Input() screenReaderPaginationLabel: string = 'Pagination';
-    @Input() screenReaderPageLabel: string = 'page';
-    @Input() screenReaderCurrentLabel: string = `You're on page`;
+    @Input() previousLabel = 'Previous';
+    @Input() nextLabel = 'Next';
+    @Input() screenReaderPaginationLabel = 'Pagination';
+    @Input() screenReaderPageLabel = 'page';
+    @Input() screenReaderCurrentLabel = `You're on page`;
     @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
     @Output() pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
 
-    private _directionLinks: boolean = true;
-    private _autoHide: boolean = false;
-    private _responsive: boolean = false;
+    private _directionLinks = true;
+    private _autoHide = false;
+    private _responsive = false;
 }
