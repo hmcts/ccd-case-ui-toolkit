@@ -14,6 +14,6 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
   }
 
   createElementId(elementId: string): string {
-    return this.id() + '_' + elementId ;
+    return `${this.id()}_${elementId}`;
   }
 }

@@ -130,7 +130,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   buildIdPrefix(elementId: string): string {
-    return this.idPrefix + '_' + elementId ;
+    return `${this.idPrefix}_${elementId}`;
   }
 
   private defaultLabel(numberOfAddresses) {
