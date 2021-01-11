@@ -161,7 +161,7 @@ export class FormValueService {
   }
 
   sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
-    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm);
+    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm['data']);
   }
 
   private sanitiseObject(rawObject: object): object {

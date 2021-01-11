@@ -1,8 +1,11 @@
 import { CaseField } from '../../domain/definition';
 import { Injectable } from '@angular/core';
+import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FieldTypeSanitiser {
+  public static readonly FIELD_TYPE_COMPLEX: FieldTypeEnum = 'Complex';
+  public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
 
   /**
    * This method finds dynamiclists in a form and replaces its string value, with
@@ -13,16 +16,20 @@ export class FieldTypeSanitiser {
    */
    sanitiseLists(caseFields: CaseField[], editForm: any) {
 
-    this.getDynamicListsFromCaseFields(caseFields).forEach(dynamicField => {
-      this.getListOfKeysFromEditForm(editForm).forEach((key) => {
-        this.createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField, key, editForm);
-      });
+    caseFields.forEach(caseField => {
+      if (caseField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST) {
+        this.getListOfKeysFromEditForm(editForm).forEach((key) => {
+          this.createValueCodePairAlongWithListIfKeyExistsInForm(caseField, key, editForm);
+        });
+      } else if (caseField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
+        this.sanitiseLists(caseField.field_type.complex_fields, editForm[caseField.id]);
+      }
     });
   }
 
   private createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField: CaseField, key, editForm: any) {
     if (dynamicField.id === key) {
-      editForm['data'][key] = {
+      editForm[key] = {
           value: this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
           list_items: dynamicField.list_items
         };
@@ -30,16 +37,12 @@ export class FieldTypeSanitiser {
   }
 
   private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
-    let result = dynamicField.list_items.filter(value => value.code === editForm['data'][key]);
+    let result = dynamicField.list_items.filter(value => value.code === editForm[key]);
     return result.length > 0 ? result[0] : {};
   }
 
   private getListOfKeysFromEditForm(editForm: any) {
-    return Object.keys(editForm['data']);
+    return Object.keys(editForm);
   }
 
-  private getDynamicListsFromCaseFields(caseFields: CaseField[]): CaseField[] {
-    return caseFields
-      .filter(caseField => caseField.field_type.type === 'DynamicList');
-  }
 }
