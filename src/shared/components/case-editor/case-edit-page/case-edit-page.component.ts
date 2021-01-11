@@ -126,6 +126,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.setFocusToTop();
   }
 
+  // Adding validation message to show it as Error Summary
   generateErrorMessage(fields: CaseField[]){   
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
           .forEach(casefield => {
@@ -141,11 +142,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             } else if ((this.editForm.controls['data'].get(casefield.id).hasError('maxlength'))){
               this.validationErrors.push(`${casefield.label} exceeds maximum length #${casefield.id}`);
               this.editForm.controls['data'].get(casefield.id).markAsTouched();             
-            } 
-            // else if((this.editForm.controls['data'].get(casefield.id).invalid) && this.editForm.controls['data'].get(casefield.id).errors== null){              
-            //   this.validationErrors.push(`${casefield.label} field is required #${casefield.id}`);
-            //   this.editForm.controls['data'].get(casefield.id).markAsTouched();             
-            // }
+            }             
           })
     this.scrollToTop();
   }
