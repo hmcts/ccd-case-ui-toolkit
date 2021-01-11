@@ -82,9 +82,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       }
     });
-    if (document.getElementById('main-content')) {
-      document.getElementById('main-content').focus();
-    }
+    this.setFocusToTop();
   }
 
   ngAfterViewChecked(): void {
@@ -122,6 +120,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     let caseEventData: CaseEventData = this.buildCaseEventData();
     this.updateFormData(caseEventData);
     this.previous();
+    this.setFocusToTop();
   }
 
   submit() {
@@ -139,9 +138,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }, error => this.handleError(error));
       this.scrollToTop();
     }
-    if (document.getElementById('main-content')) {
-      document.getElementById('main-content').focus();
-    }
+    this.setFocusToTop();
   }
 
   updateFormData(jsonData: CaseEventData): void {
@@ -305,5 +302,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
     }
     return caseEventData;
+  }
+
+  private setFocusToTop() {
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
   }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CaseViewerComponent } from './case-viewer.component';
+import { MatTabsModule } from '@angular/material';
 import {
   ActivityService,
   ActivityPollingService,
@@ -42,6 +43,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
     ConditionalShowModule,
     CaseHistoryModule,
     EventLogModule,
+    MatTabsModule
   ],
   declarations: [
     CaseEventTriggerComponent,
