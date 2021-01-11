@@ -164,11 +164,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   submit() {
     this.validationErrors.length = 0;
-    if(this.currentPageIsNotValid()){ 
-      // this.currentPage.case_fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-      // .forEach(casefield => {
-      //   console.log(this.editForm.controls['data'].get(casefield.id));
-      // })
+    if(this.currentPageIsNotValid()){      
       this.generateErrorMessage(this.currentPage.case_fields)      
     }
     
