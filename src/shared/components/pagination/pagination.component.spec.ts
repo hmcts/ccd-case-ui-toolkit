@@ -10,7 +10,7 @@ import locale from '@angular/common/locales/de';
 
 registerLocaleData(locale);
 
-fdescribe('PaginationComponent:', () => {
+describe('PaginationComponent:', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
