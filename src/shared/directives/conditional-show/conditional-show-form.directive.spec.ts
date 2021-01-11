@@ -60,8 +60,7 @@ describe('ConditionalShowFormDirective', () => {
     let elRadioY: HTMLElement;
     let elMake: HTMLElement;
     let elModel: HTMLElement;
-    let deChild: DebugElement;
-    let elChild: HTMLElement;
+
     let conditionalShowForm: ConditionalShowFormDirective;
     let mockRegistrar: ConditionalShowRegistrarService = createSpyObj<ConditionalShowRegistrarService>(
       'conditionalShowRegistrarService',
