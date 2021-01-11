@@ -3,3 +3,9 @@
   border-right-color: #ffcc02;
   border-right-style: solid;
 }
+
+.validationError {
+  cursor: pointer;
+  text-decoration: underline; 
+  color: #d4351c;
+}

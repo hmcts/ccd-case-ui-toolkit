@@ -17,6 +17,7 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -48,6 +49,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
+  validationErrors: string[] = [];
 
   constructor(
     private caseEdit: CaseEditComponent,
@@ -57,6 +59,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private cdRef: ChangeDetectorRef,
     private pageValidationService: PageValidationService,
     private dialog: MatDialog,
+    private caseFieldService: CaseFieldService
   ) {}
 
   ngOnInit(): void {
@@ -123,8 +126,53 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.setFocusToTop();
   }
 
+  generateErrorMessage(fields: CaseField[]){   
+    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+          .forEach(casefield => {
+            if((this.editForm.controls['data'].get(casefield.id).hasError('required'))){
+              this.validationErrors.push(`${casefield.label} is required #${casefield.id}`);
+              this.editForm.controls['data'].get(casefield.id).markAsTouched();    
+            } else if ((this.editForm.controls['data'].get(casefield.id).hasError('pattern'))){
+              this.validationErrors.push(`${casefield.label} is not valid #${casefield.id}`);
+              this.editForm.controls['data'].get(casefield.id).markAsTouched();              
+            } else if ((this.editForm.controls['data'].get(casefield.id).hasError('minlength'))){
+              this.validationErrors.push(`${casefield.label} required minimum length #${casefield.id}`);
+              this.editForm.controls['data'].get(casefield.id).markAsTouched();              
+            } else if ((this.editForm.controls['data'].get(casefield.id).hasError('maxlength'))){
+              this.validationErrors.push(`${casefield.label} exceeds maximum length #${casefield.id}`);
+              this.editForm.controls['data'].get(casefield.id).markAsTouched();             
+            } 
+            // else if((this.editForm.controls['data'].get(casefield.id).invalid) && this.editForm.controls['data'].get(casefield.id).errors== null){              
+            //   this.validationErrors.push(`${casefield.label} field is required #${casefield.id}`);
+            //   this.editForm.controls['data'].get(casefield.id).markAsTouched();             
+            // }
+          })
+    this.scrollToTop();
+  }
+
+  getElementId(errorMessage: string){
+    return errorMessage.substring(errorMessage.lastIndexOf("#"));
+  }
+
+  getValidationErrorMessage(errorMessage: string){
+    return errorMessage.substring(0,errorMessage.lastIndexOf("#"));
+  }
+
+  onClick(elementId: string): void{
+    document.getElementById(elementId.substring(1)).scrollIntoView({behavior: "smooth", block: "center"});    
+  }
+
   submit() {
-    if (!this.isSubmitting) {
+    this.validationErrors.length = 0;
+    if(this.currentPageIsNotValid()){ 
+      // this.currentPage.case_fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+      // .forEach(casefield => {
+      //   console.log(this.editForm.controls['data'].get(casefield.id));
+      // })
+      this.generateErrorMessage(this.currentPage.case_fields)      
+    }
+    
+    if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
       this.error = null;
       let caseEventData: CaseEventData = this.buildCaseEventData();

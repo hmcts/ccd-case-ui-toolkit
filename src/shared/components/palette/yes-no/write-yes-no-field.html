@@ -3,10 +3,10 @@
 	<fieldset class="inline">
 
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-      <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | ccdFirstError}}</span>
+      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>      
     </legend>
+    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+    <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | ccdFirstError:caseField.label}}</span>
 
     <div class="form-group bottom-30" [id]="id()">
 

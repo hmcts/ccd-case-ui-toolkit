@@ -2,14 +2,15 @@
 
   <fieldset>
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel }}</span>
-      <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-      <span class="error-message" *ngIf="dateControl.errors && dateControl.touched">{{dateControl.errors | ccdFirstError}}</span>
+      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel }}</span>      
     </legend>
+    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+    <span class="error-message" *ngIf="dateControl.errors && dateControl.touched">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
 
     <cut-date-input [id]="id()"
                     [isDateTime]="isDateTime()"
                     [mandatory]="caseField | ccdIsMandatory"
+                    [isValid]="dateControl.errors && dateControl.touched"
                     [formControl]="dateControl"></cut-date-input>
 
   </fieldset>
