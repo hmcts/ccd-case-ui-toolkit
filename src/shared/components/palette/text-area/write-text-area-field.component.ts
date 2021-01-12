@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { BrowserService } from '../../../services/browser/browser.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
@@ -10,16 +11,16 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
 
   textareaControl: FormControl;
 
+  constructor(private browserService: BrowserService){
+    super();
+  }
+
   ngOnInit() {
     this.textareaControl = this.registerControl(new FormControl(this.caseField.value));
   }
 
-  isIE(): boolean {
-    return /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
-  }
-
 autoGrow(event) {
-  if(this.isIE()){
+  if(this.browserService.isIEOrEdge()){
     event.target.style.height = 'auto';
     event.target.style.height = event.target.scrollHeight+'px';
     event.target.scrollTop = event.target.scrollHeight;

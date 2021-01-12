@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 ### Version 2.67.6-ie-textbox-expand-issue
-**EUI-2020** Accessibility amends for tabs and page load
+**EUI-2333** IE textbox expand issue
 
 ### Version 2.67.5-dynamiclist-fix-in-complex
 **EUI-2350** Dynamic Lists in Complex Types
