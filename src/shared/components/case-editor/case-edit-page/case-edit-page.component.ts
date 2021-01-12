@@ -297,7 +297,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
-    caseEventData.event_data = caseEventData.data;
+    caseEventData.event_data = caseEventData.data || this.editForm.value.data;
     if (this.caseEdit.caseDetails) {
       caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
     }
