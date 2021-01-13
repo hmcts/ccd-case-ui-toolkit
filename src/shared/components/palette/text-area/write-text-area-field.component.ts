@@ -5,12 +5,12 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-text-area-field',
-  templateUrl: './write-text-area-field.html'
+  templateUrl: './write-text-area-field.html',
+  providers: [BrowserService]
 })
 export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   textareaControl: FormControl;
-
   constructor(private browserService: BrowserService){
     super();
   }
