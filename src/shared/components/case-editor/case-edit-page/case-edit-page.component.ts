@@ -49,7 +49,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
-  validationErrors: string[] = [];
+  validationErrors: {id:string, message:string}[] = [];
 
   constructor(
     private caseEdit: CaseEditComponent,
@@ -119,7 +119,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
   }
 
-  toPreviousPage() {
+  toPreviousPage() {    
+    this.validationErrors = [];
     let caseEventData: CaseEventData = this.buildCaseEventData();
     this.updateFormData(caseEventData);
     this.previous();
@@ -129,40 +130,37 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   // Adding validation message to show it as Error Summary
   generateErrorMessage(fields: CaseField[]){   
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+          .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm.getRawValue()))
           .forEach(casefield => {
-            if((this.editForm.controls['data'].get(casefield.id).hasError('required'))){
-              this.validationErrors.push(`${casefield.label} is required #${casefield.id}`);
-              this.editForm.controls['data'].get(casefield.id).markAsTouched();    
-            } else if ((this.editForm.controls['data'].get(casefield.id).hasError('pattern'))){
-              this.validationErrors.push(`${casefield.label} is not valid #${casefield.id}`);
-              this.editForm.controls['data'].get(casefield.id).markAsTouched();              
-            } else if ((this.editForm.controls['data'].get(casefield.id).hasError('minlength'))){
-              this.validationErrors.push(`${casefield.label} required minimum length #${casefield.id}`);
-              this.editForm.controls['data'].get(casefield.id).markAsTouched();              
-            } else if ((this.editForm.controls['data'].get(casefield.id).hasError('maxlength'))){
-              this.validationErrors.push(`${casefield.label} exceeds maximum length #${casefield.id}`);
-              this.editForm.controls['data'].get(casefield.id).markAsTouched();             
-            }             
+            const fieldElement = this.editForm.controls['data'].get(casefield.id);               
+            
+            if(fieldElement && fieldElement.hasError('required')){               
+              this.validationErrors.push({id:casefield.id, message:`${casefield.label} is required`});
+              fieldElement.markAsTouched();    
+            } else if (fieldElement && fieldElement.hasError('pattern')){                
+              this.validationErrors.push({id:casefield.id, message:`${casefield.label} is not valid`});
+              fieldElement.markAsTouched();              
+            } else if (fieldElement && fieldElement.hasError('minlength')){                
+              this.validationErrors.push({id:casefield.id, message:`${casefield.label} required minimum length`});
+              fieldElement.markAsTouched();              
+            } else if (fieldElement && fieldElement.hasError('maxlength')){                
+              this.validationErrors.push({id:casefield.id, message:`${casefield.label} exceeds maximum length`});
+              fieldElement.markAsTouched();             
+            }
+                                 
           })
     this.scrollToTop();
   }
 
-  getElementId(errorMessage: string){
-    return errorMessage.substring(errorMessage.lastIndexOf("#"));
-  }
-
-  getValidationErrorMessage(errorMessage: string){
-    return errorMessage.substring(0,errorMessage.lastIndexOf("#"));
-  }
-
-  onClick(elementId: string): void{
-    document.getElementById(elementId.substring(1)).scrollIntoView({behavior: "smooth", block: "center"});    
+  
+  navigateToElement(elementId: string): void{    
+    document.getElementById(elementId).scrollIntoView({behavior: "smooth", block: "center"});    
   }
 
   submit() {
-    this.validationErrors.length = 0;
+    this.validationErrors = [];
     if(this.currentPageIsNotValid()){      
-      this.generateErrorMessage(this.currentPage.case_fields)      
+      this.generateErrorMessage(this.currentPage.case_fields);  
     }
     
     if (!this.isSubmitting && !this.currentPageIsNotValid()) {
