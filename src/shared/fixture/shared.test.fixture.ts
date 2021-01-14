@@ -43,6 +43,22 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
   });
 };
 
+export let aCaseFieldWithValue = (id: string, label: string, value: string, type: FieldTypeEnum, display_context: string,
+                         show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
+  return <CaseField>({
+    id: id || 'personFirstName',
+    field_type: {
+      id: type.toString() || 'Text',
+      type: type || 'Text',
+      complex_fields: typeComplexFields || []
+    },
+    display_context: display_context || 'OPTIONAL',
+    label: label || 'First name',
+    value: value || '',
+    show_summary_content_option: show_summary_content_option
+  });
+};
+
 export let createWizardPage = (id: string,
                                label: string,
                                order: number,
