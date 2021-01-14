@@ -6,6 +6,6 @@
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
   <span class="error-message" *ngIf="phoneUkControl.errors && phoneUkControl.touched">{{phoneUkControl.errors | ccdFirstError:caseField.label}}</span>
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': phoneUkControl.errors && phoneUkControl.touched}"
-  [ngStyle]="{'border-width':phoneUkControl.errors && phoneUkControl.touched ? '2px':null}" [id]="id()" type="tel" [formControl]="phoneUkControl">
+   [id]="id()" type="tel" [formControl]="phoneUkControl">
 
 </div>

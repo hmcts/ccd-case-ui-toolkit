@@ -26,7 +26,7 @@ export class PageValidationService {
     return !(this.checkMandatoryField(caseField, theControl));
   }
 
-  private isHidden(caseField, formFields) {
+  public isHidden(caseField, formFields) {
     let condition = new ShowCondition(caseField.show_condition);
     return !condition.match(formFields.data);
   }

@@ -11,8 +11,7 @@
            (change)="dayChange(dayInput.value)"
            (keyup)="dayChange(dayInput.value)"           
            (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isValid}"
-           [ngStyle]="{'border-width': isValid ? '2px':null}">
+           [ngClass]="{'govuk-input--error': isValid}">
   </div>
 
   <div class="form-group form-group-month">
@@ -26,8 +25,7 @@
            (change)="monthChange(monthInput.value)"
            (keyup)="monthChange(monthInput.value)"           
            (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isValid}"
-           [ngStyle]="{'border-width': isValid ? '2px':null}">
+           [ngClass]="{'govuk-input--error': isValid}">
   </div>
 
   <div class="form-group form-group-year">
@@ -41,8 +39,7 @@
            (change)="yearChange(yearInput.value)"
            (keyup)="yearChange(yearInput.value)"           
            (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isValid}"
-           [ngStyle]="{'border-width': isValid ? '2px':null}">
+           [ngClass]="{'govuk-input--error': isValid}">
   </div>
 
   <div class="form-group form-group-hour" *ngIf="isDateTime">
@@ -56,8 +53,7 @@
            (change)="hourChange(hourInput.value)"
            (keyup)="hourChange(hourInput.value)"           
            (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isValid}"
-           [ngStyle]="{'border-width': isValid ? '2px':null}">
+           [ngClass]="{'govuk-input--error': isValid}">
   </div>
 
   <div class="form-group form-group-minute" *ngIf="isDateTime">
@@ -71,8 +67,7 @@
            (change)="minuteChange(minuteInput.value)"
            (keyup)="minuteChange(minuteInput.value)"           
            (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isValid}"
-           [ngStyle]="{'border-width': isValid ? '2px':null}">
+           [ngClass]="{'govuk-input--error': isValid}">
   </div>
 
   <div class="form-group form-group-second" *ngIf="isDateTime">
@@ -86,8 +81,7 @@
            (change)="secondChange(secondInput.value)"
            (keyup)="secondChange(secondInput.value)"           
            (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isValid}"
-           [ngStyle]="{'border-width': isValid ? '2px':null}">
+           [ngClass]="{'govuk-input--error': isValid}">
   </div>
 
 </div>

@@ -180,12 +180,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public inputFocus() {
     this.isTouched = false;
     this.touch();
-  }
-
-  // public inputBlur() {
-  //   this.isTouched = true;
-  //   this.touch();
-  // }
+  }  
 
   public touch() {
     if (this.isTouched) {
