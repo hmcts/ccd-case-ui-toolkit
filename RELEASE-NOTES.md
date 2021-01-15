@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.67.7-radio-list-button-issue
+**EUI-2725** Radio button option ends in disabled state fix
+
 ### Version 2.67.5-dynamiclist-fix-in-complex
 **EUI-2350** Dynamic Lists in Complex Types
 
