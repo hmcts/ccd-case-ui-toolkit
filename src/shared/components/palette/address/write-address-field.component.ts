@@ -7,6 +7,8 @@ import { AddressesService } from '../../../services/addresses/addresses.service'
 import { FormControl, FormGroup } from '@angular/forms';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { FocusElementDirective } from '../../../directives/focus-element';
+import { CaseField } from '../../../domain';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-write-address-field',
@@ -34,7 +36,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   missingPostcode = false;
 
-  constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
+  constructor(addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
     super();
     this.addressesService = addressesService;
   }
@@ -49,7 +51,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   findAddress() {
-
     if (!this.postcode.value) {
       this.missingPostcode = true;
     } else {
@@ -91,7 +92,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   isComplexWithHiddenFields() {
     if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
-      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
+      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true)) {
       return true;
     }
   }
@@ -124,13 +125,15 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['caseField']) {
+    super.ngOnChanges(changes);
+    let change = changes['caseField'];
+    if (change) {
       this.setFormValue();
     }
   }
 
   createId(elementId: string): string {
-    return this.id() + '_' + elementId ;
+    return this.id() + '_' + elementId;
   }
 
   private defaultLabel(numberOfAddresses) {

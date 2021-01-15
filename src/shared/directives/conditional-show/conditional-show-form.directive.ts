@@ -66,8 +66,6 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
           cf.hidden = !condResult;
         }
       }
-    } else {
-      console.log('No casefield bound  to control ' + JSON.stringify(c.value));
     }
   }
 
