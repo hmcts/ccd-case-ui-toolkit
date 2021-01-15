@@ -57,6 +57,9 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
     if (cf) {
       if (cf.show_condition) {
         const condResult = ShowCondition.getInstance(cf.show_condition).match(this.allFieldValues, this.buildPath(component, cf));
+        if (cf.hidden === null || cf.hidden === undefined) {
+          cf.hidden = false;
+        }
         if (condResult === cf.hidden) {
           if (cf.hidden) {
             this.greyBarService.addToggledToShow(cf.id);
@@ -89,7 +92,7 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   }
 
   private evalAllShowHideConditions() {
-    let fields = this.getCurrentPagesReadOnlyAndFormFieldValues()
+    this.getCurrentPagesReadOnlyAndFormFieldValues()
     this.fieldsUtils.controlIterator(this.formGroup, this.handleFormArray, this.handleFormGroup, this.handleFormControl)
   }
 
@@ -105,6 +108,7 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   private getCurrentPagesReadOnlyAndFormFieldValues() {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     this.allFieldValues = this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
+    return this.allFieldValues;
   }
 
   private getFormFieldsValuesIncludingDisabled() {

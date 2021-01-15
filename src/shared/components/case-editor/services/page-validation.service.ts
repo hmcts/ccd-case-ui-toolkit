@@ -14,7 +14,7 @@ export class PageValidationService {
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm.getRawValue()))
       .every(caseField => {
-        let theControl = editForm.controls['data'].get(caseField.id);
+        let theControl = editForm.get(caseField.id);
         return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
   }
@@ -32,7 +32,11 @@ export class PageValidationService {
   }
 
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
-    return (!theControl && this.caseFieldService.isOptional(caseField)) || theControl.valid || theControl.disabled;
+    if (!theControl) {
+      return this.caseFieldService.isOptional(caseField);
+    } else {
+      return theControl.valid || theControl.disabled;
+    }
   }
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {
