@@ -153,7 +153,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   
-  navigateToElement(elementId: string): void{    
+  navigateToErrorElement(elementId: string): void{    
     document.getElementById(elementId).scrollIntoView({behavior: "smooth", block: "center"});    
   }
 

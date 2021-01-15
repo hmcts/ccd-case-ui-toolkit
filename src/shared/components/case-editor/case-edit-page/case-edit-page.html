@@ -13,7 +13,7 @@
   <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
     <ul class="govuk-list govuk-error-summary__list">
       <li> 
-        <a (click)="navigateToElement(validationError.id)" class="validationError">{{validationError.message}}</a>
+        <a (click)="navigateToErrorElement(validationError.id)" class="validationError">{{validationError.message}}</a>
       </li>      
     </ul>
   </div>

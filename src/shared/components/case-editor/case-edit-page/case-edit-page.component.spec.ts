@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { FormValueService } from '../../../services/form/form-value.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -407,7 +407,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       let cancelText = comp.getCancelText();
-      console.log(cancelText);
+      
       expect(cancelText).toEqual('Cancel');
     });
 
@@ -783,6 +783,91 @@ describe('CaseEditPageComponent', () => {
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
     });
+  });
+
+  describe('Check for Validation Error', () => {
+
+    const F_GROUP = new FormGroup({
+      'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
+                              ,'Invalidfield2': new FormControl(null, Validators.required)
+                            })
+    });
+
+    beforeEach(async(() => {
+      firstPage.id = 'first page';
+      cancelled = createSpyObj('cancelled', ['emit']);      
+    
+      caseEditComponentStub = {
+        'form': F_GROUP,
+        'wizard': WIZARD,
+        'data': '',
+        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false},
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'first': () => true,
+        'next': () => true,
+        'previous': () => true,
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'validate': (caseEventData: CaseEventData) => of(caseEventData),
+        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': []},
+      };
+      snapshot = {
+        queryParamMap: createSpyObj('queryParamMap', ['get']),
+      };
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
+      };
+
+      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
+      dialog = createSpyObj<MatDialog>('dialog', ['open']);
+      dialog.open.and.returnValue(matDialogRef);
+
+      spyOn(caseEditComponentStub, 'first');
+      spyOn(caseEditComponentStub, 'next');
+      spyOn(caseEditComponentStub, 'previous');
+      TestBed.configureTestingModule({
+        declarations: [CaseEditPageComponent,
+          CaseReferencePipe],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditPageComponent);
+      comp = fixture.componentInstance;
+      readOnly.display_context = 'READONLY';
+      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);
+      comp.currentPage = wizardPage;
+    });
+
+    it('should validate Mandatory Fields and log error message ', () => {      
+        wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
+        wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
+        wizardPage.isMultiColumn = () => false;                    
+  
+        comp.editForm = F_GROUP;        
+        comp.currentPage = wizardPage;     
+        fixture.detectChanges();
+        expect(comp.currentPageIsNotValid()).toBeTruthy();      
+        
+        comp.generateErrorMessage(wizardPage.case_fields);
+        comp.validationErrors.forEach(error =>{
+          expect(error.message).toEqual(`${error.id} is required`)
+        });        
+      
+      });
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
