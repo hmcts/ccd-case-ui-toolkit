@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.68.1-prerelease-conditional-show-perf",
+  "version": "2.68.2-prerelease-conditional-show-perf",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

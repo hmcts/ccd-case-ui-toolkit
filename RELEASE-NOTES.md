@@ -1,6 +1,6 @@
 ## RELEASE NOTES
-### Version 2.68.0-prerelease-conditional-show-perf"
-**EUI-3055** Fix regression in address field
+### Version 2.68.2-prerelease-conditional-show-perf"
+**EUI-3055** Fix regression in address field and tests
 
 ### Version 2.68.0-prerelease-conditional-show-perf"
 **EUI-3055** Better performance in edit forms through new show hide implementation

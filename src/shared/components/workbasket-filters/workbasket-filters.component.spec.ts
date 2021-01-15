@@ -566,7 +566,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       let writeFieldInstance = writeField.componentInstance;
 
-      expect(writeFieldInstance.caseField).toEqual(expectedInput.field);
+      expect(writeFieldInstance.caseField.id).toEqual(expectedInput.field.id);
       expect(writeFieldInstance.caseField.label).toEqual(expectedInput.field.label);
       expect(writeFieldInstance.formGroup).toBeTruthy();
     });
@@ -579,8 +579,7 @@ describe('WorkbasketFiltersComponent', () => {
       let complexFieldSearchInput = TEST_WORKBASKET_INPUTS[2];
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.of([complexFieldSearchInput]));
 
-      let expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
-
+      let expectedFieldId = complexFieldSearchInput.field.id;
       component.onCaseTypeIdChange();
       fixture.detectChanges();
 
