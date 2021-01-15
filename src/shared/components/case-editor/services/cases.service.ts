@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { AbstractAppConfig } from '../../../../app.config';
-import { plainToClass } from 'class-transformer';
 import { Headers } from '@angular/http';
-import { HttpErrorService, HttpService, OrderService } from '../../../services';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { plainToClass } from 'class-transformer';
+import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { CaseEventData, CaseEventTrigger, CasePrintDocument, CaseView, Draft } from '../../../domain';
+
+import { AbstractAppConfig } from '../../../../app.config';
+import { ShowCondition } from '../../../directives';
+import { CaseEventData, CaseEventTrigger, CasePrintDocument, CaseView, Draft, Profile } from '../../../domain';
+import { HttpErrorService, HttpService, OrderService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 
@@ -161,7 +162,7 @@ export class CasesService {
       );
   }
 
-  createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<object> {
+  createEvent(caseDetails: CaseView, eventData: CaseEventData, profile?: Profile): Observable<object> {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
@@ -173,7 +174,7 @@ export class CasesService {
     return this.http
       .post(url, eventData, {headers})
       .pipe(
-        map(response => this.processResponse(response)),
+        map(response => this.processResponse(response, eventData, profile)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -202,7 +203,7 @@ export class CasesService {
       );
   }
 
-  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
+  createCase(ctid: string, eventData: CaseEventData, profile?: Profile): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
@@ -219,7 +220,7 @@ export class CasesService {
     return this.http
       .post(url, eventData, {headers})
       .pipe(
-        map(response => this.processResponse(response)),
+        map(response => this.processResponse(response, eventData, profile)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -271,9 +272,12 @@ export class CasesService {
     return url;
   }
 
-  private processResponse(response) {
+  private processResponse(response: any, eventData: CaseEventData, profile: Profile) {
     if (response.headers && response.headers.get('content-type').match(/application\/.*json/)) {
-      return response.json();
+      // TODO: Handle associated tasks.
+      const json = response.json();
+      this.processTasksOnSuccess(json, eventData.event, profile);
+      return json;
     }
     return {'id': ''};
   }
@@ -288,6 +292,55 @@ export class CasesService {
       wizardPage.case_fields = this.orderService.sort(
         this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });
+  }
+
+  private processTasksOnSuccess(caseData: any, eventData: any, profile: Profile): void {
+    const user = profile && profile.user && profile.user.idam ? profile.user.idam.id : null;
+    /**
+     * Retrieve all tasks, which are:
+     *   * For the current case;
+     *   * Can be completed (status is not "Completed" or "Cancelled");
+     *   * Can be completed by the current event;
+     *   * Are assigned to the current user.
+     */
+    const taskSearchParameter: any = {
+      ccdId: caseData.id,
+      eventId: eventData.id,
+      state: [ 'Open' ] // Need to know which are the "completeable" statuses.
+    };
+    if (user) {
+      taskSearchParameter.user = [ user ];
+    }
+
+    // Now get the tasks using those properties.
+    this.getWorkAllocationTasks([ taskSearchParameter ]).subscribe((tasks: any[]) => {
+      console.log('Got tasks', tasks);
+      if (tasks && tasks.length > 0) {
+        if (tasks.length === 1) {
+          // TODO: Attempt to mark this task as complete.
+          // If this fails, flag it as an error.
+        } else {
+          // TODO: This is a problem. We need to flag it up as an error.
+        }
+      }
+      // If we didn't get any tasks back, we're all good. Nothing to see here.
+    });
+  }
+
+  public getWorkAllocationTasks(taskSearchParameters: any[]): Observable<object> {
+    // TODO: Put this in a WorkAllocationService.
+    console.log('Find tasks that match this:', taskSearchParameters);
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task`;
+    return this.http
+      .post(url, { searchRequest: taskSearchParameters })
+      .pipe(
+        map(response => response.json()),
+        catchError(error => {
+          console.log('caught error for getting work allocation tasks', error);
+          // this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
 }

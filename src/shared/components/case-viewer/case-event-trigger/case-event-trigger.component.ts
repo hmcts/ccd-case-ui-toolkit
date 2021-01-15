@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
-import { DisplayMode, CaseEventTrigger, CaseView, Activity, CaseEventData } from '../../../domain';
-import { CaseNotifier, CasesService } from '../../case-editor';
-import { AlertService, ActivityPollingService, EventStatusService } from '../../../services';
+
+import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode, Profile } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { NgZone } from '@angular/core';
+import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -29,9 +29,15 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private caseReferencePipe: CaseReferencePipe,
     private activityPollingService: ActivityPollingService
-  ) { }
+  ) {
+    // Doesn't look like this is ever called so this may be a redundant component now...
+    // It may, of course, just be that I don't know how to get to this component.
+    console.log('CaseEvenTriggerComponent constructor');
+  }
 
   ngOnInit(): void {
+    // Doesn't look like this is ever called so this may be a redundant component now...
+    console.log('CaseEvenTriggerComponent.ngOnInit', this.route.snapshot.data);
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
@@ -65,8 +71,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     return this.activityPollingService.postEditActivity(this.caseDetails.case_id);
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData) => this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
+  submit(): (sanitizedEditForm: CaseEventData, profile?: Profile) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData, profile?: Profile) =>
+      this.casesService.createEvent(this.caseDetails, sanitizedEditForm, profile);
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {

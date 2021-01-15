@@ -1,13 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Draft } from '../../../domain/draft.model';
-import { CasesService } from '../services/cases.service';
-import { HttpError } from '../../../domain/http';
-import { AlertService } from '../../../services/alert';
-import { CaseEventData } from '../../../domain';
-import { DraftService } from '../../../services/draft/draft.service';
-import { EventTriggerService } from '../services/event-trigger.service';
+
+import { CaseEventData, CaseEventTrigger, Draft, HttpError, Profile } from '../../../domain';
+import { AlertService, DraftService } from '../../../services';
+import { CasesService, EventTriggerService } from '../services';
 
 @Component({
   selector: 'ccd-case-create',
@@ -27,7 +23,7 @@ export class CaseCreateComponent implements OnInit {
   @Output()
   submitted: EventEmitter<any> = new EventEmitter();
 
-  private eventTrigger: CaseEventTrigger;
+  public eventTrigger: CaseEventTrigger;
 
   constructor(
     private casesService: CasesService,
@@ -48,10 +44,10 @@ export class CaseCreateComponent implements OnInit {
       });
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData) => {
+  submit(): (sanitizedEditForm: CaseEventData, profile?: Profile) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData, profile?: Profile) => {
       sanitizedEditForm.draft_id = this.eventTrigger.case_id;
-      return this.casesService.createCase(this.caseType, sanitizedEditForm);
+      return this.casesService.createCase(this.caseType, sanitizedEditForm, profile);
     }
   }
 

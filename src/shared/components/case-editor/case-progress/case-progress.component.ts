@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { CasesService } from '../services/cases.service';
-import { HttpError } from '../../../domain/http';
-import { AlertService } from '../../../services/alert';
-import { CaseEventData, CaseView } from '../../../domain';
-import { EventTriggerService } from '../services/event-trigger.service';
+
+import { CaseEventData, CaseEventTrigger, CaseView, HttpError, Profile } from '../../../domain';
+import { AlertService } from '../../../services';
+import { CasesService, EventTriggerService } from '../services';
 
 @Component({
   selector: 'ccd-case-progress',
@@ -23,8 +21,8 @@ export class CaseProgressComponent implements OnInit {
   @Output()
   submitted: EventEmitter<any> = new EventEmitter();
 
-  private caseDetails: CaseView;
-  private eventTrigger: CaseEventTrigger;
+  public caseDetails: CaseView;
+  public eventTrigger: CaseEventTrigger;
 
   constructor(
     private casesService: CasesService,
@@ -48,8 +46,9 @@ export class CaseProgressComponent implements OnInit {
       });
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData) => this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
+  submit(): (sanitizedEditForm: CaseEventData, profile?: Profile) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData, profile?: Profile) =>
+      this.casesService.createEvent(this.caseDetails, sanitizedEditForm, profile);
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
