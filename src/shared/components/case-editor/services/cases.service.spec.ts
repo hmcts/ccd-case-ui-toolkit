@@ -1,12 +1,13 @@
 import { Headers, Response, ResponseOptions } from '@angular/http';
-import { AbstractAppConfig } from '../../../../app.config';
-import { CasesService } from './cases.service';
 import { Observable, throwError } from 'rxjs';
-import { CasePrintDocument } from '../../../../shared/domain/case-view/case-print-document.model';
-import { HttpErrorService, HttpService } from '../../../services/http';
-import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
+
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError, Profile } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { HttpErrorService, HttpService } from '../../../services';
+import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasesService', () => {
@@ -51,6 +52,31 @@ describe('CasesService', () => {
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
+  let USER = {
+    idam: {
+      id: 'userId',
+      email: 'string',
+      forename: 'string',
+      surname: 'string',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+    }
+  };
+  let FUNC = () => false;
+  let PROFILE: Profile = {
+    channels: [],
+    jurisdictions: [],
+    default: {
+      workbasket: {
+        case_type_id: '',
+        jurisdiction_id: '',
+        state_id: ''
+      }
+    },
+    user: USER,
+    'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC
+  };
+
   let appConfig: any;
   let httpService: any;
   let orderService: any;
@@ -60,9 +86,10 @@ describe('CasesService', () => {
   let casesService: CasesService;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
+    appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
 
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
@@ -282,7 +309,7 @@ describe('CasesService', () => {
 
     it('should use HttpService::post with correct url', () => {
       casesService
-        .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
+        .createEvent(CASE_DETAILS, CASE_EVENT_DATA, PROFILE)
         .subscribe();
 
       const headers = new Headers({

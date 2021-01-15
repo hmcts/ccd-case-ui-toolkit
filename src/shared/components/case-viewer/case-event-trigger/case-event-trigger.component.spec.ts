@@ -1,15 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import { DebugElement } from '@angular/core';
-import { MockComponent } from 'ng2-mock-component';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { Observable } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { MockComponent } from 'ng2-mock-component';
+import { Observable } from 'rxjs';
+
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError, Profile } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
-import { CasesService, CaseNotifier } from '../../case-editor';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
+import { CaseEventTriggerComponent } from './case-event-trigger.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventTriggerComponent', () => {
@@ -26,6 +28,31 @@ describe('CaseEventTriggerComponent', () => {
   };
   CASE_DETAILS.case_type.id = 'TEST_CASE_TYPE';
   CASE_DETAILS.case_type.jurisdiction.id = 'TEST';
+
+  let USER = {
+    idam: {
+      id: 'userId',
+      email: 'string',
+      forename: 'string',
+      surname: 'string',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+    }
+  };
+  let FUNC = () => false;
+  let PROFILE: Profile = {
+    channels: [],
+    jurisdictions: [],
+    default: {
+      workbasket: {
+        case_type_id: '',
+        jurisdiction_id: '',
+        state_id: ''
+      }
+    },
+    user: USER,
+    'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC
+  };
 
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',
@@ -181,9 +208,9 @@ describe('CaseEventTriggerComponent', () => {
   }));
 
   it('should edit case with sanitised data when form submitted', () => {
-    component.submit()(SANITISED_EDIT_FORM);
+    component.submit()(SANITISED_EDIT_FORM, PROFILE);
 
-    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_DETAILS, SANITISED_EDIT_FORM);
+    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_DETAILS, SANITISED_EDIT_FORM, PROFILE);
   });
 
   it('should edit case with sanitised data when form validated', () => {

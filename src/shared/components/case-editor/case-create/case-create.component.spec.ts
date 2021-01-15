@@ -1,17 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CasesService } from '../services/cases.service';
-import { CaseCreateComponent } from './case-create.component';
-import { CaseEventTrigger, CaseField, DRAFT_PREFIX } from '../../../domain';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { DraftService } from '../../../services/draft';
-import { AlertService } from '../../../services/alert';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpError } from '../../../domain/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { EventTriggerService } from '../services/event-trigger.service';
-import { CaseDetails } from '../../../domain/case-details.model';
-import { CaseEventData } from '../../../domain/case-event-data.model';
+import { Observable, of, throwError } from 'rxjs';
+
+import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, DRAFT_PREFIX, HttpError, Profile } from '../../../domain';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { AlertService, DraftService } from '../../../services';
+import { CasesService, EventTriggerService } from '../services';
+import { CaseCreateComponent } from './case-create.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 let CaseEditComponent: any = MockComponent({
@@ -70,6 +67,31 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     },
     event_token: 'test-token',
     ignore_warning: false
+  };
+
+  let USER = {
+    idam: {
+      id: 'userId',
+      email: 'string',
+      forename: 'string',
+      surname: 'string',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+    }
+  };
+  let FUNC = () => false;
+  let PROFILE: Profile = {
+    channels: [],
+    jurisdictions: [],
+    default: {
+      workbasket: {
+        case_type_id: '',
+        jurisdiction_id: '',
+        state_id: ''
+      }
+    },
+    user: USER,
+    'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC
   };
 
   let fixture: ComponentFixture<CaseCreateComponent>;
@@ -149,9 +171,9 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
 
   it('should create case with sanitised data when form submitted', () => {
     casesService.createCase.and.returnValue(CREATED_CASE_OBS);
-    component.submit()(SANITISED_EDIT_FORM);
+    component.submit()(SANITISED_EDIT_FORM, PROFILE);
 
-    expect(casesService.createCase).toHaveBeenCalledWith(CTID, SANITISED_EDIT_FORM);
+    expect(casesService.createCase).toHaveBeenCalledWith(CTID, SANITISED_EDIT_FORM, PROFILE);
   });
 
   it('should validate case details with sanitised data when validated', () => {

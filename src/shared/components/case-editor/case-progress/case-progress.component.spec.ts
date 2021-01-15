@@ -1,14 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CasesService } from '../services/cases.service';
-import { CaseProgressComponent } from './case-progress.component';
-import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { AlertService } from '../../../services/alert';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpError } from '../../../domain/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { EventTriggerService } from '../services/event-trigger.service';
+import { Observable, of, throwError } from 'rxjs';
+
+import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView, Profile } from '../../../domain';
+import { HttpError } from '../../../domain/http';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { AlertService } from '../../../services';
+import { CasesService, EventTriggerService } from '../services';
+import { CaseProgressComponent } from './case-progress.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 let CaseEditComponent: any = MockComponent({
@@ -42,6 +43,31 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
     events: []
   };
   const CASE_VIEW_DATA_OB = of(CASE_VIEW_DATA);
+
+  let USER = {
+    idam: {
+      id: 'userId',
+      email: 'string',
+      forename: 'string',
+      surname: 'string',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+    }
+  };
+  let FUNC = () => false;
+  let PROFILE: Profile = {
+    channels: [],
+    jurisdictions: [],
+    default: {
+      workbasket: {
+        case_type_id: '',
+        jurisdiction_id: '',
+        state_id: ''
+      }
+    },
+    user: USER,
+    'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC
+  };
 
   const ETID = 'TEST_TRIGGER';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -176,9 +202,9 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   });
 
   it('should create case with sanitised data when form submitted', () => {
-    component.submit()(SANITISED_EDIT_FORM);
+    component.submit()(SANITISED_EDIT_FORM, PROFILE);
 
-    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_VIEW_DATA, SANITISED_EDIT_FORM);
+    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_VIEW_DATA, SANITISED_EDIT_FORM, PROFILE);
   });
 
   it('should validate case details with sanitised data when validated', () => {
