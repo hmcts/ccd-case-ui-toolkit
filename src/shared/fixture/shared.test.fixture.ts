@@ -10,7 +10,7 @@ import { CaseFieldBuilder } from './case-field-builder';
 
 export let createCaseEventTrigger = (id: string,
                                      name: string,
-                                     case_id: string, 
+                                     case_id: string,
                                      show_summary: boolean,
                                      case_fields: CaseField[],
                                      wizard_pages = [],

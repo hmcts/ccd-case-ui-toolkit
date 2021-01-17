@@ -407,7 +407,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       let cancelText = comp.getCancelText();
-      
+
       expect(cancelText).toEqual('Cancel');
     });
 
@@ -789,14 +789,14 @@ describe('CaseEditPageComponent', () => {
 
     const F_GROUP = new FormGroup({
       'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
-                              ,'Invalidfield2': new FormControl(null, Validators.required)
+                              , 'Invalidfield2': new FormControl(null, Validators.required)
                             })
     });
 
     beforeEach(async(() => {
       firstPage.id = 'first page';
-      cancelled = createSpyObj('cancelled', ['emit']);      
-    
+      cancelled = createSpyObj('cancelled', ['emit']);
+
       caseEditComponentStub = {
         'form': F_GROUP,
         'wizard': WIZARD,
@@ -852,21 +852,21 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
     });
 
-    it('should validate Mandatory Fields and log error message ', () => {      
+    it('should validate Mandatory Fields and log error message ', () => {
         wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
         wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
-        wizardPage.isMultiColumn = () => false;                    
-  
-        comp.editForm = F_GROUP;        
-        comp.currentPage = wizardPage;     
+        wizardPage.isMultiColumn = () => false;
+
+        comp.editForm = F_GROUP;
+        comp.currentPage = wizardPage;
         fixture.detectChanges();
-        expect(comp.currentPageIsNotValid()).toBeTruthy();      
-        
+        expect(comp.currentPageIsNotValid()).toBeTruthy();
+
         comp.generateErrorMessage(wizardPage.case_fields);
-        comp.validationErrors.forEach(error =>{
+        comp.validationErrors.forEach(error => {
           expect(error.message).toEqual(`${error.id} is required`)
-        });        
-      
+        });
+
       });
   });
 

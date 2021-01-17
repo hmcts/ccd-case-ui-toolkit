@@ -11,10 +11,10 @@ export class FirstErrorPipe implements PipeTransform {
       return '';
     }
 
-    if(!args){
+    if (!args) {
       args = 'field';
     }
-    
+
     let keys = Object.keys(value);
 
     if (!keys.length) {
