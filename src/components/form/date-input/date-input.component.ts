@@ -32,7 +32,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public formControl: FormControl;
 
   @Input()
-  public isInValid: boolean;
+  public isInvalid: boolean;
 
   public isTouched = false;
   public displayDay: string = null;
