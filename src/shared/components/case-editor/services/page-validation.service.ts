@@ -27,7 +27,7 @@ export class PageValidationService {
   }
 
   public isHidden(caseField, formFields) {
-    let condition = new ShowCondition(caseField.show_condition);
+    const condition = new ShowCondition(caseField.show_condition);
     return !condition.match(formFields.data);
   }
 

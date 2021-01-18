@@ -20,16 +20,20 @@ export class FirstErrorPipe implements PipeTransform {
     if (!keys.length) {
       return '';
     }
-    if (keys[0] ===  'required') {
-      return `${args} is required`;
-    } else if (keys[0] ===  'pattern') {
-      return `The data entered is not valid for ${args}`;
-    } else if (keys[0] ===  'minlength') {
-      return `${args} required minimum length`;
-    } else if (keys[0] ===  'maxlength') {
-      return `${args} exceeds maximum length`;
+
+    const keyValue = keys[0];
+    switch (keyValue) {
+      case 'required':
+        return `${args} is required`;
+      case 'pattern':
+        return `The data entered is not valid for ${args}`;
+      case 'minlength':
+        return `${args} required minimum length`;
+      case 'maxlength':
+        return `${args} exceeds maximum length`;
+      default:
+        return value[keyValue];
     }
-    return value[keys[0]];
   }
 
 }

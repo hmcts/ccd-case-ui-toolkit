@@ -133,21 +133,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm.getRawValue()))
           .forEach(casefield => {
             const fieldElement = this.editForm.controls['data'].get(casefield.id);
-
-            if (fieldElement && fieldElement.hasError('required')) {
-              this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
-              fieldElement.markAsTouched();
-            } else if (fieldElement && fieldElement.hasError('pattern')) {
-              this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
-              fieldElement.markAsTouched();
-            } else if (fieldElement && fieldElement.hasError('minlength')) {
-              this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
-              fieldElement.markAsTouched();
-            } else if (fieldElement && fieldElement.hasError('maxlength')) {
-              this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
-              fieldElement.markAsTouched();
+            if (fieldElement) {
+              if (fieldElement.hasError('required')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('pattern')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('minlength')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('maxlength')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
+                fieldElement.markAsTouched();
+              }
             }
-
           })
     this.scrollToTop();
   }
