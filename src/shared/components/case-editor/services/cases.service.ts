@@ -107,7 +107,7 @@ export class CasesService {
     if (jsonResponse.case_fields) {
       jsonResponse.case_fields.forEach(caseField => {
         if (caseField.field_type) {
-          this.getDynamicListFormObject(caseField, caseField.field_type);
+          this.getDynamicListDefinition(caseField, caseField.field_type);
         }
       });
     }
@@ -115,13 +115,14 @@ export class CasesService {
     return jsonResponse;
   }
 
-  private getDynamicListFormObject(caseField, caseFieldType) {
+  private getDynamicListDefinition(caseField, caseFieldType) {
+
     if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
 
       caseFieldType.complex_fields.forEach(field => {
-
+        
         if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
-          const dynamicListValue = this.getDynamicListValueObject(caseField.value, field.id);
+          const dynamicListValue = this.getDynamicListValue(caseField.value, field.id);
           const list_items = dynamicListValue.list_items;
           const value = dynamicListValue.value;
           field.value = {
@@ -132,34 +133,28 @@ export class CasesService {
             ...field.formatted_value,
             ...field.value
           };
-        } 
+        }
       });
     } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION){
-      console.log(caseFieldType.collection_field_type);
       if (caseFieldType.collection_field_type) {
-        this.getDynamicListFormObject(caseField, caseFieldType.collection_field_type);
+        this.getDynamicListDefinition(caseField, caseFieldType.collection_field_type);
       }
     }
   }
 
-  private getDynamicListValueObject(jsonBlock: any, key: string) {
-    let result = null;
-    if (Array.isArray(jsonBlock)) {
-      jsonBlock.forEach(childJsonBlock => {
-        this.getDynamicListValueObject(childJsonBlock, key);
-      });
-    } else {
-      if (jsonBlock[key]) {
-        result = jsonBlock[key];
-      } else {
-        for (const elementKey in jsonBlock) {
-          if (jsonBlock.hasOwnProperty(elementKey)) {
-            this.getDynamicListValueObject(jsonBlock[elementKey], key);
-          }
+  private getDynamicListValue(jsonBlock: any, key: string) {
+
+    if (jsonBlock[key]) {
+      return jsonBlock[key];
+    } else  {
+      for (const elementKey in jsonBlock) {
+        if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
+          return this.getDynamicListValue(jsonBlock[elementKey], key);
         }
       }
     }
-    return result;
+
+    return null;
   }
 
   getEventTrigger(caseTypeId: string,
