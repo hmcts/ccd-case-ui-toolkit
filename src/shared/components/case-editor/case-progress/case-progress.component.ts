@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
-import { CaseEventData, CaseEventTrigger, CaseView, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseView, HttpError } from '../../../domain';
 import { AlertService } from '../../../services';
 import { CasesService, EventTriggerService } from '../services';
 
@@ -46,9 +46,9 @@ export class CaseProgressComponent implements OnInit {
       });
   }
 
-  submit(): (sanitizedEditForm: CaseEventData, profile?: Profile) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData, profile?: Profile) =>
-      this.casesService.createEvent(this.caseDetails, sanitizedEditForm, profile);
+  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData) =>
+      this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {

@@ -2,11 +2,12 @@ import { Headers, Response, ResponseOptions } from '@angular/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { HttpErrorService, HttpService } from '../../../services';
 import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import { WorkAllocationService } from './work-allocation.service';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -52,38 +53,13 @@ describe('CasesService', () => {
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
-  let USER = {
-    idam: {
-      id: 'userId',
-      email: 'string',
-      forename: 'string',
-      surname: 'string',
-      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
-    }
-  };
-  let FUNC = () => false;
-  let PROFILE: Profile = {
-    channels: [],
-    jurisdictions: [],
-    default: {
-      workbasket: {
-        case_type_id: '',
-        jurisdiction_id: '',
-        state_id: ''
-      }
-    },
-    user: USER,
-    'isSolicitor': FUNC,
-    'isCourtAdmin': FUNC
-  };
-
   let appConfig: any;
   let httpService: any;
   let orderService: any;
   let errorService: any;
   let wizardPageFieldToCaseFieldMapper: any;
-
   let casesService: CasesService;
+  let workAllocationService: WorkAllocationService;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl']);
@@ -103,7 +79,10 @@ describe('CasesService', () => {
       return caseFields;
     });
 
-    casesService = new CasesService(httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService);
+    casesService = new CasesService(
+      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService
+    );
   });
 
   describe('getCaseView()', () => {
@@ -309,7 +288,7 @@ describe('CasesService', () => {
 
     it('should use HttpService::post with correct url', () => {
       casesService
-        .createEvent(CASE_DETAILS, CASE_EVENT_DATA, PROFILE)
+        .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
         .subscribe();
 
       const headers = new Headers({

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
-import { CaseEventData, CaseEventTrigger, Draft, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, Draft, HttpError } from '../../../domain';
 import { AlertService, DraftService } from '../../../services';
 import { CasesService, EventTriggerService } from '../services';
 
@@ -44,10 +44,10 @@ export class CaseCreateComponent implements OnInit {
       });
   }
 
-  submit(): (sanitizedEditForm: CaseEventData, profile?: Profile) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData, profile?: Profile) => {
+  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData) => {
       sanitizedEditForm.draft_id = this.eventTrigger.case_id;
-      return this.casesService.createCase(this.caseType, sanitizedEditForm, profile);
+      return this.casesService.createCase(this.caseType, sanitizedEditForm);
     }
   }
 

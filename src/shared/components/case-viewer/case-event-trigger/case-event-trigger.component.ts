@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode, Profile } from '../../../domain';
+import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
@@ -71,9 +71,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     return this.activityPollingService.postEditActivity(this.caseDetails.case_id);
   }
 
-  submit(): (sanitizedEditForm: CaseEventData, profile?: Profile) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData, profile?: Profile) =>
-      this.casesService.createEvent(this.caseDetails, sanitizedEditForm, profile);
+  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+    return (sanitizedEditForm: CaseEventData) =>
+      this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {

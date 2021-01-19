@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 
-import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService } from '../../../services';
@@ -28,31 +28,6 @@ describe('CaseEventTriggerComponent', () => {
   };
   CASE_DETAILS.case_type.id = 'TEST_CASE_TYPE';
   CASE_DETAILS.case_type.jurisdiction.id = 'TEST';
-
-  let USER = {
-    idam: {
-      id: 'userId',
-      email: 'string',
-      forename: 'string',
-      surname: 'string',
-      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
-    }
-  };
-  let FUNC = () => false;
-  let PROFILE: Profile = {
-    channels: [],
-    jurisdictions: [],
-    default: {
-      workbasket: {
-        case_type_id: '',
-        jurisdiction_id: '',
-        state_id: ''
-      }
-    },
-    user: USER,
-    'isSolicitor': FUNC,
-    'isCourtAdmin': FUNC
-  };
 
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',
@@ -208,9 +183,9 @@ describe('CaseEventTriggerComponent', () => {
   }));
 
   it('should edit case with sanitised data when form submitted', () => {
-    component.submit()(SANITISED_EDIT_FORM, PROFILE);
+    component.submit()(SANITISED_EDIT_FORM);
 
-    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_DETAILS, SANITISED_EDIT_FORM, PROFILE);
+    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_DETAILS, SANITISED_EDIT_FORM);
   });
 
   it('should edit case with sanitised data when form validated', () => {

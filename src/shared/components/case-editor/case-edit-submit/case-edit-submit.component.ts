@@ -86,7 +86,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     let caseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
-    this.caseEdit.submit(caseEventData, this.profile)
+    this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
           let confirmation: Confirmation = this.buildConfirmation(response);

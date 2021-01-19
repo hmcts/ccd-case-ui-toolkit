@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of, throwError } from 'rxjs';
 
-import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView, Profile } from '../../../domain';
+import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
 import { HttpError } from '../../../domain/http';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { AlertService } from '../../../services';
@@ -43,31 +43,6 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
     events: []
   };
   const CASE_VIEW_DATA_OB = of(CASE_VIEW_DATA);
-
-  let USER = {
-    idam: {
-      id: 'userId',
-      email: 'string',
-      forename: 'string',
-      surname: 'string',
-      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
-    }
-  };
-  let FUNC = () => false;
-  let PROFILE: Profile = {
-    channels: [],
-    jurisdictions: [],
-    default: {
-      workbasket: {
-        case_type_id: '',
-        jurisdiction_id: '',
-        state_id: ''
-      }
-    },
-    user: USER,
-    'isSolicitor': FUNC,
-    'isCourtAdmin': FUNC
-  };
 
   const ETID = 'TEST_TRIGGER';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -202,9 +177,9 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   });
 
   it('should create case with sanitised data when form submitted', () => {
-    component.submit()(SANITISED_EDIT_FORM, PROFILE);
+    component.submit()(SANITISED_EDIT_FORM);
 
-    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_VIEW_DATA, SANITISED_EDIT_FORM, PROFILE);
+    expect(casesService.createEvent).toHaveBeenCalledWith(CASE_VIEW_DATA, SANITISED_EDIT_FORM);
   });
 
   it('should validate case details with sanitised data when validated', () => {
