@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.68.6-non-descriptive-headings
+**EUI-3155** Accessibility amends for non-descriptive headings
+
 ### Version 2.67.5-dynamiclist-fix-in-complex
 **EUI-2350** Dynamic Lists in Complex Types
 
