@@ -23,9 +23,9 @@ export abstract class AbstractFormFieldComponent {
         return this.formGroup.get(this.caseField.id);
       }
       this.addValidators(this.caseField, control);
-      this.formGroup.addControl(this.caseField.id, control);
       // make sure we can get hold of the CaseField for this control when we are evaluating show conditions
       FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this)
+      this.formGroup.addControl(this.caseField.id, control);
       return control;
     };
   }

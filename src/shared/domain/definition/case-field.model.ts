@@ -9,7 +9,7 @@ import { FixedListItem } from './fixed-list-item.model';
 // @dynamic
 export class CaseField implements Orderable {
   id: string;
-  hidden?: boolean;
+  hidden: boolean;
   label: string;
   order?: number;
 

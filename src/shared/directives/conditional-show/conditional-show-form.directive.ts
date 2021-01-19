@@ -35,7 +35,10 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.formGroup = this.formGroup || new FormGroup({});
+    if (!this.formGroup) {
+      console.log ('**** no form group in conditional-show-form directive');
+      this.formGroup = new FormGroup({});
+    }
     this.evalAllShowHideConditions();
     this.subscribeToFormChanges();
   }

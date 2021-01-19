@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.68.5-prerelease-conditional-show-perf"
+**EUI-3151** Fix problems caused by components not being registered
+
 ### Version 2.68.4-prerelease-conditional-show-perf"
 **EUI-3151** Additional changes to fix probate regression during case creation
 
