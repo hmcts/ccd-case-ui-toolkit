@@ -73,11 +73,16 @@ export class WorkAllocationService {
     }];
     return this.searchTasks({ parameters })
       .pipe(
-        map((tasks: any[]) => {
+        map((response: any) => {
+          const tasks: any[] = response.tasks;
+          console.log('completeAppropriateTask: got back some tasks', tasks);
           if (tasks && tasks.length > 0) {
             if (tasks.length === 1) {
               // Attempt to mark this task as complete.
               console.log('returning the result of attempting to complete task', tasks[0].id);
+
+              // TODO: This isn't actually making the call to the API for some reason.
+              // The unit test shows the method being called, however.
               return this.completeTask(tasks[0].id);
             } else {
               // This is a problem. Throw an appropriate error.

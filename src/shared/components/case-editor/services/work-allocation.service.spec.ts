@@ -41,7 +41,7 @@ describe('WorkAllocationService', () => {
 
     beforeEach(() => {
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([ MOCK_TASK_1 ])
+        body: JSON.stringify({ tasks: [ MOCK_TASK_1 ] })
       }))));
     });
 
@@ -59,12 +59,13 @@ describe('WorkAllocationService', () => {
         parameters: [ { ccdId: '1234567890' } ]
       };
       workAllocationService.searchTasks(searchRequest)
-        .subscribe(tasks => {
-          expect(tasks).toBeDefined();
-          expect(Array.isArray(tasks)).toBeTruthy();
-          const arrTasks = tasks as any[];
-          expect(arrTasks.length).toEqual(1);
-          expect(arrTasks).toContain(MOCK_TASK_1);
+        .subscribe((response: any) => {
+          expect(response).toBeDefined();
+          expect(response.tasks).toBeDefined();
+          expect(Array.isArray(response.tasks)).toBeTruthy();
+          const tasks: any[] = response.tasks;
+          expect(tasks.length).toEqual(1);
+          expect(tasks).toContain(MOCK_TASK_1);
           done();
         });
     });
@@ -121,7 +122,7 @@ describe('WorkAllocationService', () => {
     it('should succeed when no tasks are found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([])
+        body: JSON.stringify({ tasks: [] })
       }))));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(result).toBeTruthy();
@@ -134,7 +135,7 @@ describe('WorkAllocationService', () => {
       const COMPLETE_TASK_RESULT = 'Bob';
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(COMPLETE_TASK_RESULT);
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([ MOCK_TASK_2 ])
+        body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
       }))));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
@@ -146,7 +147,7 @@ describe('WorkAllocationService', () => {
     it('should throw an error when more than one task is found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([ MOCK_TASK_1, MOCK_TASK_2 ])
+        body: JSON.stringify({ tasks: [ MOCK_TASK_1, MOCK_TASK_2 ] })
       }))));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
@@ -161,7 +162,7 @@ describe('WorkAllocationService', () => {
     it('should throw an error when failing to complete one task', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.throwError(COMPLETE_ERROR.message);
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([ MOCK_TASK_2 ])
+        body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
       }))));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
