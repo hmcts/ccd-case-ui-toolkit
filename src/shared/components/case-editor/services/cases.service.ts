@@ -107,7 +107,7 @@ export class CasesService {
     if (jsonResponse.case_fields) {
       jsonResponse.case_fields.forEach(caseField => {
         if (caseField.field_type) {
-          this.getDynamicListDefinition(caseField, caseField.field_type);
+          this.getDynamicListDefinition(caseField, caseField.field_type, caseField);
         }
       });
     }
@@ -115,14 +115,14 @@ export class CasesService {
     return jsonResponse;
   }
 
-  private getDynamicListDefinition(caseField, caseFieldType) {
+  private getDynamicListDefinition(caseField, caseFieldType, rootCaseField) {
 
     if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
 
       caseFieldType.complex_fields.forEach(field => {
         
         if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
-          const dynamicListValue = this.getDynamicListValue(caseField.value, field.id);
+          const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
           const list_items = dynamicListValue.list_items;
           const value = dynamicListValue.value;
           field.value = {
@@ -133,11 +133,13 @@ export class CasesService {
             ...field.formatted_value,
             ...field.value
           };
+        } else {
+          this.getDynamicListDefinition(field, field.field_type, rootCaseField);
         }
       });
     } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION){
       if (caseFieldType.collection_field_type) {
-        this.getDynamicListDefinition(caseField, caseFieldType.collection_field_type);
+        this.getDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
       }
     }
   }
