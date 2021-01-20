@@ -32,6 +32,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnInit(): void {
+    // don't call super.ngOnInit
     this.complexGroup = this.registerControl(new FormGroup({}));
   }
 

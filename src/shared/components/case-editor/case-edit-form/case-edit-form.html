@@ -9,13 +9,16 @@
           <ccd-field-write [caseField]="field"
                            [caseFields]="caseFields"
                            [formGroup]="formGroup"
-                           [idPrefix]=""></ccd-field-write>
+                           [idPrefix]=""
+                           [hidden]="field.hidden">
+          </ccd-field-write>
         </ng-container>
         <ng-template #CompoundRow>
           <ccd-field-write [caseField]="field"
                            [caseFields]="caseFields"
                            [formGroup]="formGroup"
-                           [idPrefix]="field.id + '_'"></ccd-field-write>
+                           [idPrefix]="field.id + '_'"
+                           [hidden]="field.hidden"></ccd-field-write>
         </ng-template>
       </ng-container>
     </ng-container>

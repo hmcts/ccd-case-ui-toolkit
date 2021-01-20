@@ -17,7 +17,8 @@
                        [caseFields]="caseFields"
                        [formGroup]="formGroup"
                        [registerControl]="buildControlRegistrer(field)"
-                       [idPrefix]="buildIdPrefix(field)">
+                       [idPrefix]="buildIdPrefix(field)"
+                       [hidden]="field.hidden">
       </ccd-field-write>
     </ng-container>
   </ng-container>

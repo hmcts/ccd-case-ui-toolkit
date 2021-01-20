@@ -42,6 +42,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     if (!this.isComplexWithHiddenFields()) {
       this.postcode = new FormControl('');
       this.addressFormGroup.addControl('postcode', this.postcode);

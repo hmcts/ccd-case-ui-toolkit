@@ -31,6 +31,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   ngOnInit() {
+    // don't call super.ngOnInit because we have special processing to do
     this.organisations$ = this.organisationService.getActiveOrganisations();
 
     this.searchOrgTextFormControl = new FormControl('');

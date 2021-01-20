@@ -28,7 +28,8 @@
                          [caseFields]="caseFields"
                          [formGroup]="formGroup"
                          [registerControl]="buildControlRegistrer(item.id, i)"
-                         [idPrefix]="buildIdPrefix(i)">
+                         [idPrefix]="buildIdPrefix(i)"
+                         [hidden]="caseField.hidden">
         </ccd-field-write>
       </div>
 

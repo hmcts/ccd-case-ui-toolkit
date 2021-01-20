@@ -18,9 +18,7 @@ import { plainToClassFromExist } from 'class-transformer';
 @Component({
   selector: 'ccd-field-write',
   template: `
-    <div [hidden]="caseField.hidden">
       <ng-container #fieldContainer></ng-container>
-    </div>
   `
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
@@ -42,6 +40,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
     let injector = Injector.create([], this.fieldContainer.parentInjector);

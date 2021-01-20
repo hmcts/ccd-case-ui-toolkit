@@ -43,6 +43,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   ngOnInit(): void {
+    // Don't call super.ngOnInit here because we are registering an array
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
       this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }

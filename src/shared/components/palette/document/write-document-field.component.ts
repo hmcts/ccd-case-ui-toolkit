@@ -54,6 +54,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.initDialog();
     let document = this.caseField.value;
     if (document) {

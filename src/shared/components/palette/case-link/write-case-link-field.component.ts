@@ -20,6 +20,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   ngOnInit() {
+    // don't call super.ngOnit because we are doing something different with registration
     if (this.caseField.value) {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(this.caseField.value.CaseReference),

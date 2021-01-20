@@ -3,7 +3,7 @@ import { PaletteContext } from './palette-context.enum';
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 import { FormControl } from '@angular/forms';
 
-export abstract class AbstractFieldReadComponent extends AbstractFormFieldComponent implements OnInit {
+export abstract class AbstractFieldReadComponent extends AbstractFormFieldComponent  {
 
   @Input()
   caseReference: string;
@@ -13,11 +13,5 @@ export abstract class AbstractFieldReadComponent extends AbstractFormFieldCompon
    */
   @Input()
   context: PaletteContext = PaletteContext.DEFAULT;
-
-  ngOnInit(): void {
-    if (this.registerControl && !this.caseField.metadata) {
-      this.registerControl(new FormControl(this.caseField.value));
-    }
-  }
 
 }
