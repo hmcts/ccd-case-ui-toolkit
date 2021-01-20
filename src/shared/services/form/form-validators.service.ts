@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
-import { FormControl, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, Validators } from '@angular/forms';
 import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 import { Constants } from '../../commons/constants';
 
@@ -11,7 +11,7 @@ export class FormValidatorsService {
     'Date', 'MoneyGBP'
   ];
 
-  addValidators(caseField: CaseField, control: FormControl): FormControl {
+  addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     if (caseField.display_context === Constants.MANDATORY
       && this.CUSTOM_VALIDATED_TYPES.indexOf(caseField.field_type.type) === -1) {
       let validators = [Validators.required];

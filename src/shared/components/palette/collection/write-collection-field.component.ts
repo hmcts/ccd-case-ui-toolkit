@@ -43,7 +43,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   ngOnInit(): void {
-    // Don't call super.ngOnInit here because we are registering an array
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
       this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
@@ -75,7 +74,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     });
   }
 
-  buildControlRegistrer(id: string, index: number): (control: FormControl) => AbstractControl {
+  buildControlRegistrer(id: string, index: number): (control: AbstractControl) => AbstractControl {
     return control => {
       if (this.formArray.at(index)) {
         return this.formArray.at(index).get('value');

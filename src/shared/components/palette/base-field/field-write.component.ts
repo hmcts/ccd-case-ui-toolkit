@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
 import { plainToClassFromExist } from 'class-transformer';
@@ -18,7 +18,9 @@ import { plainToClassFromExist } from 'class-transformer';
 @Component({
   selector: 'ccd-field-write',
   template: `
+    <div>
       <ng-container #fieldContainer></ng-container>
+    </div>
   `
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
@@ -35,12 +37,14 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     super();
   }
 
-  protected addValidators(caseField: CaseField, control: FormControl): void {
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
     this.formValidatorsService.addValidators(caseField, control);
   }
 
   ngOnInit(): void {
-    super.ngOnInit();
+    if (this.registerControl) {
+      this.registerControl(new FormControl(this.caseField.value));
+    }
     let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
     let injector = Injector.create([], this.fieldContainer.parentInjector);

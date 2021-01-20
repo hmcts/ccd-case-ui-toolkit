@@ -11,7 +11,6 @@ export class ReadCollectionFieldComponent extends AbstractFieldReadComponent imp
   public isDisplayContextParameterAvailable = false;
 
   ngOnInit(): void {
-    super.ngOnInit();
       if (this.caseField.display_context_parameter && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
         this.isDisplayContextParameterAvailable = true;
       }

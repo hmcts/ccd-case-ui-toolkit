@@ -11,7 +11,6 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
   fixedListFormControl: FormControl;
 
   ngOnInit() {
-    // don't call super.ngOnInit because we have special processing to do
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
     if (isNull) {
       this.caseField.value = null;

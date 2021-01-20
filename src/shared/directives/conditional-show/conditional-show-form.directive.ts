@@ -57,6 +57,10 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   private handleFormControl = (c: FormControl) => {
     const cf = c['caseField'] as CaseField;
     const component = c['component'] as AbstractFormFieldComponent;
+    this.evaluateCondition(cf, component);
+  }
+
+  private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent) {
     if (cf) {
       if (cf.show_condition) {
         const condResult = ShowCondition.getInstance(cf.show_condition).match(this.allFieldValues, this.buildPath(component, cf));
@@ -82,6 +86,9 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   }
 
   private handleFormGroup = (g: FormGroup) => {
+    const cf = g['caseField'] as CaseField;
+    const component = g['component'] as AbstractFormFieldComponent;
+    this.evaluateCondition(cf, component);
     let groupControl = null;
     if (g.get('value')) { // Complex Field
       groupControl = g.get('value') as FormGroup;

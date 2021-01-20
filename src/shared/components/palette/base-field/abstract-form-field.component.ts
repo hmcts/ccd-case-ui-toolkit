@@ -1,20 +1,20 @@
-import { Input, OnInit } from '@angular/core';
+import { Input } from '@angular/core';
 import { CaseField } from '../../../domain/definition';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { FieldsUtils } from '../../../services';
 
-export abstract class AbstractFormFieldComponent implements OnInit {
+export abstract class AbstractFormFieldComponent {
 
   @Input()
   caseField: CaseField;
 
   @Input()
-  formGroup?: FormGroup;
+  formGroup: FormGroup;
 
   @Input()
   registerControl?: <T extends AbstractControl> (control: T) => T;
 
-  protected defaultControlRegister(): (control: FormControl) => AbstractControl {
+  protected defaultControlRegister(): (control: AbstractControl) => AbstractControl {
     return control => {
       if (!this.formGroup) {
         return null;
@@ -30,14 +30,7 @@ export abstract class AbstractFormFieldComponent implements OnInit {
     };
   }
 
-  protected addValidators(caseField: CaseField, control: FormControl): void {
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
     // No validators by default, override this method to add validators to the form control
   }
-
-  ngOnInit(): void {
-    if (this.registerControl && !this.caseField.metadata) {
-      this.registerControl(new FormControl(this.caseField.value));
-    }
-  }
-
 }

@@ -11,7 +11,6 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
   checkboxes: FormArray;
 
   ngOnInit(): void {
-    // don't call super.ngOnInit because we have special processing to do
     this.checkboxes = new FormArray([]);
 
     // Initialise array with existing values
