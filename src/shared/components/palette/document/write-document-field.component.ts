@@ -237,7 +237,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url, Validators.required),
       document_binary_url: new FormControl(binaryUrl, Validators.required),
       document_filename: new FormControl(filename, Validators.required)
-    }));
+    })) as FormGroup;
   }
 
   private createDocumentForm(url: string, binaryUrl: string, filename: string) {
@@ -245,7 +245,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url),
       document_binary_url: new FormControl(binaryUrl),
       document_filename: new FormControl(filename)
-    }));
+    })) as FormGroup;
   }
 
   private getErrorMessage(error: HttpError): string {

@@ -23,11 +23,11 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     if (this.caseField.value) {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(this.caseField.value.CaseReference),
-      }));
+      })) as FormGroup;
     } else {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(),
-      }));
+      })) as FormGroup;
     }
     this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
     this.caseReferenceControl.setValidators(this.caseReferenceValidator());

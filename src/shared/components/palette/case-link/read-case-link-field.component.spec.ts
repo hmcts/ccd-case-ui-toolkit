@@ -115,7 +115,6 @@ describe('ReadCaseLinkFieldComponent', () => {
       fixture = TestBed.createComponent(ReadCaseLinkFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
 
       de = fixture.debugElement;

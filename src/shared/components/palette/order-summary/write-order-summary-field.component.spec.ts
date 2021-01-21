@@ -100,7 +100,6 @@ describe('WriteOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
-      component.registerControl = REGISTER_CONTROL;
       de = fixture.debugElement;
       fixture.detectChanges();
     }));

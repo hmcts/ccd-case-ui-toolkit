@@ -136,7 +136,6 @@ describe('WriteCollectionFieldComponent', () => {
 
     fixture = TestBed.createComponent(WriteCollectionFieldComponent);
     component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
     component.caseFields = [caseField];
     component.formGroup = formGroup;
@@ -144,10 +143,10 @@ describe('WriteCollectionFieldComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
     // Manually populate the form array as item field are mocked and can't register themselves
-    VALUES.forEach((collectionItem, index) => {
-      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
-    });
-    fixture.detectChanges();
+//    VALUES.forEach((collectionItem, index) => {
+//      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+//    });
+//    fixture.detectChanges();
   }));
 
   it('should render a row with a write field for each items', () => {
@@ -282,10 +281,10 @@ describe('WriteCollectionFieldComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     // Manually populate the form array as item field are mocked and can't register themselves
-    VALUES.forEach((collectionItem, index) => {
-      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
-    });
-    fixture.detectChanges();
+    // VALUES.forEach((collectionItem, index) => {
+    //  component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+    // });
+    // fixture.detectChanges();
     // Confirm removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Remove'));
 
@@ -410,7 +409,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
 
     fixture = TestBed.createComponent(WriteCollectionFieldComponent);
     component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
     component.caseFields = [caseField];
     component.formGroup = formGroup;
@@ -418,10 +416,10 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
     // Manually populate the form array as item field are mocked and can't register themselves
-    collectionValues.forEach((collectionItem, index) => {
-      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
-    });
-    fixture.detectChanges();
+//    collectionValues.forEach((collectionItem, index) => {
+//      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+//    });
+//    fixture.detectChanges();
   }));
 
   it('should disable remove buttons when user does not have DELETE right', () => {
@@ -532,7 +530,6 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
 
     fixture = TestBed.createComponent(WriteCollectionFieldComponent);
     component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = caseField;
     component.caseFields = [caseField];
     component.formGroup = formGroup;
@@ -540,10 +537,10 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
     // Manually populate the form array as item field are mocked and can't register themselves
-    collectionValues.forEach((collectionItem, index) => {
-      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
-    });
-    fixture.detectChanges();
+//    collectionValues.forEach((collectionItem, index) => {
+//      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
+//    });
+//    fixture.detectChanges();
   }));
 
   it('should change the displayContext to READONLY when user does not have update right', () => {

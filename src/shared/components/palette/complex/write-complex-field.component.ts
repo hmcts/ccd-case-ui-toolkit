@@ -29,10 +29,34 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   constructor (private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
     super();
+    this.complexGroup = new FormGroup({});
   }
 
   ngOnInit(): void {
-    this.complexGroup = this.registerControl(new FormGroup({}));
+    this.registerControl(this.complexGroup);
+  }
+
+  buildField(caseField: CaseField): CaseField {
+    let control: AbstractControl = this.complexGroup.get(caseField.id);
+    if (control) {
+      return caseField;
+    } else {
+      control = new FormControl(caseField.value);
+    }
+    // checks validators are required before calling formValidatorsService
+    const validatorsRequired = function () {
+      return 'AddressLine1' === caseField.id
+        && 'TextMax150' === caseField.field_type.id
+        && Constants.MANDATORY === caseField.display_context
+        || !this.ignoreMandatory;
+    };
+    if (validatorsRequired.call(this)) {
+      // console.log('WriteComplexFieldComponent add validators for caseField', caseField);
+      this.formValidatorsService.addValidators(caseField, control);
+    }
+    this.complexGroup.addControl(caseField.id, control);
+    FieldsUtils.addCaseFieldAndComponentReferences(control, caseField, this);
+    return caseField;
   }
 
   buildControlRegistrer(caseField: CaseField): (control: FormControl) => AbstractControl {

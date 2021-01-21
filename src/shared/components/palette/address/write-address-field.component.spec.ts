@@ -33,7 +33,7 @@ describe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-host-component`,
-    template: `<ccd-write-address-field [caseField]="caseField" [registerControl]="registerControl" [formGroup]="formGroup">
+    template: `<ccd-write-address-field [caseField]="caseField" [formGroup]="formGroup">
     </ccd-write-address-field>`
   })
   class TestHostComponent {

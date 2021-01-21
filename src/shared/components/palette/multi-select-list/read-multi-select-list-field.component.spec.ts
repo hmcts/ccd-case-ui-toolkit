@@ -153,7 +153,6 @@ describe('ReadMultiSelectListFieldComponent', () => {
       fixture = TestBed.createComponent(ReadMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
 
       de = fixture.debugElement;

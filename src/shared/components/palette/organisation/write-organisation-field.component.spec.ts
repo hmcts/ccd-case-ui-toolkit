@@ -84,7 +84,6 @@ describe('WrieteOrganisationFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteOrganisationFieldComponent);
     component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
     mockOrganisationService.getActiveOrganisations.and.returnValue(of([]));
     component.organisations$ = of(ORGANISATIONS);
     fixture.detectChanges();

@@ -132,7 +132,6 @@ describe('WriteDocumentFieldComponent', () => {
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
 
     de = fixture.debugElement;
@@ -395,7 +394,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD_MANDATORY;
 
     de = fixture.debugElement;

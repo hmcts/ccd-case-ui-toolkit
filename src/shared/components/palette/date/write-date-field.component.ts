@@ -1,6 +1,6 @@
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Form, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'ccd-write-date-field',
@@ -10,7 +10,7 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
   dateControl: FormControl;
 
   ngOnInit() {
-    this.dateControl = this.registerControl(new FormControl(this.caseField.value));
+    this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 
   isDateTime(): boolean {

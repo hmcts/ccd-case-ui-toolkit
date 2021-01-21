@@ -222,7 +222,6 @@ describe('ReadFixedListFieldComponent', () => {
       fixture = TestBed.createComponent(ReadFixedListFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
 
       de = fixture.debugElement;

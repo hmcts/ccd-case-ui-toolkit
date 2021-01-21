@@ -182,7 +182,6 @@ describe('WriteComplexFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
-      component.registerControl = REGISTER_CONTROL;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -352,7 +351,6 @@ describe('WriteComplexFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
-      component.registerControl = REGISTER_CONTROL;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -488,7 +486,6 @@ describe('WriteComplexFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD_M;
-      component.registerControl = REGISTER_CONTROL;
       component.ignoreMandatory = true;
 
       de = fixture.debugElement;

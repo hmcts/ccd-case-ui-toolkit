@@ -15,6 +15,6 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
     if (isNull) {
       this.caseField.value = null;
     }
-    this.fixedListFormControl = this.registerControl(new FormControl(this.caseField.value));
+    this.fixedListFormControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }

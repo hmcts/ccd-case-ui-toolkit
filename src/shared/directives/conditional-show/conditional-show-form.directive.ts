@@ -53,10 +53,10 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
       this.evalAllShowHideConditions();
     });
   }
-  // make sure for the 3 callbacks that we are bound to this via an arrow function
-  private handleFormControl = (c: FormControl) => {
-    const cf = c['caseField'] as CaseField;
-    const component = c['component'] as AbstractFormFieldComponent;
+
+  private evaluateControl(control: AbstractControl) {
+    const cf = control['caseField'] as CaseField;
+    const component = control['component'] as AbstractFormFieldComponent;
     this.evaluateCondition(cf, component);
   }
 
@@ -79,16 +79,20 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
     }
   }
 
+  // make sure for the 3 callbacks that we are bound to this via an arrow function
+  private handleFormControl = (c: FormControl) => {
+    this.evaluateControl(c);
+  }
+
   private handleFormArray = (c: FormArray, caseField: CaseField) => {
+    this.evaluateControl(c);
     c.controls.forEach((formControl, ix) => {
       this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl)
    });
   }
 
   private handleFormGroup = (g: FormGroup) => {
-    const cf = g['caseField'] as CaseField;
-    const component = g['component'] as AbstractFormFieldComponent;
-    this.evaluateCondition(cf, component);
+    this.evaluateControl(g);
     let groupControl = null;
     if (g.get('value')) { // Complex Field
       groupControl = g.get('value') as FormGroup;

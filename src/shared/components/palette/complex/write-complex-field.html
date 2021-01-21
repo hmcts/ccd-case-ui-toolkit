@@ -5,18 +5,16 @@
     <ng-container [ngSwitch]="field | ccdIsReadOnlyAndNotCollection">
       <ccd-field-read *ngSwitchCase="true"
                       ccdLabelSubstitutor
-                      [caseField]="field"
+                      [caseField]="buildField(field)"
                       [caseFields]="caseFields"
                       [formGroup]="formGroup"
-                      [withLabel]="true"
-                      [registerControl]="buildControlRegistrer(field)">
+                      [withLabel]="true">
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
                        ccdLabelSubstitutor
-                       [caseField]="field"
+                       [caseField]="buildField(field)"
                        [caseFields]="caseFields"
                        [formGroup]="formGroup"
-                       [registerControl]="buildControlRegistrer(field)"
                        [idPrefix]="buildIdPrefix(field)"
                        [hidden]="field.hidden">
       </ccd-field-write>

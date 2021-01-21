@@ -72,7 +72,6 @@ describe('WriteFixedListFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    component.registerControl = REGISTER_CONTROL;
 
     de = fixture.debugElement;
     fixture.detectChanges();

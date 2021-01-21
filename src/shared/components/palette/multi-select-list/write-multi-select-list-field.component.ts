@@ -20,8 +20,7 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
         this.checkboxes.push(new FormControl(value));
       });
     }
-
-    this.checkboxes = this.registerControl(this.checkboxes);
+    this.registerControl(this.checkboxes);
   }
 
   onCheckChange(event) {
@@ -41,7 +40,10 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
   }
 
   isSelected(code): AbstractControl {
-    return this.checkboxes.controls.find(control => control.value === code);
+    if (this.checkboxes && this.checkboxes.controls) {
+      return this.checkboxes.controls.find(control => control.value === code);
+    } else {
+      console.log('no controls');
+    }
   }
-
 }

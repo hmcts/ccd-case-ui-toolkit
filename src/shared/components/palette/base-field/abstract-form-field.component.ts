@@ -3,31 +3,26 @@ import { CaseField } from '../../../domain/definition';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { FieldsUtils } from '../../../services';
 
-export abstract class AbstractFormFieldComponent {
+type RegisterFunc = <T extends AbstractControl> (control: T) => T;
 
+export abstract class AbstractFormFieldComponent {
   @Input()
   caseField: CaseField;
 
   @Input()
   formGroup: FormGroup;
 
-  @Input()
-  registerControl?: <T extends AbstractControl> (control: T) => T;
-
-  protected defaultControlRegister(): (control: AbstractControl) => AbstractControl {
-    return control => {
+  protected registerControl<T extends AbstractControl>(control: T): AbstractControl {
+      FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this)
       if (!this.formGroup) {
-        return null;
+        return control;
       }
       if (this.formGroup.controls[this.caseField.id]) {
         return this.formGroup.get(this.caseField.id);
       }
       this.addValidators(this.caseField, control);
-      // make sure we can get hold of the CaseField for this control when we are evaluating show conditions
-      FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this)
       this.formGroup.addControl(this.caseField.id, control);
       return control;
-    };
   }
 
   protected addValidators(caseField: CaseField, control: AbstractControl): void {

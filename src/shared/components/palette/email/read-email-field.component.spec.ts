@@ -103,7 +103,6 @@ describe('ReadEmailFieldComponent', () => {
       fixture = TestBed.createComponent(ReadEmailFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
 
       de = fixture.debugElement;

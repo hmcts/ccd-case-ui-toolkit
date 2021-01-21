@@ -48,7 +48,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
     this.caseField.value = this.caseField.value || [];
 
-    this.formArray = this.registerControl(new FormArray([]));
+    this.formArray = this.registerControl(new FormArray([])) as FormArray;
     this.formArray['caseField'] = this.caseField;
   }
 
@@ -59,7 +59,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   buildCaseField(item, index: number): CaseField {
-    return this.newCaseField(index, item);
+    let cf: CaseField =  this.newCaseField(index, item);
+    const c = new FormControl(item);
+    this.formValidatorsService.addValidators(this.caseField, c);
+    FieldsUtils.addCaseFieldAndComponentReferences(c, this.caseField, this)
+    this.formArray.push(
+      new FormGroup({
+        id: item.id,
+        value: c
+      })
+    );
+    return cf;
   }
 
   private newCaseField(index: number, item) {
@@ -72,24 +82,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       label: null,
       acls: this.caseField.acls
     });
-  }
-
-  buildControlRegistrer(id: string, index: number): (control: AbstractControl) => AbstractControl {
-    return control => {
-      if (this.formArray.at(index)) {
-        return this.formArray.at(index).get('value');
-      }
-      this.formValidatorsService.addValidators(this.caseField, control);
-      const c = new FormControl(id);
-      FieldsUtils.addCaseFieldAndComponentReferences(c, this.caseField, this)
-      this.formArray.push(
-        new FormGroup({
-          id: c,
-          value: control
-        })
-      );
-      return control;
-    };
   }
 
   buildIdPrefix(index: number): string {

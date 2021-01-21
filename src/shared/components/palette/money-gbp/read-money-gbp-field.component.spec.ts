@@ -181,7 +181,6 @@ describe('ReadMoneyGBPFieldComponent', () => {
       fixture = TestBed.createComponent(ReadMoneyGbpFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.amount = undefined;
       component.caseField = CASE_FIELD;
 

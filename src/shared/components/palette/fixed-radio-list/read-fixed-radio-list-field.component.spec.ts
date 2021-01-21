@@ -123,7 +123,6 @@ describe('ReadFixedRadioListFieldComponent', () => {
       fixture = TestBed.createComponent(ReadFixedRadioListFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
 
       de = fixture.debugElement;
