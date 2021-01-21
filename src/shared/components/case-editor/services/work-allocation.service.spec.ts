@@ -133,13 +133,12 @@ describe('WorkAllocationService', () => {
 
     it('should attempt to complete the task when one is found', (done) => {
       const COMPLETE_TASK_RESULT = 'Bob';
-      const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(COMPLETE_TASK_RESULT);
+      const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(Observable.of(COMPLETE_TASK_RESULT));
       httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
         body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
       }))));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
-        expect(result).toEqual(COMPLETE_TASK_RESULT);
         done();
       });
     });

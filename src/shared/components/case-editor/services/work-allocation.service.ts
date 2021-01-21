@@ -46,7 +46,6 @@ export class WorkAllocationService {
     return this.http
       .post(url, {})
       .pipe(
-        map(response => response.json()),
         catchError(error => {
           console.log(`caught error for completing work allocation task ${taskId}`, error);
           this.errorService.setError(error);
@@ -83,7 +82,7 @@ export class WorkAllocationService {
 
               // TODO: This isn't actually making the call to the API for some reason.
               // The unit test shows the method being called, however.
-              return this.completeTask(tasks[0].id);
+              this.completeTask(tasks[0].id).subscribe(() => console.log('Successfully processed tasks for this case event'));
             } else {
               // This is a problem. Throw an appropriate error.
               throw new Error(MULTIPLE_TASKS_FOUND);

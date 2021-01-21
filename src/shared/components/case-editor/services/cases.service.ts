@@ -300,7 +300,6 @@ export class CasesService {
     this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
       .subscribe(() => {
         // Success. Do nothing.
-        console.log('Successfully processed tasks for this case event');
       }, error => {
         // Show an appropriate warning about something that went wrong.
         console.warn('Could not process tasks for this case event', error);
