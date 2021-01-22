@@ -76,7 +76,7 @@ export class WorkAllocationService {
           const tasks: any[] = response.tasks;
           if (tasks && tasks.length > 0) {
             if (tasks.length === 1) {
-              this.completeTask(tasks[0].id).subscribe(() => console.log('Successfully processed tasks for this case event'));
+              this.completeTask(tasks[0].id).subscribe();
             } else {
               // This is a problem. Throw an appropriate error.
               throw new Error(MULTIPLE_TASKS_FOUND);
