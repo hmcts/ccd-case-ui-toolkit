@@ -4,7 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter, TaskSearchParameters } from '../../../domain';
-import { HttpErrorService, HttpService } from '../../../services';
+import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
@@ -14,7 +14,8 @@ export class WorkAllocationService {
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
-    private readonly errorService: HttpErrorService
+    private readonly errorService: HttpErrorService,
+    private readonly alertService: AlertService
   ) {
   }
 
@@ -49,6 +50,8 @@ export class WorkAllocationService {
         catchError(error => {
           console.log(`caught error for completing work allocation task ${taskId}`, error);
           this.errorService.setError(error);
+          this.alertService.clear();
+          this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
           return throwError(error);
         })
       );
