@@ -24,14 +24,12 @@ export class WorkAllocationService {
    * @param searchRequest The search parameters that specify which tasks to match.
    */
   public searchTasks(searchRequest: TaskSearchParameters): Observable<object> {
-    console.log('Find tasks that match this:', searchRequest);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task`;
     return this.http
       .post(url, { searchRequest })
       .pipe(
         map(response => response.json()),
         catchError(error => {
-          console.log('caught error for getting work allocation tasks', error);
           this.errorService.setError(error);
           return throwError(error);
         })
@@ -48,7 +46,6 @@ export class WorkAllocationService {
       .post(url, {})
       .pipe(
         catchError(error => {
-          console.log(`caught error for completing work allocation task ${taskId}`, error);
           this.errorService.setError(error);
           this.alertService.clear();
           this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
@@ -77,14 +74,8 @@ export class WorkAllocationService {
       .pipe(
         map((response: any) => {
           const tasks: any[] = response.tasks;
-          console.log('completeAppropriateTask: got back some tasks', tasks);
           if (tasks && tasks.length > 0) {
             if (tasks.length === 1) {
-              // Attempt to mark this task as complete.
-              console.log('returning the result of attempting to complete task', tasks[0].id);
-
-              // TODO: This isn't actually making the call to the API for some reason.
-              // The unit test shows the method being called, however.
               this.completeTask(tasks[0].id).subscribe(() => console.log('Successfully processed tasks for this case event'));
             } else {
               // This is a problem. Throw an appropriate error.
