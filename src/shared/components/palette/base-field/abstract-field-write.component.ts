@@ -1,7 +1,10 @@
 import { Input, OnChanges, SimpleChanges } from '@angular/core';
-import { AbstractFormFieldComponent } from './abstract-form-field.component';
-import { CaseField } from '../../../domain';
+import { AbstractControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+
+import { CaseField } from '../../../domain';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent implements OnChanges {
 
@@ -28,6 +31,10 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
         this.fixCaseField();
       }
     }
+  }
+
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
+    FormValidatorsService.addValidators(caseField, control);
   }
 
   private fixCaseField() {

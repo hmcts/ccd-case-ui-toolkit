@@ -1,13 +1,14 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { CaseField } from '../../domain/definition/case-field.model';
 import { Subscription } from 'rxjs';
-import { ShowCondition } from './domain';
-import { FieldsUtils } from '../../services/fields/fields.utils';
-import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
-import { GreyBarService } from './services/grey-bar.service';
+
 import { AbstractFieldWriteComponent } from '../../components/palette/base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../services/fields/fields.utils';
+import { ShowCondition } from './domain';
+import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
+import { GreyBarService } from './services/grey-bar.service';
 
 @Directive({ selector: '[ccdConditionalShowForm]' })
 /** Hides and shows all fields in a form. Works on read only fields and form fields.
@@ -57,10 +58,10 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   private evaluateControl(control: AbstractControl) {
     const cf = control['caseField'] as CaseField;
     const component = control['component'] as AbstractFormFieldComponent;
-    this.evaluateCondition(cf, component);
+    this.evaluateCondition(cf, component, control);
   }
 
-  private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent) {
+  private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent, control: AbstractControl) {
     if (cf) {
       if (cf.show_condition) {
         const condResult = ShowCondition.getInstance(cf.show_condition).match(this.allFieldValues, this.buildPath(component, cf));
@@ -74,6 +75,13 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
             this.greyBarService.removeToggledToShow(cf.id)
           }
           cf.hidden = !condResult;
+        }
+        // Disable the control if it's hidden so that it doesn't count towards the
+        // validation state of the form.
+        if (cf.hidden === true && !control.disabled) {
+          control.disable();
+        } else if (cf.hidden !== true && control.disabled) {
+          control.enable();
         }
       }
     }

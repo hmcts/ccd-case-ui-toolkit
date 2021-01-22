@@ -1,17 +1,17 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { finalize } from 'rxjs/operators';
-import { Profile } from '../../../domain/profile';
-import { ProfileNotifier } from '../../../services';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { Profile } from '../../../domain/profile';
+import { FieldsUtils, ProfileNotifier } from '../../../services';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
-import { FieldsUtils } from '../../../services';
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -33,8 +33,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
 
-  constructor(private formValidatorsService: FormValidatorsService,
-              private dialog: MatDialog,
+  constructor(private dialog: MatDialog,
               private scrollToService: ScrollToService,
               private profileNotifier: ProfileNotifier,
               private createChecker: CollectionCreateCheckerService
@@ -61,7 +60,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   buildCaseField(item, index: number): CaseField {
     let cf: CaseField =  this.newCaseField(index, item);
     const c = new FormControl(item);
-    this.formValidatorsService.addValidators(this.caseField, c);
+    FormValidatorsService.addValidators(this.caseField, c);
     FieldsUtils.addCaseFieldAndComponentReferences(c, this.caseField, this)
     this.formArray.push(
       new FormGroup({

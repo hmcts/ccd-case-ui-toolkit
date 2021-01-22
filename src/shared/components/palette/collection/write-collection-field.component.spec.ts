@@ -1,22 +1,23 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { WriteCollectionFieldComponent } from './write-collection-field.component';
-import { DebugElement } from '@angular/core';
-import { MockComponent } from 'ng2-mock-component';
-import { CaseField, FieldType } from '../../../domain/definition';
-import { PaletteUtilsModule } from '../utils';
-import { By } from '@angular/platform-browser';
-import { FormValidatorsService } from '../../../services/form';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, of } from 'rxjs';
-import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
-import { ProfileNotifier } from '../../../services';
+
+import { CaseField, FieldType } from '../../../domain/definition';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { ProfileNotifier } from '../../../services';
+import { FormValidatorsService } from '../../../services/form';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
+import { PaletteUtilsModule } from '../utils';
+import { CollectionCreateCheckerService } from './collection-create-checker.service';
+import { WriteCollectionFieldComponent } from './write-collection-field.component';
+
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { CollectionCreateCheckerService } from './collection-create-checker.service';
-
 const FIELD_ID = 'Values';
 const SIMPLE_FIELD_TYPE: FieldType = {
   id: 'Text',
@@ -142,6 +143,7 @@ describe('WriteCollectionFieldComponent', () => {
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
+    // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
     // Manually populate the form array as item field are mocked and can't register themselves
 //    VALUES.forEach((collectionItem, index) => {
 //      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
@@ -271,6 +273,7 @@ describe('WriteCollectionFieldComponent', () => {
     expect(dialog.open).toHaveBeenCalledWith(RemoveDialogComponent, any(Object));
   });
 
+  // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
   it('should remove item from collection when remove button is clicked and confirmed', () => {
     const tempCaseField = <CaseField>({
       ...caseField,
@@ -415,6 +418,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
+    // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
     // Manually populate the form array as item field are mocked and can't register themselves
 //    collectionValues.forEach((collectionItem, index) => {
 //      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));
@@ -536,6 +540,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
+    // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
     // Manually populate the form array as item field are mocked and can't register themselves
 //    collectionValues.forEach((collectionItem, index) => {
 //      component.buildControlRegistrer(collectionItem.id, index)(new FormControl(collectionItem.value));

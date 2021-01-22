@@ -1,24 +1,16 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ComponentFactoryResolver,
-  Injector,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
-import { PaletteService } from '../palette.service';
-import { AbstractFieldWriteComponent } from './abstract-field-write.component';
-import { AbstractControl, FormControl } from '@angular/forms';
+import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
+
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
-import { plainToClassFromExist } from 'class-transformer';
+import { PaletteService } from '../palette.service';
+import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
 @Component({
   selector: 'ccd-field-write',
   template: `
-    <div>
+    <div [hidden]="caseField.hidden">
       <ng-container #fieldContainer></ng-container>
     </div>
   `
@@ -32,13 +24,12 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   fieldContainer: ViewContainerRef;
 
   constructor(private resolver: ComponentFactoryResolver,
-              private paletteService: PaletteService,
-              private formValidatorsService: FormValidatorsService) {
+              private paletteService: PaletteService) {
     super();
   }
 
   protected addValidators(caseField: CaseField, control: AbstractControl): void {
-    this.formValidatorsService.addValidators(caseField, control);
+    FormValidatorsService.addValidators(caseField, control);
   }
 
   ngOnInit(): void {
@@ -57,6 +48,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
 
     component.instance['caseFields'] = this.caseFields;
     component.instance['formGroup'] = this.formGroup;
+    component.instance['parent'] = this.parent;
     component.instance['idPrefix'] = this.idPrefix;
     if (this.caseField.field_type.id === 'AddressGlobal') {
       component.instance['ignoreMandatory'] = true;

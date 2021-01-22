@@ -1,11 +1,12 @@
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
+
 import { Constants } from '../../../commons/constants';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
 @Component({
   selector: 'ccd-write-complex-type-field',
@@ -33,7 +34,9 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnInit(): void {
-    this.registerControl(this.complexGroup);
+    // Add validators for the complex field.
+    this.formValidatorsService.addValidators(this.caseField, this.complexGroup);
+    this.complexGroup = this.registerControl(this.complexGroup) as FormGroup;
   }
 
   buildField(caseField: CaseField): CaseField {
@@ -43,15 +46,14 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     } else {
       control = new FormControl(caseField.value);
     }
-    // checks validators are required before calling formValidatorsService
-    const validatorsRequired = function () {
-      return 'AddressLine1' === caseField.id
-        && 'TextMax150' === caseField.field_type.id
-        && Constants.MANDATORY === caseField.display_context
-        || !this.ignoreMandatory;
-    };
-    if (validatorsRequired.call(this)) {
-      // console.log('WriteComplexFieldComponent add validators for caseField', caseField);
+    
+    // Add validators for addresses, if appropriate.
+    if (this.isAddressUK()) {
+      if (this.addressValidatorsRequired(caseField)) {
+        this.formValidatorsService.addValidators(caseField, control);
+      }
+    } else {
+      // It's not an address so set it up according to its own display_context.
       this.formValidatorsService.addValidators(caseField, control);
     }
     this.complexGroup.addControl(caseField.id, control);
@@ -59,29 +61,23 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     return caseField;
   }
 
-  buildControlRegistrer(caseField: CaseField): (control: FormControl) => AbstractControl {
-    return control => {
-      if (this.complexGroup.get(caseField.id)) {
-        return this.complexGroup.get(caseField.id);
-      }
-      // checks validators are required before calling formValidatorsService
-      const validatorsRequired = function () {
-        return 'AddressLine1' === caseField.id
-          && 'TextMax150' === caseField.field_type.id
-          && Constants.MANDATORY === caseField.display_context
-          || !this.ignoreMandatory;
-      };
-      if (validatorsRequired.call(this)) {
-        // console.log('WriteComplexFieldComponent add validators for caseField', caseField);
-        this.formValidatorsService.addValidators(caseField, control);
-      }
-      this.complexGroup.addControl(caseField.id, control);
-      FieldsUtils.addCaseFieldAndComponentReferences(control, caseField, this);
-      return control;
-    };
-  }
-
   buildIdPrefix(field: CaseField): string {
     return this.isCompoundPipe.transform(field) ? `${this.idPrefix}${field.id}_` : `${this.idPrefix}`;
+  }
+
+  private addressValidatorsRequired(caseField: CaseField): boolean {
+    return this.isSmallAddressLine1(caseField) && this.isMandatory(caseField);
+  }
+
+  private isSmallAddressLine1(caseField: CaseField): boolean {
+    return caseField.id === 'AddressLine1' && caseField.field_type.id === 'TextMax150';
+  }
+
+  private isMandatory(caseField: CaseField): boolean {
+    return (Constants.MANDATORY === caseField.display_context || !this.ignoreMandatory);
+  }
+
+  private isAddressUK(): boolean {
+    return this.caseField.field_type.id === 'AddressUK';
   }
 }
