@@ -4,3 +4,4 @@ export * from './case-edit-wizard.guard';
 export * from './event-trigger.service';
 export * from './case.notifier';
 export * from './cases.service';
+export * from './work-allocation.service';
