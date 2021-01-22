@@ -60,6 +60,7 @@ describe('CasesService', () => {
   let wizardPageFieldToCaseFieldMapper: any;
   let casesService: CasesService;
   let workAllocationService: WorkAllocationService;
+  let alertService: any; 
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl']);
@@ -78,8 +79,9 @@ describe('CasesService', () => {
     spyOn(orderService, 'sort').and.callFake((caseFields: CaseField[]) => {
       return caseFields;
     });
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
 
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
     casesService = new CasesService(
       httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService
     );

@@ -26,6 +26,7 @@ describe('WorkAllocationService', () => {
   let httpService: any;
   let errorService: any;
   let workAllocationService: WorkAllocationService;
+  let alertService: any;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
@@ -33,8 +34,8 @@ describe('WorkAllocationService', () => {
 
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService);
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
   });
 
   describe('searchTasks', () => {
@@ -98,7 +99,6 @@ describe('WorkAllocationService', () => {
 
     it('should call post with the correct parameters', () => {
       workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
-
       expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {});
     });
 
@@ -111,6 +111,8 @@ describe('WorkAllocationService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          expect(alertService.clear).toHaveBeenCalled();
+          expect(alertService.warning).toHaveBeenCalled();
           done();
         });
     });
