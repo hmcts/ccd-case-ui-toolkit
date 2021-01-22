@@ -5,6 +5,7 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 @Injectable()
 export class FieldTypeSanitiser {
   public static readonly FIELD_TYPE_COMPLEX: FieldTypeEnum = 'Complex';
+  public static readonly FIELD_TYPE_COLLECTION: FieldTypeEnum = 'Collection';
   public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
 
   /**
@@ -17,13 +18,28 @@ export class FieldTypeSanitiser {
    sanitiseLists(caseFields: CaseField[], editForm: any) {
 
     caseFields.forEach(caseField => {
-      if (caseField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST) {
-        this.getListOfKeysFromEditForm(editForm).forEach((key) => {
-          this.createValueCodePairAlongWithListIfKeyExistsInForm(caseField, key, editForm);
-        });
-      } else if (caseField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
-        this.sanitiseLists(caseField.field_type.complex_fields, editForm[caseField.id]);
+
+      switch (caseField.field_type.type) {
+        case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
+          this.getListOfKeysFromEditForm(editForm).forEach((key) => {
+            this.createValueCodePairAlongWithListIfKeyExistsInForm(caseField, key, editForm);
+          });
+          break;
+
+        case FieldTypeSanitiser.FIELD_TYPE_COMPLEX:
+          this.sanitiseLists(caseField.field_type.complex_fields, editForm[caseField.id]);
+          break;
+
+        case FieldTypeSanitiser.FIELD_TYPE_COLLECTION:
+          editForm[caseField.id].forEach(formElement => {
+            this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
+          });
+          break;
+
+        default:
+          break;
       }
+
     });
   }
 
