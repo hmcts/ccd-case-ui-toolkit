@@ -525,11 +525,11 @@ describe('CasesService', () => {
     });
   });
 
-  describe('handleNestedDynamicListsInComplexTypes()', () => {
+  describe('handleNestedDynamicLists()', () => {
 
     it('should set data for dynamic lists', () => {
 
-      const response = (casesService as any).handleNestedDynamicListsInComplexTypes({
+      const response = (casesService as any).handleNestedDynamicLists({
         case_fields: [
           {
             field_type: {
