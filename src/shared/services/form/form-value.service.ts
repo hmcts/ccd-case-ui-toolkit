@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition/case-field.model';
-import { FieldTypeSanitiser } from './field-type-sanitiser';
+
+import { CaseEventData, CaseField } from '../../domain';
 import { FieldsUtils } from '../fields';
+import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
@@ -208,6 +209,28 @@ export class FormValueService {
         return String(rawValue);
       default:
         return rawValue;
+    }
+  }
+
+  public removeLabels(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      for (const field of caseFields) {
+        if (field.field_type) {
+          // We don't want labels to be included.
+          switch (field.field_type.type) {
+            case 'Label':
+              delete data[field.id];
+              break;
+            case 'Complex':
+              // Recurse and remove the labels from within a complex field.
+              this.removeLabels(data[field.id], field.field_type.complex_fields);
+              break;
+            default:
+              // TODO: Handle lists that may contain labels and/or complex fields.
+              break;
+          }
+        }
+      }
     }
   }
 
