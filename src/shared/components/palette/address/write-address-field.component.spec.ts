@@ -42,7 +42,6 @@ describe('WriteAddressFieldComponent', () => {
 
     caseField = caseField(null);
     formGroup = addressFormGroup();
-    registerControl = () => {};
   }
 
   @Component({
@@ -53,9 +52,6 @@ describe('WriteAddressFieldComponent', () => {
 
     @Input()
     caseField: CaseField;
-
-    @Input()
-    registerControl: (control: FormControl) => AbstractControl;
 
     @Input()
     idPrefix = '';

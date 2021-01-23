@@ -27,6 +27,7 @@
         <ccd-field-write [caseField]="buildCaseField(item, i)"
                          [caseFields]="caseFields"
                          [formGroup]="formGroup"
+                         [parent]="formArray"
                          [idPrefix]="buildIdPrefix(i)"
                          [hidden]="caseField.hidden">
         </ccd-field-write>

@@ -47,7 +47,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
     this.caseField.value = this.caseField.value || [];
 
-    this.formArray = this.registerControl(new FormArray([])) as FormArray;
+    this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
     this.formArray['caseField'] = this.caseField;
   }
 
@@ -60,14 +60,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   buildCaseField(item, index: number): CaseField {
     let cf: CaseField =  this.newCaseField(index, item);
     const c = new FormControl(item);
-    FormValidatorsService.addValidators(this.caseField, c);
-    FieldsUtils.addCaseFieldAndComponentReferences(c, this.caseField, this)
-    this.formArray.push(
-      new FormGroup({
-        id: item.id,
-        value: c
-      })
-    );
+    FormValidatorsService.addValidators(cf, c);
+    FieldsUtils.addCaseFieldAndComponentReferences(c, cf, this);
+    if (index < this.formArray.length) {
+      this.formArray.setControl(index, c);
+    } else {
+      this.formArray.push(c);
+    }
     return cf;
   }
 
@@ -149,10 +148,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    let id = false;
-    if (this.formArray.at(index)) {
-      id = this.formArray.at(index).get('id').value;
-    }
+    const id = this.getControlIdAt(index);
     if (!!id) {
       if (!!this.profile.user && !!this.profile.user.idam) {
         return !this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
@@ -169,10 +165,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    let id = false;
-    if (this.formArray.at(index)) {
-      id = this.formArray.at(index).get('id').value;
-    }
+    const id = this.getControlIdAt(index);
     return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
   }
 
@@ -197,6 +190,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.removeItem(i);
       }
     });
+  }
+
+  private getControlIdAt(index: number): string {
+    // this.formArray contains [ FormControl, ... ].
+    // Here, we need to get the id of the FormControl;
+    const control = this.formArray.at(index);
+    return control && control.value ? control.value.id : undefined;
   }
 
 }

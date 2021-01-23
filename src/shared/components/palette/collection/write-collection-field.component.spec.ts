@@ -45,11 +45,6 @@ const VALUES = [
     value: 'v2'
   }
 ];
-const FORM_GROUP: FormGroup = new FormGroup({});
-const REGISTER_CONTROL = (control) => {
-  FORM_GROUP.addControl(FIELD_ID, control);
-  return control;
-};
 const $WRITE_FIELDS = By.css('ccd-field-write');
 const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
 const $ADD_BUTTON_BOTTOM = By.css('.form-group>.panel>.button:nth-of-type(2)');
@@ -57,8 +52,7 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 let FieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded'],
-  template: '<input type="text" />',
+  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
 });
 let FieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
@@ -185,6 +179,7 @@ describe('WriteCollectionFieldComponent', () => {
     expect(field2.idPrefix).toEqual(caseField.id + '_' + 1 + '_');
   });
 
+  // TODO: Is this needed anymore? We're no longer injecting registerControl.
   it('should pass valid `registerControl` function registering control as value of item', () => {
     // Reset form array
     component.ngOnInit();
@@ -256,12 +251,25 @@ describe('WriteCollectionFieldComponent', () => {
     expect(removeButtons.length).toBe(VALUES.length);
   });
 
+  /**
+   * TODO: I don't understand how this could have been passing! It's setting up
+   * permissions inside the component.caseFields property, which are entirely
+   * ignored when determining whether or not the delete button is enabled.
+   * 
+   * It only cares about the permissions on the CaseField for the entire collection
+   * from what I can tell.
+   * 
+   * I *think* this was passing by accident and that the id was undefined in the
+   * return line of isNotAuthorisedToDelete(index). If it's undefined, they're
+   * deemed AUTHORISED to delete, which seems very odd.
+   */
   it('should display removal confirmation dialog when remove button is clicked', () => {
     const tempCaseField = <CaseField>({
       ...caseField,
       display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
     });
     component.caseFields = [tempCaseField];
+    component.caseField = tempCaseField;
     component.ngOnInit();
     fixture.detectChanges();
     let removeButtons = de.queryAll($REMOVE_BUTTONS);
@@ -281,7 +289,6 @@ describe('WriteCollectionFieldComponent', () => {
     });
     component.caseField = tempCaseField;
     component.caseFields = [tempCaseField];
-    component.ngOnInit();
     fixture.detectChanges();
     // Manually populate the form array as item field are mocked and can't register themselves
     // VALUES.forEach((collectionItem, index) => {
