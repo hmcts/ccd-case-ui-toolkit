@@ -46,7 +46,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     } else {
       control = new FormControl(caseField.value);
     }
-    
+
     // Add validators for addresses, if appropriate.
     if (this.isAddressUK()) {
       if (this.addressValidatorsRequired(caseField)) {
