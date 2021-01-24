@@ -139,7 +139,7 @@ export class CasesService {
           console.log(error);
         }
       });
-    } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION){
+    } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
       if (caseFieldType.collection_field_type) {
         this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
       }
