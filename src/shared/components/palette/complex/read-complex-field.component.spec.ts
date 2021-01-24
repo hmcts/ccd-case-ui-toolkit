@@ -1,15 +1,15 @@
-import { MockComponent } from 'ng2-mock-component';
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaletteUtilsModule } from '../utils/utils.module';
-import { PaletteContext } from '../base-field/palette-context.enum';
+import { FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { MockComponent } from 'ng2-mock-component';
+
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { PaletteContext } from '../base-field/palette-context.enum';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { By } from '@angular/platform-browser';
-import { FieldType } from '../../../domain/definition';
-import { FormGroup } from '@angular/forms';
 
 describe('ReadComplexFieldComponent', () => {
 
@@ -25,6 +25,7 @@ describe('ReadComplexFieldComponent', () => {
       const $COMPLEX_AS_RAW = By.css('ccd-read-complex-field-raw');
 
       const caseField: CaseField = new CaseField();
+      const FORM_GROUP: FormGroup = new FormGroup({});
 
       let fixture: ComponentFixture<ReadComplexFieldComponent>;
       let component: ReadComplexFieldComponent;
@@ -90,6 +91,7 @@ describe('ReadComplexFieldComponent', () => {
         fixture = TestBed.createComponent(ReadComplexFieldComponent);
         component = fixture.componentInstance;
         component.caseField = caseField;
+        component.formGroup = FORM_GROUP;
         component.context = null;
 
         de = fixture.debugElement;
@@ -136,6 +138,7 @@ describe('ReadComplexFieldComponent', () => {
       let component: ReadComplexFieldComponent;
       let de: DebugElement;
       const caseField_dsp: CaseField = new CaseField();
+      const FORM_GROUP: FormGroup = new FormGroup({});
 
       const expectCollectionTable = () => {
         expect(de.queryAll($COMPLEX_AS_RAW).length).toEqual(0);
@@ -188,6 +191,7 @@ describe('ReadComplexFieldComponent', () => {
         fixture = TestBed.createComponent(ReadComplexFieldComponent);
         component = fixture.componentInstance;
         component.caseField = caseField_dsp;
+        component.formGroup = FORM_GROUP;
         component.context = null;
 
         de = fixture.debugElement;
@@ -203,10 +207,6 @@ describe('ReadComplexFieldComponent', () => {
   });
   describe('Persistable readonly complex field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'Complex',
       type: 'Complex',
@@ -291,6 +291,7 @@ describe('ReadComplexFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();
