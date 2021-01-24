@@ -23,12 +23,12 @@ describe('WriteComplexFieldComponent', () => {
 
   let FieldWriteComponent = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded']
+    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel', 'registerControl']
+    inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
   @Pipe({name: 'ccdIsReadOnlyAndNotCollection'})
@@ -377,7 +377,6 @@ describe('WriteComplexFieldComponent', () => {
         field_type: line1.field_type,
         value: CASE_FIELD.value['AddressLine1']
       }));
-      expect(values[LINE_1].componentInstance.registerControl).not.toBeNull();
 
       let line2 = FIELD_TYPE.complex_fields[LINE_2];
       expect(values[LINE_2].componentInstance.caseField).toEqual( <CaseField>({
@@ -387,7 +386,6 @@ describe('WriteComplexFieldComponent', () => {
         field_type: line2.field_type,
         value: CASE_FIELD.value['AddressLine2']
       }));
-      expect(values[LINE_2].componentInstance.registerControl).not.toBeNull();
 
       let postcode = FIELD_TYPE.complex_fields[POSTCODE];
       expect(values[POSTCODE].componentInstance.caseField).toEqual({
@@ -397,7 +395,6 @@ describe('WriteComplexFieldComponent', () => {
         field_type: postcode.field_type,
         value: CASE_FIELD.value['AddressPostcode']
       });
-      expect(values[POSTCODE].componentInstance.registerControl).not.toBeNull();
     });
 
     it('should render fields with empty value', () => {

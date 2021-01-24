@@ -103,6 +103,7 @@ describe('ReadTextFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();

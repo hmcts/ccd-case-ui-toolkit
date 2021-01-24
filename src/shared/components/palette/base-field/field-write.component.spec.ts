@@ -98,9 +98,9 @@ describe('FieldWriteComponent', () => {
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
-    expect(fieldTest.registerControl).not.toBeNull();
   });
 
+  // TODO: Is this needed anymore? We're no longer injecting registerControl.
   it('should inject component instance with valid default `registerControl` function', () => {
     let ngContent = de.children[0];
     let fieldTestComponent = ngContent.children[0];
