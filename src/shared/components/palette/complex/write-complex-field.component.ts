@@ -3,8 +3,7 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldsUtils } from '../../../services';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FieldsUtils, FormValidatorsService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
@@ -41,10 +40,9 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   buildField(caseField: CaseField): CaseField {
     let control: AbstractControl = this.complexGroup.get(caseField.id);
-    if (control) {
-      return caseField;
-    } else {
+    if (!control) {
       control = new FormControl(caseField.value);
+      this.complexGroup.addControl(caseField.id, control);
     }
 
     // Add validators for addresses, if appropriate.
@@ -56,7 +54,6 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
       // It's not an address so set it up according to its own display_context.
       this.formValidatorsService.addValidators(caseField, control);
     }
-    this.complexGroup.addControl(caseField.id, control);
     FieldsUtils.addCaseFieldAndComponentReferences(control, caseField, this);
     return caseField;
   }
