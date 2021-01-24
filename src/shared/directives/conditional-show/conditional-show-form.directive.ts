@@ -77,11 +77,13 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
           cf.hidden = !condResult;
         }
         // Disable the control if it's hidden so that it doesn't count towards the
-        // validation state of the form.
-        if (cf.hidden === true && !control.disabled) {
-          control.disable();
-        } else if (cf.hidden !== true && control.disabled) {
-          control.enable();
+        // validation state of the form, but only if it's actually being validated.
+        if (control.validator) {
+          if (cf.hidden === true && !control.disabled) {
+            control.disable();
+          } else if (cf.hidden !== true && control.disabled) {
+            control.enable();
+          }
         }
       }
     }
