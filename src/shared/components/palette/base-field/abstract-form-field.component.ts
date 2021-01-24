@@ -17,22 +17,22 @@ export abstract class AbstractFormFieldComponent {
   parent?: FormContainer;
 
   protected registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
-      const container: FormContainer = this.parent || this.formGroup;
-      if (!container) {
-        return control;
+    const container: FormContainer = this.parent || this.formGroup;
+    if (!container) {
+      return control;
+    }
+    const existing = container.controls[this.caseField.id];
+    if (existing) {
+      if (replace) {
+        // Set the validators on the replacement with what already exists.
+        control.setValidators(existing.validator);
+      } else {
+        return existing;
       }
-      const existing = container.controls[this.caseField.id];
-      if (existing) {
-        if (replace) {
-          // Set the validators on the replacement with what already exists.
-          control.setValidators(existing.validator);
-        } else {
-          return existing;
-        }
-      }
-      this.addValidators(this.caseField, control);
-      FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this);
-      return this.addControlToParent(control, container, replace);
+    }
+    this.addValidators(this.caseField, control);
+    FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this);
+    return this.addControlToParent(control, container, replace);
   }
 
   protected addValidators(caseField: CaseField, control: AbstractControl): void {
