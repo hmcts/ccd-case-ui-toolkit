@@ -107,7 +107,7 @@ export class CasesService {
     if (jsonResponse.case_fields) {
       jsonResponse.case_fields.forEach(caseField => {
         if (caseField.field_type) {
-          this.getDynamicListDefinition(caseField, caseField.field_type, caseField);
+          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
         }
       });
     }
@@ -115,8 +115,7 @@ export class CasesService {
     return jsonResponse;
   }
 
-  private getDynamicListDefinition(caseField, caseFieldType, rootCaseField) {
-
+  private setDynamicListDefinition(caseField, caseFieldType, rootCaseField) {
     if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
 
       caseFieldType.complex_fields.forEach(field => {
@@ -134,7 +133,7 @@ export class CasesService {
               ...field.value
             };
           } else {
-            this.getDynamicListDefinition(field, field.field_type, rootCaseField);
+            this.setDynamicListDefinition(field, field.field_type, rootCaseField);
           }
         } catch (error) {
           console.log(error);
@@ -142,7 +141,7 @@ export class CasesService {
       });
     } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION){
       if (caseFieldType.collection_field_type) {
-        this.getDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
+        this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
       }
     }
   }
