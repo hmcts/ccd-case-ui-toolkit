@@ -255,10 +255,10 @@ describe('WriteCollectionFieldComponent', () => {
    * TODO: I don't understand how this could have been passing! It's setting up
    * permissions inside the component.caseFields property, which are entirely
    * ignored when determining whether or not the delete button is enabled.
-   * 
+   *
    * It only cares about the permissions on the CaseField for the entire collection
    * from what I can tell.
-   * 
+   *
    * I *think* this was passing by accident and that the id was undefined in the
    * return line of isNotAuthorisedToDelete(index). If it's undefined, they're
    * deemed AUTHORISED to delete, which seems very odd.
