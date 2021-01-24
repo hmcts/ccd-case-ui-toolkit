@@ -135,6 +135,28 @@ export class FormValueService {
     }
   }
 
+  private static isReadOnly(field: CaseField): boolean {
+    return field.display_context ? field.display_context.toUpperCase() === 'READONLY' : false;
+  }
+
+  private static isOptional(field: CaseField): boolean {
+    return field.display_context ? field.display_context.toUpperCase() === 'OPTIONAL' : false;
+  }
+
+  private static isEmptyData(data: Object): boolean {
+    if (data) {
+      let allEmpty = true;
+      for (const prop of Object.keys(data)) {
+        const value = data[prop];
+        if (value && typeof(value) === 'object') {
+          allEmpty = allEmpty && this.isEmptyData(value);
+        }
+      }
+      return allEmpty;
+    }
+    return true;
+  }
+
   constructor(private fieldTypeSanitiser: FieldTypeSanitiser) {
   }
 
@@ -212,21 +234,34 @@ export class FormValueService {
     }
   }
 
-  public removeLabels(data: object, caseFields: CaseField[]): void {
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
-        if (field.field_type) {
-          // We don't want labels to be included.
+        // Retain anything that is readonly.
+        if (FormValueService.isReadOnly(field)) {
+          continue;
+        }
+        if (field.hidden === true) {
+          // Delete anything that is hidden (that is NOT readonly).
+          delete data[field.id];
+        } else if (field.field_type) {
           switch (field.field_type.type) {
             case 'Label':
+              // Delete any labels.
               delete data[field.id];
               break;
             case 'Complex':
-              // Recurse and remove the labels from within a complex field.
-              this.removeLabels(data[field.id], field.field_type.complex_fields);
+              // Recurse and remove anything unnecessary from within a complex field.
+              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields);
+              // Also remove any optional complex objects that are completely empty.
+              if (FormValueService.isOptional(field) && FormValueService.isEmptyData(data[field.id])) {
+                delete data[field.id];
+              }
+              break;
+            case 'Collection':
+              // TODO: handle collections.
               break;
             default:
-              // TODO: Handle lists that may contain labels and/or complex fields.
               break;
           }
         }

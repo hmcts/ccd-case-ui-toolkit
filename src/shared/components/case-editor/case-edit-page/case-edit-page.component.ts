@@ -295,11 +295,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
     this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields, pageFormFields);
     const caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
-    this.formValueService.removeLabels(caseEventData.data, this.currentPage.case_fields);
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
-    // TODO: Do we need to also tidy up event_data to strip out
-    // labels and sanitise the contents?
+
+    // TODO: Do we need to also tidy up event_data to strip out any unnecessay content?
     caseEventData.event_data = this.editForm.value.data;
     if (this.caseEdit.caseDetails) {
       caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
