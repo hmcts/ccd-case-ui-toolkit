@@ -1,24 +1,31 @@
 ## RELEASE NOTES
-### Version 2.68.7-prerelease-conditional-show-perf"
+
+### Version 2.68.7-prerelease-conditional-show-perf
 **EUI-3151** Changes to make validation work properly and fix all the tests
 
-### Version 2.68.6-prerelease-conditional-show-perf"
+### Version 2.68.6-prerelease-conditional-show-perf
 **EUI-3151** Fix more problems caused by components not being registered. Fix problem with [hidden] not working inside inline template
 
-### Version 2.68.5-prerelease-conditional-show-perf"
+### Version 2.68.5-prerelease-conditional-show-perf
 **EUI-3151** Fix problems caused by components not being registered
 
-### Version 2.68.4-prerelease-conditional-show-perf"
+### Version 2.68.4-prerelease-conditional-show-perf
 **EUI-3151** Additional changes to fix probate regression during case creation
 
-### Version 2.68.3-prerelease-conditional-show-perf"
+### Version 2.68.3-prerelease-conditional-show-perf
 **EUI-3151** Fix probate regression during case creation
 
-### Version 2.68.2-prerelease-conditional-show-perf"
+### Version 2.68.2-prerelease-conditional-show-perf
 **EUI-3055** Fix regression in address field and tests
 
-### Version 2.68.0-prerelease-conditional-show-perf"
+### Version 2.68.0-prerelease-conditional-show-perf
 **EUI-3055** Better performance in edit forms through new show hide implementation
+
+### VVersion 2.67.6-task-event-completion
+**EUI-2986** Task Event completion
+
+### Version 2.67.5-dynamiclist-fix-in-complex
+**EUI-2350** Dynamic Lists in Complex Types
 
 ### Version 2.67.4-reset-button-and-keyboard-fix
 **EUI-2989** GDS styles Checkbox: keyboard tab and spacebar not effective on Safari and Firefox

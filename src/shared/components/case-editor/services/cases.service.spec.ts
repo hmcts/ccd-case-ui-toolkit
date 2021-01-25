@@ -1,12 +1,14 @@
 import { Headers, Response, ResponseOptions } from '@angular/http';
-import { AbstractAppConfig } from '../../../../app.config';
-import { CasesService } from './cases.service';
 import { Observable, throwError } from 'rxjs';
-import { CasePrintDocument } from '../../../../shared/domain/case-view/case-print-document.model';
-import { HttpErrorService, HttpService } from '../../../services/http';
+
+import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { HttpErrorService, HttpService } from '../../../services';
+import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import { WorkAllocationService } from './work-allocation.service';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasesService', () => {
@@ -56,13 +58,15 @@ describe('CasesService', () => {
   let orderService: any;
   let errorService: any;
   let wizardPageFieldToCaseFieldMapper: any;
-
   let casesService: CasesService;
+  let workAllocationService: WorkAllocationService;
+  let alertService: any; 
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
+    appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
 
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
@@ -75,8 +79,12 @@ describe('CasesService', () => {
     spyOn(orderService, 'sort').and.callFake((caseFields: CaseField[]) => {
       return caseFields;
     });
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
 
-    casesService = new CasesService(httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+    casesService = new CasesService(
+      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService
+    );
   });
 
   describe('getCaseView()', () => {
@@ -522,6 +530,84 @@ describe('CasesService', () => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
         });
+    });
+  });
+
+  describe('handleNestedDynamicListsInComplexTypes()', () => {
+
+    it('should set data for dynamic lists', () => {
+
+      const response = (casesService as any).handleNestedDynamicListsInComplexTypes({
+        case_fields: [
+          {
+            field_type: {
+              complex_fields: [
+                {
+                  field_type: {
+                    type: 'DynamicList'
+                  },
+                  id: 'complex_dl',
+                  value: {},
+                  formatted_value: {}
+                }
+              ],
+              type: 'Complex'
+            },
+            value: {
+              complex_dl: {
+                list_items: [
+                  {code: '1', value: '1'},
+                  {code: '2', value: '2'}
+                ],
+                value: {code: '2', value: '2'}
+              }
+            }
+          }
+        ]
+      });
+
+      const expected = {
+        case_fields: [
+          {
+            field_type: {
+              complex_fields: [
+                {
+                  field_type: {
+                    type: 'DynamicList'
+                  },
+                  id: 'complex_dl',
+                  value: {
+                    list_items: [
+                      {code: '1', value: '1'},
+                      {code: '2', value: '2'}
+                    ],
+                    value: {code: '2', value: '2'}
+                  },
+                  formatted_value: {
+                    list_items: [
+                      {code: '1', value: '1'},
+                      {code: '2', value: '2'}
+                    ],
+                    value: {code: '2', value: '2'}
+                  }
+                }
+              ],
+              type: 'Complex'
+            },
+            value: {
+              complex_dl: {
+                list_items: [
+                  {code: '1', value: '1'},
+                  {code: '2', value: '2'}
+                ],
+                value: {code: '2', value: '2'}
+              }
+            }
+          }
+        ]
+      };
+
+      expect(response).toEqual(expected);
     });
   });
 });

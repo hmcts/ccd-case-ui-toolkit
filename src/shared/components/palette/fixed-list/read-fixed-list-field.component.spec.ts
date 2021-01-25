@@ -231,5 +231,4 @@ describe('ReadFixedListFieldComponent', () => {
     });
 
   });
-
 });
