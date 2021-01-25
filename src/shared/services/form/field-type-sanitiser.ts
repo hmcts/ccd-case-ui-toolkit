@@ -35,9 +35,6 @@ export class FieldTypeSanitiser {
             this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
           });
           break;
-
-        default:
-          break;
       }
 
     });
