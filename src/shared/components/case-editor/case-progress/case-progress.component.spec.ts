@@ -1,14 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CasesService } from '../services/cases.service';
-import { CaseProgressComponent } from './case-progress.component';
-import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { AlertService } from '../../../services/alert';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpError } from '../../../domain/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { EventTriggerService } from '../services/event-trigger.service';
+import { Observable, of, throwError } from 'rxjs';
+
+import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
+import { HttpError } from '../../../domain/http';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { AlertService } from '../../../services';
+import { CasesService, EventTriggerService } from '../services';
+import { CaseProgressComponent } from './case-progress.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 let CaseEditComponent: any = MockComponent({

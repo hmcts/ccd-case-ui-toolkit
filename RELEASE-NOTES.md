@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 2.67.6-ie-textbox-expand-issue
+### Version 2.67.9-ie-textbox-expand-issue
 **EUI-2333** IE textbox expand issue
 
 ### Version 2.67.5-dynamiclist-fix-in-complex
