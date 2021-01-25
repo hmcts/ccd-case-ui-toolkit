@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.68.8-wcag-status-message
+**EUI-2029** WCAG AA Status Message Fixes
+
 ### VVersion 2.67.6-task-event-completion
 **EUI-2986** Task Event completion
 
