@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.67.5-dynamiclist-fix-in-complex",
+  "version": "2.68.8-wcag-status-message",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
