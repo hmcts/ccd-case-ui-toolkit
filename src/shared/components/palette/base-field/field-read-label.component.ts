@@ -1,4 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { plainToClassFromExist } from 'class-transformer';
+
 import { CaseField } from '../../../domain/definition/case-field.model';
 
 @Component({
@@ -8,7 +10,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
     './field-read-label.scss'
   ]
 })
-export class FieldReadLabelComponent {
+export class FieldReadLabelComponent implements OnChanges {
 
   @Input()
   caseField: CaseField;
@@ -26,5 +28,21 @@ export class FieldReadLabelComponent {
 
   public isCaseLink(): boolean {
     return this.caseField.isCaseLink();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    let change = changes['caseField'];
+    if (change) {
+      let cfNew = change.currentValue;
+      if (!(cfNew instanceof CaseField)) {
+        this.fixCaseField();
+      }
+    }
+  }
+
+  private fixCaseField() {
+    if (this.caseField && !(this.caseField instanceof CaseField)) {
+      this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
+    }
   }
 }
