@@ -35,7 +35,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   ngOnInit(): void {
     // Add validators for the complex field.
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);
-    this.complexGroup = this.registerControl(this.complexGroup) as FormGroup;
+    this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
   }
 
   buildField(caseField: CaseField): CaseField {
