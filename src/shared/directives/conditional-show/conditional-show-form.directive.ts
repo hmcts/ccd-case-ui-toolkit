@@ -103,16 +103,18 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
 
   private handleFormGroup = (g: FormGroup) => {
     this.evaluateControl(g);
-    let groupControl = null;
-    if (g.get('value')) { // Complex Field
+    let groupControl = g;
+    if (g.get('value') && g.get('value') instanceof FormGroup) { // Complex Field
       groupControl = g.get('value') as FormGroup;
     } else if (g.controls) {
       // Special Fields like AddressUK, AddressGlobal
       groupControl = g;
     }
-    Object.keys(groupControl.controls).forEach(cKey => {
-      this.fieldsUtils.controlIterator(groupControl.get(cKey), this.handleFormArray, this.handleFormGroup, this.handleFormControl)
-    });
+    if (groupControl.controls) {
+      Object.keys(groupControl.controls).forEach(cKey => {
+        this.fieldsUtils.controlIterator(groupControl.get(cKey), this.handleFormArray, this.handleFormGroup, this.handleFormControl)
+      });
+    }
   }
 
   private evalAllShowHideConditions() {
