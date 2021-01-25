@@ -2,9 +2,6 @@
 ### Version 2.68.8-wcag-status-message
 **EUI-2029** WCAG AA Status Message Fixes
 
-### VVersion 2.67.6-task-event-completion
-**EUI-2986** Task Event completion
-
 ### Version 2.67.5-dynamiclist-fix-in-complex
 **EUI-2350** Dynamic Lists in Complex Types
 
