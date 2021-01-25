@@ -92,10 +92,6 @@ describe('ReadFixedRadioListFieldComponent', () => {
 
   describe('Persistable readonly fixed radio list field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
@@ -124,14 +120,15 @@ describe('ReadFixedRadioListFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
     it('should register readonly case field value with form group', () => {
-      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
-      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+      expect(FORM_GROUP.controls[CASE_FIELD.id]).toBeTruthy();
+      expect(FORM_GROUP.controls[CASE_FIELD.id].value).toBe(VALUE);
     });
 
   });

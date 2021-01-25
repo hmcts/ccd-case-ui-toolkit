@@ -37,10 +37,6 @@ CASE_FIELD.label = 'X';
 CASE_FIELD.field_type = FIELD_TYPE;
 CASE_FIELD.value = VALUES;
 
-const REGISTER_CONTROL = (control) => {
-  return control;
-};
-
 describe('WriteMultiSelectListFieldComponent', () => {
 
   const $CHECKBOXES = By.css('input[type="checkbox"]');

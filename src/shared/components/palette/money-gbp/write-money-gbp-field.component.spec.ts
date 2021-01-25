@@ -24,10 +24,6 @@ const CASE_FIELD: CaseField = <CaseField>({
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
-const REGISTER_CONTROL = (control) => {
-  FORM_GROUP.addControl(FIELD_ID, control);
-  return control;
-};
 
 describe('WriteMoneyGbpFieldComponent', () => {
 
@@ -57,6 +53,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
+    component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
     fixture.detectChanges();

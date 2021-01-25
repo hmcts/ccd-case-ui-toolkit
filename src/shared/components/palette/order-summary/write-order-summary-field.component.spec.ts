@@ -75,10 +75,6 @@ describe('WriteOrderSummaryFieldComponent', () => {
     let de: DebugElement;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(ID, control);
-      return control;
-    };
 
     beforeEach(async(() => {
       TestBed

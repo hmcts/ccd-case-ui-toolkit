@@ -179,23 +179,6 @@ describe('WriteCollectionFieldComponent', () => {
     expect(field2.idPrefix).toEqual(caseField.id + '_' + 1 + '_');
   });
 
-  // TODO: Is this needed anymore? We're no longer injecting registerControl.
-  it('should pass valid `registerControl` function registering control as value of item', () => {
-    // Reset form array
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    let field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
-
-    expect(component.formArray.controls.length).toBe(0);
-
-    const control = new FormControl('x');
-    field1.registerControl(control);
-
-    expect(component.formArray.controls.length).toBe(1);
-    expect(component.formArray.get('0.value')).toBe(control);
-  });
-
   it('should add empty item to collection when add button is clicked', () => {
     let addButton = de.query($ADD_BUTTON_TOP);
 

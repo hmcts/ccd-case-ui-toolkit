@@ -15,11 +15,6 @@ describe('WrieteOrganisationFieldComponent', () => {
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
 
   const FORM_GROUP: FormGroup = new FormGroup({});
-  const REGISTER_CONTROL = (control) => {
-    FORM_GROUP.addControl('OrganisationId', control);
-    FORM_GROUP.addControl('OrganisationName', control);
-    return control;
-  };
 
   const ORGANISATIONS = [{
     organisationIdentifier: 'O111111',

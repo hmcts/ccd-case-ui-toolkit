@@ -66,10 +66,6 @@ describe('ReadYesNoFieldComponent', () => {
 
   describe('Persistable readonly yes/no field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',

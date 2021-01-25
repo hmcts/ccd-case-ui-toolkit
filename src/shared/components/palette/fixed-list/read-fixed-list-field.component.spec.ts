@@ -191,10 +191,6 @@ describe('ReadFixedListFieldComponent', () => {
 
   describe('Persistable readonly fixed list field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
       id: FIELD_ID,
       label: 'X',
@@ -223,6 +219,7 @@ describe('ReadFixedListFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();
