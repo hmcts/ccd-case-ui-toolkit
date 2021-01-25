@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.68.7-prerelease-conditional-show-perf"
+**EUI-3151** Changes to make validation work properly and fix all the tests
+
 ### Version 2.68.6-prerelease-conditional-show-perf"
 **EUI-3151** Fix more problems caused by components not being registered. Fix problem with [hidden] not working inside inline template
 
