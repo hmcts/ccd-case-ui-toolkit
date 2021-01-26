@@ -2,6 +2,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { AbstractFormFieldComponent } from './abstract-form-field.component';
+import { AbstractFieldReadComponent } from './abstract-field-read.component';
 
 @Component({
   selector: 'ccd-field-read-label',
@@ -10,10 +12,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
     './field-read-label.scss'
   ]
 })
-export class FieldReadLabelComponent implements OnChanges {
-
-  @Input()
-  caseField: CaseField;
+export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges {
 
   @Input()
   withLabel: boolean;

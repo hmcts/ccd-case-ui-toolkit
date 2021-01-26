@@ -143,6 +143,14 @@ export class FormValueService {
     return field.display_context ? field.display_context.toUpperCase() === 'OPTIONAL' : false;
   }
 
+  private static isLabel (field: CaseField): boolean {
+    if (field.field_type) {
+      return field.field_type.type === 'Label';
+    } else {
+      return false;
+    }
+  }
+
   private static isEmptyData(data: Object): boolean {
     if (data) {
       let allEmpty = true;
@@ -246,7 +254,6 @@ export class FormValueService {
         return rawValue;
     }
   }
-
   /**
    * Clear out unnecessary fields from a data object, based on an array of CaseFields.
    * This method is recursive and will call itself if it encounters particular field types.
@@ -258,8 +265,8 @@ export class FormValueService {
   public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false): void {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
-        // Retain anything that is readonly.
-        if (FormValueService.isReadOnly(field)) {
+        // Retain anything that is readonly and not a label.
+        if (!FormValueService.isLabel(field) && FormValueService.isReadOnly(field)) {
           continue;
         }
         if (field.hidden === true) {
