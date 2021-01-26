@@ -259,7 +259,20 @@ export class FormValueService {
               }
               break;
             case 'Collection':
-              // TODO: handle collections.
+              // Get hold of the collection.
+              const collection = data[field.id];
+              // Check if we actually have a collection to work with.
+              if (collection && Array.isArray(collection)) {
+                // If this is a collection of complex object, we need to iterate through
+                // and clear them out.
+                if (field.field_type.collection_field_type.type === 'Complex') {
+                  // Iterate through the elements and remove any unnecessary fields within.
+                  for (const item of collection) {
+                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields);
+                  }
+                }
+              }
               break;
             default:
               break;
