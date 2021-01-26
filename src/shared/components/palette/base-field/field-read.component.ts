@@ -15,7 +15,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   withLabel = false;
 
   @Input()
-  formGroup: FormGroup;
+  formGroup: FormGroup = new FormGroup({});
 
   @Input()
   caseFields: CaseField[] = [];
