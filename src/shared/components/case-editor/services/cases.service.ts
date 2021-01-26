@@ -36,6 +36,7 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
 
   // Handling of Dynamic Lists in Complex Types
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
 
@@ -95,7 +96,7 @@ export class CasesService {
   }
 
   /**
-   * handleNestedDynamicListsInComplexTypes()
+   * handleNestedDynamicLists()
    * Reassigns list_item and value data to DymanicList children
    * down the tree. Server response returns data only in
    * the `value` object of parent complex type
@@ -104,29 +105,63 @@ export class CasesService {
    *
    * @param jsonResponse - {}
    */
-  private handleNestedDynamicListsInComplexTypes(jsonResponse) {
+  private handleNestedDynamicLists(jsonResponse) {
 
     if (jsonResponse.case_fields) {
       jsonResponse.case_fields.forEach(caseField => {
-        if (caseField.field_type && caseField.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
-
-          caseField.field_type.complex_fields.forEach(field => {
-
-            if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
-              const list_items = caseField.value[field.id].list_items;
-              const value = caseField.value[field.id].value;
-              field.value = {
-                list_items: list_items,
-                value: value ? value : undefined
-              };
-              field.formatted_value = field.value;
-            }
-          });
+        if (caseField.field_type) {
+          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
         }
       });
     }
 
     return jsonResponse;
+  }
+
+  private setDynamicListDefinition(caseField, caseFieldType, rootCaseField) {
+    if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
+
+      caseFieldType.complex_fields.forEach(field => {
+        try {
+          if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
+            const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
+            const list_items = dynamicListValue.list_items;
+            const value = dynamicListValue.value;
+            field.value = {
+              list_items: list_items,
+              value: value ? value : undefined
+            };
+            field.formatted_value = {
+              ...field.formatted_value,
+              ...field.value
+            };
+          } else {
+            this.setDynamicListDefinition(field, field.field_type, rootCaseField);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
+      if (caseFieldType.collection_field_type) {
+        this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
+      }
+    }
+  }
+
+  private getDynamicListValue(jsonBlock: any, key: string) {
+
+    if (jsonBlock[key]) {
+      return jsonBlock[key];
+    } else  {
+      for (const elementKey in jsonBlock) {
+        if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
+          return this.getDynamicListValue(jsonBlock[elementKey], key);
+        }
+      }
+    }
+
+    return null;
   }
 
   getEventTrigger(caseTypeId: string,
@@ -153,7 +188,7 @@ export class CasesService {
       .pipe(
         map(response => {
 
-          return this.handleNestedDynamicListsInComplexTypes(response.json());
+          return this.handleNestedDynamicLists(response.json());
         }),
         catchError(error => {
           this.errorService.setError(error);
