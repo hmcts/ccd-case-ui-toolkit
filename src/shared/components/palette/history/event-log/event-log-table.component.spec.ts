@@ -55,6 +55,7 @@ describe('EventLogTableComponent', () => {
   const $TABLE_ROWS = By.css('table>tbody>tr');
   const $TABLE_ROW_LINKS_TIMELINE = By.css('table>tbody>tr>td>div#case-timeline>a');
   const $TABLE_ROW_LINKS_STANDALONE = By.css('table>tbody>tr>td>div:not(.tooltip)>a');
+  const $TABLE_COLUMNS = By.css('table>tbody>tr>td');
 
   const COL_EVENT = 0;
   const COL_DATE = 1;
@@ -148,6 +149,23 @@ describe('EventLogTableComponent', () => {
 
       rows[1].nativeElement.click();
       fixture.detectChanges();
+
+      expect(component.onSelect.emit).toHaveBeenCalledWith(EVENTS[1]);
+    });
+
+    it('should set aria-label attribute for non selected row date column', () => {
+      let columns = de.queryAll($TABLE_COLUMNS);
+
+      expect(columns[4].nativeElement.getAttribute('aria-label')).toBe(`press enter key for event ${EVENTS[1].event_name} details`);
+    });
+
+    it('should fire onSelect event when enter key pressed on non selected date column', () => {
+      spyOn(component.onSelect, 'emit');
+      let columns = de.queryAll($TABLE_COLUMNS);
+
+      columns[4].nativeElement.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'Enter'
+      }));
 
       expect(component.onSelect.emit).toHaveBeenCalledWith(EVENTS[1]);
     });

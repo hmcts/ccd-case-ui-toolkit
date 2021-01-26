@@ -53,4 +53,12 @@ export class EventLogTableComponent implements OnInit {
   caseHistoryClicked(eventId: string) {
     this.onCaseHistory.emit(eventId);
   }
+
+  ariaLabelText(event: CaseViewEvent): string {
+    if (this.selected !== event) {
+      return `press enter key for event ${event.event_name} details`;
+    } else {
+      return '';
+    }
+  }
 }
