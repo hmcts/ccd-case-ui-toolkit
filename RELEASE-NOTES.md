@@ -2,6 +2,9 @@
 ### Version 2.68.8-wcag-status-message
 **EUI-2029** WCAG AA Status Message Fixes
 
+### Version 2.67.9-ie-textbox-expand-issue
+**EUI-2333** IE textbox expand issue
+
 ### Version 2.67.5-dynamiclist-fix-in-complex
 **EUI-2350** Dynamic Lists in Complex Types
 
