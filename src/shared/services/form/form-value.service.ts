@@ -157,6 +157,19 @@ export class FormValueService {
     return true;
   }
 
+  /**
+   * Should we clear out optional, empty, complex objects?
+   * @param clearEmpty False property if we simply want to skip it.
+   * @param data The data to assess for "emptiness".
+   * @param field The CaseField that will tell us if this is optional.
+   */
+  private static clearOptionalEmpty(clearEmpty: boolean, data: Object, field: CaseField): boolean {
+    if (clearEmpty) {
+      return FormValueService.isOptional(field) && FormValueService.isEmptyData(data);
+    }
+    return false;
+  }
+
   constructor(private fieldTypeSanitiser: FieldTypeSanitiser) {
   }
 
@@ -234,7 +247,15 @@ export class FormValueService {
     }
   }
 
-  public removeUnnecessaryFields(data: object, caseFields: CaseField[]): void {
+  /**
+   * Clear out unnecessary fields from a data object, based on an array of CaseFields.
+   * This method is recursive and will call itself if it encounters particular field types.
+   *
+   * @param data The object to be tidied up.
+   * @param caseFields The CaseFields that need to be cleaned up.
+   * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
+   */
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false): void {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
         // Retain anything that is readonly.
@@ -252,9 +273,9 @@ export class FormValueService {
               break;
             case 'Complex':
               // Recurse and remove anything unnecessary from within a complex field.
-              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields);
+              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
-              if (FormValueService.isOptional(field) && FormValueService.isEmptyData(data[field.id])) {
+              if (FormValueService.clearOptionalEmpty(clearEmpty, data[field.id], field)) {
                 delete data[field.id];
               }
               break;
@@ -268,8 +289,8 @@ export class FormValueService {
                 if (field.field_type.collection_field_type.type === 'Complex') {
                   // Iterate through the elements and remove any unnecessary fields within.
                   for (const item of collection) {
-                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields);
-                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields);
+                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, clearEmpty);
                   }
                 }
               }

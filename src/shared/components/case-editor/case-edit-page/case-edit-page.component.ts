@@ -300,11 +300,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     // Get hold of the CaseEventData and immediately tidy it up.
     const caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
-    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields);
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields, true);
 
     // Set up the event_data, also remove any unnecessary guff.
     const event_data = JSON.parse(JSON.stringify(this.editForm.value.data));
-    this.formValueService.removeUnnecessaryFields(event_data, this.currentPage.case_fields);
+    this.formValueService.removeUnnecessaryFields(event_data, this.currentPage.case_fields, false);
 
     // Now add the remaining bits and pieces to the CaseEventData.
     caseEventData.event_data = event_data;
