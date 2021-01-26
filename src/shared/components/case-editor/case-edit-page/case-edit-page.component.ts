@@ -292,18 +292,31 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private buildCaseEventData(): CaseEventData {
+    // Get hold of the fields specific to the current page that we're going to submit.
     const pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
+
+    // Sort out the dynamic lists.
     this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields, pageFormFields);
+
+    // Get hold of the CaseEventData and immediately tidy it up.
     const caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
     this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields);
+
+    // Set up the event_data, also remove any unnecessary guff.
+    const event_data = JSON.parse(JSON.stringify(this.editForm.value.data));
+    this.formValueService.removeUnnecessaryFields(event_data, this.currentPage.case_fields);
+
+    // Now add the remaining bits and pieces to the CaseEventData.
+    caseEventData.event_data = event_data;
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
 
-    // TODO: Do we need to also tidy up event_data to strip out any unnecessay content?
-    caseEventData.event_data = this.editForm.value.data;
+    // Finally, try to set up the case_reference.
     if (this.caseEdit.caseDetails) {
       caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
     }
+
+    // Return the now hopefully sane CaseEventData.
     return caseEventData;
   }
 
