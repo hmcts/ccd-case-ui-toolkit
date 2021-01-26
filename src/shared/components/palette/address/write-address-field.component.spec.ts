@@ -1,17 +1,16 @@
 import { Component, DebugElement, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteAddressFieldComponent } from './write-address-field.component';
-import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AddressesService } from '../../../services/addresses/addresses.service';
-import { AddressModel } from '../../../domain/addresses/address.model';
 import { of } from 'rxjs';
-import { FieldLabelPipe } from '../utils/field-label.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { createFieldType } from '../../../fixture';
+
+import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { FocusElementModule } from '../../../directives/focus-element';
+import { AddressModel, CaseField } from '../../../domain';
+import { createFieldType } from '../../../fixture';
+import { AddressesService } from '../../../services/addresses/addresses.service';
+import { FieldLabelPipe, IsCompoundPipe } from '../utils';
+import { WriteAddressFieldComponent } from './write-address-field.component';
 
 describe('WriteAddressFieldComponent', () => {
 
@@ -52,6 +51,9 @@ describe('WriteAddressFieldComponent', () => {
 
     @Input()
     caseField: CaseField;
+
+    @Input()
+    parent?: FormGroup | FormArray;
 
     @Input()
     idPrefix = '';
