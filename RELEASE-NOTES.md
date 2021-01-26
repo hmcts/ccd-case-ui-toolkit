@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.68.8-prerelease-conditional-show-perf
+**EUI-3151** form validation and label fixes
+
 ### Version 2.68.7-prerelease-conditional-show-perf
 **EUI-3151** Changes to make validation work properly and fix all the tests
 
