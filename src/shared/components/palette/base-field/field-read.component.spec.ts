@@ -58,7 +58,7 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
-  let formGroup: FormGroup;
+  let formGroup: FormGroup = new FormGroup({});
   let caseFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
