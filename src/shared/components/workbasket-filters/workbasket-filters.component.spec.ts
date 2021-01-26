@@ -239,12 +239,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture.detectChanges();
         });
     }));
-    // it('should remove localStorage once reset button is clicked', async(() => {
-    //   windowMockService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
-    //   windowMockService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-    //   component.reset();
-    //   expect(windowMockService.removeLocalStorage).toHaveBeenCalled();
-    // }));
   });
   describe('with defaults', () => {
     beforeEach(async(() => {
@@ -501,7 +495,6 @@ describe('WorkbasketFiltersComponent', () => {
         queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
       });
       expect(component.selected.formGroup).toEqual(null);
-      // expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
     }));
 
     it('should have metadata fields added when apply button is clicked', async(() => {
@@ -717,7 +710,6 @@ describe('WorkbasketFiltersComponent', () => {
       let selector = de.query(By.css('#wb-case-state'));
       component.defaults.state_id = CRUD_FILTERED_CASE_TYPES[0].states[0].id;
       expect(selector.nativeElement.selectedIndex).toEqual(0);
-      // expect(component.selected.caseState.id).toEqual(CRUD_FILTERED_CASE_TYPES[0].states[0].id);
       expect(component.selected.caseState).toEqual(null);
     }));
   });
