@@ -90,7 +90,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.alertService.setPreserveAlerts(!this.initialised);
     }
     if (Object.keys(this.formGroup.controls).length === 0) {
-      this.selected.formGroup  = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
+      this.selected.formGroup = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
     } else {
       this.selected.formGroup = this.formGroup;
     }
