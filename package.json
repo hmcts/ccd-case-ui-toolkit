@@ -1,6 +1,7 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.67.6-task-event-completion",
+  "version": "2.67.9-ie-textbox-expand-issue",
+
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
