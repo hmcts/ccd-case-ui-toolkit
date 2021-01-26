@@ -308,7 +308,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
      * The commented out line below was made by Adnan and appeared as a merge conflict.
      * I think we're doing a good cleanup now and I'm pretty sure we want the full
      * editForm.value.data without stripping out what's on the current page, based on
-     * the behaviour I'v seen. To be reviewed, though.
+     * the behaviour I've seen. To be reviewed, though.
      */
     // caseEventData.event_data = caseEventData.data || this.editForm.value.data;
 
