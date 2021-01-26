@@ -83,9 +83,6 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.caseState) {
       queryParams[WorkbasketFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
     }
-    if (init) {
-      this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
-    }
     // without explicitly preserving alerts any message on the page
     // would be cleared out because of this initial navigation.
     // The above is only true if no alerts were set prior to loading case list page.
@@ -101,6 +98,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
     if (init) {
+      this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
       if (Object.keys(this.formGroup.controls).length > 0) {
         this.windowService.setLocalStorage(FORM_GROUP_VAL_LOC_STORAGE, JSON.stringify(this.formGroup.value));
       }
@@ -115,7 +113,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     setTimeout (() => {
       this.resetFieldsWhenNoDefaults();
       this.onReset.emit(true);
-    }, 1000);
+    }, 500);
   }
 
   getMetadataFields(): string[] {
@@ -130,11 +128,8 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
       this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0 ? this.selected.jurisdiction.caseTypes : null;
-      this.selected.caseType = this.workbasketDefaults ?
-        (this.selectedJurisdictionCaseTypes ? this.selectedJurisdictionCaseTypes[0] : null) : null;
-      // this.selected.caseState = this.selected.caseType ? this.selected.caseType.states[0] : null;
+      this.selected.caseType = this.workbasketDefaults ? (this.selectedJurisdictionCaseTypes ? this.selectedJurisdictionCaseTypes[0] : null) : null;
       this.selected.caseState = null;
-      // this.resetCaseState();
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
         this.onCaseTypeIdChange();
@@ -148,9 +143,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   onCaseTypeIdChange(): void {
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
-      // this.selected.caseState = this.selectedCaseTypeStates[0];
       this.selected.caseState = null;
-      // this.resetCaseState();
       this.formGroup = new FormGroup({});
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
