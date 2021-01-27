@@ -35,7 +35,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   ngOnInit(): void {
     // Are we inside of a collection? If so, the parent is the complexGroup we want.
-    if (this.isWithinCollection()) {
+    if (this.isTopLevelWithinCollection()) {
       this.complexGroup = this.parent as FormGroup;
     } else {
       this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
@@ -84,11 +84,17 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     return this.caseField.field_type.id === 'AddressUK';
   }
 
-  private isWithinCollection(): boolean {
+  private isTopLevelWithinCollection(): boolean {
     if (this.parent) {
-      const parentComponent = this.parent['component'] as AbstractFormFieldComponent;
-      if (parentComponent && parentComponent.caseField && parentComponent.caseField.field_type) {
-        return parentComponent.caseField.field_type.type === 'Collection';
+      const parentCaseField: CaseField = this.parent['caseField'];
+      if (parentCaseField && parentCaseField.id === this.caseField.id) {
+        const parentComponent = this.parent['component'] as AbstractFormFieldComponent;
+        if (parentComponent) {
+          const parentComponentCaseField = parentComponent.caseField;
+          if (parentComponentCaseField.field_type) {
+            return parentComponentCaseField.field_type.type === 'Collection';
+          }
+        }
       }
     }
     return false;
