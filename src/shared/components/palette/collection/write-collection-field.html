@@ -13,10 +13,10 @@
 
     <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
 
-      <div class="form-group" *ngFor="let item of caseField.value; let i = index" #collectionItem>
+      <div class="form-group" *ngFor="let item of collItems; let i = index" #collectionItem>
         <div class="collection-title">
           <div class="float-left">
-            <label [for]="buildIdPrefix(i) + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
+            <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
           </div>
           <div class="float-right">
             <button class="button button-secondary" type="button" (click)="openModal(i)"
@@ -24,11 +24,11 @@
                     attr.aria-label="Remove {{ itemLabel(i) }}">Remove</button>
           </div>
         </div>
-        <ccd-field-write [caseField]="buildCaseField(item, i)"
+        <ccd-field-write [caseField]="item.caseField"
                          [caseFields]="caseFields"
                          [formGroup]="formGroup"
-                         [parent]="formArray"
-                         [idPrefix]="buildIdPrefix(i)"
+                         [parent]="item.container"
+                         [idPrefix]="item.prefix"
                          [hidden]="caseField.hidden">
         </ccd-field-write>
       </div>

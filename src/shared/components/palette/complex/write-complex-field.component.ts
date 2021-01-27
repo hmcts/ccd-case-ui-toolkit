@@ -5,6 +5,7 @@ import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils, FormValidatorsService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
 @Component({
@@ -33,8 +34,13 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnInit(): void {
+    // Are we inside of a collection? If so, the parent is the complexGroup we want.
+    if (this.isTopLevelWithinCollection()) {
+      this.complexGroup = this.parent as FormGroup;
+    } else {
+      this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
+    }
     // Add validators for the complex field.
-    this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);
   }
 
@@ -76,5 +82,21 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   private isAddressUK(): boolean {
     return this.caseField.field_type.id === 'AddressUK';
+  }
+
+  private isTopLevelWithinCollection(): boolean {
+    if (this.parent) {
+      const parentCaseField: CaseField = this.parent['caseField'];
+      if (parentCaseField && parentCaseField.id === this.caseField.id) {
+        const parentComponent = this.parent['component'] as AbstractFormFieldComponent;
+        if (parentComponent) {
+          const parentComponentCaseField = parentComponent.caseField;
+          if (parentComponentCaseField.field_type) {
+            return parentComponentCaseField.field_type.type === 'Collection';
+          }
+        }
+      }
+    }
+    return false;
   }
 }
