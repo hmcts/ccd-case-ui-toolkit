@@ -19,6 +19,7 @@ type CollectionItem = {
   item: any;
   prefix: string;
   index: number;
+  container: FormGroup;
 }
 
 @Component({
@@ -60,10 +61,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value.forEach((val, ix ) => {
       const pre: string = (this.buildIdPrefix(ix));
       const cf = this.buildCaseField(val, ix);
+      const container = this.formArray.at(ix).get('value') as FormGroup;
       if (this.collItems.length <= ix) {
         this.collItems.length = ix + 1;
       }
-      this.collItems[ix] = {caseField: cf, item: val, prefix: pre, index: ix};
+      this.collItems[ix] = {
+        caseField: cf,
+        item: val,
+        prefix: pre,
+        index: ix,
+        container
+      };
     });
   }
 
@@ -167,7 +175,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     let lastIndex = this.caseField.value.length - 1;
     const cf: CaseField = this.buildCaseField(item, lastIndex);
     const pre = this.buildIdPrefix(lastIndex);
-    this.collItems.push({caseField: cf, item: item, index: lastIndex, prefix: pre});
+    const container = this.formArray.at(lastIndex).get('value') as FormGroup;
+    this.collItems.push({caseField: cf, item: item, index: lastIndex, prefix: pre, container});
 
     // Timeout is required for the collection item to be rendered before it can be scrolled to or focused.
     if (doScroll) {
