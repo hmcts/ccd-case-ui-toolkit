@@ -14,6 +14,13 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
+type CollectionItem = {
+  caseField: CaseField;
+  item: any;
+  prefix: string;
+  index: number;
+}
+
 @Component({
   selector: 'ccd-write-collection-field',
   templateUrl: './write-collection-field.html',
@@ -33,6 +40,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
+  private collItems: CollectionItem[] = [];
 
   constructor(private dialog: MatDialog,
               private scrollToService: ScrollToService,
@@ -47,9 +55,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
-
     this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
     this.formArray['caseField'] = this.caseField;
+    this.caseField.value.forEach((val, ix ) => {
+      const pre: string = (this.buildIdPrefix(ix));
+      const cf = this.buildCaseField(val, ix);
+      this.collItems.push ({caseField: cf, item: val, prefix: pre, index: ix})
+    });
   }
 
   ngOnDestroy() {
@@ -73,7 +85,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
      *   4, 5, 6, etc - the same as 3.
      */
     let group: FormGroup;
-    if (index < this.formArray.length) {
+    if (this.formArray && (index < this.formArray.length)) {
       group = this.formArray.at(index) as FormGroup;
     } else {
       group = new FormGroup({});
@@ -145,10 +157,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    this.caseField.value.push({ value: null });
+    const item = { value: null }
+    this.caseField.value.push(item);
     // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
     let lastIndex = this.caseField.value.length - 1;
+    const cf: CaseField = this.buildCaseField(item, lastIndex);
+    const pre = this.buildIdPrefix(lastIndex);
+    this.collItems.push({caseField: cf, item: item, index: lastIndex, prefix: pre});
 
     // Timeout is required for the collection item to be rendered before it can be scrolled to or focused.
     if (doScroll) {
@@ -174,6 +190,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   removeItem(index: number): void {
     this.caseField.value.splice(index, 1);
+    this.collItems.splice(index, 1);
     this.formArray.removeAt(index);
   }
 
