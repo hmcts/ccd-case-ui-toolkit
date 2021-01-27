@@ -60,7 +60,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value.forEach((val, ix ) => {
       const pre: string = (this.buildIdPrefix(ix));
       const cf = this.buildCaseField(val, ix);
-      this.collItems.push ({caseField: cf, item: val, prefix: pre, index: ix})
+      if (this.collItems.length <= ix) {
+        this.collItems.length = ix + 1;
+      }
+      this.collItems[ix] = {caseField: cf, item: val, prefix: pre, index: ix};
     });
   }
 
