@@ -47,7 +47,6 @@ export class WorkAllocationService {
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
-          this.alertService.clear();
           this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
           return throwError(error);
         })

@@ -8,16 +8,37 @@ import { Alert } from '../../domain/alert/alert.model';
 @Injectable()
 export class AlertService {
 
-  private observer: Observer<Alert>;
+  private alertObserver: Observer<Alert>;
+  private successObserver: Observer<Alert>;
+  private errorObserver: Observer<Alert>;
+  private warningObserver: Observer<Alert>;
 
   alerts: ConnectableObservable<Alert>;
+  successes: ConnectableObservable<Alert>;
+  errors: ConnectableObservable<Alert>;
+  warnings: ConnectableObservable<Alert>;
   private preserveAlerts = false;
 
   constructor(private router: Router) {
     this.alerts = Observable
-      .create(observer => this.observer = observer)
+      .create(observer => this.alertObserver = observer)
       .publish();
     this.alerts.connect();
+
+    this.successes = Observable
+      .create(observer => this.successObserver = observer)
+      .publish();
+    this.successes.connect();
+
+    this.errors = Observable
+      .create(observer => this.errorObserver = observer)
+      .publish();
+    this.errors.connect();
+
+    this.warnings = Observable
+      .create(observer => this.warningObserver = observer)
+      .publish();
+    this.warnings.connect();
 
     this.router
       .events
@@ -31,30 +52,36 @@ export class AlertService {
       });
   }
 
-  push(alert: Alert): void {
-    this.observer.next(alert);
-  }
+/*   push(alert: Alert): void {
+    this.observer.next([alert, {
+      level: 'warning',
+      message: 'ababababab'
+    }]);
+  } */
 
   clear(): void {
-    this.observer.next(null);
+    this.alertObserver.next(null);
+    this.successObserver.next(null);
+    this.errorObserver.next(null);
+    this.warningObserver.next(null);
   }
 
   error(message: string): void {
-    this.push({
+    this.errorObserver.next({
       level: 'error',
       message: message
     });
   }
 
   warning(message: string): void {
-    this.push({
+    this.warningObserver.next({
       level: 'warning',
       message: message
     });
   }
 
   success(message: string): void {
-    this.push({
+    this.successObserver.next({
       level: 'success',
       message: message
     });
@@ -69,9 +96,9 @@ export class AlertService {
   }
 
   message(message: string): void {
-    this.push({
+    this.alertObserver.next({
       level: 'message',
       message: message
-    });
+    })
   }
 }
