@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+
+### Version 2.68.9-prerelease-conditional-show-perf
+**EUI-3151** dynamic lists and nested complex in collection fixes
+
 ### Version 2.68.8-prerelease-conditional-show-perf
 **EUI-3151** form validation and label fixes
 
