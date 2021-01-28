@@ -19,10 +19,10 @@ export class FieldsPurger {
   }
 
   private clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger) {
-    let currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
+    const currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
     wizard.pages.forEach(wp => {
       if (this.hasShowConditionPage(wp, currentEventState)) {
-        let condition = new ShowCondition(wp.show_condition);
+        const condition = new ShowCondition(wp.show_condition);
         if (this.isHidden(condition, currentEventState)) {
           this.resetPage(form, wp);
         }
@@ -31,12 +31,12 @@ export class FieldsPurger {
   }
 
   private clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger) {
-    let formFields = form.getRawValue();
-    let currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
+    const formFields = form.getRawValue();
+    const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
-      let case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
+      const case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
       if (this.hasShowConditionField(case_field, formFields)) {
-        let condition = new ShowCondition(case_field.show_condition);
+        const condition = new ShowCondition(case_field.show_condition);
         if (this.isHidden(condition, formFields.data) && !(this.isReadonly(case_field))) {
           this.resetField(form, case_field);
         }
@@ -88,7 +88,7 @@ export class FieldsPurger {
 
   private resetPage(form, wizardPage: WizardPage) {
     wizardPage.wizard_page_fields.forEach(wpf => {
-      let case_field = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
+      const case_field = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
       this.resetField(form, case_field);
     });
   }

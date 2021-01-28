@@ -14,12 +14,12 @@ export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent
     and has to be built manually.
   */
   ngOnInit(): void {
-    let orderSummaryGroup: FormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
-    let paymentReference: FormControl = new FormControl(this.caseField.value.PaymentReference);
+    const orderSummaryGroup: FormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
+    const paymentReference: FormControl = new FormControl(this.caseField.value.PaymentReference);
     orderSummaryGroup.addControl('PaymentReference', paymentReference);
-    let paymentTotal: FormControl = new FormControl(this.caseField.value.PaymentTotal);
+    const paymentTotal: FormControl = new FormControl(this.caseField.value.PaymentTotal);
     orderSummaryGroup.addControl('PaymentTotal', paymentTotal);
-    let feesArray: FormArray = new FormArray([]);
+    const feesArray: FormArray = new FormArray([]);
     this.caseField.value.Fees.forEach((fee) => {
       feesArray.push(this.getFeeValue(fee.value));
     });
@@ -27,12 +27,12 @@ export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent
   }
 
   private getFeeValue(feeValue): FormGroup {
-    let feeGroup = new FormGroup({});
+    const feeGroup = new FormGroup({});
     feeGroup.addControl('FeeCode', new FormControl(feeValue.FeeCode));
     feeGroup.addControl('FeeAmount', new FormControl(feeValue.FeeAmount));
     feeGroup.addControl('FeeDescription', new FormControl(feeValue.FeeDescription));
     feeGroup.addControl('FeeVersion', new FormControl(feeValue.FeeVersion));
-    let feeValueGroup = new FormGroup({});
+    const feeValueGroup = new FormGroup({});
     feeValueGroup.addControl('value', feeGroup);
     return feeValueGroup;
   }

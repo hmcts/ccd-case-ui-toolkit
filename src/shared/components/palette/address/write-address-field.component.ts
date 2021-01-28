@@ -1,14 +1,13 @@
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
-import { AddressModel } from '../../../domain/addresses/address.model';
-import { AddressOption } from './address-option.model';
-import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
+
 import { FocusElementDirective } from '../../../directives/focus-element';
-import { CaseField } from '../../../domain';
-import { plainToClassFromExist } from 'class-transformer';
+import { AddressModel } from '../../../domain/addresses/address.model';
+import { AddressesService } from '../../../services/addresses/addresses.service';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { AddressOption } from './address-option.model';
 
 @Component({
   selector: 'ccd-write-address-field',
@@ -126,7 +125,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
-    let change = changes['caseField'];
+    const change = changes['caseField'];
     if (change) {
       this.setFormValue();
     }

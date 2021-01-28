@@ -37,7 +37,6 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.formGroup) {
-      console.log ('**** no form group in conditional-show-form directive');
       this.formGroup = new FormGroup({});
     }
     this.evalAllShowHideConditions();
@@ -132,7 +131,7 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
   }
 
   private getCurrentPagesReadOnlyAndFormFieldValues() {
-    let formFields = this.getFormFieldsValuesIncludingDisabled();
+    const formFields = this.getFormFieldsValuesIncludingDisabled();
     this.allFieldValues = this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
     return this.allFieldValues;
   }

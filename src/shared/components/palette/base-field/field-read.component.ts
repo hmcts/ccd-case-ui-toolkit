@@ -30,9 +30,9 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   ngOnInit(): void {
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
-      let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
-      let injector = Injector.create([], this.fieldContainer.parentInjector);
-      let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+      const componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
+      const injector = Injector.create([], this.fieldContainer.parentInjector);
+      const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
       // Provide component @Inputs
       // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist

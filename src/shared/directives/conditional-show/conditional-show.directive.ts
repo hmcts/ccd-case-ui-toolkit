@@ -188,7 +188,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
       }
     } else if (aControl instanceof FormControl) {  // FormControl
       if (aControl.invalid) {
-        console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
+        // console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
         this.registry.refresh();
       }
     }

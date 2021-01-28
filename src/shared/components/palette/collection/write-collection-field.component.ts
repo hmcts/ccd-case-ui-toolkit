@@ -138,7 +138,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
 
     // Now set up the CaseField and validation.
-    let cf: CaseField = this.newCaseField(index, item);
+    const cf: CaseField = this.newCaseField(index, item);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
     return cf;
@@ -172,7 +172,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value.push(item);
     // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
-    let lastIndex = this.caseField.value.length - 1;
+    const lastIndex = this.caseField.value.length - 1;
     const cf: CaseField = this.buildCaseField(item, lastIndex);
     const pre = this.buildIdPrefix(lastIndex);
     const container = this.formArray.at(lastIndex).get('value') as FormGroup;
@@ -207,7 +207,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   itemLabel(index: number) {
-    let displayIndex = index + 1;
+    const displayIndex = index + 1;
     return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
   }
 
