@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.67.9-ie-textbox-expand-issue",
+  "version": "2.67.10-feature-toggle-work-allocation",
 
   "engines": {
     "yarn": "^1.12.3",
