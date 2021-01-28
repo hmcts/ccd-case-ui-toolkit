@@ -15,11 +15,10 @@ enum AlertMessageType {
 })
 export class AlertComponent {
 
-  
   public static readonly TYPE_WARNING = 'warning';
   public static readonly TYPE_CONFIRMATION = 'confirmation';
   public static readonly TYPE_SUCCESS = 'success';
-  public static readonly TYPE_ERROR = "error";
+  public static readonly TYPE_ERROR = 'error';
 
   @Input()
   public type: AlertMessageType;

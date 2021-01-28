@@ -21,10 +21,10 @@ describe('AlertService', () => {
     message: 'This is a success with a warning'
   };
 
-  const ERROR_MESSAGE: string = 'This is an error'
-  const SUCCESS_MESSAGE: string = 'This is a success';
-  const WARNING_MESSAGE: string = 'This is a warning';
-  const A_MESSAGE: string = 'This is a success with a warning';
+  const ERROR_MESSAGE = 'This is an error'
+  const SUCCESS_MESSAGE = 'This is a success';
+  const WARNING_MESSAGE = 'This is a warning';
+  const A_MESSAGE = 'This is a success with a warning';
 
   let routerObserver;
   let router;
@@ -46,6 +46,7 @@ describe('AlertService', () => {
   });
 
   it('should publish alert to observable when respective methods used', done => {
+    // set up all observables with expected results
     alertService
       .alerts
       .subscribe(alert => {
@@ -74,6 +75,7 @@ describe('AlertService', () => {
         done();
       });
 
+    // set the respective methods
     alertService.message(A_MESSAGE);
     alertService.error(ERROR_MESSAGE);
     alertService.success(SUCCESS_MESSAGE);
@@ -81,6 +83,7 @@ describe('AlertService', () => {
   });
 
   it('should publish null to observable when clear method used', done => {
+    // set up all observables with expected null values
     alertService
       .alerts
       .subscribe(alert => {
@@ -109,6 +112,7 @@ describe('AlertService', () => {
         done();
       });
 
+    // all observables cleared via this method
     alertService.clear();
   });
 
@@ -146,11 +150,13 @@ describe('AlertService', () => {
   });
 
    it('should be a hot alert observable', done => {
+    // set an original message
     alertService.message(WARNING_MESSAGE);
     alertService.error(WARNING_MESSAGE);
     alertService.success(WARNING_MESSAGE);
     alertService.warning(A_MESSAGE);
 
+    // change the messages on each observable
     alertService
       .alerts
       .subscribe(alert => {
@@ -179,6 +185,7 @@ describe('AlertService', () => {
         done();
       });
 
+    // set the new message
     alertService.message(A_MESSAGE);
     alertService.error(ERROR_MESSAGE);
     alertService.success(SUCCESS_MESSAGE);
