@@ -60,7 +60,7 @@ describe('CasesService', () => {
   let wizardPageFieldToCaseFieldMapper: any;
   let casesService: CasesService;
   let workAllocationService: WorkAllocationService;
-  let alertService: any; 
+  let alertService: any;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl']);
