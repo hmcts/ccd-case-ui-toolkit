@@ -1,5 +1,9 @@
 ## RELEASE NOTES
-### 2.67.10-feature-toggle-work-allocation
+
+### Version 2.67.11-alert-service-message-improvements
+**EUI-3232** CCD UI toolkit Alert service message improvements
+
+### Version 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
 ### Version 2.67.9-ie-textbox-expand-issue

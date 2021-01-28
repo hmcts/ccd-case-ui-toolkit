@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.67.10-feature-toggle-work-allocation",
+  "version": "2.67.11-alert-service-message-improvements",
 
   "engines": {
     "yarn": "^1.12.3",
