@@ -1,6 +1,5 @@
 ## RELEASE NOTES
 
-
 ### Version 2.68.9-prerelease-conditional-show-perf
 **EUI-3151** dynamic lists and nested complex in collection fixes
 
@@ -27,6 +26,12 @@
 
 ### Version 2.68.0-prerelease-conditional-show-perf
 **EUI-3055** Better performance in edit forms through new show hide implementation
+
+### 2.67.10-feature-toggle-work-allocation
+**Feature Toggle Work Allocation** Hot Fix
+
+### Version 2.67.9-ie-textbox-expand-issue
+**EUI-2333** IE textbox expand issue
 
 ### VVersion 2.67.6-task-event-completion
 **EUI-2986** Task Event completion
