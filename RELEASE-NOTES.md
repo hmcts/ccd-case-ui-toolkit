@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### 2.67.10-feature-toggle-work-allocation
+**Feature Toggle Work Allocation** Hot Fix
+
 ### Version 2.67.9-ie-textbox-expand-issue
 **EUI-2333** IE textbox expand issue
 
