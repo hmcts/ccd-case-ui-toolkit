@@ -111,7 +111,8 @@ describe('WorkAllocationService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-          expect(alertService.clear).toHaveBeenCalled();
+          // no longer expecting previous values to have been called
+          // expect(alertService.clear).toHaveBeenCalled();
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });

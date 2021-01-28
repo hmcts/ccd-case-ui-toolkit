@@ -4,18 +4,27 @@ import { NavigationEnd, NavigationStart } from '@angular/router';
 
 describe('AlertService', () => {
 
-  const ALERT: Alert = {
+  const ERROR_ALERT: Alert = {
     level: 'error',
     message: 'This is an error'
   };
-  const OTHER_ALERT: Alert = {
+  const SUCCESS_ALERT: Alert = {
     level: 'success',
     message: 'This is a success'
+  };
+  const WARNING_ALERT: Alert = {
+    level: 'warning',
+    message: 'This is a warning'
   };
   const MESSAGE_ALERT: Alert = {
     level: 'message',
     message: 'This is a success with a warning'
   };
+
+  const ERROR_MESSAGE: string = 'This is an error'
+  const SUCCESS_MESSAGE: string = 'This is a success';
+  const WARNING_MESSAGE: string = 'This is a warning';
+  const A_MESSAGE: string = 'This is a success with a warning';
 
   let routerObserver;
   let router;
@@ -36,20 +45,65 @@ describe('AlertService', () => {
     expect(alertService.alerts.subscribe).toBeTruthy();
   });
 
-  it('should publish alert to observable when push method used', done => {
+  it('should publish alert to observable when respective methods used', done => {
     alertService
       .alerts
       .subscribe(alert => {
-        expect(alert).toEqual(ALERT);
+        expect(alert).toEqual(MESSAGE_ALERT);
         done();
       });
 
-    alertService.push(ALERT);
+    alertService
+      .errors
+      .subscribe(alert => {
+        expect(alert).toEqual(ERROR_ALERT);
+        done();
+      });
+
+    alertService
+      .successes
+      .subscribe(alert => {
+        expect(alert).toEqual(SUCCESS_ALERT);
+        done();
+      });
+
+    alertService
+      .warnings
+      .subscribe(alert => {
+        expect(alert).toEqual(WARNING_ALERT);
+        done();
+      });
+
+    alertService.message(A_MESSAGE);
+    alertService.error(ERROR_MESSAGE);
+    alertService.success(SUCCESS_MESSAGE);
+    alertService.warning(WARNING_MESSAGE);
   });
 
   it('should publish null to observable when clear method used', done => {
     alertService
       .alerts
+      .subscribe(alert => {
+        expect(alert).toBeFalsy();
+        done();
+      });
+
+    alertService
+      .errors
+      .subscribe(alert => {
+        expect(alert).toBeFalsy();
+        done();
+      });
+
+    alertService
+      .successes
+      .subscribe(alert => {
+        expect(alert).toBeFalsy();
+        done();
+      });
+
+    alertService
+      .warnings
       .subscribe(alert => {
         expect(alert).toBeFalsy();
         done();
@@ -91,40 +145,43 @@ describe('AlertService', () => {
     expect(alertService.clear).not.toHaveBeenCalled();
   });
 
-  it('should be a hot alert observable', done => {
-    alertService.push(OTHER_ALERT);
+   it('should be a hot alert observable', done => {
+    alertService.message(WARNING_MESSAGE);
+    alertService.error(WARNING_MESSAGE);
+    alertService.success(WARNING_MESSAGE);
+    alertService.warning(A_MESSAGE);
 
     alertService
       .alerts
       .subscribe(alert => {
-        expect(alert).toEqual(ALERT);
+        expect(alert).toEqual(MESSAGE_ALERT);
         done();
       });
 
-    alertService.push(ALERT);
-  });
+      alertService
+      .errors
+      .subscribe(alert => {
+        expect(alert).toEqual(ERROR_ALERT);
+        done();
+      });
 
-  it('should call `push` with error alert when using `error` method', () => {
-    spyOn(alertService, 'push');
+    alertService
+      .successes
+      .subscribe(alert => {
+        expect(alert).toEqual(SUCCESS_ALERT);
+        done();
+      });
 
-    alertService.error(ALERT.message);
+    alertService
+      .warnings
+      .subscribe(alert => {
+        expect(alert).toEqual(WARNING_ALERT);
+        done();
+      });
 
-    expect(alertService.push).toHaveBeenCalledWith(ALERT);
-  });
-
-  it('should call `push` with success alert when using `success` method', () => {
-    spyOn(alertService, 'push');
-
-    alertService.success(OTHER_ALERT.message);
-
-    expect(alertService.push).toHaveBeenCalledWith(OTHER_ALERT);
-  });
-
-  it('should call `push` with warning alert when using `warn` method', () => {
-    spyOn(alertService, 'push');
-
-    alertService.message(MESSAGE_ALERT.message);
-
-    expect(alertService.push).toHaveBeenCalledWith(MESSAGE_ALERT);
+    alertService.message(A_MESSAGE);
+    alertService.error(ERROR_MESSAGE);
+    alertService.success(SUCCESS_MESSAGE);
+    alertService.warning(WARNING_MESSAGE);
   });
 });
