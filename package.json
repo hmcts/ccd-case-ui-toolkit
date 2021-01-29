@@ -49,6 +49,7 @@
   "dependencies": {
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
+    "@hmcts/ccpay-web-component": "^2.0.12",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "govuk-elements-sass": "^3.1.2",
@@ -88,7 +89,6 @@
     "@angular/router": "~7.0.3",
     "@angular/upgrade": "~7.0.3",
     "@compodoc/compodoc": "^1.1.7",
-    "@hmcts/ccpay-web-component": "^2.0.12",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
