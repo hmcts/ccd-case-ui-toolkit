@@ -8,6 +8,24 @@ import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
+interface UserInfo {
+  id: string,
+  forename: string,
+  surname: string,
+  email: string,
+  active: boolean,
+  roles: string []
+}
+
+interface UserDetails {
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
+  canShareCases: boolean;
+  userInfo: UserInfo
+}
+
 @Injectable()
 export class WorkAllocationService {
 
@@ -43,14 +61,6 @@ export class WorkAllocationService {
       );
   }
 
-  public getUserRoles(): string[] {
-    this.http.get(this.appConfig.getWorkAllocationApiUrl()).subscribe((response: any) => {
-      const userInfo = response.userInfo;
-      return userInfo.roles;
-    });
-    return [];
-  }
-
   /**
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
@@ -61,23 +71,27 @@ export class WorkAllocationService {
       .post(url, {})
       .pipe(
         catchError(error => {
-          return this.handleTaskCompletionError(error);
+          this.errorService.setError(error);
+          this.alertService.clear();
 
+          this.http.get(this.appConfig.getWorkAllocationApiUrl()).subscribe((response) => {
+            this.handleTaskCompletionError(response);
+          });
+
+          return throwError(error);
         })
       );
   }
 
-  public handleTaskCompletionError(error: HttpError): Observable<any> {
-    this.errorService.setError(error);
-    this.alertService.clear();
-    if (this.userIsCaseworker()) {
+  public handleTaskCompletionError(response: any): void {
+    const userDetails = response.json() as UserDetails;
+    if(this.userIsCaseworker(userDetails.userInfo.roles)) {
       this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
     }
-    return throwError(error);
   }
 
-public userIsCaseworker(): boolean {
-  return this.getUserRoles().some(this.roleIsCaseworker);
+public userIsCaseworker(roles: string []): boolean {
+  return roles.includes('caseworker-ia-caseofficer') || roles.includes('caseworker-ia-admofficer');
 }
 
   /**
