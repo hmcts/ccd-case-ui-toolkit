@@ -3,7 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { TaskSearchParameter, TaskSearchParameters } from '../../../domain';
+import { HttpError, TaskSearchParameter, TaskSearchParameters } from '../../../domain';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
@@ -17,6 +17,13 @@ export class WorkAllocationService {
     private readonly errorService: HttpErrorService,
     private readonly alertService: AlertService
   ) {
+  }
+
+  public static IACCaseworkerRoles = ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
+  // public userRoles = this.getUserRoles();
+
+  public roleIsCaseworker(role) {
+    return WorkAllocationService.IACCaseworkerRoles.includes(role);
   }
 
   /**
@@ -36,6 +43,14 @@ export class WorkAllocationService {
       );
   }
 
+  public getUserRoles(): string[] {
+    this.http.get(this.appConfig.getWorkAllocationApiUrl()).subscribe((response: any) => {
+      const userInfo = response.userInfo;
+      return userInfo.roles;
+    });
+    return [];
+  }
+
   /**
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
@@ -46,13 +61,24 @@ export class WorkAllocationService {
       .post(url, {})
       .pipe(
         catchError(error => {
-          this.errorService.setError(error);
-          this.alertService.clear();
-          this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
-          return throwError(error);
+          return this.handleTaskCompletionError(error);
+
         })
       );
   }
+
+  public handleTaskCompletionError(error: HttpError): Observable<any> {
+    this.errorService.setError(error);
+    this.alertService.clear();
+    if (this.userIsCaseworker()) {
+      this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
+    }
+    return throwError(error);
+  }
+
+public userIsCaseworker(): boolean {
+  return this.getUserRoles().some(this.roleIsCaseworker);
+}
 
   /**
    * Look for open tasks for a case and event combination. There are 5 possible scenarios:
@@ -68,7 +94,7 @@ export class WorkAllocationService {
     const parameters: TaskSearchParameter[] = [{
       ccdId,
       eventId,
-      state: [ 'Open' ] // Need to know which are the "completeable" statuses.
+      state: ['Open'] // Need to know which are the "completeable" statuses.
     }];
     return this.searchTasks({ parameters })
       .pipe(
