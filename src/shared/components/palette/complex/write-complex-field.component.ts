@@ -112,7 +112,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
       if (field && field.id) {
         const id = field.id;
         if (!(field instanceof CaseField)) {
-          return plainToClassFromExist(new CaseField(), field);
+          return this.buildField(plainToClassFromExist(new CaseField(), field));
         }
       }
       return this.buildField(field);

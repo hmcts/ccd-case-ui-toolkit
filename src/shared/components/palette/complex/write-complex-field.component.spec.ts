@@ -233,17 +233,15 @@ describe('WriteComplexFieldComponent', () => {
       expect(labels[LINE_2].componentInstance.caseField.label).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
     });
 
-    // TODO: Add this back in after figuring out why it's not working.
-    xit('should return control if it exists in the formGroup', () => {
+    it('should return control if it exists in the formGroup', () => {
       // component.caseField is CASE_FIELD to start with.
       // Try re-building the first field and ensure it's appropriately handled.
       const FIRST_FIELD = CASE_FIELD.field_type.complex_fields[0];
       // Spy on the addControl method.
       const addControlSpy = spyOn(component.complexGroup, 'addControl').and.callThrough();
-      // const addControlSpy = createSpyObj('component.complexGroup', ['addControl']).and.callThrough();
       const firstFieldControl = component.complexGroup.get(FIRST_FIELD.id);
       expect(firstFieldControl).toBeDefined();
-      expect(firstFieldControl['caseField']).toEqual(FIRST_FIELD);
+      expect(firstFieldControl['caseField']).toEqual(plainToClassFromExist(new CaseField(), FIRST_FIELD));
       const result = component.buildField(FIRST_FIELD);
       expect(result).toEqual(FIRST_FIELD);
       // Make sure we didn't call the addControl method.
@@ -251,7 +249,7 @@ describe('WriteComplexFieldComponent', () => {
       // And also make sure we still have the control in place.
       const firstFieldControlAgain = component.complexGroup.get(FIRST_FIELD.id);
       expect(firstFieldControlAgain).toBe(firstFieldControl);
-      expect(firstFieldControlAgain['caseField']).toEqual(FIRST_FIELD);
+      expect(firstFieldControlAgain['caseField']).toEqual(firstFieldControl['caseField']);
     });
 
     // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
