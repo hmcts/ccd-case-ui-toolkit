@@ -61,4 +61,8 @@ export class EventLogTableComponent implements OnInit {
       return '';
     }
   }
+
+  getAriaLabelforRow() {
+    return 'press tab key to navigate to columns';
+  }
 }

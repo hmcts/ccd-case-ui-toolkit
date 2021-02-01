@@ -8,7 +8,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let event of events" (click)="select(event)" [ngClass]="{'EventLogTable-Selected': selected === event}">
+  <tr *ngFor="let event of events" (click)="select(event)" [ngClass]="{'EventLogTable-Selected': selected === event}" tabindex="0" attr.aria-label="{{getAriaLabelforRow()}}">
     <td>
       <ng-container [ngSwitch]="isPartOfCaseTimeline">
         <div id="case-timeline" *ngSwitchCase="true">
