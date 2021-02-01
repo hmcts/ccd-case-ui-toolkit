@@ -158,11 +158,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   buildIdPrefix(index: number): string {
-    if ('Complex' === this.caseField.field_type.collection_field_type.type) {
-      return this.idPrefix + this.caseField.id + '_' + index + '_';
-    } else {
-      return this.idPrefix + this.caseField.id + '_';
+    const prefix = `${this.idPrefix}${this.caseField.id}_`;
+    if (this.caseField.field_type.collection_field_type.type === 'Complex') {
+      return `${prefix}${index}_`;
     }
+    return prefix;
   }
 
   addItem(doScroll: boolean): void {
@@ -172,17 +172,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value.push(item);
     // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
-    let lastIndex = this.caseField.value.length - 1;
-    const cf: CaseField = this.buildCaseField(item, lastIndex);
-    const pre = this.buildIdPrefix(lastIndex);
-    const container = this.formArray.at(lastIndex).get('value') as FormGroup;
-    this.collItems.push({caseField: cf, item: item, index: lastIndex, prefix: pre, container});
+    const index = this.caseField.value.length - 1;
+    const caseField: CaseField = this.buildCaseField(item, index);
+    const prefix = this.buildIdPrefix(index);
+    const container = this.formArray.at(index).get('value') as FormGroup;
+    this.collItems.push({ caseField, item, index, prefix, container });
 
     // Timeout is required for the collection item to be rendered before it can be scrolled to or focused.
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-          target: this.buildIdPrefix(lastIndex) + lastIndex,
+          target: `${this.buildIdPrefix(index)}${index}`,
           duration: 1000,
           offset: -150,
         })
@@ -195,8 +195,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   private focusLastItem() {
-    if (this.items.last.nativeElement.querySelector('.form-control')) {
-      this.items.last.nativeElement.querySelector('.form-control').focus();
+    const item: any = this.items.last.nativeElement.querySelector('.form-control');
+    if (item) {
+      item.focus();
     }
   }
 
@@ -207,8 +208,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   itemLabel(index: number) {
-    let displayIndex = index + 1;
-    return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
+    if (index) {
+      return `${this.caseField.label} ${index + 1}`;
+    }
+    return this.caseField.label;
   }
 
   isNotAuthorisedToCreate() {
