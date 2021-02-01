@@ -302,22 +302,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
     this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields, true);
 
-    /**
-     * NOTE:
-     *
-     * The commented out line below was made by Adnan and appeared as a merge conflict.
-     * I think we're doing a good cleanup now and I'm pretty sure we want the full
-     * editForm.value.data without stripping out what's on the current page, based on
-     * the behaviour I've seen. To be reviewed, though.
-     */
-    // caseEventData.event_data = caseEventData.data || this.editForm.value.data;
-
-    // Set up the event_data, also remove any unnecessary guff.
-    const event_data = JSON.parse(JSON.stringify(this.editForm.value.data));
-    this.formValueService.removeUnnecessaryFields(event_data, this.currentPage.case_fields, false);
-
-    // Now add the remaining bits and pieces to the CaseEventData.
-    caseEventData.event_data = event_data;
+    // Now add the remaining bits and pieces to the CaseEventData,
+    // including a copy of CaseEventData's data to event_data.
+    caseEventData.event_data = caseEventData.data || this.editForm.value.data;
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
 
