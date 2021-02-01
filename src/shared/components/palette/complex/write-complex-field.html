@@ -1,7 +1,7 @@
 <div class="form-group" [id]="id()">
 
   <h2 *ngIf="renderLabel" class="heading-h2">{{caseField | ccdFieldLabel}}</h2>
-  <ng-container *ngFor="let field of caseField | ccdFieldsFilter:true">
+  <ng-container *ngFor="let field of complexFields">
     <ng-container [ngSwitch]="field | ccdIsReadOnlyAndNotCollection">
       <ccd-field-read *ngSwitchCase="true"
                       ccdLabelSubstitutor
@@ -12,7 +12,7 @@
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
                        ccdLabelSubstitutor
-                       [caseField]="buildField(field)"
+                       [caseField]="field"
                        [caseFields]="caseFields"
                        [formGroup]="formGroup"
                        [parent]="complexGroup"

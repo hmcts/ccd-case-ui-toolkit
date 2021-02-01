@@ -72,10 +72,6 @@ export class FieldsFilterPipe implements PipeTransform {
     return FieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
 
-  constructor(
-    private fieldsUtils: FieldsUtils
-  ) {}
-
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.
    *
