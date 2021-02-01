@@ -3,7 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { HttpError, TaskSearchParameter, TaskSearchParameters } from '../../../domain';
+import { TaskSearchParameter, TaskSearchParameters } from '../../../domain';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
@@ -14,7 +14,7 @@ interface UserInfo {
   surname: string,
   email: string,
   active: boolean,
-  roles: string []
+  roles: string[]
 }
 
 interface UserDetails {
@@ -37,12 +37,8 @@ export class WorkAllocationService {
   ) {
   }
 
-  public static IACCaseworkerRoles = ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
-  // public userRoles = this.getUserRoles();
-
-  public roleIsCaseworker(role) {
-    return WorkAllocationService.IACCaseworkerRoles.includes(role);
-  }
+  public static IACCaseOfficer = 'caseworker-ia-caseofficer';
+  public static IACAdmOfficer = 'caseworker-ia-admofficer';
 
   /**
    * Call the API to get tasks matching the search criteria.
@@ -66,6 +62,7 @@ export class WorkAllocationService {
    * @param taskId specifies which task should be completed.
    */
   public completeTask(taskId: string): Observable<any> {
+    console.log('Testing completion');
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
@@ -73,8 +70,8 @@ export class WorkAllocationService {
         catchError(error => {
           this.errorService.setError(error);
           this.alertService.clear();
-
-          this.http.get(this.appConfig.getWorkAllocationApiUrl()).subscribe((response) => {
+          // this will subscribe to get the user details and decide whether to display an error message
+          this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response.json()).subscribe((response) => {
             this.handleTaskCompletionError(response);
           });
 
@@ -83,16 +80,26 @@ export class WorkAllocationService {
       );
   }
 
+  /**
+   * Handles the response from the observable to get the user details when task is completed.
+   * @param response is the response given from the observable which contains the user detaild.
+   */
   public handleTaskCompletionError(response: any): void {
-    const userDetails = response.json() as UserDetails;
-    if(this.userIsCaseworker(userDetails.userInfo.roles)) {
+    const userDetails = response as UserDetails;
+    console.log(userDetails.userInfo.roles);
+    if (this.userIsCaseworker(userDetails.userInfo.roles)) {
       this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
     }
   }
 
-public userIsCaseworker(roles: string []): boolean {
-  return roles.includes('caseworker-ia-caseofficer') || roles.includes('caseworker-ia-admofficer');
-}
+  /**
+   * Returns true if the user's role is equivalent to a caseworker.
+   * @param roles is the list of roles found from the current user.
+   */
+  public userIsCaseworker(roles: string[]): boolean {
+    const lowerCaseRoles = roles.map(role => role.toLowerCase());
+    return lowerCaseRoles.includes(WorkAllocationService.IACCaseOfficer) || lowerCaseRoles.includes(WorkAllocationService.IACAdmOfficer);
+  }
 
   /**
    * Look for open tasks for a case and event combination. There are 5 possible scenarios:
