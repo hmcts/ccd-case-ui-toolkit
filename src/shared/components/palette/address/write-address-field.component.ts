@@ -7,8 +7,6 @@ import { AddressesService } from '../../../services/addresses/addresses.service'
 import { FormControl, FormGroup } from '@angular/forms';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { FocusElementDirective } from '../../../directives/focus-element';
-import { CaseField } from '../../../domain';
-import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-write-address-field',
