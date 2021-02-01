@@ -144,6 +144,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
         this.valid = true;
         this.fileUploadStateService.setUploadInProgress(false);
+        // refresh replaced document info
+        this.caseField.value.document_binary_url = document._links.binary.href;
+        this.caseField.value.document_filename = document.originalDocumentName;
+        this.caseField.value.document_url = document._links.self.href;
       }, (error: HttpError) => {
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
@@ -159,7 +163,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileSelectEvent() {
-    if (this.caseField.value) {
+    if ((this.caseField.value && this.caseField.value.document_filename !== null) ||
+      (this.selectedFile && this.selectedFile.name !== null)) {
       this.openDialog(this.dialogConfig);
     } else {
       this.openFileDialog();
