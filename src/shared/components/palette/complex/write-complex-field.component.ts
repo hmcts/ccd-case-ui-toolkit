@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
 
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -7,6 +8,7 @@ import { FieldsUtils, FormValidatorsService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { FieldsFilterPipe } from './fields-filter.pipe';
 
 @Component({
   selector: 'ccd-write-complex-type-field',
@@ -28,6 +30,8 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   @Input()
   ignoreMandatory = false;
 
+  public complexFields: CaseField[];
+
   constructor (private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
     super();
     this.complexGroup = new FormGroup({});
@@ -37,11 +41,13 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     // Are we inside of a collection? If so, the parent is the complexGroup we want.
     if (this.isTopLevelWithinCollection()) {
       this.complexGroup = this.parent as FormGroup;
+      FieldsUtils.addCaseFieldAndComponentReferences(this.complexGroup, this.caseField, this);
     } else {
       this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
     }
     // Add validators for the complex field.
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);
+    this.setupFields();
   }
 
   buildField(caseField: CaseField): CaseField {
@@ -98,5 +104,18 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
       }
     }
     return false;
+  }
+
+  private setupFields(): void {
+    const fieldsFilterPipe: FieldsFilterPipe = new FieldsFilterPipe();
+    this.complexFields = fieldsFilterPipe.transform(this.caseField, true).map(field => {
+      if (field && field.id) {
+        const id = field.id;
+        if (!(field instanceof CaseField)) {
+          return plainToClassFromExist(new CaseField(), field);
+        }
+      }
+      return this.buildField(field);
+    });
   }
 }
