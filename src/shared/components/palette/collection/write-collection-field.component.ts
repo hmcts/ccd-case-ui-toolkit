@@ -58,20 +58,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value = this.caseField.value || [];
     this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
     this.formArray['caseField'] = this.caseField;
-    this.caseField.value.forEach((val, ix ) => {
-      const pre: string = (this.buildIdPrefix(ix));
-      const cf = this.buildCaseField(val, ix);
-      const container = this.formArray.at(ix).get('value') as FormGroup;
-      if (this.collItems.length <= ix) {
-        this.collItems.length = ix + 1;
+    this.caseField.value.forEach((item: any, index: number) => {
+      const prefix: string = this.buildIdPrefix(index);
+      const caseField = this.buildCaseField(item, index);
+      const container = this.formArray.at(index).get('value') as FormGroup;
+      if (this.collItems.length <= index) {
+        this.collItems.length = index + 1;
       }
-      this.collItems[ix] = {
-        caseField: cf,
-        item: val,
-        prefix: pre,
-        index: ix,
-        container
-      };
+      this.collItems[index] = { caseField, item, prefix, index, container };
     });
   }
 
@@ -146,11 +140,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private newCaseField(index: number, item) {
     const isNotAuthorisedToUpdate = this.isNotAuthorisedToUpdate(index);
+    // Remove the bit setting the hidden flag here as it's an item in the array and
+    // its hidden state isn't independently re-evaluated when the form is changed.
     return plainToClassFromExist(new CaseField(), {
       id: index.toString(),
       field_type: this.caseField.field_type.collection_field_type,
       display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
-      hidden: this.caseField.hidden,
       value: item.value,
       label: null,
       acls: this.caseField.acls
