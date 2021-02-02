@@ -48,6 +48,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     // Add validators for the complex field.
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);
     this.setupFields();
+    this.complexGroup.updateValueAndValidity({ emitEvent: true });
   }
 
   buildField(caseField: CaseField): CaseField {
