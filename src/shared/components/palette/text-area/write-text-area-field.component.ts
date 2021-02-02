@@ -11,7 +11,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   textareaControl: FormControl;
-  constructor(private browserService: BrowserService){
+  constructor(private browserService: BrowserService) {
     super();
   }
 
@@ -20,9 +20,9 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
   }
 
 autoGrow(event) {
-  if(this.browserService.isIEOrEdge()){
+  if (this.browserService.isIEOrEdge()) {
     event.target.style.height = 'auto';
-    event.target.style.height = event.target.scrollHeight+'px';
+    event.target.style.height = event.target.scrollHeight + 'px';
     event.target.scrollTop = event.target.scrollHeight;
    }
   }

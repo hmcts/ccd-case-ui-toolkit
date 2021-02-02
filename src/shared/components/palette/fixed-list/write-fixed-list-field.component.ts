@@ -12,7 +12,7 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
 
   ngOnInit() {
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
-  
+
     if (isNull) {
       this.caseField.value = null;
     }
