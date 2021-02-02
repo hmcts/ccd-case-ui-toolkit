@@ -24,10 +24,10 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
 
   ngOnInit() {
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
+  
     if (isNull) {
       this.caseField.value = null;
     }
-
     this.fixedListFormControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }
