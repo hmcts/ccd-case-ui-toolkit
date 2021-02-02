@@ -7,6 +7,7 @@ import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { FixedListModule } from './fixed-list/fixed-list.module';
+import { DynamicListModule } from './dynamic-list/dynamic-list.module';
 import { YesNoModule } from './yes-no/yes-no.module';
 import { ComplexModule } from './complex/complex.module';
 import { AddressModule } from './address/address.module';
@@ -55,6 +56,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     CommonModule,
     BaseFieldModule,
     FixedListModule,
+    DynamicListModule,
     FixedRadioListModule,
     YesNoModule,
     ComplexModule,
