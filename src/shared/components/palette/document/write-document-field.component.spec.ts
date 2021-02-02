@@ -1,17 +1,16 @@
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { DebugElement } from '@angular/core';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { DocumentData } from '../../../domain/document/document-data.model';
+import { DocumentManagementService } from '../../../services/document-management';
+import { DocumentData } from '../../../domain/document';
 import { of, throwError, Subscription } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { FormGroup } from '@angular/forms';
-import { FieldLabelPipe } from '../utils/field-label.pipe';
+import { FieldLabelPipe } from '../utils';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
-import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { FileUploadStateService } from './file-upload-state.service';
@@ -91,8 +90,8 @@ describe('WriteDocumentFieldComponent', () => {
   let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
   let componentDialog: DocumentDialogComponent;
   let deDialog: DebugElement;
-  let dialog: any;
-  let matDialogRef: MatDialogRef<DocumentDialogComponent>;
+  let mockDialog: any;
+  let mockMatDialogRef: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -100,8 +99,8 @@ describe('WriteDocumentFieldComponent', () => {
       of(RESPONSE_FIRST_DOCUMENT),
       of(RESPONSE_SECOND_DOCUMENT)
     );
-    dialog = createSpyObj<MatDialog>('dialog', ['open']);
-    matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
+    mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
+    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed']);
 
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -120,8 +119,8 @@ describe('WriteDocumentFieldComponent', () => {
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialog, useValue: mockDialog},
+          {provide: MatDialogRef, useValue: mockMatDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           DocumentDialogComponent
@@ -168,6 +167,66 @@ describe('WriteDocumentFieldComponent', () => {
     component.fileSelectEvent();
     component.confirmReplaceResult = 'Replace';
     expect(component.triggerReplace()).toBeFalsy();
+  });
+
+  it('should open replace file dialog if document exist', () => {
+    const spyOpenFileDialog = spyOn(component, 'openFileDialog');
+    component.caseField.value = {};
+    component.caseField.value.document_filename = 'file_name_1';
+    mockMatDialogRef = {
+      beforeClosed() {
+        return of('Replace');
+      }
+    };
+    mockDialog.open.and.returnValue(mockMatDialogRef);
+    component.dialog = mockDialog;
+    component.fileSelectEvent();
+    expect(component.confirmReplaceResult).toBe('Replace');
+    expect(spyOpenFileDialog).toHaveBeenCalled();
+  });
+
+  it('should open replace file dialog if has selected document', () => {
+    const spyOpenFileDialog = spyOn(component, 'openFileDialog');
+    component.selectedFile = new File(['foo'], 'file_name_2.txt');
+    mockMatDialogRef = {
+      beforeClosed() {
+        return of('Replace');
+      }
+    };
+    mockDialog.open.and.returnValue(mockMatDialogRef);
+    component.dialog = mockDialog;
+    component.fileSelectEvent();
+    expect(component.confirmReplaceResult).toBe('Replace');
+    expect(spyOpenFileDialog).toHaveBeenCalled();
+  });
+
+  it('should replace upload given document', () => {
+    const REPLACE_DOCUMENT: DocumentData = {
+      _embedded: {
+        documents: [{
+          originalDocumentName: 'test.pdf',
+          _links: {
+            self: {
+              href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+            },
+            binary: {
+              href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+            }
+          }
+        }]
+      }
+    };
+    mockDocumentManagementService.uploadFile.and.returnValue(of(REPLACE_DOCUMENT));
+    let blobParts: BlobPart[] = ['some contents for blob'];
+    let file: File = new File(blobParts, 'test.pdf');
+    component.fileChangeEvent({
+      target: {
+        files: [
+          file
+        ]
+      }
+    });
+    expect(component.caseField.value.document_filename).toBe('test.pdf');
   });
 
   it('should upload given document', () => {
