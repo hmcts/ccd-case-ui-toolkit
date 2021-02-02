@@ -165,8 +165,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileSelectEvent() {
-    if ((this.caseField.value && this.caseField.value.document_filename !== null) ||
-      (this.selectedFile && this.selectedFile.name !== null)) {
+    if ((this.caseField.value && this.caseField.value.document_filename) ||
+      (this.selectedFile && this.selectedFile.name)) {
       this.openDialog(this.dialogConfig);
     } else {
       this.openFileDialog();
