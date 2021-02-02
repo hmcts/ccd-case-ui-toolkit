@@ -20,7 +20,7 @@ export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent 
     }
 
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
-  
+
     if (isNull || typeof this.caseField.value === 'object') {
       this.caseField.value = null;
     }
