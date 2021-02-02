@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### 2.67.11-fix-replace-document-issue
+**EUI-2243** Fix upload replacement document issue
+
 ### 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
