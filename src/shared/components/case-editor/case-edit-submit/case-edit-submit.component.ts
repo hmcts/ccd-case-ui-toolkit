@@ -84,7 +84,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   submit(): void {
     this.isSubmitting = true;
     let caseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
-    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.eventTrigger.case_fields);
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.eventTrigger.case_fields, false, true);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     this.caseEdit.submit(caseEventData)

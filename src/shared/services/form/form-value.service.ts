@@ -262,11 +262,19 @@ export class FormValueService {
    * @param caseFields The CaseFields that need to be cleaned up.
    * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
    */
-  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false): void {
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false): void {
     if (data && caseFields && caseFields.length > 0) {
+      // check if there is any data at the top level of the form that's not in the caseFields
+      if (clearNonCase) {
+        for (let dataKey in data) {
+          if (!caseFields.find(cf => cf.id === dataKey)) {
+            delete data [dataKey];
+          }
+        }
+      }
       for (const field of caseFields) {
-        // Retain anything that is readonly and not a label.
         if (!FormValueService.isLabel(field) && FormValueService.isReadOnly(field)) {
+          // Retain anything that is readonly and not a label.
           continue;
         }
         if (field.hidden === true) {

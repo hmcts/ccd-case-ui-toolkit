@@ -303,8 +303,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields, true);
 
     // Now add the remaining bits and pieces to the CaseEventData,
-    // including a copy of CaseEventData's data to event_data.
-    caseEventData.event_data = caseEventData.data || this.editForm.value.data;
+    // The event_data should be the full context of the event, including values from previous pages, but not labels
+    caseEventData.event_data = this.editForm.value.data;
+    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, this.getCaseFields(), false, true);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
 
