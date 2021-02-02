@@ -35,12 +35,15 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
       // Provide component @Inputs
+      // Only Fixed list use plainToClassFromExist
+      // Better performance
       // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist
-      if (this.caseField.field_type.type === 'FixedList') {
-        component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
-      } else {
-        component.instance['caseField'] =  this.caseField;
+      // Added a check to make sure it's NOT already a CaseField and then
+      // assigning it back to this.caseField so we don't create separation.
+      if (this.caseField.field_type.type === 'FixedList' && !(this.caseField instanceof CaseField)) {
+        this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
       }
+      component.instance['caseField'] =  this.caseField;
       component.instance['caseFields'] = this.caseFields;
       component.instance['formGroup'] = this.formGroup;
       component.instance['parent'] = this.parent;
