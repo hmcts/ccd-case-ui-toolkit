@@ -156,8 +156,12 @@ export class FormValueService {
       let allEmpty = true;
       for (const prop of Object.keys(data)) {
         const value = data[prop];
-        if (value && typeof(value) === 'object') {
-          allEmpty = allEmpty && this.isEmptyData(value);
+        if (value) {
+          if (typeof(value) === 'object') {
+            allEmpty = allEmpty && this.isEmptyData(value);
+          } else {
+            allEmpty = false;
+          }
         }
       }
       return allEmpty;
