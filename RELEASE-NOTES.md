@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.68.12-prerelease-conditional-show-perf
+**EUI-3331** Problem with event_data submission
+
 ### Version 2.68.11-prerelease-conditional-show-perf
 **EUI-3270** Improve performance of event forms. 
 Work around for case when profile data is not available. 
