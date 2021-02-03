@@ -291,6 +291,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.eventTrigger.case_fields;
   }
 
+  private getCaseFieldsFromCurrentAndPreviousPages(): CaseField[] {
+    const result: CaseField[] = []
+    this.wizard.pages.forEach ( page => {
+      if (page.order <= this.currentPage.order) {
+        page.case_fields.forEach( field => result.push(field));
+      }
+    })
+    return result;
+  }
+
   private buildCaseEventData(): CaseEventData {
     // Get hold of the fields specific to the current page that we're going to submit.
     const pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
@@ -305,7 +315,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     // Now add the remaining bits and pieces to the CaseEventData,
     // The event_data should be the full context of the event, including values from previous pages, but not labels
     caseEventData.event_data = this.editForm.value.data;
-    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, this.getCaseFields(), false, true);
+    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, this.getCaseFieldsFromCurrentAndPreviousPages(),
+      false, true);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
 
