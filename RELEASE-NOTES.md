@@ -1,5 +1,7 @@
 ## RELEASE NOTES
 
+### Version 2.68.10-prerelease-conditional-show-perf
+**EUI-3168** fix regression issues and further improve performance
 
 ### Version 2.68.9-prerelease-conditional-show-perf
 **EUI-3151** dynamic lists and nested complex in collection fixes
