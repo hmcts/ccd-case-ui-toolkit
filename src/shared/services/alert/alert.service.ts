@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observer } from 'rxjs/Observer';
-import { NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import 'rxjs/operator/publish';
 import { ConnectableObservable, Observable } from 'rxjs/Rx';
 import { Alert } from '../../domain/alert/alert.model';
+
+enum AlertMessageType {
+  WARNING = 'warning',
+  SUCCESS = 'success',
+  ERROR = 'error',
+  ALERT = 'alert'
+}
 
 @Injectable()
 export class AlertService {
@@ -12,6 +19,11 @@ export class AlertService {
   private successObserver: Observer<Alert>;
   private errorObserver: Observer<Alert>;
   private warningObserver: Observer<Alert>;
+
+  preservedError = '';
+  preservedWarning = '';
+  preservedSuccess = '';
+  preservedAlert = '';
 
   alerts: ConnectableObservable<Alert>;
   successes: ConnectableObservable<Alert>;
@@ -47,26 +59,23 @@ export class AlertService {
           if (!this.preserveAlerts) {
             this.clear();
           }
-          this.setPreserveAlerts(false);
+          this.preserveAlerts = false;
         }
       });
   }
-
-/*   push(alert: Alert): void {
-    this.observer.next([alert, {
-      level: 'warning',
-      message: 'ababababab'
-    }]);
-  } */
 
   clear(): void {
     this.alertObserver.next(null);
     this.successObserver.next(null);
     this.errorObserver.next(null);
     this.warningObserver.next(null);
+    this.preservedError = '';
+    this.preservedWarning = '';
+    this.preservedSuccess = '';
   }
 
   error(message: string): void {
+    this.preservedError = this.preserveMessages(message);
     this.errorObserver.next({
       level: 'error',
       message: message
@@ -74,6 +83,7 @@ export class AlertService {
   }
 
   warning(message: string): void {
+    this.preservedWarning = this.preserveMessages(message);
     this.warningObserver.next({
       level: 'warning',
       message: message
@@ -81,21 +91,44 @@ export class AlertService {
   }
 
   success(message: string): void {
+    this.preservedSuccess = this.preserveMessages(message);
     this.successObserver.next({
       level: 'success',
       message: message
     });
   }
 
-  setPreserveAlerts(preserve: boolean) {
-    this.preserveAlerts = preserve;
+  setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {
+    if (!urlInfo) {
+      this.preserveAlerts = preserve;
+    } else {
+      this.preserveAlerts = this.currentUrlIncludesInfo(preserve, urlInfo);
+    }
+  }
+
+  currentUrlIncludesInfo(preserve: boolean, urlInfo: string[]): boolean {
+    for (const urlSnip of urlInfo) {
+      if (!this.router.url.includes(urlSnip)) {
+        return !preserve;
+      }
+    }
+    return preserve;
   }
 
   isPreserveAlerts(): boolean {
     return this.preserveAlerts;
   }
 
+  preserveMessages(message: string) {
+    if (this.isPreserveAlerts()) {
+      return message;
+    } else {
+      return '';
+    }
+  }
+
   message(message: string): void {
+    this.preservedAlert = this.preserveMessages(message);
     this.alertObserver.next({
       level: 'message',
       message: message
