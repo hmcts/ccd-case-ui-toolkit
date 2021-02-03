@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -19,7 +19,7 @@ import { GreyBarService } from './services/grey-bar.service';
  *  to the page after the page has been left, the grey bar has to be redisplayed. If instead on initial page load the field renders as
  *  initially shown, the grey bar is not displayed.
  */
-export class ConditionalShowFormDirective implements OnInit, OnDestroy {
+export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() caseFields: CaseField[];
   @Input() contextFields: CaseField[] = [];
@@ -40,6 +40,18 @@ export class ConditionalShowFormDirective implements OnInit, OnDestroy {
       console.log ('**** no form group in conditional-show-form directive');
       this.formGroup = new FormGroup({});
     }
+  }
+
+  /**
+   * Moved the evaluation of show/hide conditions and subscription
+   * to form changes until after the form has been fully created.
+   * 
+   * Prior to this change, I traced more than 5,100,000 firings of
+   * the evaluateCondition INSIDE the show_condition check on page
+   * load for an event with a lot of content. After this change,
+   * that number dropped to fewer than 2,500 - that's a.
+   */
+  ngAfterViewInit() {
     this.evalAllShowHideConditions();
     this.subscribeToFormChanges();
   }

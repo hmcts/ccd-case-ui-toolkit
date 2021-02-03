@@ -332,13 +332,16 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
-      .subscribe(() => {
-        // Success. Do nothing.
-      }, error => {
-        // Show an appropriate warning about something that went wrong.
-        console.warn('Could not process tasks for this case event', error);
-      });
+    // This is used a feature toggle to
+    // control the work allocation
+    if (this.appConfig.getWorkAllocationApiUrl()) {
+        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
+          .subscribe(() => {
+            // Success. Do nothing.
+          }, error => {
+            // Show an appropriate warning about something that went wrong.
+            console.warn('Could not process tasks for this case event', error);
+          });
+    }
   }
-
 }

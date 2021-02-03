@@ -18,9 +18,9 @@ import { ConditionalShowFormDirective } from './conditional-show-form.directive'
         <label>Yes</label>
         <input type="radio" formControlName="hasCar" id="HasCarY" value="Yes">
         <label>No</label>
-        <input type="radio" [hidden]="isHidden('HasCar')" formControlName="HasCar" id="HasCarN" value="No">
-        <input type="text" [hidden]="isHidden('CarMake')" formControlName="CarMake" id="CarMake"/>
-        <input type="text" [hidden]="isHidden('CarModel')" formControlName="CarModel" id="CarModel"/>"
+        <input type="radio" [hidden]="carHidden" formControlName="hasCar" id="HasCarN" value="No">
+        <input type="text" [hidden]="makeHidden" formControlName="carMake" id="CarMake"/>
+        <input type="text" [hidden]="modelHidden" formControlName="carModel" id="CarModel"/>"
       </div>`
 })
 
@@ -36,6 +36,13 @@ class TestHostComponent {
     }
     return false;
   }
+  public carHidden = false;
+  public makeHidden = true;
+  public modelHidden = true;
+
+  // TODO: Sort the bindings out so we can test that the [hidden]
+  // works. Binding to isHidden(name) results in an
+  // ExpressionChangedAfterItHasBeenCheckedError.
 }
 
 let field = (id, value, showCondition?) => {
@@ -95,10 +102,10 @@ describe('ConditionalShowFormDirective', () => {
     })
   }
 
-  it('should not trigger when hide condition is empty', () => {
-      comp.caseFields = [ field('HasCar', 'Yes', ''),
-        field('CarMake', 'Ford', ''),
-        field('CarModel', 'Prefect', '')];
+  it('should not trigger when hide condition is empty', (done) => {
+      comp.caseFields = [ field('hasCar', 'Yes', ''),
+        field('carMake', 'Ford', ''),
+        field('carModel', 'Prefect', '')];
       comp.formGroup = new FormGroup({
         hasCar: new FormControl(comp.caseFields[0].value),
         carMake: new FormControl(comp.caseFields[1].value),
@@ -106,14 +113,19 @@ describe('ConditionalShowFormDirective', () => {
       });
       bindCaseFields(comp.formGroup, comp.caseFields);
       fixture.detectChanges();
-      expect(elMake.hidden).toBe(false);
-      expect(elModel.hidden).toBe( false);
+      fixture.whenStable().then(() => {
+        expect(comp.caseFields[1].hidden).toBeFalsy();
+        expect(comp.caseFields[2].hidden).toBeFalsy();
+        done();
+      });
     });
 
-    it ('should hide when condition is false', () => {
-      comp.caseFields = [ field('HasCar', 'No', ''),
-        field('CarMake', 'Ford', 'HasCar="Yes"'),
-        field('CarModel', 'Prefect', 'HasCar="Yes"')];
+    it('should hide when condition is false', (done) => {
+      comp.caseFields = [
+        field('hasCar', 'No', ''),
+        field('carMake', 'Ford', 'hasCar="Yes"'),
+        field('carModel', 'Prefect', 'hasCar="Yes"')
+      ];
       comp.formGroup = new FormGroup({
         hasCar: new FormControl(comp.caseFields[0].value),
         carMake: new FormControl(comp.caseFields[1].value),
@@ -121,14 +133,17 @@ describe('ConditionalShowFormDirective', () => {
       });
       bindCaseFields(comp.formGroup, comp.caseFields);
       fixture.detectChanges();
-      expect(elMake.hidden).toBe(true);
-      expect(elModel.hidden).toBe( true);
+      fixture.whenStable().then(() => {
+        expect(comp.caseFields[1].hidden).toBeTruthy();
+        expect(comp.caseFields[2].hidden).toBeTruthy();
+        done();
+      });
     })
 
-  it ('should show when condition is true', () => {
-    comp.caseFields = [ field('HasCar', 'Yes', ''),
-      field('CarMake', 'Ford', 'HasCar="Yes"'),
-      field('CarModel', 'Prefect', 'HasCar="Yes"')];
+  it ('should show when condition is true', (done) => {
+    comp.caseFields = [ field('hasCar', 'Yes', ''),
+      field('carMake', 'Ford', 'hasCar="Yes"'),
+      field('carModel', 'Prefect', 'hasCar="Yes"')];
     comp.formGroup = new FormGroup({
       hasCar: new FormControl(comp.caseFields[0].value),
       carMake: new FormControl(comp.caseFields[1].value),
@@ -136,13 +151,16 @@ describe('ConditionalShowFormDirective', () => {
     });
     bindCaseFields(comp.formGroup, comp.caseFields);
     fixture.detectChanges();
-    expect(elMake.hidden).toBe(false);
-    expect(elModel.hidden).toBe( false);
+    fixture.whenStable().then(() => {
+      expect(comp.caseFields[1].hidden).toBe(false);
+      expect(comp.caseFields[2].hidden).toBe(false);
+      done();
+    });
   })
-  it ('should hide when field value changes to make condition false', () => {
-    comp.caseFields = [ field('HasCar', 'Yes', ''),
-      field('CarMake', 'Ford', 'HasCar="Yes"'),
-      field('CarModel', 'Prefect', 'HasCar="Yes"')];
+  it ('should hide when field value changes to make condition false', (done) => {
+    comp.caseFields = [ field('hasCar', 'Yes', ''),
+      field('carMake', 'Ford', 'hasCar="Yes"'),
+      field('carModel', 'Prefect', 'hasCar="Yes"')];
     comp.formGroup = new FormGroup({
       hasCar: new FormControl(comp.caseFields[0].value),
       carMake: new FormControl(comp.caseFields[1].value),
@@ -150,12 +168,15 @@ describe('ConditionalShowFormDirective', () => {
     });
     bindCaseFields(comp.formGroup, comp.caseFields);
     fixture.detectChanges();
-    expect(elMake.hidden).toBe(false);
-    expect(elModel.hidden).toBe( false);
-    comp.formGroup.patchValue({hasCar: 'No'});
-    fixture.detectChanges();
-    expect(elMake.hidden).toBe(false);
-    expect(elModel.hidden).toBe( false);
+    fixture.whenStable().then(() => {
+      expect(comp.caseFields[1].hidden).toBe(false);
+      expect(comp.caseFields[2].hidden).toBe(false);
+      comp.formGroup.patchValue({hasCar: 'No'});
+      fixture.detectChanges();
+      expect(comp.caseFields[1].hidden).toBe(true);
+      expect(comp.caseFields[2].hidden).toBe(true);
+      done();
+    });
   })
   /*
   it('should display not grey bar when toggled to show if grey bar disabled', () => {

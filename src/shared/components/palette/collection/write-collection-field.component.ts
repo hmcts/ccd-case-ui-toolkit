@@ -237,7 +237,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         return !updateRole;
       }
     // }
-    return true;
+    return false;
   }
 
   hasUpdateAccess(role: any): boolean {
