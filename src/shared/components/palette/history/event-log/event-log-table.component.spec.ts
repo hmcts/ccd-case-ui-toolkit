@@ -8,6 +8,7 @@ import { DatePipe } from '../../utils';
 import createSpyObj = jasmine.createSpyObj;
 import * as moment from 'moment-timezone';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { formatDate } from '@angular/common';
 
 describe('EventLogTableComponent', () => {
 
@@ -156,7 +157,8 @@ describe('EventLogTableComponent', () => {
     it('should set aria-label attribute for non selected row date column', () => {
       let columns = de.queryAll($TABLE_COLUMNS);
 
-      expect(columns[4].nativeElement.getAttribute('aria-label')).toBe(`press enter key for event ${EVENTS[1].event_name} details`);
+      expect(columns[4].nativeElement.getAttribute('aria-label')).toBe(`date ${formatDate(EVENTS[1].timestamp, 'dd MMM yyyy hh:mm:ss a', 'en-GB')},
+        press enter key for event ${EVENTS[1].event_name} details`);
     });
 
     it('should fire onSelect event when enter key pressed on non selected date column', () => {

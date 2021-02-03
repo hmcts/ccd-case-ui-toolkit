@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'ccd-event-log-table',
@@ -54,15 +55,20 @@ export class EventLogTableComponent implements OnInit {
     this.onCaseHistory.emit(eventId);
   }
 
-  getAriaLabel(event: CaseViewEvent): string {
+  getAriaLabelforColumn(event: CaseViewEvent): string {
     if (this.selected !== event) {
-      return `press enter key for event ${event.event_name} details`;
+      return `date ${formatDate(event.timestamp, 'dd MMM yyyy hh:mm:ss a', 'en-GB')},
+        press enter key for event ${event.event_name} details`;
     } else {
       return '';
     }
   }
 
-  getAriaLabelforRow() {
-    return 'press tab key to navigate to columns';
+  getAriaLabelforRow(event: CaseViewEvent): string {
+    return `you are on event ${event.event_name} row, press tab key to navigate to columns`;
+  }
+
+  getAriaLabelforLink(event: CaseViewEvent): string {
+    return `press enter key to open event ${event.event_name} link in separate window`;
   }
 }
