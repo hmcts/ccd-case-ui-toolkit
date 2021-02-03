@@ -28,8 +28,12 @@ describe('AlertService', () => {
 
   let routerObserver;
   let router;
+  let firstMockUrlRouter;
+  let secondMockUrlRouter;
 
   let alertService: AlertService;
+  let firstMockUrlAlertService: AlertService;
+  let secondMockUrlAlertService: AlertService;
 
   beforeEach(() => {
     router = {
@@ -149,7 +153,7 @@ describe('AlertService', () => {
     expect(alertService.clear).not.toHaveBeenCalled();
   });
 
-   it('should be a hot alert observable', done => {
+  it('should be a hot alert observable', done => {
     // set an original message
     alertService.message(WARNING_MESSAGE);
     alertService.error(WARNING_MESSAGE);
@@ -164,7 +168,7 @@ describe('AlertService', () => {
         done();
       });
 
-      alertService
+    alertService
       .errors
       .subscribe(alert => {
         expect(alert).toEqual(ERROR_ALERT);
@@ -190,5 +194,59 @@ describe('AlertService', () => {
     alertService.error(ERROR_MESSAGE);
     alertService.success(SUCCESS_MESSAGE);
     alertService.warning(WARNING_MESSAGE);
+  });
+
+  it('should set the messages to be preserved and kept', () => {
+    alertService.setPreserveAlerts(true);
+    expect(alertService.preserveMessages(A_MESSAGE)).toBe(A_MESSAGE);
+
+    alertService.setPreserveAlerts(false);
+    expect(alertService.preserveMessages(A_MESSAGE)).toBe('');
+  });
+
+  describe('check url functionality', () => {
+    firstMockUrlRouter = {
+      events: {
+        subscribe: observer => routerObserver = observer
+      },
+      url: 'cases/case-1/'
+    }
+    secondMockUrlRouter = {
+      events: {
+        subscribe: observer => routerObserver = observer
+      },
+      url: 'cases/case-2/'
+    }
+    firstMockUrlAlertService = new AlertService(firstMockUrlRouter);
+    secondMockUrlAlertService = new AlertService(secondMockUrlRouter);
+    it('should enable checking if the current url contains the string', () => {
+      // first check the first alert service
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['example'])).toBe(false);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1'])).toBe(true);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-2'])).toBe(false);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(false, ['case-1'])).toBe(false);
+
+      // second check the second alert service
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(true, ['example'])).toBe(false);
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1'])).toBe(false);
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(true, ['case-2'])).toBe(true);
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(false, ['case-1'])).toBe(true);
+
+      // now check for more than one in list
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1', 'cases'])).toBe(true);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1', 'not-cases'])).toBe(false);
+    });
+
+    it('should set the preserveAlerts value correctly', () => {
+      alertService.setPreserveAlerts(true);
+      expect(alertService.isPreserveAlerts()).toBe(true);
+      alertService.setPreserveAlerts(false);
+      expect(alertService.isPreserveAlerts()).toBe(false);
+
+      firstMockUrlAlertService.setPreserveAlerts(true, ['case-1']);
+      expect(firstMockUrlAlertService.isPreserveAlerts()).toBe(true);
+      firstMockUrlAlertService.setPreserveAlerts(true, ['case-1', 'not-cases']);
+      expect(firstMockUrlAlertService.isPreserveAlerts()).toBe(false);
+    });
   });
 });

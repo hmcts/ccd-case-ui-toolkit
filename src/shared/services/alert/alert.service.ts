@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observer } from 'rxjs/Observer';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import 'rxjs/operator/publish';
 import { ConnectableObservable, Observable } from 'rxjs/Rx';
 import { Alert } from '../../domain/alert/alert.model';
-
-enum AlertMessageType {
-  WARNING = 'warning',
-  SUCCESS = 'success',
-  ERROR = 'error',
-  ALERT = 'alert'
-}
 
 @Injectable()
 export class AlertService {
@@ -20,6 +13,7 @@ export class AlertService {
   private errorObserver: Observer<Alert>;
   private warningObserver: Observer<Alert>;
 
+  // the preserved messages
   preservedError = '';
   preservedWarning = '';
   preservedSuccess = '';
@@ -56,9 +50,11 @@ export class AlertService {
       .events
       .subscribe(event => {
         if (event instanceof NavigationStart) {
+          // if there is no longer a preserve alerts setting for the page then clear all observers and preserved messages
           if (!this.preserveAlerts) {
             this.clear();
           }
+          // if not, then set the preserving of alerts to false so rendering to a new page 
           this.preserveAlerts = false;
         }
       });
@@ -99,19 +95,24 @@ export class AlertService {
   }
 
   setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {
+    // if there is no url setting then just preserve the messages
     if (!urlInfo) {
       this.preserveAlerts = preserve;
     } else {
+      // check if the url includes the sting given
       this.preserveAlerts = this.currentUrlIncludesInfo(preserve, urlInfo);
     }
   }
 
   currentUrlIncludesInfo(preserve: boolean, urlInfo: string[]): boolean {
+    // loop through the list of strings and check the router includes all of them
     for (const urlSnip of urlInfo) {
       if (!this.router.url.includes(urlSnip)) {
+        // return the opposite boolean value if the router does not include one of the strings
         return !preserve;
       }
     }
+    // return the boolean value if all strings are in the url
     return preserve;
   }
 
@@ -120,6 +121,7 @@ export class AlertService {
   }
 
   preserveMessages(message: string) {
+    // preserve the messages if set to preserve them
     if (this.isPreserveAlerts()) {
       return message;
     } else {
