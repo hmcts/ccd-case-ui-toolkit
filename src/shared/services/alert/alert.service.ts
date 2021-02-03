@@ -54,7 +54,7 @@ export class AlertService {
           if (!this.preserveAlerts) {
             this.clear();
           }
-          // if not, then set the preserving of alerts to false so rendering to a new page 
+          // if not, then set the preserving of alerts to false so rendering to a new page
           this.preserveAlerts = false;
         }
       });
