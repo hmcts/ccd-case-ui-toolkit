@@ -154,7 +154,7 @@ describe('WriteCollectionFieldComponent', () => {
   it('should pass ID, type and value to child field', () => {
     let field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
 
-    expect(field1.caseField.id).toEqual('0');
+    expect(field1.caseField.id).toEqual('value');
     expect(field1.caseField.value).toEqual(VALUES[0].value);
     expect(field1.caseField.field_type instanceof FieldType).toBeTruthy();
     expect(field1.caseField.field_type.id).toEqual(SIMPLE_FIELD_TYPE.collection_field_type.id);
@@ -194,7 +194,7 @@ describe('WriteCollectionFieldComponent', () => {
     let addedField = writeFields[2].componentInstance;
 
     // Show empty case field
-    expect(addedField.caseField.id).toEqual('2');
+    expect(addedField.caseField.id).toEqual('value');
     expect(addedField.caseField.value).toBeNull();
     expect(addedField.caseField.field_type instanceof FieldType).toBeTruthy();
     expect(addedField.caseField.field_type.id).toEqual(SIMPLE_FIELD_TYPE.collection_field_type.id);

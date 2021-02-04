@@ -61,7 +61,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.caseField.value.forEach((item: any, index: number) => {
       const prefix: string = this.buildIdPrefix(index);
       const caseField = this.buildCaseField(item, index);
-      const container = this.formArray.at(index).get('value') as FormGroup;
+      const container = this.getContainer(index);
       if (this.collItems.length <= index) {
         this.collItems.length = index + 1;
       }
@@ -96,23 +96,31 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       group = new FormGroup({});
     }
 
-    let value = group.get('value') as FormGroup;
+    let value;
+    if (this.isCollectionOfSimpleType(this.caseField)) {
+      value = group.get('value') as FormControl
+      if (!value) {
+        value = new FormControl(item.value);
+        // Now add the value FormControl to the outer group.
+        group.addControl('value', value);
+      }
+    } else {
+      value = group.get('value') as FormGroup;
+      if (!value) {
+        value = new FormGroup({});
+        for (const key of Object.keys(group.controls)) {
+          value.addControl(key, group.get(key));
+          // DON'T remove the control for this key from the outer group or it
+          // goes awry. So DON'T uncomment the below line!
+          // group.removeControl(key);
+        }
+        // Now add the value FormGroup to the outer group.
+        group.addControl('value', value);
+      }
+    }
     let id = group.get('id') as FormControl;
     // If we're not in scenario 3, above, we need to do some jiggery pokery
     // and set up the id and value controls.
-    if (!value) {
-      value = new FormGroup({});
-      // Copy any controls currently in the outer group into the newly-created
-      // value FormGroup.
-      for (const key of Object.keys(group.controls)) {
-        value.addControl(key, group.get(key));
-        // DON'T remove the control for this key from the outer group or it
-        // goes awry. So DON'T uncomment the below line!
-        // group.removeControl(key);
-      }
-      // Now add the value FormGroup to the outer group.
-      group.addControl('value', value);
-    }
     // Also set up an id control if it doesn't yet exist.
     if (!id) {
       id = new FormControl(item.id);
@@ -132,18 +140,24 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
 
     // Now set up the CaseField and validation.
-    let cf: CaseField = this.newCaseField(index, item);
+    let cfid: string;
+    if (value instanceof FormControl) {
+      cfid = 'value';
+    } else {
+      cfid = index.toString();
+    }
+    let cf: CaseField = this.newCaseField(cfid, item);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
     return cf;
   }
 
-  private newCaseField(index: number, item) {
-    const isNotAuthorisedToUpdate = this.isNotAuthorisedToUpdate(index);
+  private newCaseField(id: string, item) {
+    const isNotAuthorisedToUpdate = this.isNotAuthorisedToUpdate();
     // Remove the bit setting the hidden flag here as it's an item in the array and
     // its hidden state isn't independently re-evaluated when the form is changed.
     return plainToClassFromExist(new CaseField(), {
-      id: index.toString(),
+      id,
       field_type: this.caseField.field_type.collection_field_type,
       display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
       value: item.value,
@@ -160,6 +174,15 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return prefix;
   }
 
+  private getContainer(index: number): FormGroup {
+    const value = this.formArray.at(index).get('value');
+    if (value instanceof FormGroup) {
+      return value;
+    } else {
+      return this.formArray.at(index) as FormGroup;
+    }
+  }
+
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
@@ -170,7 +193,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index);
     const prefix = this.buildIdPrefix(index);
-    const container = this.formArray.at(index).get('value') as FormGroup;
+    const container = this.getContainer(index);
     this.collItems.push({ caseField, item, index, prefix, container });
 
     // Timeout is required for the collection item to be rendered before it can be scrolled to or focused.
@@ -223,7 +246,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
                 .includes(type);
   }
 
-  isNotAuthorisedToUpdate(index: number) {
+  isNotAuthorisedToUpdate() {
     if (this.isExpanded) {
       return false;
     }
@@ -294,4 +317,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // return control ? control.value : undefined;
   }
 
+  private isCollectionOfSimpleType(caseField: CaseField) {
+    const notSimple = ['Collection', 'Complex'];
+    return notSimple.indexOf( caseField.field_type.collection_field_type.type ) < 0;
+  }
 }
