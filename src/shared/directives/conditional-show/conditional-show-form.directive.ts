@@ -45,7 +45,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   /**
    * Moved the evaluation of show/hide conditions and subscription
    * to form changes until after the form has been fully created.
-   * 
+   *
    * Prior to this change, I traced more than 5,100,000 firings of
    * the evaluateCondition INSIDE the show_condition check on page
    * load for an event with a lot of content. After this change,

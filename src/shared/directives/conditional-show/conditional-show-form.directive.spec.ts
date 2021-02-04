@@ -29,13 +29,6 @@ class TestHostComponent {
   @Input() formGroup: FormGroup;
   @Input() complexFormGroup: FormGroup;
 
-  isHidden(name: string) {
-    if (this.caseFields) {
-      let f = this.caseFields.find( (cf, ix) =>  (cf.id === name) );
-      return f ? f.hidden : false;
-    }
-    return false;
-  }
   public carHidden = false;
   public makeHidden = true;
   public modelHidden = true;
@@ -43,6 +36,13 @@ class TestHostComponent {
   // TODO: Sort the bindings out so we can test that the [hidden]
   // works. Binding to isHidden(name) results in an
   // ExpressionChangedAfterItHasBeenCheckedError.
+  isHidden(name: string) {
+    if (this.caseFields) {
+      let f = this.caseFields.find( (cf, ix) =>  (cf.id === name) );
+      return f ? f.hidden : false;
+    }
+    return false;
+  }
 }
 
 let field = (id, value, showCondition?) => {
