@@ -3,12 +3,14 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { Constants } from '../../../commons/constants';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField, FieldTypeEnum } from '../../../domain/definition';
 import { FieldsUtils, FormValidatorsService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { FieldsFilterPipe } from './fields-filter.pipe';
+
+const ADDRESS_FIELD_TYPES = [ 'AddressUK', 'AddressGlobalUK', 'AddressGlobal' ];
 
 @Component({
   selector: 'ccd-write-complex-type-field',
@@ -88,7 +90,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   private isAddressUK(): boolean {
-    return this.caseField.field_type.id === 'AddressUK';
+    return ADDRESS_FIELD_TYPES.indexOf(this.caseField.field_type.id) > -1;
   }
 
   private isTopLevelWithinCollection(): boolean {
