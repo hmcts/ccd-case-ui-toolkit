@@ -1,5 +1,5 @@
 <div [ngClass]="{'hmcts-banner hmcts-banner--warning':type === alertMessageType.WARNING || type === alertMessageType.ERROR}">
-  <div [ngClass]="{'hmcts-banner hmcts-banner--success':type === alertMessageType.SUCCESS">
+  <div [ngClass]="{'hmcts-banner hmcts-banner--success':type === alertMessageType.SUCCESS}">
     <ng-container [ngSwitch]="type">
       <ng-container *ngSwitchCase="alertMessageType.WARNING">
         <svg class="hmcts-banner__icon" fill="currentColor" role="presentation" focusable="false"
