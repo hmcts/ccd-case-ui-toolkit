@@ -8,7 +8,6 @@ import { Alert } from '../../domain/alert/alert.model';
 @Injectable()
 export class AlertService {
 
-  private alertObserver: Observer<Alert>;
   private successObserver: Observer<Alert>;
   private errorObserver: Observer<Alert>;
   private warningObserver: Observer<Alert>;
@@ -17,19 +16,13 @@ export class AlertService {
   preservedError = '';
   preservedWarning = '';
   preservedSuccess = '';
-  preservedAlert = '';
 
-  alerts: ConnectableObservable<Alert>;
   successes: ConnectableObservable<Alert>;
   errors: ConnectableObservable<Alert>;
   warnings: ConnectableObservable<Alert>;
   private preserveAlerts = false;
 
   constructor(private router: Router) {
-    this.alerts = Observable
-      .create(observer => this.alertObserver = observer)
-      .publish();
-    this.alerts.connect();
 
     this.successes = Observable
       .create(observer => this.successObserver = observer)
@@ -61,7 +54,6 @@ export class AlertService {
   }
 
   clear(): void {
-    this.alertObserver.next(null);
     this.successObserver.next(null);
     this.errorObserver.next(null);
     this.warningObserver.next(null);
@@ -127,13 +119,5 @@ export class AlertService {
     } else {
       return '';
     }
-  }
-
-  message(message: string): void {
-    this.preservedAlert = this.preserveMessages(message);
-    this.alertObserver.next({
-      level: 'message',
-      message: message
-    })
   }
 }

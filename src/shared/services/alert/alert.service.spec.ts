@@ -46,18 +46,13 @@ describe('AlertService', () => {
   });
 
   it('should offer observable alert stream', () => {
-    expect(alertService.alerts.subscribe).toBeTruthy();
+    expect(alertService.errors.subscribe).toBeTruthy();
+    expect(alertService.warnings.subscribe).toBeTruthy();
+    expect(alertService.successes.subscribe).toBeTruthy();
   });
 
   it('should publish alert to observable when respective methods used', done => {
     // set up all observables with expected results
-    alertService
-      .alerts
-      .subscribe(alert => {
-        expect(alert).toEqual(MESSAGE_ALERT);
-        done();
-      });
-
     alertService
       .errors
       .subscribe(alert => {
@@ -80,7 +75,6 @@ describe('AlertService', () => {
       });
 
     // set the respective methods
-    alertService.message(A_MESSAGE);
     alertService.error(ERROR_MESSAGE);
     alertService.success(SUCCESS_MESSAGE);
     alertService.warning(WARNING_MESSAGE);
@@ -88,13 +82,6 @@ describe('AlertService', () => {
 
   it('should publish null to observable when clear method used', done => {
     // set up all observables with expected null values
-    alertService
-      .alerts
-      .subscribe(alert => {
-        expect(alert).toBeFalsy();
-        done();
-      });
-
     alertService
       .errors
       .subscribe(alert => {
@@ -155,18 +142,9 @@ describe('AlertService', () => {
 
   it('should be a hot alert observable', done => {
     // set an original message
-    alertService.message(WARNING_MESSAGE);
     alertService.error(WARNING_MESSAGE);
     alertService.success(WARNING_MESSAGE);
     alertService.warning(A_MESSAGE);
-
-    // change the messages on each observable
-    alertService
-      .alerts
-      .subscribe(alert => {
-        expect(alert).toEqual(MESSAGE_ALERT);
-        done();
-      });
 
     alertService
       .errors
@@ -190,7 +168,6 @@ describe('AlertService', () => {
       });
 
     // set the new message
-    alertService.message(A_MESSAGE);
     alertService.error(ERROR_MESSAGE);
     alertService.success(SUCCESS_MESSAGE);
     alertService.warning(WARNING_MESSAGE);
