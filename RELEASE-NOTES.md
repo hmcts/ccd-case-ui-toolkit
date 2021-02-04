@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 2.67.10-feature-toggle-work-allocation
+### 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
 ### Version 2.67.9-ie-textbox-expand-issue
