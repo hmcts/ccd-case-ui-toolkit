@@ -1,5 +1,4 @@
 ## RELEASE NOTES
-
 ### Version 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
