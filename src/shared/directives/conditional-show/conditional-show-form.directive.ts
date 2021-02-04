@@ -75,7 +75,9 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
 
   private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent, control: AbstractControl) {
     if (cf) {
-      if (cf.show_condition) {
+      if (cf.display_context === 'HIDDEN') {
+          cf.hidden = true; // display_context === 'HIDDEN' means always hide
+      } else if (cf.show_condition) {
         const condResult = ShowCondition.getInstance(cf.show_condition).match(this.allFieldValues, this.buildPath(component, cf));
         if (cf.hidden === null || cf.hidden === undefined) {
           cf.hidden = false;
