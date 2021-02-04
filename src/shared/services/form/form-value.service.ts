@@ -258,6 +258,13 @@ export class FormValueService {
         return rawValue;
     }
   }
+  public clearNonCaseFields (data: object, caseFields: CaseField[]) {
+    for (let dataKey in data) {
+      if (!caseFields.find(cf => cf.id === dataKey)) {
+        delete data [dataKey];
+      }
+    }
+  }
   /**
    * Clear out unnecessary fields from a data object, based on an array of CaseFields.
    * This method is recursive and will call itself if it encounters particular field types.
@@ -270,11 +277,7 @@ export class FormValueService {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
-        for (let dataKey in data) {
-          if (!caseFields.find(cf => cf.id === dataKey)) {
-            delete data [dataKey];
-          }
-        }
+        this.clearNonCaseFields(data, caseFields);
       }
       for (const field of caseFields) {
         if (!FormValueService.isLabel(field) && FormValueService.isReadOnly(field)) {
