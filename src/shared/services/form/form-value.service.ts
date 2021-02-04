@@ -198,8 +198,8 @@ export class FormValueService {
     return s;
   }
 
-  filterCurrentPageFields(caseFields: CaseField[], editFrom: any): any {
-    let cloneForm = JSON.parse(JSON.stringify(editFrom));
+  filterCurrentPageFields(caseFields: CaseField[], editForm: any): any {
+    let cloneForm = JSON.parse(JSON.stringify(editForm));
     Object.keys(cloneForm['data']).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
         delete cloneForm['data'][key];
