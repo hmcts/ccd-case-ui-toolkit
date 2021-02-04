@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.68.13-prerelease-conditional-show-perf
+We do need to submit labels
+
 ### Version 2.68.12-prerelease-conditional-show-perf
 **EUI-3331** Problem with event_data submission
 
