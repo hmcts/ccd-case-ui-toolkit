@@ -125,16 +125,18 @@ export class CasesService {
         try {
           if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
             const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
-            const list_items = dynamicListValue.list_items;
-            const value = dynamicListValue.value;
-            field.value = {
-              list_items: list_items,
-              value: value ? value : undefined
-            };
-            field.formatted_value = {
-              ...field.formatted_value,
-              ...field.value
-            };
+            if (dynamicListValue) {
+              const list_items = dynamicListValue.list_items;
+              const value = dynamicListValue.value;
+              field.value = {
+                list_items: list_items,
+                value: value ? value : undefined
+              };
+              field.formatted_value = {
+                ...field.formatted_value,
+                ...field.value
+              };
+            }
           } else {
             this.setDynamicListDefinition(field, field.field_type, rootCaseField);
           }
