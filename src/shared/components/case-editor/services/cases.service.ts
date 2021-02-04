@@ -297,9 +297,9 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // This is used a feature toggle to 
+    // This is used a feature toggle to
     // control the work allocation
-    if(this.appConfig.getWorkAllocationApiUrl()) {
+    if (this.appConfig.getWorkAllocationApiUrl()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
           .subscribe(() => {
             // Success. Do nothing.
