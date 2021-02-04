@@ -15,8 +15,8 @@ enum AlertMessageType {
 })
 export class AlertComponent {
 
+  // confirmation type has been removed as per EUI-3232
   public static readonly TYPE_WARNING = 'warning';
-  public static readonly TYPE_CONFIRMATION = 'confirmation';
   public static readonly TYPE_SUCCESS = 'success';
   public static readonly TYPE_ERROR = 'error';
 
@@ -26,4 +26,5 @@ export class AlertComponent {
 
   @Input()
   public showIcon = true;
+
 }

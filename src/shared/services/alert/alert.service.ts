@@ -112,7 +112,7 @@ export class AlertService {
     return this.preserveAlerts;
   }
 
-  preserveMessages(message: string) {
+  preserveMessages(message: string): string {
     // preserve the messages if set to preserve them
     if (this.isPreserveAlerts()) {
       return message;
