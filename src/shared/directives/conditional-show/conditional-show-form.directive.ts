@@ -45,7 +45,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   /**
    * Moved the evaluation of show/hide conditions and subscription
    * to form changes until after the form has been fully created.
-   * 
+   *
    * Prior to this change, I traced more than 5,100,000 firings of
    * the evaluateCondition INSIDE the show_condition check on page
    * load for an event with a lot of content. After this change,
@@ -75,7 +75,9 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
 
   private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent, control: AbstractControl) {
     if (cf) {
-      if (cf.show_condition) {
+      if (cf.display_context === 'HIDDEN') {
+          cf.hidden = true; // display_context === 'HIDDEN' means always hide
+      } else if (cf.show_condition) {
         const condResult = ShowCondition.getInstance(cf.show_condition).match(this.allFieldValues, this.buildPath(component, cf));
         if (cf.hidden === null || cf.hidden === undefined) {
           cf.hidden = false;
