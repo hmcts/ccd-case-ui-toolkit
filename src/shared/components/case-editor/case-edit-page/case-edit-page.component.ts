@@ -314,9 +314,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     // Now add the remaining bits and pieces to the CaseEventData,
     // The event_data should be the full context of the event, including values from previous pages, but not labels
-    caseEventData.event_data = this.editForm.value.data;
-    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, this.getCaseFieldsFromCurrentAndPreviousPages(),
+
+    caseEventData.event_data = this.clone(this.editForm.value.data);
+    let evCf = this.getCaseFieldsFromCurrentAndPreviousPages();
+    // for consistency we'll santise before removing
+    this.formValueService.sanitiseDynamicLists(evCf, {data: caseEventData.event_data});
+    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, evCf,
       false, true);
+    // we are not calling santise on event_data to be consistent with previous code. Seeems like we ought to though
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
 
@@ -327,6 +332,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     // Return the now hopefully sane CaseEventData.
     return caseEventData;
+  }
+
+  private clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
   }
 
   private setFocusToTop() {
