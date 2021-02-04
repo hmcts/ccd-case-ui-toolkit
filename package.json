@@ -62,7 +62,7 @@
     "moment-timezone": "^0.5.31",
     "npm-registry-fetch": "^4.0.5",
     "rx-polling": "1.1.0",
-    "typescript": "3.1.1",
+    "typescript": "3.9.7",
     "underscore": "^1.9.1",
     "yargs-parser": "18.1.2"
   },
@@ -153,7 +153,7 @@
     "ts-node": "^7.0.1",
     "tslib": "^1.9.3",
     "tslint": "^5.8.0",
-    "typescript": "3.1.1",
+    "typescript": "3.9.7",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "4.44.1",
     "webpack-angular-externals": "^1.0.2",
