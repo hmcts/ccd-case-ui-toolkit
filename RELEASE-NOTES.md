@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.68.14-prerelease-conditional-show-perf
+**EUI-2830** Dynamic list fixes
+
 ### Version 2.68.13-prerelease-conditional-show-perf
 We do need to submit labels
 
