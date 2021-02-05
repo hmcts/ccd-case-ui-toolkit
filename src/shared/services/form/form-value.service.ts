@@ -265,6 +265,46 @@ export class FormValueService {
       }
     }
   }
+  // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
+  public removeNullLabels (data: object, caseFields: CaseField[]) {
+    if (data && caseFields && caseFields.length > 0) {
+      // check if there is any data at the top level of the form that's not in the caseFields
+      for (const field of caseFields) {
+        if (field.field_type) {
+          switch (field.field_type.type) {
+            case 'Label':
+              // Delete any labels that are null
+              if (data[field.id] === null) {
+                delete data[field.id];
+              }
+              break;
+            case 'Complex':
+              // Recurse and remove anything unnecessary from within a complex field.
+              this.removeNullLabels(data[field.id], field.field_type.complex_fields);
+              break;
+            case 'Collection':
+              // Get hold of the collection.
+              const collection = data[field.id];
+              // Check if we actually have a collection to work with.
+              if (collection && Array.isArray(collection)) {
+                // If this is a collection of complex object, we need to iterate through
+                // and clear them out.
+                if (field.field_type.collection_field_type.type === 'Complex') {
+                  // Iterate through the elements and remove any unnecessary fields within.
+                  for (const item of collection) {
+                    this.removeNullLabels(item, field.field_type.collection_field_type.complex_fields);
+                    this.removeNullLabels(item.value, field.field_type.collection_field_type.complex_fields);
+                  }
+                }
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    }
+  }
   /**
    * Clear out unnecessary fields from a data object, based on an array of CaseFields.
    * This method is recursive and will call itself if it encounters particular field types.
