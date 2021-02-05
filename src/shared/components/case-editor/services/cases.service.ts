@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Headers } from '@angular/http';
 import { plainToClass } from 'class-transformer';
@@ -68,7 +69,7 @@ export class CasesService {
     return this.http
       .get(url)
       .pipe(
-        map(response => response.json()),
+        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -78,15 +79,15 @@ export class CasesService {
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
-    const headers = new Headers({
+    const headers = new HttpHeaders({
       'Accept': CasesService.V2_MEDIATYPE_CASE_VIEW,
       'experimental': 'true',
     });
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'events'})
       .pipe(
-        map(response => response.json()),
+        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -137,7 +138,7 @@ export class CasesService {
 
     let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true'
     });
     if (Draft.isDraft(caseId)) {
@@ -149,11 +150,11 @@ export class CasesService {
     }
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'events'})
       .pipe(
         map(response => {
 
-          return this.handleNestedDynamicListsInComplexTypes(response.json());
+          return this.handleNestedDynamicListsInComplexTypes(response);
         }),
         catchError(error => {
           this.errorService.setError(error);
@@ -235,15 +236,15 @@ export class CasesService {
       + `/cases/${caseId}`
       + `/documents`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
     });
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'events'})
       .pipe(
-        map(response => response.json().documentResources),
+        map(response => response.documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -297,9 +298,9 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // This is used a feature toggle to 
+    // This is used a feature toggle to
     // control the work allocation
-    if(this.appConfig.getWorkAllocationApiUrl()) {
+    if (this.appConfig.getWorkAllocationApiUrl()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
           .subscribe(() => {
             // Success. Do nothing.

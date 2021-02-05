@@ -4,6 +4,7 @@ import { Response, Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, HttpErrorService } from '../http';
 import { CaseEventData, Draft, DRAFT_PREFIX, CaseView } from '../../domain';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class DraftService {
@@ -55,12 +56,12 @@ export class DraftService {
 
   getDraft(draftId: string): Observable<CaseView> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
     });
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'events'})
       .map(response => response.json())
       .catch((error: any): any => {
         this.errorService.setError(error);
