@@ -62,7 +62,6 @@ export class WorkAllocationService {
    * @param taskId specifies which task should be completed.
    */
   public completeTask(taskId: string): Observable<any> {
-    console.log('Testing completion');
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
