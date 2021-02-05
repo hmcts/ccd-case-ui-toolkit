@@ -1,7 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.69.0-color-contrast-aa",
-
+  "version": "2.70.0-workbasket-submit",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

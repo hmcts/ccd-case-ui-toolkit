@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.70.0-workbasket-submit
+**EUI-3177** Changed the submit button on workbasket to conform to accessibility standards
+
 ### Version 2.69.0-color-contrast-aa
 **EUI-2030** Change selected table row background colour to improve accessibility (AA) 
 
