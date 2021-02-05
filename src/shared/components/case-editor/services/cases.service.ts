@@ -152,7 +152,6 @@ export class CasesService {
       .get(url, {headers})
       .pipe(
         map(response => {
-
           return this.handleNestedDynamicListsInComplexTypes(response.json());
         }),
         catchError(error => {
