@@ -64,7 +64,7 @@ function getExampleUserDetails(): UserDetails[] {
   }]
 }
 
-fdescribe('WorkAllocationService', () => {
+describe('WorkAllocationService', () => {
 
   const API_URL = 'http://aggregated.ccd.reform';
   const MOCK_TASK_1 = { id: 'Task_1', caseReference: '1234567890' };
