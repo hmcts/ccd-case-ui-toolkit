@@ -86,7 +86,6 @@ export class WorkAllocationService {
    */
   public handleTaskCompletionError(response: any): void {
     const userDetails = response as UserDetails;
-    console.log(userDetails.userInfo.roles);
     if (this.userIsCaseworker(userDetails.userInfo.roles)) {
       this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
     }
