@@ -74,7 +74,6 @@ export class WorkAllocationService {
           this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response.json()).subscribe((response) => {
             this.handleTaskCompletionError(response);
           });
-
           return throwError(error);
         })
       );
@@ -87,6 +86,8 @@ export class WorkAllocationService {
   public handleTaskCompletionError(response: any): void {
     const userDetails = response as UserDetails;
     if (this.userIsCaseworker(userDetails.userInfo.roles)) {
+      // when submitting the completion of task if not yet rendered cases/case confirm then preserve the alert for re-rendering
+      this.alertService.setPreserveAlerts(true, ['cases/case', 'submit']);
       this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
     }
   }

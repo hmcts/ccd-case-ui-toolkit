@@ -94,7 +94,7 @@ fdescribe('WorkAllocationService', () => {
       body: JSON.stringify(getExampleUserDetails()[1])
     }))));
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
   });
 
@@ -171,7 +171,7 @@ fdescribe('WorkAllocationService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-          expect(alertService.clear).toHaveBeenCalled();
+          expect(alertService.setPreserveAlerts).toHaveBeenCalled();
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });
