@@ -6,6 +6,7 @@
 $blue_table: #005ea5;
 $blue_pagination: #005da6;
 $black: #231F20;
+$focus-yellow: #FFDD00;
 
 table {
 
@@ -16,9 +17,19 @@ table {
   tbody tr td {
     font-size: 16px;
     word-wrap: break-word;
+
     a {
+      float: left;
       color: $blue_table;
       background-color: $white;
+
+      &.govuk-link:focus {
+        outline: 3px solid transparent;
+        color: $black;
+        background-color: $focus-yellow;
+        box-shadow: 0 -2px $focus-yellow, 0 4px $black;
+        text-decoration: none;
+      }
     }
   }
 
