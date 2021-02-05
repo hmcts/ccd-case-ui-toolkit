@@ -62,7 +62,7 @@ export class DraftService {
     });
     return this.http
       .get(url, {headers, observe: 'events'})
-      .map(response => response.json())
+      .map(response => response)
       .catch((error: any): any => {
         this.errorService.setError(error);
         return throwError(error);
