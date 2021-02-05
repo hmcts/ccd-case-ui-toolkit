@@ -29,6 +29,9 @@ interface UserDetails {
 @Injectable()
 export class WorkAllocationService {
 
+  public static IACCaseOfficer = 'caseworker-ia-caseofficer';
+  public static IACAdmOfficer = 'caseworker-ia-admofficer';
+
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
@@ -36,9 +39,6 @@ export class WorkAllocationService {
     private readonly alertService: AlertService
   ) {
   }
-
-  public static IACCaseOfficer = 'caseworker-ia-caseofficer';
-  public static IACAdmOfficer = 'caseworker-ia-admofficer';
 
   /**
    * Call the API to get tasks matching the search criteria.
