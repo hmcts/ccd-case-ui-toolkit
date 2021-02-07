@@ -85,7 +85,7 @@ export class CasesService {
     });
 
     return this.http
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => response),
         catchError(error => {
@@ -150,7 +150,7 @@ export class CasesService {
     }
 
     return this.http
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => {
 
@@ -242,7 +242,7 @@ export class CasesService {
     });
 
     return this.http
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => response.documentResources),
         catchError(error => {

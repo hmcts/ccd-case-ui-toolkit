@@ -27,7 +27,7 @@ export class CaseHistoryService {
     });
 
     return this.httpService
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .map(response => response)
       .catch((error: any): any => {
         this.httpErrorService.setError(error);

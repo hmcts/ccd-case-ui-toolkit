@@ -31,7 +31,7 @@ export class WorkbasketInputFilterService {
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;
     return this.httpService
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .map(response => {
         let jsonResponse = response;
         let workbasketInputs = jsonResponse.workbasketInputs;

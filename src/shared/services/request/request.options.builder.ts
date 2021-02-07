@@ -29,7 +29,7 @@ export class RequestOptionsBuilder {
         }
       }
 
-      let options: OptionsType = { params, observe: 'events'};
+      let options: OptionsType = { params, observe: 'body'};
       return options;
     }
 

@@ -26,7 +26,7 @@ export class ProfileService {
     });
 
     return this.httpService
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map((response) => response),
         map((p: Object) => plainToClass(Profile, p))

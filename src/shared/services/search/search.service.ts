@@ -70,7 +70,7 @@ export class SearchService {
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;
     return this.httpService
-      .get(url, { headers, observe: 'events' })
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(response => {
           let jsonResponse = response;

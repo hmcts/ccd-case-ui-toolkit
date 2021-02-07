@@ -23,7 +23,7 @@ export class BannersService {
     let params: HttpParams = new HttpParams();
     jurisdictionReferences.forEach(reference => params.append('ids', reference));
     return this.httpService
-      .get(url, {params, headers, observe: 'events'})
+      .get(url, {params, headers, observe: 'body'})
       .map(response => {
         let jsonResponse = response;
         let banners = jsonResponse.banners;

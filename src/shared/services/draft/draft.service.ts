@@ -61,7 +61,7 @@ export class DraftService {
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
     });
     return this.http
-      .get(url, {headers, observe: 'events'})
+      .get(url, {headers, observe: 'body'})
       .map(response => response)
       .catch((error: any): any => {
         this.errorService.setError(error);

@@ -37,15 +37,9 @@ export class HttpService {
   }
 
   private setDefaultValue(options?: OptionsType): OptionsType {
-    options = options || {observe: 'events'};
-    options.withCredentials = true; 
+    options = options || {observe: 'body'};
+    options.withCredentials = true;
     if (!options.headers) {
-      options.headers = new HttpHeaders()
-        .set(HttpService.HEADER_ACCEPT, 'application/json')
-        .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
-    }
-
-    /*if (!options.headers) {
       options.headers = new HttpHeaders();
     } else if (!(options.headers instanceof HttpHeaders)) {
       options.headers = new HttpHeaders(options.headers);
@@ -55,13 +49,10 @@ export class HttpService {
     }
     if (!options.headers.has(HttpService.HEADER_CONTENT_TYPE)) {
       options.headers.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
-    }*/
-    /*if (null === options.headers.get(HttpService.HEADER_CONTENT_TYPE)) {
-      console.log('test4');
+    }
+    if (null === options.headers.get(HttpService.HEADER_CONTENT_TYPE)) {      
       options.headers.delete(HttpService.HEADER_CONTENT_TYPE);
-    }*/
-    // console.log('setDefaultValue', JSON.stringify(options.headers));
-
+    }
     return options;
   }
 
@@ -147,7 +138,7 @@ export class HttpService {
 
 export interface OptionsType {
   headers?: HttpHeaders | { [header: string]: string | string[]; };
-  observe: 'events';
+  observe: 'body';
   params?: HttpParams | { [param: string]: string | string[]; };
   reportProgress?: boolean;
   responseType?: 'json';
