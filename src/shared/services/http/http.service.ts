@@ -40,7 +40,7 @@ export class HttpService {
     options = options || {observe: 'body'};
     options.withCredentials = true;
     if (!options.headers) {
-      options.headers = new HttpHeaders();
+      options.headers = new HttpHeaders({'Content-Type': 'application/json'});
     } else if (!(options.headers instanceof HttpHeaders)) {
       options.headers = new HttpHeaders(options.headers);
     }
