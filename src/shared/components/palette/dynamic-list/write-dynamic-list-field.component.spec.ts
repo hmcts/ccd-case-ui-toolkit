@@ -67,11 +67,7 @@ describe('WriteDynamicListFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
-    component.registerControl = REGISTER_CONTROL;
+    component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
     fixture.detectChanges();
