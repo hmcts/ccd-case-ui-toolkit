@@ -15,6 +15,6 @@ export class ReadDynamicListFieldComponent extends AbstractFieldReadComponent im
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
-
+    super.ngOnInit();
   }
 }
