@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.70.1-table-link-contrast-aa",
+  "version": "2.69.1-table-link-contrast-aa",
 
   "engines": {
     "yarn": "^1.12.3",
