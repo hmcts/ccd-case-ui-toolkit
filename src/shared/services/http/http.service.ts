@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Headers, Http, RequestOptionsArgs, Response } from '@angular/http';
 import { HttpErrorService } from './http-error.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
+import { LoadingService } from '../loading';
 
 @Injectable()
 export class HttpService {
@@ -12,7 +13,8 @@ export class HttpService {
 
   constructor(
     private http: Http,
-    private httpErrorService: HttpErrorService
+    private httpErrorService: HttpErrorService,
+    private loadingService: LoadingService
   ) {}
 
   /**
@@ -23,12 +25,14 @@ export class HttpService {
    * @see UrlResolverService
    */
   public get(url: string, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
+    const loadingToken = this.loadingService.register();
     return this.http
       .get(url, this.sanitiseOptions(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
@@ -41,12 +45,14 @@ export class HttpService {
    * @see UrlResolverService
    */
   public post(url: string, body: any, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
+    const loadingToken = this.loadingService.register();
     return this.http
       .post(url, body, this.sanitiseOptions(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
@@ -59,12 +65,14 @@ export class HttpService {
    * @see UrlResolverService
    */
   public put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
+    const loadingToken = this.loadingService.register();
     return this.http
       .put(url, body, this.sanitiseOptions(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
@@ -76,12 +84,14 @@ export class HttpService {
    * @see UrlResolverService
    */
   public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
+    const loadingToken = this.loadingService.register();
     return this.http
       .delete(url, this.sanitiseOptions(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 

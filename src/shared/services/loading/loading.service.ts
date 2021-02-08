@@ -2,9 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { distinctUntilChanged } from "rxjs/operators";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LoadingService implements HasLoadingState {
   private registered = new Map<string, string>();
   private loading = new BehaviorSubject<boolean>(false);
