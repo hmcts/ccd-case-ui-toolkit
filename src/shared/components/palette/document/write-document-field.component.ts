@@ -22,7 +22,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
 
   private uploadedDocument: FormGroup;
-  private selectedFile: File;
+  public selectedFile: File;
   private dialogConfig: MatDialogConfig;
   @ViewChild('fileInput') fileInput: ElementRef;
 
@@ -47,7 +47,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   constructor(
     private documentManagement: DocumentManagementService,
-    private dialog: MatDialog,
+    public dialog: MatDialog,
     private fileUploadStateService: FileUploadStateService,
   ) {
     super();
@@ -144,6 +144,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
         this.valid = true;
         this.fileUploadStateService.setUploadInProgress(false);
+        // refresh replaced document info
+        if (this.caseField.value) {
+          this.caseField.value.document_binary_url = document._links.binary.href;
+          this.caseField.value.document_filename = document.originalDocumentName;
+          this.caseField.value.document_url = document._links.self.href;
+        }
       }, (error: HttpError) => {
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
@@ -159,7 +165,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileSelectEvent() {
-    if (this.caseField.value) {
+    if ((this.caseField.value && this.caseField.value.document_filename) ||
+      (this.selectedFile && this.selectedFile.name)) {
       this.openDialog(this.dialogConfig);
     } else {
       this.openFileDialog();
@@ -168,7 +175,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   openDialog(dialogConfig) {
     const dialogRef = this.dialog.open(DocumentDialogComponent, dialogConfig);
-    this.dialogSubscription = dialogRef.beforeClose().subscribe(result => {
+    this.dialogSubscription = dialogRef.beforeClosed().subscribe(result => {
       this.confirmReplaceResult = result;
       this.triggerReplace();
     });

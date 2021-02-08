@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.69.0-color-contrast-aa",
+  "version": "2.69.1-fix-replace-document-issue",
 
   "engines": {
     "yarn": "^1.12.3",

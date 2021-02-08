@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.69.1-fix-replace-document-issue
+**EUI-2243** Fix upload replacement document issue
+
 ### Version 2.69.0-color-contrast-aa
 **EUI-2030** Change selected table row background colour to improve accessibility (AA) 
 
