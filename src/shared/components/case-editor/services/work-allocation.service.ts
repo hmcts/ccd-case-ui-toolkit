@@ -68,7 +68,6 @@ export class WorkAllocationService {
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
-          this.alertService.clear();
           // this will subscribe to get the user details and decide whether to display an error message
           this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response.json()).subscribe((response) => {
             this.handleTaskCompletionError(response);
