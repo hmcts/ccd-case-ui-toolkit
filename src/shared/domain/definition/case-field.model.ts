@@ -46,6 +46,9 @@ export class CaseField implements Orderable {
     if (this.field_type && this.field_type.type === 'DynamicList') {
       if (value instanceof Object && value.list_items) {
         this._list_items = value.list_items;
+        if (!value.value) {
+          value = null;
+        }
       } else if (!this._list_items || this._list_items.length === 0) {
         // Extract the list items from the current value if that's the only place they exist.
         this._list_items = this.list_items;
