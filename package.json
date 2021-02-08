@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.69.1-fix-replace-document-issue",
+  "version": "2.70.3-button-labels",
 
   "engines": {
     "yarn": "^1.12.3",

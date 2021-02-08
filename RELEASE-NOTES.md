@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.70.3-button-labels-aa
+**EUI-2027** Button label accessibility amends
+
 ### Version 2.69.1-fix-replace-document-issue
 **EUI-2243** Fix upload replacement document issue
 
