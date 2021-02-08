@@ -32,12 +32,10 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   ) {
     // Doesn't look like this is ever called so this may be a redundant component now...
     // It may, of course, just be that I don't know how to get to this component.
-    console.log('CaseEvenTriggerComponent constructor');
   }
 
   ngOnInit(): void {
     // Doesn't look like this is ever called so this may be a redundant component now...
-    console.log('CaseEvenTriggerComponent.ngOnInit', this.route.snapshot.data);
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
