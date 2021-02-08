@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+
+### Version 2.69.2-alert-service-update
+**EUI-3229** Task event completion - part 2
+**EUI-3232** CCD UI toolkit Alert service message improvements
+
 ### Version 2.69.1-fix-replace-document-issue
 **EUI-2243** Fix upload replacement document issue
 
