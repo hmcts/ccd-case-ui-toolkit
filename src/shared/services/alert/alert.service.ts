@@ -139,7 +139,6 @@ export class AlertService {
 
   // TODO: Remove
   push(msgObject) {
-    console.log('Hi' + msgObject);
     this.message = msgObject.message;
     this.level = msgObject.level;
 
