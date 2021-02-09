@@ -189,6 +189,7 @@ export class CasesService {
       .get(url, {headers})
       .pipe(
         map(response => {
+
           return this.handleNestedDynamicLists(response.json());
         }),
         catchError(error => {

@@ -10,6 +10,7 @@ export class AlertIconClassPipe implements PipeTransform {
 
   public transform(type: string): string {
     switch (type) {
+      case AlertComponent.TYPE_CONFIRMATION:
       case AlertComponent.TYPE_SUCCESS:
         return AlertIconClassPipe.CLASS_SUCCESS;
       case AlertComponent.TYPE_WARNING:

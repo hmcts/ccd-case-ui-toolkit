@@ -22,7 +22,7 @@
 
     &.EventLogTable-Selected {
       border-left: $borderWidth solid $govuk-blue;
-      background-color: $highlight-colour;
+      background-color: rgba($govuk-blue, .2);
 
       td:first-child {
         padding-left: $leftPadding - $borderWidth / 2;

@@ -11,7 +11,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   textareaControl: FormControl;
-  constructor(private readonly browserService: BrowserService) {
+  constructor(private browserService: BrowserService) {
     super();
   }
 

@@ -47,8 +47,7 @@ export class WorkAllocationService {
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
-          // when submitting the completion of task if not yet rendered cases/case confirm then preserve the alert for re-rendering
-          this.alertService.setPreserveAlerts(true, ['cases/case', 'submit']);
+          this.alertService.clear();
           this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
           return throwError(error);
         })
