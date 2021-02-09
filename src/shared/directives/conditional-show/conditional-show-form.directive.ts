@@ -126,7 +126,13 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     }
     if (groupControl.controls) {
       Object.keys(groupControl.controls).forEach(cKey => {
-        this.fieldsUtils.controlIterator(groupControl.get(cKey), this.handleFormArray, this.handleFormGroup, this.handleFormControl)
+        // EUI-3359.
+        // Get the control from groupControl.controls[cKey] rather than
+        // groupControl.get(cKey) as the latter does pathing and will interpret
+        // full stops in cKey as delimeters for being nested within an array,
+        // which makes no sense in this situation.
+        const control = groupControl.controls[cKey];
+        this.fieldsUtils.controlIterator(control, this.handleFormArray, this.handleFormGroup, this.handleFormControl)
       });
     }
   }
