@@ -352,7 +352,6 @@ export class FormValueService {
                   // Iterate through the elements and remove any unnecessary fields within.
                   for (const item of collection) {
                     this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
-                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, clearEmpty);
                   }
                 }
               }
