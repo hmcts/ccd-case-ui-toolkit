@@ -239,12 +239,6 @@ describe('WorkbasketFiltersComponent', () => {
           fixture.detectChanges();
         });
     }));
-    it('should remove localStorage once reset button is clicked', async(() => {
-      windowMockService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
-      windowMockService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-      component.reset();
-      expect(windowMockService.removeLocalStorage).toHaveBeenCalled();
-    }));
   });
   describe('with defaults', () => {
     beforeEach(async(() => {
@@ -397,12 +391,15 @@ describe('WorkbasketFiltersComponent', () => {
     it('should initialise case state selector with states from selected case type', () => {
       let selector = de.query(By.css('#wb-case-state'));
 
-      expect(selector.children.length).toEqual(2);
+      expect(selector.children.length).toEqual(3);
 
-      let cs2 = selector.children[0];
+      let cs1 = selector.children[0];
+      expect(cs1.nativeElement.textContent).toEqual('Any');
+
+      let cs2 = selector.children[1];
       expect(cs2.nativeElement.textContent).toEqual(DEFAULT_CASE_TYPE.states[0].name);
 
-      let cs3 = selector.children[1];
+      let cs3 = selector.children[2];
       expect(cs3.nativeElement.textContent).toEqual(DEFAULT_CASE_STATE.name);
       expect(orderService.sortAsc).toHaveBeenCalled();
     });
@@ -410,7 +407,7 @@ describe('WorkbasketFiltersComponent', () => {
     it('should initially select case state based on default', () => {
       let selector = de.query(By.css('#wb-case-state'));
 
-      expect(selector.nativeElement.selectedIndex).toEqual(1);
+      expect(selector.nativeElement.selectedIndex).toEqual(2);
       expect(component.selected.caseState).toBe(DEFAULT_CASE_TYPE.states[1]);
       expect(orderService.sortAsc).toHaveBeenCalled();
     });
@@ -423,7 +420,7 @@ describe('WorkbasketFiltersComponent', () => {
         .whenStable()
         .then(() => {
           let selector = de.query(By.css('#wb-case-state'));
-          expect(selector.nativeElement.selectedIndex).toEqual(0);
+          expect(selector.nativeElement.selectedIndex).toEqual(1);
           expect(component.selected.caseState).toBe(DEFAULT_CASE_TYPE.states[0]);
         });
     }));
@@ -497,7 +494,7 @@ describe('WorkbasketFiltersComponent', () => {
         selected: component.selected,
         queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
       });
-      expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
+      expect(component.selected.formGroup).toEqual(null);
     }));
 
     it('should have metadata fields added when apply button is clicked', async(() => {
@@ -713,7 +710,7 @@ describe('WorkbasketFiltersComponent', () => {
       let selector = de.query(By.css('#wb-case-state'));
       component.defaults.state_id = CRUD_FILTERED_CASE_TYPES[0].states[0].id;
       expect(selector.nativeElement.selectedIndex).toEqual(0);
-      expect(component.selected.caseState.id).toEqual(CRUD_FILTERED_CASE_TYPES[0].states[0].id);
+      expect(component.selected.caseState).toEqual(null);
     }));
   });
 
@@ -1112,9 +1109,9 @@ describe('WorkbasketFiltersComponent', () => {
 
       selector = de.query(By.css('#wb-case-state'));
 
-      expect(selector.children.length).toEqual(0);
+      expect(selector.children.length).toEqual(1);
+      expect(selector.children[0].nativeElement.textContent).toEqual('Any');
       expect(selector.nativeElement.selectedIndex).toEqual(-1);
-
     });
 
     it('should initialise case type with types from selected jurisdiction and index should be "Select a value" ', async(() => {
@@ -1159,7 +1156,7 @@ describe('WorkbasketFiltersComponent', () => {
 
           selector = de.query(By.css('#wb-case-state'));
 
-          expect(selector.children.length).toEqual(2);
+          expect(selector.children.length).toEqual(3);
           expect(selector.nativeElement.selectedIndex).toEqual(0);
         });
     }));
