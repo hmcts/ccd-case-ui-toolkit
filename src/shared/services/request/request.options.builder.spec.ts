@@ -1,9 +1,11 @@
 import { URLSearchParams, RequestOptionsArgs } from '@angular/http';
+import { HttpParams } from '@angular/common/http';
 import { RequestOptionsBuilder } from './request.options.builder';
+import { OptionsType } from '../http';
 
 describe('RequestOptionsBuilder', () => {
 
-  let params: URLSearchParams;
+  let params: HttpParams;
   let requestOptionsBuilder: RequestOptionsBuilder;
 
   describe('buildOptions()', () => {
@@ -16,22 +18,22 @@ describe('RequestOptionsBuilder', () => {
       }
 
       jasmine.addCustomEqualityTester(matchCall);
-      params = new URLSearchParams();
+      params = new HttpParams();
       requestOptionsBuilder = new RequestOptionsBuilder();
     });
 
     it('should not set if no params', () => {
       let result = requestOptionsBuilder.buildOptions({}, {});
 
-      let expected: RequestOptionsArgs = { params };
+      let expected: OptionsType = { params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
     it('should set view if present', () => {
       let result = requestOptionsBuilder.buildOptions({}, {}, 'WORKBASKET');
 
-      params.set('view', 'WORKBASKET');
-      let expected: RequestOptionsArgs = { params };
+      params = params.set('view', 'WORKBASKET');
+      let expected: OptionsType = { params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
@@ -39,8 +41,8 @@ describe('RequestOptionsBuilder', () => {
       let metaCriteria = {'caseState': 'testState'};
       let result = requestOptionsBuilder.buildOptions(metaCriteria, {});
 
-      params.set('caseState', 'testState');
-      let expected: RequestOptionsArgs = { params };
+      params = params.set('caseState', 'testState');
+      let expected: OptionsType = {params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
@@ -49,9 +51,9 @@ describe('RequestOptionsBuilder', () => {
       let caseCriteria = {'firstName': 'testFirstName', 'lastName': 'testLastName'};
       let result = requestOptionsBuilder.buildOptions({}, caseCriteria);
 
-      params.set('case.firstName', 'testFirstName');
-      params.set('case.lastName', 'testLastName');
-      let expected: RequestOptionsArgs = { params };
+      params = params.set('case.firstName', 'testFirstName');
+      params = params.set('case.lastName', 'testLastName');
+      let expected: OptionsType = {params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
@@ -61,11 +63,11 @@ describe('RequestOptionsBuilder', () => {
       let caseCriteria = {'firstName': 'testFirstName', 'lastName': 'testLastName'};
       let result = requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, 'WORKBASKET');
 
-      params.set('view', 'WORKBASKET');
-      params.set('caseState', 'testState');
-      params.set('case.firstName', 'testFirstName');
-      params.set('case.lastName', 'testLastName');
-      let expected: RequestOptionsArgs = { params };
+      params = params.set('view', 'WORKBASKET');
+      params = params.set('caseState', 'testState');
+      params = params.set('case.firstName', 'testFirstName');
+      params = params.set('case.lastName', 'testLastName');
+      let expected: OptionsType = {params, observe: 'body'};
       expect(result).toEqual(expected);
     });
   });

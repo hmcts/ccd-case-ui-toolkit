@@ -27,7 +27,7 @@ export class ActivityService {
     let body = { activity: activityType};
     return this.http
       .post(url, body, null, false)
-      .map(response => response.json());
+      .map(response => response);
   }
 
   verifyUserIsAuthorized(): void {

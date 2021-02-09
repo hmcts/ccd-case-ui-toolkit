@@ -20,10 +20,10 @@ export class ProfileService {
 
   get(): Observable<Profile> {
     let url = this.appConfig.getCaseDataUrl() + ProfileService.URL;
-    let headers = new HttpHeaders({
-      'experimental': 'true',
-      'Accept': ProfileService.V2_MEDIATYPE_USER_PROFILE
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', ProfileService.V2_MEDIATYPE_USER_PROFILE)
+      .set('Content-Type', 'application/json');
 
     return this.httpService
       .get(url, {headers, observe: 'body'})

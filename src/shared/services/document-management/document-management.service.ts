@@ -6,6 +6,7 @@ import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class DocumentManagementService {
@@ -23,17 +24,17 @@ export class DocumentManagementService {
 
   uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.appConfig.getDocumentManagementUrl();
-    let headers = new Headers();
-    headers.append(DocumentManagementService.HEADER_ACCEPT, null);
+    let headers = new HttpHeaders();
+    headers = headers.append(DocumentManagementService.HEADER_ACCEPT, null);
     // Content-Type header value needs to be null; HttpService will delete it, so that Angular can set it automatically
     // with the correct boundary
-    headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
+    headers = headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
     return this.http
-      .post(url, formData, { headers })
+      .post(url, formData, {headers, observe: 'body'})
       .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
       .pipe(
         map(response => {
-          return response.json();
+          return response;
         })
       );
   }

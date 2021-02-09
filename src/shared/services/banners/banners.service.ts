@@ -16,10 +16,10 @@ export class BannersService {
 
   getBanners(jurisdictionReferences: string[]): Observable<Banner[]> {
     let url = this.appConfig.getBannersUrl();
-    let headers = new HttpHeaders({
-      'experimental': 'true',
-      'Accept': BannersService.V2_MEDIATYPE_BANNERS
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', BannersService.V2_MEDIATYPE_BANNERS)
+      .set('Content-Type', 'application/json');
     let params: HttpParams = new HttpParams();
     jurisdictionReferences.forEach(reference => params.append('ids', reference));
     return this.httpService

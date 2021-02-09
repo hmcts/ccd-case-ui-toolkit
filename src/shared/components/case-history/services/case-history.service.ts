@@ -20,11 +20,10 @@ export class CaseHistoryService {
       eventId: string): Observable<CaseHistory> {
 
     const url = this.appConfig.getCaseHistoryUrl(caseId, eventId);
-
-    let headers = new HttpHeaders({
-      'experimental': 'true',
-      'Accept': CaseHistoryService.V2_MEDIATYPE_CASE_EVENT_VIEW
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CaseHistoryService.V2_MEDIATYPE_CASE_EVENT_VIEW)
+      .set('Content-Type', 'application/json');
 
     return this.httpService
       .get(url, {headers, observe: 'body'})

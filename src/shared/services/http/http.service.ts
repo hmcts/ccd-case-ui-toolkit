@@ -13,7 +13,6 @@ export class HttpService {
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
 
   constructor(
-    private http: Http,
     private httpclient: HttpClient,
     private httpErrorService: HttpErrorService
   ) {}
@@ -22,11 +21,12 @@ export class HttpService {
    *
    * @param url Url resolved using UrlResolverService
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
 
   public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
+    console.log('In get');
     return this.httpclient
       .get(url, this.setDefaultValue(options))
       .pipe(
@@ -36,37 +36,18 @@ export class HttpService {
       );
   }
 
-  private setDefaultValue(options?: OptionsType): OptionsType {
-    options = options || {observe: 'body'};
-    options.withCredentials = true;
-    if (!options.headers) {
-      options.headers = new HttpHeaders();
-    } else if (!(options.headers instanceof HttpHeaders)) {
-      options.headers = new HttpHeaders(options.headers);
-    }
-    if (!options.headers.has(HttpService.HEADER_ACCEPT)) {
-      options.headers.set(HttpService.HEADER_ACCEPT, 'application/json');
-    }
-    if (!options.headers.has(HttpService.HEADER_CONTENT_TYPE)) {
-      options.headers.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
-    }
-    if (null === options.headers.get(HttpService.HEADER_CONTENT_TYPE)) {      
-      options.headers.delete(HttpService.HEADER_CONTENT_TYPE);
-    }
-    return options;
-  }
-
   /**
    *
    * @param url Url resolved using UrlResolverService
    * @param body
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public post(url: string, body: any, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
-    return this.http
-      .post(url, body, this.sanitiseOptions(options))
+  public post(url: string, body: any, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
+    console.log('In post');
+    return this.httpclient
+      .post(url, body, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
@@ -79,12 +60,13 @@ export class HttpService {
    * @param url Url resolved using UrlResolverService
    * @param body
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-    return this.http
-      .put(url, body, this.sanitiseOptions(options))
+  public put(url: string, body: any, options?: OptionsType): Observable<any> {
+    console.log('In put');
+    return this.httpclient
+      .put(url, body, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res);
@@ -96,12 +78,13 @@ export class HttpService {
    *
    * @param url Url resolved using UrlResolverService
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
-    return this.http
-      .delete(url, this.sanitiseOptions(options))
+  public delete(url: string, options?: OptionsType): Observable<any> {
+    console.log('In delete');
+    return this.httpclient
+      .delete(url, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res);
@@ -109,7 +92,60 @@ export class HttpService {
       );
   }
 
-  private sanitiseOptions(options?: RequestOptionsArgs): RequestOptionsArgs {
+  private setDefaultValue(options?: OptionsType): OptionsType {
+    //try {      
+      options = options || {observe: 'body'};    
+      options.withCredentials = true;
+      console.log('Start',JSON.stringify(options.headers));
+      let headers = options.headers ? options.headers : new HttpHeaders();
+      console.log('In headers',JSON.stringify(headers));
+      
+      const val1 = headers.has(HttpService.HEADER_ACCEPT);
+      console.log('Val1', val1);
+
+      /*if (!headers) {
+        //headers = new HttpHeaders();
+          //.set(HttpService.HEADER_ACCEPT, 'application/json')
+          //.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+          console.log('H1', JSON.stringify(headers));
+      } else if (!(headers instanceof HttpHeaders)) {
+        //headers = new HttpHeaders();
+          //.set(HttpService.HEADER_ACCEPT, 'application/json')
+          //.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+          console.log('H2', JSON.stringify(headers));
+      }*/
+      
+    /*
+      if (!headers.has(HttpService.HEADER_ACCEPT)) {         
+        // options.headers = new HttpHeaders()
+        //   .set(HttpService.HEADER_ACCEPT, 'application/json')
+        //   .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+        headers = headers.set(HttpService.HEADER_ACCEPT, 'application/json');
+        //console.log('H3', JSON.stringify(headers));
+      }
+    
+      if (!headers.has(HttpService.HEADER_CONTENT_TYPE)) {  
+        // options.headers = new HttpHeaders()
+        //   .set(HttpService.HEADER_ACCEPT, 'application/json')
+        //   .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+        headers = headers.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+        //console.log('H4', JSON.stringify(headers));
+      }
+      //console.log('H5', JSON.stringify(headers));
+       if (null === headers.get(HttpService.HEADER_CONTENT_TYPE)) {
+         headers = headers.delete(HttpService.HEADER_CONTENT_TYPE);
+      //   console.log('H6', JSON.stringify(headers));
+       }*/
+      options.headers = headers;
+      console.log('H7', JSON.stringify(headers));
+    // }
+    // catch (error) {
+    //   console.error('Here is the error message', error);      
+    // }
+    return options;
+  }
+
+  /*private sanitiseOptions(options?: RequestOptionsArgs): RequestOptionsArgs {
     options = options || {};
     options.withCredentials = true;
 
@@ -133,11 +169,11 @@ export class HttpService {
     if (null === options.headers.get(HttpService.HEADER_CONTENT_TYPE)) {
       options.headers.delete(HttpService.HEADER_CONTENT_TYPE);
     }
-  }
+  }*/
 }
 
 export interface OptionsType {
-  headers?: HttpHeaders | { [header: string]: string | string[]; };
+  headers?: HttpHeaders;
   observe: 'body';
   params?: HttpParams | { [param: string]: string | string[]; };
   reportProgress?: boolean;

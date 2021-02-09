@@ -24,10 +24,11 @@ export class WorkbasketInputFilterService {
 
   getWorkbasketInputs(jurisdictionId: string, caseTypeId: string): Observable<WorkbasketInputModel[]> {
     let url = this.getWorkbasketInputUrl(caseTypeId);
-    let headers = new HttpHeaders({
-      'experimental': 'true',
-      'Accept': WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS)
+      .set('Content-Type', 'application/json');    
+
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;
     return this.httpService

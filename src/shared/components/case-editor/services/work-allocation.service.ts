@@ -28,7 +28,7 @@ export class WorkAllocationService {
     return this.http
       .post(url, { searchRequest })
       .pipe(
-        map(response => response.json()),
+        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);

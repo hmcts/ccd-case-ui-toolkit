@@ -26,13 +26,13 @@ export class DraftService {
 
   createDraft(ctid: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid);
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': DraftService.V2_MEDIATYPE_DRAFT_CREATE
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_CREATE)
+      .set('Content-Type', 'application/json');
     return this.http
-      .post(saveDraftEndpoint, eventData, {headers})
-      .map(response => response.json())
+      .post(saveDraftEndpoint, eventData, {headers, observe: 'body'})
+      .map(response => response)
       .catch((error: any): any => {
         this.errorService.setError(error);
         return throwError(error);
@@ -41,13 +41,13 @@ export class DraftService {
 
   updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid) + draftId;
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': DraftService.V2_MEDIATYPE_DRAFT_UPDATE
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_UPDATE)
+      .set('Content-Type', 'application/json');
     return this.http
-      .put(saveDraftEndpoint, eventData, {headers})
-      .map(response => response.json())
+      .put(saveDraftEndpoint, eventData, {headers, observe: 'body'})
+      .map(response => response)
       .catch((error: any): any => {
         this.errorService.setError(error);
         return throwError(error);
@@ -56,10 +56,10 @@ export class DraftService {
 
   getDraft(draftId: string): Observable<CaseView> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
-    let headers = new HttpHeaders({
-      'experimental': 'true',
-      'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_READ)
+      .set('Content-Type', 'application/json');
     return this.http
       .get(url, {headers, observe: 'body'})
       .map(response => response)
@@ -69,14 +69,14 @@ export class DraftService {
       });
   }
 
-  deleteDraft(draftId: string): Observable<{} | Response> {
+  deleteDraft(draftId: string): Observable<{} | any> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': DraftService.V2_MEDIATYPE_DRAFT_DELETE
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_DELETE)
+      .set('Content-Type', 'application/json');
     return this.http
-      .delete(url, {headers})
+      .delete(url, {headers, observe: 'body'})
       .catch((error: any): any => {
         this.errorService.setError(error);
         return throwError(error);

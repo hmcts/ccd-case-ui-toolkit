@@ -44,7 +44,7 @@ export class SearchService {
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
 
-    let options: RequestOptionsArgs = this.requestOptionsBuilder.buildPostOptions(metaCriteria, caseCriteria, view);
+    let options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {
       sort,
       size: this.appConfig.getPaginationPageSize()
@@ -53,7 +53,7 @@ export class SearchService {
     return this.httpService
       .post(url, body, options)
       .pipe(
-        map(response => response.json())
+        map(response => response)
       );
   }
 
@@ -63,10 +63,10 @@ export class SearchService {
 
   getSearchInputs(jurisdictionId: string, caseTypeId: string): Observable<SearchInput[]> {
     let url = this.getSearchInputUrl(caseTypeId);
-    const headers = new HttpHeaders({
-      'Accept': SearchService.V2_MEDIATYPE_SEARCH_INPUTS,
-      'experimental': 'true',
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
+      .set('Content-Type', 'application/json');
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;
     return this.httpService
