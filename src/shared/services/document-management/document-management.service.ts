@@ -2,10 +2,10 @@ import { Observable } from 'rxjs';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
-import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class DocumentManagementService {
@@ -23,7 +23,7 @@ export class DocumentManagementService {
 
   uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.appConfig.getDocumentManagementUrl();
-    let headers = new Headers();
+    let headers = new HttpHeaders();
     headers.append(DocumentManagementService.HEADER_ACCEPT, null);
     // Content-Type header value needs to be null; HttpService will delete it, so that Angular can set it automatically
     // with the correct boundary

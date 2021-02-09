@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { plainToClass } from 'class-transformer';
 import { AbstractAppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
 import { HttpService } from '../http';
 import { Profile } from '../../domain';
-import { Headers } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class ProfileService {
@@ -19,7 +18,7 @@ export class ProfileService {
 
   get(): Observable<Profile> {
     let url = this.appConfig.getCaseDataUrl() + ProfileService.URL;
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': ProfileService.V2_MEDIATYPE_USER_PROFILE
     });

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { Response, Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, HttpErrorService } from '../http';
 import { CaseEventData, Draft, DRAFT_PREFIX, CaseView } from '../../domain';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class DraftService {
@@ -25,7 +25,7 @@ export class DraftService {
 
   createDraft(ctid: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid);
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_CREATE
     });
@@ -40,7 +40,7 @@ export class DraftService {
 
   updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid) + draftId;
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_UPDATE
     });
@@ -55,7 +55,7 @@ export class DraftService {
 
   getDraft(draftId: string): Observable<CaseView> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
     });
@@ -70,7 +70,7 @@ export class DraftService {
 
   deleteDraft(draftId: string): Observable<{} | Response> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_DELETE
     });

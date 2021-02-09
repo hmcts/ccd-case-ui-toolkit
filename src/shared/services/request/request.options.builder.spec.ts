@@ -1,9 +1,10 @@
-import { URLSearchParams, RequestOptionsArgs } from '@angular/http';
+import { HttpParams } from '@angular/common/http';
+import { RequestOptionsArgs } from '..';
 import { RequestOptionsBuilder } from './request.options.builder';
 
 describe('RequestOptionsBuilder', () => {
 
-  let params: URLSearchParams;
+  let params: HttpParams;
   let requestOptionsBuilder: RequestOptionsBuilder;
 
   describe('buildOptions()', () => {
@@ -16,7 +17,7 @@ describe('RequestOptionsBuilder', () => {
       }
 
       jasmine.addCustomEqualityTester(matchCall);
-      params = new URLSearchParams();
+      params = new HttpParams();
       requestOptionsBuilder = new RequestOptionsBuilder();
     });
 

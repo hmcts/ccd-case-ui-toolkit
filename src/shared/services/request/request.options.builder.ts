@@ -1,5 +1,6 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RequestOptionsArgs, URLSearchParams } from '@angular/http';
+import { RequestOptionsArgs } from '..';
 
 @Injectable()
 export class RequestOptionsBuilder {
@@ -7,7 +8,7 @@ export class RequestOptionsBuilder {
     public static readonly FIELD_PREFIX = 'case.';
 
     buildOptions(metaCriteria: object, caseCriteria: object, view?: SearchView): RequestOptionsArgs {
-        let params: URLSearchParams = new URLSearchParams();
+        let params: HttpParams = new HttpParams();
 
         if (view) {
           params.set('view', view);

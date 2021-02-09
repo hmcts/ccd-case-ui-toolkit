@@ -1,12 +1,12 @@
 import { SearchService } from './search.service';
-import { Headers, Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { of, Observable } from 'rxjs';
 import { SearchInput } from '../../components/search-filters';
 import { FieldType, Field } from '../../domain';
 import { RequestOptionsBuilder } from '../request';
-import { HttpService } from '../http';
+import { HttpService, RequestOptionsArgs } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
+import { HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 
 describe('SearchService', () => {
 
@@ -39,7 +39,7 @@ describe('SearchService', () => {
   const SEARCH_INPUT: SearchInput = new SearchInput(SEARCH_INPUT_LABEL, SEARCH_INPUT_ORDER, TEST_FIELD);
   const SEARCH_INPUTS = { searchInputs: [SEARCH_INPUT]};
 
-  let params: URLSearchParams;
+  let params: HttpParams;
   let appConfig: any;
   let httpService: any;
   let searchService: SearchService;
@@ -62,11 +62,11 @@ describe('SearchService', () => {
       appConfig.getCaseDataUrl.and.returnValue(DATA_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify({})
-      }))));
+      })));
 
-      params = new URLSearchParams();
+      params = new HttpParams();
       requestOptionsArgs = { params };
 
       requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);
@@ -200,16 +200,16 @@ describe('SearchService', () => {
     });
 
     it('should call backend with right URL, authorization and method for search input', () => {
-      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new HttpResponse({
         body: JSON.stringify(SEARCH_INPUTS)
-      }))));
+      })));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {
-        headers: new Headers({
+        headers: new HttpHeaders({
           'Accept': SearchService.V2_MEDIATYPE_SEARCH_INPUTS,
           'experimental': 'true',
         })
@@ -217,9 +217,9 @@ describe('SearchService', () => {
     });
 
     it('should return search input results', () => {
-      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new HttpResponse({
         body: JSON.stringify(SEARCH_INPUTS)
-      }))));
+      })));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
@@ -247,11 +247,11 @@ describe('SearchService', () => {
       appConfig.getPaginationPageSize.and.returnValue(25);
 
       httpService = createSpyObj<HttpService>('httpService', ['post']);
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.post.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify({})
-      }))));
+      })));
 
-      params = new URLSearchParams();
+      params = new HttpParams();
       requestOptionsArgs = { params };
 
       requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);

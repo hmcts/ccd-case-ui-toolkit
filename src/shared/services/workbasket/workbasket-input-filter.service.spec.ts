@@ -3,8 +3,8 @@ import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { HttpService } from '../http/http.service';
 import { Observable } from 'rxjs';
-import { Response, ResponseOptions, Headers } from '@angular/http';
 import { WorkbasketInput, WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('DefinitionsService', () => {
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';
@@ -26,9 +26,9 @@ describe('DefinitionsService', () => {
 
   describe('getWorkbasketInputs()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(jsonResponse())
-      }))));
+      })));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -37,7 +37,7 @@ describe('DefinitionsService', () => {
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(CASE_TYPES_URL, {
-        headers: new Headers({
+        headers: new HttpHeaders({
           'experimental': 'true',
           'Accept': WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS
         })});

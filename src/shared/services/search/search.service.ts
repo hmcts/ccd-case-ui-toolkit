@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { RequestOptionsArgs } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../http';
-import { Headers } from '@angular/http';
+import { HttpService, RequestOptionsArgs } from '../http';
 import { RequestOptionsBuilder, SearchView } from '../request';
 import { SearchInput } from '../../components/search-filters';
 import { SearchResultView } from '../../domain/search';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class SearchService {
@@ -62,7 +61,7 @@ export class SearchService {
 
   getSearchInputs(jurisdictionId: string, caseTypeId: string): Observable<SearchInput[]> {
     let url = this.getSearchInputUrl(caseTypeId);
-    const headers = new Headers({
+    const headers = new HttpHeaders({
       'Accept': SearchService.V2_MEDIATYPE_SEARCH_INPUTS,
       'experimental': 'true',
     });

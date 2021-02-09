@@ -1,4 +1,3 @@
-import { Headers, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { CaseHistoryService } from './case-history.service';
 import { HttpError } from '../../../domain';
@@ -8,6 +7,7 @@ import { CaseHistory } from '../domain';
 import { createCaseHistory } from '../../../fixture';
 import { classToPlain } from 'class-transformer';
 import createSpyObj = jasmine.createSpyObj;
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('CaseHistoryService', () => {
 
@@ -38,9 +38,9 @@ describe('CaseHistoryService', () => {
     const CASE_HISTORY: CaseHistory = createCaseHistory();
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']}))
-      }))));
+      })));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -49,7 +49,7 @@ describe('CaseHistoryService', () => {
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(CASE_HISTORY_URL, {
-        headers: new Headers({
+        headers: new HttpHeaders({
           'experimental': 'true',
           'Accept': CaseHistoryService.V2_MEDIATYPE_CASE_EVENT_VIEW
         })});

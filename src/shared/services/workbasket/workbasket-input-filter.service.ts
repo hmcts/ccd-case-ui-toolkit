@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import { Headers } from '@angular/http';
 import { HttpService } from '../http/http.service';
 import { WorkbasketInputModel } from '../../domain';
 import { AbstractAppConfig } from '../../../app.config';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class WorkbasketInputFilterService {
@@ -23,7 +23,7 @@ export class WorkbasketInputFilterService {
 
   getWorkbasketInputs(jurisdictionId: string, caseTypeId: string): Observable<WorkbasketInputModel[]> {
     let url = this.getWorkbasketInputUrl(caseTypeId);
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS
     });

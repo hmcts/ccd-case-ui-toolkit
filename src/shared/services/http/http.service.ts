@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Headers, Http, RequestOptionsArgs, Response } from '@angular/http';
 import { HttpErrorService } from './http-error.service';
 import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class HttpService {
@@ -11,7 +11,7 @@ export class HttpService {
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private httpErrorService: HttpErrorService
   ) {}
 
@@ -19,10 +19,10 @@ export class HttpService {
    *
    * @param url Url resolved using UrlResolverService
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public get(url: string, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
+  public get(url: string, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<any> {
     return this.http
       .get(url, this.sanitiseOptions(options))
       .pipe(
@@ -37,10 +37,10 @@ export class HttpService {
    * @param url Url resolved using UrlResolverService
    * @param body
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public post(url: string, body: any, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
+  public post(url: string, body: any, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<any> {
     return this.http
       .post(url, body, this.sanitiseOptions(options))
       .pipe(
@@ -55,10 +55,10 @@ export class HttpService {
    * @param url Url resolved using UrlResolverService
    * @param body
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
+  public put(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
     return this.http
       .put(url, body, this.sanitiseOptions(options))
       .pipe(
@@ -72,10 +72,10 @@ export class HttpService {
    *
    * @param url Url resolved using UrlResolverService
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
+  public delete(url: string, options?: RequestOptionsArgs): Observable<any> {
     return this.http
       .delete(url, this.sanitiseOptions(options))
       .pipe(
@@ -91,12 +91,12 @@ export class HttpService {
 
     this.sanitiseHeaders(options);
 
-    return options;
+    return { ...options };
   }
 
   private sanitiseHeaders(options?: RequestOptionsArgs) {
     if (!options.headers) {
-      options.headers = new Headers();
+      options.headers = new HttpHeaders();
     }
 
     if (!options.headers.has(HttpService.HEADER_ACCEPT)) {
@@ -110,4 +110,13 @@ export class HttpService {
       options.headers.delete(HttpService.HEADER_CONTENT_TYPE);
     }
   }
+}
+
+export interface RequestOptionsArgs {
+  headers?: HttpHeaders;
+  observe?: 'body';
+  params?: HttpParams;
+  reportProgress?: boolean;
+  responseType?: 'json';
+  withCredentials?: boolean;
 }

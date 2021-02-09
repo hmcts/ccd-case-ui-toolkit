@@ -1,5 +1,5 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -78,7 +78,7 @@ export class CasesService {
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
-    const headers = new Headers({
+    const headers = new HttpHeaders({
       'Accept': CasesService.V2_MEDIATYPE_CASE_VIEW,
       'experimental': 'true',
     });
@@ -137,7 +137,7 @@ export class CasesService {
 
     let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true'
     });
     if (Draft.isDraft(caseId)) {
@@ -167,7 +167,7 @@ export class CasesService {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
     });
@@ -188,7 +188,7 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/validate${pageIdString}`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE
     });
@@ -213,7 +213,7 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
     });
@@ -234,7 +234,7 @@ export class CasesService {
       + `/cases/${caseId}`
       + `/documents`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
     });

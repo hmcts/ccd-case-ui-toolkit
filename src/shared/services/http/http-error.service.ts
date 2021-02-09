@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { Response } from '@angular/http';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth';
 

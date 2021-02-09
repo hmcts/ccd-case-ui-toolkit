@@ -4,7 +4,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { AbstractAppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
 import { HttpService } from '../http';
-import { Response, ResponseOptions } from '@angular/http';
+import { HttpResponse } from '@angular/common/http';
 
 describe('AddressesService', () => {
 
@@ -22,7 +22,7 @@ describe('AddressesService', () => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('AppConfig', ['getPostcodeLookupUrl']);
     httpService = jasmine.createSpyObj<HttpService>('HttpService', ['get']);
     appConfig.getPostcodeLookupUrl.and.returnValue('http://postcodeUrl/postcode=${postcode}&key=${key}');
-    let postCodeResponse = new Response(<ResponseOptions>{body: JSON.stringify(validPostCodeResults)});
+    let postCodeResponse = new HttpResponse(<any>{body: JSON.stringify(validPostCodeResults)});
     httpService.get.and.returnValue(Observable.of(postCodeResponse));
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],

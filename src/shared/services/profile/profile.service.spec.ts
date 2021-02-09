@@ -1,12 +1,11 @@
 import { ProfileService } from './profile.service';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { createAProfile } from '../../domain/profile/profile.test.fixture';
 import { Profile } from '../../domain';
-import { Headers } from '@angular/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('ProfileService', () => {
 
@@ -28,9 +27,9 @@ describe('ProfileService', () => {
       appConfig.getCaseDataUrl.and.returnValue(API_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(MOCK_PROFILE)
-      }))));
+      })));
 
       profileService = new ProfileService(httpService, appConfig);
     });
@@ -41,7 +40,7 @@ describe('ProfileService', () => {
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(PROFILE_URL, {
-        headers: new Headers({
+        headers: new HttpHeaders({
           'experimental': 'true',
           'Accept': ProfileService.V2_MEDIATYPE_USER_PROFILE
         })});

@@ -1,13 +1,13 @@
 import { AuthService } from './auth.service';
 import { HttpService } from '../http/http.service';
 import { of } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../app.config';
+import { HttpResponse } from '@angular/common/http';
 
 describe('AuthService', () => {
 
-  const RESPONSE = of(new Response(new ResponseOptions()));
+  const RESPONSE = of(new HttpResponse());
   const LOGIN_URL = 'http://idam/login';
   const OAUTH2_CLIENT_ID = 'some_client_id';
   const REDIRECT_URI = 'http://localhost/oauth2redirect';

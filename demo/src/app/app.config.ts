@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
@@ -28,10 +27,6 @@ export class AppConfig extends AbstractAppConfig {
     'cache_time_out': 45000,
     'work_allocation_api_url': '/workallocation'
   };
-
-  constructor(private http: Http) {
-    super();
-  }
 
   public load(): Promise<void> {
     return Promise.resolve();

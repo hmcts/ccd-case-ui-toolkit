@@ -1,22 +1,22 @@
-import { HttpService } from './http.service';
-import { Headers, Http, RequestOptionsArgs, Response, ResponseOptions } from '@angular/http';
+import { HttpService, RequestOptionsArgs } from './http.service';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorService } from './http-error.service';
 import { Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('HttpService', () => {
 
   const URL = 'http://ccd.reform/';
   const HEADER_1 = 'x-header1';
   const HEADER_1_VALUE = 'x-header1-value';
-  const HEADERS = new Headers({});
+  const HEADERS = new HttpHeaders({});
   const CONTENT_TYPE_HEADER = 'Content-Type';
   const CONTENT_TYPE_HEADER_VALUE = 'X-rated';
   const ACCEPT_HEADER = 'Accept';
   const ACCEPT_HEADER_VALUE = 'text/ccd';
-  const HEADERS_WITH_CONTENT_TYPE_DEFINED = new Headers({});
-  const HEADERS_WITH_CONTENT_TYPE_NULL = new Headers({});
+  const HEADERS_WITH_CONTENT_TYPE_DEFINED = new HttpHeaders({});
+  const HEADERS_WITH_CONTENT_TYPE_NULL = new HttpHeaders({});
   const BODY = JSON.stringify({});
   const error = {
     message: ''
@@ -26,7 +26,7 @@ describe('HttpService', () => {
   HEADERS_WITH_CONTENT_TYPE_DEFINED.append(ACCEPT_HEADER, ACCEPT_HEADER_VALUE);
   HEADERS_WITH_CONTENT_TYPE_NULL.append(CONTENT_TYPE_HEADER, null);
   HEADERS_WITH_CONTENT_TYPE_NULL.append(ACCEPT_HEADER, null);
-  const EXPECTED_RESPONSE = of(new Response(new ResponseOptions()));
+  const EXPECTED_RESPONSE = of(new HttpResponse());
 
   let httpService: HttpService;
 
@@ -38,7 +38,7 @@ describe('HttpService', () => {
     catchObservable = createSpyObj<Observable<Response>>('observable', ['pipe']);
     catchObservable.pipe.and.returnValue(EXPECTED_RESPONSE);
 
-    httpMock = createSpyObj<Http>('http', ['get', 'post', 'put', 'delete']);
+    httpMock = createSpyObj<HttpClient>('http', ['get', 'post', 'put', 'delete']);
     httpMock.get.and.returnValue(catchObservable);
     httpMock.post.and.returnValue(catchObservable);
     httpMock.put.and.returnValue(catchObservable);
