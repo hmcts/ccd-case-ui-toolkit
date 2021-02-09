@@ -92,16 +92,26 @@ export class HttpService {
       );
   }
 
-  private setDefaultValue(options?: OptionsType): OptionsType {
+  public setDefaultValue(options?: OptionsType): OptionsType {
+
+    return {
+      headers: options.headers ? options.headers : HttpService.getDefaultHttpHeaders(),
+      observe: 'body',
+      params: options.params ? options.params : new HttpParams(),
+      reportProgress: options.reportProgress,
+      responseType: options.responseType ? options.responseType : 'json',
+      withCredentials: options.withCredentials ? options.withCredentials : true
+    };
+
     //try {      
-      options = options || {observe: 'body'};    
-      options.withCredentials = true;
-      console.log('Start',JSON.stringify(options.headers));
-      let headers = options.headers ? options.headers : new HttpHeaders();
-      console.log('In headers',JSON.stringify(headers));
+      // options = options || {observe: 'body'};    
+      // options.withCredentials = true;
+      // console.log('Start',JSON.stringify(options.headers));
+      // let headers = options.headers ? options.headers : new HttpHeaders();
+      // console.log('In headers',JSON.stringify(headers));
       
-      const val1 = headers.has(HttpService.HEADER_ACCEPT);
-      console.log('Val1', val1);
+      // const val1 = headers.has(HttpService.HEADER_ACCEPT);
+      // console.log('Val1', val1);
 
       /*if (!headers) {
         //headers = new HttpHeaders();
@@ -125,24 +135,27 @@ export class HttpService {
       }
     
       if (!headers.has(HttpService.HEADER_CONTENT_TYPE)) {  
-        // options.headers = new HttpHeaders()
-        //   .set(HttpService.HEADER_ACCEPT, 'application/json')
-        //   .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
-        headers = headers.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
-        //console.log('H4', JSON.stringify(headers));
+
       }
       //console.log('H5', JSON.stringify(headers));
        if (null === headers.get(HttpService.HEADER_CONTENT_TYPE)) {
          headers = headers.delete(HttpService.HEADER_CONTENT_TYPE);
       //   console.log('H6', JSON.stringify(headers));
        }*/
-      options.headers = headers;
-      console.log('H7', JSON.stringify(headers));
+      // options.headers = headers;
+      // console.log('H7', JSON.stringify(headers));
     // }
     // catch (error) {
     //   console.error('Here is the error message', error);      
     // }
-    return options;
+    // return options;
+  }
+
+
+  public static getDefaultHttpHeaders(): HttpHeaders {
+    return new HttpHeaders()
+      .set(HttpService.HEADER_ACCEPT, 'application/json')
+      .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
   }
 
   /*private sanitiseOptions(options?: RequestOptionsArgs): RequestOptionsArgs {
