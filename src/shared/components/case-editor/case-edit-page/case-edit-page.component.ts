@@ -317,8 +317,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     caseEventData.event_data = this.clone(this.editForm.value.data);
     let evCf = this.getCaseFieldsFromCurrentAndPreviousPages();
-    // for consistency we'll santise before removing
-    this.formValueService.sanitiseDynamicLists(evCf, {data: caseEventData.event_data});
     this.formValueService.removeUnnecessaryFields(caseEventData.event_data, evCf,
       false, true);
     // we are not calling santise on event_data to be consistent with previous code. Seeems like we ought to though
