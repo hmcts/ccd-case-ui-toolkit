@@ -97,7 +97,8 @@ export class WorkAllocationService {
   public userIsCaseworker(roles: string[]): boolean {
     const lowerCaseRoles = roles.map(role => role.toLowerCase());
     // When/if lib & target permanently change to es2016, replace indexOf with includes
-    return (lowerCaseRoles.indexOf(WorkAllocationService.IACCaseOfficer) !== -1) || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
+    return (lowerCaseRoles.indexOf(WorkAllocationService.IACCaseOfficer) !== -1)
+     || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
   }
 
   /**

@@ -1,5 +1,5 @@
 import { Response, ResponseOptions } from '@angular/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameters } from '../../../domain';

@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.70.1-alert-service-update
+### Version 2.71.0-alert-service-update
 **EUI-3229** Task event completion - part 2
 **EUI-3232** CCD UI toolkit Alert service message improvements
 
