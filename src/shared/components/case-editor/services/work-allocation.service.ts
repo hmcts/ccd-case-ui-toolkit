@@ -4,27 +4,10 @@ import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter, TaskSearchParameters } from '../../../domain';
+import { UserDetails } from '../../../domain/user/user-details.model';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
-
-interface UserInfo {
-  id: string,
-  forename: string,
-  surname: string,
-  email: string,
-  active: boolean,
-  roles: string[]
-}
-
-interface UserDetails {
-  sessionTimeout: {
-    idleModalDisplayTime: number,
-    totalIdleTime: number,
-  };
-  canShareCases: boolean;
-  userInfo: UserInfo
-}
 
 @Injectable()
 export class WorkAllocationService {
