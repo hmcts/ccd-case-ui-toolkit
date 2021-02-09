@@ -34,7 +34,7 @@ describe('WorkAllocationService', () => {
 
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
   });
 
@@ -111,7 +111,7 @@ describe('WorkAllocationService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-          expect(alertService.clear).toHaveBeenCalled();
+          expect(alertService.setPreserveAlerts).toHaveBeenCalled();
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });

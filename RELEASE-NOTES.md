@@ -1,6 +1,17 @@
 ## RELEASE NOTES
-### VVersion 2.67.6-task-event-completion
-**EUI-2986** Task Event completion
+### Version 2.70.0-fix-alert-service
+Fix breaking changes of Alert Service
+### Version 2.69.1-fix-replace-document-issue
+**EUI-2243** Fix upload replacement document issue
+
+### Version 2.69.0-color-contrast-aa
+**EUI-2030** Change selected table row background colour to improve accessibility (AA) 
+
+### 2.67.10-feature-toggle-work-allocation
+**Feature Toggle Work Allocation** Hot Fix
+
+### Version 2.67.9-ie-textbox-expand-issue
+**EUI-2333** IE textbox expand issue
 
 ### Version 2.67.5-dynamiclist-fix-in-complex
 **EUI-2350** Dynamic Lists in Complex Types
