@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.69.1-fix-replace-document-issue
+**EUI-2243** Fix upload replacement document issue
+
+### Version 2.69.0-color-contrast-aa
+**EUI-2030** Change selected table row background colour to improve accessibility (AA)
+
 ### Version 2.68.16-prerelease-conditional-show-perf
 EUI-3366 - CYA hide hidden fields
 EUI-3284 - Form submission must include data in complex field values
@@ -53,6 +59,8 @@ Merge master to simplify final branch merge
 **EUI-3055** Better performance in edit forms through new show hide implementation
 
 ### Version 2.67.10-feature-toggle-work-allocation
+
+### 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
 ### Version 2.67.6-task-event-completion
