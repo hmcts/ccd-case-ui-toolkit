@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 2.68.16-prerelease-conditional-show-perf
+EUI-3366 - CYA hide hidden fields
+EUI-3284 - Form submission must include data in complex field values
+EUI-3359 - Full stop in field names broke show hide
+
 ### Version 2.68.15-prerelease-conditional-show-perf
 Don't submit labels if they are blank
 
