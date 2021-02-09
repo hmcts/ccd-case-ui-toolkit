@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.70.0-fix-alert-service
+Fix breaking changes of Alert Service
 ### Version 2.69.1-fix-replace-document-issue
 **EUI-2243** Fix upload replacement document issue
 
