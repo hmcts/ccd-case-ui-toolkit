@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.71.2-conditional-show-perf
+Fix EUI-3381 - fix for missing alert banner.
+
 ### Version 2.71.1-conditional-show-perf
 Fix EUI-3375 - more tweaks to collections on data submission
 
