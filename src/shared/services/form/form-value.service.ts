@@ -312,6 +312,7 @@ export class FormValueService {
    * @param data The object to be tidied up.
    * @param caseFields The CaseFields that need to be cleaned up.
    * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
+   * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
   public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false): void {
     if (data && caseFields && caseFields.length > 0) {
@@ -324,8 +325,9 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true) {
-          // Delete anything that is hidden (that is NOT readonly).
+        if (field.hidden === true && field.display_context !== 'HIDDEN') {
+          // Delete anything that is hidden (that is NOT readonly), and that
+          // hasn't had its display_context overridden to make it hidden.
           delete data[field.id];
         } else if (field.field_type) {
           switch (field.field_type.type) {
@@ -352,6 +354,7 @@ export class FormValueService {
                   // Iterate through the elements and remove any unnecessary fields within.
                   for (const item of collection) {
                     this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false);
                   }
                 }
               }
