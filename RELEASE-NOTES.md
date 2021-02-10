@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.71.1-conditional-show-perf
+Fix EUI-3375 - more tweaks to collections on data submission
+
 ### Version 2.71.0-conditional-show-perf
 Release candidate for conditional show performance.
 
