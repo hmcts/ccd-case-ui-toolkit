@@ -30,12 +30,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private caseReferencePipe: CaseReferencePipe,
     private activityPollingService: ActivityPollingService
   ) {
-    // Doesn't look like this is ever called so this may be a redundant component now...
-    // It may, of course, just be that I don't know how to get to this component.
   }
 
   ngOnInit(): void {
-    // Doesn't look like this is ever called so this may be a redundant component now...
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {

@@ -1,14 +1,79 @@
 ## RELEASE NOTES
+
+### Version 2.71.0-conditional-show-perf
+Release candidate for conditional show performance.
+
+### Version 2.70.1-fix-alert-service
+Fixes for case filtering.
+
 ### Version 2.70.0-fix-alert-service
 Fix breaking changes of Alert Service
+
 ### Version 2.69.1-fix-replace-document-issue
 **EUI-2243** Fix upload replacement document issue
 
 ### Version 2.69.0-color-contrast-aa
-**EUI-2030** Change selected table row background colour to improve accessibility (AA) 
+**EUI-2030** Change selected table row background colour to improve accessibility (AA)
+
+### Version 2.68.16-prerelease-conditional-show-perf
+EUI-3366 - CYA hide hidden fields
+EUI-3284 - Form submission must include data in complex field values
+EUI-3359 - Full stop in field names broke show hide
+
+### Version 2.68.15-prerelease-conditional-show-perf
+Don't submit labels if they are blank
+
+### Version 2.68.14-prerelease-conditional-show-perf
+**EUI-2830** Dynamic list fixes
+
+### Version 2.68.13-prerelease-conditional-show-perf
+We do need to submit labels
+
+### Version 2.68.12-prerelease-conditional-show-perf
+**EUI-3331** Problem with event_data submission
+
+### Version 2.68.11-prerelease-conditional-show-perf
+**EUI-3270** Improve performance of event forms. 
+Work around for case when profile data is not available. 
+Merge master to simplify final branch merge
+
+### Version 2.68.10-prerelease-conditional-show-perf
+**EUI-3168** fix regression issues and further improve performance
+
+### Version 2.68.9-prerelease-conditional-show-perf
+**EUI-3151** dynamic lists and nested complex in collection fixes
+
+### Version 2.68.8-prerelease-conditional-show-perf
+**EUI-3151** form validation and label fixes
+
+### Version 2.68.7-prerelease-conditional-show-perf
+**EUI-3151** Changes to make validation work properly and fix all the tests
+
+### Version 2.68.6-prerelease-conditional-show-perf
+**EUI-3151** Fix more problems caused by components not being registered. Fix problem with [hidden] not working inside inline template
+
+### Version 2.68.5-prerelease-conditional-show-perf
+**EUI-3151** Fix problems caused by components not being registered
+
+### Version 2.68.4-prerelease-conditional-show-perf
+**EUI-3151** Additional changes to fix probate regression during case creation
+
+### Version 2.68.3-prerelease-conditional-show-perf
+**EUI-3151** Fix probate regression during case creation
+
+### Version 2.68.2-prerelease-conditional-show-perf
+**EUI-3055** Fix regression in address field and tests
+
+### Version 2.68.0-prerelease-conditional-show-perf
+**EUI-3055** Better performance in edit forms through new show hide implementation
+
+### Version 2.67.10-feature-toggle-work-allocation
 
 ### 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
+
+### Version 2.67.6-task-event-completion
+**EUI-2986** Task Event completion
 
 ### Version 2.67.9-ie-textbox-expand-issue
 **EUI-2333** IE textbox expand issue
