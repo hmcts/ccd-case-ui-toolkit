@@ -339,7 +339,6 @@ export class FormValueService {
               // Recurse and remove anything unnecessary from within a complex field.
               this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
-              // Stop removing empty objects.
               if (FormValueService.clearOptionalEmpty(clearEmpty, data[field.id], field)) {
                 delete data[field.id];
               }
