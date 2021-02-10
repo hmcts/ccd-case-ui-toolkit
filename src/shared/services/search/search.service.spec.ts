@@ -1,5 +1,4 @@
 import { SearchService } from './search.service';
-//import { Headers, Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { of, Observable } from 'rxjs';
 import { SearchInput } from '../../components/search-filters';
@@ -47,7 +46,7 @@ describe('SearchService', () => {
   let requestOptionsArgs: OptionsType;
   let requestOptionsBuilder: any;
 
-  fdescribe('get()', () => {
+  describe('get()', () => {
 
     beforeEach(() => {
       function matchCall(value: any, expected: any): boolean {
@@ -200,7 +199,7 @@ describe('SearchService', () => {
         });
     });
 
-    fit('should call backend with right URL, authorization and method for search input', () => {
+    it('should call backend with right URL, authorization and method for search input', () => {
       httpService.get.and.returnValue(of(new HttpResponse({
         body: JSON.stringify(SEARCH_INPUTS)
       })));
@@ -214,6 +213,7 @@ describe('SearchService', () => {
           .set('experimental', 'true')
           .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
           .set('Content-Type', 'application/json'),
+        observe: 'body'
       });
     });
 
@@ -266,7 +266,7 @@ describe('SearchService', () => {
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
         .subscribe();
 
-      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params});
+      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
@@ -286,7 +286,7 @@ describe('SearchService', () => {
         .subscribe();
 
       params.set('view', SearchService.VIEW_WORKBASKET);
-      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params});
+      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {

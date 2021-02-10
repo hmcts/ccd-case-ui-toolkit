@@ -1,6 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -154,7 +153,6 @@ export class CasesService {
       .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => {
-
           return this.handleNestedDynamicListsInComplexTypes(response);
         }),
         catchError(error => {

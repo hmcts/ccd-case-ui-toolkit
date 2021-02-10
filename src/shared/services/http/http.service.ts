@@ -93,7 +93,7 @@ export class HttpService {
     if (!options.headers) {
       options.headers = new HttpHeaders()
         .set(HttpService.HEADER_ACCEPT, 'application/json')
-        .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+        .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');      
     }
     return options;
   }

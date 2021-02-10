@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import { Headers, URLSearchParams } from '@angular/http';
 import { HttpService } from '../http/http.service';
 import { AbstractAppConfig } from '../../../app.config';
 import { Banner } from '../../domain';
@@ -20,8 +19,8 @@ export class BannersService {
       .set('experimental', 'true')
       .set('Accept', BannersService.V2_MEDIATYPE_BANNERS)
       .set('Content-Type', 'application/json');
-    let params: HttpParams = new HttpParams();
-    jurisdictionReferences.forEach(reference => params.append('ids', reference));
+    let params = new HttpParams();
+    jurisdictionReferences.forEach(reference => params = params.append('ids', reference));
     return this.httpService
       .get(url, {params, headers, observe: 'body'})
       .map(response => {

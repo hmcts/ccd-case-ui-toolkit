@@ -1,4 +1,4 @@
-import { Headers, Response, ResponseOptions } from '@angular/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -90,9 +90,9 @@ describe('CasesService', () => {
   describe('getCaseView()', () => {
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(CASE_VIEW)
-      }))));
+      })));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -129,9 +129,9 @@ describe('CasesService', () => {
   describe('getCaseViewV2()', () => {
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(CASE_VIEW)
-      }))));
+      })));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -140,10 +140,11 @@ describe('CasesService', () => {
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(V2_CASE_VIEW_URL, {
-        headers: new Headers({
-          'Accept': CasesService.V2_MEDIATYPE_CASE_VIEW,
-          'experimental': 'true',
-        })
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
       });
     });
 
@@ -175,9 +176,9 @@ describe('CasesService', () => {
     const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger('', '', '', false, []);
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(EVENT_TRIGGER)
-      }))));
+      })));
     });
 
     it('should use HttpService::get with correct url for create case', () => {
@@ -185,11 +186,12 @@ describe('CasesService', () => {
         .getEventTrigger(CTID, EVENT_TRIGGER_ID, CASE_ID_UNDEFINED, 'true')
         .subscribe();
 
-      const headers = new Headers({
-        'experimental': 'true',
-        'Accept': CasesService.V2_MEDIATYPE_START_CASE_TRIGGER
-      });
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, {headers});
+      const headers = new HttpHeaders()
+        .set('experimental', 'true')
+        .set('Content-Type', 'application/json')
+        .set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+        
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, {headers, observe: 'body'});
     });
 
     it('should use HttpService::get with correct url for create event', () => {
@@ -197,11 +199,11 @@ describe('CasesService', () => {
         .getEventTrigger(CTID_UNDEFINED, EVENT_TRIGGER_ID, CASE_ID, 'true')
         .subscribe();
 
-      const headers = new Headers({
-        'experimental': 'true',
-        'Accept': CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER
-      });
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, {headers});
+      const headers = new HttpHeaders()
+        .set('experimental', 'true')
+        .set('Content-Type', 'application/json')
+        .set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, {headers, observe: 'body'});
     });
 
     it('should use HttpService::get with correct url for DRAFTS', () => {
@@ -209,11 +211,11 @@ describe('CasesService', () => {
         .getEventTrigger(CTID, EVENT_TRIGGER_ID, DRAFT_ID, 'true')
         .subscribe();
 
-      const headers = new Headers({
-          'experimental': 'true',
-          'Accept': CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER
-        });
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, {headers});
+      const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Content-Type', 'application/json')
+      .set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, {headers, observe: 'body'});
     });
 
     it('should retrieve event trigger from server by case id', () => {
@@ -279,26 +281,27 @@ describe('CasesService', () => {
 
     const EVENT_RESPONSE = { id: 5 };
     const EMPTY_RESPONSE = { id: '' };
-    const HEADERS = new Headers({'content-type': CasesService.V2_MEDIATYPE_CREATE_EVENT});
+    const HEADERS = new HttpHeaders()
+      .set('content-type', CasesService.V2_MEDIATYPE_CREATE_EVENT);
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.post.and.returnValue(Observable.of(new HttpResponse({
         headers: HEADERS,
         body: JSON.stringify(EVENT_RESPONSE)
-      }))));
+      })));
     });
 
     it('should use HttpService::post with correct url', () => {
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
         .subscribe();
+      
+      const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
+      .set('Content-Type', 'application/json');
 
-      const headers = new Headers({
-        'experimental': 'true',
-        'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
-      });
-
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_EVENT_URL, CASE_EVENT_DATA, {headers});
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_EVENT_URL, CASE_EVENT_DATA, {headers, observe: 'body'});
     });
 
     it('should create event on server', () => {
@@ -310,9 +313,9 @@ describe('CasesService', () => {
     });
 
     it('should return body with empty id if no content-type response header', () => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.post.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(EVENT_RESPONSE)
-      }))));
+      })));
 
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
@@ -369,9 +372,9 @@ describe('CasesService', () => {
     const EVENT_RESPONSE = { id: 5 };
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.post.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(EVENT_RESPONSE)
-      }))));
+      })));
     });
 
     it('should use HttpService::post with correct url', () => {
@@ -379,12 +382,12 @@ describe('CasesService', () => {
         .validateCase(CTID, CASE_EVENT_DATA, PAGE_ID)
         .subscribe();
 
-      const headers = new Headers({
-        'experimental': 'true',
-        'Accept': CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE
-      });
+      const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
+      .set('Content-Type', 'application/json');
 
-      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, {headers});
+      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, {headers, observe: 'body'});
     });
 
     it('should validate case on server', () => {
@@ -422,13 +425,14 @@ describe('CasesService', () => {
 
     const CASE_RESPONSE = { id: 5 };
     const EMPTY_RESPONSE = { id: '' };
-    const HEADERS = new Headers({'content-type': 'application/json;charset=UTF-8'});
+    const HEADERS = new HttpHeaders()
+      .set('content-type', 'application/json;charset=UTF-8');
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.post.and.returnValue(Observable.of(new HttpResponse({
         headers: HEADERS,
         body: JSON.stringify(CASE_RESPONSE)
-      }))));
+      })));
     });
 
     it('should use HttpService::post with correct url', () => {
@@ -436,12 +440,12 @@ describe('CasesService', () => {
         .createCase(CTID, CASE_EVENT_DATA)
         .subscribe();
 
-      const headers = new Headers({
-        'experimental': 'true',
-        'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
-      });
+      const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
+      .set('Content-Type', 'application/json');
 
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, {headers});
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, {headers, observe: 'body'});
     });
 
     it('should create case on server', () => {
@@ -453,9 +457,9 @@ describe('CasesService', () => {
     });
 
     it('should return body with empty id if no content-type response header', () => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.post.and.returnValue(Observable.of(new HttpResponse({
         body: JSON.stringify(CASE_RESPONSE)
-      }))));
+      })));
 
       casesService
         .createCase(CTID, CASE_EVENT_DATA)
@@ -489,26 +493,28 @@ describe('CasesService', () => {
         }
       ]
     };
-    const HEADERS = new Headers({'content-type': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS});
+
+    const HEADERS = new HttpHeaders()
+      .set('content-type', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS);
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(Observable.of(new HttpResponse({
         headers: HEADERS,
         body: JSON.stringify(DOCUMENTS)
-      }))));
+      })));
     });
 
     it('should use HttpService::get with correct url', () => {
-      const headers = new Headers({
-        'experimental': 'true',
-        'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
-      });
+      const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
+      .set('Content-Type', 'application/json');
 
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, {headers});
+      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, {headers, observe: 'body'});
     });
 
     it('should retrieve document list from server', () => {
