@@ -25,7 +25,9 @@ export abstract class AbstractAppConfig {
   abstract getPrdUrl(): string;
   abstract getCacheTimeOut(): number;
   abstract getWorkAllocationApiUrl(): string;
-  abstract getUserInfoApiUrl(): string;
+  getUserInfoApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
