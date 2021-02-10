@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { RequestOptionsArgs } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, OptionsType } from '../http';
-import { Headers } from '@angular/http';
 import { RequestOptionsBuilder, SearchView } from '../request';
 import { SearchInput } from '../../components/search-filters';
 import { SearchResultView } from '../../domain/search';

@@ -1,4 +1,3 @@
-import { URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import { HttpParams } from '@angular/common/http';
 import { RequestOptionsBuilder } from './request.options.builder';
 import { OptionsType } from '../http';

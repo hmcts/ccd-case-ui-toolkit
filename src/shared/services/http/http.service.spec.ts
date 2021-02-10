@@ -5,7 +5,7 @@ import any = jasmine.any;
 import { HttpErrorService } from './http-error.service';
 import { Observable, of, throwError } from 'rxjs';
 
-fdescribe('HttpService', () => {
+describe('HttpService', () => {
 
   const URL = 'http://ccd.reform/';
   const HEADER_1 = 'x-header1';
@@ -81,18 +81,8 @@ fdescribe('HttpService', () => {
 
       expectHeadersToBeSanitized(httpMock.get.calls.mostRecent().args[1]);
     });
-
-    it('setDefaultValue not', () => {
-      let options: OptionsType = {
-        // headers: HEADERS,
-        withCredentials: true,
-        observe: 'body',
-      };
-      const returnOptions = httpService.setDefaultValue(options);
-      expect(returnOptions.headers).not.toEqual(options.headers);
-    });
-
-    it('setDefaultValue ', () => {
+    
+    it('should return same header properties when headers is defined', () => {
       let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -117,7 +107,7 @@ fdescribe('HttpService', () => {
       expect(headers.get('Accept')).toEqual(ACCEPT_HEADER_VALUE);
     });
 
-    fit('should not add `content-type` and `accept` headers when defined with null values', () => {
+    it('should define headers when not defined', () => {
       let options: OptionsType = {
         headers: null,
         withCredentials: true,
@@ -126,14 +116,13 @@ fdescribe('HttpService', () => {
 
       httpService.get(URL, options);
 
-      // let headers = httpMock.get.calls.mostRecent().args[1].headers;
-      expect(httpMock.setDefaultValue).toHaveBeenCalledWith(options);
-      // expect(headers.get('Accept')).toBe(null);
+      expect(options.headers).toBeDefined;
+      
     });
 
     it('should add `content-type` and `accept` headers when not defined', () => {
       let options: OptionsType = {
-        headers: HEADERS,
+        headers: null,
         withCredentials: true,
         observe: 'body',
       };
@@ -191,9 +180,9 @@ fdescribe('HttpService', () => {
       expect(httpErrorService.handle).toHaveBeenCalledWith(error, true);
     });
 
-    it('should add a `content-type` and `accept` headers', () => {
+    it('should add a `content-type` and `accept` headers when not defined', () => {
       let options: OptionsType = {
-        headers: HEADERS,
+        headers: null,
         withCredentials: true,
         observe: 'body',
       };
@@ -247,7 +236,7 @@ fdescribe('HttpService', () => {
 
     it('should add a `content-type` and `accept` headers', () => {
       let options: OptionsType = {
-        headers: HEADERS,
+        headers: null,
         withCredentials: true,
         observe: 'body',
       };
@@ -301,7 +290,7 @@ fdescribe('HttpService', () => {
 
     it('should add a `content-type` and `accept` headers', () => {
       let options: OptionsType = {
-        headers: HEADERS,
+        headers: null,
         withCredentials: true,
         observe: 'body',
       };
@@ -316,7 +305,7 @@ fdescribe('HttpService', () => {
 
   function expectHeadersToBeSanitized(options) {
     let headers = options.headers;
-
+    
     expect(headers).toBeDefined();
     expect(headers.get(HEADER_1)).toEqual(HEADER_1_VALUE);
   }

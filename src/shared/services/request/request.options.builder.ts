@@ -1,6 +1,5 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RequestOptionsArgs, URLSearchParams } from '@angular/http';
 import { OptionsType } from '..';
 
 @Injectable()
