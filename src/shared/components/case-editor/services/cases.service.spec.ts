@@ -90,9 +90,7 @@ describe('CasesService', () => {
   describe('getCaseView()', () => {
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new HttpResponse({
-        body: JSON.stringify(CASE_VIEW)
-      })));
+      httpService.get.and.returnValue(Observable.of(CASE_VIEW));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -129,9 +127,7 @@ describe('CasesService', () => {
   describe('getCaseViewV2()', () => {
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new HttpResponse({
-        body: JSON.stringify(CASE_VIEW)
-      })));
+      httpService.get.and.returnValue(Observable.of(CASE_VIEW));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -176,9 +172,7 @@ describe('CasesService', () => {
     const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger('', '', '', false, []);
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new HttpResponse({
-        body: JSON.stringify(EVENT_TRIGGER)
-      })));
+      httpService.get.and.returnValue(Observable.of(EVENT_TRIGGER));
     });
 
     it('should use HttpService::get with correct url for create case', () => {
@@ -285,10 +279,10 @@ describe('CasesService', () => {
       .set('content-type', CasesService.V2_MEDIATYPE_CREATE_EVENT);
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new HttpResponse({
+      httpService.post.and.returnValue(Observable.of({
         headers: HEADERS,
-        body: JSON.stringify(EVENT_RESPONSE)
-      })));
+        body: EVENT_RESPONSE
+      }));
     });
 
     it('should use HttpService::post with correct url', () => {
