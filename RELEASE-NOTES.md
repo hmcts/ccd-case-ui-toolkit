@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 2.71.0-conditional-show-perf
+Release candidate for conditional show performance.
+
+### Version 2.70.1-fix-alert-service
+Fixes for case filtering.
+
+### Version 2.70.0-fix-alert-service
+Fix breaking changes of Alert Service
+
 ### Version 2.69.1-fix-replace-document-issue
 **EUI-2243** Fix upload replacement document issue
 
