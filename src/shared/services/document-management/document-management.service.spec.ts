@@ -52,10 +52,11 @@ describe('DocumentManagementService', () => {
     });
 
     it('should set Content-Type header to null', () => {
-      documentManagementService.uploadFile(new FormData()).subscribe();
-      let headers = httpService.post.calls.mostRecent().args[2].headers;
+      documentManagementService.uploadFile(new FormData()).subscribe(() => {
 
-      expect(headers.get('Content-Type')).toBe(null);
+        let headers = httpService.post.calls.mostRecent().args[2].headers;
+        expect(headers.get('Content-Type')).toBe(null);
+      });
     });
 
     it('should return document metadata', () => {

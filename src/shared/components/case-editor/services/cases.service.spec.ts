@@ -302,7 +302,7 @@ describe('CasesService', () => {
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
         .subscribe(
-          data => expect(data).toEqual(EVENT_RESPONSE)
+          data => expect((data as any).body).toEqual(EVENT_RESPONSE)
         );
     });
 
@@ -442,7 +442,7 @@ describe('CasesService', () => {
       casesService
         .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(
-          data => expect(data).toEqual(CASE_RESPONSE)
+          data => expect((data as any).body).toEqual(CASE_RESPONSE)
         );
     });
 
@@ -486,10 +486,7 @@ describe('CasesService', () => {
       .set('content-type', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS);
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new HttpResponse({
-        headers: HEADERS,
-        body: DOCUMENTS
-      })));
+      httpService.get.and.returnValue(Observable.of(DOCUMENTS));
     });
 
     it('should use HttpService::get with correct url', () => {
