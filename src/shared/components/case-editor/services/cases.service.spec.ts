@@ -283,7 +283,6 @@ describe('CasesService', () => {
         headers: HEADERS,
         body: EVENT_RESPONSE
       }));
-
     });
 
     it('should use HttpService::post with correct url', () => {
