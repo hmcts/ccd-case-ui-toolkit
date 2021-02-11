@@ -23,7 +23,7 @@ export class HttpService {
    * @see UrlResolverService
    */
 
-  public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {    
+  public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
     return this.httpclient
       .get(url, this.setDefaultValue(options))
       .pipe(
@@ -41,7 +41,7 @@ export class HttpService {
    * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public post(url: string, body: any, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {    
+  public post(url: string, body: any, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
     return this.httpclient
       .post(url, body, this.setDefaultValue(options))
       .pipe(
@@ -59,7 +59,7 @@ export class HttpService {
    * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public put(url: string, body: any, options?: OptionsType): Observable<any> {    
+  public put(url: string, body: any, options?: OptionsType): Observable<any> {
     return this.httpclient
       .put(url, body, this.setDefaultValue(options))
       .pipe(
@@ -76,7 +76,7 @@ export class HttpService {
    * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public delete(url: string, options?: OptionsType): Observable<any> {    
+  public delete(url: string, options?: OptionsType): Observable<any> {
     return this.httpclient
       .delete(url, this.setDefaultValue(options))
       .pipe(
@@ -87,13 +87,13 @@ export class HttpService {
   }
 
   public setDefaultValue(options?: OptionsType): OptionsType {
-    options = options || {observe: 'body'};    
-    options.withCredentials = true;    
-    
+    options = options || {observe: 'body'};
+    options.withCredentials = true;
+
     if (!options.headers) {
       options.headers = new HttpHeaders()
         .set(HttpService.HEADER_ACCEPT, 'application/json')
-        .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');      
+        .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
     }
     return options;
   }

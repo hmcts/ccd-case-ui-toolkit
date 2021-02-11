@@ -26,7 +26,7 @@ describe('DefinitionsService', () => {
 
   describe('getWorkbasketInputs()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(jsonResponse()));      
+      httpService.get.and.returnValue(Observable.of(jsonResponse()));
     });
 
     it('should use HttpService::get with correct url', () => {

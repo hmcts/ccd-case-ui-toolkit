@@ -26,7 +26,7 @@ export class WorkbasketInputFilterService {
     let headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS)
-      .set('Content-Type', 'application/json');    
+      .set('Content-Type', 'application/json');
 
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;

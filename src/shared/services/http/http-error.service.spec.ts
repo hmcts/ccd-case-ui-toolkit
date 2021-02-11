@@ -44,7 +44,7 @@ describe('HttpErrorService', () => {
 
   const NOT_VALID_ERROR_RESPONSE = new HttpResponse({
     headers: new HttpHeaders()
-      .set('Content-Type', 'application/json'),    
+      .set('Content-Type', 'application/json'),
     body: '{notvalidjson}'
   });
 
@@ -57,7 +57,7 @@ describe('HttpErrorService', () => {
 
   const HTTP_403_RESPONSE = new HttpResponse({
     headers: new HttpHeaders()
-      .set('Content-Type', 'application/json'),    
+      .set('Content-Type', 'application/json'),
     body: HTTP_403_ERROR_BODY,
     status: 403
   });

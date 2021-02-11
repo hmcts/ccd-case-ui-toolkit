@@ -204,7 +204,7 @@ describe('SearchService', () => {
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {       
+      expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {
         headers: new HttpHeaders()
           .set('experimental', 'true')
           .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)

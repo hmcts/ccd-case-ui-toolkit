@@ -38,7 +38,7 @@ describe('CaseHistoryService', () => {
     const CASE_HISTORY: CaseHistory = createCaseHistory();
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']})));      
+      httpService.get.and.returnValue(Observable.of(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']})));
     });
 
     it('should use HttpService::get with correct url', () => {

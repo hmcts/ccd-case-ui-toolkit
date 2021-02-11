@@ -81,7 +81,7 @@ describe('HttpService', () => {
 
       expectHeadersToBeSanitized(httpMock.get.calls.mostRecent().args[1]);
     });
-    
+
     it('should return same header properties when headers is defined', () => {
       let options: OptionsType = {
         headers: HEADERS,
@@ -91,7 +91,6 @@ describe('HttpService', () => {
       const returnOptions = httpService.setDefaultValue(options);
       expect(returnOptions.headers).toEqual(options.headers);
     });
-    
 
     it('should not add `content-type` and `accept` headers when defined', () => {
       let options: OptionsType = {
@@ -116,8 +115,7 @@ describe('HttpService', () => {
 
       httpService.get(URL, options);
 
-      expect(options.headers).toBeDefined;
-      
+      expect(options.headers).toBeDefined();
     });
 
     it('should add `content-type` and `accept` headers when not defined', () => {
@@ -305,7 +303,7 @@ describe('HttpService', () => {
 
   function expectHeadersToBeSanitized(options) {
     let headers = options.headers;
-    
+
     expect(headers).toBeDefined();
     expect(headers.get(HEADER_1)).toEqual(HEADER_1_VALUE);
   }

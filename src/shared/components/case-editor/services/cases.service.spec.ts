@@ -184,7 +184,6 @@ describe('CasesService', () => {
         .set('experimental', 'true')
         .set('Content-Type', 'application/json')
         .set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
-        
       expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, {headers, observe: 'body'});
     });
 
@@ -289,7 +288,6 @@ describe('CasesService', () => {
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
         .subscribe();
-      
       const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
