@@ -4,7 +4,7 @@ import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { HttpService } from '../http/http.service';
 import { Observable } from 'rxjs';
 import { WorkbasketInput, WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
 describe('DefinitionsService', () => {
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';
@@ -26,9 +26,7 @@ describe('DefinitionsService', () => {
 
   describe('getWorkbasketInputs()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new HttpResponse({
-        body: JSON.stringify(jsonResponse())
-      })));
+      httpService.get.and.returnValue(Observable.of(jsonResponse()));      
     });
 
     it('should use HttpService::get with correct url', () => {

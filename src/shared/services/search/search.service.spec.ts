@@ -6,7 +6,7 @@ import { FieldType, Field } from '../../domain';
 import { RequestOptionsBuilder } from '../request';
 import { HttpService, OptionsType } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 describe('SearchService', () => {
 
@@ -62,9 +62,7 @@ describe('SearchService', () => {
       appConfig.getCaseDataUrl.and.returnValue(DATA_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of(new HttpResponse({
-        body: JSON.stringify({})
-      })));
+      httpService.get.and.returnValue(Observable.of({}));
 
       params = new HttpParams();
       requestOptionsArgs = { params, observe: 'body' };
@@ -200,9 +198,7 @@ describe('SearchService', () => {
     });
 
     it('should call backend with right URL, authorization and method for search input', () => {
-      httpService.get.and.returnValue(of(new HttpResponse({
-        body: JSON.stringify(SEARCH_INPUTS)
-      })));
+      httpService.get.and.returnValue(of(SEARCH_INPUTS))
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
@@ -218,9 +214,7 @@ describe('SearchService', () => {
     });
 
     it('should return search input results', () => {
-      httpService.get.and.returnValue(of(new HttpResponse({
-        body: JSON.stringify(SEARCH_INPUTS)
-      })));
+      httpService.get.and.returnValue(of(SEARCH_INPUTS));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
@@ -248,9 +242,7 @@ describe('SearchService', () => {
       appConfig.getPaginationPageSize.and.returnValue(25);
 
       httpService = createSpyObj<HttpService>('httpService', ['post']);
-      httpService.post.and.returnValue(Observable.of(new HttpResponse({
-        body: JSON.stringify({})
-      })));
+      httpService.post.and.returnValue(Observable.of({}));
 
       params = new HttpParams();
       requestOptionsArgs = { params, observe: 'body' };

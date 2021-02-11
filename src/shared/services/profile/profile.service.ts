@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { plainToClass } from 'class-transformer';
 import { AbstractAppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
 import { HttpService } from '../http';
 import { Profile } from '../../domain';
-import { Headers } from '@angular/http';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()

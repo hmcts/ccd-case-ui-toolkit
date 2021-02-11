@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { plainToClass } from 'class-transformer';
-import { Headers } from '@angular/http';
 import { HttpService, HttpErrorService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseHistory } from '../domain';

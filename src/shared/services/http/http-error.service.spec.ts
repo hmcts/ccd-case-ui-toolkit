@@ -1,7 +1,7 @@
 import { HttpErrorService } from './http-error.service';
 import { HttpError } from '../../domain/http/http-error.model';
-import { Headers, Response, ResponseOptions } from '@angular/http';
 import { AuthService } from '../auth/auth.service';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('HttpErrorService', () => {
   const CURRENT_URL = 'http://core-case-data.common-components.reform';
@@ -29,43 +29,38 @@ describe('HttpErrorService', () => {
     'message': 'The server understood the request but refuses to authorize it....',
     'path': CURRENT_URL
   };
-  const VALID_ERROR_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(VALID_ERROR_BODY),
+  const VALID_ERROR_RESPONSE = new HttpResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),
+    body: VALID_ERROR_BODY,
     status: 422
-  }));
-  const VALID_ERROR_RESPONSE_WITH_CHARSET = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json;charset=UTF-8',
-    }),
-    body: JSON.stringify(VALID_ERROR_BODY),
+  });
+  const VALID_ERROR_RESPONSE_WITH_CHARSET = new HttpResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json;charset=UTF-8'),
+    body: VALID_ERROR_BODY,
     status: 422
-  }));
+  });
 
-  const NOT_VALID_ERROR_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
+  const NOT_VALID_ERROR_RESPONSE = new HttpResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),    
     body: '{notvalidjson}'
-  }));
+  });
 
-  const HTTP_401_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(HTTP_401_ERROR_BODY),
+  const HTTP_401_RESPONSE = new HttpResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),
+    body: HTTP_401_ERROR_BODY,
     status: 401
-  }));
+  });
 
-  const HTTP_403_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(HTTP_403_ERROR_BODY),
+  const HTTP_403_RESPONSE = new HttpResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),    
+    body: HTTP_403_ERROR_BODY,
     status: 403
-  }));
+  });
 
   let authService: any;
   let errorService: HttpErrorService;

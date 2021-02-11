@@ -1,4 +1,3 @@
-import { Response, ResponseOptions } from '@angular/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -41,9 +40,9 @@ describe('WorkAllocationService', () => {
   describe('searchTasks', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_1 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_1 ]
+      }));
     });
 
     it('should call post with the correct parameters', () => {
@@ -92,9 +91,7 @@ describe('WorkAllocationService', () => {
   describe('completeTask', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({})
-      }))));
+      httpService.post.and.returnValue(Observable.of({}));
     });
 
     it('should call post with the correct parameters', () => {
@@ -123,9 +120,9 @@ describe('WorkAllocationService', () => {
 
     it('should succeed when no tasks are found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: []
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(result).toBeTruthy();
         expect(completeSpy).not.toHaveBeenCalled();
@@ -136,9 +133,9 @@ describe('WorkAllocationService', () => {
     it('should attempt to complete the task when one is found', (done) => {
       const COMPLETE_TASK_RESULT = 'Bob';
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(Observable.of(COMPLETE_TASK_RESULT));
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_2 ]
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
@@ -147,9 +144,9 @@ describe('WorkAllocationService', () => {
 
     it('should throw an error when more than one task is found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_1, MOCK_TASK_2 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Processed multiple tasks instead of erroring');
@@ -162,9 +159,9 @@ describe('WorkAllocationService', () => {
 
     it('should throw an error when failing to complete one task', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.throwError(COMPLETE_ERROR.message);
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_2 ]
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');

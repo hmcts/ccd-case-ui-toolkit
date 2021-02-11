@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { Response, Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, HttpErrorService } from '../http';
 import { CaseEventData, Draft, DRAFT_PREFIX, CaseView } from '../../domain';

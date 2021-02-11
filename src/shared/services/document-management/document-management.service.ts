@@ -2,7 +2,6 @@ import { Observable } from 'rxjs';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
-import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';

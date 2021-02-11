@@ -1,7 +1,6 @@
 import { DocumentManagementService } from './document-management.service';
 import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { CaseField, DocumentData, FieldType } from '../../domain';
@@ -43,9 +42,7 @@ describe('DocumentManagementService', () => {
     };
 
     beforeEach(() => {
-      httpService.post.and.returnValue(of(new Response(new ResponseOptions({
-        body: JSON.stringify(RESPONSE)
-      }))));
+      httpService.post.and.returnValue(of(RESPONSE));
     });
 
     it('should use HttpService.post with the correct URL', () => {
