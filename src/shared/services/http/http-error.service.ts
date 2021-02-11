@@ -25,7 +25,7 @@ export class HttpErrorService {
       return error;
   }
 
-  handle(error: any | any, redirectIfNotAuthorised = true): Observable<never> {
+  handle(error: HttpResponse<any> | any, redirectIfNotAuthorised = true): Observable<never> {
     let httpError = new HttpError();
     if (error instanceof HttpResponse) {
       if (error.headers

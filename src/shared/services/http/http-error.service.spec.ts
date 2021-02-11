@@ -99,7 +99,7 @@ describe('HttpErrorService', () => {
         .subscribe(
           () => fail('no error'),
           error => {
-            expect(error).toEqual(HttpError.from(VALID_ERROR_BODY));
+            expect(error).toEqual(HttpError.from(VALID_ERROR_RESPONSE));
             done();
           }
         );
@@ -110,7 +110,7 @@ describe('HttpErrorService', () => {
         .subscribe(
           () => fail('no error'),
           error => {
-            expect(error).toEqual(HttpError.from(VALID_ERROR_BODY));
+            expect(error).toEqual(HttpError.from(VALID_ERROR_RESPONSE_WITH_CHARSET));
             done();
           }
         );
@@ -121,7 +121,7 @@ describe('HttpErrorService', () => {
         .subscribe(
           () => fail('no error'),
           error => {
-            expect(error).toEqual(new HttpError());
+            expect(error).toEqual(HttpError.from(NOT_VALID_ERROR_RESPONSE));
             done();
           }
         );
