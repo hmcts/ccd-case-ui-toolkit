@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.71.3-conditional-show-perf
+Fix EUI-3398 - don't submit labels with empty string values 
+
 ### Version 2.71.2-conditional-show-perf
 Fix EUI-3381 - fix for missing alert banner.
 
