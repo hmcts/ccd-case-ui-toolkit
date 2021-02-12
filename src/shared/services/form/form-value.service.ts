@@ -274,7 +274,7 @@ export class FormValueService {
           switch (field.field_type.type) {
             case 'Label':
               // Delete any labels that are null
-              if (data[field.id] === null) {
+              if ((data[field.id] === null) || (data[field.id] === '')) {
                 delete data[field.id];
               }
               break;
