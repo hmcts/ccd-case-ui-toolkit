@@ -197,9 +197,8 @@ export class FormValueService {
     });
 
     // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
-    // association of a value. In addition, if the array contains items with a "value" object property, return only
-    // those whose value object contains non-empty values, including for any descendant objects
-    return rawArray.filter(item => !!item).filter(item => item.value ? this.containsNonEmptyValues(item.value) : true);
+    // association of a value
+    return rawArray.filter(item => !!item);
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -217,19 +216,5 @@ export class FormValueService {
       default:
         return rawValue;
     }
-  }
-
-  /**
-   * Recursive check of an object and its descendants for the presence of any non-empty values.
-   *
-   * @param object The object to check
-   */
-  private containsNonEmptyValues(object: object): boolean {
-    const values = Object.keys(object).map(key => object[key]);
-    const objectRefs = [];
-    // Note that pushing to an array is truthy (returns new length of the array), hence using ! to make it falsy
-    const hasNonNullPrimitive = values.some(x => (x !== null &&
-      (typeof x === 'object' && x.constructor === Object ? !objectRefs.push(x) : x !== '')));
-    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
   }
 }
