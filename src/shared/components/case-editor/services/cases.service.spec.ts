@@ -522,13 +522,11 @@ describe('CasesService', () => {
     });
   });
 
-  describe('handleNestedDynamicListsInComplexTypes()', () => {
+  describe('setDynamicListDefinition()', () => {
 
     it('should set data for dynamic lists', () => {
 
-      const response = (casesService as any).handleNestedDynamicListsInComplexTypes({
-        case_fields: [
-          {
+      const callbackResponse = {
             field_type: {
               complex_fields: [
                 {
@@ -551,13 +549,11 @@ describe('CasesService', () => {
                 value: {code: '2', value: '2'}
               }
             }
-          }
-        ]
-      });
+      };
+
+      (casesService as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
 
       const expected = {
-        case_fields: [
-          {
             field_type: {
               complex_fields: [
                 {
@@ -592,11 +588,9 @@ describe('CasesService', () => {
                 value: {code: '2', value: '2'}
               }
             }
-          }
-        ]
       };
 
-      expect(response).toEqual(expected);
+      expect(callbackResponse).toEqual(expected);
     });
   });
 });

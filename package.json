@@ -1,7 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.69.1-fix-replace-document-issue",
-
+  "version": "2.71.3-conditional-show-perf",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -93,11 +92,11 @@
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^10.11.0",
-    "@types/webpack": "^4.4.12",
-    "@types/webpack-env": "^1.13.2",
+    "@types/webpack": "^4.41.25",
+    "@types/webpack-env": "^1.16.0",
     "angular2-template-loader": "^0.6.2",
     "awesome-typescript-loader": "^5.2.1",
-    "class-transformer": "^0.1.8",
+    "class-transformer": "^0.3.2",
     "codacy-coverage": "^2.1.1",
     "codecov": "^3.0.0",
     "codelyzer": "^4.1.0",
@@ -154,11 +153,10 @@
     "tslib": "^1.9.3",
     "tslint": "^5.8.0",
     "typescript": "3.1.1",
-    "uglifyjs-webpack-plugin": "^2.0.1",
-    "webpack": "4.44.1",
+    "webpack": "^5.0.0-rc.6",
     "webpack-angular-externals": "^1.0.2",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-middleware": "^3.1.2",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-middleware": "^4.0.2",
     "webpack-rxjs-externals": "^2.0.0",
     "zone.js": "^0.8.26"
   },

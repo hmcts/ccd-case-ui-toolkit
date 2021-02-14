@@ -4,6 +4,7 @@ import { NavigationStart, Router } from '@angular/router';
 import 'rxjs/operator/publish';
 import { ConnectableObservable, Observable } from 'rxjs/Rx';
 import { Alert } from '../../domain/alert/alert.model';
+import { AlertLevel } from '../../domain';
 
 @Injectable()
 export class AlertService {
@@ -11,15 +12,24 @@ export class AlertService {
   private successObserver: Observer<Alert>;
   private errorObserver: Observer<Alert>;
   private warningObserver: Observer<Alert>;
+  // TODO: Remove
+  private alertObserver: Observer<Alert>;
 
   // the preserved messages
   preservedError = '';
   preservedWarning = '';
   preservedSuccess = '';
 
+  // TODO: Remove
+  message: string;
+  level: AlertLevel;
+
   successes: ConnectableObservable<Alert>;
   errors: ConnectableObservable<Alert>;
   warnings: ConnectableObservable<Alert>;
+  // TODO: Remove
+  alerts: ConnectableObservable<Alert>;
+
   private preserveAlerts = false;
 
   constructor(private router: Router) {
@@ -38,6 +48,12 @@ export class AlertService {
       .create(observer => this.warningObserver = observer)
       .publish();
     this.warnings.connect();
+
+    // TODO: Remove
+    this.alerts = Observable
+      .create(observer => this.alertObserver = observer)
+      .publish();
+    this.alerts.connect();
 
     this.router
       .events
@@ -60,30 +76,37 @@ export class AlertService {
     this.preservedError = '';
     this.preservedWarning = '';
     this.preservedSuccess = '';
+
+    // EUI-3381.
+    this.alertObserver.next(null);
+    this.message = '';
   }
 
   error(message: string): void {
     this.preservedError = this.preserveMessages(message);
-    this.errorObserver.next({
-      level: 'error',
-      message: message
-    });
+    const alert: Alert = { level: 'error', message };
+    this.errorObserver.next(alert);
+
+    // EUI-3381.
+    this.push(alert);
   }
 
   warning(message: string): void {
     this.preservedWarning = this.preserveMessages(message);
-    this.warningObserver.next({
-      level: 'warning',
-      message: message
-    });
+    const alert: Alert = { level: 'warning', message };
+    this.warningObserver.next(alert);
+
+    // EUI-3381.
+    this.push(alert);
   }
 
   success(message: string): void {
     this.preservedSuccess = this.preserveMessages(message);
-    this.successObserver.next({
-      level: 'success',
-      message: message
-    });
+    const alert: Alert = { level: 'success', message };
+    this.successObserver.next(alert);
+
+    // EUI-3381.
+    this.push(alert);
   }
 
   setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {
@@ -119,5 +142,16 @@ export class AlertService {
     } else {
       return '';
     }
+  }
+
+  // TODO: Remove
+  push(msgObject) {
+    this.message = msgObject.message;
+    this.level = msgObject.level;
+
+    this.alertObserver.next({
+      level: this.level,
+      message: this.message
+    });
   }
 }
