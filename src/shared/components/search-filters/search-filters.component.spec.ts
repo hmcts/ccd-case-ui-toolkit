@@ -482,8 +482,7 @@ describe('SearchFiltersComponent', () => {
     let writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
 
     let writeFieldInstance = writeField.componentInstance;
-
-    expect(writeFieldInstance.caseField).toEqual(firstInput.field);
+    expect(writeFieldInstance.caseField.id).toEqual(firstInput.field.id)
     expect(writeFieldInstance.caseField.label).toEqual(firstInput.field.label);
     expect(writeFieldInstance.formGroup).toBeTruthy();
   });

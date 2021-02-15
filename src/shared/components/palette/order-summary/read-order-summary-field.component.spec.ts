@@ -7,7 +7,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { By } from '@angular/platform-browser';
 import { text } from '../../../test/helpers';
 import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MoneyGbpModule } from '../money-gbp/money-gbp.module';
 
 describe('ReadOrderSummaryFieldComponent', () => {
@@ -16,7 +16,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
     id: 'PersonOrderSummary',
     type: 'Complex'
   };
-
+  const FORM_GROUP: FormGroup = new FormGroup( {} );
   const VALUE: OrderSummary = {
     PaymentReference: 'RC-1521-1095-0964-3143',
     Fees: [
@@ -90,6 +90,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -148,6 +149,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = UNDEFINED_CASE_FIELD;
+      component.formGroup = FORM_GROUP;
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -193,6 +195,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = NULL_CASE_FIELD;
+      component.formGroup = FORM_GROUP;
       de = fixture.debugElement;
       fixture.detectChanges();
     }));

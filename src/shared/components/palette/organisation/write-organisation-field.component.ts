@@ -37,7 +37,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$ = this.searchOrgTextFormControl.valueChanges;
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
-    this.organisationFormGroup = this.registerControl(new FormGroup({}));
+    this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
     if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
       this.organisationIDFormControl = new FormControl(this.caseField.value.OrganisationID);
       this.organisationFormGroup.addControl('OrganisationID', this.organisationIDFormControl);

@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, OnDestroy } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
-import { Constants } from '../../../commons/constants'
 import { Subscription } from 'rxjs';
+
+import { Constants } from '../../../commons/constants';
+import { HttpError } from '../../../domain/http/http-error.model';
+import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
@@ -244,7 +245,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url, Validators.required),
       document_binary_url: new FormControl(binaryUrl, Validators.required),
       document_filename: new FormControl(filename, Validators.required)
-    }));
+    }), true) as FormGroup;
   }
 
   private createDocumentForm(url: string, binaryUrl: string, filename: string) {
@@ -252,7 +253,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url),
       document_binary_url: new FormControl(binaryUrl),
       document_filename: new FormControl(filename)
-    }));
+    }), true) as FormGroup;
   }
 
   private getErrorMessage(error: HttpError): string {
