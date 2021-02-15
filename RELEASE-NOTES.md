@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.71.4-optional-top-level-documents
+Fix EUI-3403 - fix for optional top-level documents incorrectly showing.
+
 ### Version 2.71.2-conditional-show-perf
 Fix EUI-3381 - fix for missing alert banner.
 
