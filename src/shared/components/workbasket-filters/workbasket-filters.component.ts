@@ -128,7 +128,12 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
       this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0 ? this.selected.jurisdiction.caseTypes : null;
-      this.selected.caseType = this.workbasketDefaults ? (this.selectedJurisdictionCaseTypes ? this.selectedJurisdictionCaseTypes[0] : null) : null;
+      // Line was too long for linting so refactored it.
+      if (this.workbasketDefaults && this.selectedJurisdictionCaseTypes) {
+        this.selected.caseType = this.selectedJurisdictionCaseTypes[0];
+      } else {
+        this.selected.caseType = null;
+      }
       this.selected.caseState = null;
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
