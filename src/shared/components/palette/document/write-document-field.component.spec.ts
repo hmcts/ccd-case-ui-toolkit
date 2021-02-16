@@ -68,10 +68,6 @@ describe('WriteDocumentFieldComponent', () => {
 
   const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});
-  const REGISTER_CONTROL = (control) => {
-    FORM_GROUP.addControl(FORM_GROUP_ID, control);
-    return control;
-  };
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
@@ -131,8 +127,8 @@ describe('WriteDocumentFieldComponent', () => {
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
+    component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -156,9 +152,9 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should initialise formControl with provided value', () => {
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_url).toBe(VALUE.document_url);
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_binary_url).toBe(VALUE.document_binary_url);
-    expect(FORM_GROUP.controls[FORM_GROUP_ID].value.document_filename).toBe(VALUE.document_filename);
+    expect(FORM_GROUP.controls[CASE_FIELD.id].value.document_url).toBe(VALUE.document_url);
+    expect(FORM_GROUP.controls[CASE_FIELD.id].value.document_binary_url).toBe(VALUE.document_binary_url);
+    expect(FORM_GROUP.controls[CASE_FIELD.id].value.document_filename).toBe(VALUE.document_filename);
   });
 
   it('should open file dialog if document does not exist', () => {
@@ -391,10 +387,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   };
   const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});
-  const REGISTER_CONTROL = (control) => {
-    FORM_GROUP.addControl(FORM_GROUP_ID, control);
-    return control;
-  };
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
@@ -454,7 +446,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD_MANDATORY;
 
     de = fixture.debugElement;

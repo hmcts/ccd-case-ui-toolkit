@@ -3,13 +3,16 @@ import { ConditionalShowDirective } from './conditional-show.directive';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import { GreyBarService } from './services/grey-bar.service';
+import { ConditionalShowFormDirective } from './conditional-show-form.directive';
 
 @NgModule({
   declarations: [
-    ConditionalShowDirective
+    ConditionalShowDirective,
+    ConditionalShowFormDirective
   ],
   exports: [
-    ConditionalShowDirective
+    ConditionalShowDirective,
+    ConditionalShowFormDirective
   ],
   providers: [
     FieldsUtils,

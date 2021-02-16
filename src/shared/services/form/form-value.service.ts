@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition/case-field.model';
-import { FieldTypeSanitiser } from './field-type-sanitiser';
+
+import { CaseEventData, CaseField } from '../../domain';
 import { FieldsUtils } from '../fields';
+import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
@@ -134,6 +135,53 @@ export class FormValueService {
     }
   }
 
+  private static isReadOnly(field: CaseField): boolean {
+    return field.display_context ? field.display_context.toUpperCase() === 'READONLY' : false;
+  }
+
+  private static isOptional(field: CaseField): boolean {
+    return field.display_context ? field.display_context.toUpperCase() === 'OPTIONAL' : false;
+  }
+
+  private static isLabel (field: CaseField): boolean {
+    if (field.field_type) {
+      return field.field_type.type === 'Label';
+    } else {
+      return false;
+    }
+  }
+
+  private static isEmptyData(data: Object): boolean {
+    if (data) {
+      let allEmpty = true;
+      for (const prop of Object.keys(data)) {
+        const value = data[prop];
+        if (value) {
+          if (typeof(value) === 'object') {
+            allEmpty = allEmpty && this.isEmptyData(value);
+          } else {
+            allEmpty = false;
+          }
+        }
+      }
+      return allEmpty;
+    }
+    return true;
+  }
+
+  /**
+   * Should we clear out optional, empty, complex objects?
+   * @param clearEmpty False property if we simply want to skip it.
+   * @param data The data to assess for "emptiness".
+   * @param field The CaseField that will tell us if this is optional.
+   */
+  private static clearOptionalEmpty(clearEmpty: boolean, data: Object, field: CaseField): boolean {
+    if (clearEmpty) {
+      return FormValueService.isOptional(field) && FormValueService.isEmptyData(data);
+    }
+    return false;
+  }
+
   constructor(private fieldTypeSanitiser: FieldTypeSanitiser) {
   }
 
@@ -150,8 +198,8 @@ export class FormValueService {
     return s;
   }
 
-  filterCurrentPageFields(caseFields: CaseField[], editFrom: any): any {
-    let cloneForm = JSON.parse(JSON.stringify(editFrom));
+  filterCurrentPageFields(caseFields: CaseField[], editForm: any): any {
+    let cloneForm = JSON.parse(JSON.stringify(editForm));
     Object.keys(cloneForm['data']).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
         delete cloneForm['data'][key];
@@ -161,7 +209,7 @@ export class FormValueService {
   }
 
   sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
-    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm);
+    return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
   }
 
   private sanitiseObject(rawObject: object): object {
@@ -208,6 +256,114 @@ export class FormValueService {
         return String(rawValue);
       default:
         return rawValue;
+    }
+  }
+  public clearNonCaseFields (data: object, caseFields: CaseField[]) {
+    for (let dataKey in data) {
+      if (!caseFields.find(cf => cf.id === dataKey)) {
+        delete data [dataKey];
+      }
+    }
+  }
+  // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
+  public removeNullLabels (data: object, caseFields: CaseField[]) {
+    if (data && caseFields && caseFields.length > 0) {
+      // check if there is any data at the top level of the form that's not in the caseFields
+      for (const field of caseFields) {
+        if (field.field_type) {
+          switch (field.field_type.type) {
+            case 'Label':
+              // Delete any labels that are null
+              if ((data[field.id] === null) || (data[field.id] === '')) {
+                delete data[field.id];
+              }
+              break;
+            case 'Complex':
+              // Recurse and remove anything unnecessary from within a complex field.
+              this.removeNullLabels(data[field.id], field.field_type.complex_fields);
+              break;
+            case 'Collection':
+              // Get hold of the collection.
+              const collection = data[field.id];
+              // Check if we actually have a collection to work with.
+              if (collection && Array.isArray(collection)) {
+                // If this is a collection of complex object, we need to iterate through
+                // and clear them out.
+                if (field.field_type.collection_field_type.type === 'Complex') {
+                  // Iterate through the elements and remove any unnecessary fields within.
+                  for (const item of collection) {
+                    this.removeNullLabels(item, field.field_type.collection_field_type.complex_fields);
+                    this.removeNullLabels(item.value, field.field_type.collection_field_type.complex_fields);
+                  }
+                }
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    }
+  }
+  /**
+   * Clear out unnecessary fields from a data object, based on an array of CaseFields.
+   * This method is recursive and will call itself if it encounters particular field types.
+   *
+   * @param data The object to be tidied up.
+   * @param caseFields The CaseFields that need to be cleaned up.
+   * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
+   * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
+   */
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false): void {
+    if (data && caseFields && caseFields.length > 0) {
+      // check if there is any data at the top level of the form that's not in the caseFields
+      if (clearNonCase) {
+        this.clearNonCaseFields(data, caseFields);
+      }
+      for (const field of caseFields) {
+        if (!FormValueService.isLabel(field) && FormValueService.isReadOnly(field)) {
+          // Retain anything that is readonly and not a label.
+          continue;
+        }
+        if (field.hidden === true && field.display_context !== 'HIDDEN') {
+          // Delete anything that is hidden (that is NOT readonly), and that
+          // hasn't had its display_context overridden to make it hidden.
+          delete data[field.id];
+        } else if (field.field_type) {
+          switch (field.field_type.type) {
+            case 'Label':
+              // Delete any labels.
+              delete data[field.id];
+              break;
+            case 'Complex':
+              // Recurse and remove anything unnecessary from within a complex field.
+              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
+              // Also remove any optional complex objects that are completely empty.
+              if (FormValueService.clearOptionalEmpty(clearEmpty, data[field.id], field)) {
+                delete data[field.id];
+              }
+              break;
+            case 'Collection':
+              // Get hold of the collection.
+              const collection = data[field.id];
+              // Check if we actually have a collection to work with.
+              if (collection && Array.isArray(collection)) {
+                // If this is a collection of complex object, we need to iterate through
+                // and clear them out.
+                if (field.field_type.collection_field_type.type === 'Complex') {
+                  // Iterate through the elements and remove any unnecessary fields within.
+                  for (const item of collection) {
+                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false);
+                  }
+                }
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }
     }
   }
 

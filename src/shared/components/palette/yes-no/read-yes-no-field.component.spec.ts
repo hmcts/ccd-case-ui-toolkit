@@ -66,10 +66,6 @@ describe('ReadYesNoFieldComponent', () => {
 
   describe('Persistable readonly yes/no field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'X',
@@ -101,8 +97,8 @@ describe('ReadYesNoFieldComponent', () => {
       fixture = TestBed.createComponent(ReadYesNoFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();

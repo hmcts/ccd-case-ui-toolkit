@@ -151,10 +151,6 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
   describe('Persistable readonly textarea field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
@@ -181,17 +177,17 @@ describe('ReadMoneyGBPFieldComponent', () => {
       fixture = TestBed.createComponent(ReadMoneyGbpFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.amount = undefined;
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
     it('should register readonly case field value with form group', () => {
-      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
-      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+      expect(FORM_GROUP.controls[CASE_FIELD.id]).toBeTruthy();
+      expect(FORM_GROUP.controls[CASE_FIELD.id].value).toBe(VALUE);
     });
 
   });

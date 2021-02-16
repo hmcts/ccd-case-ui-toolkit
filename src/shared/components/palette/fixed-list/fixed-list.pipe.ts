@@ -9,8 +9,11 @@ export class FixedListPipe implements PipeTransform {
   private static readonly EMPTY = '';
 
   transform(value: string, items: FixedListItem[]): any {
-    let item = items.find(i => i.code === value);
-    return item ? item.label : FixedListPipe.EMPTY;
+    if (!!items) {
+      let item = items.find(i => i.code === value);
+      return item ? item.label : FixedListPipe.EMPTY;
+    } else {
+      return FixedListPipe.EMPTY;
+    }
   }
-
 }

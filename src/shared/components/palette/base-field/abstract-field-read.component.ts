@@ -15,7 +15,7 @@ export abstract class AbstractFieldReadComponent extends AbstractFormFieldCompon
   context: PaletteContext = PaletteContext.DEFAULT;
 
   ngOnInit(): void {
-    if (this.registerControl && !this.caseField.metadata) {
+    if (!this.caseField.metadata) {
       this.registerControl(new FormControl(this.caseField.value));
     }
   }

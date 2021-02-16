@@ -11,6 +11,6 @@ export class WriteMoneyGbpFieldComponent extends AbstractFieldWriteComponent imp
   moneyGbpControl: FormControl;
 
   ngOnInit() {
-    this.moneyGbpControl = this.registerControl(new FormControl(this.caseField.value));
+    this.moneyGbpControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }
