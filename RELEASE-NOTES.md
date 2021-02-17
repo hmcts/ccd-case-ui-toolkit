@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.0-task-event-completion
+**EUI-3229** Task event completion - part 2
+
 ### Version 2.71.4-optional-top-level-documents
 Fix EUI-3403 - fix for optional top-level documents incorrectly showing.
 
