@@ -25,6 +25,7 @@ export class ReadOrganisationFieldTableComponent extends AbstractFieldReadCompon
   }
 
   ngOnInit(): void {
+    super.ngOnInit()
     if (this.caseField.value && this.caseField.value.OrganisationID) {
       this.organisations$ = this.organisationService.getActiveOrganisations();
       this.selectedOrg$ = this.organisations$.pipe(

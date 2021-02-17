@@ -23,10 +23,6 @@ const CASE_FIELD: CaseField = <CaseField>({
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
-const REGISTER_CONTROL = (control) => {
-  FORM_GROUP.addControl(FIELD_ID, control);
-  return control;
-};
 
 describe('WriteNumberFieldComponent', () => {
 
@@ -62,19 +58,19 @@ describe('WriteNumberFieldComponent', () => {
     fixture = TestBed.createComponent(WriteNumberFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
+    component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
   it('should add a formControl linked to the field ID to the formGroup', () => {
-    expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+    expect(FORM_GROUP.controls[CASE_FIELD.id]).toBeTruthy();
   });
 
   it('should initialise formControl with provided value', () => {
-    expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
+    expect(FORM_GROUP.controls[CASE_FIELD.id].value).toBe(VALUE);
   });
 
   it('should render text input element linked to formControl', () => {

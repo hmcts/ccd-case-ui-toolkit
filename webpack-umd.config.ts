@@ -3,11 +3,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as angularExternals from 'webpack-angular-externals';
 import * as rxjsExternals from 'webpack-rxjs-externals';
-import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
-
+import * as TerserPlugin from 'terser-webpack-plugin'
 const pkg = JSON.parse(fs.readFileSync('./package.json').toString());
 
 export default {
+  mode: 'production',
   entry: {
     'index.umd': './src/index.ts',
     'index.umd.min': './src/index.ts',
@@ -26,6 +26,14 @@ export default {
     rxjsExternals()
   ],
   devtool: 'source-map',
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin ( {
+      include: /\.min\.js$/,
+      sourceMap: true,
+      terserOptions: { compress: true },
+    } )]
+  },
   module: {
     rules: [
       {
@@ -73,12 +81,6 @@ export default {
       /angular(\\|\/)core(\\|\/)@angular/,
       path.join(__dirname, 'src')
     ),
-
-    new UglifyJSPlugin({
-      include: /\.min\.js$/,
-      sourceMap: true
-    }),
-
     new webpack.BannerPlugin({
       banner: `
 /**
