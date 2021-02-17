@@ -139,4 +139,8 @@ export class AppConfig extends AbstractAppConfig {
   public getWorkAllocationApiUrl(): string {
     return this.config.work_allocation_api_url;
   }
+
+  public getUserInfoApiUrl(): string {
+    return this.config.user_info_api_url;
+  }
 }
