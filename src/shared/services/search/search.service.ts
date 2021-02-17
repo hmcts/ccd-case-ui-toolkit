@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RequestOptionsArgs } from '@angular/http';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
@@ -8,6 +8,7 @@ import { Headers } from '@angular/http';
 import { RequestOptionsBuilder, SearchView } from '../request';
 import { SearchInput } from '../../components/search-filters';
 import { SearchResultView } from '../../domain/search';
+import { LoadingService } from '../loading';
 
 @Injectable()
 export class SearchService {
@@ -21,7 +22,8 @@ export class SearchService {
 
   constructor(private appConfig: AbstractAppConfig,
               private httpService: HttpService,
-              private requestOptionsBuilder: RequestOptionsBuilder) { }
+              private requestOptionsBuilder: RequestOptionsBuilder,
+              private loadingService: LoadingService) { }
 
   public search(jurisdictionId: string, caseTypeId: string,
                 metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
@@ -31,11 +33,12 @@ export class SearchService {
                                            + `/cases`;
 
     let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
-
+    const loadingToken = this.loadingService.register();
     return this.httpService
       .get(url, options)
       .pipe(
-        map(response => response.json())
+        map(response => response.json()),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
@@ -48,11 +51,12 @@ export class SearchService {
       sort,
       size: this.appConfig.getPaginationPageSize()
     };
-
+    const loadingToken = this.loadingService.register();
     return this.httpService
       .post(url, body, options)
       .pipe(
-        map(response => response.json())
+        map(response => response.json()),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
