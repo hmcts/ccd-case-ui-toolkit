@@ -4,7 +4,6 @@ import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorService } from './http-error.service';
 import { Observable, of, throwError } from 'rxjs';
-import { LoadingService } from '../loading';
 
 describe('HttpService', () => {
 
@@ -33,7 +32,6 @@ describe('HttpService', () => {
 
   let httpMock: any;
   let httpErrorService: any;
-  let loadingService: any;
   let catchObservable: any;
 
   beforeEach(() => {
@@ -49,9 +47,7 @@ describe('HttpService', () => {
     httpErrorService = createSpyObj<HttpErrorService>('httpErrorService', ['handle']);
     httpErrorService.handle.and.returnValue(throwError(error));
 
-    loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
-
-    httpService = new HttpService(httpMock, httpErrorService, loadingService);
+    httpService = new HttpService(httpMock, httpErrorService);
   });
 
   describe('get', () => {
@@ -129,16 +125,6 @@ describe('HttpService', () => {
       httpService.get(URL).subscribe(() => {}, () => {});
       expect(httpErrorService.handle).toHaveBeenCalledWith(error, true);
     });
-
-    it('should register loading token', () => {
-      httpService.get(URL);
-
-      expect(loadingService.register).toHaveBeenCalled();
-    });
-
-    it('should unregister loading token', () => {
-      httpService.get(URL).finally(() => expect(loadingService.unregister).toHaveBeenCalled());
-    });
   });
 
   describe('post', () => {
@@ -189,16 +175,6 @@ describe('HttpService', () => {
       let headers = httpMock.post.calls.mostRecent().args[2].headers;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
-    });
-
-    it('should register loading token', () => {
-      httpService.post(URL, {});
-
-      expect(loadingService.register).toHaveBeenCalled();
-    });
-
-    it('should unregister loading token', () => {
-      httpService.post(URL, {}).finally(() => expect(loadingService.unregister).toHaveBeenCalled());
     });
   });
 
@@ -251,16 +227,6 @@ describe('HttpService', () => {
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
     });
-
-    it('should register loading token', () => {
-      httpService.put(URL, {});
-
-      expect(loadingService.register).toHaveBeenCalled();
-    });
-
-    it('should unregister loading token', () => {
-      httpService.put(URL, {}).finally(() => expect(loadingService.unregister).toHaveBeenCalled());
-    });
   });
 
   describe('delete', () => {
@@ -311,16 +277,6 @@ describe('HttpService', () => {
       let headers = httpMock.delete.calls.mostRecent().args[1].headers;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
-    });
-
-    it('should register loading token', () => {
-      httpService.delete(URL);
-
-      expect(loadingService.register).toHaveBeenCalled();
-    });
-
-    it('should unregister loading token', () => {
-      httpService.delete(URL).finally(() => expect(loadingService.unregister).toHaveBeenCalled());
     });
   });
 
