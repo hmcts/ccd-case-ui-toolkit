@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.1-do-not-send-empty-documents
+Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.
+
 ### Version 2.72.0-task-event-completion
 **EUI-3229** Task event completion - part 2
 

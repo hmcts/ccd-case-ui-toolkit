@@ -258,7 +258,7 @@ export class FormValueService {
         return rawValue;
     }
   }
-  public clearNonCaseFields (data: object, caseFields: CaseField[]) {
+  public clearNonCaseFields(data: object, caseFields: CaseField[]) {
     for (let dataKey in data) {
       if (!caseFields.find(cf => cf.id === dataKey)) {
         delete data [dataKey];
@@ -266,7 +266,7 @@ export class FormValueService {
     }
   }
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
-  public removeNullLabels (data: object, caseFields: CaseField[]) {
+  public removeNullLabels(data: object, caseFields: CaseField[]) {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       for (const field of caseFields) {
@@ -305,6 +305,45 @@ export class FormValueService {
       }
     }
   }
+  // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
+  public removeEmptyDocuments(data: object, caseFields: CaseField[]) {
+    if (data && caseFields && caseFields.length > 0) {
+      // check if there is any data at the top level of the form that's not in the caseFields
+      for (const field of caseFields) {
+        if (field.field_type) {
+          switch (field.field_type.type) {
+            case 'Complex':
+              // Recurse and remove any empty documents from within a complex field.
+              this.removeEmptyDocuments(data[field.id], field.field_type.complex_fields);
+              break;
+            case 'Collection':
+              // Get hold of the collection.
+              const collection = data[field.id];
+              // Check if we actually have a collection to work with.
+              if (collection && Array.isArray(collection)) {
+                // If this is a collection of complex object, we need to iterate through
+                // and clear out empty documents
+                if (field.field_type.collection_field_type.type === 'Complex') {
+                  // Iterate through the elements and remove any empty documents within.
+                  for (const item of collection) {
+                    this.removeEmptyDocuments(item, field.field_type.collection_field_type.complex_fields);
+                    this.removeEmptyDocuments(item.value, field.field_type.collection_field_type.complex_fields);
+                  }
+                }
+              }
+              break;
+            case 'Document':
+              if (FormValueService.isEmptyData(data[field.id])) {
+                delete data[field.id];
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    }
+  }
   /**
    * Clear out unnecessary fields from a data object, based on an array of CaseFields.
    * This method is recursive and will call itself if it encounters particular field types.
@@ -334,6 +373,11 @@ export class FormValueService {
             case 'Label':
               // Delete any labels.
               delete data[field.id];
+              break;
+            case 'Document':
+              if (FormValueService.isEmptyData(data[field.id])) {
+                delete data[field.id];
+              }
               break;
             case 'Complex':
               // Recurse and remove anything unnecessary from within a complex field.
