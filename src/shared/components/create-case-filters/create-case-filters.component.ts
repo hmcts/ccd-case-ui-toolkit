@@ -9,7 +9,12 @@ import { DefinitionsService, OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-create-case-filters',
-  templateUrl: './create-case-filters.component.html'
+  templateUrl: './create-case-filters.component.html',
+  styles: [`a.disabled {
+    color: gray;
+    pointer-events: none;
+    cursor: default;
+  }`]
 })
 export class CreateCaseFiltersComponent implements OnInit {
 

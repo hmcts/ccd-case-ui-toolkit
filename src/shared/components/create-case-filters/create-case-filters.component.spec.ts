@@ -254,7 +254,7 @@ describe('CreateCaseFiltersComponent', () => {
   const $SELECT_JURISDICTION = By.css('#cc-jurisdiction');
   const $SELECT_CASE_TYPE = By.css('#cc-case-type');
   const $SELECT_EVENT = By.css('#cc-event');
-  const $SELECT_BUTTON = By.css('button');
+  const $SELECT_BUTTON = By.css('a');
 
   beforeEach(async(() => {
     mockOrderService = createSpyObj<OrderService>('orderService', ['sort']);
@@ -585,7 +585,7 @@ describe('CreateCaseFiltersComponent', () => {
 
     fixture.detectChanges();
     let button = de.query($SELECT_BUTTON);
-    expect(button.nativeElement.disabled).toBeTruthy();
+    expect(button.classes.disabled).toBeTruthy();
   }));
 
   it('should have an Go button enabled when event is set', async(() => {
@@ -599,7 +599,7 @@ describe('CreateCaseFiltersComponent', () => {
 
     fixture.detectChanges();
     let button = de.query($SELECT_BUTTON);
-    expect(button.nativeElement.disabled).toBeFalsy();
+    expect(button.classes.disabled).toBeFalsy();
   }));
 
   it('should return selected object when form fields selected and Go button clicked', async(() => {
