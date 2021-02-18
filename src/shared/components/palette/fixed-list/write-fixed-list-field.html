@@ -6,10 +6,9 @@
     <span class="error-message" *ngIf="fixedListFormControl.errors && fixedListFormControl.touched">{{fixedListFormControl.errors | ccdFirstError}}</span>
   </label>
 
-  <select class="form-control ccd-dropdown bottom-30" [id]="id()" 
-  [(ngModel)]="caseField.value" [formControl]="fixedListFormControl">
+  <select class="form-control ccd-dropdown bottom-30" [id]="id()" [(ngModel)]="caseField.value" [formControl]="fixedListFormControl">
     <option [ngValue]=null>--Select a value--</option>
-    <option [ngValue]="type.code" *ngFor="let type of caseField.list_items">{{type.label}}</option>
+    <option [ngValue]="type.code" *ngFor="let type of listItems">{{type.label}}</option>
   </select>
 
 </div>

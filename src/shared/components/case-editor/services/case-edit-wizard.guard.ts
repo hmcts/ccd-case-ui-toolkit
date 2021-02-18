@@ -42,7 +42,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     let currentState = this.buildState(eventTrigger.case_fields);
     // TODO Extract predicate and state creation in a factory
     let canShowPredicate: Predicate<WizardPage> = (page: WizardPage): boolean => {
-      return new ShowCondition(page.show_condition).match(currentState);
+      return ShowCondition.getInstance(page.show_condition).match(currentState);
     };
 
     if (!route.params['page']) {

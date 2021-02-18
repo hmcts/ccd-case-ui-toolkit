@@ -23,10 +23,10 @@ export class FieldsPurger {
     let currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
     wizard.pages.forEach(wp => {
       if (this.hasShowConditionPage(wp, currentEventState)) {
-          let condition = new ShowCondition(wp.show_condition);
-          if (this.isHidden(condition, currentEventState)) {
-            this.resetPage(form, wp);
-          }
+        let condition = new ShowCondition(wp.show_condition);
+        if (this.isHidden(condition, currentEventState)) {
+          this.resetPage(form, wp);
+        }
       }
     });
   }
@@ -50,9 +50,19 @@ export class FieldsPurger {
     // so far only applies to the new field type OrganisationPolicy which needs to retain the default case role value
     // for other case fields there should be no side effects
     if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
-      const caseRoleFormControl = ((form.get('data') as FormGroup).get(field.id) as FormGroup)
-        .get('OrgPolicyCaseAssignedRole') as FormControl;
-      caseRoleFormControl.enable();
+      // <bubble_wrap>
+      // Doing some null checking to stop it from falling over.
+      const data: FormGroup = form.get('data') as FormGroup;
+      if (data) {
+        const fieldGroup: FormGroup = data.get(field.id) as FormGroup;
+        if (fieldGroup) {
+          const caseRoleFormControl: FormControl = fieldGroup.get('OrgPolicyCaseAssignedRole') as FormControl;
+          if (caseRoleFormControl) {
+            caseRoleFormControl.enable();
+          }
+        }
+      }
+      // </bubble_wrap>
     }
   }
 

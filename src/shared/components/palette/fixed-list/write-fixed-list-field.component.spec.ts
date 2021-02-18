@@ -68,11 +68,6 @@ describe('WriteFixedListFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
-    component.registerControl = REGISTER_CONTROL;
 
     de = fixture.debugElement;
     fixture.detectChanges();

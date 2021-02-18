@@ -1,18 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteComplexFieldComponent } from './write-complex-field.component';
 import { DebugElement, Pipe, PipeTransform } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { FieldsFilterPipe } from './fields-filter.pipe';
+import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { IsReadOnlyPipe } from '../utils';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { FieldsFilterPipe } from './fields-filter.pipe';
+import { WriteComplexFieldComponent } from './write-complex-field.component';
+
 import createSpyObj = jasmine.createSpyObj;
+
+const buildFields = (component: WriteComplexFieldComponent) => {
+  const fields = component.caseField.field_type.complex_fields;
+  for (const field of fields) {
+    component.buildField(field);
+  }
+}
 
 describe('WriteComplexFieldComponent', () => {
   const $COMPLEX_PANEL = By.css('.form-group');
@@ -21,12 +31,12 @@ describe('WriteComplexFieldComponent', () => {
 
   let FieldWriteComponent = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'registerControl', 'idPrefix', 'isExpanded']
+    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel', 'registerControl']
+    inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
   @Pipe({name: 'ccdIsReadOnlyAndNotCollection'})
@@ -168,10 +178,6 @@ describe('WriteComplexFieldComponent', () => {
     const POSTCODE = 2;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
 
     beforeEach(async(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -181,10 +187,11 @@ describe('WriteComplexFieldComponent', () => {
       fixture = TestBed.createComponent(WriteComplexFieldComponent);
       component = fixture.componentInstance;
 
+      component.formGroup = FORM_GROUP;
       component.caseField = CASE_FIELD;
-      component.registerControl = REGISTER_CONTROL;
 
       de = fixture.debugElement;
+      component.ngOnInit();
       fixture.detectChanges();
     }));
 
@@ -215,6 +222,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_MISSING_VALUE
       });
+      component.ngOnInit();
       fixture.detectChanges();
 
       let labels = de.queryAll($COMPLEX_PANEL_VALUES);
@@ -225,39 +233,47 @@ describe('WriteComplexFieldComponent', () => {
       expect(labels[LINE_2].componentInstance.caseField.label).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
     });
 
-    it('should return control if exists in formGroup', () => {
-      const CASE_FIELD_1: CaseField = <CaseField>({
-        id: FIELD_ID,
-        label: 'Complex Field',
-        display_context: 'OPTIONAL',
-        field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      });
-      let firstControl = new FormControl();
-      let formGroup = new FormGroup({});
-      formGroup.addControl(FIELD_ID, firstControl);
-      component.complexGroup = formGroup;
-      fixture.detectChanges();
-      let returned = component.buildControlRegistrer(CASE_FIELD_1).apply(firstControl);
-      expect(returned).toBe(firstControl);
-      expect(component.complexGroup.get(CASE_FIELD_1.id)).toBeTruthy();
+    it('should return control if it exists in the formGroup', () => {
+      // component.caseField is CASE_FIELD to start with.
+      // Try re-building the first field and ensure it's appropriately handled.
+      const FIRST_FIELD = CASE_FIELD.field_type.complex_fields[0];
+      // Spy on the addControl method.
+      const addControlSpy = spyOn(component.complexGroup, 'addControl').and.callThrough();
+      const firstFieldControl = component.complexGroup.get(FIRST_FIELD.id);
+      expect(firstFieldControl).toBeDefined();
+      expect(firstFieldControl['caseField']).toEqual(plainToClassFromExist(new CaseField(), FIRST_FIELD));
+      const result = component.buildField(FIRST_FIELD);
+      expect(result).toEqual(FIRST_FIELD);
+      // Make sure we didn't call the addControl method.
+      expect(addControlSpy).not.toHaveBeenCalled();
+      // And also make sure we still have the control in place.
+      const firstFieldControlAgain = component.complexGroup.get(FIRST_FIELD.id);
+      expect(firstFieldControlAgain).toBe(firstFieldControl);
+      expect(firstFieldControlAgain['caseField']).toEqual(firstFieldControl['caseField']);
     });
 
-    it('should add control if it does not exist in formGroup', () => {
-      const CASE_FIELD_1: CaseField = <CaseField>({
-        id: 'anotherComplexField',
-        label: 'Complex Field',
+    // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
+    it('should add control if it does not exist in the formGroup', () => {
+      // component.caseField is CASE_FIELD to start with.
+      // Try re-building the first field and ensure it's appropriately handled.
+      const NEW_FIELD = <CaseField>({
+        id: 'AddressLine3',
+        label: 'Line 3',
         display_context: 'OPTIONAL',
-        field_type: FIELD_TYPE_WITH_MISSING_VALUE
+        field_type: { id: 'Text', type: 'Text' }
       });
-      let firstControl = new FormControl();
-      let formGroup = new FormGroup({});
-      formGroup.addControl('first', firstControl);
-      component.complexGroup = formGroup;
-      fixture.detectChanges();
-      let returned = component.buildControlRegistrer(CASE_FIELD_1) (firstControl);
-      expect(returned).toBe(firstControl);
-      expect(component.complexGroup.get(CASE_FIELD_1.id)).toBeTruthy();
-      expect(component.complexGroup.get('first')).toBeTruthy();
+      // Spy on the addControl method, which should NOT be called.
+      const addControlSpy = spyOn(component.complexGroup, 'addControl').and.callThrough();
+      const newFieldControl = component.complexGroup.get(NEW_FIELD.id);
+      expect(newFieldControl).toBeNull();
+      const result = component.buildField(NEW_FIELD);
+      expect(result).toEqual(NEW_FIELD);
+      // And also make sure we still have the control in place.
+      const newFieldControlAgain = component.complexGroup.get(NEW_FIELD.id);
+      expect(newFieldControlAgain).toBeDefined();
+      expect(newFieldControlAgain['caseField']).toEqual(NEW_FIELD);
+      // Make sure we DID call the addControl method with this newly added control.
+      expect(addControlSpy).toHaveBeenCalledWith(NEW_FIELD.id, newFieldControlAgain);
     });
   });
 
@@ -331,30 +347,25 @@ describe('WriteComplexFieldComponent', () => {
         }
       }
     });
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     const LINE_1 = 0;
     const LINE_2 = 1;
     const POSTCODE = 2;
 
-    let formGroup: FormGroup;
-    const REGISTER_CONTROL = <T extends AbstractControl> (control: T) => {
-      formGroup.addControl(FIELD_ID, control);
-      return control;
-    };
-
     beforeEach(async(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-      formGroup = new FormGroup({});
 
       prepareTestBed();
 
       fixture = TestBed.createComponent(WriteComplexFieldComponent);
       component = fixture.componentInstance;
 
+      component.formGroup = FORM_GROUP;
       component.caseField = CASE_FIELD;
-      component.registerControl = REGISTER_CONTROL;
 
       de = fixture.debugElement;
+      component.ngOnInit();
       fixture.detectChanges();
     }));
 
@@ -366,34 +377,31 @@ describe('WriteComplexFieldComponent', () => {
       expect(values.length).toBe(3);
 
       let line1 = FIELD_TYPE.complex_fields[LINE_1];
-      expect(values[LINE_1].componentInstance.caseField).toEqual( <CaseField>({
+      expect(values[LINE_1].componentInstance.caseField).toEqual(plainToClassFromExist(new CaseField(), {
         id: line1.id,
         label: line1.label,
         display_context: 'OPTIONAL',
         field_type: line1.field_type,
         value: CASE_FIELD.value['AddressLine1']
       }));
-      expect(values[LINE_1].componentInstance.registerControl).not.toBeNull();
 
       let line2 = FIELD_TYPE.complex_fields[LINE_2];
-      expect(values[LINE_2].componentInstance.caseField).toEqual( <CaseField>({
+      expect(values[LINE_2].componentInstance.caseField).toEqual(plainToClassFromExist(new CaseField(), {
         id: line2.id,
         label: line2.label,
         display_context: 'OPTIONAL',
         field_type: line2.field_type,
         value: CASE_FIELD.value['AddressLine2']
       }));
-      expect(values[LINE_2].componentInstance.registerControl).not.toBeNull();
 
       let postcode = FIELD_TYPE.complex_fields[POSTCODE];
-      expect(values[POSTCODE].componentInstance.caseField).toEqual({
+      expect(values[POSTCODE].componentInstance.caseField).toEqual(plainToClassFromExist(new CaseField(), {
         id: postcode.id,
         label: postcode.label,
         display_context: 'OPTIONAL',
         field_type: postcode.field_type,
         value: CASE_FIELD.value['AddressPostcode']
-      });
-      expect(values[POSTCODE].componentInstance.registerControl).not.toBeNull();
+      }));
     });
 
     it('should render fields with empty value', () => {
@@ -433,32 +441,30 @@ describe('WriteComplexFieldComponent', () => {
   });
 
   describe('when display_context of AddressLine1 is MANDATORY', () => {
-    const FIELD_TYPE_WITH_MISSING_VALUE: FieldType = {
-      id: 'IAmVeryComplex',
+    const ADDRESS_LINE_1: CaseField = <CaseField>({
+      id: 'AddressLine1',
+      label: 'Line 1',
+      display_context: 'MANDATORY',
+      field_type: { id: 'TextMax150', type: 'Text' },
+      value: ''
+    });
+    const ADDRESS_LINE_2: CaseField = <CaseField>({
+      id: 'AddressLine2',
+      label: 'Line 2',
+      field_type: { id: 'Text', type: 'Text' },
+      value: '111 East India road'
+    });
+    const BROKEN_ADDRESS_LINE_1: CaseField = <CaseField>({
+      id: 'AddressLine1',
+      label: 'Line 1',
+      display_context: 'MANDATORY',
+      field_type: { id: '"TextMax150"', type: 'Text' },
+      value: ''
+    });
+    const ADDRESS_TYPE: FieldType = {
+      id: 'AddressUK',
       type: 'Complex',
-      complex_fields: [
-        <CaseField>({
-          id: 'AddressLine1',
-          label: 'Line 1',
-          display_context: 'MANDATORY',
-          field_type: {
-            id: '"TextMax150"',
-            type: 'Text'
-          },
-          value: ''
-        }),
-        <CaseField>({
-          id: 'AddressLine2',
-          label: 'Line 2',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'Text',
-            type: 'Text'
-          },
-          value: '111 East India road'
-        })
-      ]
-    };
+    }
 
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'TextMax150',
@@ -474,116 +480,117 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
 
     beforeEach(async(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-
       prepareTestBed();
 
       fixture = TestBed.createComponent(WriteComplexFieldComponent);
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD_M;
-      component.registerControl = REGISTER_CONTROL;
+      component.formGroup = new FormGroup({}); // FORM_GROUP;
       component.ignoreMandatory = true;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
-    it('should not add control when case field is not AddressLine1 and TextMax150', () => {
-      const CASE_FIELD_1: CaseField =  <CaseField>({
+    it('should not add validators when case field is not AddressLine1 and TextMax150', () => {
+      formValidatorService.addValidators.calls.reset();
+      component.caseField =  <CaseField>({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
-        field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      });
-      const firstControl = new FormControl();
-      const formGroup = new FormGroup({});
-      formGroup.addControl('first', firstControl);
-      component.complexGroup = formGroup;
-
-      const returned = component.buildControlRegistrer(CASE_FIELD_1) (firstControl);
-      expect(returned).toBe(firstControl);
-      expect(component.complexGroup.get(CASE_FIELD_1.id)).toBeTruthy();
-      expect(component.complexGroup.get('first')).toBeTruthy();
-      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(0);
-    });
-
-    it('should add control when case field is AddressLine1 and TextMax150', () => {
-      component.caseField =  <CaseField>({
-        id: 'AddressLine1',
-        label: 'x',
-        display_context: 'MANDATORY',
-        field_type: FIELD_TYPE_WITH_VALUES,
-        value: {
-          'AddressLine1': 'Flat 9'
+        field_type: {
+          ...ADDRESS_TYPE,
+          complex_fields: [ BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2 ]
         }
       });
-      const firstControl = new FormControl();
-      const formGroup = new FormGroup({});
-      formGroup.addControl('first', firstControl);
-      component.complexGroup = formGroup;
+      component.ngOnInit();
+      buildFields(component);
+      fixture.detectChanges();
 
-      const returned = component.buildControlRegistrer(component.caseField) (firstControl);
-      expect(returned).toBe(firstControl);
-      expect(component.complexGroup.get(component.caseField.id)).toBeTruthy();
-      expect(component.complexGroup.get('first')).toBeTruthy();
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, firstControl);
+      // Should have been called for the group overall, but not for either of the complex_fields.
+      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
     });
 
-    it('should not add control when case field is AddressLine1 but NOT TextMax150', () => {
+    it('should add validators when case field is AddressLine1 and TextMax150', () => {
+      formValidatorService.addValidators.calls.reset();
       component.caseField =  <CaseField>({
-        id: 'AddressLine1',
-        label: 'x',
+        id: 'anotherComplexField',
+        label: 'Complex Field',
         display_context: 'MANDATORY',
         field_type: {
-          id: 'TextMax151',
-          type: 'Text'
-        },
-        value: {
-          'AddressLine1': 'Flat 9'
+          ...ADDRESS_TYPE,
+          complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
         }
       });
-      const firstControl = new FormControl();
-      const formGroup = new FormGroup({});
-      formGroup.addControl('first', firstControl);
-      component.complexGroup = formGroup;
+      component.ngOnInit();
+      buildFields(component);
+      fixture.detectChanges();
 
-      const returned = component.buildControlRegistrer(component.caseField) (firstControl);
-      expect(returned).toBe(firstControl);
-      expect(component.complexGroup.get(component.caseField.id)).toBeTruthy();
-      expect(component.complexGroup.get('first')).toBeTruthy();
-      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(0);
+      // Should have been called for the group overall, but not for either of the complex_fields.
+      // expect(formValidatorService.addValidators).toHaveBeenCalledTimes(2);
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(ADDRESS_LINE_1, jasmine.any(FormControl));
     });
 
-    it('should not add control when case field is NOT AddressLine1', () => {
+    it('should not add validators when case field is AddressLine1 but NOT TextMax150', () => {
+      formValidatorService.addValidators.calls.reset();
       component.caseField =  <CaseField>({
-        id: 'AddressLine2',
-        label: 'x',
+        id: 'anotherComplexField',
+        label: 'Complex Field',
         display_context: 'MANDATORY',
         field_type: {
-          id: 'TextMax150',
-          type: 'Text'
-        },
-        value: {
-          'AddressLine1': 'Flat 9'
+          ...ADDRESS_TYPE,
+          complex_fields: [ <CaseField>({
+            id: 'AddressLine1',
+            label: 'Line 1',
+            field_type: {
+              id: 'TextMax151', // Should fall down here.
+              type: 'Text'
+            },
+            value: ''
+          }), ADDRESS_LINE_2 ]
         }
       });
-      const firstControl = new FormControl();
-      const formGroup = new FormGroup({});
-      formGroup.addControl('first', firstControl);
-      component.complexGroup = formGroup;
+      component.ngOnInit();
+      buildFields(component);
+      fixture.detectChanges();
 
-      const returned = component.buildControlRegistrer(component.caseField) (firstControl);
-      expect(returned).toBe(firstControl);
-      expect(component.complexGroup.get(component.caseField.id)).toBeTruthy();
-      expect(component.complexGroup.get('first')).toBeTruthy();
-      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(0);
+      // Should have been called for the group overall, but not for either of the complex_fields.
+      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+    });
+
+    it('should not add validators when case field is NOT AddressLine1', () => {
+      formValidatorService.addValidators.calls.reset();
+      component.caseField =  <CaseField>({
+        id: 'anotherComplexField',
+        label: 'Complex Field',
+        display_context: 'MANDATORY',
+        field_type: {
+          ...ADDRESS_TYPE,
+          complex_fields: [ <CaseField>({
+            id: 'AddressLine3', // Should fall down here.
+            label: 'Line 1',
+            field_type: {
+              id: 'TextMax150',
+              type: 'Text'
+            },
+            value: ''
+          }), ADDRESS_LINE_2 ]
+        }
+      });
+      component.ngOnInit();
+      buildFields(component);
+      fixture.detectChanges();
+
+      // Should have been called for the group overall, but not for either of the complex_fields.
+      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
     });
   });
 
