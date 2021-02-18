@@ -109,22 +109,22 @@ describe('ReadDynamicListFieldComponent', () => {
   });
 
   describe('ReadDynamicListFieldComponent for dynamiclist type', () => {
-    const VALUE_DYNAMIC_LIST = '{\n' +
-      '            "value": {\n' +
-      '              "code": "F",\n' +
-      '              "label": "Female"\n' +
-      '            },\n' +
-      '            "list_items": [\n' +
-      '              {\n' +
-      '                "code": "F",\n' +
-      '                "label": "Female"\n' +
-      '              },\n' +
-      '              {\n' +
-      '                "code": "M",\n' +
-      '                "label": "Male"\n' +
-      '              }' +
-      '            ]\n' +
-      '          }';
+    const VALUE_DYNAMIC_LIST = `{
+                  "value": {
+                    "code": "F",
+                    "label": "Female"
+                  },
+                  "list_items": [
+                    {
+                      "code": "F",
+                      "label": "Female"
+                    },
+                    {
+                      "code": "M",
+                      "label": "Male"
+                    }
+                 ]
+                }`;
 
     const FIELD_TYPE_DYNAMIC_LIST: FieldType = {
       id: 'Gender',
