@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.2
+EUI-3045 performance enhancements and 3045 work
+
 ### Version 2.72.1-do-not-send-empty-documents
 Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.
 
