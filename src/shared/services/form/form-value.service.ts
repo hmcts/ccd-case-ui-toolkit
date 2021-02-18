@@ -245,9 +245,8 @@ export class FormValueService {
     });
 
     // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
-    // association of a value. In addition, if the array contains items with a "value" object property, return only
-    // those whose value object contains non-empty values, including for any descendant objects
-    return rawArray.filter(item => !!item).filter(item => item.value ? this.containsNonEmptyValues(item.value) : true);
+    // association of a value
+    return rawArray.filter(item => !!item);
   }
 
   private sanitiseValue(rawValue: any): any {
