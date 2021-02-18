@@ -49,6 +49,9 @@ export class CaseField implements Orderable {
       } else if (!this._list_items || this._list_items.length === 0) {
         // Extract the list items from the current value if that's the only place they exist.
         this._list_items = this.list_items;
+        if (!value.value) {
+          value = null;
+        }
       }
     }
     this._value = value;
