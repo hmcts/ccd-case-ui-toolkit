@@ -1,12 +1,11 @@
-import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { ReadDynamicListFieldComponent } from './read-dynamic-list-field.component';
+import { DebugElement } from '@angular/core';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { DynamicListPipe } from './dynamic-list.pipe';
+import { CaseField } from '../../../domain/definition/case-field.model';
 
-import { CaseField, FieldType } from '../../../domain/definition';
-import { FixedListPipe } from './fixed-list.pipe';
-import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
-
-describe('ReadFixedListFieldComponent', () => {
+describe('ReadDynamicListFieldComponent', () => {
 
   const VALUE = 'F';
   const EXPECTED_LABEL = 'Female';
@@ -62,8 +61,8 @@ describe('ReadFixedListFieldComponent', () => {
 
     const EMPTY = '';
 
-    let fixture: ComponentFixture<ReadFixedListFieldComponent>;
-    let component: ReadFixedListFieldComponent;
+    let fixture: ComponentFixture<ReadDynamicListFieldComponent>;
+    let component: ReadDynamicListFieldComponent;
     let de: DebugElement;
 
     beforeEach(async(() => {
@@ -71,14 +70,14 @@ describe('ReadFixedListFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadFixedListFieldComponent,
-            FixedListPipe
+            ReadDynamicListFieldComponent,
+            DynamicListPipe
           ],
           providers: []
         })
         .compileComponents();
 
-      fixture = TestBed.createComponent(ReadFixedListFieldComponent);
+      fixture = TestBed.createComponent(ReadDynamicListFieldComponent);
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
@@ -109,23 +108,23 @@ describe('ReadFixedListFieldComponent', () => {
     });
   });
 
-  describe('ReadFixedListFieldComponent for dynamiclist type', () => {
-    const VALUE_DYNAMIC_LIST = '{\n' +
-      '            "value": {\n' +
-      '              "code": "F",\n' +
-      '              "label": "Female"\n' +
-      '            },\n' +
-      '            "list_items": [\n' +
-      '              {\n' +
-      '                "code": "F",\n' +
-      '                "label": "Female"\n' +
-      '              },\n' +
-      '              {\n' +
-      '                "code": "M",\n' +
-      '                "label": "Male"\n' +
-      '              }' +
-      '            ]\n' +
-      '          }';
+  describe('ReadDynamicListFieldComponent for dynamiclist type', () => {
+    const VALUE_DYNAMIC_LIST = `{
+                  "value": {
+                    "code": "F",
+                    "label": "Female"
+                  },
+                  "list_items": [
+                    {
+                      "code": "F",
+                      "label": "Female"
+                    },
+                    {
+                      "code": "M",
+                      "label": "Male"
+                    }
+                 ]
+                }`;
 
     const FIELD_TYPE_DYNAMIC_LIST: FieldType = {
       id: 'Gender',
@@ -158,8 +157,8 @@ describe('ReadFixedListFieldComponent', () => {
     });
     const EMPTY = '';
 
-    let fixture: ComponentFixture<ReadFixedListFieldComponent>;
-    let component: ReadFixedListFieldComponent;
+    let fixture: ComponentFixture<ReadDynamicListFieldComponent>;
+    let component: ReadDynamicListFieldComponent;
     let de: DebugElement;
 
     beforeEach(async(() => {
@@ -167,14 +166,14 @@ describe('ReadFixedListFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadFixedListFieldComponent,
-            FixedListPipe
+            ReadDynamicListFieldComponent,
+            DynamicListPipe
           ],
           providers: []
         })
         .compileComponents();
 
-      fixture = TestBed.createComponent(ReadFixedListFieldComponent);
+      fixture = TestBed.createComponent(ReadDynamicListFieldComponent);
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD_DYNAMIC_LIST;
@@ -189,46 +188,4 @@ describe('ReadFixedListFieldComponent', () => {
 
   });
 
-  describe('Persistable readonly fixed list field', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
-      id: FIELD_ID,
-      label: 'X',
-      display_context: 'OPTIONAL',
-      field_type: FIELD_TYPE,
-      value: VALUE
-    });
-
-    let fixture: ComponentFixture<ReadFixedListFieldComponent>;
-    let component: ReadFixedListFieldComponent;
-    let de: DebugElement;
-
-    beforeEach(async(() => {
-      TestBed
-        .configureTestingModule({
-          imports: [],
-          declarations: [
-            ReadFixedListFieldComponent,
-            FixedListPipe
-          ],
-          providers: []
-        })
-        .compileComponents();
-
-      fixture = TestBed.createComponent(ReadFixedListFieldComponent);
-      component = fixture.componentInstance;
-
-      component.caseField = CASE_FIELD;
-      component.formGroup = FORM_GROUP;
-
-      de = fixture.debugElement;
-      fixture.detectChanges();
-    }));
-
-    it('should register readonly case field value with form group', () => {
-      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
-      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
-    });
-
-  });
 });
