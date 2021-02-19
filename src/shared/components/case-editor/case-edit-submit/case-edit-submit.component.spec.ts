@@ -44,28 +44,45 @@ describe('CaseEditSubmitComponent', () => {
     data: new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })
   });
   const HIDE_ALL_TEXT_ELEMENT = new FormControl('Hide all');
+  const COMPLEX_SUBFIELD_1_VALUE_RETAINED = '1st child field of complex type (retain)';
+  const COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED = '2nd child field of complex type (do not retain)';
   const COMPLEX_ELEMENT_HIDDEN = new FormGroup({
-    childField1: new FormControl('1st child field of complex type (retain)'),
-    childField2: new FormControl('2nd child field of complex type (do not retain)')
+    childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED),
+    childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
   });
   COMPLEX_ELEMENT_HIDDEN.disable();
+  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormGroup({
+    childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED)
+  });
+  COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormGroup({
+    childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
+  });
+  COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
+  const FIELD_1_VALUE_RETAINED = 'Hidden value to be retained';
+  const FIELD_2_VALUE_NOT_RETAINED = 'Hidden value not to be retained';
   const FORM_GROUP_WITH_HIDDEN_FIELDS = new FormGroup({
     data: new FormGroup({
-      field1: new FormControl({ value: 'Hidden value to be retained', disabled: true }),
-      field2: new FormControl({ value: 'Hidden value not to be retained', disabled: true }),
+      field1: new FormControl({ value: FIELD_1_VALUE_RETAINED, disabled: true }),
+      field2: new FormControl({ value: FIELD_2_VALUE_NOT_RETAINED, disabled: true }),
       field3: HIDE_ALL_TEXT_ELEMENT,
       complexField1: COMPLEX_ELEMENT_HIDDEN
     })
   });
+  const MULTI_SELECT_FIELD_VALUE_1 = 'UK';
+  const MULTI_SELECT_FIELD_VALUE_2 = 'US';
   const MULTI_SELECT_ELEMENT_HIDDEN = new FormArray([
-    new FormControl({ value: 'UK', disabled: true }),
-    new FormControl({ value: 'US', disabled: true })
+    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_1, disabled: true }),
+    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_2, disabled: true })
   ]);
   MULTI_SELECT_ELEMENT_HIDDEN.disable();
+  const DOCUMENT_BINARY_URL_VALUE = 'http://document_binary.url';
+  const DOCUMENT_FILENAME_VALUE = 'document.dummy';
+  const DOCUMENT_URL_VALUE = 'http://document.url';
   const DOCUMENT_ELEMENT_HIDDEN = new FormGroup({
-    document_binary_url: new FormControl({ value: 'http://document_binary.url', disabled: true }),
-    document_filename: new FormControl({ value: 'document.dummy', disabled: true }),
-    document_url: new FormControl({ value: 'http://document.url', disabled: true })
+    document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
+    document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
+    document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
   });
   DOCUMENT_ELEMENT_HIDDEN.disable();
   const FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS = new FormGroup({
@@ -75,8 +92,15 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
+  // Representative dummy UUID value
+  const COLLECTION_ELEMENT_ID_ATTRIBUTE = '0a1b2c3d-a1b2-c3d4-e5f6-00aa11bb22cc';
   const COMPLEX_COLLECTION_ELEMENT_HIDDEN = new FormArray([
-    new FormGroup({ value: COMPLEX_ELEMENT_HIDDEN })
+    new FormGroup({
+      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the Complex field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: COMPLEX_ELEMENT_HIDDEN
+    })
   ]);
   COMPLEX_COLLECTION_ELEMENT_HIDDEN.disable();
   const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD = new FormGroup({
@@ -85,17 +109,48 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
-  // Second instance of COMPLEX_ELEMENT_HIDDEN needed because the first one is mutated by the Complex collection
-  // field type test
-  const COMPLEX_ELEMENT_HIDDEN_2 = new FormGroup({
-    childField1: new FormControl('1st child field of complex type (retain)'),
-    childField2: new FormControl('2nd child field of complex type (do not retain)')
+  const COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormArray([
+    new FormGroup({
+      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the Complex field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED
+    })
+  ]);
+  COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_2 = new FormGroup({
+    data: new FormGroup({
+      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED,
+      field3: HIDE_ALL_TEXT_ELEMENT
+    })
   });
-  COMPLEX_ELEMENT_HIDDEN_2.disable();
+  const COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormArray([
+    new FormGroup({
+      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the Complex field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
+    })
+  ]);
+  COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
+  const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_3 = new FormGroup({
+    data: new FormGroup({
+      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED,
+      field3: HIDE_ALL_TEXT_ELEMENT
+    })
+  });
   const NESTED_COMPLEX_ELEMENT_HIDDEN = new FormGroup({
-    complexField1: COMPLEX_ELEMENT_HIDDEN_2
+    complexField1: COMPLEX_ELEMENT_HIDDEN
   });
   NESTED_COMPLEX_ELEMENT_HIDDEN.disable();
+  const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormGroup({
+    complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED
+  });
+  NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormGroup({
+    complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
+  });
+  NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
   const FORM_GROUP_WITH_NESTED_COMPLEX_FIELD = new FormGroup({
     data: new FormGroup({
       nestedComplexField1: NESTED_COMPLEX_ELEMENT_HIDDEN,
@@ -103,7 +158,12 @@ describe('CaseEditSubmitComponent', () => {
     })
   });
   const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN = new FormArray([
-    new FormGroup({ value: NESTED_COMPLEX_ELEMENT_HIDDEN })
+    new FormGroup({
+      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the nested Complex field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: NESTED_COMPLEX_ELEMENT_HIDDEN
+    })
   ]);
   NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN.disable();
   const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD = new FormGroup({
@@ -112,6 +172,52 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
+  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormArray([
+    new FormGroup({
+      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the nested Complex field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED
+    })
+  ]);
+  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_2 = new FormGroup({
+    data: new FormGroup({
+      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED,
+      field3: HIDE_ALL_TEXT_ELEMENT
+    })
+  });
+  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormArray([
+    new FormGroup({
+      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the nested Complex field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
+    })
+  ]);
+  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
+  const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_3 = new FormGroup({
+    data: new FormGroup({
+      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED,
+      field3: HIDE_ALL_TEXT_ELEMENT
+    })
+  });
+  const DOCUMENT_COLLECTION_ELEMENT_HIDDEN = new FormArray([
+    new FormGroup({
+      // Each Document field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
+      // and a "value" attribute, which is the Document field FormGroup itself
+      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
+      value: DOCUMENT_ELEMENT_HIDDEN
+    })
+  ]);
+  DOCUMENT_COLLECTION_ELEMENT_HIDDEN.disable();
+  const FORM_GROUP_WITH_DOCUMENT_COLLECTION_FIELD = new FormGroup({
+    data: new FormGroup({
+      collectionField1: DOCUMENT_COLLECTION_ELEMENT_HIDDEN,
+      field3: HIDE_ALL_TEXT_ELEMENT
+    })
+  });
+  const FIELD_3_SHOW_CONDITION = 'field3!="Hide all"';
   let caseEditComponent: any;
   let orderService: OrderService;
   let profileService: jasmine.SpyObj<ProfileService>;
@@ -119,29 +225,32 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifierSpy: jasmine.Spy;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
-  const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3);
+  const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
-  const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1, null, true);
-  const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'OPTIONAL', 2);
+  const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1, null, true, true);
+  const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'OPTIONAL', 2, null, false, true);
   const complexCaseField: CaseField = aCaseField('complexField1', 'complexField1', 'Complex', 'OPTIONAL', 1,
-    [complexSubField1, complexSubField2], true);
+    [complexSubField1, complexSubField2], true, true);
   const nestedComplexCaseField: CaseField = aCaseField('nestedComplexField1', 'nestedComplexField1', 'Complex',
-    'OPTIONAL', 1, [complexCaseField], true);
-  const caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4, null, true);
+    'OPTIONAL', 1, [complexCaseField], true, true);
+  const caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4, null, true, true);
   const countries: FixedListItem[] = [{code: 'UK', label: 'United Kingdom'}, {code: 'US', label: 'United States'}];
   const countryMultiSelectFieldType: FieldType = createMultiSelectListFieldType('countryCodes', countries);
   const countryMultiSelectField: CaseField = createCaseField('countrySelection', 'Country selection', '',
-    countryMultiSelectFieldType, 'OPTIONAL', 1, null, null);
-  const documentField = aCaseField('documentField', 'Dummy document', 'Document', 'OPTIONAL', 2, null, null);
+    countryMultiSelectFieldType, 'OPTIONAL', 1, null, null, true);
+  const documentField = aCaseField('documentField', 'Dummy document', 'Document', 'OPTIONAL', 2, null, false, true);
+  const documentCollectionFieldType: FieldType = createFieldType('documentCollection', 'Collection', [],
+    documentField.field_type);
+  const documentCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
+    documentCollectionFieldType, 'OPTIONAL', 1, null, null, true);
   const complexCollectionFieldType: FieldType = createFieldType('complexCollection', 'Collection', [],
     complexCaseField.field_type);
   const complexCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
-    complexCollectionFieldType, 'OPTIONAL', 1, null, null);
+    complexCollectionFieldType, 'OPTIONAL', 1, null, null, true);
   const nestedComplexCollectionFieldType: FieldType = createFieldType('nestedComplexCollection', 'Collection', [],
     nestedComplexCaseField.field_type);
   const nestedComplexCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
-    nestedComplexCollectionFieldType, 'OPTIONAL', 1, null, null);
-  nestedComplexCollectionField.retain_hidden_value = true;
+    nestedComplexCollectionFieldType, 'OPTIONAL', 1, null, null, true);
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
 
@@ -779,14 +888,11 @@ describe('CaseEditSubmitComponent', () => {
     });
   });
 
-  describe('Form submit test', () => {
+  describe('Form submit test for simple and Complex field types', () => {
     const pages: WizardPage[] = [
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    caseFieldRetainHiddenValue.show_condition = 'field3!="Hide all"';
-    caseField2.show_condition = 'field3!="Hide all"';
-    complexCaseField.show_condition = 'field3!="Hide all"';
     const WP_FIELD_1: WizardPageField = { case_field_id: caseFieldRetainHiddenValue.id };
     const WP_FIELD_2: WizardPageField = { case_field_id: caseField2.id };
     const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
@@ -824,6 +930,17 @@ describe('CaseEditSubmitComponent', () => {
     };
 
     beforeEach(async(() => {
+      caseFieldRetainHiddenValue.show_condition = FIELD_3_SHOW_CONDITION;
+      caseFieldRetainHiddenValue.value = FIELD_1_VALUE_RETAINED;
+      caseField2.show_condition = FIELD_3_SHOW_CONDITION;
+      caseField2.value = FIELD_2_VALUE_NOT_RETAINED;
+      complexCaseField.show_condition = FIELD_3_SHOW_CONDITION;
+      complexCaseField.value = {
+        [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+        [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+      };
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -849,10 +966,7 @@ describe('CaseEditSubmitComponent', () => {
         })
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
-      formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
-      formValueService.sanitise.and.callFake((rawValue: object) => {
-        return rawValue;
-      });
+      const formValueServiceReal = new FormValueService(null);
 
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileService.get.and.returnValue(PROFILE_OBS);
@@ -869,7 +983,7 @@ describe('CaseEditSubmitComponent', () => {
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueService },
+          { provide: FormValueService, useValue: formValueServiceReal },
           { provide: FormErrorService, useValue: formErrorService },
           { provide: CaseFieldService, useValue: caseFieldService },
           { provide: FieldsUtils, useValue: fieldsUtils },
@@ -889,7 +1003,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with null for any hidden fields (including sub-fields of Complex types) whose values are not to be retained', () => {
+    it('should submit CaseEventData with null for any hidden fields (including sub-fields of Complex types) whose non-empty values are NOT to be retained', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -897,27 +1011,24 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          field1: 'Hidden value to be retained',
           field2: null,
           field3: 'Hide all',
           complexField1: {
-            childField1: '1st child field of complex type (retain)',
             childField2: null
           }
         },
+        event: undefined,
         event_token: undefined,
         ignore_warning: false
       });
     });
   });
 
-  describe('Form submit test for MultiSelectList and Document field types', () => {
+  describe('Form submit test for MultiSelectList and Document field types, both retain_hidden_value = false', () => {
     const pages: WizardPage[] = [
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    countryMultiSelectField.show_condition = 'field3!="Hide all"';
-    documentField.show_condition = 'field3!="Hide all"';
     const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
     const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
     const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
@@ -954,6 +1065,14 @@ describe('CaseEditSubmitComponent', () => {
     };
 
     beforeEach(async(() => {
+      countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
+      countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
+      documentField.show_condition = FIELD_3_SHOW_CONDITION;
+      documentField.value = {
+        document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+        document_filename: DOCUMENT_FILENAME_VALUE,
+        document_url: DOCUMENT_URL_VALUE
+      };
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -1026,20 +1145,150 @@ describe('CaseEditSubmitComponent', () => {
         data: {
           countrySelection: [],
           documentField: null,
-          field3: 'Hide all',
+          field3: 'Hide all'
         },
+        event: undefined,
         event_token: undefined,
         ignore_warning: false
       });
     });
   });
 
-  describe('Form submit test for Complex collection field type', () => {
+  describe('Form submit test for MultiSelectList and Document field types, both retain_hidden_value = true', () => {
     const pages: WizardPage[] = [
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    complexCollectionField.show_condition = 'field3!="Hide all"';
+    const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
+    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
+    firstPage.case_fields = [countryMultiSelectField, documentField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      countryMultiSelectField.retain_hidden_value = true;
+      countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
+      countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
+      documentField.retain_hidden_value = true;
+      documentField.show_condition = FIELD_3_SHOW_CONDITION;
+      documentField.value = {
+        document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+        document_filename: DOCUMENT_FILENAME_VALUE,
+        document_url: DOCUMENT_URL_VALUE
+      };
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [countryMultiSelectField, documentField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData without both the multi-select list field and Document field (effectively no update)', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for Complex collection field type, with retain_hidden_value = true and a non-empty Complex field', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
     const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
     const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
@@ -1075,6 +1324,17 @@ describe('CaseEditSubmitComponent', () => {
     };
 
     beforeEach(async(() => {
+      complexCollectionField.retain_hidden_value = true;
+      complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      complexCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+          [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+        }
+      }];
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -1137,7 +1397,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with an empty array for the Complex collection field', () => {
+    it('should submit CaseEventData with an array containing the Complex field, with null for any sub-fields NOT to be retained', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -1145,21 +1405,288 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [],
-          field3: 'Hide all',
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              childField2: null
+            }
+          }],
+          field3: 'Hide all'
         },
+        event: undefined,
         event_token: undefined,
         ignore_warning: false
       });
     });
   });
 
-  describe('Form submit test for nested Complex field type', () => {
+  describe('Form submit test for Complex collection field type, with retain_hidden_value = true and an empty Complex field', () => {
     const pages: WizardPage[] = [
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    nestedComplexCaseField.show_condition = 'field3!="Hide all"';
+    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [complexCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      complexCollectionField.retain_hidden_value = true;
+      complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      complexCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+        }
+      }];
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_2,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [complexCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData without the Complex collection field altogether (effectively no update)', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for Complex collection field type, with retain_hidden_value = false and a non-empty Complex field', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [complexCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      complexCollectionField.retain_hidden_value = false;
+      complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      complexCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+        }
+      }];
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_3,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [complexCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with an array containing the Complex field, with null for any sub-fields NOT to be retained', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              childField2: null
+            }
+          }],
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for nested Complex field type, retain_hidden_value = true', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
     const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCaseField.id };
     const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
@@ -1195,6 +1722,15 @@ describe('CaseEditSubmitComponent', () => {
     };
 
     beforeEach(async(() => {
+      nestedComplexCaseField.show_condition = FIELD_3_SHOW_CONDITION;
+      nestedComplexCaseField.value = {
+        [complexCaseField.id]: {
+          [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+          [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+        }
+      };
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -1257,7 +1793,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with null for any hidden fields of the nested Complex type whose values are not to be retained', () => {
+    it('should submit CaseEventData with null for any hidden fields of the nested Complex type whose non-empty values are NOT to be retained', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -1267,24 +1803,23 @@ describe('CaseEditSubmitComponent', () => {
         data: {
           nestedComplexField1: {
             complexField1: {
-              childField1: '1st child field of complex type (retain)',
               childField2: null
             }
           },
-          field3: 'Hide all',
+          field3: 'Hide all'
         },
+        event: undefined,
         event_token: undefined,
         ignore_warning: false
       });
     });
   });
 
-  describe('Form submit test for nested Complex collection field type', () => {
+  describe('Form submit test for Complex collection field type, retain_hidden_value = true, non-empty nested Complex field', () => {
     const pages: WizardPage[] = [
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    nestedComplexCollectionField.show_condition = 'field3!="Hide all"';
     const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
     const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
@@ -1320,6 +1855,23 @@ describe('CaseEditSubmitComponent', () => {
     };
 
     beforeEach(async(() => {
+      nestedComplexCollectionField.retain_hidden_value = true;
+      nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      nestedComplexCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          [complexCaseField.id]: {
+            [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+            [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+          }
+        }
+      }];
+      complexCaseField.value = {
+        [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+        [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+      };
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -1382,7 +1934,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with null for any hidden fields of the nested Complex type whose values are not to be retained', () => {
+    it('should submit CaseEventData with an array containing the nested Complex field, with null for any sub-fields NOT to be retained', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -1391,15 +1943,549 @@ describe('CaseEditSubmitComponent', () => {
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
           collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
             value: {
               complexField1: {
-                childField1: '1st child field of complex type (retain)',
                 childField2: null
               }
             }
           }],
-          field3: 'Hide all',
+          field3: 'Hide all'
         },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for Complex collection field type, retain_hidden_value = true, empty nested Complex field', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [nestedComplexCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      nestedComplexCollectionField.retain_hidden_value = true;
+      nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      nestedComplexCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          [complexCaseField.id]: {
+            [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED
+          }
+        }
+      }];
+      complexCaseField.value = {
+        [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED
+      };
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_2,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [nestedComplexCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData without the nested Complex collection field altogether (effectively no update)', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for Complex collection field type, retain_hidden_value = false, non-empty nested Complex field', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [nestedComplexCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      nestedComplexCollectionField.retain_hidden_value = false;
+      nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      nestedComplexCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          [complexCaseField.id]: {
+            [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+          }
+        }
+      }];
+      complexCaseField.value = {
+        [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+      };
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_3,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [nestedComplexCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with an array containing the nested Complex field, with null for any sub-fields NOT to be retained', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              complexField1: {
+                childField2: null
+              }
+            }
+          }],
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for Document collection field type, with retain_hidden_value = true', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: documentCollectionField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [documentCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      documentCollectionField.retain_hidden_value = true;
+      documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      documentCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+          document_filename: DOCUMENT_FILENAME_VALUE,
+          document_url: DOCUMENT_URL_VALUE
+        }
+      }];
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_DOCUMENT_COLLECTION_FIELD,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [documentCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData without the Document collection field altogether (effectively no update)', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for Document collection field type, with retain_hidden_value = false', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: documentCollectionField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [documentCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      documentCollectionField.retain_hidden_value = false;
+      documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      documentCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+          document_filename: DOCUMENT_FILENAME_VALUE,
+          document_url: DOCUMENT_URL_VALUE
+        }
+      }];
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_DOCUMENT_COLLECTION_FIELD,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [documentCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with an empty array for the Document collection field', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          collectionField1: [],
+          field3: 'Hide all'
+        },
+        event: undefined,
         event_token: undefined,
         ignore_warning: false
       });

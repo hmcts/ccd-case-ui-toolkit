@@ -245,9 +245,8 @@ export class FormValueService {
     });
 
     // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
-    // association of a value. In addition, if the array contains items with a "value" object property, return only
-    // those whose value object contains non-empty values, including for any descendant objects
-    return rawArray.filter(item => !!item).filter(item => item.value ? this.containsNonEmptyValues(item.value) : true);
+    // association of a value
+    return rawArray.filter(item => !!item);
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -341,7 +340,9 @@ export class FormValueService {
               }
               break;
             case 'Document':
-              if (FormValueService.isEmptyData(data[field.id])) {
+              // Ensure this is executed only if the Document field is NOT hidden and is empty of data; hidden Document
+              // fields are handled by the filterRawFormValues() function in CaseEditSubmit component
+              if (field.hidden !== true && FormValueService.isEmptyData(data[field.id])) {
                 delete data[field.id];
               }
               break;

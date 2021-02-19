@@ -54,7 +54,7 @@ export class FieldsPurger {
       // Doing some null checking to stop it from falling over.
       const data: FormGroup = form.get('data') as FormGroup;
       if (data) {
-        const fieldGroup: FormGroup = data.get(field.id) as FormGroup;
+        const fieldGroup: FormGroup = data.controls[field.id] as FormGroup;
         if (fieldGroup) {
           const caseRoleFormControl: FormControl = fieldGroup.get('OrgPolicyCaseAssignedRole') as FormControl;
           if (caseRoleFormControl) {
@@ -108,7 +108,7 @@ export class FieldsPurger {
               !complexSubField.retain_hidden_value) {
             // Call deleteFieldValue() with the parent FormGroup (i.e. the Complex field itself) and the sub-field to
             // be deleted
-            this.deleteFieldValue(form.get('data').get(field.id) as FormGroup, complexSubField);
+            this.deleteFieldValue((form.get('data') as FormGroup).controls[field.id] as FormGroup, complexSubField);
           }
         }
       } else if (fieldType === 'Collection' && field.field_type.collection_field_type.type === 'Complex' &&
@@ -118,7 +118,7 @@ export class FieldsPurger {
         // retain_hidden_value* (in order to inspect the sub-fields of a Complex type within another Complex type)
 
         // Get the array of field controls corresponding to the Complex field values
-        const fieldControl = form.get('data').get(field.id) as FormArray;
+        const fieldControl = (form.get('data') as FormGroup).controls[field.id] as FormArray;
 
         // Get the array of Complex field values
         const complexFieldValues = fieldControl.value as any[];

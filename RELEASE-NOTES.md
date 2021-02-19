@@ -1,6 +1,6 @@
 ## RELEASE NOTES
-### Version 2.65.7-retain-hidden-fields-pre-release
-**EUI-2739** Bump version number to trigger npm release process (again)
+### Version 3.0.0-alpha
+**EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
 
 ### Version 2.72.4-check-your-answers
 Fix EUI-3452 - fix for show/hide conditions on Check Your Answers page.

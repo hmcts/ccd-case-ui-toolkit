@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 
-import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, FieldTypeEnum, HttpError, Profile } from '../../../domain';
 import {
   CaseFieldService,
   FieldsUtils,
@@ -83,7 +83,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.isSubmitting = true;
-    let caseEventData: CaseEventData = this.formValueService.sanitise(this.filterRawFormValues(this.editForm).value) as CaseEventData;
+    let caseEventData: CaseEventData = {
+      data: this.formValueService.sanitise(
+        this.filterRawFormValues(this.editForm.get('data') as FormGroup, this.eventTrigger.case_fields)),
+      event: this.editForm.value.event
+    } as CaseEventData
     this.formValueService.clearNonCaseFields(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeNullLabels(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeEmptyDocuments(caseEventData.data, this.eventTrigger.case_fields);
@@ -112,30 +116,124 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filter *all* the values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), removing
+   * Filter *all* the values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), discarding
    * any whose {@link FormControl} is hidden (disabled) AND whose value is to be retained (i.e. `retain_hidden_value`
-   * = `true`). This is necessary to allow hidden fields whose values are **not** to be retained, to be passed to the
-   * backend to be updated.
+   * = `true`) OR whose value is **not** to be retained *where the value is empty*, for example, `null` or an empty
+   * string or object. The latter is necessary to prevent superfluous updates.
+   *
+   * Hidden fields with *non-empty* values that are **not** to be retained are passed to the backend to be updated with
+   * `null`.
+   *
+   * **Complex** fields with `retain_hidden_value` = `true` are filtered out ONLY if they do **not** contain any
+   * sub-fields with *non-empty* values that are not to be retained.
+   *
+   * For Collection field types, including collections of Complex field types, the filter is applied to all fields in
+   * the collection.
    *
    * @param formGroup The `FormGroup` instance whose raw values are to be filtered
-   * @returns `formGroup` with the filtered raw form value data (as key-value pairs) in place of the original value data
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in the `formGroup`
+   * @returns An object with the filtered *raw* form value data (as key-value pairs)
    */
-  private filterRawFormValues(formGroup: FormGroup): any {
+  private filterRawFormValues(formGroup: FormGroup, caseFields: CaseField[]): object {
     // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
-    const rawFormValueData = formGroup.getRawValue().data;
+    const rawFormValueData = formGroup.getRawValue();
 
-    // Discard any value whose FormControl is hidden (status = DISABLED) AND corresponds to a case_field with the
-    // retain_hidden_value flag set to true (these fields should not be updated in the backend)
+    // Place all case fields in a lookup object, so they can be retrieved by id
+    const caseFieldsLookup = {};
+    for (let i = 0, len = caseFields.length; i < len; i++) {
+      caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    }
+
+    /**
+     * Discard any value where the CaseField is hidden AND has the retain_hidden_value flag set to true, OR set to
+     * false AND the value is empty (these fields should not be updated in the backend).
+     *
+     * If the CaseField's `hidden` attribute is null or undefined, then check the corresponding FormGroup for status =
+     * 'DISABLED' instead. This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type,
+     * or an item in a Collection type.
+     *
+     * If the field is a Complex type with retain_hidden_value = true, check recursively for the presence of any
+     * sub-fields with non-empty values that are not to be retained; do NOT discard the Complex field if any are found
+     *
+     * If the field is a Collection type with retain_hidden_value = true, the two procedures described above are
+     * applied to the collection, depending on whether the collection type is non-Complex or Complex respectively.
+     */
     Object.keys(rawFormValueData).forEach((key) => {
-      const case_field = this.eventTrigger.case_fields[key];
-      if ((formGroup.get('data') as FormGroup).get(key).status === 'DISABLED' && case_field && case_field.retain_hidden_value) {
-        delete rawFormValueData[key];
+      const caseField: CaseField = caseFieldsLookup[key];
+      if (caseField &&
+        (caseField.hidden || (caseField.hidden !== false && formGroup.controls[key].status === 'DISABLED'))) {
+        const fieldType: FieldTypeEnum = caseField.field_type.type;
+        switch (fieldType) {
+          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
+          // handle both null and undefined values
+          case 'Complex':
+            if (caseField.retain_hidden_value && caseField.value != null) {
+              // Call this function recursively to check the Complex field's sub-fields
+              const resultantObject = this.filterRawFormValues(
+                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields);
+              // If the resultant object from the recursive function call is empty, remove the *existing one* from
+              // rawFormValueData altogether (effectively no update); else, update rawFormValueData for this field
+              !FieldsUtils.isNonEmptyObject(resultantObject)
+                ? delete rawFormValueData[key]
+                : rawFormValueData[key] = resultantObject;
+            }
+            // Discard null, undefined, or empty Complex field values, to avoid submitting a superfluous update for
+            // such fields
+            if (caseField.value == null || !FieldsUtils.containsNonEmptyValues(caseField.value)) {
+              delete rawFormValueData[key];
+            }
+            break;
+          case 'Collection':
+            if (caseField.value != null) {
+              // If the collection is of a Complex field type, loop through each item and call this function recursively
+              // to check each Complex field instance's sub-fields, updating rawFormValueData for this instance
+              const collectionFieldType = caseField.field_type.collection_field_type;
+              if (collectionFieldType.type === 'Complex' && collectionFieldType.complex_fields.length > 0) {
+                if (caseField.retain_hidden_value) {
+                  (caseField.value as any[]).forEach((_, index) => {
+                    // Call this function recursively to check the Complex field's sub-fields
+                    const complexFormGroup = (formGroup.controls[key] as FormArray).at(index).get('value') as FormGroup;
+                    const complexSubFields = caseField.field_type.collection_field_type.complex_fields;
+                    const resultantObject = this.filterRawFormValues(complexFormGroup, complexSubFields);
+                    // If the resultant object from the recursive function call is empty, remove the *existing item*
+                    // from the array in rawFormValueData altogether (effectively no update); else, update this item in
+                    // the array
+                    !FieldsUtils.isNonEmptyObject(resultantObject)
+                      ? rawFormValueData[key].splice(index, 1)
+                      : rawFormValueData[key][index].value = resultantObject;
+                  });
+
+                  // If the collection has been left empty as a result of removals above, remove the collection itself
+                  if (rawFormValueData[key].length == 0) {
+                    delete rawFormValueData[key];
+                  }
+                }
+              } else if (collectionFieldType.type !== 'Complex') {
+                if (caseField.retain_hidden_value) {
+                  // If retain_hidden_value = true on the collection then this applies to all items in the collection,
+                  // so remove the entire collection from rawFormValueData (effectively no update)
+                  delete rawFormValueData[key];
+                } else {
+                  // Otherwise, replace the collection with an empty array, which will clear the existing items
+                  rawFormValueData[key] = [];
+                }
+              }
+            }
+
+            // Discard null, undefined, or empty collections, to avoid submitting a superfluous update for such fields
+            if (caseField.value == null || !FieldsUtils.containsNonEmptyValues(caseField.value)) {
+              delete rawFormValueData[key];
+            }
+            break;
+          default:
+            if (caseField.retain_hidden_value || caseField.value == null || !FieldsUtils.containsNonEmptyValues(caseField.value)) {
+              delete rawFormValueData[key];
+            }
+        }
       }
     });
 
-    // Set the filtered raw form value data back on the FormGroup
-    formGroup.value.data = rawFormValueData;
-    return formGroup;
+    return rawFormValueData;
   }
 
   isDisabled(): boolean {
