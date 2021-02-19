@@ -1,5 +1,5 @@
-import { HttpService } from './http.service';
-import { Headers, Http, RequestOptionsArgs, Response, ResponseOptions } from '@angular/http';
+import { HttpService, OptionsType } from './http.service';
+import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorService } from './http-error.service';
@@ -10,24 +10,23 @@ describe('HttpService', () => {
   const URL = 'http://ccd.reform/';
   const HEADER_1 = 'x-header1';
   const HEADER_1_VALUE = 'x-header1-value';
-  const HEADERS = new Headers({});
+  const HEADERS = new HttpHeaders()
+    .set(HEADER_1, HEADER_1_VALUE);
   const CONTENT_TYPE_HEADER = 'Content-Type';
   const CONTENT_TYPE_HEADER_VALUE = 'X-rated';
   const ACCEPT_HEADER = 'Accept';
   const ACCEPT_HEADER_VALUE = 'text/ccd';
-  const HEADERS_WITH_CONTENT_TYPE_DEFINED = new Headers({});
-  const HEADERS_WITH_CONTENT_TYPE_NULL = new Headers({});
+  const HEADERS_WITH_CONTENT_TYPE_DEFINED = new HttpHeaders()
+    .set(CONTENT_TYPE_HEADER, CONTENT_TYPE_HEADER_VALUE)
+    .set(ACCEPT_HEADER, ACCEPT_HEADER_VALUE);
+  const HEADERS_WITH_CONTENT_TYPE_NULL = new HttpHeaders()
+    .set(CONTENT_TYPE_HEADER, null)
+    .set(ACCEPT_HEADER, null);
   const BODY = JSON.stringify({});
   const error = {
     message: ''
   };
-  HEADERS.append(HEADER_1, HEADER_1_VALUE);
-  HEADERS_WITH_CONTENT_TYPE_DEFINED.append(CONTENT_TYPE_HEADER, CONTENT_TYPE_HEADER_VALUE);
-  HEADERS_WITH_CONTENT_TYPE_DEFINED.append(ACCEPT_HEADER, ACCEPT_HEADER_VALUE);
-  HEADERS_WITH_CONTENT_TYPE_NULL.append(CONTENT_TYPE_HEADER, null);
-  HEADERS_WITH_CONTENT_TYPE_NULL.append(ACCEPT_HEADER, null);
-  const EXPECTED_RESPONSE = of(new Response(new ResponseOptions()));
-
+  const EXPECTED_RESPONSE = of(new HttpResponse());
   let httpService: HttpService;
 
   let httpMock: any;
@@ -35,10 +34,10 @@ describe('HttpService', () => {
   let catchObservable: any;
 
   beforeEach(() => {
-    catchObservable = createSpyObj<Observable<Response>>('observable', ['pipe']);
+    catchObservable = createSpyObj<Observable<any>>('observable', ['pipe']);
     catchObservable.pipe.and.returnValue(EXPECTED_RESPONSE);
 
-    httpMock = createSpyObj<Http>('http', ['get', 'post', 'put', 'delete']);
+    httpMock = createSpyObj<HttpClient>('http', ['get', 'post', 'put', 'delete']);
     httpMock.get.and.returnValue(catchObservable);
     httpMock.post.and.returnValue(catchObservable);
     httpMock.put.and.returnValue(catchObservable);
@@ -60,9 +59,10 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.get(URL, options);
@@ -71,9 +71,10 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.get(URL, options);
@@ -81,10 +82,21 @@ describe('HttpService', () => {
       expectHeadersToBeSanitized(httpMock.get.calls.mostRecent().args[1]);
     });
 
+    it('should return same header properties when headers is defined', () => {
+      let options: OptionsType = {
+        headers: HEADERS,
+        withCredentials: true,
+        observe: 'body',
+      };
+      const returnOptions = httpService.setDefaultValue(options);
+      expect(returnOptions.headers).toEqual(options.headers);
+    });
+
     it('should not add `content-type` and `accept` headers when defined', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS_WITH_CONTENT_TYPE_DEFINED,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.get(URL, options);
@@ -94,23 +106,23 @@ describe('HttpService', () => {
       expect(headers.get('Accept')).toEqual(ACCEPT_HEADER_VALUE);
     });
 
-    it('should not add `content-type` and `accept` headers when defined with null values', () => {
-      let options: RequestOptionsArgs = {
-        headers: HEADERS_WITH_CONTENT_TYPE_NULL,
+    it('should define headers when not defined', () => {
+      let options: OptionsType = {
+        headers: null,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.get(URL, options);
 
-      let headers = httpMock.get.calls.mostRecent().args[1].headers;
-      expect(headers.get('Content-Type')).toBe(null);
-      expect(headers.get('Accept')).toBe(null);
+      expect(options.headers).toBeDefined();
     });
 
     it('should add `content-type` and `accept` headers when not defined', () => {
-      let options: RequestOptionsArgs = {
-        headers: HEADERS,
+      let options: OptionsType = {
+        headers: null,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.get(URL, options);
@@ -137,9 +149,10 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.post(URL, BODY, options);
@@ -148,9 +161,10 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.post(URL, BODY, options);
@@ -164,10 +178,11 @@ describe('HttpService', () => {
       expect(httpErrorService.handle).toHaveBeenCalledWith(error, true);
     });
 
-    it('should add a `content-type` and `accept` headers', () => {
-      let options: RequestOptionsArgs = {
-        headers: HEADERS,
+    it('should add a `content-type` and `accept` headers when not defined', () => {
+      let options: OptionsType = {
+        headers: null,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.post(URL, BODY, options);
@@ -188,9 +203,10 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.put(URL, BODY, options);
@@ -199,9 +215,10 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.put(URL, BODY, options);
@@ -216,9 +233,10 @@ describe('HttpService', () => {
     });
 
     it('should add a `content-type` and `accept` headers', () => {
-      let options: RequestOptionsArgs = {
-        headers: HEADERS,
+      let options: OptionsType = {
+        headers: null,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.put(URL, BODY, options);
@@ -239,9 +257,10 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.delete(URL, options);
@@ -250,9 +269,10 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.delete(URL, options);
@@ -267,9 +287,10 @@ describe('HttpService', () => {
     });
 
     it('should add a `content-type` and `accept` headers', () => {
-      let options: RequestOptionsArgs = {
-        headers: HEADERS,
+      let options: OptionsType = {
+        headers: null,
         withCredentials: true,
+        observe: 'body',
       };
 
       httpService.delete(URL, options);

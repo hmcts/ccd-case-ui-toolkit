@@ -2,6 +2,15 @@
 ### Version 2.65.7-retain-hidden-fields-pre-release
 **EUI-2739** Bump version number to trigger npm release process (again)
 
+### Version 2.72.4-check-your-answers
+Fix EUI-3452 - fix for show/hide conditions on Check Your Answers page.
+
+### Version 2.72.3-dynamic-list-null-values
+EUI-3045 Handle null values appropriately.
+
+### Version 2.72.2
+EUI-3045 performance enhancements and 3045 work
+
 ### Version 2.72.1-do-not-send-empty-documents
 Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.
 

@@ -1,5 +1,5 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -69,7 +69,7 @@ export class CasesService {
     return this.http
       .get(url)
       .pipe(
-        map(response => response.json()),
+        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -79,15 +79,15 @@ export class CasesService {
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
-    const headers = new Headers({
-      'Accept': CasesService.V2_MEDIATYPE_CASE_VIEW,
-      'experimental': 'true',
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json()),
+        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -174,22 +174,23 @@ export class CasesService {
 
     let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new Headers({
-      'experimental': 'true'
-    });
+    let headers = new HttpHeaders()
+    headers = headers.set('experimental', 'true')
+    headers = headers.set('Content-Type', 'application/json');
+
     if (Draft.isDraft(caseId)) {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
+      headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
     } else if (caseId !== undefined && caseId !== null) {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+      headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
     } else {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+      headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
     }
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => {
-          return this.handleNestedDynamicLists(response.json());
+          return this.handleNestedDynamicLists(response);
         }),
         catchError(error => {
           this.errorService.setError(error);
@@ -204,13 +205,13 @@ export class CasesService {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
         map(response => this.processResponse(response, eventData)),
         catchError(error => {
@@ -225,15 +226,15 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/validate${pageIdString}`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json()),
+        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -250,13 +251,13 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
         map(response => this.processResponse(response, eventData)),
         catchError(error => {
@@ -271,15 +272,15 @@ export class CasesService {
       + `/cases/${caseId}`
       + `/documents`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json().documentResources),
+        map(response => response.documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -313,7 +314,7 @@ export class CasesService {
   private processResponse(response: any, eventData: CaseEventData) {
     if (response.headers && response.headers.get('content-type').match(/application\/.*json/)) {
       // TODO: Handle associated tasks.
-      const json = response.json();
+      const json = response;
       this.processTasksOnSuccess(json, eventData.event);
       return json;
     }
