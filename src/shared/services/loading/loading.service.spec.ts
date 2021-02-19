@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
 import { LoadingService } from './loading.service';
 
-
 describe('LoadingService', () => {
   let loadingService: LoadingService;
   let subscription: Subscription;
@@ -19,7 +18,7 @@ describe('LoadingService', () => {
   });
 
   it('should return observable of true when a token is registered', () => {
-    
+
     loadingService.register();
     subscription = loadingService.isLoading.subscribe(value => {
       expect(value).toBeTruthy();
