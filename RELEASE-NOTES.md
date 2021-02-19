@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.3-dynamic-list-null-values
+EUI-3045 Handle null values appropriately.
+
 ### Version 2.72.2
 EUI-3045 performance enhancements and 3045 work
 
