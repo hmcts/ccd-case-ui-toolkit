@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.4-check-your-answers
+Fix EUI-3452 - fix for show/hide conditions on Check Your Answers page.
+
 ### Version 2.72.3-dynamic-list-null-values
 EUI-3045 Handle null values appropriately.
 
