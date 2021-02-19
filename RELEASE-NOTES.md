@@ -1,6 +1,6 @@
 ## RELEASE NOTES
-### Version 2.65.7-retain-hidden-fields-pre-release
-**EUI-2739** Bump version number to trigger npm release process (again)
+### Version 3.0.0-alpha
+**EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
 
 ### Version 2.72.1-do-not-send-empty-documents
 Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.

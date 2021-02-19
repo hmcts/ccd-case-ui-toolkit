@@ -225,32 +225,32 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifierSpy: jasmine.Spy;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
-  const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3);
+  const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
-  const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1, null, true);
-  const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'OPTIONAL', 2);
+  const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1, null, true, true);
+  const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'OPTIONAL', 2, null, false, true);
   const complexCaseField: CaseField = aCaseField('complexField1', 'complexField1', 'Complex', 'OPTIONAL', 1,
-    [complexSubField1, complexSubField2], true);
+    [complexSubField1, complexSubField2], true, true);
   const nestedComplexCaseField: CaseField = aCaseField('nestedComplexField1', 'nestedComplexField1', 'Complex',
-    'OPTIONAL', 1, [complexCaseField], true);
-  const caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4, null, true);
+    'OPTIONAL', 1, [complexCaseField], true, true);
+  const caseFieldRetainHiddenValue: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4, null, true, true);
   const countries: FixedListItem[] = [{code: 'UK', label: 'United Kingdom'}, {code: 'US', label: 'United States'}];
   const countryMultiSelectFieldType: FieldType = createMultiSelectListFieldType('countryCodes', countries);
   const countryMultiSelectField: CaseField = createCaseField('countrySelection', 'Country selection', '',
-    countryMultiSelectFieldType, 'OPTIONAL', 1, null, null);
-  const documentField = aCaseField('documentField', 'Dummy document', 'Document', 'OPTIONAL', 2, null, null);
+    countryMultiSelectFieldType, 'OPTIONAL', 1, null, null, true);
+  const documentField = aCaseField('documentField', 'Dummy document', 'Document', 'OPTIONAL', 2, null, false, true);
   const documentCollectionFieldType: FieldType = createFieldType('documentCollection', 'Collection', [],
     documentField.field_type);
   const documentCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
-    documentCollectionFieldType, 'OPTIONAL', 1, null, null);
+    documentCollectionFieldType, 'OPTIONAL', 1, null, null, true);
   const complexCollectionFieldType: FieldType = createFieldType('complexCollection', 'Collection', [],
     complexCaseField.field_type);
   const complexCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
-    complexCollectionFieldType, 'OPTIONAL', 1, null, null);
+    complexCollectionFieldType, 'OPTIONAL', 1, null, null, true);
   const nestedComplexCollectionFieldType: FieldType = createFieldType('nestedComplexCollection', 'Collection', [],
     nestedComplexCaseField.field_type);
   const nestedComplexCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
-    nestedComplexCollectionFieldType, 'OPTIONAL', 1, null, null);
+    nestedComplexCollectionFieldType, 'OPTIONAL', 1, null, null, true);
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
 
@@ -966,10 +966,7 @@ describe('CaseEditSubmitComponent', () => {
         })
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
-      formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
-      formValueService.sanitise.and.callFake((rawValue: object) => {
-        return rawValue;
-      });
+      const formValueServiceReal = new FormValueService(null);
 
       profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileService.get.and.returnValue(PROFILE_OBS);
@@ -986,7 +983,7 @@ describe('CaseEditSubmitComponent', () => {
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueService },
+          { provide: FormValueService, useValue: formValueServiceReal },
           { provide: FormErrorService, useValue: formErrorService },
           { provide: CaseFieldService, useValue: caseFieldService },
           { provide: FieldsUtils, useValue: fieldsUtils },

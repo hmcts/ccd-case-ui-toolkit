@@ -30,7 +30,7 @@ export let createCaseEventTrigger = (id: string,
 
 export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
                          show_summary_content_option: number, typeComplexFields: CaseField[] = [],
-                         retain_hidden_value?: boolean): CaseField => {
+                         retain_hidden_value?: boolean, hidden?: boolean): CaseField => {
   return <CaseField>({
     id: id || 'personFirstName',
     field_type: {
@@ -41,7 +41,8 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
     display_context: display_context || 'OPTIONAL',
     label: label || 'First name',
     show_summary_content_option: show_summary_content_option,
-    retain_hidden_value: retain_hidden_value || false
+    retain_hidden_value: retain_hidden_value || false,
+    hidden: hidden || false
   });
 };
 
@@ -104,7 +105,8 @@ export let createCaseField = (id: string,
                               display_context: string,
                               order = undefined,
                               show_condition = undefined,
-                              ACLs: AccessControlList[] = undefined): CaseField => {
+                              ACLs: AccessControlList[] = undefined,
+                              hidden?: boolean): CaseField => {
   return CaseFieldBuilder.create()
     .withId(id || 'personFirstName')
     .withFieldType(fieldType || textFieldType())
@@ -115,6 +117,7 @@ export let createCaseField = (id: string,
     .withOrder(order)
     .withShowCondition(show_condition || undefined)
     .withACLs(ACLs)
+    .withHidden(hidden || false)
     .build();
 };
 

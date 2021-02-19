@@ -340,7 +340,9 @@ export class FormValueService {
               }
               break;
             case 'Document':
-              if (FormValueService.isEmptyData(data[field.id])) {
+              // Ensure this is executed only if the Document field is NOT hidden and is empty of data; hidden Document
+              // fields are handled by the filterRawFormValues() function in CaseEditSubmit component
+              if (field.hidden !== true && FormValueService.isEmptyData(data[field.id])) {
                 delete data[field.id];
               }
               break;

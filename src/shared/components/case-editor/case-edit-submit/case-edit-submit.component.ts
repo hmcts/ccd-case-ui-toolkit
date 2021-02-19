@@ -144,18 +144,24 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       caseFieldsLookup[caseFields[i].id] = caseFields[i];
     }
 
-    // Discard any value whose FormControl is hidden (status = DISABLED) AND corresponds to a case_field with the
-    // retain_hidden_value flag set to true, OR with it set to false AND where the value is empty (these fields should
-    // not be updated in the backend).
-    //
-    // If the field is a Complex type with retain_hidden_value = true, check recursively for the presence of any
-    // sub-fields with non-empty values that are not to be retained; do NOT discard the Complex field if any are found
-    //
-    // If the field is a Collection type with retain_hidden_value = true, the two procedures described above are
-    // applied to the collection, depending on whether the collection type is non-Complex or Complex respectively.
+    /**
+     * Discard any value where the CaseField is hidden AND has the retain_hidden_value flag set to true, OR set to
+     * false AND the value is empty (these fields should not be updated in the backend).
+     *
+     * If the CaseField's `hidden` attribute is null or undefined, then check the corresponding FormGroup for status =
+     * 'DISABLED' instead. This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type,
+     * or an item in a Collection type.
+     *
+     * If the field is a Complex type with retain_hidden_value = true, check recursively for the presence of any
+     * sub-fields with non-empty values that are not to be retained; do NOT discard the Complex field if any are found
+     *
+     * If the field is a Collection type with retain_hidden_value = true, the two procedures described above are
+     * applied to the collection, depending on whether the collection type is non-Complex or Complex respectively.
+     */
     Object.keys(rawFormValueData).forEach((key) => {
       const caseField: CaseField = caseFieldsLookup[key];
-      if (caseField && formGroup.get(key).status === 'DISABLED') {
+      if (caseField &&
+        (caseField.hidden || (caseField.hidden !== false && formGroup.controls[key].status === 'DISABLED'))) {
         const fieldType: FieldTypeEnum = caseField.field_type.type;
         switch (fieldType) {
           // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
@@ -164,7 +170,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
             if (caseField.retain_hidden_value && caseField.value != null) {
               // Call this function recursively to check the Complex field's sub-fields
               const resultantObject = this.filterRawFormValues(
-                formGroup.get(key) as FormGroup, caseField.field_type.complex_fields);
+                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields);
               // If the resultant object from the recursive function call is empty, remove the *existing one* from
               // rawFormValueData altogether (effectively no update); else, update rawFormValueData for this field
               !FieldsUtils.isNonEmptyObject(resultantObject)
@@ -186,7 +192,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
                 if (caseField.retain_hidden_value) {
                   (caseField.value as any[]).forEach((_, index) => {
                     // Call this function recursively to check the Complex field's sub-fields
-                    const complexFormGroup = (formGroup.get(key) as FormArray).at(index).get('value') as FormGroup;
+                    const complexFormGroup = (formGroup.controls[key] as FormArray).at(index).get('value') as FormGroup;
                     const complexSubFields = caseField.field_type.collection_field_type.complex_fields;
                     const resultantObject = this.filterRawFormValues(complexFormGroup, complexSubFields);
                     // If the resultant object from the recursive function call is empty, remove the *existing item*
