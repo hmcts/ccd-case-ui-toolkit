@@ -7,10 +7,12 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { LogService } from '../../../services/logging/log.service';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('PageValidationService', () => {
 
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let service = new PageValidationService(caseFieldService, logService);
   let wizardPage: WizardPage;
@@ -36,6 +38,9 @@ describe('PageValidationService', () => {
     wizardPage = new WizardPage();
     wizardPage.case_fields = FIELDS;
     wizardPage.label = 'Test Label';
+
+    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
   });
 
   it('should allow empty values when field is OPTIONAL', () => {

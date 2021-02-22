@@ -15,8 +15,8 @@ export class LogService {
   level: LogLevel = LogLevel.Debug;
   caseFieldIdList: string[] = [];
 
-  constructor(private config: AbstractAppConfig) {
-    this.caseFieldIdList = config.getLoggingCaseFieldList();
+  constructor(private appConfig: AbstractAppConfig) {
+    this.caseFieldIdList = appConfig.getLoggingCaseFieldList();
   }
 
   debug(caseFieldId: string, msg: string) {

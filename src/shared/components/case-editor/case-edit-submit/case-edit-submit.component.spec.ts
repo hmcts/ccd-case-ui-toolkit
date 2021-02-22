@@ -24,6 +24,7 @@ import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.componen
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -34,7 +35,8 @@ describe('CaseEditSubmitComponent', () => {
   const END_BUTTON_LABEL = 'Go now!';
   let formValueService: any;
   let formErrorService: any;
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let fieldsUtils: FieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
@@ -157,6 +159,9 @@ describe('CaseEditSubmitComponent', () => {
     }));
 
     beforeEach(() => {
+      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;

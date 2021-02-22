@@ -9,6 +9,7 @@ import { By } from '@angular/platform-browser';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { LogService } from '../../../services/logging/log.service';
+import { AbstractAppConfig } from '../../../../app.config';
 
 const FIELD_ID = 'Wage';
 const FIELD_TYPE: FieldType = {
@@ -35,7 +36,8 @@ describe('WriteMoneyGbpFieldComponent', () => {
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
   let de: DebugElement;
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
 
   beforeEach(async(() => {
@@ -64,6 +66,11 @@ describe('WriteMoneyGbpFieldComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
+
+  beforeEach(() => {
+    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  });
 
   it('should add a formControl linked to the field ID to the formGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();

@@ -2,12 +2,19 @@ import { IsReadOnlyPipe } from './is-read-only.pipe';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { LogService } from '../../../services/logging/log.service';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('IsReadOnlyPipe', () => {
 
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let isReadOnly: IsReadOnlyPipe = new IsReadOnlyPipe(caseFieldService);
+
+  beforeEach(() => {
+    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  });
 
   it('should identify null field as NOT readOnly', () => {
     expect(isReadOnly.transform(null))

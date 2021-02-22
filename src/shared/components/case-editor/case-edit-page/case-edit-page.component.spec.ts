@@ -24,6 +24,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
@@ -39,7 +40,8 @@ describe('CaseEditPageComponent', () => {
   let formValueService = new FormValueService(fieldTypeSanitiser);
   let formErrorService = new FormErrorService();
   let firstPage = new WizardPage();
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let pageValidationService = new PageValidationService(caseFieldService, logService);
   let route: any;
@@ -119,6 +121,9 @@ describe('CaseEditPageComponent', () => {
     }));
 
     beforeEach(() => {
+      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+
       fixture = TestBed.createComponent(CaseEditPageComponent);
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';

@@ -8,6 +8,7 @@ import { WriteDateFieldComponent } from './write-date-field.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { LogService } from '../../../services/logging/log.service';
 import { FormModule } from '../../../../components/form/form.module';
+import { AbstractAppConfig } from '../../../../app.config';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -34,7 +35,8 @@ describe('WriteDateFieldComponent', () => {
   let fixture: ComponentFixture<WriteDateFieldComponent>;
   let component: WriteDateFieldComponent;
   let de: DebugElement;
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
 
   beforeEach(async(() => {
@@ -63,6 +65,11 @@ describe('WriteDateFieldComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
+
+  beforeEach(() => {
+    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  });
 
   it('should add a formControl linked to the field ID to the formGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();

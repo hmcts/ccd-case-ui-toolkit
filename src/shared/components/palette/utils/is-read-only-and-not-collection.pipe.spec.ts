@@ -3,12 +3,19 @@ import { LogService } from '../../../services/logging/log.service';
 import { CaseField } from '../../../domain/definition';
 import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collection.pipe';
 import { createFieldType, newCaseField } from '../../../fixture';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('IsReadOnlyAndNotCollectionPipe', () => {
 
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let isReadOnlyAndNotCollectionPipe: IsReadOnlyAndNotCollectionPipe = new IsReadOnlyAndNotCollectionPipe(caseFieldService);
+
+  beforeEach(() => {
+    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  });
 
   it('should identify null field as NOT readOnly', () => {
     expect(isReadOnlyAndNotCollectionPipe.transform(null)).toBeFalsy();

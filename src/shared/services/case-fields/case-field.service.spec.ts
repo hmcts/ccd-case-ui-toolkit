@@ -1,12 +1,19 @@
 import { CaseFieldService } from './case-field.service';
 import { LogService } from '../logging/log.service';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { AbstractAppConfig } from '../../../app.config';
 
 describe('CaseFieldService', () => {
 
-  let logService = new LogService();
+  let appConfig: any;
+  let logService = new LogService(appConfig);
   let caseFieldService: CaseFieldService = new CaseFieldService(logService);
   describe('isOptional', () => {
+
+    beforeEach(() => {
+      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+    });
 
     it('should identify null field as NOT optional', () => {
       expect(caseFieldService.isOptional(null))
@@ -45,6 +52,11 @@ describe('CaseFieldService', () => {
 
   describe('isReadOnly', () => {
 
+    beforeEach(() => {
+      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+    });
+
     it('should identify null field as NOT readOnly', () => {
       expect(caseFieldService.isReadOnly(null))
         .toBeFalsy();
@@ -81,6 +93,11 @@ describe('CaseFieldService', () => {
   });
 
   describe('isMandatory', () => {
+
+    beforeEach(() => {
+      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+    });
 
     it('should identify null field as NOT mandatory', () => {
       expect(caseFieldService.isMandatory(null))
