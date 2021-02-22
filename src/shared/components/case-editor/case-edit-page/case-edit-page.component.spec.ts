@@ -16,7 +16,9 @@ import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { Draft } from '../../../domain/draft.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -37,8 +39,9 @@ describe('CaseEditPageComponent', () => {
   let formValueService = new FormValueService(fieldTypeSanitiser);
   let formErrorService = new FormErrorService();
   let firstPage = new WizardPage();
-  let caseFieldService = new CaseFieldService();
-  let pageValidationService = new PageValidationService(caseFieldService);
+  let logService = new LogService();
+  let caseFieldService = new CaseFieldService(logService);
+  let pageValidationService = new PageValidationService(caseFieldService, logService);
   let route: any;
   let snapshot: any;
   const FORM_GROUP = new FormGroup({
@@ -681,6 +684,10 @@ describe('CaseEditPageComponent', () => {
     cf.id = id;
     cf.value = value;
     cf.display_context = display_context;
+    let ft = new FieldType();
+    ft.id = 'Text';
+    ft.type = 'Text';
+    cf.field_type = ft;
     return cf;
   }
 

@@ -1,11 +1,13 @@
 import { CaseFieldService } from '../../../services/case-fields';
+import { LogService } from '../../../services/logging/log.service';
 import { CaseField } from '../../../domain/definition';
 import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collection.pipe';
 import { createFieldType, newCaseField } from '../../../fixture';
 
 describe('IsReadOnlyAndNotCollectionPipe', () => {
 
-  let caseFieldService = new CaseFieldService();
+  let logService = new LogService();
+  let caseFieldService = new CaseFieldService(logService);
   let isReadOnlyAndNotCollectionPipe: IsReadOnlyAndNotCollectionPipe = new IsReadOnlyAndNotCollectionPipe(caseFieldService);
 
   it('should identify null field as NOT readOnly', () => {

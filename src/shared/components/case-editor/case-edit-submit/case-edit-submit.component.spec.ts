@@ -15,6 +15,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { OrderService } from '../../../services/order/order.service';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
@@ -33,7 +34,8 @@ describe('CaseEditSubmitComponent', () => {
   const END_BUTTON_LABEL = 'Go now!';
   let formValueService: any;
   let formErrorService: any;
-  let caseFieldService = new CaseFieldService();
+  let logService = new LogService();
+  let caseFieldService = new CaseFieldService(logService);
   let fieldsUtils: FieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
     'data': new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })

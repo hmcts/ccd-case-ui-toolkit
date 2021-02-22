@@ -8,6 +8,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 
 const FIELD_ID = 'Wage';
 const FIELD_TYPE: FieldType = {
@@ -34,7 +35,8 @@ describe('WriteMoneyGbpFieldComponent', () => {
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+  let logService = new LogService();
+  let caseFieldService = new CaseFieldService(logService);
 
   beforeEach(async(() => {
     TestBed

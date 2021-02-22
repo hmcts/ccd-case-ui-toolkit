@@ -23,7 +23,8 @@ export class AppConfig extends AbstractAppConfig {
     'activity_max_request_per_batch': 25,
     'print_service_url': '/print',
     'remote_print_service_url': '/remote_print',
-    'pagination_page_size': 25
+    'pagination_page_size': 25,
+    'case_field_id_list': ['respondents', 'staffUploadedDocuments']
   };
 
   constructor(private http: Http) {
@@ -69,7 +70,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentsUrl() {
     return this.config.payments_url;
   }
-  
+
   public getPayBulkScanBaseUrl() {
     return this.config.pay_bulk_scan_url;
   }
@@ -124,8 +125,12 @@ export class AppConfig extends AbstractAppConfig {
   public getBannersUrl() {
     return this.getCaseDataUrl() + `/internal/banners/`;
   }
-  
+
   public getJurisdictionUiConfigsUrl() {
     return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
+  }
+
+  public getCaseFieldIdList() {
+    return this.config.case_field_id_list;
   }
 }

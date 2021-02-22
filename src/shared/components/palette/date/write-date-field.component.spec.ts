@@ -6,6 +6,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDateFieldComponent } from './write-date-field.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { FormModule } from '../../../../components/form/form.module';
 
 const FIELD_ID = 'CreatedAt';
@@ -33,7 +34,8 @@ describe('WriteDateFieldComponent', () => {
   let fixture: ComponentFixture<WriteDateFieldComponent>;
   let component: WriteDateFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+  let logService = new LogService();
+  let caseFieldService = new CaseFieldService(logService);
 
   beforeEach(async(() => {
     TestBed

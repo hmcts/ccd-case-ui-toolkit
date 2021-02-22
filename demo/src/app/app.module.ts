@@ -10,7 +10,7 @@ import { CaseCreateConsumerComponent } from './case-create-consumer.component';
 import { AppConfig } from './app.config';
 import { routing } from './app.routing';
 import { AppComponent } from './app.component';
-import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
+import { CaseUIToolkitModule, DraftService, AlertService, HttpService, LogService, AuthService, CasesService,
 WorkbasketFiltersModule, CaseListFiltersModule,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
   PlaceholderService, DocumentManagementService, PageValidationService, SearchService,
@@ -68,6 +68,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     SearchService,
     RequestOptionsBuilder,
     HttpService,
+    LogService,
     HttpErrorService,
     AlertService,
     DraftService,
