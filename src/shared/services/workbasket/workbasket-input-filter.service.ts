@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import { Headers } from '@angular/http';
 import { HttpService } from '../http/http.service';
 import { WorkbasketInputModel } from '../../domain';
 import { AbstractAppConfig } from '../../../app.config';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class WorkbasketInputFilterService {
@@ -23,16 +23,17 @@ export class WorkbasketInputFilterService {
 
   getWorkbasketInputs(jurisdictionId: string, caseTypeId: string): Observable<WorkbasketInputModel[]> {
     let url = this.getWorkbasketInputUrl(caseTypeId);
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS
-    });
+    let headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS)
+      .set('Content-Type', 'application/json');
+
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;
     return this.httpService
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .map(response => {
-        let jsonResponse = response.json();
+        let jsonResponse = response;
         let workbasketInputs = jsonResponse.workbasketInputs;
         if (this.isDataValid(jurisdictionId, caseTypeId)) {
           workbasketInputs.forEach(item => {

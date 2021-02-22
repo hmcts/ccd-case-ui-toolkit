@@ -5,6 +5,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
+const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
+
 @Component({
   selector: 'ccd-field-read',
   templateUrl: './field-read.html'
@@ -40,7 +42,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist
       // Added a check to make sure it's NOT already a CaseField and then
       // assigning it back to this.caseField so we don't create separation.
-      if (this.caseField.field_type.type === 'FixedList' && !(this.caseField instanceof CaseField)) {
+      if (FIX_CASEFIELD_FOR.indexOf(this.caseField.field_type.type) > -1 && !(this.caseField instanceof CaseField)) {
         this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
       }
       component.instance['caseField'] =  this.caseField;

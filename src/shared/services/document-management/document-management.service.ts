@@ -2,38 +2,35 @@ import { Observable } from 'rxjs';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
-import { Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class DocumentManagementService {
-  private static readonly HEADER_ACCEPT = 'Accept';
-  private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 1000;
 
-  imagesList: string[] = [ 'GIF', 'JPG', 'JPEG', 'PNG'];
+  imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
   uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.appConfig.getDocumentManagementUrl();
-    let headers = new Headers();
-    headers.append(DocumentManagementService.HEADER_ACCEPT, null);
-    // Content-Type header value needs to be null; HttpService will delete it, so that Angular can set it automatically
-    // with the correct boundary
-    headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
+    // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
+    // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
+    // correct headers and values automatically
+    const headers = new HttpHeaders();
     return this.http
-      .post(url, formData, { headers })
-      .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
+      .post(url, formData, {headers, observe: 'body'})
+      .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
       .pipe(
         map(response => {
-          return response.json();
+          return response;
         })
       );
   }
