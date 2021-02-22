@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.72.5-remove-null-http-request-headers
+**EUI-3464** Fix Document field uploads by removing setting of null HTTP "Accept" and "Content-Type" headers
 
 ### Version 2.72.4-check-your-answers
 Fix EUI-3452 - fix for show/hide conditions on Check Your Answers page.
