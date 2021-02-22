@@ -13,10 +13,10 @@ export enum LogLevel {
 @Injectable()
 export class LogService {
   level: LogLevel = LogLevel.Debug;
-  caseFieldIdList: string[];
+  caseFieldIdList: string[] = [];
 
   constructor(private config: AbstractAppConfig) {
-    caseFieldIdList = config.getCaseFieldIdList();
+    this.caseFieldIdList = config.getLoggingCaseFieldList();
   }
 
   debug(caseFieldId: string, msg: string) {

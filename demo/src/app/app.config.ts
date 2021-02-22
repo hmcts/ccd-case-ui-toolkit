@@ -24,7 +24,7 @@ export class AppConfig extends AbstractAppConfig {
     'print_service_url': '/print',
     'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
-    'case_field_id_list': ['respondents', 'staffUploadedDocuments']
+    'logging_case_field_list': ['respondents', 'staffUploadedDocuments']
   };
 
   constructor(private http: Http) {
@@ -130,7 +130,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
   }
 
-  public getCaseFieldIdList() {
-    return this.config.case_field_id_list;
+  public getLoggingCaseFieldList() {
+    return this.config.logging_case_field_list;
   }
 }

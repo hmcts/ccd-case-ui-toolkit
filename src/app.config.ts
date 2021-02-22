@@ -23,7 +23,7 @@ export abstract class AbstractAppConfig {
   abstract getPaginationPageSize(): number;
   abstract getBannersUrl(): string;
   abstract getJurisdictionUiConfigsUrl(): string;
-  abstract getCaseFieldIdList(): string[];
+  abstract getLoggingCaseFieldList(): string[];
 }
 
 export class CaseEditorConfig {
@@ -45,5 +45,5 @@ export class CaseEditorConfig {
   print_service_url: string;
   remote_print_service_url: string;
   pagination_page_size: number;
-  caseFieldIdList: string[];
+  logging_case_field_list: string[];
 }
