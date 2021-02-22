@@ -8,6 +8,9 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
+import { AbstractAppConfig } from '../../../../app.config';
+import { WindowService } from '../../../services/window';
 
 const FIELD_ID = 'Wage';
 const FIELD_TYPE: FieldType = {
@@ -34,7 +37,15 @@ describe('WriteMoneyGbpFieldComponent', () => {
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingLevel', 'getLoggingCaseFieldList']);
+  appConfig.getLoggingLevel.and.returnValue('Off');
+  appConfig.getLoggingCaseFieldList.and.returnValue('');
+  let windowService = jasmine.createSpyObj('windowService', ['getLocalStorage']);
+  windowService.getLocalStorage.and.returnValue(false);
+
+  let logService = new LogService(appConfig, windowService);
+  let caseFieldService = new CaseFieldService(logService);
 
   beforeEach(async(() => {
     TestBed

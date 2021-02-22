@@ -6,7 +6,10 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDateFieldComponent } from './write-date-field.component';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { FormModule } from '../../../../components/form/form.module';
+import { AbstractAppConfig } from '../../../../app.config';
+import { WindowService } from '../../../services/window';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -33,7 +36,15 @@ describe('WriteDateFieldComponent', () => {
   let fixture: ComponentFixture<WriteDateFieldComponent>;
   let component: WriteDateFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingLevel', 'getLoggingCaseFieldList']);
+  appConfig.getLoggingLevel.and.returnValue('Off');
+  appConfig.getLoggingCaseFieldList.and.returnValue('');
+  let windowService = jasmine.createSpyObj('windowService', ['getLocalStorage']);
+  windowService.getLocalStorage.and.returnValue(false);
+
+  let logService = new LogService(appConfig, windowService);
+  let caseFieldService = new CaseFieldService(logService);
 
   beforeEach(async(() => {
     TestBed

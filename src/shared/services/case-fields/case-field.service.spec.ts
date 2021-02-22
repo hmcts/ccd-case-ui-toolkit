@@ -1,9 +1,21 @@
 import { CaseFieldService } from './case-field.service';
+import { LogService } from '../logging/log.service';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { AbstractAppConfig } from '../../../app.config';
+import { WindowService } from '../window';
 
 describe('CaseFieldService', () => {
 
-  let caseFieldService: CaseFieldService = new CaseFieldService();
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingLevel', 'getLoggingCaseFieldList']);
+  appConfig.getLoggingLevel.and.returnValue('Off');
+  appConfig.getLoggingCaseFieldList.and.returnValue('');
+
+  let windowService = jasmine.createSpyObj('windowService', ['getLocalStorage']);
+  windowService.getLocalStorage.and.returnValue(false);
+
+  let logService = new LogService(appConfig, windowService);
+  let caseFieldService: CaseFieldService = new CaseFieldService(logService);
+
   describe('isOptional', () => {
 
     it('should identify null field as NOT optional', () => {
@@ -17,22 +29,26 @@ describe('CaseFieldService', () => {
     });
 
     it('should identify unknown display_context value as NOT optional', () => {
-      expect(caseFieldService.isOptional({ display_context: '' } as CaseField))
+      expect(caseFieldService.isOptional({ id: 'test', display_context: '', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify OPTIONAL display_context field as optional', () => {
-      expect(caseFieldService.isOptional({ display_context: 'OPTIONAL' } as CaseField))
+      expect(caseFieldService.isOptional({ id: 'test', display_context: 'OPTIONAL', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeTruthy();
     });
 
     it('should identify MANDATORY display_context field as NOT optional', () => {
-      expect(caseFieldService.isOptional({ display_context: 'MANDATORY' } as CaseField))
+      expect(caseFieldService.isOptional({ id: 'test', display_context: 'MANDATORY', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify READONLY display_context field as NOT optional', () => {
-      expect(caseFieldService.isOptional({ display_context: 'READONLY' } as CaseField))
+      expect(caseFieldService.isOptional({ id: 'test', display_context: 'READONLY', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
   });
@@ -50,22 +66,26 @@ describe('CaseFieldService', () => {
     });
 
     it('should identify unknown display_context value as NOT readOnly', () => {
-      expect(caseFieldService.isReadOnly({ display_context: '' } as CaseField))
+      expect(caseFieldService.isReadOnly({ id: 'test', display_context: '', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify OPTIONAL display_context field as NOT readOnly', () => {
-      expect(caseFieldService.isReadOnly({ display_context: 'OPTIONAL' } as CaseField))
+      expect(caseFieldService.isReadOnly({ id: 'test', display_context: 'OPTIONAL', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify MANDATORY display_context field as NOT readOnly', () => {
-      expect(caseFieldService.isReadOnly({ display_context: 'MANDATORY' } as CaseField))
+      expect(caseFieldService.isReadOnly({ id: 'test', display_context: 'MANDATORY', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify READONLY display_context field as NOT readOnly', () => {
-      expect(caseFieldService.isReadOnly({ display_context: 'READONLY' } as CaseField))
+      expect(caseFieldService.isReadOnly({ id: 'test', display_context: 'READONLY', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeTruthy();
     });
   });
@@ -83,22 +103,26 @@ describe('CaseFieldService', () => {
     });
 
     it('should identify unknown display_context value as NOT mandatory', () => {
-      expect(caseFieldService.isMandatory({ display_context: '' } as CaseField))
+      expect(caseFieldService.isMandatory({ id: 'test', display_context: '', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify OPTIONAL display_context field as NOT mandatory', () => {
-      expect(caseFieldService.isMandatory({ display_context: 'OPTIONAL' } as CaseField))
+      expect(caseFieldService.isMandatory({ id: 'test', display_context: 'OPTIONAL', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
 
     it('should identify MANDATORY display_context field as NOT mandatory', () => {
-      expect(caseFieldService.isMandatory({ display_context: 'MANDATORY' } as CaseField))
+      expect(caseFieldService.isMandatory({ id: 'test', display_context: 'MANDATORY', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeTruthy();
     });
 
     it('should identify READONLY display_context field as NOT mandatory', () => {
-      expect(caseFieldService.isMandatory({ display_context: 'READONLY' } as CaseField))
+      expect(caseFieldService.isMandatory({ id: 'test', display_context: 'READONLY', label: 'test',
+        field_type: { id: 'Text', type: 'Text' } } as CaseField))
         .toBeFalsy();
     });
   });

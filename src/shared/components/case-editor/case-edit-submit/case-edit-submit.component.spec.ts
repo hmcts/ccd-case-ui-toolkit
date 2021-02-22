@@ -15,6 +15,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { OrderService } from '../../../services/order/order.service';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
@@ -23,6 +24,8 @@ import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.componen
 import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { AbstractAppConfig } from '../../../../app.config';
+import { WindowService } from '../../../services/window';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -33,7 +36,13 @@ describe('CaseEditSubmitComponent', () => {
   const END_BUTTON_LABEL = 'Go now!';
   let formValueService: any;
   let formErrorService: any;
-  let caseFieldService = new CaseFieldService();
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingLevel', 'getLoggingCaseFieldList']);
+  appConfig.getLoggingLevel.and.returnValue('Off');
+  appConfig.getLoggingCaseFieldList.and.returnValue('');
+  let windowService = jasmine.createSpyObj('windowService', ['getLocalStorage']);
+  windowService.getLocalStorage.and.returnValue(false);
+  let logService = new LogService(appConfig, windowService);
+  let caseFieldService = new CaseFieldService(logService);
   let fieldsUtils: FieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
     'data': new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })

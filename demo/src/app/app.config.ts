@@ -1,37 +1,39 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { throwError } from 'rxjs';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { environment } from '../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
 
-  protected config: CaseEditorConfig = {
-    'api_url': '/aggregated',
-    'case_data_url': '/data',
-    'document_management_url': '/documents',
-    'login_url': '/login',
-    'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': '/addresses/?postcode=${postcode}',
-    'remote_document_management_url': '/documents',
-    'annotation_api_url': '/em-anno',
-    'payments_url': '/payments',
-    'pay_bulk_scan_url': '/pay-bulkscan',
-    'activity_batch_collection_delay_ms': 1,
-    'activity_next_poll_request_ms': 5000,
-    'activity_retry': 5,
-    'activity_url': '',
-    'activity_max_request_per_batch': 25,
-    'print_service_url': '/print',
-    'remote_print_service_url': '/remote_print',
-    'pagination_page_size': 25
-  };
+  protected config: Config;
 
-  constructor(private http: Http) {
+  constructor(private httpClient: HttpClient) {
     super();
   }
 
   public load(): Promise<void> {
-    return Promise.resolve();
+    console.log('Loading app config...');
+
+    let configUrl = environment.configUrl;
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient
+        .get(configUrl)
+        .catch((error: any): any => {
+          console.error(`Configuration ${configUrl} could not be read`, error);
+          reject();
+          return throwError(error.json().error || 'Server error');
+        })
+        .subscribe((config: Config) => {
+          this.config = config;
+          console.log('Loading app config: OK');
+          resolve();
+        });
+    });
   }
 
   public getLoginUrl(): string {
@@ -69,7 +71,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentsUrl() {
     return this.config.payments_url;
   }
-  
+
   public getPayBulkScanBaseUrl() {
     return this.config.pay_bulk_scan_url;
   }
@@ -124,8 +126,39 @@ export class AppConfig extends AbstractAppConfig {
   public getBannersUrl() {
     return this.getCaseDataUrl() + `/internal/banners/`;
   }
-  
+
   public getJurisdictionUiConfigsUrl() {
     return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
   }
+
+  public getLoggingLevel() {
+    return this.config.logging_level;
+  }
+
+  public getLoggingCaseFieldList() {
+    return this.config.logging_case_field_list;
+  }
+}
+
+export class Config extends CaseEditorConfig {
+  api_url: string;
+  case_data_url: string;
+  document_management_url: string;
+  login_url: string;
+  oauth2_client_id: string;
+  postcode_lookup_url: string;
+  remote_document_management_url: string;
+  annotation_api_url: string;
+  payments_url: string;
+  pay_bulk_scan_url: string;
+  activity_batch_collection_delay_ms: number;
+  activity_next_poll_request_ms: number;
+  activity_retry: number;
+  activity_url: string;
+  activity_max_request_per_batch: number;
+  print_service_url: string;
+  remote_print_service_url: string;
+  pagination_page_size: number;
+  logging_level: string;
+  logging_case_field_list: string;
 }

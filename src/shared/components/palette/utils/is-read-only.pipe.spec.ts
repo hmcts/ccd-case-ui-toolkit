@@ -1,10 +1,20 @@
 import { IsReadOnlyPipe } from './is-read-only.pipe';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { AbstractAppConfig } from '../../../../app.config';
+import { WindowService } from '../../../services/window';
 
 describe('IsReadOnlyPipe', () => {
 
-  let caseFieldService = new CaseFieldService();
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingLevel', 'getLoggingCaseFieldList']);
+  appConfig.getLoggingLevel.and.returnValue('Off');
+  appConfig.getLoggingCaseFieldList.and.returnValue('');
+  let windowService = jasmine.createSpyObj('windowService', ['getLocalStorage']);
+  windowService.getLocalStorage.and.returnValue(false);
+
+  let logService = new LogService(appConfig, windowService);
+  let caseFieldService = new CaseFieldService(logService);
   let isReadOnly: IsReadOnlyPipe = new IsReadOnlyPipe(caseFieldService);
 
   it('should identify null field as NOT readOnly', () => {
@@ -18,22 +28,26 @@ describe('IsReadOnlyPipe', () => {
   });
 
   it('should identify unknown display_context value as NOT readOnly', () => {
-    expect(isReadOnly.transform({ display_context: ''} as CaseField))
+    expect(isReadOnly.transform({ id: 'test', display_context: '', label: 'test',
+      field_type: { id: 'Text', type: 'Text' } } as CaseField))
       .toBeFalsy();
   });
 
   it('should identify OPTIONAL display_context field as NOT readOnly', () => {
-    expect(isReadOnly.transform({ display_context: 'OPTIONAL' } as CaseField))
+    expect(isReadOnly.transform({ id: 'test', display_context: 'OPTIONAL', label: 'test',
+      field_type: { id: 'Text', type: 'Text' } } as CaseField))
       .toBeFalsy();
   });
 
   it('should identify MANDATORY display_context field as NOT readOnly', () => {
-    expect(isReadOnly.transform({ display_context: 'MANDATORY' } as CaseField))
+    expect(isReadOnly.transform({ id: 'test', display_context: 'MANDATORY', label: 'test',
+      field_type: { id: 'Text', type: 'Text' } } as CaseField))
       .toBeFalsy();
   });
 
   it('should identify READONLY display_context field as readOnly', () => {
-    expect(isReadOnly.transform({ display_context: 'READONLY' } as CaseField))
+    expect(isReadOnly.transform({ id: 'test', display_context: 'READONLY', label: 'test',
+      field_type: { id: 'Text', type: 'Text' } } as CaseField))
       .toBeTruthy();
   });
 });
