@@ -53,8 +53,8 @@ export class LogService {
     if ('ANY' === caseFieldId) {
       isValidCaseField = true;
     } else {
-      for (var index in this.loggingCaseFieldArray) {
-        if (caseFieldId === this.loggingCaseFieldArray[index].trim()) {
+      for (var index in this.loggingCaseFieldList) {
+        if (caseFieldId === this.loggingCaseFieldList[index].trim()) {
           isValidCaseField = true;
         }
       }
