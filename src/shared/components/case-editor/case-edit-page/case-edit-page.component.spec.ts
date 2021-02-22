@@ -17,11 +17,13 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { LogService } from '../../../services/logging/log.service';
 import { Draft } from '../../../domain/draft.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { WindowService } from '../../../services/window';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
@@ -37,8 +39,11 @@ describe('CaseEditPageComponent', () => {
   let formValueService = new FormValueService(fieldTypeSanitiser);
   let formErrorService = new FormErrorService();
   let firstPage = new WizardPage();
+  let windowService = jasmine.createSpyObj('windowService', ['getLocalStorage']);
+  windowService.getLocalStorage.and.returnValue(false);
+  let logService = new LogService(windowService);
   let caseFieldService = new CaseFieldService();
-  let pageValidationService = new PageValidationService(caseFieldService);
+  let pageValidationService = new PageValidationService(caseFieldService, logService);
   let route: any;
   let snapshot: any;
   const FORM_GROUP = new FormGroup({

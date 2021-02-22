@@ -14,6 +14,7 @@ import { FormValueService } from '../../services/form/form-value.service';
 import { FormErrorService } from '../../services/form/form-error.service';
 import { PageValidationService } from './services/page-validation.service';
 import { CaseFieldService } from '../../services/case-fields/case-field.service';
+import { LogService } from '../../services/logging/log.service';
 import { OrderService } from '../../services/order/order.service';
 import { PipesModule } from '../../pipes/pipes.module';
 import { MarkdownModule } from '../../components/markdown/markdown.module';
@@ -76,6 +77,7 @@ import { FieldTypeSanitiser } from '../../services/form';
         FormErrorService,
         PageValidationService,
         CaseFieldService,
+        LogService,
         OrderService,
         EventTriggerService,
         ProfileService,
