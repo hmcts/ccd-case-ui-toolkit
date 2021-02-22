@@ -7,15 +7,12 @@ import { AbstractAppConfig } from '../../../../app.config';
 
 describe('IsReadOnlyAndNotCollectionPipe', () => {
 
-  let appConfig: any;
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+
   let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let isReadOnlyAndNotCollectionPipe: IsReadOnlyAndNotCollectionPipe = new IsReadOnlyAndNotCollectionPipe(caseFieldService);
-
-  beforeEach(() => {
-    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
-  });
 
   it('should identify null field as NOT readOnly', () => {
     expect(isReadOnlyAndNotCollectionPipe.transform(null)).toBeFalsy();

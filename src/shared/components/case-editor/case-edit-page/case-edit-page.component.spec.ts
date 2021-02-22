@@ -40,7 +40,8 @@ describe('CaseEditPageComponent', () => {
   let formValueService = new FormValueService(fieldTypeSanitiser);
   let formErrorService = new FormErrorService();
   let firstPage = new WizardPage();
-  let appConfig: any;
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
   let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let pageValidationService = new PageValidationService(caseFieldService, logService);
@@ -121,9 +122,6 @@ describe('CaseEditPageComponent', () => {
     }));
 
     beforeEach(() => {
-      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
-
       fixture = TestBed.createComponent(CaseEditPageComponent);
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';

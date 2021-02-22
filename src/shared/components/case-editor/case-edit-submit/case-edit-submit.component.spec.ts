@@ -35,7 +35,8 @@ describe('CaseEditSubmitComponent', () => {
   const END_BUTTON_LABEL = 'Go now!';
   let formValueService: any;
   let formErrorService: any;
-  let appConfig: any;
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
   let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let fieldsUtils: FieldsUtils = new FieldsUtils();
@@ -159,9 +160,6 @@ describe('CaseEditSubmitComponent', () => {
     }));
 
     beforeEach(() => {
-      appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-      appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
-
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;

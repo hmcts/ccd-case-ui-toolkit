@@ -36,7 +36,10 @@ describe('WriteMoneyGbpFieldComponent', () => {
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
   let de: DebugElement;
-  let appConfig: any;
+
+  let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
+  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+
   let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
 
@@ -66,11 +69,6 @@ describe('WriteMoneyGbpFieldComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
-
-  beforeEach(() => {
-    appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-    appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
-  });
 
   it('should add a formControl linked to the field ID to the formGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
