@@ -41,7 +41,7 @@ describe('CaseEditPageComponent', () => {
   let formErrorService = new FormErrorService();
   let firstPage = new WizardPage();
   let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  appConfig.getLoggingCaseFieldList.and.returnValue('respondents,staffUploadedDocuments');
   let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let pageValidationService = new PageValidationService(caseFieldService, logService);

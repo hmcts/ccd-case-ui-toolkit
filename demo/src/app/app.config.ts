@@ -24,7 +24,7 @@ export class AppConfig extends AbstractAppConfig {
     'print_service_url': '/print',
     'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
-    'logging_case_field_list': ['respondents', 'staffUploadedDocuments']
+    'logging_case_field_list': 'respondents,staffUploadedDocuments'
   };
 
   constructor(private http: Http) {

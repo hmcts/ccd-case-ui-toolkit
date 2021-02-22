@@ -11,8 +11,8 @@ export class CaseFieldService {
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
+    this.logger.debug(field?.id, 'field label =>' + field?.label + ', field type =>' + field?.field_type?.id
+      + ', display_context =>' + field?.display_context?.toUpperCase());
 
     return field.display_context.toUpperCase() === 'OPTIONAL';
   }
@@ -22,8 +22,8 @@ export class CaseFieldService {
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
+    this.logger.debug(field?.id, 'field label =>' + field?.label + ', field type =>' + field?.field_type?.id
+      + ', display_context =>' + field?.display_context?.toUpperCase());
 
     return field.display_context.toUpperCase() === 'READONLY';
   }
@@ -33,8 +33,8 @@ export class CaseFieldService {
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
+    this.logger.debug(field?.id, 'field label =>' + field?.label + ', field type =>' + field?.field_type?.id
+      + ', display_context =>' + field?.display_context?.toUpperCase());
 
     return field.display_context.toUpperCase() === 'MANDATORY';
   }
@@ -44,8 +44,8 @@ export class CaseFieldService {
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
+    this.logger.debug(field?.id, 'field label =>' + field?.label + ', field type =>' + field?.field_type?.id
+      + ', display_context =>' + field?.display_context?.toUpperCase());
 
     return field.field_type.type === 'Label';
   }

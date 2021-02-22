@@ -36,7 +36,7 @@ describe('CaseEditSubmitComponent', () => {
   let formValueService: any;
   let formErrorService: any;
   let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  appConfig.getLoggingCaseFieldList.and.returnValue('respondents,staffUploadedDocuments');
   let logService = new LogService(appConfig);
   let caseFieldService = new CaseFieldService(logService);
   let fieldsUtils: FieldsUtils = new FieldsUtils();

@@ -13,10 +13,12 @@ export enum LogLevel {
 @Injectable()
 export class LogService {
   level: LogLevel = LogLevel.Debug;
-  caseFieldIdList: string[] = [];
+  loggingCaseFieldList: string[] = [];
 
   constructor(private appConfig: AbstractAppConfig) {
-    this.caseFieldIdList = appConfig.getLoggingCaseFieldList();
+    if (appConfig.getLoggingCaseFieldList()) {
+      this.loggingCaseFieldList = appConfig.getLoggingCaseFieldList().split(',');
+    }
   }
 
   debug(caseFieldId: string, msg: string) {
@@ -51,8 +53,8 @@ export class LogService {
     if ('ANY' === caseFieldId) {
       isValidCaseField = true;
     } else {
-      for (var index in this.caseFieldIdList) {
-        if (caseFieldId === this.caseFieldIdList[index]) {
+      for (var index in this.loggingCaseFieldArray) {
+        if (caseFieldId === this.loggingCaseFieldArray[index].trim()) {
           isValidCaseField = true;
         }
       }

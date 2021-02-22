@@ -6,7 +6,7 @@ import { AbstractAppConfig } from '../../../app.config';
 describe('CaseFieldService', () => {
 
   let appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getLoggingCaseFieldList']);
-  appConfig.getLoggingCaseFieldList.and.returnValue(['respondents', 'staffUploadedDocuments']);
+  appConfig.getLoggingCaseFieldList.and.returnValue('respondents,staffUploadedDocuments');
 
   let logService = new LogService(appConfig);
   let caseFieldService: CaseFieldService = new CaseFieldService(logService);
