@@ -1,6 +1,9 @@
 ## RELEASE NOTES
-### Version 3.0.0-alpha
+### Version 3.0.0-beta
 **EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
+
+### Version 2.72.5-remove-null-http-request-headers
+**EUI-3464** Fix Document field uploads by removing setting of null HTTP "Accept" and "Content-Type" headers
 
 ### Version 2.72.4-check-your-answers
 Fix EUI-3452 - fix for show/hide conditions on Check Your Answers page.
