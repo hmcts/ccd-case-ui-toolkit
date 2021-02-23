@@ -13,7 +13,7 @@ export enum LogLevel {
 @Injectable()
 export class LogService {
 
-  const ALL_CASE_FIELD_LIST = 'All';
+  static readonly ALL_CASE_FIELD_LIST = 'All';
   logLevel: LogLevel = LogLevel.Off;
   loggingCaseFieldList: string[] = [];
 
