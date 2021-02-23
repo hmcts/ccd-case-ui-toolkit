@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.64.7-loading-spinner
+**EUI-3222** Integrating loading spinner
+
 ### Version 2.72.5-remove-null-http-request-headers
 **EUI-3464** Fix Document field uploads by removing setting of null HTTP "Accept" and "Content-Type" headers
 
