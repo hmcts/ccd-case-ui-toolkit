@@ -56,7 +56,7 @@ export class LogService {
   private shouldLog(level: LogLevel, caseFieldId: string): boolean {
     let isValidCaseField: boolean = false;
 
-    if (ALL_CASE_FIELD_LIST === caseFieldId) {
+    if (LogService.ALL_CASE_FIELD_LIST === caseFieldId) {
       isValidCaseField = true;
     } else {
       for (var index in this.loggingCaseFieldList) {
