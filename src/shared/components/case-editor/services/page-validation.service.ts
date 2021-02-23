@@ -15,45 +15,48 @@ export class PageValidationService {
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm.getRawValue()))
       .every(caseField => {
-        this.logger.debug(caseField.id, 'Validating for field => ' + caseField.id);
+        this.logger.info(caseField.id, caseField);
         let theControl = editForm.controls['data'].get(caseField.id);
+        this.logger.debug(caseField.id, theControl);
         let result = this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
-        this.logger.debug(caseField.id, 'Page validation result => ' + result);
+        this.logger.info(caseField.id, 'Page validation result => ' + result);
         return result;
       });
   }
 
   private checkDocumentField(caseField: CaseField, theControl: AbstractControl): boolean {
-    this.logger.debug(caseField.id, 'Checking document field for field_type => ' + caseField.field_type.id);
-
     if (caseField.field_type.id !== 'Document') {
+      this.logger.info(caseField.id, 'checkDocumentField result => true');
       return true;
     }
-    return !(this.checkMandatoryField(caseField, theControl));
+
+    let result = !(this.checkMandatoryField(caseField, theControl));
+    this.logger.info(caseField.id, 'checkDocumentField result => ' + result);
+    return result;
   }
 
   private isHidden(caseField, formFields) {
     let condition = new ShowCondition(caseField.show_condition);
-    this.logger.debug(caseField.id, 'isHidden for field_type => ' + caseField.field_type.id
-      + ', condition => ' + caseField.show_condition + ', formFields data => ' + formFields.data);
-    return !condition.match(formFields.data);
+    let result = !condition.match(formFields.data);
+
+    this.logger.info(caseField.id, 'isHidden result => ' + result);
+    return result;
   }
 
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
-    this.logger.debug(caseField.id, 'theControl => ' + theControl);
-
-    if (theControl !== null && theControl !== undefined) {
-      this.logger.debug(caseField.id, 'isControlValid => ' + theControl.valid
-        + ', isControlDisabled => ' + theControl.disabled + ', checkOptionalField result => '
-        + ((!theControl && this.caseFieldService.isOptional(caseField)) || theControl.valid || theControl.disabled));
+    if (theControl) {
+      this.logger.debug(caseField.id, 'isControlValid => ' + theControl.valid + ', isControlDisabled => ' +
+        theControl.disabled);
     }
 
-    return (!theControl && this.caseFieldService.isOptional(caseField)) || theControl.valid || theControl.disabled;
+    let result = ((!theControl && this.caseFieldService.isOptional(caseField)) || theControl.valid || theControl.disabled);
+    this.logger.info(caseField.id, 'checkOptionalField result => ' + result);
+    return result;
   }
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {
-    this.logger.debug(caseField.id, 'theControl => ' + theControl + ', checkMandatoryField result => '
-      + (this.caseFieldService.isMandatory(caseField) && theControl === null));
-    return this.caseFieldService.isMandatory(caseField) && theControl === null;
+    let result = (this.caseFieldService.isMandatory(caseField) && theControl === null);
+    this.logger.info(caseField.id, 'checkMandatoryField result => ' + result);
+    return result;
   }
 }

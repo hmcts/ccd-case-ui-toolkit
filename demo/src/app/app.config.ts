@@ -24,6 +24,7 @@ export class AppConfig extends AbstractAppConfig {
     'print_service_url': '/print',
     'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
+    'logging_level': 'Debug',
     'logging_case_field_list': 'respondents,staffUploadedDocuments'
   };
 
@@ -130,7 +131,12 @@ export class AppConfig extends AbstractAppConfig {
     return this.getCaseDataUrl() + `/internal/jurisdiction-ui-configs/`;
   }
 
+  public getLoggingLevel() {
+    return this.config.logging_level;
+  }
+
   public getLoggingCaseFieldList() {
     return this.config.logging_case_field_list;
   }
+
 }

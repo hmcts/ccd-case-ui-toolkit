@@ -8,45 +8,45 @@ export class CaseFieldService {
 
   public isOptional (field: CaseField) {
     if (!field || !field.display_context) {
+      this.logger.debug(field.id, 'isOptional result => false');
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
-
-    return field.display_context.toUpperCase() === 'OPTIONAL';
+    let result = (field.display_context.toUpperCase() === 'OPTIONAL');
+    this.logger.debug(field.id, 'isOptional result => ' + result);
+    return result;
   }
 
   public isReadOnly (field: CaseField) {
     if (!field || !field.display_context) {
+      this.logger.debug(field.id, 'isReadOnly result => false');
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
-
-    return field.display_context.toUpperCase() === 'READONLY';
+    let result = (field.display_context.toUpperCase() === 'READONLY');
+    this.logger.debug(field.id, 'isReadOnly result => ' + result);
+    return result;
   }
 
   public isMandatory (field: CaseField) {
     if (!field || !field.display_context) {
+      this.logger.debug(field.id, 'isMandatory result => false');
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
-
-    return field.display_context.toUpperCase() === 'MANDATORY';
+    let result = (field.display_context.toUpperCase() === 'MANDATORY');
+    this.logger.debug(field.id, 'isMandatory result => ' + result);
+    return result;
   }
 
   public isLabel (field: CaseField) {
     if (!field || !field.field_type) {
+      this.logger.debug(field.id, 'isLabel result => false');
       return false;
     }
 
-    this.logger.debug(field.id, 'field label =>' + field.label + ', field type =>' + field.field_type.id
-      + ', display_context =>' + field.display_context.toUpperCase());
-
-    return field.field_type.type === 'Label';
+    let result = (field.field_type.type === 'Label');
+    this.logger.debug(field.id, 'isLabel result => ' + result);
+    return result;
   }
 }
