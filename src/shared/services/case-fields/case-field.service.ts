@@ -8,7 +8,6 @@ export class CaseFieldService {
 
   public isOptional (field: CaseField) {
     if (!field || !field.display_context) {
-      this.logger.debug(field.id, 'isOptional result => false');
       return false;
     }
 
@@ -19,7 +18,6 @@ export class CaseFieldService {
 
   public isReadOnly (field: CaseField) {
     if (!field || !field.display_context) {
-      this.logger.debug(field.id, 'isReadOnly result => false');
       return false;
     }
 
@@ -30,7 +28,6 @@ export class CaseFieldService {
 
   public isMandatory (field: CaseField) {
     if (!field || !field.display_context) {
-      this.logger.debug(field.id, 'isMandatory result => false');
       return false;
     }
 
@@ -41,7 +38,6 @@ export class CaseFieldService {
 
   public isLabel (field: CaseField) {
     if (!field || !field.field_type) {
-      this.logger.debug(field.id, 'isLabel result => false');
       return false;
     }
 
