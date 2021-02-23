@@ -1,4 +1,4 @@
-:host::ng-deep .grey-bar {
+:host::ng-deep :not(.no-grey-bar) .grey-bar {
   > * > .form-group {
     margin-left: 15px;
     &:not(.form-group-error) {

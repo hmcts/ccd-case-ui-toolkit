@@ -1,6 +1,7 @@
+import { _ as _score } from 'underscore';
+
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { _ as _score } from 'underscore';
 
 export class ShowCondition {
 
@@ -67,6 +68,54 @@ export class ShowCondition {
     }
     return this.matchAndConditions(fields, this.condition, path);
   }
+
+  /**
+   * Determine whether this is affected by fields that have a display_context
+   * of HIDDEN or READONLY, which means they aren't able to be changed by the
+   * user's actions.
+   *
+   * @param caseFields Inspected to see appropriate display_context(s).
+   */
+  public hiddenCannotChange(caseFields: CaseField[]): boolean {
+    if (caseFields) {
+      const conditions: string[] = this.andConditions || this.orConditions;
+      if (conditions && conditions.length > 0) {
+        let allUnchangeable = true;
+        for (const condition of conditions) {
+          const [field] = this.getField(condition);
+          const path: string[] = field.split('.');
+          let head = path.shift();
+          let caseField: CaseField = caseFields.find(cf => cf.id === head);
+          while (path.length > 0) {
+            head = path.shift();
+            if (caseField) {
+              const ft = caseField.field_type;
+              switch (ft.type) {
+                case 'Collection':
+                  if (ft.collection_field_type.type === 'Complex' && ft.collection_field_type.complex_fields) {
+                    caseField = ft.collection_field_type.complex_fields.find(cf => cf.id === head);
+                  }
+                  break;
+                case 'Complex':
+                  if (ft.complex_fields) {
+                    caseField = ft.complex_fields.find(cf => cf.id === head);
+                  }
+                  break;
+              }
+            }
+          }
+          if (caseField) {
+            allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1;
+          } else {
+            allUnchangeable = false;
+          }
+        }
+        return allUnchangeable;
+      }
+    }
+    return false;
+  }
+
   private matchAndConditions(fields: any, condition: string, path?: string): boolean {
     if (!!this.orConditions)  {
       return this.orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition, path));
@@ -78,25 +127,26 @@ export class ShowCondition {
   }
 
   private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
-    if (condition.search(ShowCondition.CONTAINS) === -1) {
-      let conditionSeparator = ShowCondition.CONDITION_EQUALS;
-      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) !== -1) {
-        conditionSeparator = ShowCondition.CONDITION_NOT_EQUALS;
-      }
-      let field = condition.split(conditionSeparator)[0];
-      const [head, ...tail] = field.split('.');
-      let currentValue = this.findValueForComplexCondition(fields, head, tail, path);
-      let expectedValue = this.unquoted(condition.split(conditionSeparator)[1]);
-
-      return this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
-    } else {
-      let field = condition.split(ShowCondition.CONTAINS)[0];
-      const [head, ...tail] = field.split('.');
-      let currentValue = this.findValueForComplexCondition(fields, head, tail, path);
-      let expectedValue = this.unquoted(condition.split(ShowCondition.CONTAINS)[1]);
-
+    const [field, conditionSeparator] = this.getField(condition);
+    const [head, ...tail] = field.split('.');
+    const currentValue = this.findValueForComplexCondition(fields, head, tail, path);
+    const expectedValue = this.unquoted(condition.split(conditionSeparator)[1]);
+    if (conditionSeparator === ShowCondition.CONTAINS) {
       return this.checkValueContains(expectedValue, currentValue);
+    } else {
+      return this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
     }
+  }
+
+  private getField(condition: string): [string, string?] {
+    let separator: string = ShowCondition.CONTAINS;
+    if (condition.indexOf(ShowCondition.CONTAINS) < 0) {
+      separator = ShowCondition.CONDITION_EQUALS;
+      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) > -1) {
+        separator = ShowCondition.CONDITION_NOT_EQUALS;
+      }
+    }
+    return [ condition.split(separator)[0], separator ];
   }
 
   private checkValueEquals(expectedValue, currentValue, conditionSeparaor): boolean {
