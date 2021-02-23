@@ -41,7 +41,7 @@ app.use(function (req, res) {
       } else if (req.url.indexOf('CT3/search-inputs') !== -1) {
         response = db.get('CT3inputs').value();
       } else if (req.url.indexOf('work-basket-inputs') !== -1) {
-        response = db.get('workbasketInputs').value();        
+        response = db.get('workbasketInputs').value();
       } else if (req.url.indexOf('jurisdictions?access=read') !== -1) {
         response = db.get('jurisdictions-read').value();
       } else if (req.url.indexOf('jurisdictions?access=create') !== -1) {
@@ -62,3 +62,45 @@ app.use(function (req, res) {
 
 // Start the app by listening on the default Heroku port
 app.listen(process.env.PORT || 8080);
+
+// Faster server renders w/ Prod mode (dev mode never needed)
+import { enableProdMode } from '@angular/core';
+enableProdMode();
+
+const CONFIG = {
+  'api_url': '/aggregated',
+  'case_data_url': '/data',
+  'document_management_url': '/documents',
+  'login_url': '/login',
+  'oauth2_client_id': 'ccd_gateway',
+  'postcode_lookup_url': '/addresses/?postcode=${postcode}',
+  'remote_document_management_url': '/documents',
+  'annotation_api_url': '/em-anno',
+  'payments_url': '/payments',
+  'pay_bulk_scan_url': '/pay-bulkscan',
+  'activity_batch_collection_delay_ms': 1,
+  'activity_next_poll_request_ms': 5000,
+  'activity_retry': 5,
+  'activity_url': '',
+  'activity_max_request_per_batch': 25,
+  'print_service_url': '/print',
+  'remote_print_service_url': '/remote_print',
+  'pagination_page_size': 25,
+  'logging_level': process.env['LOGGING_LEVEL'] || 'Debug',
+  'logging_case_field_list': process.env['LOGGING_CASE_FIELD_LIST'] || 'respondents,staffUploadedDocuments'
+};
+
+// * NOTE :: leave this as require() since this file is built Dynamically from webpack
+const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('./dist/server/main');
+
+import { AppConfig } from './src/app/app.config';
+import { AppServerConfig } from './src/app/app.server.config';
+import * as config from 'config';
+
+app.engine('html', ngExpressEngine({
+  bootstrap: AppServerModuleNgFactory,
+  providers: [
+    provideModuleMap(LAZY_MODULE_MAP),
+    { provide: AppConfig, useValue: new AppServerConfig(CONFIG) },
+  ]
+}));

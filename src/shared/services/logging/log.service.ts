@@ -12,6 +12,8 @@ export enum LogLevel {
 
 @Injectable()
 export class LogService {
+
+  const ALL_CASE_FIELD_LIST = 'All';
   logLevel: LogLevel = LogLevel.Off;
   loggingCaseFieldList: string[] = [];
 
@@ -54,7 +56,7 @@ export class LogService {
   private shouldLog(level: LogLevel, caseFieldId: string): boolean {
     let isValidCaseField: boolean = false;
 
-    if ('ANY' === caseFieldId) {
+    if (ALL_CASE_FIELD_LIST === caseFieldId) {
       isValidCaseField = true;
     } else {
       for (var index in this.loggingCaseFieldList) {
