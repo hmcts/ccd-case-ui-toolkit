@@ -15,7 +15,7 @@ export class PageValidationService {
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm.getRawValue()))
       .every(caseField => {
-        this.logger.info(caseField.id, caseField);
+        this.logger.debug(caseField.id, caseField);
         let theControl = editForm.controls['data'].get(caseField.id);
         this.logger.debug(caseField.id, theControl);
         let result = this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);

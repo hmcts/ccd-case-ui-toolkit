@@ -21,31 +21,31 @@ export class LogService {
     }
 
     if (appConfig.getLoggingLevel()) {
-      this.logLevel = appConfig.getLoggingLevel();
+      this.logLevel = LogLevel[appConfig.getLoggingLevel()];
     }
   }
 
-  debug(caseFieldId: string, msg: string) {
+  debug(caseFieldId: string, msg: any) {
     this.writeToLog(LogLevel.Debug, caseFieldId, msg);
   }
 
-  info(caseFieldId: string, msg: string) {
+  info(caseFieldId: string, msg: any) {
     this.writeToLog(LogLevel.Info, caseFieldId, msg);
   }
 
-  warn(caseFieldId: string, msg: string) {
+  warn(caseFieldId: string, msg: any) {
     this.writeToLog(LogLevel.Warn, caseFieldId, msg);
   }
 
-  error(caseFieldId: string, msg: string) {
+  error(caseFieldId: string, msg: any) {
     this.writeToLog(LogLevel.Error, caseFieldId, msg);
   }
 
-  fatal(caseFieldId: string, msg: string) {
+  fatal(caseFieldId: string, msg: any) {
     this.writeToLog(LogLevel.Fatal, caseFieldId, msg);
   }
 
-  private writeToLog(level: LogLevel, caseFieldId: string, msg: string) {
+  private writeToLog(level: LogLevel, caseFieldId: string, msg: any) {
     if (this.shouldLog(level, caseFieldId)) {
       console.log(msg);
     }
