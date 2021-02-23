@@ -1,0 +1,18 @@
+:host::ng-deep .grey-bar {
+  > * > .form-group {
+    margin-left: 15px;
+    &:not(.form-group-error) {
+      border-left: solid 5px #b1b4b6; /* govuk-border-colour */
+      padding-left: 15px;
+    }
+
+    /**
+     * Input controls need to be block elements or it messes up layout
+     */
+    input, select, textarea {
+      &:not(.inline-block) {
+        display: block;
+      }
+    }
+  }
+}

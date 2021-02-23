@@ -11,11 +11,8 @@ const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
 
 @Component({
   selector: 'ccd-field-write',
-  template: `
-    <div [hidden]="caseField.hidden">
-      <ng-container #fieldContainer></ng-container>
-    </div>
-  `
+  templateUrl: './field-write.component.html',
+  styleUrls: [ './field-write.component.scss' ]
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
 
