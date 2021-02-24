@@ -29,9 +29,7 @@ export class DocumentManagementService {
       .post(url, formData, {headers, observe: 'body'})
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
       .pipe(
-        map(response => {
-          return response;
-        })
+        map(body => body) // EUI-3495. Not sure we need this?
       );
   }
 

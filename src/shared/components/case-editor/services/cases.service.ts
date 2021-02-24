@@ -87,7 +87,6 @@ export class CasesService {
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -103,19 +102,19 @@ export class CasesService {
    *
    * EUI-2530 Dynamic Lists for Elements in a Complex Type
    *
-   * @param jsonResponse - {}
+   * @param jsonBody - {}
    */
-  private handleNestedDynamicLists(jsonResponse) {
+  private handleNestedDynamicLists(jsonBody: any): any {
 
-    if (jsonResponse.case_fields) {
-      jsonResponse.case_fields.forEach(caseField => {
+    if (jsonBody.case_fields) {
+      jsonBody.case_fields.forEach(caseField => {
         if (caseField.field_type) {
           this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
         }
       });
     }
 
-    return jsonResponse;
+    return jsonBody;
   }
 
   private setDynamicListDefinition(caseField, caseFieldType, rootCaseField) {
@@ -172,7 +171,7 @@ export class CasesService {
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
     let headers = new HttpHeaders()
     headers = headers.set('experimental', 'true')
@@ -189,8 +188,8 @@ export class CasesService {
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => {
-          return this.handleNestedDynamicLists(response);
+        map(body => {
+          return this.handleNestedDynamicLists(body);
         }),
         catchError(error => {
           this.errorService.setError(error);
@@ -205,7 +204,7 @@ export class CasesService {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
       .set('Content-Type', 'application/json');
@@ -213,7 +212,7 @@ export class CasesService {
     return this.http
       .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => this.processResponse(response, eventData)),
+        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -226,7 +225,7 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/validate${pageIdString}`;
 
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
       .set('Content-Type', 'application/json');
@@ -234,7 +233,6 @@ export class CasesService {
     return this.http
       .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -251,7 +249,7 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
       .set('Content-Type', 'application/json');
@@ -259,7 +257,7 @@ export class CasesService {
     return this.http
       .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => this.processResponse(response, eventData)),
+        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -272,7 +270,7 @@ export class CasesService {
       + `/cases/${caseId}`
       + `/documents`;
 
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
       .set('Content-Type', 'application/json');
@@ -280,7 +278,7 @@ export class CasesService {
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response.documentResources),
+        map(body => body.documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -311,14 +309,9 @@ export class CasesService {
     return url;
   }
 
-  private processResponse(response: any, eventData: CaseEventData) {
-    if (response.headers && response.headers.get('content-type').match(/application\/.*json/)) {
-      // TODO: Handle associated tasks.
-      const json = response;
-      this.processTasksOnSuccess(json, eventData.event);
-      return json;
-    }
-    return {'id': ''};
+  private processResponseBody(body: any, eventData: CaseEventData): any {
+    this.processTasksOnSuccess(body, eventData.event);
+    return body;
   }
 
   private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
