@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 2.72.6-fix-filter-any-state
+**EUI-3490** Fixed an issue with the Case list filter where "Any" state is selected.
+
 ### Version 2.72.5-remove-null-http-request-headers
 **EUI-3464** Fix Document field uploads by removing setting of null HTTP "Accept" and "Content-Type" headers
 
