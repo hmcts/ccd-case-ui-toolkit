@@ -1,11 +1,16 @@
+import { Input } from '@angular/core';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { Subscription } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
 
 import { Constants } from '../../../commons/constants';
+import { DocumentData } from '../../../domain';
+import { CaseView } from '../../../domain/case-view/case-view.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
@@ -22,6 +27,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
 
+  private caseDetails: CaseView;
   private uploadedDocument: FormGroup;
   public selectedFile: File;
   private dialogConfig: MatDialogConfig;
@@ -47,6 +53,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   constructor(
+    private readonly appConfig: AbstractAppConfig,
+    private readonly caseNotifier: CaseNotifier,
     private documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private fileUploadStateService: FileUploadStateService,
@@ -64,6 +72,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.createDocumentFormWithValidator(document.document_url, document.document_binary_url, document.document_filename);
     } else {
       this.createDocumentForm(document.document_url, document.document_binary_url, document.document_filename);
+    }
+
+    if (this.appConfig.getDocumentSecureMode()) {
+      this.subscribeToCaseDetails();
     }
   }
 
@@ -100,57 +112,36 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  fileValidations () {
+  fileValidations() {
 
     if (this.isAMandatoryComponent()) {
-      if ( this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
+      if (this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
   }
 
-  fileValidationsOnTab () {
+  fileValidationsOnTab() {
 
     if (this.isAMandatoryComponent()) {
-      if ( this.validateFormUploadedDocument() ) {
+      if (this.validateFormUploadedDocument()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
       }
     }
   }
 
   fileChangeEvent(fileInput: any) {
+    const secureModeOn = this.appConfig.getDocumentSecureMode();
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
       this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS);
-      // Perform the file upload immediately on file selection
-      let documentUpload: FormData = new FormData();
-      documentUpload.append('files', this.selectedFile, this.selectedFile.name);
-      documentUpload.append('classification', 'PUBLIC');
+      const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
-      this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe(result => {
-        if (!this.uploadedDocument) {
-          this.createDocumentForm(null, null, null);
-        }
-        let document = result._embedded.documents[0];
-        this.updateDocumentForm(
-          document._links.self.href,
-          document._links.binary.href,
-          document.originalDocumentName,
-        );
 
-        this.valid = true;
-        this.fileUploadStateService.setUploadInProgress(false);
-        // refresh replaced document info
-        if (this.caseField.value) {
-          this.caseField.value.document_binary_url = document._links.binary.href;
-          this.caseField.value.document_filename = document.originalDocumentName;
-          this.caseField.value.document_url = document._links.self.href;
-        }
-      }, (error: HttpError) => {
-        this.fileUploadMessages = this.getErrorMessage(error);
-        this.valid = false;
-        this.fileUploadStateService.setUploadInProgress(false);
+      this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe({
+        next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument, secureModeOn),
+        error: (error: HttpError) => this.handleDocumentUploadError(error)
       });
     } else {
       this.resetUpload();
@@ -207,11 +198,17 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  private subscribeToCaseDetails(): void {
+    this.caseNotifier.caseView.subscribe(caseDetails => {
+      this.caseDetails = caseDetails;
+    });
+  }
+
   private isAMandatoryComponent() {
     return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY;
   }
 
-  private displayFileUploadMessages ( fileUploadMessage: string ) {
+  private displayFileUploadMessages(fileUploadMessage: string) {
     this.valid = false;
     this.fileUploadMessages = fileUploadMessage;
   }
@@ -219,8 +216,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private isUpLoadingAFile(): boolean {
     return this.fileUploadMessages === WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS
   }
-  private validateFormUploadedDocument():  boolean {
-    if (!this.uploadedDocument ) {
+  private validateFormUploadedDocument(): boolean {
+    if (!this.uploadedDocument) {
       return true;
     }
 
@@ -258,5 +255,45 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     }
     return error.error;
+  }
+
+  private buildDocumentUploadData(selectedFile: File): FormData {
+    const documentUpload: FormData = new FormData();
+    documentUpload.append('files', selectedFile, selectedFile.name);
+    documentUpload.append('classification', 'PUBLIC');
+
+    if (this.appConfig.getDocumentSecureMode()) {
+      document.append('caseTypeId', this.caseDetails.case_type.id);
+      document.append('jurisdictionId', this.caseDetails.case_type.jurisdiction.id);
+    }
+
+    return documentUpload;
+  }
+
+  private handleDocumentUploadResult(result: DocumentData, secureMode: boolean): void {
+    if (!this.uploadedDocument) {
+      this.createDocumentForm(null, null, null);
+    }
+    let document = secureMode ? result.documents[0] : result._embedded.documents[0];
+    this.updateDocumentForm(
+      document._links.self.href,
+      document._links.binary.href,
+      document.originalDocumentName,
+    );
+
+    this.valid = true;
+    this.fileUploadStateService.setUploadInProgress(false);
+    // refresh replaced document info
+    if (this.caseField.value) {
+      this.caseField.value.document_binary_url = document._links.binary.href;
+      this.caseField.value.document_filename = document.originalDocumentName;
+      this.caseField.value.document_url = document._links.self.href;
+    }
+  }
+
+  private handleDocumentUploadError(error: HttpError): void {
+    this.fileUploadMessages = this.getErrorMessage(error);
+    this.valid = false;
+    this.fileUploadStateService.setUploadInProgress(false);
   }
 }
