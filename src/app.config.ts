@@ -4,6 +4,8 @@ export abstract class AbstractAppConfig {
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
+  abstract getDocumentManagementUrlV2(): string;
+  abstract getDocumentSecureMode(): boolean;
   abstract getRemoteDocumentManagementUrl(): string;
   abstract getAnnotationApiUrl(): string;
   abstract getPostcodeLookupUrl(): string;
@@ -34,6 +36,8 @@ export class CaseEditorConfig {
   api_url: string;
   case_data_url: string;
   document_management_url: string;
+  document_management_url_v2: string;
+  document_management_secure_enabled: boolean;
   login_url: string;
   oauth2_client_id: string;
   postcode_lookup_url: string;

@@ -18,4 +18,5 @@ export class Embedded {
 
 export class DocumentData {
   _embedded: Embedded;
+  documents: Document[];
 }
