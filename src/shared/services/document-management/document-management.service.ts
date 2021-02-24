@@ -38,29 +38,7 @@ export class DocumentManagementService {
   secureUploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.appConfig.getDocumentManagementUrlV2();
 
-    let headers = new HttpHeaders();
-    headers = headers.append(DocumentManagementService.HEADER_ACCEPT, null);
-    // Content-Type header value needs to be null; HttpService will delete it, so that Angular can set it automatically
-    // with the correct boundary
-    headers = headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
-    return this.http
-      .post(url, formData, {headers, observe: 'body'})
-      .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
-      .pipe(
-        map(response => {
-          return response;
-        })
-      );
-  }
-
-  secureUploadFile(formData: FormData): Observable<DocumentData> {
-    const url = this.appConfig.getDocumentManagementUrlV2();
-
-    let headers = new HttpHeaders();
-    headers = headers.append(DocumentManagementService.HEADER_ACCEPT, null);
-    // Content-Type header value needs to be null; HttpService will delete it, so that Angular can set it automatically
-    // with the correct boundary
-    headers = headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
+    const headers = new HttpHeaders();
     return this.http
       .post(url, formData, {headers, observe: 'body'})
       .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
