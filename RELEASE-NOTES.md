@@ -1,6 +1,15 @@
 ## RELEASE NOTES
+### Version 3.0.0-gamma
+Incorporating fix in Version 2.72.6-fix-filter-any-state for EUI-3490
+
 ### Version 3.0.0-beta
+Incorporating fix in Version 2.72.5-remove-null-http-request-headers for EUI-3464
+
+### Version 3.0.0-alpha
 **EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
+
+### Version 2.72.6-fix-filter-any-state
+**EUI-3490** Fixed an issue with the Case list filter where "Any" state is selected.
 
 ### Version 2.72.5-remove-null-http-request-headers
 **EUI-3464** Fix Document field uploads by removing setting of null HTTP "Accept" and "Content-Type" headers
