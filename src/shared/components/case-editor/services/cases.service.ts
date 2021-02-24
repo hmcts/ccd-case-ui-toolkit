@@ -6,7 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
-import { CaseEventData, CaseEventTrigger, CasePrintDocument, CaseView, Draft } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType } from '../../../domain';
 import { HttpErrorService, HttpService, OrderService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -96,15 +96,15 @@ export class CasesService {
 
   /**
    * handleNestedDynamicLists()
-   * Reassigns list_item and value data to DymanicList children
+   * Reassigns list_item and value data to DynamicList children
    * down the tree. Server response returns data only in
    * the `value` object of parent complex type
    *
    * EUI-2530 Dynamic Lists for Elements in a Complex Type
    *
-   * @param jsonBody - {}
+   * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
    */
-  private handleNestedDynamicLists(jsonBody: any): any {
+  private handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
 
     if (jsonBody.case_fields) {
       jsonBody.case_fields.forEach(caseField => {
@@ -117,7 +117,7 @@ export class CasesService {
     return jsonBody;
   }
 
-  private setDynamicListDefinition(caseField, caseFieldType, rootCaseField) {
+  private setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {
     if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
 
       caseFieldType.complex_fields.forEach(field => {
