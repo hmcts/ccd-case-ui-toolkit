@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.7-document-secure-mode
+**EUI-3425** Added ability to switch the document upload process
+
 ### Version 2.72.6-fix-filter-any-state
 **EUI-3490** Fixed an issue with the Case list filter where "Any" state is selected.
 
