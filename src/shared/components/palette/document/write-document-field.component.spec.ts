@@ -46,7 +46,18 @@ const RESPONSE_FIRST_DOCUMENT: DocumentData = {
         }
       }
     }]
-  }
+  },
+  documents: [{
+    originalDocumentName: 'howto.pdf',
+    _links: {
+      self: {
+        href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+      },
+      binary: {
+        href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+      }
+    }
+  }]
 };
 const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   _embedded: {
@@ -61,7 +72,18 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
         }
       }
     }]
-  }
+  },
+  documents: [{
+    originalDocumentName: 'plop.pdf',
+    _links: {
+      self: {
+        href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+      },
+      binary: {
+        href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+      }
+    }
+  }]
 };
 
 describe('WriteDocumentFieldComponent', () => {
