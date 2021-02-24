@@ -38,7 +38,18 @@ describe('DocumentManagementService', () => {
             }
           }
         }]
-      }
+      },
+      documents: [{
+        originalDocumentName: 'something.pdf',
+        _links: {
+          self: {
+            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+          },
+          binary: {
+            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+          }
+        }
+      }]
     };
 
     beforeEach(() => {
