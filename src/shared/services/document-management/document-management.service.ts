@@ -28,9 +28,7 @@ export class DocumentManagementService {
     return this.http
       .post(url, formData, {headers, observe: 'body'})
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
-      .pipe(
-        map(body => body) // EUI-3495. Not sure we need this?
-      );
+      .pipe();
   }
 
   getMediaViewerInfo(documentFieldValue: any): string {

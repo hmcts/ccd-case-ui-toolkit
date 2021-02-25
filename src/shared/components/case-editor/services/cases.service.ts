@@ -69,7 +69,6 @@ export class CasesService {
     return this.http
       .get(url)
       .pipe(
-        map(response => response),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
