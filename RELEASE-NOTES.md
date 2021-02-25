@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.72.8-document-secure-mode
+### Version 2.72.10-document-secure-mode
 **EUI-3425** Added ability to switch the document upload process
 
 ### Version 2.72.6-fix-filter-any-state
