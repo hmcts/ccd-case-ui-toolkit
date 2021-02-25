@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.72.9-fix-case-submission",
+  "version": "2.72.9-prerelease-fix-case-submission",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
