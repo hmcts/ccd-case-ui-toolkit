@@ -3,6 +3,10 @@
 ### Version 2.80.1-fix-disabled-text-field
 **EUI-3468** Fixed an issue with the textfield being disabled 
 
+### Version 2.72.9-fix-case-submission
+**EUI-3494** Fixed the missing case ID on case creation.
+**EUI-3495** Fixed an issue where the user was return to Case list following case creation.
+
 ### Version 2.72.6-fix-filter-any-state
 **EUI-3490** Fixed an issue with the Case list filter where "Any" state is selected.
 
