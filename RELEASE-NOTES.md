@@ -11,7 +11,7 @@ Incorporating fix in Version 2.72.5-remove-null-http-request-headers for EUI-346
 ### Version 3.0.0-alpha
 **EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
 
-### Version 2.72.9-prerelease-fix-case-submission
+### Version 2.72.9-fix-case-submission
 **EUI-3494** Fixed the missing case ID on case creation.
 **EUI-3495** Fixed an issue where the user was return to Case list following case creation.
 
