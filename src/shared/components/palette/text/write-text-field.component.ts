@@ -11,6 +11,10 @@ export class WriteTextFieldComponent extends AbstractFieldWriteComponent impleme
   textControl: FormControl;
 
   ngOnInit() {
-    this.textControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
+    this.textControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null)) as FormControl;
+    if (this.textControl.disabled) {
+      this.textControl.enable({emitEvent: false});
+    }
   }
 }
