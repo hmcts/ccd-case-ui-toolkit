@@ -60,7 +60,7 @@ export class SearchService {
   }
 
   getSearchInputs(jurisdictionId: string, caseTypeId: string): Observable<SearchInput[]> {
-    let url = this.getSearchInputUrl(caseTypeId);
+    const url = this.getSearchInputUrl(caseTypeId);
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
@@ -70,9 +70,8 @@ export class SearchService {
     return this.httpService
       .get(url, { headers, observe: 'body' })
       .pipe(
-        map(response => {
-          let jsonResponse = response;
-          let searchInputs = jsonResponse.searchInputs;
+        map(body => {
+          const searchInputs = body.searchInputs;
           if (this.isDataValid(jurisdictionId, caseTypeId)) {
             searchInputs.forEach(item => {
               item.field.label = item.label;

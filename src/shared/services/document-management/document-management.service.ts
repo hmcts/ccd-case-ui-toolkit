@@ -28,11 +28,7 @@ export class DocumentManagementService {
     return this.http
       .post(url, formData, {headers, observe: 'body'})
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
-      .pipe(
-        map(response => {
-          return response;
-        })
-      );
+      .pipe();
   }
 
   getMediaViewerInfo(documentFieldValue: any): string {
