@@ -25,6 +25,8 @@ import { ProfileService, ProfileNotifier } from '../../../services/profile';
 import { Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { text } from '../../../test/helpers';
+import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
+import { FieldsFilterPipe } from '../../palette/complex';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -151,6 +153,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          FieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -444,6 +448,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          FieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -578,6 +584,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          CcdPageFieldsPipe,
+          FieldsFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],

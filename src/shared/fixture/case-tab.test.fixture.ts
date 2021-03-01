@@ -8,7 +8,7 @@ export let createCaseTabArray = () => {
   tab1.label = 'Address';
   tab1.order = 2;
   tab1.fields = [];
-  tab1.show_condition = 'PersonFirstName="Jane"';
+  tab1.show_condition = 'PersonFirstName="Janet"';
 
   const tab2 = new CaseTab();
 
@@ -38,7 +38,7 @@ export let createCaseTabArray = () => {
       },
       order: 1,
       value: 'Parker',
-      show_condition: 'PersonFirstName="Jane*"'
+      show_condition: 'PersonFirstName="Janet"'
     }),
     plainToClass(CaseField, {
       id: 'PersonComplex',
@@ -50,7 +50,7 @@ export let createCaseTabArray = () => {
         complex_fields: []
       },
       order: 3,
-      show_condition: 'PersonFirstName="Park"'
+      show_condition: 'PersonLastName="Parker"'
     })
   ];
   tab2.show_condition = 'PersonFirstName="Janet"';

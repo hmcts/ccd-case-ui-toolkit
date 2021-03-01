@@ -39,12 +39,15 @@
       </div>
       <div>
         <h2 class="heading-h2">Case Details</h2>
+        <pre>
+            {{tabs | json}}
+          </pre>
         <ng-container *ngFor="let tab of tabs">
           <div class="caseHistorySection">
             <h3 class="heading-h3">{{tab.label}}</h3>
             <table class="CaseHistory" id="{{tab.id}}">
-              <ng-container *ngFor="let field of tab.fields">
-                <div ccdConditionalShow ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields">
+              <ng-container *ngFor="let field of tab| ccdTabFields | ccdFieldsFilter:false :undefined :true">
+                <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
                       <th>

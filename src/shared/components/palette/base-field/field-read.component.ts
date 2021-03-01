@@ -51,7 +51,6 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       component.instance['parent'] = this.parent;
       component.instance['caseReference'] = this.caseReference;
       component.instance['context'] = this.context;
-
       this.fieldContainer.insert(component.hostView);
     });
   }
