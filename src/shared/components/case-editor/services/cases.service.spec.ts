@@ -337,16 +337,6 @@ describe('CasesService', () => {
         );
     });
 
-    it('should return body with empty id if no content-type response header', () => {
-      httpService.post.and.returnValue(Observable.of(EVENT_RESPONSE));
-
-      casesService
-        .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
-        .subscribe(
-          data => expect(data).toEqual(EMPTY_RESPONSE)
-        );
-    });
-
     it('should set error when error is thrown', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
@@ -474,16 +464,6 @@ describe('CasesService', () => {
         .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(
           data => expect((data as any).body).toEqual(CASE_RESPONSE)
-        );
-    });
-
-    it('should return body with empty id if no content-type response header', () => {
-      httpService.post.and.returnValue(Observable.of(CASE_RESPONSE));
-
-      casesService
-        .createCase(CTID, CASE_EVENT_DATA)
-        .subscribe(
-          data => expect(data).toEqual(EMPTY_RESPONSE)
         );
     });
 
