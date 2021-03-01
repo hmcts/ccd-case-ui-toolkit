@@ -39,6 +39,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   fileUploadSubscription: Subscription;
   dialogSubscription: Subscription;
+  caseEventSubscription: Subscription;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -84,6 +85,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
     if (this.dialogSubscription) {
       this.dialogSubscription.unsubscribe();
+    }
+    if (this.caseEventSubscription) {
+      this.caseEventSubscription.unsubscribe();
     }
   }
 
@@ -131,6 +135,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   fileChangeEvent(fileInput: any) {
     const secureModeOn = this.appConfig.getDocumentSecureMode();
+    const uploadFile = secureModeOn ?  this.documentManagement.secureUploadFile : this.documentManagement.uploadFile;
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -138,7 +143,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
 
-      this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe({
+      this.fileUploadSubscription = uploadFile(documentUpload).subscribe({
         next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument, secureModeOn),
         error: (error: HttpError) => this.handleDocumentUploadError(error)
       });
@@ -198,8 +203,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private subscribeToCaseDetails(): void {
-    this.caseNotifier.caseView.subscribe(caseDetails => {
-      this.caseDetails = caseDetails;
+    this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
+      next: (caseDetails) => {
+        this.caseDetails = caseDetails;
+      }
     });
   }
 
@@ -262,8 +269,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     documentUpload.append('classification', 'PUBLIC');
 
     if (this.appConfig.getDocumentSecureMode()) {
-      document.append('caseTypeId', this.caseDetails.case_type.id);
-      document.append('jurisdictionId', this.caseDetails.case_type.jurisdiction.id);
+      documentUpload.append('caseTypeId', this.caseDetails.case_type.id);
+      documentUpload.append('jurisdictionId', this.caseDetails.case_type.jurisdiction.id);
     }
 
     return documentUpload;
@@ -273,6 +280,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (!this.uploadedDocument) {
       this.createDocumentForm(null, null, null);
     }
+
     let document = secureMode ? result.documents[0] : result._embedded.documents[0];
     this.updateDocumentForm(
       document._links.self.href,
@@ -282,11 +290,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     this.valid = true;
     this.fileUploadStateService.setUploadInProgress(false);
+
     // refresh replaced document info
     if (this.caseField.value) {
       this.caseField.value.document_binary_url = document._links.binary.href;
       this.caseField.value.document_filename = document.originalDocumentName;
       this.caseField.value.document_url = document._links.self.href;
+
+      if (secureMode) {
+        this.caseField.value.hashToken = document.hashToken;
+      }
     }
   }
 
