@@ -38,7 +38,7 @@ export let createCaseTabArray = () => {
       },
       order: 1,
       value: 'Parker',
-      show_condition: 'PersonFirstName="Janet"'
+      show_condition: ''
     }),
     plainToClass(CaseField, {
       id: 'PersonComplex',
