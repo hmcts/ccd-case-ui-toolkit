@@ -60,8 +60,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private fileUploadStateService: FileUploadStateService,
   ) {
     super();
-
-    console.log(this.appConfig);
   }
 
   ngOnInit() {
