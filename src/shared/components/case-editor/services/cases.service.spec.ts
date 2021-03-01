@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { HttpErrorService, HttpService } from '../../../services';
+import { HttpErrorService, HttpService, LoadingService } from '../../../services';
 import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -60,6 +60,7 @@ describe('CasesService', () => {
   let wizardPageFieldToCaseFieldMapper: any;
   let casesService: CasesService;
   let workAllocationService: WorkAllocationService;
+  let loadingService: any;
   let alertService: any;
 
   beforeEach(() => {
@@ -81,8 +82,10 @@ describe('CasesService', () => {
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
 
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+
+    loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
     casesService = new CasesService(
-      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService
+      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService, loadingService
     );
   });
 
@@ -121,6 +124,21 @@ describe('CasesService', () => {
         });
     });
 
+    it('should register loading token when called', () => {
+      casesService
+        .getCaseView(JID, CTID, CASE_ID)
+        .subscribe();
+
+      expect(loadingService.register).toHaveBeenCalled();
+    });
+
+    it('should unregister loading token when finished', () => {
+      casesService
+        .getCaseView(JID, CTID, CASE_ID)
+        .finally(() => {
+          expect(loadingService.unregister).toHaveBeenCalled();
+        });
+    });
   });
 
   describe('getCaseViewV2()', () => {
@@ -161,6 +179,22 @@ describe('CasesService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+        });
+    });
+
+    it('should register loading token when called', () => {
+      casesService
+        .getCaseViewV2(CASE_ID)
+        .subscribe();
+
+      expect(loadingService.register).toHaveBeenCalled();
+    });
+
+    it('should unregister loading token when finished', () => {
+      casesService
+        .getCaseViewV2(CASE_ID)
+        .finally(() => {
+          expect(loadingService.unregister).toHaveBeenCalled();
         });
     });
 
@@ -303,16 +337,6 @@ describe('CasesService', () => {
         );
     });
 
-    it('should return body with empty id if no content-type response header', () => {
-      httpService.post.and.returnValue(Observable.of(EVENT_RESPONSE));
-
-      casesService
-        .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
-        .subscribe(
-          data => expect(data).toEqual(EMPTY_RESPONSE)
-        );
-    });
-
     it('should set error when error is thrown', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
@@ -440,16 +464,6 @@ describe('CasesService', () => {
         .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(
           data => expect((data as any).body).toEqual(CASE_RESPONSE)
-        );
-    });
-
-    it('should return body with empty id if no content-type response header', () => {
-      httpService.post.and.returnValue(Observable.of(CASE_RESPONSE));
-
-      casesService
-        .createCase(CTID, CASE_EVENT_DATA)
-        .subscribe(
-          data => expect(data).toEqual(EMPTY_RESPONSE)
         );
     });
 

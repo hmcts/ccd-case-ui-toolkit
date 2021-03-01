@@ -22,8 +22,8 @@ export class WorkbasketInputFilterService {
   }
 
   getWorkbasketInputs(jurisdictionId: string, caseTypeId: string): Observable<WorkbasketInputModel[]> {
-    let url = this.getWorkbasketInputUrl(caseTypeId);
-    let headers = new HttpHeaders()
+    const url = this.getWorkbasketInputUrl(caseTypeId);
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS)
       .set('Content-Type', 'application/json');
@@ -32,9 +32,8 @@ export class WorkbasketInputFilterService {
     this.currentCaseType = caseTypeId;
     return this.httpService
       .get(url, {headers, observe: 'body'})
-      .map(response => {
-        let jsonResponse = response;
-        let workbasketInputs = jsonResponse.workbasketInputs;
+      .map(body => {
+        const workbasketInputs = body.workbasketInputs;
         if (this.isDataValid(jurisdictionId, caseTypeId)) {
           workbasketInputs.forEach(item => {
             item.field.label = item.label;
