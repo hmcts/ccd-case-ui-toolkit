@@ -60,6 +60,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private fileUploadStateService: FileUploadStateService,
   ) {
     super();
+
+    console.log(this.appConfig);
   }
 
   ngOnInit() {
@@ -135,7 +137,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   fileChangeEvent(fileInput: any) {
     const secureModeOn = this.appConfig.getDocumentSecureMode();
-    const uploadFile = secureModeOn ?  this.documentManagement.secureUploadFile : this.documentManagement.uploadFile;
+    
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -143,7 +145,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
 
-      this.fileUploadSubscription = uploadFile(documentUpload).subscribe({
+      const uploadFile = secureModeOn ? 
+        this.documentManagement.secureUploadFile(documentUpload) :
+        this.documentManagement.uploadFile(documentUpload);
+
+      this.fileUploadSubscription = uploadFile.subscribe({
         next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument, secureModeOn),
         error: (error: HttpError) => this.handleDocumentUploadError(error)
       });
