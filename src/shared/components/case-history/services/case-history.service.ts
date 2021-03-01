@@ -15,18 +15,15 @@ export class CaseHistoryService {
               private httpErrorService: HttpErrorService,
               private appConfig: AbstractAppConfig) {}
 
-  get(caseId: string,
-      eventId: string): Observable<CaseHistory> {
-
+  get(caseId: string, eventId: string): Observable<CaseHistory> {
     const url = this.appConfig.getCaseHistoryUrl(caseId, eventId);
-    let headers = new HttpHeaders()
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CaseHistoryService.V2_MEDIATYPE_CASE_EVENT_VIEW)
       .set('Content-Type', 'application/json');
 
     return this.httpService
       .get(url, {headers, observe: 'body'})
-      .map(response => response)
       .catch((error: any): any => {
         this.httpErrorService.setError(error);
         return Observable.throw(error);

@@ -6,6 +6,7 @@ import { FieldType, Field } from '../../domain';
 import { RequestOptionsBuilder } from '../request';
 import { HttpService, OptionsType } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
+import { LoadingService } from '../loading';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 describe('SearchService', () => {
@@ -45,6 +46,7 @@ describe('SearchService', () => {
   let searchService: SearchService;
   let requestOptionsArgs: OptionsType;
   let requestOptionsBuilder: any;
+  let loadingService: any;
 
   describe('get()', () => {
 
@@ -70,7 +72,9 @@ describe('SearchService', () => {
       requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);
       requestOptionsBuilder.buildOptions.and.returnValue(requestOptionsArgs);
 
-      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder);
+      loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+
+      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
     });
 
     it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
@@ -223,6 +227,22 @@ describe('SearchService', () => {
         });
     });
 
+    it('should register loading token when called', () => {
+      searchService
+      .search(JID, CTID, {}, {})
+        .subscribe();
+
+      expect(loadingService.register).toHaveBeenCalled();
+    });
+
+    it('should unregister loading token when finished', () => {
+      searchService
+        .search(JID, CTID, {}, {})
+        .finally(() => {
+          expect(loadingService.unregister).toHaveBeenCalled();
+        });
+    });
+
   });
 
   describe('post()', () => {
@@ -250,7 +270,9 @@ describe('SearchService', () => {
       requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);
       requestOptionsBuilder.buildOptions.and.returnValue(requestOptionsArgs);
 
-      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder);
+      loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+
+      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
     });
 
     it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
@@ -291,5 +313,20 @@ describe('SearchService', () => {
       expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
     });
 
+    it('should register loading token when called', () => {
+      searchService
+        .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
+        .subscribe();
+
+      expect(loadingService.register).toHaveBeenCalled();
+    });
+
+    it('should unregister loading token when finished', () => {
+      searchService
+        .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
+        .finally(() => {
+          expect(loadingService.unregister).toHaveBeenCalled();
+        });
+    });
   });
 });

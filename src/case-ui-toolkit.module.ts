@@ -34,7 +34,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, FocusElementModule,
-  FocusElementDirective } from './shared';
+  FocusElementDirective, LoadingModule} from './shared';
 import { CaseHistoryModule } from './shared/components/case-history';
 
 @NgModule({
@@ -57,6 +57,7 @@ import { CaseHistoryModule } from './shared/components/case-history';
       LabelSubstitutorModule,
       SearchFiltersModule,
       FocusElementModule,
+      LoadingModule
     ],
     exports: [
       AlertComponent,
