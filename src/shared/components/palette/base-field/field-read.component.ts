@@ -1,9 +1,10 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { PaletteService } from '../palette.service';
-import { AbstractFieldReadComponent } from './abstract-field-read.component';
-import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { PaletteService } from '../palette.service';
+import { AbstractFieldReadComponent } from './abstract-field-read.component';
 
 const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
 
@@ -48,6 +49,8 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       component.instance['caseField'] =  this.caseField;
       component.instance['caseFields'] = this.caseFields;
       component.instance['formGroup'] = this.formGroup;
+      component.instance['topLevelFormGroup'] = this.topLevelFormGroup;
+      component.instance['idPrefix'] = this.idPrefix;
       component.instance['parent'] = this.parent;
       component.instance['caseReference'] = this.caseReference;
       component.instance['context'] = this.context;

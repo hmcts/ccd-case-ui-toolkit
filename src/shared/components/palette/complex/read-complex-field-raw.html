@@ -1,8 +1,8 @@
 <dl class="complex-raw">
-  <ng-container *ngFor="let field of caseField | ccdFieldsFilter:false :undefined :true">
-    <dt><span class="text-16">{{field.label}}</span></dt>
-    <dd>
-      <ccd-field-read [caseField]="field" [context]="context"></ccd-field-read>
+  <ng-container *ngFor="let field of caseField | ccdReadFieldsFilter:false :undefined :true :topLevelFormGroup :id()">
+    <dt [hidden]="field.hidden"><span class="text-16">{{field.label}}</span></dt>
+    <dd [hidden]="field.hidden">
+      <ccd-field-read [caseField]="field" [context]="context" [topLevelFormGroup]="topLevelFormGroup" [idPrefix]="idPrefix"></ccd-field-read>
     </dd>
   </ng-container>
 </dl>

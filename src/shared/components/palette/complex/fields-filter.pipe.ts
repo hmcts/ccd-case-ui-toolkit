@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
+
+import { ShowCondition } from '../../../directives';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields';
-import { ShowCondition } from '../../../directives';
 
 @Pipe({
   name: 'ccdFieldsFilter'
@@ -53,6 +54,11 @@ export class FieldsFilterPipe implements PipeTransform {
   }
 
   private static keepField(field: CaseField, value?: object): boolean {
+    // We shouldn't ditch labels.
+    if (field.field_type.type === 'Label' && (field.label || '').length > 0) {
+      return true;
+    }
+
     value = value || {};
 
     if (FieldsFilterPipe.isCompound(field)) {

@@ -39,13 +39,15 @@
       <tbody>
       <ng-container *ngFor="let page of this.wizard.pages">
         <ng-container *ngIf="isShown(page)">
-          <ng-container *ngFor="let field of page | ccdPageFields | ccdFieldsFilter: false :undefined :true">
+          <ng-container *ngFor="let field of page | ccdPageFields | ccdReadFieldsFilter: false :undefined :true :editForm.controls['data']">
             <ng-container *ngIf="canShowFieldInCYA(field)">
               <tr ccdLabelSubstitutor [caseField]="field"
                   [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">
                 <th *ngIf="!isLabel(field)" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
                 <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
-                  <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)" [context]="paletteContext"></ccd-field-read>
+                  <ccd-field-read
+                    [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
+                    [caseField]="summaryCaseField(field)" [context]="paletteContext"></ccd-field-read>
                 </td>
                 <td class="valign-top check-your-answers__change case-field-change">
                   <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"

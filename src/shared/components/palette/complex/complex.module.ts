@@ -1,19 +1,20 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
-import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
-import { FieldsFilterPipe } from './fields-filter.pipe';
-import { BaseFieldModule } from '../base-field';
-import { WriteComplexFieldComponent } from './write-complex-field.component';
-import { PaletteUtilsModule } from '../utils';
-import { IsCompoundPipe } from '../utils';
+import { NgModule } from '@angular/core';
+
 import { ConditionalShowModule } from '../../../directives/conditional-show';
 import { MarkdownModule } from '../../markdown';
-import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
-import { ReadComplexFieldComponent } from './read-complex-field.component';
+import { BaseFieldModule } from '../base-field';
 import { CaseLinkModule } from '../case-link/case-link.module';
+import { IsCompoundPipe, PaletteUtilsModule } from '../utils';
+import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 import { CcdTabFieldsPipe } from './ccd-tab-fields.pipe';
 import { CcdPageFieldsPipe } from './cdd-page-fields.pipe';
+import { FieldsFilterPipe } from './fields-filter.pipe';
+import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
+import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
+import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
+import { ReadComplexFieldComponent } from './read-complex-field.component';
+import { WriteComplexFieldComponent } from './write-complex-field.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { CcdPageFieldsPipe } from './cdd-page-fields.pipe';
     FieldsFilterPipe,
     CcdTabFieldsPipe,
     CcdPageFieldsPipe,
+    ReadFieldsFilterPipe,
     ReadComplexFieldComponent,
     WriteComplexFieldComponent,
     ReadComplexFieldRawComponent,
@@ -45,6 +47,7 @@ import { CcdPageFieldsPipe } from './cdd-page-fields.pipe';
     CcdPageFieldsPipe,
     FieldsFilterPipe,
     CcdTabFieldsPipe,
+    ReadFieldsFilterPipe,
     WriteComplexFieldComponent
   ]
 })
