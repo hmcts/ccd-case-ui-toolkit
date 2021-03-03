@@ -103,7 +103,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    * @param path The current path to this field.
    * @returns CaseField[]
    */
-  transform(complexField: CaseField, keepEmpty?: boolean, index?: number, setupHidden = false, formGroup?: FormGroup, path?: string): CaseField[] {
+  transform(
+    complexField: CaseField, keepEmpty?: boolean, index?: number,
+    setupHidden = false, formGroup?: FormGroup, path?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }

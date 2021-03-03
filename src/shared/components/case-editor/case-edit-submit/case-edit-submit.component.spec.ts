@@ -1,33 +1,33 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { of, Observable, BehaviorSubject } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
-import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
-import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { OrderService } from '../../../services/order/order.service';
-import { aWizardPage } from '../case-edit.spec';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { CaseEditSubmitComponent } from './case-edit-submit.component';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
-import { ProfileService, ProfileNotifier } from '../../../services/profile';
-import { Profile } from '../../../domain';
-import { createAProfile } from '../../../domain/profile/profile.test.fixture';
-import { text } from '../../../test/helpers';
-import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
-import { FieldsFilterPipe } from '../../palette/complex';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
+import { CaseField, HttpError, Profile } from '../../../domain';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import {
+  CaseFieldService,
+  FieldsUtils,
+  FormErrorService,
+  FormValueService,
+  OrderService,
+  ProfileNotifier,
+  ProfileService,
+} from '../../../services';
+import { text } from '../../../test/helpers';
+import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
+import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
+import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
+import { aWizardPage } from '../case-edit.spec';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Wizard, WizardPage } from '../domain';
+import { CaseEditSubmitComponent } from './case-edit-submit.component';
+
+import createSpyObj = jasmine.createSpyObj;
 describe('CaseEditSubmitComponent', () => {
 
   let comp: CaseEditSubmitComponent;
@@ -154,6 +154,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           FieldsFilterPipe,
+          ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -362,7 +363,6 @@ describe('CaseEditSubmitComponent', () => {
       expect(prevButton.nativeElement.disabled).toBeTruthy();
 
       let cancelLink = de.query(By.css('a[class=disabled]'));
-      console.log(cancelLink);
       expect(cancelLink.nativeElement).toBeTruthy();
     });
 
@@ -449,6 +449,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           FieldsFilterPipe,
+          ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -586,6 +587,7 @@ describe('CaseEditSubmitComponent', () => {
           IsCompoundPipe,
           CcdPageFieldsPipe,
           FieldsFilterPipe,
+          ReadFieldsFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],

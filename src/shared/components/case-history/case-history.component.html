@@ -43,17 +43,21 @@
           <div class="caseHistorySection">
             <h3 class="heading-h3">{{tab.label}}</h3>
             <table class="CaseHistory" id="{{tab.id}}">
-              <ng-container *ngFor="let field of tab| ccdTabFields | ccdFieldsFilter:false :undefined :true">
-                <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields">
+              <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true">
+                <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
                       <th>
                         <div class="case-viewer-label">{{field.label}}</div>
                       </th>
-                      <td><ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read></td>
+                      <td>
+                        <ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read>
+                      </td>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <td colspan="2"><ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read></td>
+                      <td colspan="2">
+                        <ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read>
+                      </td>
                     </tr>
                   </ng-container>
                 </div>
