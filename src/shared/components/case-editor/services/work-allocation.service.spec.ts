@@ -1,4 +1,3 @@
-import { Response, ResponseOptions } from '@angular/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -7,6 +6,62 @@ import { HttpErrorService, HttpService } from '../../../services';
 import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.service';
 
 import createSpyObj = jasmine.createSpyObj;
+
+interface UserInfo {
+  id: string,
+  forename: string,
+  surname: string,
+  email: string,
+  active: boolean,
+  roles: string[]
+}
+
+interface UserDetails {
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
+  canShareCases: boolean;
+  userInfo: UserInfo
+}
+
+function getExampleUserInfo(): UserInfo[] {
+  return [{
+    id: '1',
+    forename: 'T',
+    surname: 'Testing',
+    email: 'testing@mail.com',
+    active: true,
+    roles: []
+  },
+  {
+    id: '2',
+    forename: 'G',
+    surname: 'Testing',
+    email: 'testing2@mail.com',
+    active: true,
+    roles: ['caseworker-ia-caseofficer']
+  }]
+}
+
+function getExampleUserDetails(): UserDetails[] {
+  return [{
+    sessionTimeout: {
+      idleModalDisplayTime: 2000,
+      totalIdleTime: 4000,
+    },
+    canShareCases: true,
+    userInfo: getExampleUserInfo()[0]
+  },
+  {
+    sessionTimeout: {
+      idleModalDisplayTime: 2000,
+      totalIdleTime: 4000,
+    },
+    canShareCases: true,
+    userInfo: getExampleUserInfo()[1]
+  }]
+}
 
 describe('WorkAllocationService', () => {
 
@@ -29,26 +84,28 @@ describe('WorkAllocationService', () => {
   let alertService: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl']);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
+    appConfig.getUserInfoApiUrl.and.returnValue('api/user/details');
 
-    httpService = createSpyObj<HttpService>('httpService', ['post']);
+    httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
+    httpService.get.and.returnValue(Observable.of(getExampleUserDetails()[1]));
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
   });
 
   describe('searchTasks', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_1 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_1 ]
+      }));
     });
 
     it('should call post with the correct parameters', () => {
       const searchRequest: TaskSearchParameters = {
-        parameters: [ { ccdId: '1234567890' } ]
+        parameters: [{ ccdId: '1234567890' }]
       };
       workAllocationService.searchTasks(searchRequest).subscribe();
 
@@ -57,7 +114,7 @@ describe('WorkAllocationService', () => {
 
     it('should retrieve a list of matching tasks', (done) => {
       const searchRequest: TaskSearchParameters = {
-        parameters: [ { ccdId: '1234567890' } ]
+        parameters: [{ ccdId: '1234567890' }]
       };
       workAllocationService.searchTasks(searchRequest)
         .subscribe((response: any) => {
@@ -74,7 +131,7 @@ describe('WorkAllocationService', () => {
     it('should set error service error when the search fails', (done) => {
       httpService.post.and.returnValue(throwError(ERROR));
       const searchRequest: TaskSearchParameters = {
-        parameters: [ { ccdId: '1234567890' } ]
+        parameters: [{ ccdId: '1234567890' }]
       };
       workAllocationService.searchTasks(searchRequest)
         .subscribe(() => {
@@ -92,9 +149,7 @@ describe('WorkAllocationService', () => {
   describe('completeTask', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({})
-      }))));
+      httpService.post.and.returnValue(Observable.of({}));
     });
 
     it('should call post with the correct parameters', () => {
@@ -111,7 +166,7 @@ describe('WorkAllocationService', () => {
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-          expect(alertService.clear).toHaveBeenCalled();
+          expect(alertService.setPreserveAlerts).toHaveBeenCalled();
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });
@@ -119,13 +174,44 @@ describe('WorkAllocationService', () => {
 
   });
 
+  describe('handleTaskCompletionError', () => {
+    it('should set a warning on the alertService if the role is of caseworker', () => {
+      workAllocationService.handleTaskCompletionError(getExampleUserDetails()[1]);
+      expect(alertService.warning).toHaveBeenCalled();
+    });
+
+    it('should not set a warning on the alertService if the role is not of caseworker', () => {
+      workAllocationService.handleTaskCompletionError(getExampleUserDetails()[0]);
+      expect(alertService.warning).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('userIsCaseworker', () => {
+    it('should return true if the user is of caseworker', () => {
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACCaseOfficer])).toBe(true);
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACAdmOfficer])).toBe(true);
+
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACAdmOfficer, 'nonCaseworkerRole'])).toBe(true);
+    });
+
+    it('should return true if the user is of caseworker with casing discrepancies', () => {
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACAdmOfficer.toUpperCase()])).toBe(true);
+      expect(workAllocationService.userIsCaseworker(['casEworker-iA-caseoFficer'])).toBe(true);
+    });
+
+    it('should return false if the user is not of caseworker', () => {
+      expect(workAllocationService.userIsCaseworker(['nonCaseworkerRole'])).toBe(false);
+      expect(workAllocationService.userIsCaseworker([])).toBe(false);
+    });
+  });
+
   describe('completeAppropriateTask', () => {
 
     it('should succeed when no tasks are found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: []
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(result).toBeTruthy();
         expect(completeSpy).not.toHaveBeenCalled();
@@ -136,9 +222,9 @@ describe('WorkAllocationService', () => {
     it('should attempt to complete the task when one is found', (done) => {
       const COMPLETE_TASK_RESULT = 'Bob';
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(Observable.of(COMPLETE_TASK_RESULT));
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_2 ]
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
@@ -147,9 +233,9 @@ describe('WorkAllocationService', () => {
 
     it('should throw an error when more than one task is found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_1, MOCK_TASK_2 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Processed multiple tasks instead of erroring');
@@ -162,9 +248,9 @@ describe('WorkAllocationService', () => {
 
     it('should throw an error when failing to complete one task', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.throwError(COMPLETE_ERROR.message);
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({ tasks: [ MOCK_TASK_2 ] })
-      }))));
+      httpService.post.and.returnValue(Observable.of({
+        tasks: [ MOCK_TASK_2 ]
+      }));
       workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');

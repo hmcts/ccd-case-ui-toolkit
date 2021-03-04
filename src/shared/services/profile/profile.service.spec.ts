@@ -1,12 +1,11 @@
 import { ProfileService } from './profile.service';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { createAProfile } from '../../domain/profile/profile.test.fixture';
 import { Profile } from '../../domain';
-import { Headers } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 
 describe('ProfileService', () => {
 
@@ -28,9 +27,7 @@ describe('ProfileService', () => {
       appConfig.getCaseDataUrl.and.returnValue(API_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(MOCK_PROFILE)
-      }))));
+      httpService.get.and.returnValue(Observable.of(MOCK_PROFILE));
 
       profileService = new ProfileService(httpService, appConfig);
     });
@@ -41,10 +38,12 @@ describe('ProfileService', () => {
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(PROFILE_URL, {
-        headers: new Headers({
-          'experimental': 'true',
-          'Accept': ProfileService.V2_MEDIATYPE_USER_PROFILE
-        })});
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', ProfileService.V2_MEDIATYPE_USER_PROFILE)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
+        });
     });
 
     it('should retrieve profile from server', () => {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { FeeValue } from './fee-value.model';
 
@@ -10,10 +10,17 @@ import { FeeValue } from './fee-value.model';
     './read-order-summary-row.scss'
   ],
 })
-export class ReadOrderSummaryRowComponent extends AbstractFieldReadComponent {
+export class ReadOrderSummaryRowComponent extends AbstractFieldReadComponent implements OnInit {
 
   @Input()
   feeValue: FeeValue;
+
+  ngOnInit() {
+    // We don't want to register this if we don't have a caseField
+    if (this.caseField) {
+      super.ngOnInit();
+    }
+  }
 
   getFeeAmount(): string {
     return this.feeValue.value ? this.feeValue.value.FeeAmount : '';

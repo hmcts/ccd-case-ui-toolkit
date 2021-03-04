@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Headers, Http, RequestOptionsArgs, Response } from '@angular/http';
 import { HttpErrorService } from './http-error.service';
 import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class HttpService {
@@ -11,7 +11,7 @@ export class HttpService {
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
 
   constructor(
-    private http: Http,
+    private httpclient: HttpClient,
     private httpErrorService: HttpErrorService
   ) {}
 
@@ -19,12 +19,13 @@ export class HttpService {
    *
    * @param url Url resolved using UrlResolverService
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public get(url: string, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
-    return this.http
-      .get(url, this.sanitiseOptions(options))
+
+  public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
+    return this.httpclient
+      .get(url, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
@@ -37,12 +38,12 @@ export class HttpService {
    * @param url Url resolved using UrlResolverService
    * @param body
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public post(url: string, body: any, options?: RequestOptionsArgs, redirectIfNotAuthorised = true): Observable<Response> {
-    return this.http
-      .post(url, body, this.sanitiseOptions(options))
+  public post(url: string, body: any, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
+    return this.httpclient
+      .post(url, body, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
@@ -55,12 +56,12 @@ export class HttpService {
    * @param url Url resolved using UrlResolverService
    * @param body
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-    return this.http
-      .put(url, body, this.sanitiseOptions(options))
+  public put(url: string, body: any, options?: OptionsType): Observable<any> {
+    return this.httpclient
+      .put(url, body, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res);
@@ -72,12 +73,12 @@ export class HttpService {
    *
    * @param url Url resolved using UrlResolverService
    * @param options
-   * @returns {Observable<Response>}
+   * @returns {Observable<any>}
    * @see UrlResolverService
    */
-  public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
-    return this.http
-      .delete(url, this.sanitiseOptions(options))
+  public delete(url: string, options?: OptionsType): Observable<any> {
+    return this.httpclient
+      .delete(url, this.setDefaultValue(options))
       .pipe(
         catchError(res => {
           return this.httpErrorService.handle(res);
@@ -85,29 +86,24 @@ export class HttpService {
       );
   }
 
-  private sanitiseOptions(options?: RequestOptionsArgs): RequestOptionsArgs {
-    options = options || {};
+  public setDefaultValue(options?: OptionsType): OptionsType {
+    options = options || {observe: 'body'};
     options.withCredentials = true;
 
-    this.sanitiseHeaders(options);
-
+    if (!options.headers) {
+      options.headers = new HttpHeaders()
+        .set(HttpService.HEADER_ACCEPT, 'application/json')
+        .set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
+    }
     return options;
   }
+}
 
-  private sanitiseHeaders(options?: RequestOptionsArgs) {
-    if (!options.headers) {
-      options.headers = new Headers();
-    }
-
-    if (!options.headers.has(HttpService.HEADER_ACCEPT)) {
-      options.headers.set(HttpService.HEADER_ACCEPT, 'application/json');
-    }
-    if (!options.headers.has(HttpService.HEADER_CONTENT_TYPE)) {
-      options.headers.set(HttpService.HEADER_CONTENT_TYPE, 'application/json');
-    }
-
-    if (null === options.headers.get(HttpService.HEADER_CONTENT_TYPE)) {
-      options.headers.delete(HttpService.HEADER_CONTENT_TYPE);
-    }
-  }
+export interface OptionsType {
+  headers?: HttpHeaders;
+  observe: 'body';
+  params?: HttpParams | { [param: string]: string | string[]; };
+  reportProgress?: boolean;
+  responseType?: 'json';
+  withCredentials?: boolean;
 }

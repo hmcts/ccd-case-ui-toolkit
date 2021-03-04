@@ -1,45 +1,78 @@
 import { CaseField } from '../../domain/definition';
 import { Injectable } from '@angular/core';
+import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FieldTypeSanitiser {
+  public static readonly FIELD_TYPE_COMPLEX: FieldTypeEnum = 'Complex';
+  public static readonly FIELD_TYPE_COLLECTION: FieldTypeEnum = 'Collection';
+  public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
 
   /**
-   * This method finds dynamiclists in a form and replaces its string value, with
-   * following example JSON format
-   * @return {value: {code:'xyz',label:'XYZ'}, list_items: [{code:'xyz',label:'XYZ'},{code:'abc',label:'ABC'}]}
-   * @param caseFields
-   * @param editForm
+   * This method finds dynamiclists in a form and replaces their string
+   * values, with a JSON object, as below:
+   * From: 'xyz'
+   * To  : {
+   *   value: { code:'xyz', label:'XYZ' },
+   *   list_items: [
+   *     { code:'xyz', label:'XYZ'},
+   *     { code:'abc', label:'ABC'}
+   *   ]
+   * }
+   * @param caseFields The CaseFields to assess.
+   * @param data The data in the form.
    */
-   sanitiseLists(caseFields: CaseField[], editForm: any) {
+   public sanitiseLists(caseFields: CaseField[], data: any) {
+    if (!data || !caseFields) {
+      return;
+    }
+    caseFields.forEach(caseField => {
 
-    this.getDynamicListsFromCaseFields(caseFields).forEach(dynamicField => {
-      this.getListOfKeysFromEditForm(editForm).forEach((key) => {
-        this.createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField, key, editForm);
-      });
+      switch (caseField.field_type.type) {
+        case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
+          this.convertStringToDynamicListOutput(caseField, data);
+          break;
+
+        case FieldTypeSanitiser.FIELD_TYPE_COMPLEX:
+          this.sanitiseLists(caseField.field_type.complex_fields, data[caseField.id]);
+          break;
+
+        case FieldTypeSanitiser.FIELD_TYPE_COLLECTION:
+          if (Array.isArray(data[caseField.id])) {
+            data[caseField.id].forEach((formElement: any) => {
+              this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
+            });
+          }
+          break;
+      }
+
     });
   }
 
-  private createValueCodePairAlongWithListIfKeyExistsInForm(dynamicField: CaseField, key, editForm: any) {
-    if (dynamicField.id === key) {
-      editForm['data'][key] = {
-          value: this.getMatchingCodeFromListOfItems(dynamicField, editForm, key),
-          list_items: dynamicField.list_items
+  private convertStringToDynamicListOutput(field: CaseField, data: any): void {
+    const stringValue = data[field.id];
+    if (typeof stringValue === 'string') {
+      const listItems = this.getListItems(field);
+      const matches = listItems.filter(value => value.code === stringValue);
+      if (matches && matches.length > 0) {
+        data[field.id] = {
+          value: matches[0],
+          list_items: listItems
         };
+      }
     }
   }
 
-  private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
-    let result = dynamicField.list_items.filter(value => value.code === editForm['data'][key]);
-    return result.length > 0 ? result[0] : {};
+  private getListItems(field: CaseField): any[] {
+    if (field) {
+      if (field.list_items) {
+        return field.list_items;
+      }
+      if (field.formatted_value && field.formatted_value.list_items) {
+        return field.formatted_value.list_items;
+      }
+    }
+    return [];
   }
 
-  private getListOfKeysFromEditForm(editForm: any) {
-    return Object.keys(editForm['data']);
-  }
-
-  private getDynamicListsFromCaseFields(caseFields: CaseField[]): CaseField[] {
-    return caseFields
-      .filter(caseField => caseField.field_type.type === 'DynamicList');
-  }
 }

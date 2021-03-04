@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormControl } from '@angular/forms';
+
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FormArray, FormControl, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'ccd-write-multi-select-list-field',
@@ -20,12 +21,10 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
         this.checkboxes.push(new FormControl(value));
       });
     }
-
-    this.checkboxes = this.registerControl(this.checkboxes);
+    this.registerControl(this.checkboxes, true);
   }
 
   onCheckChange(event) {
-
     if (!this.isSelected(event.target.value)) {
       // Add a new control in the FormArray
       this.checkboxes.push(new FormControl(event.target.value));
@@ -41,7 +40,8 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
   }
 
   isSelected(code): AbstractControl {
-    return this.checkboxes.controls.find(control => control.value === code);
+    if (this.checkboxes && this.checkboxes.controls) {
+      return this.checkboxes.controls.find(control => control.value === code);
+    }
   }
-
 }

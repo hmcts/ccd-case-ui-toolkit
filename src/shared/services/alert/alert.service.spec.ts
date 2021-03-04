@@ -4,23 +4,36 @@ import { NavigationEnd, NavigationStart } from '@angular/router';
 
 describe('AlertService', () => {
 
-  const ALERT: Alert = {
+  const ERROR_ALERT: Alert = {
     level: 'error',
     message: 'This is an error'
   };
-  const OTHER_ALERT: Alert = {
+  const SUCCESS_ALERT: Alert = {
     level: 'success',
     message: 'This is a success'
+  };
+  const WARNING_ALERT: Alert = {
+    level: 'warning',
+    message: 'This is a warning'
   };
   const MESSAGE_ALERT: Alert = {
     level: 'message',
     message: 'This is a success with a warning'
   };
 
+  const ERROR_MESSAGE = 'This is an error'
+  const SUCCESS_MESSAGE = 'This is a success';
+  const WARNING_MESSAGE = 'This is a warning';
+  const A_MESSAGE = 'This is a success with a warning';
+
   let routerObserver;
   let router;
+  let firstMockUrlRouter;
+  let secondMockUrlRouter;
 
   let alertService: AlertService;
+  let firstMockUrlAlertService: AlertService;
+  let secondMockUrlAlertService: AlertService;
 
   beforeEach(() => {
     router = {
@@ -33,28 +46,64 @@ describe('AlertService', () => {
   });
 
   it('should offer observable alert stream', () => {
-    expect(alertService.alerts.subscribe).toBeTruthy();
+    expect(alertService.errors.subscribe).toBeTruthy();
+    expect(alertService.warnings.subscribe).toBeTruthy();
+    expect(alertService.successes.subscribe).toBeTruthy();
   });
 
-  it('should publish alert to observable when push method used', done => {
+  it('should publish alert to observable when respective methods used', done => {
+    // set up all observables with expected results
     alertService
-      .alerts
+      .errors
       .subscribe(alert => {
-        expect(alert).toEqual(ALERT);
+        expect(alert).toEqual(ERROR_ALERT);
         done();
       });
 
-    alertService.push(ALERT);
+    alertService
+      .successes
+      .subscribe(alert => {
+        expect(alert).toEqual(SUCCESS_ALERT);
+        done();
+      });
+
+    alertService
+      .warnings
+      .subscribe(alert => {
+        expect(alert).toEqual(WARNING_ALERT);
+        done();
+      });
+
+    // set the respective methods
+    alertService.error(ERROR_MESSAGE);
+    alertService.success(SUCCESS_MESSAGE);
+    alertService.warning(WARNING_MESSAGE);
   });
 
   it('should publish null to observable when clear method used', done => {
+    // set up all observables with expected null values
     alertService
-      .alerts
+      .errors
       .subscribe(alert => {
         expect(alert).toBeFalsy();
         done();
       });
 
+    alertService
+      .successes
+      .subscribe(alert => {
+        expect(alert).toBeFalsy();
+        done();
+      });
+
+    alertService
+      .warnings
+      .subscribe(alert => {
+        expect(alert).toBeFalsy();
+        done();
+      });
+
+    // all observables cleared via this method
     alertService.clear();
   });
 
@@ -92,39 +141,89 @@ describe('AlertService', () => {
   });
 
   it('should be a hot alert observable', done => {
-    alertService.push(OTHER_ALERT);
+    // set an original message
+    alertService.error(WARNING_MESSAGE);
+    alertService.success(WARNING_MESSAGE);
+    alertService.warning(A_MESSAGE);
 
     alertService
-      .alerts
+      .errors
       .subscribe(alert => {
-        expect(alert).toEqual(ALERT);
+        expect(alert).toEqual(ERROR_ALERT);
         done();
       });
 
-    alertService.push(ALERT);
+    alertService
+      .successes
+      .subscribe(alert => {
+        expect(alert).toEqual(SUCCESS_ALERT);
+        done();
+      });
+
+    alertService
+      .warnings
+      .subscribe(alert => {
+        expect(alert).toEqual(WARNING_ALERT);
+        done();
+      });
+
+    // set the new message
+    alertService.error(ERROR_MESSAGE);
+    alertService.success(SUCCESS_MESSAGE);
+    alertService.warning(WARNING_MESSAGE);
   });
 
-  it('should call `push` with error alert when using `error` method', () => {
-    spyOn(alertService, 'push');
+  it('should set the messages to be preserved and kept', () => {
+    alertService.setPreserveAlerts(true);
+    expect(alertService.preserveMessages(A_MESSAGE)).toBe(A_MESSAGE);
 
-    alertService.error(ALERT.message);
-
-    expect(alertService.push).toHaveBeenCalledWith(ALERT);
+    alertService.setPreserveAlerts(false);
+    expect(alertService.preserveMessages(A_MESSAGE)).toBe('');
   });
 
-  it('should call `push` with success alert when using `success` method', () => {
-    spyOn(alertService, 'push');
+  describe('check url functionality', () => {
+    firstMockUrlRouter = {
+      events: {
+        subscribe: observer => routerObserver = observer
+      },
+      url: 'cases/case-1/'
+    }
+    secondMockUrlRouter = {
+      events: {
+        subscribe: observer => routerObserver = observer
+      },
+      url: 'cases/case-2/'
+    }
+    firstMockUrlAlertService = new AlertService(firstMockUrlRouter);
+    secondMockUrlAlertService = new AlertService(secondMockUrlRouter);
+    it('should enable checking if the current url contains the string', () => {
+      // first check the first alert service
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['example'])).toBe(false);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1'])).toBe(true);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-2'])).toBe(false);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(false, ['case-1'])).toBe(false);
 
-    alertService.success(OTHER_ALERT.message);
+      // second check the second alert service
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(true, ['example'])).toBe(false);
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1'])).toBe(false);
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(true, ['case-2'])).toBe(true);
+      expect(secondMockUrlAlertService.currentUrlIncludesInfo(false, ['case-1'])).toBe(true);
 
-    expect(alertService.push).toHaveBeenCalledWith(OTHER_ALERT);
-  });
+      // now check for more than one in list
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1', 'cases'])).toBe(true);
+      expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['case-1', 'not-cases'])).toBe(false);
+    });
 
-  it('should call `push` with warning alert when using `warn` method', () => {
-    spyOn(alertService, 'push');
+    it('should set the preserveAlerts value correctly', () => {
+      alertService.setPreserveAlerts(true);
+      expect(alertService.isPreserveAlerts()).toBe(true);
+      alertService.setPreserveAlerts(false);
+      expect(alertService.isPreserveAlerts()).toBe(false);
 
-    alertService.message(MESSAGE_ALERT.message);
-
-    expect(alertService.push).toHaveBeenCalledWith(MESSAGE_ALERT);
+      firstMockUrlAlertService.setPreserveAlerts(true, ['case-1']);
+      expect(firstMockUrlAlertService.isPreserveAlerts()).toBe(true);
+      firstMockUrlAlertService.setPreserveAlerts(true, ['case-1', 'not-cases']);
+      expect(firstMockUrlAlertService.isPreserveAlerts()).toBe(false);
+    });
   });
 });

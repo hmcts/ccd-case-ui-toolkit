@@ -7,6 +7,8 @@ import { Predicate } from '../../domain/predicate.model';
 import { CaseView } from '../../domain/case-view';
 import { plainToClassFromExist } from 'class-transformer';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 
 // @dynamic
 @Injectable()
@@ -36,16 +38,16 @@ export class FieldsUtils {
   }
 
   public static isObject(elem) {
-      return this.getType(elem) === 'Object';
-  };
+    return typeof elem === 'object' && elem !== null;
+  }
 
   public static isNonEmptyObject(elem) {
       return this.isObject(elem) && Object.keys(elem).length !== 0;
-  };
+  }
 
   public static isArray(elem) {
-      return this.getType(elem) === 'Array';
-  };
+    return Array.isArray(elem);
+  }
 
   public static areCollectionValuesSimpleFields(fieldValue) {
       return !this.isObject(fieldValue[0]['value']) && !Array.isArray(fieldValue[0]['value']) && fieldValue[0]['value'] !== undefined;
@@ -177,6 +179,11 @@ export class FieldsUtils {
     return `{ Invalid ${type}: ${invalidValue} }`;
   }
 
+  public static addCaseFieldAndComponentReferences (c: AbstractControl, cf: CaseField, comp: AbstractFormFieldComponent): void {
+    c['caseField'] = cf;
+    c['component'] = comp;
+  }
+
   public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
     let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
@@ -200,6 +207,20 @@ export class FieldsUtils {
     return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
   }
 
+  public controlIterator(aControl: AbstractControl,
+                         formArrayFn: (AbstractControl, CaseField) => void,
+                         formGroupFn: (FormGroup) => void,
+                         controlFn: (FormControl) => void) {
+    if (aControl instanceof FormArray) {  // We're in a collection
+      const cf: CaseField =  aControl['caseField'];
+      formArrayFn( aControl, cf);
+    } else if (aControl instanceof FormGroup) {
+      formGroupFn(aControl)
+    } else if (aControl instanceof FormControl) {  // FormControl
+      controlFn(aControl);
+    }
+  }
+
   private mergeFields(caseFields: CaseField[], formFields: any, mergeFunction: (CaseField, any) => void) {
     let result = FieldsUtils.cloneObject(formFields);
     caseFields.forEach(field => {
@@ -210,5 +231,4 @@ export class FieldsUtils {
     });
     return result;
   }
-
 }

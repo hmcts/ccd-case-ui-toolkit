@@ -19,7 +19,7 @@ export class ActivityService {
     const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
     return this.http
       .get(url, null, false)
-      .map(response => response.json());
+      .map(response => response);
   }
 
   postActivity(caseId: string, activityType: String): Observable<Activity[]> {
@@ -27,7 +27,7 @@ export class ActivityService {
     let body = { activity: activityType};
     return this.http
       .post(url, body, null, false)
-      .map(response => response.json());
+      .map(response => response);
   }
 
   verifyUserIsAuthorized(): void {

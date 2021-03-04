@@ -65,7 +65,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.selected = {};
     this.route.queryParams.subscribe(params => {
       if (!this.initialised || !params || !Object.keys(params).length) {
-        this.initFilters();
+        this.initFilters(false);
         this.initialised = true;
       }
     });
@@ -83,21 +83,25 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.caseState) {
       queryParams[WorkbasketFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
     }
-    if (init) {
-      this.windowService.setLocalStorage('savedQueryParams', JSON.stringify(queryParams));
-    }
     // without explicitly preserving alerts any message on the page
     // would be cleared out because of this initial navigation.
     // The above is only true if no alerts were set prior to loading case list page.
     if (!this.alertService.isPreserveAlerts()) {
       this.alertService.setPreserveAlerts(!this.initialised);
     }
-    this.selected.formGroup = this.formGroup;
+    if (Object.keys(this.formGroup.controls).length === 0) {
+      this.selected.formGroup = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
+    } else {
+      this.selected.formGroup = this.formGroup;
+    }
     this.selected.init = init;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
     if (init) {
-      this.windowService.setLocalStorage(FORM_GROUP_VAL_LOC_STORAGE, JSON.stringify(this.formGroup.value));
+      this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
+      if (Object.keys(this.formGroup.controls).length > 0) {
+        this.windowService.setLocalStorage(FORM_GROUP_VAL_LOC_STORAGE, JSON.stringify(this.formGroup.value));
+      }
     }
     // Apply filters
     this.onApply.emit({selected: this.selected, queryParams: queryParams});
@@ -107,8 +111,10 @@ export class WorkbasketFiltersComponent implements OnInit {
   reset(): void {
     this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
     this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-    this.resetFieldsWhenNoDefaults();
-    this.onReset.emit(true);
+    setTimeout (() => {
+      this.resetFieldsWhenNoDefaults();
+      this.onReset.emit(true);
+    }, 500);
   }
 
   getMetadataFields(): string[] {
@@ -123,9 +129,13 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
       this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0 ? this.selected.jurisdiction.caseTypes : null;
-      this.selected.caseType = this.workbasketDefaults ?
-        (this.selectedJurisdictionCaseTypes ? this.selectedJurisdictionCaseTypes[0] : null) : null;
-      this.selected.caseState = this.selected.caseType ? this.selected.caseType.states[0] : null;
+      // Line was too long for linting so refactored it.
+      if (this.workbasketDefaults && this.selectedJurisdictionCaseTypes) {
+        this.selected.caseType = this.selectedJurisdictionCaseTypes[0];
+      } else {
+        this.selected.caseType = null;
+      }
+      this.selected.caseState = null;
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
         this.onCaseTypeIdChange();
@@ -139,7 +149,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   onCaseTypeIdChange(): void {
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
-      this.selected.caseState = this.selectedCaseTypeStates[0];
+      this.selected.caseState = null;
       this.formGroup = new FormGroup({});
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
@@ -190,7 +200,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Try to initialise filters based on query parameters or workbasket defaults.
    * Query parameters, when available, take precedence over workbasket defaults.
    */
-  private initFilters() {
+  private initFilters(init: boolean) {
     const savedQueryParams = this.windowService.getLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
     let routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
     if (savedQueryParams) {
@@ -212,7 +222,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     } else {
       this.selected.jurisdiction = null;
     }
-    this.apply(false);
+    this.apply(init);
   }
 
   private selectCaseState(caseType: CaseTypeLite, routeSnapshot: ActivatedRouteSnapshot): CaseState {
@@ -221,7 +231,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       let selectedCaseStateId = this.selectCaseStateIdFromQueryOrDefaults(routeSnapshot, (this.defaults && this.defaults.state_id));
       caseState = caseType.states.find(ct => selectedCaseStateId === ct.id);
     }
-    return caseState ? caseState : caseType.states[0];
+    return caseState ? caseState : null;
   }
 
   private selectCaseStateIdFromQueryOrDefaults(routeSnapshot: ActivatedRouteSnapshot, defaultCaseStateId: string): string {
@@ -246,13 +256,13 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private resetFieldsWhenNoDefaults() {
-    this.workbasketDefaults = false;
-    this.selected.jurisdiction = null;
-    this.initialised = false;
     this.resetCaseState();
     this.resetCaseType();
     this.clearWorkbasketInputs();
-    this.ngOnInit();
+    this.workbasketDefaults = false;
+    this.selected.jurisdiction = null;
+    this.initialised = false;
+    this.initFilters(true);
   }
 
   private clearWorkbasketInputs() {
@@ -261,6 +271,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private resetCaseState() {
+    this.defaults.state_id = null;
     this.selected.caseState = null;
     this.selectedCaseTypeStates = null;
   }
