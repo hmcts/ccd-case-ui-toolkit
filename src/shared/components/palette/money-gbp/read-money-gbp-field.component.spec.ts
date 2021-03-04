@@ -57,6 +57,14 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£42.20');
       });
 
+      it('should render provided negative value as GBP currency', () => {
+        component.caseField.value = -4220;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£42.20');
+      });
+
       it('should prefix pences with leading 0.', () => {
         component.caseField.value = 20;
         component.ngOnInit();
@@ -65,12 +73,28 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£0.20');
       });
 
+      it('should prefix negative pences with leading 0.', () => {
+        component.caseField.value = -20;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£0.20');
+      });
+
       it('should format large number with commas', () => {
         component.caseField.value = 420000020;
         component.ngOnInit();
         fixture.detectChanges();
 
         expect(de.nativeElement.textContent).toEqual('£4,200,000.20');
+      });
+
+      it('should format large negative number with commas', () => {
+        component.caseField.value = -420000020;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£4,200,000.20');
       });
 
       it('should render undefined value as empty string', () => {
@@ -107,6 +131,14 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£42.20');
       });
 
+      it('should render provided negative value as GBP currency', () => {
+        component.amount = -4220;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£42.20');
+      });
+
       it('should prefix pences with leading 0.', () => {
         component.amount = 20;
         component.ngOnInit();
@@ -115,12 +147,28 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£0.20');
       });
 
+      it('should prefix negative pences with leading 0.', () => {
+        component.amount = -20;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£0.20');
+      });
+
       it('should format large number with commas', () => {
         component.amount = 420000020;
         component.ngOnInit();
         fixture.detectChanges();
 
         expect(de.nativeElement.textContent).toEqual('£4,200,000.20');
+      });
+
+      it('should format negative large number with commas', () => {
+        component.amount = -420000020;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£4,200,000.20');
       });
 
       it('should render undefined value as empty string', () => {

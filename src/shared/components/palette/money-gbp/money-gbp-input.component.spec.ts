@@ -107,10 +107,22 @@ describe('MoneyGbpInputComponent', () => {
     expect(onChange).toHaveBeenCalledWith('12300');
   });
 
+  it('should convert pounds to pences with negative value', () => {
+    component.onChange({ target: { value: '-123'}});
+
+    expect(onChange).toHaveBeenCalledWith('-12300');
+  });
+
   it('should convert pounds and pences to pences', () => {
     component.onChange({ target: { value: '123.45'}});
 
     expect(onChange).toHaveBeenCalledWith('12345');
+  });
+
+  it('should convert pounds and pences to pences with negative value', () => {
+    component.onChange({ target: { value: '-123.45'}});
+
+    expect(onChange).toHaveBeenCalledWith('-12345');
   });
 
   it('should convert partial pences to pences', () => {
@@ -119,10 +131,22 @@ describe('MoneyGbpInputComponent', () => {
     expect(onChange).toHaveBeenCalledWith('12310');
   });
 
+  it('should convert partial pences to pences with negative value', () => {
+    component.onChange({ target: { value: '-123.1'}});
+
+    expect(onChange).toHaveBeenCalledWith('-12310');
+  });
+
   it('should convert pences only to pences', () => {
     component.onChange({ target: { value: '.1'}});
 
     expect(onChange).toHaveBeenCalledWith('10');
+  });
+
+  it('should convert pences only to pences with negative value', () => {
+    component.onChange({ target: { value: '-.1'}});
+
+    expect(onChange).toHaveBeenCalledWith('-10');
   });
 
   it('should keep empty ', () => {
@@ -149,8 +173,20 @@ describe('MoneyGbpInputComponent', () => {
     expect(results).toBeUndefined();
   });
 
+  it('should be valid when digits with negative value', () => {
+    let results = component.validate({ value: '-12.34'} as FormControl);
+
+    expect(results).toBeUndefined();
+  });
+
   it('should be invalid when too many decimal places', () => {
     let results = component.validate({ value: '12.345'} as FormControl);
+
+    expect(results['pattern']).toBeTruthy();
+  });
+
+  it('should be invalid when too many decimal places with negative value', () => {
+    let results = component.validate({ value: '-12.345'} as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
