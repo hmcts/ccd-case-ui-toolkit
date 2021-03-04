@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.73.1
+**EUI-3177** Work basket submit button
+
 ### Version 2.73.0
 **EUI-3222** Loading spinner
 
