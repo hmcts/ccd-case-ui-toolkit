@@ -27,8 +27,8 @@ export class WorkAllocationService {
    * Call the API to get tasks matching the search criteria.
    * @param searchRequest The search parameters that specify which tasks to match.
    */
-  public searchTasks(searchRequest: TaskSearchParameters): Observable<object> {
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task`;
+  public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
       .post(url, { searchRequest })
       .pipe(
@@ -94,13 +94,14 @@ export class WorkAllocationService {
    * @param ccdId The ID of the case to find tasks for.
    * @param eventId The ID of the event to find tasks for.
    */
-  public completeAppropriateTask(ccdId: string, eventId: string): Observable<any> {
-    const parameters: TaskSearchParameter[] = [{
+  public completeAppropriateTask(ccdId: string, eventId: string, jurisdiction: string, caseTypeId: string): Observable<any> {
+    const taskSearchParameter: TaskSearchParameter = {
       ccdId,
       eventId,
-      state: ['Open'] // Need to know which are the "completeable" statuses.
-    }];
-    return this.searchTasks({ parameters })
+      jurisdiction,
+      caseTypeId
+    };
+    return this.searchTasks(taskSearchParameter)
       .pipe(
         map((response: any) => {
           const tasks: any[] = response.tasks;

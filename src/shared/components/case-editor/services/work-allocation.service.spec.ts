@@ -1,7 +1,6 @@
 import { Observable, throwError } from 'rxjs';
-
 import { AbstractAppConfig } from '../../../../app.config';
-import { HttpError, TaskSearchParameters } from '../../../domain';
+import { HttpError, TaskSearchParameter } from '../../../domain';
 import { HttpErrorService, HttpService } from '../../../services';
 import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.service';
 
@@ -68,7 +67,7 @@ describe('WorkAllocationService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   const MOCK_TASK_1 = { id: 'Task_1', caseReference: '1234567890' };
   const MOCK_TASK_2 = { id: 'Task_2', caseReference: '2345678901' };
-  const TASK_SEARCH_URL = `${API_URL}/task`;
+  const TASK_SEARCH_URL = `${API_URL}/searchForCompletable`;
   const TASK_COMPLETE_URL = `${API_URL}/task/${MOCK_TASK_1.id}/complete`;
 
   const ERROR: HttpError = new HttpError();
@@ -104,18 +103,14 @@ describe('WorkAllocationService', () => {
     });
 
     it('should call post with the correct parameters', () => {
-      const searchRequest: TaskSearchParameters = {
-        parameters: [{ ccdId: '1234567890' }]
-      };
+      const searchRequest: TaskSearchParameter = { ccdId: '1234567890' };
       workAllocationService.searchTasks(searchRequest).subscribe();
 
       expect(httpService.post).toHaveBeenCalledWith(TASK_SEARCH_URL, { searchRequest });
     });
 
     it('should retrieve a list of matching tasks', (done) => {
-      const searchRequest: TaskSearchParameters = {
-        parameters: [{ ccdId: '1234567890' }]
-      };
+      const searchRequest: TaskSearchParameter = { ccdId: '1234567890' };
       workAllocationService.searchTasks(searchRequest)
         .subscribe((response: any) => {
           expect(response).toBeDefined();
@@ -130,9 +125,7 @@ describe('WorkAllocationService', () => {
 
     it('should set error service error when the search fails', (done) => {
       httpService.post.and.returnValue(throwError(ERROR));
-      const searchRequest: TaskSearchParameters = {
-        parameters: [{ ccdId: '1234567890' }]
-      };
+      const searchRequest: TaskSearchParameter = { ccdId: '1234567890' }
       workAllocationService.searchTasks(searchRequest)
         .subscribe(() => {
           // Should not get here... so if we do, make sure it fails.
@@ -212,7 +205,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: []
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
         expect(result).toBeTruthy();
         expect(completeSpy).not.toHaveBeenCalled();
         done();
@@ -225,7 +218,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
       });
@@ -236,7 +229,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(() => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Processed multiple tasks instead of erroring');
       }, error => {
@@ -251,7 +244,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');
       }, error => {
