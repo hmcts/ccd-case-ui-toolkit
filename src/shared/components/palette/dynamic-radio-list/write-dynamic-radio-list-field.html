@@ -1,0 +1,21 @@
+<div class="form-group bottom-30"
+    [ngClass]="{'form-group-error': !dynamicRadioListControl.valid && dynamicRadioListControl.touched}" [id]="id()">
+  <fieldset>
+    <label [for]="id()">
+        <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+        <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+        <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">Select an option from the
+            dropdown</span>
+        <span class="error-message"
+            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.touched">{{dynamicRadioListControl.errors |
+            ccdFirstError}}</span>
+    </label>
+
+    <ng-container>
+      <div class="multiple-choice" *ngFor="let radioButton of caseField.list_items" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
+          <input class="form-control" [id]="id()+'-'+radioButton.code" [name]="id()" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
+          <label class="form-label" [for]="id()+'-'+radioButton.code">{{radioButton.label}}</label>
+      </div>
+    </ng-container>
+  </fieldset>
+</div>
