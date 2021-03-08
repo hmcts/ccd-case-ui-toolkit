@@ -11,6 +11,7 @@ export type FieldTypeEnum =
   | 'MoneyGBP'
   | 'FixedList'
   | 'DynamicList'
+  | 'DynamicMultiSelectList'
   | 'FixedRadioList'
   | 'Complex'
   | 'Collection'

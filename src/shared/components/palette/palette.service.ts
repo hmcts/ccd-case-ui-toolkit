@@ -40,6 +40,7 @@ import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } f
 import { CaseHistoryViewerFieldComponent } from './history';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 
 @Injectable()
 export class PaletteService {
@@ -65,7 +66,8 @@ export class PaletteService {
       case 'MoneyGBP':
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
       case 'DynamicList':
-        return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
+        return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
+      //   return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
       case 'FixedList':
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
       case 'FixedRadioList':

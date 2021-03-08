@@ -3,7 +3,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-dynamic-multi-select-list-field',
-  templateUrl: './read-multi-dynamic-select-list-field.html',
+  templateUrl: './read-dynamic-multi-select-list-field.html',
   styleUrls: ['./multi-select-list.scss']
 })
 export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadComponent {}
