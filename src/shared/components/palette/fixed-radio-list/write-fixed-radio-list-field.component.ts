@@ -12,7 +12,7 @@ export class WriteFixedRadioListFieldComponent extends AbstractFieldWriteCompone
 ​
   ngOnInit() {
     let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
-    this.fixedRadioListControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null));
+    this.fixedRadioListControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null)) as FormControl;
     if (this.fixedRadioListControl.disabled) {
       this.fixedRadioListControl.enable({emitEvent: false});
     }
