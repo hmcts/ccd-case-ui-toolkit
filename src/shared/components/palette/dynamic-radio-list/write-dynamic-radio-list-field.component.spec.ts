@@ -11,33 +11,36 @@ import { attr, text } from '../../../test/helpers';
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
 const FIELD_ID = 'MarritalStatus';
+const FIELD_LIST_ITEMS = [
+  {
+    code: 'M',
+    label: 'Male',
+    order: 1
+  },
+  {
+    code: VALUE,
+    label: EXPECTED_LABEL,
+    order: 2
+  },
+  {
+    code: 'O',
+    label: 'Other',
+    order: 3
+  }
+];
+
 const FIELD_TYPE: FieldType = {
   id: 'Gender',
-  type: 'FixedList',
-  fixed_list_items: [
-    {
-      code: 'M',
-      label: 'Male',
-      order: 1
-    },
-    {
-      code: VALUE,
-      label: EXPECTED_LABEL,
-      order: 2
-    },
-    {
-      code: 'O',
-      label: 'Other',
-      order: 3
-    }
-  ]
+  type: 'DynamicList',
 };
+
 const CASE_FIELD: CaseField = <CaseField>({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
-  value: VALUE
+  value: VALUE,
+  list_items: FIELD_LIST_ITEMS
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
@@ -86,7 +89,6 @@ describe('WriteDynamicRadioListFieldComponent', () => {
     let options = de.queryAll($RADIO);
 
     expect(options.length).toEqual(3);
-    console.log('Radio', options);
     expect(attr(options[0], 'id')).toEqual('MarritalStatus-M');
     expect(attr(options[1], 'id')).toEqual('MarritalStatus-F');
     expect(attr(options[2], 'id')).toEqual('MarritalStatus-O');
