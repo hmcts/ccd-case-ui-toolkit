@@ -65,11 +65,10 @@ export class PaletteService {
         return write ? WriteDateFieldComponent : ReadDateFieldComponent;
       case 'MoneyGBP':
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
-      // case 'DynamicList':
-      //   return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
+      case 'DynamicList':
+        return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
       case 'FixedList':
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
-      case 'DynamicList': // TODO Remove this clause
       case 'DynamicRadioList':
         return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
       case 'FixedRadioList':
