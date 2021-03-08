@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.73.1-alpha-grey-bars
+**EUI-3267** Reintroducing the grey bars for fields shown by other fields.
+
 ### Version 2.73.0
 **EUI-3222** Loading spinner
 
