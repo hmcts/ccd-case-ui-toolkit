@@ -37,7 +37,7 @@ const CASE_FIELD: CaseField = <CaseField>({
   list_items: FIELD_LIST_ITEMS
 });
 
-fdescribe('WriteDynamicMultiSelectListFieldComponent', () => {
+describe('WriteDynamicMultiSelectListFieldComponent', () => {
 
   const $CHECKBOXES = By.css('input[type="checkbox"]');
 
