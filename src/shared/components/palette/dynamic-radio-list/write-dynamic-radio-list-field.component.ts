@@ -28,4 +28,8 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
     this.dynamicRadioListControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
     this.dynamicRadioListControl.setValue(this.caseField.value);
   }
+
+  buildElementId(name: string): string {
+    return `${this.id}-${name}`;
+  }
 }
