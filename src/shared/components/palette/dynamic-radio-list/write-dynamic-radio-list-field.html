@@ -5,7 +5,7 @@
         <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
         <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
         <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">Select an option from the
-            dropdown</span>
+            radio buttons</span>
         <span class="error-message"
             *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.touched">{{dynamicRadioListControl.errors |
             ccdFirstError}}</span>
