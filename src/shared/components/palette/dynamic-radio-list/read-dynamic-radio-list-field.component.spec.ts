@@ -13,7 +13,7 @@ describe('ReadDynamicRadioListFieldComponent', () => {
   const FIELD_ID = 'ReadOnlyFieldId';
   const FIELD_TYPE: FieldType = {
     id: 'Gender',
-    type: 'FixedRadioList',
+    type: 'DynamicRadioList',
     fixed_list_items: [
       {
         code: 'M',
