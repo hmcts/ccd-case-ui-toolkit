@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 2.74.0
+**EUI-2778** Dynamic list incorrect format for mid event callbacks
+**EUI-2830** Fix dynamic lists in collections
+**EUI-2985** Facing an issue with CCD UI where some of the fields are getting shown as disabled
+
 ### Version 2.73.0
 **EUI-3222** Loading spinner
 
