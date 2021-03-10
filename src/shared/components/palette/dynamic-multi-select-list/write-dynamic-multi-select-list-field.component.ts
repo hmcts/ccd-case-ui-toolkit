@@ -24,14 +24,18 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
     this.registerControl(this.checkboxes, true);
   }
 
-  onCheckChange(event) {
-    if (!this.isSelected(event.target.value)) {
+  onCheckChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+
+    if (!target) return;
+
+    if (!this.isSelected(target.value)) {
       // Add a new control in the FormArray
-      this.checkboxes.push(new FormControl(event.target.value));
+      this.checkboxes.push(new FormControl(target.value));
     } else {
       // Remove the control from the FormArray
       this.checkboxes.controls.forEach((ctrl: FormControl, i) => {
-        if (ctrl.value === event.target.value) {
+        if (ctrl.value === target.value) {
           this.checkboxes.removeAt(i);
           return;
         }
