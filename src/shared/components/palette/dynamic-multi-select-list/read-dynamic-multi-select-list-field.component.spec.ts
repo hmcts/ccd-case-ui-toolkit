@@ -35,7 +35,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       }
     ]
   };
-  const VALUES = [ 'P', 'PA', 'J' ];
+  const VALUES = ['P', 'PA', 'J'];
 
   describe('Non-persistable readonly multi-select-list field', () => {
     const CASE_FIELD = new CaseField();
@@ -81,7 +81,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       component.caseField.value = VALUES;
       fixture.detectChanges();
 
-      let cells = de.queryAll($VALUES);
+      const cells = de.queryAll($VALUES);
 
       expect(cells.length).toEqual(VALUES.length);
 
@@ -152,7 +152,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       component.caseField = CASE_FIELD;
       component.formGroup = FORM_GROUP;
 
-        de = fixture.debugElement;
+      de = fixture.debugElement;
       fixture.detectChanges();
     }));
 

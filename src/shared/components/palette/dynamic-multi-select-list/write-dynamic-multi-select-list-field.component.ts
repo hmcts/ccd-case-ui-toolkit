@@ -44,4 +44,8 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
       return this.checkboxes.controls.find(control => control.value === code);
     }
   }
+
+  buildElementId(name: string): string {
+    return `${this.id()}-${name}`;
+  }
 }

@@ -80,7 +80,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   });
 
   it('should render a checkbox for each available option', () => {
-    let checkboxes = de.queryAll($CHECKBOXES);
+    const checkboxes = de.queryAll($CHECKBOXES);
 
     expect(checkboxes.length).toEqual(FIELD_LIST_ITEMS.length);
 
