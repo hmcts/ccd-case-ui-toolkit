@@ -42,7 +42,6 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   const $CHECKBOXES = By.css('input[type="checkbox"]');
   const $SELECTED_CHECKBOXES = By.css('input[type="checkbox"]:checked');
   const $OPTION_1 = By.css('input[value="Option1"]');
-  const $OPTION_2 = By.css('input[value="Option2"]');
 
   let fixture: ComponentFixture<WriteDynamicMultiSelectListFieldComponent>;
   let component: WriteDynamicMultiSelectListFieldComponent;
