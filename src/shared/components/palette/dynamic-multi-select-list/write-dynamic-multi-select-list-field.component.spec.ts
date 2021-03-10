@@ -40,6 +40,9 @@ const CASE_FIELD: CaseField = <CaseField>({
 describe('WriteDynamicMultiSelectListFieldComponent', () => {
 
   const $CHECKBOXES = By.css('input[type="checkbox"]');
+  const $SELECTED_CHECKBOXES = By.css('input[type="checkbox"]:checked');
+  const $OPTION_1 = By.css('input[value="Option1"]');
+  const $OPTION_2 = By.css('input[value="Option2"]');
 
   let fixture: ComponentFixture<WriteDynamicMultiSelectListFieldComponent>;
   let component: WriteDynamicMultiSelectListFieldComponent;
@@ -87,5 +90,26 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     FIELD_LIST_ITEMS.forEach(item => {
       expect(checkboxes.find(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
     });
+  });
+
+  it('should mark as selected the initially selected checkboxes', () => {
+    let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
+
+    expect(checkboxes.length).toEqual(VALUES.length);
+
+    VALUES.forEach(value => {
+      expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
+    });
+  });
+
+  it('should remove option from values when unselected', () => {
+    let option1 = de.query($OPTION_1).nativeElement;
+    option1.click();
+
+    fixture.detectChanges();
+
+    expect(option1.checked).toBeFalsy();
+    expect(component.checkboxes.controls.length).toEqual(1);
+    expect(component.checkboxes.controls[0].value).not.toEqual(FIELD_LIST_ITEMS[0].code);
   });
 });
