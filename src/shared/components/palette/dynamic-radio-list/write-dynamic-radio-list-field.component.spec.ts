@@ -10,7 +10,7 @@ import { attr, text } from '../../../test/helpers';
 
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
-const FIELD_ID = 'MarritalStatus';
+const FIELD_ID = 'MaritalStatus';
 const FIELD_LIST_ITEMS = [
   {
     code: 'M',
@@ -31,7 +31,7 @@ const FIELD_LIST_ITEMS = [
 
 const FIELD_TYPE: FieldType = {
   id: 'Gender',
-  type: 'DynamicList',
+  type: 'DynamicRadioList',
 };
 
 const CASE_FIELD: CaseField = <CaseField>({
@@ -86,11 +86,11 @@ describe('WriteDynamicRadioListFieldComponent', () => {
   });
 
   it('should render all options', () => {
-    let options = de.queryAll($RADIO);
+    const options = de.queryAll($RADIO);
 
     expect(options.length).toEqual(3);
-    expect(attr(options[0], 'id')).toEqual('MarritalStatus-M');
-    expect(attr(options[1], 'id')).toEqual('MarritalStatus-F');
-    expect(attr(options[2], 'id')).toEqual('MarritalStatus-O');
+    expect(attr(options[0], 'id')).toEqual('MaritalStatus-M');
+    expect(attr(options[1], 'id')).toEqual('MaritalStatus-F');
+    expect(attr(options[2], 'id')).toEqual('MaritalStatus-O');
   });
 });

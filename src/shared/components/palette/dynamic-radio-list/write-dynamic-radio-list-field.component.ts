@@ -30,6 +30,6 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
   }
 
   buildElementId(name: string): string {
-    return `${this.id}-${name}`;
+    return `${this.id()}-${name}`;
   }
 }
