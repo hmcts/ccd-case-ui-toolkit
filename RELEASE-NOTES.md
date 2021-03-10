@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+## Version 2.74.1-non-descriptive-headings-aa
+**EUI-3506** Loading spinner
+
 ### Version 2.73.5-ngmodel-deprecation
 **EUI-3410** ngModel deprecation
 
