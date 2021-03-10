@@ -9,7 +9,7 @@ import { WriteDynamicListFieldComponent } from './write-dynamic-list-field.compo
 
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
-const FIELD_ID = 'MarritalStatus';
+const FIELD_ID = 'MaritalStatus';
 const FIELD_TYPE: FieldType = {
   id: 'Gender',
   type: 'FixedList',
