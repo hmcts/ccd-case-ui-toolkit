@@ -66,7 +66,7 @@ export class PaletteService {
       case 'MoneyGBP':
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
       case 'DynamicList':
-         return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent; 
+        return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent; 
       case 'DynamicMultiSelectList':
         return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
       case 'FixedList':

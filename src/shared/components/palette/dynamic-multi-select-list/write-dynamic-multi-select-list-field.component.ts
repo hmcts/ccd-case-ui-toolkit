@@ -29,7 +29,7 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
       // Add a new control in the FormArray
       this.checkboxes.push(new FormControl(event.target.value));
     } else {
-      // Remove the control form the FormArray
+      // Remove the control from the FormArray
       this.checkboxes.controls.forEach((ctrl: FormControl, i) => {
         if (ctrl.value === event.target.value) {
           this.checkboxes.removeAt(i);
@@ -39,7 +39,7 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
     }
   }
 
-  isSelected(code): AbstractControl {
+  isSelected(code: string): AbstractControl {
     if (this.checkboxes && this.checkboxes.controls) {
       return this.checkboxes.controls.find(control => control.value === code);
     }
