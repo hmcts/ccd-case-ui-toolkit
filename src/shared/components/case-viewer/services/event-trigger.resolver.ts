@@ -4,7 +4,7 @@ import { CaseEventTrigger, CaseView } from '../../../domain';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CasesService } from '../../case-editor';
-import { AlertService } from '../../../services';
+import { AlertService, ProfileNotifier, ProfileService } from '../../../services';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -19,6 +19,8 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
   constructor(
     private casesService: CasesService,
     private alertService: AlertService,
+    private profileService: ProfileService,
+    private profileNotifier: ProfileNotifier,
     ) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
@@ -40,6 +42,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
       ignoreWarning = 'false';
     }
+    this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
     return this.casesService
       .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
       .pipe(

@@ -2,8 +2,11 @@ import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { CaseResolver } from './case.resolver';
-import { CaseEventTrigger, HttpError, CaseView } from '../../../domain';
+import { CaseEventTrigger, HttpError, CaseView, Profile } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
+import { HttpService, ProfileNotifier, ProfileService } from '../../../services';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('EventTriggerResolver', () => {
 
@@ -33,15 +36,31 @@ describe('EventTriggerResolver', () => {
   let route: any;
 
   let router: any;
+  let profileService: ProfileService;
+  let profileNotifier: any;
+  let appConfig: any;
+  let httpService: any;
+  const MOCK_PROFILE: Profile = createAProfile();
+  const API_URL = 'http://data.ccd.reform';
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
     alertService = createSpyObj('alertService', ['error']);
     orderService = createSpyObj('orderService', ['sort']);
+    profileService = createSpyObj<ProfileService>('profileService', ['get']);
+    profileNotifier = new ProfileNotifier();
 
     router = createSpyObj('router', ['navigate']);
 
-    eventTriggerResolver = new EventTriggerResolver(casesService, alertService);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
+    appConfig.getApiUrl.and.returnValue(API_URL);
+    appConfig.getCaseDataUrl.and.returnValue(API_URL);
+    httpService = createSpyObj<HttpService>('httpService', ['get']);
+    httpService.get.and.returnValue(Observable.of(MOCK_PROFILE));
+
+    profileService = new ProfileService(httpService, appConfig);
+
+    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier);
 
     route = {
       firstChild: {
