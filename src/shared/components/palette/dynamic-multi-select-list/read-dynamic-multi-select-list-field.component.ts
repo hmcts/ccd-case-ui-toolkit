@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
@@ -6,4 +6,16 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   templateUrl: './read-dynamic-multi-select-list-field.html',
   styleUrls: ['./read-dynamic-multi-select-list-field.component.scss']
 })
-export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadComponent {}
+export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadComponent implements OnInit {
+  
+  ngOnInit() {
+    /**
+     *
+     * Reassigning list_items from formatted_list when list_items is empty
+     */
+    if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
+      this.caseField.list_items = this.caseField.formatted_value.list_items;
+    }
+    super.ngOnInit();
+  }
+}
