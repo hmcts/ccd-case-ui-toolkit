@@ -28,87 +28,164 @@ const FIELD_TYPE: FieldType = {
   type: 'DynamicMultiSelectList',
 };
 
-const CASE_FIELD: CaseField = <CaseField>({
-  id: FIELD_ID,
-  label: 'X',
-  display_context: 'OPTIONAL',
-  field_type: FIELD_TYPE,
-  value: VALUES,
-  list_items: FIELD_LIST_ITEMS
-});
+let CASE_FIELD: CaseField;
+
+const $CHECKBOXES = By.css('input[type="checkbox"]');
+const $SELECTED_CHECKBOXES = By.css('input[type="checkbox"]:checked');
+const $UNSELECTED_CHECKBOXES = By.css('input[type="checkbox"]:not(:checked)');
+const $OPTION_1 = By.css('input[value="Option1"]');
 
 describe('WriteDynamicMultiSelectListFieldComponent', () => {
-
-  const $CHECKBOXES = By.css('input[type="checkbox"]');
-  const $SELECTED_CHECKBOXES = By.css('input[type="checkbox"]:checked');
-  const $OPTION_1 = By.css('input[value="Option1"]');
-
   let fixture: ComponentFixture<WriteDynamicMultiSelectListFieldComponent>;
   let component: WriteDynamicMultiSelectListFieldComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  describe('List Value Dynamic Case Field', () => {
+    beforeEach(async(() => {
 
-    TestBed
-      .configureTestingModule({
-        imports: [
-          ReactiveFormsModule,
-          PaletteUtilsModule
-        ],
-        declarations: [
-          WriteDynamicMultiSelectListFieldComponent,
-        ],
-        providers: []
-      })
-      .compileComponents();
+      CASE_FIELD = <CaseField>({
+        id: FIELD_ID,
+        label: 'X',
+        display_context: 'OPTIONAL',
+        field_type: FIELD_TYPE,
+        value: VALUES,
+        list_items: FIELD_LIST_ITEMS
+      });
 
-    fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
-    component = fixture.componentInstance;
+      TestBed
+        .configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            PaletteUtilsModule
+          ],
+          declarations: [
+            WriteDynamicMultiSelectListFieldComponent,
+          ],
+          providers: []
+        })
+        .compileComponents();
 
-    component.caseField = CASE_FIELD;
+      fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
+      component = fixture.componentInstance;
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
+      component.caseField = CASE_FIELD;
 
-  it('should register a FormArray', () => {
-    expect(component.checkboxes.constructor).toBe(FormArray);
-  });
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
 
-  it('should initialise FormArray with initial values', () => {
-    expect(component.checkboxes.controls.length).toEqual(2);
-    expect(component.checkboxes.controls[0].value).toEqual(VALUES[0]);
-    expect(component.checkboxes.controls[1].value).toEqual(VALUES[1]);
-  });
+    describe('buildElementId()', () => {
+      it('should produce a composite id string', () => {
+        const name = 'str';
+  
+        const result = component.buildElementId(name);
+  
+        expect(result).toEqual('DynamicMultiSelectList-str');
+      });
+    });
 
-  it('should render a checkbox for each available option', () => {
-    const checkboxes = de.queryAll($CHECKBOXES);
+    it('should register a FormArray', () => {
+      expect(component.checkboxes.constructor).toBe(FormArray);
+    });
 
-    expect(checkboxes.length).toEqual(FIELD_LIST_ITEMS.length);
+    it('should initialise FormArray with initial values', () => {
+      expect(component.checkboxes.controls.length).toEqual(2);
+      expect(component.checkboxes.controls[0].value).toEqual(VALUES[0]);
+      expect(component.checkboxes.controls[1].value).toEqual(VALUES[1]);
+    });
 
-    FIELD_LIST_ITEMS.forEach(item => {
-      expect(checkboxes.find(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
+    it('should render a checkbox for each available option', () => {
+      const checkboxes = de.queryAll($CHECKBOXES);
+
+      expect(checkboxes.length).toEqual(FIELD_LIST_ITEMS.length);
+
+      FIELD_LIST_ITEMS.forEach(item => {
+        expect(checkboxes.find(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
+      });
+    });
+
+    it('should mark as selected the initially selected checkboxes', () => {
+      let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
+
+      expect(checkboxes.length).toEqual(VALUES.length);
+
+      VALUES.forEach(value => {
+        expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
+      });
+    });
+
+    it('should mark as selected the initially selected checkboxes', () => {
+      let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
+
+      expect(checkboxes.length).toEqual(VALUES.length);
+
+      VALUES.forEach(value => {
+        expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
+      });
+    });
+
+    it('should remove option from values when unselected', () => {
+      let option1 = de.query($OPTION_1).nativeElement;
+      option1.click();
+
+      fixture.detectChanges();
+
+      expect(option1.checked).toBeFalsy();
+      expect(component.checkboxes.controls.length).toEqual(1);
+      expect(component.checkboxes.controls[0].value).not.toEqual(FIELD_LIST_ITEMS[0].code);
     });
   });
 
-  it('should mark as selected the initially selected checkboxes', () => {
-    let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
 
-    expect(checkboxes.length).toEqual(VALUES.length);
+  describe('Null Value Dynamic Case Field', () => {
+    beforeEach(async(() => {
 
-    VALUES.forEach(value => {
-      expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
+      CASE_FIELD = <CaseField>({
+        id: FIELD_ID,
+        label: 'X',
+        display_context: 'OPTIONAL',
+        field_type: FIELD_TYPE,
+        value: null,
+        list_items: FIELD_LIST_ITEMS
+      });
+
+      TestBed
+        .configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            PaletteUtilsModule
+          ],
+          declarations: [
+            WriteDynamicMultiSelectListFieldComponent,
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should set all checkboxes unselected when caseField is null', () => {
+      component.caseField.value = null;
+
+      const checkboxes = de.queryAll($UNSELECTED_CHECKBOXES);
+
+      expect(checkboxes.length).toEqual(2);
     });
-  });
 
-  it('should remove option from values when unselected', () => {
-    let option1 = de.query($OPTION_1).nativeElement;
-    option1.click();
+    it('should add value to checkbox when selected', () => {
+      component.caseField.value = null;
 
-    fixture.detectChanges();
+      let option1 = de.query($OPTION_1).nativeElement;
+      option1.click();
 
-    expect(option1.checked).toBeFalsy();
-    expect(component.checkboxes.controls.length).toEqual(1);
-    expect(component.checkboxes.controls[0].value).not.toEqual(FIELD_LIST_ITEMS[0].code);
+      expect(component.checkboxes.length).toEqual(1);
+    });
   });
 });

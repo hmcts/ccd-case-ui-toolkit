@@ -86,9 +86,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       expect(cells.length).toEqual(VALUES.length);
 
       for (let i = 0; i < VALUES.length; i++) {
-
         expect(FIELD_TYPE.fixed_list_items[i].label).toEqual(text(cells[i]));
-
       }
     });
 
