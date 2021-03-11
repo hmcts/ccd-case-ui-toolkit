@@ -212,13 +212,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
 
     this.caseFields = this.getTabFields();
-
-    console.log('caseDetails', this.caseDetails);
-
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
-
-    console.log('sortedTabs', this.sortedTabs)
-
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular(() => {
         this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {

@@ -50,9 +50,7 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
 
             this.caseHistory = caseHistory;
             this.tabs = this.orderService.sort(this.caseHistory.tabs);
-            console.log('this tabs length', this.tabs.length);
             this.tabs = this.sortTabFieldsAndFilterTabs(this.tabs);
-            console.log('this tabs after sort and filter', this.tabs.length);
           }),
           catchError(error => {
             console.error(error);
@@ -70,7 +68,7 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
   }
 
   isDataLoaded() {
-    return !!(this.caseDetails && this.caseHistory);
+    return this.caseDetails && this.caseHistory ? true : false;
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {

@@ -1,109 +1,93 @@
- <div class="complex-panel" [hidden]="caseField.hidden">
-      <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
-      <table class="complex-panel-table">
-        <tbody>
-        <!-- <COMPLEX table field header>-->
-        <tr>
-          <ng-container *ngFor="let heading of columns">
-            <ng-container *ngFor="let name of columnsAllLabels | keyvalue:keepOriginalOrder">
-              <th *ngIf="heading.trim() == name.key">
-                <span class="text-16">{{name.value.label}}</span>
-                <a href="javascript:void(0)" (click)="sortRowsByColumns(name.key)"  class="sort-widget" [innerHTML]="sortWidget(name.value)"></a>
-              </th>
-            </ng-container>
-          </ng-container>
-          <th></th>
-        </tr>
-        <!-- </COMPLEX table field header>-->
-        <ng-container *ngFor="let item of rows; let i = index;trackBy:trackByIndex;" >
-          <!-- <COMPLEX table collapsed view>-->
-          <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
-            <ng-container *ngFor="let heading of columns">
-              <ng-container  *ngFor="let name of item | keyvalue">
-                <td *ngIf="heading.trim() == name.key" class="text-16">
-                  <div *ngIf="name.value;else showEmptyTd">
-                  <ccd-field-read [caseField]="{
-                        id: name.key,
-                        label: name.value.label,
-                        field_type: columnsHorizontalLabel[heading.trim()].type,
-                        value: name.value
-                      }" [context]="context"></ccd-field-read>
-                  </div>
-                  <ng-template #showEmptyTd><div>&nbsp;</div></ng-template>
-                </td>
-
-              </ng-container>
-            </ng-container>
-              <td>
-                <div style="float: right;">
-                  <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
-                </div>
-               </td>
-          </tr>
-          <!-- </COMPLEX table collapsed view>-->
-          <!-- <COMPLEX table expanded view>-->
-          <tr [hidden]="isHidden[i]">
-            <td [colSpan]="columns.length +1">
-              <table class="complex-panel-table">
-                <tbody>
-                  
-                <ng-container *ngFor="let vLabel of columnsVerticalLabel | keyvalue:keepOriginalOrder">
-                  <ng-container  *ngFor="let name of item | keyvalue">
-                    <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
-                    <!-- <COMPLEX table expandable body simple field>-->
-
-                    <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
-                        ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
-                      <th><span class="text-16">{{vLabel.value.label}}</span></th>
-                      <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
-                        <ccd-field-read [caseField]="{
-                              id: name.key,
-                              label: vLabel.value.label,
-                               field_type:  vLabel.value.type,
-                              value: name.value
-                            }" [context]="context"></ccd-field-read>
-                      </td>
-                    </tr>
-                      
-                    <!-- </COMPLEX table expandable body simple field>-->
-                    <!-- <COMPLEX table expandable body complex field>-->
-
-                    <tr *ngIf="vLabel.value.type === 'Complex' && addCaseFieldValue(vLabel.value.caseField, name.value)">
-                      <td colspan="2">
-                        <ng-container *ngFor="let field of vLabel.value.caseField | ccdFieldsFilter">
-                          <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
-                            <tr class="complex-panel-compound-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
-                                [contextFields]="vLabel.value.caseField | ccdFieldsFilter">
-                              <td colspan="2">
-                                <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
-                              </td>
-                            </tr>
-                          </ng-container>
-                          <ng-template #SimpleRow>
-                            <tr class="complex-panel-nested-field" ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
-                                [contextFields]="vLabel.value.caseField  | ccdFieldsFilter">
-                              <th><span class="text-16">{{field.label}}</span></th>
-                              <td *ngIf="!name.value.hasOwnProperty('CaseReference')">
-                                <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
-                              </td>
-                              <td *ngIf="name.value.hasOwnProperty('CaseReference')">
-                                <ccd-read-case-link-field [caseField]="addCaseReferenceValue(field, name.value.CaseReference)" [context]="context"></ccd-read-case-link-field>
-                              </td>
-                            </tr>
-                          </ng-template>
-                        </ng-container>
-                      </td>
-                    </tr>
-                    <!-- <COMPLEX table expandable body complex field>-->
-                  </ng-container>
-                  </ng-container>
-                </ng-container>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-          <!-- </COMPLEX table expanded view>-->
+<div class="complex-panel" [hidden]="caseField.hidden">
+  <dl class="complex-panel-title">
+    <dt><span class="text-16">{{caseField.label}}</span></dt>
+    <dd></dd>
+  </dl>
+  <table class="complex-panel-table">
+    <tbody>
+    <!-- <COMPLEX table field header>-->
+    <tr *ngFor="let heading of columns">
+      <th>
+        <span class="text-16">{{columnsAllLabels[heading].label}}</span>
+        <a href="javascript:void(0)"
+           (click)="sortRowsByColumns(heading)"
+           class="sort-widget"
+           [innerHTML]="sortWidget(columnsAllLabels[heading])"></a>
+      </th>
+      <th></th>
+    </tr>
+    <!-- </COMPLEX table field header>-->
+    <ng-container *ngFor="let item of rows; let i = index; trackBy: trackByIndex;">
+      <!-- <COMPLEX table collapsed view>-->
+      <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]"
+          [class.last-accordion]="isHidden[i]">
+        <ng-container *ngFor="let heading of columns">
+          <td class="text-16">
+            <div *ngIf="item[heading]; else showEmptyTd">
+              <ccd-field-read
+                [caseField]="toCaseField(heading, item[heading].label, columnsHorizontalLabel[heading].type, item[heading])"
+                [context]="context"></ccd-field-read>
+            </div>
+            <ng-template #showEmptyTd>
+              <div>&nbsp;</div>
+            </ng-template>
+          </td>
         </ng-container>
-        </tbody>
-      </table>
-    </div>
+        <td>
+          <div style="float: right;">
+            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
+          </div>
+        </td>
+      </tr>
+      <!-- </COMPLEX table collapsed view>-->
+      <!-- <COMPLEX table expanded view>-->
+      <tr [hidden]="isHidden[i]">
+        <td [colSpan]="columns.length + 1">
+          <table class="complex-panel-table">
+            <tbody>
+            <ng-container
+              *ngFor="let vLabel of columnsVerticalLabel | keyvalue: keepOriginalOrder | ccdCollectionTableCaseFieldsFilter: caseField: rows[i] | ccdReadFieldsFilter:true :undefined :true">
+              <!-- <COMPLEX table expandable body simple field>-->
+              <tr class="complex-panel-simple-field accordion-body" *ngIf="item[vLabel.id]" [hidden]="vLabel.hidden">
+                <th><span class="text-16">{{vLabel.label}}</span></th>
+                <td *ngIf="vLabel['type'] !== 'Complex'" class="text-16">
+                  <ccd-field-read [caseField]="toCaseField('', vLabel.label, vLabel.field_type, item[vLabel.id])"
+                                  [context]="context"></ccd-field-read>
+                </td>
+              </tr>
+              <!-- </COMPLEX table expandable body simple field>-->
+
+              <!-- <COMPLEX table expandable body complex field>-->
+              <tr *ngIf="vLabel['type'] === 'Complex' && addCaseFieldValue(vLabel, item[vLabel.id])" [hidden]="vLabel.hidden">
+                <td colspan="2">
+                  <ng-container *ngFor="let caseField of vLabel | ccdReadFieldsFilter:true :undefined :true">
+                      <tr class="complex-panel-compound-field" *ngIf="(caseField | ccdIsCompound); else SimpleRow">
+                        <td colspan="2">
+                          <span class="text-16"><ccd-field-read [caseField]="caseField" [context]="context"></ccd-field-read></span>
+                        </td>
+                      </tr>
+                      <ng-template #SimpleRow>
+                        <tr class="complex-panel-nested-field">
+                          <th><span class="text-16">{{caseField.label}}</span></th>
+                          <td *ngIf="!item[vLabel.id].hasOwnProperty('CaseReference')">
+                            <span class="text-16"><ccd-field-read [caseField]="caseField" [context]="context"></ccd-field-read></span>
+                          </td>
+                          <td *ngIf="item[vLabel.id].hasOwnProperty('CaseReference')">
+                            <ccd-read-case-link-field [caseField]="addCaseReferenceValue(caseField, item[vLabel.id].CaseReference)" [context]="context"></ccd-read-case-link-field>
+                          </td>
+                        </tr>
+                      </ng-template>
+                  </ng-container>
+                </td>
+              </tr>
+              <!-- <COMPLEX table expandable body complex field>-->
+            </ng-container>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <!-- </COMPLEX table expanded view>-->
+    </ng-container>
+    </tbody>
+  </table>
+</div>

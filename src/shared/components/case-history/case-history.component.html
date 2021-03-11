@@ -42,7 +42,7 @@
         <ng-container *ngFor="let tab of tabs">
           <div class="caseHistorySection">
             <h3 class="heading-h3">{{tab.label}}</h3>
-            <table class="CaseHistory" id="{{tab.id}}">
+            <table class="CaseHistory" [id]="tab.id">
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
