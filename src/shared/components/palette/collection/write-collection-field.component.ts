@@ -250,7 +250,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    // Was reassesed as part of EUI-3505. There is still a caveat around CRT, but that was deemed an unlikely scenario
+    // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
     const id = this.getControlIdAt(index);
     if (id) {
       if (!!this.profile.user && !!this.profile.user.idam) {
