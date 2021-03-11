@@ -136,7 +136,6 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
   });
 
-
   describe('Null Value Dynamic Case Field', () => {
     beforeEach(async(() => {
 
@@ -172,16 +171,60 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     }));
 
     it('should set all checkboxes unselected when caseField is null', () => {
-      component.caseField.value = null;
-
       const checkboxes = de.queryAll($UNSELECTED_CHECKBOXES);
 
       expect(checkboxes.length).toEqual(2);
     });
 
     it('should add value to checkbox when selected', () => {
-      component.caseField.value = null;
+      let option1 = de.query($OPTION_1).nativeElement;
+      option1.click();
 
+      expect(component.checkboxes.length).toEqual(1);
+    });
+  });
+
+  describe('Object Value Dynamic Case Field', () => {
+    beforeEach(async(() => {
+
+      CASE_FIELD = <CaseField>({
+        id: FIELD_ID,
+        label: 'X',
+        display_context: 'OPTIONAL',
+        field_type: FIELD_TYPE,
+        value: FIELD_LIST_ITEMS[0],
+        list_items: FIELD_LIST_ITEMS
+      });
+
+      TestBed
+        .configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            PaletteUtilsModule
+          ],
+          declarations: [
+            WriteDynamicMultiSelectListFieldComponent,
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should set all checkboxes unselected when caseField is an object', () => {
+      const checkboxes = de.queryAll($UNSELECTED_CHECKBOXES);
+
+      expect(checkboxes.length).toEqual(2);
+    });
+
+    it('should add value to checkbox when selected', () => {
       let option1 = de.query($OPTION_1).nativeElement;
       option1.click();
 
