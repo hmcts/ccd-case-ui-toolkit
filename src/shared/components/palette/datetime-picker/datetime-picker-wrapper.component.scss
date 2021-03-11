@@ -1,0 +1,56 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+
+.datepicker-container {
+  display: inline-block;
+  position: relative;
+  float: none;
+  border: 2px solid #DDD;
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 220px;
+  &:focus-within {
+    border-width: 2px !important;
+    border-color: orange !important;
+  }
+  input {
+    position: relative;
+    display: inline-flex;
+    top: -20%;
+    border: 0px;
+    &:focus {
+      border: 0px;
+      outline: none;
+    }
+  }
+  button {
+    &:focus {
+      outline: none;
+    }
+  }
+  .mat-datepicker-toggle {
+    position: relative;
+    display: inline-flex;
+    top: -30%;
+  }
+}
+
+.cdk-overlay-container {
+  .mat-datepicker-content {
+    .mat-calendar-period-button {
+      left: 15%;
+      min-width: 125px;
+      border: 1px groove black;
+      width: 200%;
+      .mat-button-wrapper {
+        text-align: center;
+      }
+    }
+    .mat-calendar-previous-button {
+      left: -70%;
+    }
+  }
+}
