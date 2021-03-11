@@ -17,8 +17,8 @@ export class ProfileService {
   constructor(private httpService: HttpService, private appConfig: AbstractAppConfig) {}
 
   get(): Observable<Profile> {
-    let url = this.appConfig.getCaseDataUrl() + ProfileService.URL;
-    let headers = new HttpHeaders()
+    const url = this.appConfig.getCaseDataUrl() + ProfileService.URL;
+    const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', ProfileService.V2_MEDIATYPE_USER_PROFILE)
       .set('Content-Type', 'application/json');
@@ -26,7 +26,6 @@ export class ProfileService {
     return this.httpService
       .get(url, {headers, observe: 'body'})
       .pipe(
-        map((response) => response),
         map((p: Object) => plainToClass(Profile, p))
       )
   }
