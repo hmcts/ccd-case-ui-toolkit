@@ -19,10 +19,10 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
-    let isNull = this.caseField.value === undefined || this.caseField.value === '';
+    const isNull = this.caseField.value === undefined || this.caseField.value === '';
 
-    if (isNull || typeof this.caseField.value === 'object') {
-      this.caseField.value = null;
+    if (isNull || !Array.isArray(this.caseField.value)) {
+      this.caseField.value = [];
     }
 
     this.dynamicRadioListControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
