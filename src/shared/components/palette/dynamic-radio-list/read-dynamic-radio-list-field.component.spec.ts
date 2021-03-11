@@ -68,21 +68,21 @@ describe('ReadDynamicRadioListFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('render label associated to the value provided', () => {
+    it('should render label associated to the value provided', () => {
       component.caseField.value = VALUE;
       fixture.detectChanges();
 
       expect(de.nativeElement.textContent).toEqual(EXPECTED_LABEL);
     });
 
-    it('render undefined value as empty string', () => {
+    it('should render undefined value as empty string', () => {
       component.caseField.value = undefined;
       fixture.detectChanges();
 
       expect(de.nativeElement.textContent).toEqual(EMPTY);
     });
 
-    it('render null value as empty string', () => {
+    it('should render null value as empty string', () => {
       component.caseField.value = null;
       fixture.detectChanges();
 
