@@ -146,6 +146,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     } else {
       cfid = index.toString();
     }
+
+    // isNew: 
     let cf: CaseField = this.newCaseField(cfid, item, index, isNew);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
@@ -188,8 +190,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     const item = { value: null }
     this.caseField.value.push(item);
-    // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
-
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index, true);
     const prefix = this.buildIdPrefix(index);
@@ -250,9 +250,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    // TODO: Reassess the logic around the id when we know what the behaviour should actually
-    // be as what was in place prevents creation of new items as it shows a readonly field
-    // rather than an writable component.
+    // Was reassesed as part of EUI-3505. There is still a caveat around CRT, but that was deemed an unlikely scenario
     const id = this.getControlIdAt(index);
     if (id) {
       if (!!this.profile.user && !!this.profile.user.idam) {
@@ -271,6 +269,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
+    // Should be able to delete if creating a case even if "D" is absent, hence:
     const id = this.getControlIdAt(index);
     return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
   }
@@ -299,16 +298,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   /**
-   * TODO: Sort out the logic necessary for this once and for all.
+   * Applied full solution as part of EUI-3505
    */
   private getControlIdAt(index: number): string {
-    // For the moment, simply return undefined.
-    // return undefined;
-
-    // What is commented out below the return statement works, except
-    // the id is always null for a newly-created entry, which means it
-    // displays as a readonly field since it appears to require an id
-    // in order to be updatable or deletable, which doesn't seem right.
 
     // this.formArray contains [ FormGroup( id: FormControl, value: FormGroup ), ... ].
     // Here, we need to get the value of the id FormControl.
