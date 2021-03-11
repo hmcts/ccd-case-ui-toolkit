@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, OptionsType } from '../http';
 import { RequestOptionsBuilder, SearchView } from '../request';
 import { SearchInput } from '../../components/search-filters';
 import { SearchResultView } from '../../domain/search';
+import { LoadingService } from '../loading';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
@@ -20,7 +21,8 @@ export class SearchService {
 
   constructor(private appConfig: AbstractAppConfig,
               private httpService: HttpService,
-              private requestOptionsBuilder: RequestOptionsBuilder) { }
+              private requestOptionsBuilder: RequestOptionsBuilder,
+              private loadingService: LoadingService) { }
 
   public search(jurisdictionId: string, caseTypeId: string,
                 metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
@@ -30,11 +32,12 @@ export class SearchService {
                                            + `/cases`;
 
     let options: OptionsType  = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
-
+    const loadingToken = this.loadingService.register();
     return this.httpService
       .get(url, options)
       .pipe(
-        map(response => response)
+        map(response => response),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
@@ -47,11 +50,12 @@ export class SearchService {
       sort,
       size: this.appConfig.getPaginationPageSize()
     };
-
+    const loadingToken = this.loadingService.register();
     return this.httpService
       .post(url, body, options)
       .pipe(
-        map(response => response)
+        map(response => response),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 

@@ -2,12 +2,12 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType } from '../../../domain';
-import { HttpErrorService, HttpService, OrderService } from '../../../services';
+import { HttpErrorService, HttpService, LoadingService, OrderService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -53,7 +53,8 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
-    private readonly workAllocationService: WorkAllocationService
+    private readonly workAllocationService: WorkAllocationService,
+    private loadingService: LoadingService
   ) {
   }
 
@@ -66,13 +67,15 @@ export class CasesService {
       + `/case-types/${caseTypeId}`
       + `/cases/${caseId}`;
 
+    const loadingToken = this.loadingService.register();
     return this.http
       .get(url)
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
@@ -83,13 +86,15 @@ export class CasesService {
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
       .set('Content-Type', 'application/json');
 
+    const loadingToken = this.loadingService.register();
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
