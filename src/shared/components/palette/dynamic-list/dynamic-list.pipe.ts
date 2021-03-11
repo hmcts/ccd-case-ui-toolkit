@@ -9,7 +9,7 @@ export class DynamicListPipe implements PipeTransform {
   private static readonly EMPTY = '';
 
   transform(value: string, items: FixedListItem[]): any {
-    let item = items.find(i => i.code === value);
+    const item = items.find(i => i.code === value);
     return item ? item.label : DynamicListPipe.EMPTY;
   }
 
