@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { AfterViewInit, Component, DoCheck, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { Subject } from 'rxjs/Subject';
-import { Activity, DisplayMode } from '../../domain/activity';
-import { ActivityPollingService } from '../../services/activity';
+import { Activity, DisplayMode } from '../../domain/activity/activity.model';
+import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { CaseField } from '../../domain/definition';
@@ -13,7 +13,7 @@ import { OrderService } from '../../services/order';
 import { CaseView, CaseViewTrigger } from '../../domain/case-view';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
 import { AlertService } from '../../services/alert';
-import { CallbackErrorsContext } from '../error/domain';
+import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
@@ -68,9 +68,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private caseNotifier: CaseNotifier,
     private errorNotifierService: ErrorNotifierService,
     private readonly location: Location
-  ) {
-  }
-
+  ) {}
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
@@ -147,26 +145,22 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifierService.announceNavigation(
-        {
-          action: NavigationOrigin.DRAFT_RESUMED,
+        {action: NavigationOrigin.DRAFT_RESUMED,
           jid: this.caseDetails.case_type.jurisdiction.id,
           ctid: this.caseDetails.case_type.id,
           etid: trigger.id,
-          queryParams: theQueryParams
-        });
+          queryParams : theQueryParams});
     } else {
       this.navigationNotifierService.announceNavigation(
-        {
-          action: NavigationOrigin.EVENT_TRIGGERED,
+        {action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,
           etid: trigger.id,
-          relativeTo: this.route
-        });
+          relativeTo: this.route});
     }
   }
 
   isDataLoaded(): boolean {
-    return !!this.caseDetails;
+    return this.caseDetails ? true : false;
   }
 
   hasTabsPresent(): boolean {
@@ -192,27 +186,14 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         && this.error.details.field_errors.length);
   }
 
-  public ngAfterViewInit() {
-    const url = this.location.path(true);
-    let hashValue = url.substring(url.indexOf('#') + 1);
-    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
-    hashValue = hashValue.replace(reguarExp, ' ');
-    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
-    if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
-    }
-  }
-
-  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    window.location.hash = tabChangeEvent.tab.textLabel;
-  }
-
   private init() {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
 
     this.caseFields = this.getTabFields();
+
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
+
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular(() => {
         this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
@@ -223,6 +204,17 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
+    }
+  }
+
+  public ngAfterViewInit() {
+    const url = this.location.path(true);
+    let hashValue = url.substring(url.indexOf('#') + 1);
+    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(reguarExp, ' ');
+    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    if (matTab && matTab.position) {
+      this.tabGroup.selectedIndex = matTab.position;
     }
   }
 
@@ -259,6 +251,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
+  }
+
+  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    window.location.hash = tabChangeEvent.tab.textLabel;
   }
 
 }

@@ -61,13 +61,13 @@
               <tr *ngIf="vLabel['type'] === 'Complex' && addCaseFieldValue(vLabel, item[vLabel.id])" [hidden]="vLabel.hidden">
                 <td colspan="2">
                   <ng-container *ngFor="let caseField of vLabel | ccdReadFieldsFilter:true :undefined :true">
-                      <tr class="complex-panel-compound-field" *ngIf="(caseField | ccdIsCompound); else SimpleRow">
+                      <tr class="complex-panel-compound-field" *ngIf="(caseField | ccdIsCompound); else SimpleRow" [hidden]="caseField">
                         <td colspan="2">
                           <span class="text-16"><ccd-field-read [caseField]="caseField" [context]="context"></ccd-field-read></span>
                         </td>
                       </tr>
                       <ng-template #SimpleRow>
-                        <tr class="complex-panel-nested-field">
+                        <tr class="complex-panel-nested-field" [hidden]="caseField.hidden">
                           <th><span class="text-16">{{caseField.label}}</span></th>
                           <td *ngIf="!item[vLabel.id].hasOwnProperty('CaseReference')">
                             <span class="text-16"><ccd-field-read [caseField]="caseField" [context]="context"></ccd-field-read></span>

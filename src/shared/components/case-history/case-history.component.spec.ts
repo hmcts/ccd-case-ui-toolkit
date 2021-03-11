@@ -126,12 +126,12 @@ describe('CaseHistoryComponent', () => {
           PlaceholderService,
           CaseReferencePipe,
           FormatTranslatorService,
-          {provide: AlertService, useValue: alertService},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: CaseHistoryService, useValue: caseHistoryService},
-          {provide: Router, useValue: router}
+          { provide: AlertService, useValue: alertService },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: CaseHistoryService, useValue: caseHistoryService },
+          { provide: Router, useValue: router }
         ]
       })
       .compileComponents();
