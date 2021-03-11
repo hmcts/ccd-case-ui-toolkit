@@ -17,6 +17,8 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
+import { DataRowOutlet } from '@angular/cdk/table';
+import { tsStructureIsReused } from '@angular/compiler-cli/src/transformers/util';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -91,6 +93,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   applyValuesChanged(valuesChanged: boolean): void {
     this.formValuesChanged = valuesChanged;
+    this.currentPageIsNotValid();
   }
 
   private initDialog() {
@@ -113,7 +116,33 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   currentPageIsNotValid(): boolean {
-    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
+    const data = this.editForm.controls.data['controls'];
+    if (data) {
+      if (this.currentPage.id === 'editAppealnewMatters') {
+        if (data.newMatters && data.hasNewMatters) {
+          const newMatters = data.newMatters.value ? data.newMatters.value : '';
+          const hasNewMatters = data.hasNewMatters.value ? data.hasNewMatters.value : '';
+          if (newMatters.length === 0 && hasNewMatters === 'Yes') {
+            return true;
+          }
+        }
+      } else {
+        if (data.email && data.mobileNumber) {
+          const email = data.email.value ? data.email.value : '';
+          const mobileNumber = data.mobileNumber.value ? data.mobileNumber.value : '';
+          if (email.length === 0 && mobileNumber.length === 0) {
+            return true;
+          }
+          if (email.length !== 0 && mobileNumber.length === 0) {
+            return false;
+          }
+          if (email.length === 0 && mobileNumber.length !== 0) {
+            return false;
+          }
+        }
+      }
+    }
+   return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
   }
 
   toPreviousPage() {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl} from '@angular/forms';
 import { BrowserService } from '../../../services/browser/browser.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
@@ -16,7 +16,11 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   ngOnInit() {
-    this.textareaControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
+    this.textareaControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null)) as FormControl;
+    if (this.textareaControl.disabled) {
+      this.textareaControl.enable({emitEvent: false});
+    }
   }
 
   autoGrow(event) {
