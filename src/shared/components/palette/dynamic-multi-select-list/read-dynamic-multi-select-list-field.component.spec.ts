@@ -45,7 +45,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
     CASE_FIELD.value = VALUES;
     CASE_FIELD.list_items = FIELD_LIST_ITEMS;
 
-    let FieldReadComponent = MockComponent({
+    const FieldReadComponent = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField']
     });
@@ -78,7 +78,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('render values as a table with one row and one cell per value', () => {
+    it('should render values as a table with one row and one cell per value', () => {
       fixture.detectChanges();
       
       const cells = de.queryAll($VALUES);
@@ -86,7 +86,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       expect(cells.length).toEqual(VALUES.length);
     });
 
-    it('render some values as a table with one row and one cell per value', () => {
+    it('should render some values as a table with one row and one cell per value', () => {
       component.caseField.value.pop();
       fixture.detectChanges();
       
@@ -126,7 +126,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
     CASE_FIELD.value = VALUES;
     CASE_FIELD.list_items = FIELD_LIST_ITEMS;
 
-    let FieldReadComponent = MockComponent({
+    const FieldReadComponent = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField']
     });

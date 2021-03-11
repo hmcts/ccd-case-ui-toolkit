@@ -3,7 +3,7 @@
     <fieldset>
   
       <legend>
-        <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+        <span *ngIf="caseField.label" class="form-label">{{caseField | ccdFieldLabel}}</span>
         <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
         <span *ngIf="checkboxes.errors && checkboxes.touched" class="error-message">{{checkboxes.errors | ccdFirstError}}</span>
       </legend>
