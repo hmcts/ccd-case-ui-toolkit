@@ -451,16 +451,20 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with invalid date when both form and case field values present', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', '2018-03', {
+      comp.caseFields = [comp.caseField, field('LabelA', 'bob', {
         id: 'LabelA',
         type: 'Date'
       }, '')];
       comp.formGroup = new FormGroup({
-        LabelA: new FormControl('2018-03')
+        LabelA: new FormControl('bob')
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '{ Invalid Date: 2018-03 }'}, label);
+      // EUI-2667. Changing this to expect a null as the DatePipe will no
+      // longer simply throw an exception for an invalid date and will
+      // attempt to parse what's passed in as a date. This is to overcome
+      // collections of dates being passed through twice.
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, label);
     });
   });
 
