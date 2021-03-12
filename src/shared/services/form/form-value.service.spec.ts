@@ -101,7 +101,7 @@ describe('FormValueService', () => {
     caseField.value = {label: 'Text Field 0', default_value: 'test text' }
     let caseFields = [caseField];
     formValueService.removeNullLabels(data, caseFields);
-    let actual = '{"type" : "Label", "label" : "Text Field 0"}';
+    let actual = '{"type":"Label","label":"Text Field 0"}';
     expect(JSON.stringify(data)).toEqual(actual);
   })
 
