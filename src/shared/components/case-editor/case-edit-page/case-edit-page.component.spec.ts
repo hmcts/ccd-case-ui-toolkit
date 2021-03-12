@@ -25,6 +25,7 @@ import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
+import { componentFactoryName } from '@angular/compiler';
 
 describe('CaseEditPageComponent', () => {
 
@@ -135,6 +136,31 @@ describe('CaseEditPageComponent', () => {
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
+    });
+
+    it('should disable continue button if textfield is empty for either the mobile number or email', () => {
+      wizardPage.isMultiColumn = () => true;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+
+      let data = comp.editForm.controls.data['controls'];
+      data.mobileNumber = {value: ''};
+      data.email = {value: ''};
+      let currentPageIsNotValid = comp.currentPageIsNotValid();
+      expect(currentPageIsNotValid).toBe(true);
+    });
+
+    it('should disable continue button if textfield is empty for new matters page', () => {
+      wizardPage.isMultiColumn = () => true;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+
+      let data = comp.editForm.controls.data['controls'];
+      comp.currentPage.id = 'editAppealnewMatters';
+      data.newMatters = {value: ''};
+      data.hasNewMatters = {value: 'Yes'};
+      let currentPageIsNotValid = comp.currentPageIsNotValid();
+      expect(currentPageIsNotValid).toBe(true);
     });
 
     it('should display a page with two columns when wizard page is multicolumn', () => {
@@ -318,7 +344,7 @@ describe('CaseEditPageComponent', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeFalsy();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
     });
 
     it('should return "Return to case list" as cancel button text if save and resume enabled for event', () => {

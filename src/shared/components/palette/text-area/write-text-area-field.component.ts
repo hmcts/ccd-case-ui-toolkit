@@ -16,7 +16,7 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   ngOnInit() {
-    let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
+    const notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
     this.textareaControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null)) as FormControl;
     if (this.textareaControl.disabled) {
       this.textareaControl.enable({emitEvent: false});

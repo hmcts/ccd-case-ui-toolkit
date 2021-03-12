@@ -17,8 +17,6 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
-import { DataRowOutlet } from '@angular/cdk/table';
-import { tsStructureIsReused } from '@angular/compiler-cli/src/transformers/util';
 
 @Component({
   selector: 'ccd-case-edit-page',
