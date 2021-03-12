@@ -100,7 +100,7 @@ describe('Date input component', function () {
             let input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
             expect(input.value).toBe('09');
         });
-        it('Day input should be valid when null', async () => {
+        it('should be valid when null', async () => {
             component.id = 'dayInput';
             component.dayChange(null);
             component.displayDay = null;
@@ -118,7 +118,7 @@ describe('Date input component', function () {
             let input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
             expect(input.value).toBe('04');
         });
-        it('Month input should be valid when null', async () => {
+        it('should be valid when null', async () => {
             component.id = 'monthInput';
             component.monthChange(null);
             component.displayMonth = null;
@@ -138,7 +138,7 @@ describe('Date input component', function () {
             expect(input.value).toBe('2021');
         });
 
-        it('year input should be valid when null', async () => {
+        it('should be valid when null', async () => {
             component.id = 'yearInput';
             component.yearChange(null);
             component.displayYear = null;
