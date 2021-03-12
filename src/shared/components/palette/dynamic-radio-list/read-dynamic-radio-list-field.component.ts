@@ -15,11 +15,5 @@ export class ReadDynamicRadioListFieldComponent extends AbstractFieldReadCompone
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
-
-    const isNull = this.caseField.value === undefined || this.caseField.value === '';
-
-    if (isNull || !Array.isArray(this.caseField.value)) {
-      this.caseField.value = [];
-    }
   }
 }
