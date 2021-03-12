@@ -2,11 +2,13 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, O
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
-import { CaseField, CaseState, CaseType, CaseView, DisplayMode,
+import {
+  CaseField, CaseState, CaseType, DisplayMode,
   DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
+} from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, SearchResultViewItemComparatorFactory } from '../../services';
+import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -100,7 +102,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private activityService: ActivityService,
     private caseReferencePipe: CaseReferencePipe,
     private placeholderService: PlaceholderService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private browserService: BrowserService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -271,6 +274,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
       selected: this.selected,
       queryParams: queryParams
     });
+
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      topContainer.focus();
+    }
   }
 
   buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
@@ -434,5 +445,13 @@ export class SearchResultComponent implements OnChanges, OnInit {
     this.clickCase.emit({
       caseId: caseId
     });
+  }
+
+  onKeyUp($event: KeyboardEvent, c: SearchResultViewItem): void {
+    if ($event.key === 'Space') {
+      if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
+        this.changeSelection(c);
+      }
+    }
   }
 }

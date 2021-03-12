@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { FixedListPipe } from './fixed-list.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+
+import { CaseField, FieldType } from '../../../domain/definition';
+import { FixedListPipe } from './fixed-list.pipe';
+import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 
 describe('ReadFixedListFieldComponent', () => {
 
@@ -191,10 +191,6 @@ describe('ReadFixedListFieldComponent', () => {
 
   describe('Persistable readonly fixed list field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
     const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
       id: FIELD_ID,
       label: 'X',
@@ -222,8 +218,8 @@ describe('ReadFixedListFieldComponent', () => {
       fixture = TestBed.createComponent(ReadFixedListFieldComponent);
       component = fixture.componentInstance;
 
-      component.registerControl = REGISTER_CONTROL;
       component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -235,5 +231,4 @@ describe('ReadFixedListFieldComponent', () => {
     });
 
   });
-
 });

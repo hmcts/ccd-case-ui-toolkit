@@ -82,9 +82,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       }
     });
-    if (document.getElementById('main-content')) {
-      document.getElementById('main-content').focus();
-    }
+    this.setFocusToTop();
   }
 
   ngAfterViewChecked(): void {
@@ -122,6 +120,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     let caseEventData: CaseEventData = this.buildCaseEventData();
     this.updateFormData(caseEventData);
     this.previous();
+    this.setFocusToTop();
   }
 
   submit() {
@@ -139,9 +138,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }, error => this.handleError(error));
       this.scrollToTop();
     }
-    if (document.getElementById('main-content')) {
-      document.getElementById('main-content').focus();
-    }
+    this.setFocusToTop();
   }
 
   updateFormData(jsonData: CaseEventData): void {
@@ -294,16 +291,55 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.eventTrigger.case_fields;
   }
 
+  private getCaseFieldsFromCurrentAndPreviousPages(): CaseField[] {
+    const result: CaseField[] = []
+    this.wizard.pages.forEach ( page => {
+      if (page.order <= this.currentPage.order) {
+        page.case_fields.forEach( field => result.push(field));
+      }
+    })
+    return result;
+  }
+
   private buildCaseEventData(): CaseEventData {
-    let pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
+    // Get hold of the fields specific to the current page that we're going to submit.
+    const pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
+
+    // Sort out the dynamic lists.
     this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields, pageFormFields);
-    let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
+
+    // Get hold of the CaseEventData and immediately tidy it up.
+    const caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields, true);
+
+    // Now add the remaining bits and pieces to the CaseEventData,
+    // The event_data should be the full context of the event, including values from previous pages, but not labels
+
+    caseEventData.event_data = this.clone(this.editForm.value.data);
+    let evCf = this.getCaseFieldsFromCurrentAndPreviousPages();
+    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, evCf,
+      false, true);
+    // we are not calling santise on event_data to be consistent with previous code. Seeems like we ought to though
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
-    caseEventData.event_data = this.editForm.value.data;
+
+    // Finally, try to set up the case_reference.
     if (this.caseEdit.caseDetails) {
       caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
     }
+
+    // Return the now hopefully sane CaseEventData.
     return caseEventData;
+  }
+
+  private clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  private setFocusToTop() {
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
   }
 }

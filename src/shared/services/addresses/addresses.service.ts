@@ -22,7 +22,7 @@ export class AddressesService {
       .get(this.appConfig.getPostcodeLookupUrl()
         .replace('${postcode}', postcode), undefined, false)
       .pipe(
-        map(res => res.json().results))
+        map(res => res.results))
       .pipe(
         map(output => output.map(addresses =>
           this.format(new AddressParser().parse(addresses[AddressesService.DPA]))

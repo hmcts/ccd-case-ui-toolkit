@@ -6,4 +6,5 @@ import { Component } from '@angular/core';
   template: '<span class="text-16">{{caseField.value | ccdFixedList:caseField.list_items}}</span>',
 })
 export class ReadFixedListFieldComponent extends AbstractFieldReadComponent {
+
 }

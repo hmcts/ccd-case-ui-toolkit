@@ -29,10 +29,10 @@
 
   <ccd-write-complex-type-field
     [hidden]="!shouldShowDetailFields()"
-    [(caseField)]="caseField"
+    [caseField]="caseField"
     [renderLabel]="false"
+    [parent]="parent"
     [formGroup]="formGroup"
-    [registerControl]="registerControl"
     [ignoreMandatory]="true"
     [idPrefix]="idPrefix"
     #writeComplexFieldComponent>

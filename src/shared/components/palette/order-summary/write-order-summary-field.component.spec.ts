@@ -75,10 +75,6 @@ describe('WriteOrderSummaryFieldComponent', () => {
     let de: DebugElement;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(ID, control);
-      return control;
-    };
 
     beforeEach(async(() => {
       TestBed
@@ -100,7 +96,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD;
-      component.registerControl = REGISTER_CONTROL;
+      component.formGroup = FORM_GROUP;
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -135,6 +131,8 @@ describe('WriteOrderSummaryFieldComponent', () => {
   });
 
   describe('Undefined value', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
     let fixture: ComponentFixture<ReadOrderSummaryFieldComponent>;
     let component: ReadOrderSummaryFieldComponent;
     let de: DebugElement;
@@ -157,6 +155,8 @@ describe('WriteOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = UNDEFINED_CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -180,6 +180,8 @@ describe('WriteOrderSummaryFieldComponent', () => {
   });
 
   describe('Null value', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
     let fixture: ComponentFixture<ReadOrderSummaryFieldComponent>;
     let component: ReadOrderSummaryFieldComponent;
     let de: DebugElement;
@@ -202,6 +204,8 @@ describe('WriteOrderSummaryFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = NULL_CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
       de = fixture.debugElement;
       fixture.detectChanges();
     }));

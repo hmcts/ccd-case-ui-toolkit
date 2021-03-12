@@ -1,27 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { Subject, Subscription } from 'rxjs';
-import { CallbackErrorsComponent } from '../../error/callback-errors.component';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { ActivatedRoute } from '@angular/router';
-import { ProfileNotifier } from '../../../services/profile';
-import { HttpError } from '../../../domain/http';
+import { Subject, Subscription } from 'rxjs';
+
+import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import {
+  CaseFieldService,
+  FieldsUtils,
+  FormErrorService,
+  FormValueService,
+  OrderService,
+  ProfileNotifier,
+  ProfileService,
+} from '../../../services';
+import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { PaletteContext } from '../../palette';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { OrderService } from '../../../services/order/order.service';
-import { CaseEventData } from '../../../domain/case-event-data.model';
-import { Confirmation } from '../domain/confirmation.model';
-import { WizardPage } from '../domain/wizard-page.model';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
-import { ProfileService } from '../../../services/profile/profile.service';
-import { Profile } from '../../../domain';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Confirmation, Wizard, WizardPage } from '../domain';
 
 // @dynamic
 @Component({
@@ -88,6 +84,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   submit(): void {
     this.isSubmitting = true;
     let caseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
+    this.formValueService.clearNonCaseFields(caseEventData.data, this.eventTrigger.case_fields);
+    this.formValueService.removeNullLabels(caseEventData.data, this.eventTrigger.case_fields);
+    this.formValueService.removeEmptyDocuments(caseEventData.data, this.eventTrigger.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     this.caseEdit.submit(caseEventData)

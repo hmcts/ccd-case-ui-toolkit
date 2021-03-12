@@ -23,10 +23,6 @@ const CASE_FIELD: CaseField = <CaseField>({
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
-const REGISTER_CONTROL = (control) => {
-  FORM_GROUP.addControl(FIELD_ID, control);
-  return control;
-};
 
 describe('WriteTextAreaFieldComponent', () => {
 
@@ -61,8 +57,8 @@ describe('WriteTextAreaFieldComponent', () => {
     fixture = TestBed.createComponent(WriteTextAreaFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
+    component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
     fixture.detectChanges();

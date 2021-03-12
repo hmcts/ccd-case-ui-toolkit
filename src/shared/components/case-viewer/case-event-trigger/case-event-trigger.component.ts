@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
-import { DisplayMode, CaseEventTrigger, CaseView, Activity, CaseEventData } from '../../../domain';
-import { CaseNotifier, CasesService } from '../../case-editor';
-import { AlertService, ActivityPollingService, EventStatusService } from '../../../services';
+
+import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { NgZone } from '@angular/core';
+import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -29,7 +29,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private caseReferencePipe: CaseReferencePipe,
     private activityPollingService: ActivityPollingService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.route.snapshot.data.case) {
@@ -66,7 +67,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData) => this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
+    return (sanitizedEditForm: CaseEventData) =>
+      this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {

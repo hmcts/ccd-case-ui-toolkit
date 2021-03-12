@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { BrowserService } from '../../services';
 
 export class DateTimeFormatUtils {
   public static formatDateAtTime(date: Date, is24Hour: boolean): string {
@@ -39,7 +40,7 @@ export class CaseListComponent {
 
   @Input() public selectedCases: any[] = [];
 
-  constructor() { }
+  constructor(private browserService: BrowserService) { }
 
   public formatDate(date: Date): string {
     return formatDate(date, 'dd MMM yyyy', 'en-GB');
@@ -99,6 +100,14 @@ export class CaseListComponent {
 
   public allOnPageSelected(): boolean {
     return !this.cases.some(aCase => !this.isSelected(aCase));
+  }
+
+  onKeyUp($event: KeyboardEvent, aCase: any): void {
+    if ($event.key === 'Space') {
+      if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
+        this.changeSelection(aCase);
+      }
+    }
   }
 }
 

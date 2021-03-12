@@ -21,10 +21,6 @@ const CASE_FIELD: CaseField = <CaseField>({
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
-const REGISTER_CONTROL = (control) => {
-  FORM_GROUP.addControl(FIELD_ID, control);
-  return control;
-};
 
 describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
@@ -46,7 +42,6 @@ describe('WriteCaseLinkFieldComponent', () => {
 
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
     de = fixture.debugElement;
     fixture.detectChanges();

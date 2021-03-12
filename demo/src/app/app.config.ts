@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
@@ -25,10 +25,11 @@ export class AppConfig extends AbstractAppConfig {
     'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
     'prd_url': 'api/caseshare/orgs',
-    'cache_time_out': 45000
+    'cache_time_out': 45000,
+    'work_allocation_api_url': '/workallocation'
   };
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     super();
   }
 
@@ -133,5 +134,13 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCacheTimeOut(): number {
     return this.config.cache_time_out;
+  }
+
+  public getWorkAllocationApiUrl(): string {
+    return this.config.work_allocation_api_url;
+  }
+
+  public getUserInfoApiUrl(): string {
+    return this.config.user_info_api_url;
   }
 }

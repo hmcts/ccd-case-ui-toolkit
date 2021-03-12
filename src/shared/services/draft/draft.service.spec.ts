@@ -1,10 +1,10 @@
 import { Observable, throwError } from 'rxjs';
-import { Response, ResponseOptions, Headers } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { DraftService } from './draft.service';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, HttpErrorService } from '../http';
 import { CaseEventData, CaseDetails, Draft, CaseView, HttpError } from '../../domain';
+import { HttpHeaders } from '@angular/common/http';
 
 describe('Drafts Service', () => {
 
@@ -64,12 +64,8 @@ describe('Drafts Service', () => {
     };
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(DRAFT_RESPONSE)
-      }))));
-      httpService.put.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(DRAFT_RESPONSE)
-      }))));
+      httpService.post.and.returnValue(Observable.of(DRAFT_RESPONSE));
+      httpService.put.and.returnValue(Observable.of(DRAFT_RESPONSE));
     });
 
     it('should create a draft on server', () => {
@@ -80,10 +76,12 @@ describe('Drafts Service', () => {
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
       expect(httpService.post).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL, CASE_EVENT_DATA, {
-        headers: new Headers({
-          'experimental': 'true',
-          'Accept': DraftService.V2_MEDIATYPE_DRAFT_CREATE
-        })});
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_CREATE)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
+        });
     });
 
     it('should set error when error is thrown when creating draft', () => {
@@ -104,10 +102,12 @@ describe('Drafts Service', () => {
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
       expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA, {
-        headers: new Headers({
-          'experimental': 'true',
-          'Accept': DraftService.V2_MEDIATYPE_DRAFT_UPDATE
-        })});
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_UPDATE)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
+        });
     });
 
     it('should set error when error is thrown when updating draft', () => {
@@ -144,9 +144,7 @@ describe('Drafts Service', () => {
     };
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify(CASE_VIEW_DATA)
-      }))));
+      httpService.get.and.returnValue(Observable.of(CASE_VIEW_DATA));
     });
 
     it('should get draft on server', () => {
@@ -156,10 +154,12 @@ describe('Drafts Service', () => {
           data => expect(data).toEqual(CASE_VIEW_DATA)
         );
       expect(httpService.get).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL, {
-        headers: new Headers({
-          'experimental': 'true',
-          'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
-        })});
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_READ)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
+        });
     });
 
     it('should set error when error is thrown when getting draft', () => {
@@ -177,7 +177,7 @@ describe('Drafts Service', () => {
   describe('deleteDraft()', () => {
 
     beforeEach(() => {
-      httpService.delete.and.returnValue(Observable.of(new Response(new ResponseOptions())));
+      httpService.delete.and.returnValue(Observable.of());
     });
 
     it('should delete draft on server', () => {
@@ -185,10 +185,12 @@ describe('Drafts Service', () => {
         .deleteDraft(DRAFT_ID);
 
       expect(httpService.delete).toHaveBeenCalledWith(GET_OR_DELETE_DRAFT_URL, {
-        headers: new Headers({
-          'experimental': 'true',
-          'Accept': DraftService.V2_MEDIATYPE_DRAFT_DELETE
-        })});
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_DELETE)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
+        });
     });
 
     it('should set error when error is thrown when deleting draft', () => {

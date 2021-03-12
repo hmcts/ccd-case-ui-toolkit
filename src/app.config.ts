@@ -24,6 +24,10 @@ export abstract class AbstractAppConfig {
   abstract getBannersUrl(): string;
   abstract getPrdUrl(): string;
   abstract getCacheTimeOut(): number;
+  abstract getWorkAllocationApiUrl(): string;
+  getUserInfoApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
@@ -47,4 +51,6 @@ export class CaseEditorConfig {
   pagination_page_size: number;
   prd_url: string;
   cache_time_out: number;
+  work_allocation_api_url: string;
+  user_info_api_url: string;
 }

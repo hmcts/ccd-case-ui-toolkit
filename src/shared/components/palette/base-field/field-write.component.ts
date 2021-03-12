@@ -1,10 +1,13 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { PaletteService } from '../palette.service';
-import { AbstractFieldWriteComponent } from './abstract-field-write.component';
-import { FormControl } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
+
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
-import { plainToClassFromExist } from 'class-transformer';
+import { PaletteService } from '../palette.service';
+import { AbstractFieldWriteComponent } from './abstract-field-write.component';
+
+const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
 
 @Component({
   selector: 'ccd-field-write',
@@ -23,13 +26,12 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   fieldContainer: ViewContainerRef;
 
   constructor(private resolver: ComponentFactoryResolver,
-              private paletteService: PaletteService,
-              private formValidatorsService: FormValidatorsService) {
+              private paletteService: PaletteService) {
     super();
   }
 
-  protected addValidators(caseField: CaseField, control: FormControl): void {
-    this.formValidatorsService.addValidators(caseField, control);
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
+    FormValidatorsService.addValidators(caseField, control);
   }
 
   ngOnInit(): void {
@@ -38,11 +40,18 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     let injector = Injector.create([], this.fieldContainer.parentInjector);
     let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
-    // Provide component @Inputs
-    component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
+    // Only Fixed list use plainToClassFromExist
+    // Better performance
+    // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist
+    // Added a check to make sure it's NOT already a CaseField and then
+    // assigning it back to this.caseField so we don't create separation.
+    if (FIX_CASEFIELD_FOR.indexOf(this.caseField.field_type.type) > -1 && !(this.caseField instanceof CaseField)) {
+      this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
+    }
+    component.instance['caseField'] =  this.caseField;
     component.instance['caseFields'] = this.caseFields;
     component.instance['formGroup'] = this.formGroup;
-    component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
+    component.instance['parent'] = this.parent;
     component.instance['idPrefix'] = this.idPrefix;
     if (this.caseField.field_type.id === 'AddressGlobal') {
       component.instance['ignoreMandatory'] = true;

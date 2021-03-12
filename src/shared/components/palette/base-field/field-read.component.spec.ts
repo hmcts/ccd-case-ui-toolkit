@@ -58,7 +58,7 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
-  let formGroup: FormGroup;
+  let formGroup: FormGroup = new FormGroup({});
   let caseFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
@@ -124,7 +124,6 @@ describe('FieldReadComponent', () => {
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
-    expect(fieldTest.registerControl).not.toBeNull();
   });
 
   it('should pass context to field instance', () => {
