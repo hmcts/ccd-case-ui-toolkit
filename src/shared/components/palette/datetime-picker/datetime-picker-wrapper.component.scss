@@ -7,8 +7,7 @@
 .datepicker-container {
   display: inline-block;
   position: relative;
-  float: none;
-  border: 2px solid #DDD;
+  border: 2px solid transparent;
   margin-left: auto;
   margin-right: auto;
   min-width: 220px;
@@ -16,7 +15,7 @@
     border-width: 2px !important;
     border-color: orange !important;
   }
-  input {
+  .datepicker-wrapper-input {
     position: relative;
     display: inline-flex;
     top: -20%;
@@ -26,7 +25,7 @@
       outline: none;
     }
   }
-  button {
+  .mat-icon-button {
     &:focus {
       outline: none;
     }
@@ -40,17 +39,78 @@
 
 .cdk-overlay-container {
   .mat-datepicker-content {
+    .mat-calendar-header {
+      height: 34px;
+      border-bottom: 1px ridge #bfc1c3;
+    }
     .mat-calendar-period-button {
-      left: 15%;
+      left: 14%;
       min-width: 125px;
-      border: 1px groove black;
+      border-right: 1px ridge #bfc1c3;
+      border-left: 1px ridge #bfc1c3;
+      border-radius: 0px;
+      top: -20px;
       width: 200%;
       .mat-button-wrapper {
         text-align: center;
+        font-weight: bold;
       }
     }
     .mat-calendar-previous-button {
-      left: -70%;
+      left: -73%;
+      top: -20px;
+    }
+    .mat-calendar-next-button {
+      top: -20px;
+      left: 1%;
+    }
+    .mat-calendar-table-header {
+      color: black;
+    }
+    th.ng-star-inserted {
+      font-weight: bold;
+      font-size: 15px;
+      padding-top: 2%;
+      padding-bottom: 2%;
+    }
+    .mat-button-wrapper {
+      text-transform: capitalize !important;
+    }
+    .mat-calendar-table-header-divider {
+      padding: 0px;
+      border-bottom: none;
+      &::after {
+        height: 0px;
+      }
+    }
+    .mat-calendar-content {
+      padding: 0px;
+    }
+    ngx-mat-month-view {
+      .mat-calendar-body-label {
+        font-weight: bold;
+        font-size: large;
+        color: black;
+      }
+      .mat-calendar-body-selected {
+        border: none;
+        background-color: transparent;
+        color: black;
+      }
+      .mat-calendar-body-cell {
+        border: 1px ridge #bfc1c3;
+        .mat-calendar-body-cell-content {
+          width: 50%;
+          height: 50%;
+          padding: 12px;
+          .mat-calendar-body-today {
+            border-color: none;
+            .mat-calendar-body-selected {
+              box-shadow: none;
+            }
+          }
+        }
+      }
     }
   }
 }
