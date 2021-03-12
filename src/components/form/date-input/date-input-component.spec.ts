@@ -53,41 +53,41 @@ describe('Date input component', function () {
         fixture.detectChanges();
     }));
 
-    it('should valid when date value', async () => {
+    it('should verify day, month, year value from date', async () => {
         component.id = 'dateField'
         component.writeValue('2021-04-09T08:02:27.542');
         fixture.detectChanges();
-        let monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+        const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
         expect(monthInput.value).toBe('04');
-        let dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+        const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
         expect(dayInput.value).toBe('09');
-        let yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+        const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
         expect(yearInput.value).toBe('2021');
     });
-    it('should be valid when date', () => {
-        let results = component.validate({ value: '2018-04-09T08:02:27.542' } as FormControl);
+    it('should be valid when the date is in correct format', () => {
+        const results = component.validate({ value: '2018-04-09T08:02:27.542' } as FormControl);
         expect(results).toBeUndefined();
     });
 
     it('should be invalid when invalid date pattern', () => {
-        let results = component.validate({ value: 'x' } as FormControl);
-        expect(results['pattern']).toBeTruthy();
+        const results = component.validate({ value: 'x' } as FormControl);
+        expect(results).toEqual({ pattern: 'Date is not valid' });
     });
 
     it('should not be valid when empty string and mandatory', () => {
         component.mandatory = true;
-        let results = component.validate({ value: '' } as FormControl);
+        const results = component.validate({ value: '' } as FormControl);
         expect(results).toEqual({ required: 'This field is required' });
     });
 
     it('should be valid when null', () => {
-        let results = component.validate({ value: null } as FormControl);
+        const results = component.validate({ value: null } as FormControl);
         expect(results).toBeUndefined();
     });
 
     it('should not be valid when null and mandatory', () => {
         component.mandatory = true;
-        let results = component.validate({ value: null } as FormControl);
+        const results = component.validate({ value: null } as FormControl);
         expect(results).toEqual({ required: 'This field is required' });
     });
 
@@ -97,7 +97,7 @@ describe('Date input component', function () {
             component.dayChange('09');
             component.displayDay = '09'
             fixture.detectChanges();
-            let input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+            const input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
             expect(input.value).toBe('09');
         });
         it('should be valid when null', async () => {
@@ -105,7 +105,7 @@ describe('Date input component', function () {
             component.dayChange(null);
             component.displayDay = null;
             fixture.detectChanges();
-            let input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+            const input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
             expect(input.value).toBeNull();
         });
     })
@@ -115,7 +115,7 @@ describe('Date input component', function () {
             component.monthChange('04');
             component.displayMonth = '04'
             fixture.detectChanges();
-            let input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+            const input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
             expect(input.value).toBe('04');
         });
         it('should be valid when null', async () => {
@@ -123,7 +123,7 @@ describe('Date input component', function () {
             component.monthChange(null);
             component.displayMonth = null;
             fixture.detectChanges();
-            let input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+            const input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
             expect(input.value).toBeNull();
         });
     })
@@ -134,7 +134,7 @@ describe('Date input component', function () {
             component.yearChange('2021');
             component.displayYear = '2021'
             fixture.detectChanges();
-            let input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+            const input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
             expect(input.value).toBe('2021');
         });
 
@@ -143,7 +143,7 @@ describe('Date input component', function () {
             component.yearChange(null);
             component.displayYear = null;
             fixture.detectChanges();
-            let input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+            const input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
             expect(input.value).toBeNull();
         });
     })
