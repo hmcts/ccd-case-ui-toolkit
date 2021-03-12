@@ -142,10 +142,10 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
 
-      let data = comp.editForm.controls.data['controls'];
+      const data = comp.editForm.controls.data['controls'];
       data.mobileNumber = {value: ''};
       data.email = {value: ''};
-      let currentPageIsNotValid = comp.currentPageIsNotValid();
+      const currentPageIsNotValid = comp.currentPageIsNotValid();
       expect(currentPageIsNotValid).toBe(true);
     });
 
@@ -154,11 +154,11 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
 
-      let data = comp.editForm.controls.data['controls'];
+      const data = comp.editForm.controls.data['controls'];
       comp.currentPage.id = 'editAppealnewMatters';
       data.newMatters = {value: ''};
       data.hasNewMatters = {value: 'Yes'};
-      let currentPageIsNotValid = comp.currentPageIsNotValid();
+      const currentPageIsNotValid = comp.currentPageIsNotValid();
       expect(currentPageIsNotValid).toBe(true);
     });
 
