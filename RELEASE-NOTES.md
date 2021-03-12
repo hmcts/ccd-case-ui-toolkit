@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.73.6-profile-call-before-event-trigger
+**EUI-3335** Profile call before event trigger
+
 ### Version 2.73.2-collection-date-field
 **EUI-2667** Fix to date field rendering within collections
 

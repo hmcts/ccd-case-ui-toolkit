@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.73.2-collection-date-field",
+  "version": "2.73.6-profile-call-before-event-trigger",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
