@@ -25,7 +25,6 @@ import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
-import { componentFactoryName } from '@angular/compiler';
 
 describe('CaseEditPageComponent', () => {
 
