@@ -21,7 +21,7 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
 
     const isNull = this.caseField.value === undefined || this.caseField.value === '';
 
-    if (isNull || !Array.isArray(this.caseField.value)) {
+    if (isNull || typeof this.caseField.value === 'object') {
       this.caseField.value = [];
     }
 
