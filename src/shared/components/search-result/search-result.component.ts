@@ -3,9 +3,19 @@ import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
-  CaseField, CaseState, CaseType, DisplayMode,
-  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
+  CaseField,
+  CaseState,
+  CaseType,
+  DisplayMode,
+  DRAFT_PREFIX,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultView,
+  SearchResultViewColumn,
+  SearchResultViewItem,
+  SearchResultViewItemComparator,
+  SortOrder,
+  SortParameters
 } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
 import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
@@ -333,7 +343,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
       }
     }
-    // triggering chnage detection to fix expressionchangedafterithasbeencheckederror
+    // triggering change detection to fix expressionchangedafterithasbeencheckederror
     this.cdr.detectChanges();
   }
 
