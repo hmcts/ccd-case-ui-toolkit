@@ -6,7 +6,6 @@ import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { Banner } from '../../domain';
 
-
 describe('Banner service', () => {
 
   const MOCK_BANNER: Banner[] = [{
@@ -29,21 +28,15 @@ describe('Banner service', () => {
 
   describe('Banners()', () => {
     const MOCK_BANNER1 = { banners: MOCK_BANNER }
-    
     beforeEach(() => {
       params = new HttpParams();
-      
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-
       appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getBannersUrl', 'getCaseDataUrl']);
       appConfig.getApiUrl.and.returnValue(API_URL);
       appConfig.getCaseDataUrl.and.returnValue(BANNER_URL);
       appConfig.getBannersUrl.and.returnValue(BANNER_URL);
-
       bannerService = new BannersService(httpService, appConfig);
     });
-
-
     describe('getBanners()', () => {
 
       beforeEach(() => {
@@ -68,7 +61,3 @@ describe('Banner service', () => {
   });
 
 });
-
-
-
-
