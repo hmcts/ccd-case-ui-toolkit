@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 2.73.2-collection-date-field
-**EUI-2667** Fix to date field rendering within collections
+### Version 2.73.5-ngmodel-deprecation
+**EUI-3410** ngModel deprecation
 
 ### Version 2.73.0
 **EUI-3222** Loading spinner
