@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.73.3-beta-grey-bars
+### Version 2.73.4-beta-grey-bars
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
 
 ### Version 2.73.2-collection-date-field
