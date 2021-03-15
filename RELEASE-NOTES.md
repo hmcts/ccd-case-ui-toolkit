@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.73.0-hotfix-error-message-display
+**EUI-3594** Fix issue with error message specifics not being displayed
+
 ### Version 2.73.0
 **EUI-3222** Loading spinner
 
