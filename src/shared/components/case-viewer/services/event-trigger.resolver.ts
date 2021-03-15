@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { CaseEventTrigger, CaseView } from '../../../domain';
-import { throwError, forkJoin } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CasesService } from '../../case-editor';
 import { AlertService, ProfileNotifier, ProfileService } from '../../../services';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
-
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly PARAM_EVENT_ID = 'eid';
   public static readonly IGNORE_WARNING = 'ignoreWarning';
-
   private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
   private cachedEventTrigger: CaseEventTrigger;
-
   constructor(
     private casesService: CasesService,
     private alertService: AlertService,
@@ -44,15 +41,17 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     }
 
     const profileObserver = this.profileService.get();
-    const eventTriggerObserver = this.casesService.getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning);
-
-    return forkJoin([profileObserver, eventTriggerObserver])
+    profileObserver
       .pipe(
-        map(([profileData, eventTriggerData]) => {
+        map(profileData => {
           this.profileNotifier.announceProfile(profileData);
-          this.cachedEventTrigger = eventTriggerData;
-          return this.cachedEventTrigger;
-        }),
+        })
+      ).toPromise();
+
+    return this.casesService
+      .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
+      .pipe(
+        map(eventTrigger => this.cachedEventTrigger = eventTrigger),
         catchError(error => {
           this.alertService.error(error.message);
           return throwError(error);
