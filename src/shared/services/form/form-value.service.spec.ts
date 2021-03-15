@@ -89,22 +89,26 @@ describe('FormValueService', () => {
     expect(JSON.stringify(formFields.data.dynamicList))
       .toEqual(actual);
   })
-
-  it('should remove unnecessary fields', () => {
-    let data = { fieldId: null, type: 'Label', label: 'Text Field 0' };
-    let caseField = new CaseField();
-    let fieldType = new FieldType();
-    fieldType.id = 'fieldId';
-    fieldType.type = 'Label';
-    caseField.id = 'fieldId';
-    caseField.field_type = fieldType;
-    caseField.value = {label: 'Text Field 0', default_value: 'test text' }
-    let caseFields = [caseField];
-    formValueService.removeNullLabels(data, caseFields);
-    let actual = '{"type":"Label","label":"Text Field 0"}';
-    expect(JSON.stringify(data)).toEqual(actual);
+  
+  describe('removeNullLabels', () => {
+    it('should remove unnecessary fields', () => {
+      let data = { fieldId: null, type: 'Label', label: 'Text Field 0' };
+      let caseField = new CaseField();
+      let fieldType = new FieldType();
+      fieldType.id = 'fieldId';
+      fieldType.type = 'Label';
+      caseField.id = 'fieldId';
+      caseField.field_type = fieldType;
+      caseField.value = {label: 'Text Field 0', default_value: 'test text' }
+      let caseFields = [caseField];
+      formValueService.removeNullLabels(data, caseFields);
+      const actual = '{"type":"Label","label":"Text Field 0"}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    })
+  
   })
 
+  
   describe('get field value', () => {
     describe('simple types', () => {
 

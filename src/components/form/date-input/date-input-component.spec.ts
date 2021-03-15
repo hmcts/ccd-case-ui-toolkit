@@ -15,7 +15,8 @@ describe('Date input component', function () {
 
     let Input: any;
     let onChange;
-
+    const DATE = '2018-04-09T08:02:27.542';
+    const INVALIDDATE = 'x';
     beforeEach(async(() => {
         // Input is mocked so that one-way bound inputs can be tested
         Input = MockComponent({
@@ -65,16 +66,16 @@ describe('Date input component', function () {
         expect(yearInput.value).toBe('2021');
     });
     it('should be valid when the date is in correct format', () => {
-        const results = component.validate({ value: '2018-04-09T08:02:27.542' } as FormControl);
+        const results = component.validate({ value: DATE } as FormControl);
         expect(results).toBeUndefined();
     });
 
     it('should be invalid when invalid date pattern', () => {
-        const results = component.validate({ value: 'x' } as FormControl);
+        const results = component.validate({ value: INVALIDDATE } as FormControl);
         expect(results).toEqual({ pattern: 'Date is not valid' });
     });
 
-    it('should not be valid when empty string and mandatory', () => {
+    it('should not valid when empty string and mandatory', () => {
         component.mandatory = true;
         const results = component.validate({ value: '' } as FormControl);
         expect(results).toEqual({ required: 'This field is required' });
@@ -85,14 +86,14 @@ describe('Date input component', function () {
         expect(results).toBeUndefined();
     });
 
-    it('should not be valid when null and mandatory', () => {
+    it('should not valid when null and mandatory', () => {
         component.mandatory = true;
         const results = component.validate({ value: null } as FormControl);
         expect(results).toEqual({ required: 'This field is required' });
     });
 
     describe('day input component', function () {
-        it('should be valid when day value', async () => {
+        it('day input should valid for a string value', async () => {
             component.id = 'dayInput';
             component.dayChange('09');
             component.displayDay = '09'
@@ -100,7 +101,8 @@ describe('Date input component', function () {
             const input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
             expect(input.value).toBe('09');
         });
-        it('should be valid when null', async () => {
+
+        it('day input should null for a null value', async () => {
             component.id = 'dayInput';
             component.dayChange(null);
             component.displayDay = null;
@@ -108,9 +110,10 @@ describe('Date input component', function () {
             const input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
             expect(input.value).toBeNull();
         });
+        
     })
     describe('month input component', function () {
-        it('should valid when month value', async () => {
+        it('month input should valid for a string value', async () => {
             component.id = 'monthInput';
             component.monthChange('04');
             component.displayMonth = '04'
@@ -118,7 +121,7 @@ describe('Date input component', function () {
             const input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
             expect(input.value).toBe('04');
         });
-        it('should be valid when null', async () => {
+        it('month input should null for a null value', async () => {
             component.id = 'monthInput';
             component.monthChange(null);
             component.displayMonth = null;
@@ -129,7 +132,7 @@ describe('Date input component', function () {
     })
     describe('year input component', function () {
 
-        it('should valid when year value', async () => {
+        it('year input should null for a null value', async () => {
             component.id = 'yearInput';
             component.yearChange('2021');
             component.displayYear = '2021'
@@ -138,7 +141,7 @@ describe('Date input component', function () {
             expect(input.value).toBe('2021');
         });
 
-        it('should be valid when null', async () => {
+        it('year input should null for a null value', async () => {
             component.id = 'yearInput';
             component.yearChange(null);
             component.displayYear = null;

@@ -5,13 +5,10 @@ import { HttpService } from '../../services';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('Organisation Service', () => {
-
     const PRD_URL = 'http://aggregated.ccd.reform/api/caseshare/orgs';
-
     let appConfig: any;
     let httpService: any;
     let organisationService: OrganisationService;
-
     let ORGANISATIONADDRESS: OrganisationAddress [] = [{
             addressLine1: '12',
             addressLine2: 'Nithdale Role',
@@ -49,16 +46,16 @@ describe('Organisation Service', () => {
         beforeEach(() => {
             httpService.get.and.returnValue(Observable.of(ORGANISATIONS));
         });
-        it('should be call getActiveOrganisations() ', () => {
+        it('should call getActiveOrganisations() ', () => {
             let test = spyOn(organisationService, 'getActiveOrganisations');
             organisationService.getActiveOrganisations();
             expect(test).toHaveBeenCalled();
             expect(organisationService.getActiveOrganisations).toHaveBeenCalledWith();
 
         });
-        it('should be validate oorganisaation data', () => {
-            organisationService.getActiveOrganisations().subscribe(organisatuon => {
-                organisatuon.forEach(org => {
+        it('should validate organisation data', () => {
+            organisationService.getActiveOrganisations().subscribe(organisation => {
+                organisation.forEach(org => {
                     expect(ORGANISATIONS[0].organisationIdentifier).toBe(org.organisationIdentifier);
 
                     expect(ORGANISATIONS[0].name).toBe(org.name);

@@ -15,15 +15,13 @@ describe('Banner service', () => {
     bannerViewed: true,
     bannerEnabled: true
   }]
-  const JID = ['DIVORCE'];
+  const JID = ['DIVORCE', 'PROBATE'];
   let params: HttpParams;
-
   const API_URL = 'http://aggregated.ccd.reform';
   const BANNER_URL = API_URL + '/data/internal/banners/';
 
   let appConfig: any;
   let httpService: any;
-
   let bannerService: BannersService;
 
   describe('Banners()', () => {
@@ -43,7 +41,7 @@ describe('Banner service', () => {
         httpService.get.and.returnValue(Observable.of(MOCK_BANNER1));
       });
 
-      it('should use BannerUrl have been called', () => {
+      it('should use banner url have been called', () => {
         bannerService.getBanners(JID).subscribe();
         expect(appConfig.getBannersUrl).toHaveBeenCalled();
       });
@@ -53,6 +51,15 @@ describe('Banner service', () => {
           .getBanners(JID)
           .subscribe(
             banner => expect(banner).toBe(MOCK_BANNER1.banners)
+          );
+      });
+
+      it('should retrieve banners with empty ', () => {
+        httpService.get.and.returnValue(Observable.of());
+        bannerService
+          .getBanners(JID)
+          .subscribe(
+            banner => expect(banner).toBeUndefined()
           );
       });
 
