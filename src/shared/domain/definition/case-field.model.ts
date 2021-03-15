@@ -38,7 +38,7 @@ export class CaseField implements Orderable {
 
   @Expose()
   get value(): any {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
+    if (this.isDynamic()) {
       return this._value && this._value.value ? this._value.value.code : this._value;
     } else {
       return this._value;
@@ -46,7 +46,7 @@ export class CaseField implements Orderable {
   }
 
   set value(value: any) {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
+    if (this.isDynamic()) {
       if (value && value instanceof Object && value.list_items) {
         this._list_items = value.list_items;
       } else if (!this._list_items || this._list_items.length === 0) {
@@ -62,7 +62,7 @@ export class CaseField implements Orderable {
 
   @Expose()
   get list_items(): any {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
+    if (this.isDynamic()) {
       return this._value && this._value.list_items ? this._value.list_items : this._list_items;
     } else {
       return this.field_type.fixed_list_items;
@@ -131,6 +131,15 @@ export class CaseField implements Orderable {
   @Expose()
   isComplex(): boolean {
     return this.field_type && this.field_type.type === 'Complex';
+  }
+
+  @Expose()
+  isDynamic(): boolean {
+    const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+    
+    if (!this.field_type) return false;
+
+    return dynamicFieldTypes.some(t => t === this.field_type.type);
   }
 
   @Expose()
