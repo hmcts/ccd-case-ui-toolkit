@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 2.74.1-non-descriptive-headings-aa
-**EUI-3506** Loading spinner
+**EUI-3506** Non-Descriptive Headings (AA) - issue 04
 
 ### Version 2.72.9-fix-case-submission
 **EUI-3494** Fixed the missing case ID on case creation.
