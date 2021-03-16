@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.74.1-non-descriptive-headings-aa
+### Version 2.74.1
 **EUI-3506** Non-Descriptive Headings (AA) - issue 04
 
 ### Version 2.73.5-ngmodel-deprecation
