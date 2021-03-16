@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.73.5-ngmodel-deprecation
+**EUI-3410** ngModel deprecation
+
 ### Version 2.73.0
 **EUI-3222** Loading spinner
 
