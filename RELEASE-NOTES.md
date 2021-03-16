@@ -2,6 +2,8 @@
 
 ### 2.73.4-alpha-task-event-completion-integration
 **EUI-3537** WA integration
+### Version 2.73.5-ngmodel-deprecation
+**EUI-3410** ngModel deprecation
 
 ### Version 2.73.0
 **EUI-3222** Loading spinner
