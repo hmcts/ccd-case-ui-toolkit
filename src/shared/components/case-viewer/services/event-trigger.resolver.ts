@@ -40,13 +40,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
       ignoreWarning = 'false';
     }
 
-    const profileObserver = this.profileService.get();
-    profileObserver
-      .pipe(
-        map(profileData => {
-          this.profileNotifier.announceProfile(profileData);
-        })
-      ).toPromise();
+    this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
 
     return this.casesService
       .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
