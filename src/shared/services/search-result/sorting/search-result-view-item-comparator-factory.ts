@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { isUndefined } from 'util';
 import { SearchResultViewColumn, SearchResultViewItemComparator, SearchResultViewItem } from '../../../domain';
 
 @Injectable()
 export class SearchResultViewItemComparatorFactory {
+  public static isStr(fieldValue: any): boolean {
+    return typeof fieldValue === 'string' || fieldValue instanceof String
+  }
 
   createSearchResultViewItemComparator(column: SearchResultViewColumn): SearchResultViewItemComparator {
     let fieldId = column.case_field_id;
@@ -38,8 +40,8 @@ export class SearchResultViewItemComparatorFactory {
       compare(a: SearchResultViewItem, b: SearchResultViewItem) {
         let fieldA = a.case_fields[fieldId];
         let fieldB = b.case_fields[fieldId];
-        fieldA = isUndefined(fieldA) || fieldA === null ? 0 : fieldA;
-        fieldB = isUndefined(fieldB) || fieldB === null ? 0 : fieldB;
+        fieldA = fieldA === undefined || fieldA === null ? 0 : fieldA;
+        fieldB = fieldB === undefined || fieldB === null ? 0 : fieldB;
         return fieldA - fieldB;
       }
     };
@@ -50,8 +52,10 @@ export class SearchResultViewItemComparatorFactory {
       compare(a: SearchResultViewItem, b: SearchResultViewItem) {
         let fieldA = a.case_fields[fieldId];
         let fieldB = b.case_fields[fieldId];
-        fieldA = isUndefined(fieldA) || fieldA == null ? '' : fieldA.toLowerCase();
-        fieldB = isUndefined(fieldB) || fieldB == null ? '' : fieldB.toLowerCase();
+        fieldA = fieldA === undefined || fieldA === null ? '' : SearchResultViewItemComparatorFactory.isStr(fieldA) ?
+          fieldA.toLowerCase() : fieldA;
+        fieldB = fieldB === undefined || fieldB === null ? '' : SearchResultViewItemComparatorFactory.isStr(fieldB) ?
+          fieldB.toLowerCase() : fieldB;
         return fieldA === fieldB ? 0 : fieldA > fieldB ? 1 : -1;
       }
     };
@@ -62,8 +66,8 @@ export class SearchResultViewItemComparatorFactory {
       compare(a: SearchResultViewItem, b: SearchResultViewItem) {
         let fieldA = a.case_fields[fieldId];
         let fieldB = b.case_fields[fieldId];
-        fieldA = isUndefined(fieldA) || fieldA == null ? '' : fieldA.join().toLowerCase();
-        fieldB = isUndefined(fieldB) || fieldB == null ? '' : fieldB.join().toLowerCase();
+        fieldA = fieldA === undefined || fieldA === null ? '' : fieldA.join().toLowerCase();
+        fieldB = fieldB === undefined || fieldB === null ? '' : fieldB.join().toLowerCase();
         return fieldA === fieldB ? 0 : fieldA > fieldB ? 1 : -1;
       }
     };

@@ -74,6 +74,17 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     });
 
+    it('Should return a comparator to order numbers fields', () => {
+
+      let comparator
+        = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Text'));
+
+      expect(comparator.compare(item(123), item(123))).toBe(0);
+      expect(comparator.compare(item(123), item(456))).toBe(-1);
+      expect(comparator.compare(item(456), item(123))).toBe(1);
+
+    });
+
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
       let comparator

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.73.6-numeric-comparator
+**EUI-3146** numeric-comparator-hot-fix
+
 ### Version 2.73.5-ngmodel-deprecation
 **EUI-3410** ngModel deprecation
 
