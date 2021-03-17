@@ -1,7 +1,7 @@
 import { HttpErrorService } from './http-error.service';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth/auth.service';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 describe('HttpErrorService', () => {
   const CURRENT_URL = 'http://core-case-data.common-components.reform';
@@ -29,36 +29,36 @@ describe('HttpErrorService', () => {
     'message': 'The server understood the request but refuses to authorize it....',
     'path': CURRENT_URL
   };
-  const VALID_ERROR_RESPONSE = new HttpResponse({
+  const VALID_ERROR_RESPONSE = new HttpErrorResponse({
     headers: new HttpHeaders()
       .set('Content-Type', 'application/json'),
-    body: VALID_ERROR_BODY,
+    error: VALID_ERROR_BODY,
     status: 422
   });
-  const VALID_ERROR_RESPONSE_WITH_CHARSET = new HttpResponse({
+  const VALID_ERROR_RESPONSE_WITH_CHARSET = new HttpErrorResponse({
     headers: new HttpHeaders()
       .set('Content-Type', 'application/json;charset=UTF-8'),
-    body: VALID_ERROR_BODY,
+    error: VALID_ERROR_BODY,
     status: 422
   });
 
-  const NOT_VALID_ERROR_RESPONSE = new HttpResponse({
+  const NOT_VALID_ERROR_RESPONSE = new HttpErrorResponse({
     headers: new HttpHeaders()
       .set('Content-Type', 'application/json'),
-    body: '{notvalidjson}'
+    error: '{notvalidjson}'
   });
 
-  const HTTP_401_RESPONSE = new HttpResponse({
+  const HTTP_401_RESPONSE = new HttpErrorResponse({
     headers: new HttpHeaders()
       .set('Content-Type', 'application/json'),
-    body: HTTP_401_ERROR_BODY,
+    error: HTTP_401_ERROR_BODY,
     status: 401
   });
 
-  const HTTP_403_RESPONSE = new HttpResponse({
+  const HTTP_403_RESPONSE = new HttpErrorResponse({
     headers: new HttpHeaders()
       .set('Content-Type', 'application/json'),
-    body: HTTP_403_ERROR_BODY,
+    error: HTTP_403_ERROR_BODY,
     status: 403
   });
 
@@ -94,7 +94,7 @@ describe('HttpErrorService', () => {
         );
     });
 
-    it('should convert a valid Response error into an HttpError', (done) => {
+    it('should convert a valid HttpErrorResponse error into an HttpError', (done) => {
       errorService.handle(VALID_ERROR_RESPONSE)
         .subscribe(
           () => fail('no error'),
@@ -105,7 +105,7 @@ describe('HttpErrorService', () => {
         );
     });
 
-    it('should handle a valid Response with charsetInfo', (done) => {
+    it('should handle a valid HttpErrorResponse with charsetInfo', (done) => {
       errorService.handle(VALID_ERROR_RESPONSE_WITH_CHARSET)
         .subscribe(
           () => fail('no error'),
@@ -116,12 +116,13 @@ describe('HttpErrorService', () => {
         );
     });
 
-    it('should convert a non-valid Response error into an HttpError', (done) => {
+    it('should convert a non-valid HttpErrorResponse error into an HttpError', (done) => {
       errorService.handle(NOT_VALID_ERROR_RESPONSE)
         .subscribe(
           () => fail('no error'),
           error => {
             expect(error).toEqual(HttpError.from(NOT_VALID_ERROR_RESPONSE));
+            expect(error.status).toBe(500);
             done();
           }
         );
