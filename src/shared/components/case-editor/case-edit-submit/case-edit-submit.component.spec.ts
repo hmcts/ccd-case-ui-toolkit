@@ -356,6 +356,9 @@ describe('CaseEditSubmitComponent', () => {
       comp.isSubmitting = true;
       fixture.detectChanges();
 
+      // The isDisabled property should immediately pick up on this.
+      expect(comp.isDisabled).toBeTruthy();
+
       let submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeTruthy();
 
@@ -369,6 +372,9 @@ describe('CaseEditSubmitComponent', () => {
     it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
       comp.isSubmitting = false;
       fixture.detectChanges();
+
+      // The isDisabled property should immediately pick up on this.
+      expect(comp.isDisabled).toBeFalsy();
 
       let submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeFalsy();
