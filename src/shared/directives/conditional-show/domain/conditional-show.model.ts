@@ -10,6 +10,8 @@ export class ShowCondition {
   private static CONDITION_EQUALS = '=';
   private static readonly CONTAINS = 'CONTAINS';
   private static instanceCache = new Map<string, ShowCondition>();
+  private static AND_CONDITION = 'AND';
+  private static OR_CONDITION = 'OR';
 
   // private dumbCache = new Map<string, boolean>();
   private orConditions: string[] = null;
@@ -51,15 +53,78 @@ export class ShowCondition {
     }
   }
 
+  public evaluateFormula(fields: any, formula: any): boolean {
+    let comparator;
+    let conditionsResult: boolean[] = [];
+    
+    if (!!formula) {
+      formula.forEach(condition => {
+        if (!!condition && typeof condition === "object") {
+          conditionsResult.push(this.processCondition(fields, condition));
+        } else {
+          comparator = condition;
+        }
+      });
+    }     
+    
+    if (comparator === 'AND') {        
+      return conditionsResult.every(val => val);
+    } else if (comparator === 'OR') {        
+      return conditionsResult.some(val => val);
+    } else if (conditionsResult.length) {        
+      return conditionsResult[0];
+    } else {
+      return false;
+    }
+  }
+
+  private processCondition(fields: any, formula: any): boolean {
+    if (Array.isArray(formula)) {
+      return this.evaluateFormulaArray(fields, formula);
+    } else {
+      return this.evaluateCondition(fields, formula);
+    }    
+  }
+
+  private evaluateFormulaArray(fields: any, formula: any): boolean {    
+    let comparator;
+    let conditionsResult: boolean[] = [];
+    formula.forEach(condition => {
+      if (!!condition && (condition !== ShowCondition.AND_CONDITION && condition !== ShowCondition.OR_CONDITION)) {
+        conditionsResult.push(this.processCondition(fields, condition));
+      } else if (condition === ShowCondition.AND_CONDITION || condition === ShowCondition.OR_CONDITION) {
+        comparator = condition;
+      }
+    });
+    
+    if (comparator === ShowCondition.AND_CONDITION) {      
+      return conditionsResult.every(result => result);
+    } else if (comparator === ShowCondition.OR_CONDITION) {      
+      return conditionsResult.some(result => result);
+    } else {
+      return false;
+    }
+  }
+
+  private evaluateCondition(fields: any, condition: any): boolean {
+    const value = isNaN(condition.value) || condition.value.trim() === "" ? JSON.stringify(condition.value) : condition.value;
+    const cond = condition.fieldReference + condition.comparator + value;
+    
+    //console.log('Cond:',cond);
+    //console.log('Result', this.matchEqualityCondition(fields, cond));
+   
+    return this.matchEqualityCondition(fields, cond);
+  }
+
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
-    if (!!condition) {
-      if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
-        this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
-      } else {
-        this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-      }
-    }
+    // if (!!condition) {
+    //   if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
+    //     this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
+    //   } else {
+    //     this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
+    //   }
+    // }
   }
   match(fields, path?: string): boolean {
     if (!this.condition) {
@@ -78,6 +143,7 @@ export class ShowCondition {
   }
 
   private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
+    console.log('Condition:',condition);
     if (condition.search(ShowCondition.CONTAINS) === -1) {
       let conditionSeparator = ShowCondition.CONDITION_EQUALS;
       if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) !== -1) {

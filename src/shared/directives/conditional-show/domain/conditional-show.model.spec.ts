@@ -3,7 +3,7 @@ import { async } from '@angular/core/testing';
 import { CaseField, createFieldType } from '../../..';
 import { newCaseField } from '../../../fixture';
 
-describe('conditional-show', () => {
+fdescribe('conditional-show', () => {
   let caseField1: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
   let caseField2: CaseField = newCaseField('field2', 'field2', null, null, 'OPTIONAL', null).build();
   let caseField3: CaseField = newCaseField('field3', 'field3', null, null, 'OPTIONAL', null).build();
@@ -650,20 +650,34 @@ describe('conditional-show', () => {
   });
 
   describe('NOT EQUALS', () => {
-    it('Scenario1 show: comparator match with specific value', () => {
+    fit('Scenario1 show: comparator match with specific value', () => {
       let sc = new ShowCondition('field!="MOJ"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": "MOJ"
+        }
+      ];
       let fields = {
         field: 'Reform'
       };
-      let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
-    it('Scenario2 show: is not blank', () => {
+    fit('Scenario2 show: is not blank', () => {
       let sc = new ShowCondition('field!=""');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": ""
+        }
+      ];
       let fields = {
         field: 'MOJ'
       };
-      let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
     it('Scenario2 hide: is not blank', () => {
@@ -682,20 +696,35 @@ describe('conditional-show', () => {
       let matched = sc.match(fields);
       expect(matched).toBe(false);
     });
-    it('Scenario2 hide: is not blank with showCondition multiple spaces', () => {
+    fit('Scenario2 hide: is not blank with showCondition multiple spaces', () => {
       let sc = new ShowCondition('field!="  "');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": ""
+        }
+      ];
       let fields = {
         field: null
       };
-      let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
-    it('Scenario3 hide: has any value', () => {
+    fit('Scenario3 hide: has any value', () => {
       let sc = new ShowCondition('field!="*"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": "*"
+        }
+      ];
+      
       let fields = {
         field: 'MOJ'
       };
-      let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
     it('Scenario4 hide: comparator does not match value', () => {
@@ -754,5 +783,40 @@ describe('conditional-show', () => {
         expect(matched).toBe(true);
       });
     });
-  });
+    describe('New AND OR condition using brackets', () => {
+      it('Mixed of AND OR condition evaluation', () => {        
+        let sc = new ShowCondition('[a="A", AND , [b="B", OR , c="C"]]')
+        
+        let condEval = [
+          {
+            "fieldReference": "field1",
+            "comparator": "!=",
+            "value": ""
+          }
+        ];
+        
+        // let comparator;
+        // let conditionsResult: boolean[] = [];
+        // if (!!condEval) {
+        //   condEval.forEach(condition => {
+        //     if (!!condition && typeof condition === "object") {
+        //       conditionsResult.push(sc.processCondition(contextFields, condition));
+        //     } else {
+        //       comparator = condition;
+        //     }
+        //   });
+        // }     
+        
+        // if (comparator === 'AND') {          
+        //   return conditionsResult.every(val => val);
+        // } else if (comparator === 'OR') {         
+        //   return conditionsResult.some(val => val);
+        // } else if (conditionsResult.length) {        
+        //   return conditionsResult[0];
+        // } else {
+        //   return false;
+        // }
+      });
+    });
+  });  
 });
