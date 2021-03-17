@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 2.73.3-check-your-answers
+### Version 2.73.6-check-your-answers
 **EUI-3452** Fix to some issues on the Check your answers page
+
+### Version 2.73.5-ngmodel-deprecation
+**EUI-3410** ngModel deprecation
 
 ### Version 2.73.2-collection-date-field
 **EUI-2667** Fix to date field rendering within collections
