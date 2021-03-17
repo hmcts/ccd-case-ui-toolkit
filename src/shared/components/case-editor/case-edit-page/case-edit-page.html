@@ -1,5 +1,10 @@
-<!-- Current Page && Event trigger name -->
-<h1 class="heading-h1"><span *ngIf="currentPage && currentPage.label">{{currentPage.label}}&nbsp;-&nbsp;</span>{{ eventTrigger.name}}</h1>
+<ng-container *ngIf="currentPage">
+  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name}}</h1>
+  <ng-container *ngIf="currentPage.label">
+    <span class="govuk-caption-l">{{ eventTrigger.name}}</span>
+    <h1 class="govuk-heading-l">{{currentPage.label}}</h1>
+  </ng-container>
+</ng-container>
 
 <!-- Case ID -->
 <h2 *ngIf="getCaseId()" class="heading-h2">
