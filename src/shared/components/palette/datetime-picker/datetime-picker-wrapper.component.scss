@@ -7,13 +7,17 @@
 .datepicker-container {
   display: inline-block;
   position: relative;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   margin-left: auto;
   margin-right: auto;
   min-width: 220px;
   &:focus-within {
-    border-width: 2px !important;
     border-color: orange !important;
+  }
+  .govuk-input {
+    &:focus-within {
+      outline: 2px solid black;
+    }
   }
   .datepicker-wrapper-input {
     position: relative;
@@ -39,6 +43,7 @@
 
 .cdk-overlay-container {
   .mat-datepicker-content {
+    border: 2px solid black;
     .mat-calendar-header {
       height: 34px;
       border-bottom: 1px ridge #bfc1c3;
@@ -55,14 +60,37 @@
         text-align: center;
         font-weight: bold;
       }
+      &:focus {
+        border: 2px solid black;
+      }
     }
     .mat-calendar-previous-button {
       left: -73%;
       top: -20px;
+      border: 2px solid transparent;
+      border-radius: 0;
+      &:focus {
+        border-color: black;
+      }
+      &::after {
+        padding: 4px;
+        top: -2px;
+        left: -2px;
+      }
     }
     .mat-calendar-next-button {
       top: -20px;
       left: 1%;
+      border: 2px solid transparent;
+      border-radius: 0;
+      &:focus {
+        border-color: black;
+      }
+      &::after {
+        padding: 4px;
+        top: -2px;
+        left: -2px;
+      }
     }
     .mat-calendar-table-header {
       color: black;
@@ -75,6 +103,9 @@
     }
     .mat-button-wrapper {
       text-transform: capitalize !important;
+    }
+    .mat-calendar {
+      border-bottom: 1px solid black;
     }
     .mat-calendar-table-header-divider {
       padding: 0px;
@@ -95,20 +126,233 @@
       .mat-calendar-body-selected {
         border: none;
         background-color: transparent;
-        color: black;
+        color: white;
+      }
+      .mat-calendar-body-active {
+        background-color: lightskyblue;
+      }
+      .mat-calendar-body-today {
+        border: none;
+        box-shadow: none;
       }
       .mat-calendar-body-cell {
         border: 1px ridge #bfc1c3;
+        &[aria-selected="true"] {
+          background-color: blue;
+          outline: 3px solid orange;
+          border: 2px solid black;
+          outline-offset: 1px;
+        }
         .mat-calendar-body-cell-content {
           width: 50%;
           height: 50%;
           padding: 12px;
-          .mat-calendar-body-today {
-            border-color: none;
-            .mat-calendar-body-selected {
-              box-shadow: none;
+        }
+      }
+    }
+    ngx-mat-multi-year-view {
+      .mat-calendar-table {
+        border-collapse: separate;
+        border-spacing: 10px;
+        .mat-calendar-body-active {
+          background-color: lightskyblue;
+        }
+        .mat-calendar-body-cell {
+          .mat-calendar-body-selected {
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+          }
+          border: 1px solid #bfc1c3;
+          &[aria-selected="true"] {
+            background-color: blue;
+            outline: 3px solid orange;
+            border: 2px solid black;
+            outline-offset: 1px;
+          }
+        }
+      }
+    }
+    ngx-mat-year-view {
+      .mat-calendar-table {
+        border-collapse: separate;
+        border-spacing: 20px;
+        tr:nth-of-type(1) {
+          visibility: collapse;
+        }
+        .mat-calendar-body-active {
+          background-color: lightskyblue;
+        }
+        .mat-calendar-body-cell {
+          .mat-calendar-body-selected {
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+          }
+          border: 1px solid #bfc1c3;
+          &[aria-selected="true"] {
+            background-color: blue;
+            outline: 3px solid orange;
+            border: 2px solid black;
+            outline-offset: 1px;
+          }
+        }
+      }
+    }
+    .time-container {
+      height: 80px;
+      .ngx-mat-timepicker {
+        .table {
+          position: relative;
+          left: -90px;
+          top: -20px;
+          tr:nth-of-type(1) {
+            td {
+              position: relative;
+              top: 45px;
+              border-bottom: none;
+            }
+            td:nth-of-type(1) {
+              left: 40px;
+              z-index: 1;
+            }
+            td:nth-of-type(3) {
+              left: 50px;
+              z-index: 2;
+            }
+            .mat-icon {
+              visibility: hidden;
+            }
+            .mat-icon-button {
+              width: 15px;
+              height: 14px;
+              top: 2px;
+              left: 2px;
+              outline-offset: -2px;
+            }
+            .mat-button-wrapper {
+              display: block;
+              width: 15px;
+              height: 8px;
+            }
+            .mat-button-wrapper::after {
+              content: '\25B2';
+              position: relative;
+              left: -22px;
+              top: -7px;
             }
           }
+          tr:nth-of-type(2) {
+            .mat-form-field-flex {
+              width: 300%;
+              .mat-form-field-infix {
+                border: 2px solid black;
+                height: 10px;
+                display: flex;
+                align-items: center;
+              }
+            }
+            .mat-form-field-underline {
+              visibility: hidden;
+            }
+            input {
+              text-align: left;
+              height: 26px;
+              width: 55px;
+              position: relative;
+              top: 2px;
+              border: 2px solid transparent;
+              &:focus {
+                border-color:black;
+              }
+            }
+            td:nth-of-type(1) {
+              top: -20px;
+              position: relative;
+              border-bottom: none;
+              .mat-form-field::before {
+                color: black;
+                content: "Hour";
+                position: relative;
+                top: -5px;
+                font-size: 15px;
+              }
+            }
+            td:nth-of-type(3) {
+              top: -20px;
+              position: relative;
+              border-bottom: none;
+              z-index: 1;
+              .mat-form-field::before {
+                color: black;
+                content: "Minutes";
+                position: relative;
+                top: -5px;
+                font-size: 15px;
+              }
+            }
+            .spacer {
+              visibility: hidden;
+              border-bottom: none;
+            }
+          }
+          tr:nth-of-type(3) {
+            td {
+              position: relative;
+              top: -85px;
+              left: 36px;
+              border-bottom: none;
+            }
+            button {
+              z-index: 4;
+            }
+            .mat-icon {
+              visibility: hidden;
+            }
+            .mat-icon-button {
+              width: 15px;
+              height: 15px;
+              left: 6px;
+              top: 5px;
+              outline-offset: -2px;
+            }
+            .mat-button-wrapper {
+              display: block;
+              width: 15px;
+              height: 8px;
+            }
+            .mat-button-wrapper::after {
+              content: ' \25BC';
+              position: relative;
+              left: -26px;
+              top: -10px;
+            }
+          }
+        }
+      }
+    }
+    .actions {
+      padding-bottom: 20px;
+      .mat-button {
+        background-color: #00823b;
+        position: relative;
+        left: -70%;
+        top: 10px;
+        border-radius: 0;
+        width: 80px;
+        cursor: pointer;
+        &:hover {
+          background-color: darkgreen;
+        }
+        .mat-icon {
+          visibility: hidden;
+        }
+        .mat-button-wrapper::before {
+          color: white;
+          content: 'Confirm';
+          position: relative;
+          font-size: 15px;
+          left: -3px;
         }
       }
     }
