@@ -32,6 +32,9 @@ export class FieldTypeSanitiser {
 
       switch (caseField.field_type.type) {
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST:
+          this.convertArrayToDynamicListOutput(caseField, data);
+          break;
+
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
           this.convertStringToDynamicListOutput(caseField, data);
           break;
@@ -50,6 +53,22 @@ export class FieldTypeSanitiser {
       }
 
     });
+  }
+
+  private convertArrayToDynamicListOutput(field: CaseField, data: any): void {
+    const values = data[field.id];
+
+    if (Array.isArray(values)) {
+      const listItems = this.getListItems(field);
+      const matches = listItems.filter(item => values.indexOf(item.code) !== -1);
+
+      if (matches && matches.length > 0) {
+        data[field.id] = {
+          value: matches,
+          list_items: listItems
+        };
+      }
+    }
   }
 
   private convertStringToDynamicListOutput(field: CaseField, data: any): void {
