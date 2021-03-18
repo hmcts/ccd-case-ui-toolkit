@@ -15,7 +15,7 @@ export class DatetimePickerWrapperComponent {
 
   public disabled = false;
   public showSpinners = true;
-  public showSeconds = false;
+  public showSeconds = true;
   public touchUi = false;
   public enableMeridian = false;
   public minDate: Date;

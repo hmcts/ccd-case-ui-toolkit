@@ -7,21 +7,22 @@
 .datepicker-container {
   display: inline-block;
   position: relative;
-  border: 3px solid transparent;
-  margin-left: auto;
-  margin-right: auto;
-  min-width: 220px;
-  &:focus-within {
-    border-color: orange !important;
-  }
+  width: auto;
+  min-width: 500px;
   .govuk-input {
-    &:focus-within {
-      outline: 2px solid black;
+    height: auto;
+    width: auto;
+    padding-right: 30px;
+    &:focus {
+      outline: 2px solid orange;
+    }
+    &::-ms-clear {
+      display: none;
     }
   }
   .datepicker-wrapper-input {
     position: relative;
-    display: inline-flex;
+    display: inline-block;
     top: -20%;
     border: 0px;
     &:focus {
@@ -31,13 +32,14 @@
   }
   .mat-icon-button {
     &:focus {
-      outline: none;
+      outline: 2px solid orange;
     }
   }
   .mat-datepicker-toggle {
     position: relative;
-    display: inline-flex;
-    top: -30%;
+    display: inline-block;
+    left: -40px;
+    top: -3px;
   }
 }
 
@@ -146,7 +148,7 @@
         .mat-calendar-body-cell-content {
           width: 50%;
           height: 50%;
-          padding: 12px;
+          top: 1px;
         }
       }
     }
@@ -206,18 +208,22 @@
           position: relative;
           left: -90px;
           top: -20px;
+          display: block;
           tr:nth-of-type(1) {
             td {
               position: relative;
-              top: 45px;
               border-bottom: none;
             }
             td:nth-of-type(1) {
-              left: 40px;
+              .mat-icon-button {
+                left:40px;
+              }
               z-index: 1;
             }
             td:nth-of-type(3) {
-              left: 50px;
+              .mat-icon-button {
+                left: 50px;
+              }
               z-index: 2;
             }
             .mat-icon {
@@ -229,6 +235,8 @@
               top: 2px;
               left: 2px;
               outline-offset: -2px;
+              overflow: hidden;
+              top: 45px;
             }
             .mat-button-wrapper {
               display: block;
@@ -243,6 +251,10 @@
             }
           }
           tr:nth-of-type(2) {
+            .mat-form-field {
+              position: relative;
+              top: -20px;
+            }
             .mat-form-field-flex {
               width: 300%;
               .mat-form-field-infix {
@@ -267,8 +279,6 @@
               }
             }
             td:nth-of-type(1) {
-              top: -20px;
-              position: relative;
               border-bottom: none;
               .mat-form-field::before {
                 color: black;
@@ -279,8 +289,6 @@
               }
             }
             td:nth-of-type(3) {
-              top: -20px;
-              position: relative;
               border-bottom: none;
               z-index: 1;
               .mat-form-field::before {
@@ -298,9 +306,6 @@
           }
           tr:nth-of-type(3) {
             td {
-              position: relative;
-              top: -85px;
-              left: 36px;
               border-bottom: none;
             }
             button {
@@ -312,9 +317,10 @@
             .mat-icon-button {
               width: 15px;
               height: 15px;
-              left: 6px;
-              top: 5px;
+              top: -80px;
+              left: 40px;
               outline-offset: -2px;
+              overflow: hidden;
             }
             .mat-button-wrapper {
               display: block;
@@ -325,10 +331,11 @@
               content: ' \25BC';
               position: relative;
               left: -26px;
-              top: -10px;
+              top: -9px;
             }
           }
         }
+        
       }
     }
     .actions {
