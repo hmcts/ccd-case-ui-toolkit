@@ -61,16 +61,25 @@ describe('conditional-show', () => {
   describe('matches when', () => {
     it('empty condition', () => {
       let sc = new ShowCondition('');
+      let condition = [];
       let fields = {
         field : 's1'
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('dynamic list show condition', () => {
       let sc = new ShowCondition('field="List3"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "List3"
+        }
+      ];
       let fields = {
         field : { value: {code: 'List3', label: 'List 3'},
         list_items: [{code: 'List1', label: 'List 2'},
@@ -78,77 +87,131 @@ describe('conditional-show', () => {
           {code: 'List3', label: 'List 3'}]
       }
       };
-      let matched = sc.match(fields);
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('field has expected value', () => {
       let sc = new ShowCondition('field="s1"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "s1"
+        }
+      ];
       let fields = {
         field : 's1'
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('field has expected value and is a number', () => {
       let sc = new ShowCondition('field="3"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "3"
+        }
+      ];
       let fields = {
         field : 3
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('field starts with a string', () => {
       let sc = new ShowCondition('field="te*"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "te*"
+        }
+      ];
       let fields = {
         field : 'test'
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly', () => {
       let sc = new ShowCondition('field="s1,s2"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "s1,s2"
+        }
+      ];
       let fields = {
         field : ['s1', 's2']
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly regardless of the order', () => {
       let sc = new ShowCondition('field="s2,s3,s1"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "s2,s3,s1"
+        }
+      ];
       let fields = {
         field : ['s3', 's1', 's2']
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when value will match exactly on a complex field', () => {
       let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.NamePrefix",
+          "comparator": "=",
+          "value": "Mr."
+        }
+      ];
       let fields = {
         claimantDetails: {
           NamePrefix: 'Mr.'
         }
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when value will match exactly on AddressUK complex field', () => {
       let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.AddressUKCode.PostTown",
+          "comparator": "=",
+          "value": "London"
+        }
+      ];
       let fields = {
         solicitorName: 'Ben Kember',
         claimantDetails: {
@@ -167,31 +230,45 @@ describe('conditional-show', () => {
         }
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when value will match on a collection element with a complex field', () => {
       let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
-
+      let condition = [
+        {
+          "fieldReference": "interimReturns.addressAttended.County",
+          "comparator": "=",
+          "value": "Cornwall"
+        }
+      ];
       let fields = COLLECTION_OF_INTERIM_RETURNS;
       let path = 'interimReturns_1_outcomeOfVisit'; // path tells the matcher we will match against the element with index 1
-      let matched = sc.match(fields, path);
-
+      //let matched = sc.match(fields, path);
+      let matched = sc.evaluateFormula(fields, condition, path);
       expect(matched).toBe(true);
     });
 
     it('field starts with a string and has empty value', () => {
       let sc = new ShowCondition('claimantDetails.NamePrefix=""');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.NamePrefix",
+          "comparator": "=",
+          "value": ""
+        }
+      ];
+
       let fields = {
         claimantDetails: {
           NamePrefix: ''
         }
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(true);
     });
 
@@ -216,55 +293,100 @@ describe('conditional-show', () => {
 
     it('empty condition', () => {
       let sc = new ShowCondition('');
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [];
+      
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('field has expected value', () => {
       let sc = new ShowCondition('field1="s1"');
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "s1"
+        }
+      ];
 
-      let matched = sc.matchByContextFields(contextFields);
-
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('field has expected value and is a number', () => {
       let sc = new ShowCondition('field2="3"');
-      let matched = sc.matchByContextFields(contextFields);
+      let condition = [
+        {
+          "fieldReference": "field2",
+          "comparator": "=",
+          "value": "3"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('field starts with a string', () => {
       let sc = new ShowCondition('field3="te*"');
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field3",
+          "comparator": "=",
+          "value": "te*"
+        }
+      ];
+      
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly', () => {
       caseField1.value = ['s1', 's2'];
       let sc = new ShowCondition('field1="s1,s2"');
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "s1,s2"
+        }
+      ];
 
-      let matched = sc.matchByContextFields(contextFields);
-
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly regardless of the order', () => {
       caseField1.value = ['s2' , 's1'];
       let sc = new ShowCondition('field1="s1,s2"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "s1,s2"
+        }
+      ];
+      
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when complex values match exactly', () => {
       let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.AddressUKCode.PostTown",
+          "comparator": "=",
+          "value": "London"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
   });
@@ -272,160 +394,265 @@ describe('conditional-show', () => {
   describe('not matches when', () => {
     it('field value is not equal to condition', () => {
       let sc = new ShowCondition('field="test"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "test"
+        }
+      ];
       let fields = {
         field : 'test1'
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field value does not start with the condition string', () => {
       let sc = new ShowCondition('field="te*"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "te*"
+        }
+      ];
       let fields = {
         field : 'yest'
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field starts with a string and does not exist', () => {
       let sc = new ShowCondition('field="te*"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "te*"
+        }
+      ];
       let fields = {
       };
-      let matched = sc.match(fields);
-
+      
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field starts with a string and does not exist', () => {
       let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.NamePrefix",
+          "comparator": "=",
+          "value": "Mr."
+        }
+      ];
       let fields = {
         claimantDetails: {
           OtherPrefix: 'Mr.'
         }
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('should return false when multiple values does not match exactly', () => {
       let sc = new ShowCondition('field="s1,s2"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "s1,s2"
+        }
+      ];
       let fields = {
         field : ['s1', 's2' , 's3']
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field mentioned in condition has no value asked in EQUALS condition', () => {
       let sc = new ShowCondition('field="test"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "test"
+        }
+      ];
       let fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field mentioned in multi value condition has no value asked in EQUALS condition', () => {
       let sc = new ShowCondition('field="test,pest"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "=",
+          "value": "test,pest"
+        }
+      ];
       let fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field mentioned in condition has no value asked in CONTAINS condition', () => {
       let sc = new ShowCondition('fieldCONTAINS"test,mest"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "CONTAINS",
+          "value": "test,mest"
+        }
+      ];
       let fields = {
         field : []
       };
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field mentioned in condition has no value', () => {
       let sc = new ShowCondition('fieldCONTAINS"test,mest"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "CONTAINS",
+          "value": "test,mest"
+        }
+      ];
       let fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field mentioned in single value condition has no value', () => {
       let sc = new ShowCondition('fieldCONTAINS"test"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "CONTAINS",
+          "value": "test"
+        }
+      ];
       let fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('invalid field mentioned in complex field condition', () => {
       let sc = new ShowCondition('claimantDetails.InvalidField="Mr."');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.InvalidField",
+          "comparator": "=",
+          "value": "Mr."
+        }
+      ];
       let fields = {
         claimantDetails: {
           NamePrefix: 'Mr.'
         }
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('field mentioned in complex field condition has no value', () => {
       let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.NamePrefix",
+          "comparator": "=",
+          "value": "Mr."
+        }
+      ];
       let fields = {
         claimantDetails: {
           NamePrefix: undefined
         }
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
 
     it('should return false when value will not match on a collection element with a complex field', () => {
       let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
-
+      let condition = [
+        {
+          "fieldReference": "interimReturns.addressAttended.County",
+          "comparator": "=",
+          "value": "Cornwall"
+        }
+      ];
       let fields = COLLECTION_OF_INTERIM_RETURNS;
       let path = 'interimReturns_0_outcomeOfVisit'; // path tells the matcher we will match against the element with index 0
-      let matched = sc.match(fields, path);
-
+      //let matched = sc.match(fields, path);
+      let matched = sc.evaluateFormula(fields, condition, path);
       expect(matched).toBe(false);
     });
 
     it('should return false when the provided path collection number is invalid', () => {
       let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
-
+      let condition = [
+        {
+          "fieldReference": "interimReturns.addressAttended.County",
+          "comparator": "=",
+          "value": "Cornwall"
+        }
+      ];
       let fields = COLLECTION_OF_INTERIM_RETURNS;
       let path = 'interimReturns_wrongNumber_outcomeOfVisit'; // we provide invalid element index
-      let matched = sc.match(fields, path);
-
+      //let matched = sc.match(fields, path);
+      let matched = sc.evaluateFormula(fields, condition, path);
       expect(matched).toBe(false);
     });
 
     it('should return false when the provided path is broken', () => {
       let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
-
+      let condition = [
+        {
+          "fieldReference": "interimReturns.addressAttended.County",
+          "comparator": "=",
+          "value": "Cornwall"
+        }
+      ];
       let fields = COLLECTION_OF_INTERIM_RETURNS;
       let path = 'nonMatchingField_0_outcomeOfVisit';
-      let matched = sc.match(fields, path);
-
+      //let matched = sc.match(fields, path);
+      let matched = sc.evaluateFormula(fields, condition, path);
       expect(matched).toBe(false);
     });
 
@@ -450,40 +677,73 @@ describe('conditional-show', () => {
 
     it('field value is not equal to condition', () => {
       let sc = new ShowCondition('field1="test"');
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "test"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
     it('field value does not start with ' +
       'the condition string', () => {
       let sc = new ShowCondition('field1="te*"');
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "te*"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
     it('should return false when multiple values does not match exactly', () => {
       caseField1.value = ['s2', 's1', 's3'];
       let sc = new ShowCondition('field1="s1,s2"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "s1,s2"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
     it('should return false when values does not exist', () => {
       caseField1.value = undefined;
       let sc = new ShowCondition('field1="s1,s2"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "s1,s2"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
     it('should return true when complex values match exactly', () => {
       let sc = new ShowCondition('claimantDetails.AddressUKCode="London"');
-
-      let matched = sc.matchByContextFields(contextFields);
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.AddressUKCode",
+          "comparator": "=",
+          "value": "London"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
 
       expect(matched).toBe(false);
     });
@@ -509,33 +769,101 @@ describe('conditional-show', () => {
     it('should return true when all conditions are true', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s3,s2"
+        },
+        "AND",
+        {
+          "fieldReference": "field2",
+          "comparator": "=",
+          "value": 3
+        },
+        "AND",
+        {
+          "fieldReference": "field3",
+          "comparator": "=",
+          "value": "te*"
+        },
+        "AND",
+        {
+          "fieldReference": "field4",
+          "comparator": "=",
+          "value": "s1 AND s2"
+        }
+      ];
 
-      let matched = sc.matchByContextFields(contextFields);
-
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return false when any condition is false', () => {
       let sc = new ShowCondition('field1="s1" AND field2=3 AND field3="no-match"');
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "=",
+          "value": "s1"
+        },
+        "AND",
+        {
+          "fieldReference": "field2",
+          "comparator": "=",
+          "value": 3
+        },
+        "AND",
+        {
+          "fieldReference": "field3",
+          "comparator": "=",
+          "value": "no-match"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
     it('should evaluate AND conditions correctly when AND keyword is present in the value being matched', () => {
       let sc = new ShowCondition('field4="s1 AND s2" AND field2=3');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field4",
+          "comparator": "=",
+          "value": "s1 AND s2"
+        },
+        "AND",
+        {
+          "fieldReference": "field2",
+          "comparator": "=",
+          "value": 3
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should evaluate AND conditions correctly for a mix of EQUALS and CONTAINS', () => {
       caseField2.value = ['s4', 's2', 's3'];
       let sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINSs3,s4');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field4",
+          "comparator": "=",
+          "value": "s1 AND s2"
+        },
+        "AND",
+        {
+          "fieldReference": "field2",
+          "comparator": "CONTAINS",
+          "value": "s3,s4"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
@@ -543,9 +871,27 @@ describe('conditional-show', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition(
         'field1CONTAINS"s3,s2" AND claimantDetails.AddressUKCode.PostTown="London" AND claimantDetails.AddressUKCode.Country="UK"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s3,s2"
+        },
+        "AND",
+        {
+          "fieldReference": "claimantDetails.AddressUKCode.PostTown",
+          "comparator": "=",
+          "value": "London"
+        },
+        "AND",
+        {
+          "fieldReference": "claimantDetails.AddressUKCode.Country",
+          "comparator": "=",
+          "value": "UK"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
   });
@@ -560,26 +906,45 @@ describe('conditional-show', () => {
 
     it('should return true when single value matches ', () => {
       let sc = new ShowCondition('field1CONTAINS"s1"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s1"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when values match', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s1,s3"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s1,s3"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return true when value match regardless of order', () => {
       caseField1.value = ['s3', 's1', 's2'];
       let sc = new ShowCondition('field1CONTAINS"s2,s1"');
-
-      let matched = sc.matchByContextFields(contextFields);
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s2,s1"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
 
       expect(matched).toBe(true);
     });
@@ -587,35 +952,60 @@ describe('conditional-show', () => {
     it('should return false when values do not match', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s1,s4"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s1,s4"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
     it('should return true when single value condition matches', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition('field1CONTAINS"s3"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s3"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(true);
     });
 
     it('should return false for non multi select fields', () => {
       let sc = new ShowCondition('field3CONTAINS"temmy"');
-
-      let matched = sc.matchByContextFields(contextFields);
-
+      let condition = [
+        {
+          "fieldReference": "field3",
+          "comparator": "CONTAINS",
+          "value": "temmy"
+        }
+      ];
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
     it('should return false when value does not exist', () => {
       caseField1.value = undefined;
       let sc = new ShowCondition('field1CONTAINS"s1,s4"');
+      let condition = [
+        {
+          "fieldReference": "field1",
+          "comparator": "CONTAINS",
+          "value": "s1,s4"
+        }
+      ];
 
-      let matched = sc.matchByContextFields(contextFields);
-
+      //let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
       expect(matched).toBe(false);
     });
 
@@ -624,8 +1014,16 @@ describe('conditional-show', () => {
         County: ['Middlesex', 'London'],
       };
       let sc = new ShowCondition('claimantDetails.AddressUKCode.CountyCONTAINS"London"');
+      let condition = [
+        {
+          "fieldReference": "claimantDetails.AddressUKCode.County",
+          "comparator": "CONTAINS",
+          "value": "London"
+        }
+      ];
 
-      let matched = sc.matchByContextFields(contextFields);
+      let matched = sc.evaluateFormula(contextFields, condition);
+      //let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -682,18 +1080,35 @@ describe('conditional-show', () => {
     });
     it('Scenario2 hide: is not blank', () => {
       let sc = new ShowCondition('field!=""');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": ""
+        }
+      ];
+      
       let fields = {
         field: '    '
       };
-      let matched = sc.match(fields);
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
     it('Scenario2 hide: is not blank with null value', () => {
       let sc = new ShowCondition('field!=""');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": ""
+        }
+      ];
       let fields = {
         field: null
       };
-      let matched = sc.match(fields);
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
     it('Scenario2 hide: is not blank with showCondition multiple spaces', () => {
@@ -702,7 +1117,7 @@ describe('conditional-show', () => {
         {
           "fieldReference": "field",
           "comparator": "!=",
-          "value": ""
+          "value": "  "
         }
       ];
       let fields = {
@@ -729,58 +1144,224 @@ describe('conditional-show', () => {
     });
     it('Scenario4 hide: comparator does not match value', () => {
       let sc = new ShowCondition('field!="Reform"');
+
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": "Reform"
+        }
+      ];
+
       let fields = {
         field: 'Reform'
       };
-      let matched = sc.match(fields);
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
     it('Scenario4 hide: multi select not equals', () => {
       let sc = new ShowCondition('field!="s1,s2"');
+      let condition = [
+        {
+          "fieldReference": "field",
+          "comparator": "!=",
+          "value": "s1,s2"
+        }
+      ];
+
       let fields = {
         field: ['s1', 's2']
       };
 
-      let matched = sc.match(fields);
-
+      //let matched = sc.match(fields);
+      let matched = sc.evaluateFormula(fields, condition);
       expect(matched).toBe(false);
     });
     describe('OR conditional tests', () => {
       it('Scenario1: OR condition', () => {
         let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "=",
+            "value": "field1NoMatchValue"
+          },
+          "OR",
+          {
+            "fieldReference": "field2",
+            "comparator": "=",
+            "value": "field2NoMatchValue"
+          },
+          "OR",
+          {
+            "fieldReference": "field3",
+            "comparator": "=",
+            "value": "field3NoMatchValue"
+          }          
+        ];
+        //let matched = sc.matchByContextFields(contextFields);
+        let matched = sc.evaluateFormula(contextFields, condition);
         expect(matched).toBe(false);
       });
       it('Scenario2 positive: OR logic with equals', () => {
         let sc = new ShowCondition('field1="field1Value" OR field2=3 OR field3="no-match"');
-        contextFields[1].value = 3;
-        let matched = sc.matchByContextFields(contextFields);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "=",
+            "value": "field1Value"
+          },
+          "OR",
+          {
+            "fieldReference": "field2",
+            "comparator": "=",
+            "value": 3
+          },
+          "OR",
+          {
+            "fieldReference": "field3",
+            "comparator": "=",
+            "value": "no-match"
+          }          
+        ];
+        
+        contextFields[1].value = 3;        
+        let matched = sc.evaluateFormula(contextFields, condition);
+        //let matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('Scenario2 positive: OR logic with not equals', () => {
         let sc = new ShowCondition('field1!="field1Value" OR field2=3 OR field3="no-match"');
-        let matched = sc.matchByContextFields(contextFields);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "!=",
+            "value": "field1Value"
+          },
+          "OR",
+          {
+            "fieldReference": "field2",
+            "comparator": "=",
+            "value": 3
+          },
+          "OR",
+          {
+            "fieldReference": "field3",
+            "comparator": "=",
+            "value": "no-match"
+          }          
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        //let matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('OR condition mixed with AND => equals condition', () => {
         let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "=",
+            "value": "field1NoMatchValue"
+          },
+          "OR",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "field2NoMatchValue"
+            },
+            "AND",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "field3NoMatchValue"
+            }
+          ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        //let matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(false);
       });
       it('OR condition mixed with AND => not equals condition', () => {
         let sc = new ShowCondition('field1!="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "!=",
+            "value": "field1NoMatchValue"
+          },
+          "OR",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "field2NoMatchValue"
+            },
+            "AND",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "field3NoMatchValue"
+            }
+          ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        //let matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('AND condition mixed with OR => equals condition', () => {
         let sc = new ShowCondition('field1="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "=",
+            "value": "field1NoMatchValue"
+          },
+          "AND",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "field2NoMatchValue"
+            },
+            "OR",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "field3NoMatchValue"
+            }
+          ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
         expect(matched).toBe(false);
       });
       it('AND condition mixed with OR => not equals condition', () => {
         let sc = new ShowCondition('field1!="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
-        expect(matched).toBe(true);
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "!=",
+            "value": "field1NoMatchValue"
+          },
+          "AND",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "field2NoMatchValue"
+            },
+            "OR",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "field3NoMatchValue"
+            }
+          ]
+        ];
+        
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(false);
       });
     });
     xdescribe('New AND OR condition using brackets', () => {

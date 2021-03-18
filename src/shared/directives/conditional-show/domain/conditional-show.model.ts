@@ -53,46 +53,63 @@ export class ShowCondition {
     }
   }
 
-  public evaluateFormula(fields: any, formula: any): boolean {
+  public evaluateFormula(contextFields: any, formula: any, path?: string): boolean {
+    let fields;
+    if (Array.isArray(contextFields)) {
+      fields = FieldsUtils.toValuesMap(contextFields);
+    } else {
+      fields = contextFields;
+    }
+
     let comparator;
     let conditionsResult: boolean[] = [];
     
     if (!!formula) {
       formula.forEach(condition => {
         if (!!condition && typeof condition === "object") {
-          conditionsResult.push(this.processCondition(fields, condition));
+          if (comparator === ShowCondition.AND_CONDITION && conditionsResult.some(val => val === false)) {
+            return false;
+          } else if (comparator === ShowCondition.OR_CONDITION && conditionsResult.some(val => val)) {
+            return true;
+          }
+          conditionsResult.push(this.processCondition(fields, condition, path));
         } else {
           comparator = condition;
         }
       });
-    }     
+    }
     
-    if (comparator === 'AND') {        
+    if (comparator === ShowCondition.AND_CONDITION) {        
       return conditionsResult.every(val => val);
-    } else if (comparator === 'OR') {        
+    } else if (comparator === ShowCondition.OR_CONDITION) {        
       return conditionsResult.some(val => val);
     } else if (conditionsResult.length) {        
       return conditionsResult[0];
     } else {
-      return false;
+      return true;
     }
   }
 
-  private processCondition(fields: any, formula: any): boolean {
+  private processCondition(fields: any, formula: any, path?: string): boolean {
     if (Array.isArray(formula)) {
-      return this.evaluateFormulaArray(fields, formula);
+      return this.evaluateFormulaArray(fields, formula, path);
     } else {
-      return this.evaluateCondition(fields, formula);
+      return this.evaluateCondition(fields, formula, path);
     }    
   }
 
-  private evaluateFormulaArray(fields: any, formula: any): boolean {    
+  private evaluateFormulaArray(fields: any, formula: any, path?: string): boolean {    
     let comparator;
     let conditionsResult: boolean[] = [];
     formula.forEach(condition => {
-      if (!!condition && (condition !== ShowCondition.AND_CONDITION && condition !== ShowCondition.OR_CONDITION)) {
-        conditionsResult.push(this.processCondition(fields, condition));
-      } else if (condition === ShowCondition.AND_CONDITION || condition === ShowCondition.OR_CONDITION) {
+      if (!!condition && typeof condition === "object") {
+        if (comparator === ShowCondition.AND_CONDITION && conditionsResult.some(val => val === false)) {
+          return false;
+        } else if (comparator === ShowCondition.OR_CONDITION && conditionsResult.some(val => val)) {
+          return true;
+        }
+        conditionsResult.push(this.processCondition(fields, condition, path));
+      } else {
         comparator = condition;
       }
     });
@@ -101,30 +118,32 @@ export class ShowCondition {
       return conditionsResult.every(result => result);
     } else if (comparator === ShowCondition.OR_CONDITION) {      
       return conditionsResult.some(result => result);
+    } else if (conditionsResult.length) {        
+      return conditionsResult[0];
     } else {
       return false;
     }
   }
 
-  private evaluateCondition(fields: any, condition: any): boolean {
-    const value = isNaN(condition.value) || condition.value.trim() === "" ? JSON.stringify(condition.value) : condition.value;
-    const cond = condition.fieldReference + condition.comparator + value;
+  private evaluateCondition(fields: any, condition: any, path?: string): boolean {
+    //const value = isNaN(condition.value) || condition.value.toString().trim() === "" ? JSON.stringify(condition.value) : condition.value;
+    const cond = condition.fieldReference + condition.comparator + condition.value;
     
     //console.log('Cond:',cond);
     //console.log('Result', this.matchEqualityCondition(fields, cond));
    
-    return this.matchEqualityCondition(fields, cond);
+    return this.matchEqualityCondition(fields, cond, path);
   }
 
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
-    // if (!!condition) {
-    //   if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
-    //     this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
-    //   } else {
-    //     this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-    //   }
-    // }
+    /*if (!!condition) {
+      if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
+        this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
+      } else {
+        this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
+      }
+    }*/
   }
   match(fields, path?: string): boolean {
     if (!this.condition) {
@@ -143,7 +162,7 @@ export class ShowCondition {
   }
 
   private matchEqualityCondition(fields: any, condition: string, path?: string): boolean {
-    console.log('Condition:',condition);
+    //console.log('matchEqualityCondition fields:',fields);
     if (condition.search(ShowCondition.CONTAINS) === -1) {
       let conditionSeparator = ShowCondition.CONDITION_EQUALS;
       if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) !== -1) {
@@ -153,14 +172,18 @@ export class ShowCondition {
       const [head, ...tail] = field.split('.');
       let currentValue = this.findValueForComplexCondition(fields, head, tail, path);
       let expectedValue = this.unquoted(condition.split(conditionSeparator)[1]);
-
+      console.log('Condition:',condition,this.checkValueEquals(expectedValue, currentValue, conditionSeparator));
+      console.log('expectedValue',expectedValue);
+      console.log('currentValue',currentValue);
+      console.log('conditionSeparator',conditionSeparator);
       return this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
     } else {
       let field = condition.split(ShowCondition.CONTAINS)[0];
       const [head, ...tail] = field.split('.');
       let currentValue = this.findValueForComplexCondition(fields, head, tail, path);
       let expectedValue = this.unquoted(condition.split(ShowCondition.CONTAINS)[1]);
-
+      console.log('expectedValue',expectedValue);
+      console.log('currentValue',currentValue);
       return this.checkValueContains(expectedValue, currentValue);
     }
   }
@@ -211,9 +234,12 @@ export class ShowCondition {
   }
 
   private findValueForComplexCondition(fields: any, head: string, tail: string[], path?: string) {
+    //console.log('findValueForComplexCondition fields', fields);
     if (!fields) {
       return undefined;
     }
+    console.log('head', head);
+    console.log('tail', tail);
     if (tail.length === 0) {
       return this.getValue(fields, head);
     } else {
@@ -254,6 +280,7 @@ export class ShowCondition {
   }
 
   private getValue(fields, head) {
+    console.log('fields[head]', fields[head])
     if (this.isDynamicList(fields[head])) {
       return fields[head].value.code;
     } else {
