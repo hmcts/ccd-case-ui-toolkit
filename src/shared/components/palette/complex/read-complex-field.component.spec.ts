@@ -219,7 +219,8 @@ describe('ReadComplexFieldComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-          value: 'Flat 9'
+          value: 'Flat 9',
+          isDynamic: function () {}
         }),
         <CaseField>({
           id: 'AddressLine2',
@@ -229,7 +230,9 @@ describe('ReadComplexFieldComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-          value: '111 East India road'
+          value: '111 East India road',
+
+          isDynamic: function () {}
         })
       ]
     };
@@ -299,10 +302,9 @@ describe('ReadComplexFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    fit('should register readonly case field value with form group', () => {
+    it('should register readonly case field value with form group', () => {
       expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
       expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
     });
-
   });
 });
