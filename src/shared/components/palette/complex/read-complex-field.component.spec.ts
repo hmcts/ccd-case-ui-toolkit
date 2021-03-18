@@ -244,7 +244,9 @@ describe('ReadComplexFieldComponent', () => {
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
-      value: VALUE
+      value: VALUE,
+
+      isDynamic: function () {}
     });
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;
@@ -297,7 +299,7 @@ describe('ReadComplexFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('should register readonly case field value with form group', () => {
+    fit('should register readonly case field value with form group', () => {
       expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
       expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
     });
