@@ -31,13 +31,13 @@ export class ShowCondition {
   }
 
   private static extractConditions(conditionsArray: string[], pathPrefix: string): string[] {
-    return conditionsArray.map(condition => {
-      if (!condition.startsWith(pathPrefix)) {
-        return pathPrefix + '.' + condition;
-      } else {
+    const extracted = conditionsArray.map(condition => {
+      if (condition.startsWith(pathPrefix)) {
         return condition;
       }
+      return `${pathPrefix}.${condition}`;
     });
+    return extracted;
   }
 
   // Cache instances so that we can cache results more effectively
