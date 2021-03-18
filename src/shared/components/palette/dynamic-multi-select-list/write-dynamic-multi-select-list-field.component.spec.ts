@@ -105,7 +105,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
 
     it('should mark as selected the initially selected checkboxes', () => {
-      let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
+      const checkboxes = de.queryAll($SELECTED_CHECKBOXES);
 
       expect(checkboxes.length).toEqual(VALUES.length);
 
@@ -115,7 +115,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
 
     it('should mark as selected the initially selected checkboxes', () => {
-      let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
+      const checkboxes = de.queryAll($SELECTED_CHECKBOXES);
 
       expect(checkboxes.length).toEqual(VALUES.length);
 
@@ -125,7 +125,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
 
     it('should remove option from values when unselected', () => {
-      let option1 = de.query($OPTION_1).nativeElement;
+      const option1 = de.query($OPTION_1).nativeElement;
       option1.click();
 
       fixture.detectChanges();
@@ -177,7 +177,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
 
     it('should add value to checkbox when selected', () => {
-      let option1 = de.query($OPTION_1).nativeElement;
+      const option1 = de.query($OPTION_1).nativeElement;
       option1.click();
 
       expect(component.checkboxes.length).toEqual(1);
@@ -225,7 +225,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
 
     it('should add value to checkbox when selected', () => {
-      let option1 = de.query($OPTION_1).nativeElement;
+      const option1 = de.query($OPTION_1).nativeElement;
       option1.click();
 
       expect(component.checkboxes.length).toEqual(1);
