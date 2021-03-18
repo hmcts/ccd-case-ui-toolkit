@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.74.4
+**EUI-3335** Incorporating Version 2.74.4-profile-call-before-event-trigger	
+
 ### Version 2.74.2
 **EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch
 
