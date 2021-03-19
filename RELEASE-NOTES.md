@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 2.75.0
+**EUI-3267** Reintroducing the grey bars for fields shown by other fields
+
+### Version 2.73.2-collection-date-field
+**EUI-2667** Fix to date field rendering within collections
+
 ### Version 2.74.2
 **EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch
 

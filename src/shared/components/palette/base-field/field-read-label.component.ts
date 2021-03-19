@@ -14,6 +14,9 @@ import { AbstractFieldReadComponent } from './abstract-field-read.component';
 })
 export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges {
 
+  // EUI-3267. Flag for whether or not this can have a grey bar.
+  public canHaveGreyBar = false;
+
   @Input()
   withLabel: boolean;
 
@@ -36,6 +39,10 @@ export class FieldReadLabelComponent extends AbstractFieldReadComponent implemen
       if (!(cfNew instanceof CaseField)) {
         this.fixCaseField();
       }
+
+      // EUI-3267.
+      // Set up the flag for whether this can have a grey bar.
+      this.canHaveGreyBar = !!this.caseField.show_condition;
     }
   }
 
