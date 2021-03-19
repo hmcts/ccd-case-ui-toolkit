@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { FixedListItem } from '../../../domain/definition/fixed-list-item.model';
 
 @Pipe({
-  name: 'ccdFixedRadioList'
+  name: 'ccdDynamicRadioList'
 })
 export class DynamicRadioListPipe implements PipeTransform {
 
