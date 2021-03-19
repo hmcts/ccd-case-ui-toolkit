@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.75.0",
+  "version": "2.75.1-fix-for-dl-regressions",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
