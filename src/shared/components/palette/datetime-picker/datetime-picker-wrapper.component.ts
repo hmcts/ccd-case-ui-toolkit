@@ -29,5 +29,4 @@ export class DatetimePickerWrapperComponent {
 
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
-
 }

@@ -7,8 +7,8 @@ import {
   MAT_DATE_LOCALE
 } from '@angular/material';
 import {
-  NgxMatDatetimePickerModule, 
-  NgxMatNativeDateModule, 
+  NgxMatDatetimePickerModule,
+  NgxMatNativeDateModule,
   NgxMatTimepickerModule,
 } from '@angular-material-components/datetime-picker';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
