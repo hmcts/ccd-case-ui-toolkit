@@ -16,7 +16,7 @@ export abstract class AbstractFormFieldComponent {
   @Input()
   parent?: FormContainer;
 
-  protected registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
+  public registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
     const container: FormContainer = this.parent || this.formGroup;
     if (!container) {
       return control;

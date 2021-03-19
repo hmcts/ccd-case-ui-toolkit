@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType, CaseField } from '../../../domain';
 import { FormGroup } from '@angular/forms';
 
 describe('ReadMoneyGBPFieldComponent', () => {
@@ -57,6 +56,14 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£42.20');
       });
 
+      it('should render provided negative value as GBP currency', () => {
+        component.caseField.value = -4220;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£42.20');
+      });
+
       it('should prefix pences with leading 0.', () => {
         component.caseField.value = 20;
         component.ngOnInit();
@@ -65,12 +72,28 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£0.20');
       });
 
+      it('should prefix negative pences with leading 0.', () => {
+        component.caseField.value = -20;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£0.20');
+      });
+
       it('should format large number with commas', () => {
         component.caseField.value = 420000020;
         component.ngOnInit();
         fixture.detectChanges();
 
         expect(de.nativeElement.textContent).toEqual('£4,200,000.20');
+      });
+
+      it('should format large negative number with commas', () => {
+        component.caseField.value = -420000020;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£4,200,000.20');
       });
 
       it('should render undefined value as empty string', () => {
@@ -107,6 +130,14 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£42.20');
       });
 
+      it('should render provided negative value as GBP currency', () => {
+        component.amount = -4220;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£42.20');
+      });
+
       it('should prefix pences with leading 0.', () => {
         component.amount = 20;
         component.ngOnInit();
@@ -115,12 +146,28 @@ describe('ReadMoneyGBPFieldComponent', () => {
         expect(de.nativeElement.textContent).toEqual('£0.20');
       });
 
+      it('should prefix negative pences with leading 0.', () => {
+        component.amount = -20;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£0.20');
+      });
+
       it('should format large number with commas', () => {
         component.amount = 420000020;
         component.ngOnInit();
         fixture.detectChanges();
 
         expect(de.nativeElement.textContent).toEqual('£4,200,000.20');
+      });
+
+      it('should format negative large number with commas', () => {
+        component.amount = -420000020;
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        expect(de.nativeElement.textContent).toEqual('-£4,200,000.20');
       });
 
       it('should render undefined value as empty string', () => {
@@ -151,6 +198,10 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
   describe('Persistable readonly textarea field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
+    const REGISTER_CONTROL = (control) => {
+      FORM_GROUP.addControl(FIELD_ID, control);
+      return control;
+    };
     const CASE_FIELD: CaseField = <CaseField>({
       id: 'x',
       label: 'X',
@@ -175,19 +226,19 @@ describe('ReadMoneyGBPFieldComponent', () => {
         .compileComponents();
 
       fixture = TestBed.createComponent(ReadMoneyGbpFieldComponent);
-      component = fixture.componentInstance;
+      component = fixture.componentInstance as ReadMoneyGbpFieldComponent;
 
+      component.registerControl = REGISTER_CONTROL;
       component.amount = undefined;
       component.caseField = CASE_FIELD;
-      component.formGroup = FORM_GROUP;
 
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
     it('should register readonly case field value with form group', () => {
-      expect(FORM_GROUP.controls[CASE_FIELD.id]).toBeTruthy();
-      expect(FORM_GROUP.controls[CASE_FIELD.id].value).toBe(VALUE);
+      expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
+      expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
     });
 
   });
