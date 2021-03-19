@@ -243,9 +243,15 @@ describe('FormValueService', () => {
           'topComplex': {
             'field': 'value',
             'collection': [
-              { 'value': { 'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } } },
-              { 'value': { 'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } } },
-              { 'value': { 'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } } }
+              { 'value': {
+                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              }
             ]
           }
         };
@@ -261,9 +267,15 @@ describe('FormValueService', () => {
           'topComplex': {
             'field': 'value',
             'collection': [
-              { 'value': { 'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } } },
-              { 'value': { 'complex': { 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } } },
-              { 'value': { 'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } } }
+              { 'value': {
+                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              }
             ]
           }
         };
@@ -278,9 +290,15 @@ describe('FormValueService', () => {
         let pageFormFields = {
           'topComplex': {
             'collection': [
-              { 'value': { 'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } } },
-              { 'value': { 'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } } },
-              { 'value': { 'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } } }
+              { 'value': {
+                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              }
             ]
           }
         };
@@ -342,9 +360,15 @@ describe('FormValueService', () => {
       it('should return simple text collection item by index', () => {
         let pageFormFields = {
           'collection': [
-            { 'value': { 'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } } },
-            { 'value': { 'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } } },
-            { 'value': { 'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } } }
+            { 'value': {
+              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            }
           ]
         };
         let fieldIdToSubstitute = 'collection.complex.nested2.doubleNested.trippleNested';
@@ -357,9 +381,15 @@ describe('FormValueService', () => {
       it('should return undefined if collection item absent for given index', () => {
         let pageFormFields = {
           'collection': [
-            { 'value': { 'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } } },
-            { 'value': { 'complex': { 'nested': 'nested value1' } } },
-            { 'value': { 'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } } }
+            { 'value': {
+              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value1' } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            }
           ]
         };
         let fieldIdToSubstitute = 'collection.complex.nested2.doubleNested.trippleNested';
@@ -372,9 +402,15 @@ describe('FormValueService', () => {
       it('should return undefined if collection item is a complex leaf value', () => {
         let pageFormFields = {
           'collection': [
-            { 'value': { 'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } } },
-            { 'value': { 'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } } },
-            { 'value': { 'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } } }
+            { 'value': {
+              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            }
           ]
         };
         let fieldIdToSubstitute = 'collection.complex.nested2.doubleNested';

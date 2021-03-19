@@ -11,13 +11,13 @@ const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
 
 @Component({
   selector: 'ccd-field-write',
-  template: `
-    <div [hidden]="caseField.hidden">
-      <ng-container #fieldContainer></ng-container>
-    </div>
-  `
+  templateUrl: './field-write.component.html',
+  styleUrls: [ './field-write.component.scss' ]
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
+
+  // EUI-3267. Flag for whether or not this can have a grey bar.
+  public canHaveGreyBar = false;
 
   @Input()
   caseFields: CaseField[] = [];
@@ -58,5 +58,9 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['isExpanded'] = this.isExpanded;
     this.fieldContainer.insert(component.hostView);
+
+    // EUI-3267.
+    // Set up the flag for whether this can have a grey bar.
+    this.canHaveGreyBar = this.caseField.show_condition && this.caseField.field_type.type !== 'Collection';
   }
 }
