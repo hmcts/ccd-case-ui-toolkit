@@ -10,26 +10,26 @@ describe('ReadDynamicRadioListFieldComponent', () => {
   const VALUE = 'F';
   const EXPECTED_LABEL = 'Female';
   const FIELD_ID = 'ReadOnlyFieldId';
+  const FIELD_LIST_ITEMS = [
+    {
+      code: 'M',
+      label: 'Male',
+      order: 1
+    },
+    {
+      code: VALUE,
+      label: EXPECTED_LABEL,
+      order: 2
+    },
+    {
+      code: 'O',
+      label: 'Other',
+      order: 3
+    }
+  ]
   const FIELD_TYPE: FieldType = {
     id: 'Gender',
-    type: 'DynamicRadioList',
-    fixed_list_items: [
-      {
-        code: 'M',
-        label: 'Male',
-        order: 1
-      },
-      {
-        code: VALUE,
-        label: EXPECTED_LABEL,
-        order: 2
-      },
-      {
-        code: 'O',
-        label: 'Other',
-        order: 3
-      }
-    ]
+    type: 'DynamicRadioList'
   };
 
   describe('Non-persistable readonly fixed radio list field', () => {
@@ -38,7 +38,8 @@ describe('ReadDynamicRadioListFieldComponent', () => {
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
-      value: VALUE
+      value: FIELD_LIST_ITEMS[1],
+      list_items: FIELD_LIST_ITEMS
     });
     const EMPTY = '';
 
