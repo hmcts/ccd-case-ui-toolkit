@@ -46,7 +46,7 @@
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
   },
   "dependencies": {
-    "@angular-material-components/datetime-picker": "^5.1.0",
+    "@angular-material-components/datetime-picker": "^2.0.4",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
     "braces": "^2.3.1",

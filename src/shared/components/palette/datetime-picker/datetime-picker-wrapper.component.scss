@@ -3,7 +3,8 @@
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
 
-
+/* datepicker-container ensure no leakage of css via view encapsulation
+Details inside it are for the actual component first shown on page */
 .datepicker-container {
   display: inline-block;
   position: relative;
@@ -12,9 +13,10 @@
   .govuk-input {
     height: auto;
     width: auto;
-    padding-right: 30px;
+    padding-right: 40px;
     &:focus {
       outline: 2px solid orange;
+      border: 2px solid black;
     }
     &::-ms-clear {
       display: none;
@@ -31,8 +33,15 @@
     }
   }
   .mat-icon-button {
+    height:32px;
+    width: 35px;
+    top: 4px;
     &:focus {
       outline: 2px solid orange;
+    }
+    .mat-datepicker-toggle-default-icon {
+      position: relative;
+      top: -3px;
     }
   }
   .mat-datepicker-toggle {
@@ -43,7 +52,9 @@
   }
 }
 
+// this is the overlay container from which shows the datetimepicker panel
 .cdk-overlay-container {
+  // all datepicker content shown within mat-datepicker-content
   .mat-datepicker-content {
     border: 2px solid black;
     .mat-calendar-header {
@@ -119,6 +130,7 @@
     .mat-calendar-content {
       padding: 0px;
     }
+    // day selection panel
     ngx-mat-month-view {
       .mat-calendar-body-label {
         font-weight: bold;
@@ -152,6 +164,7 @@
         }
       }
     }
+    // year selection panel
     ngx-mat-multi-year-view {
       .mat-calendar-table {
         border-collapse: separate;
@@ -175,6 +188,7 @@
         }
       }
     }
+    // month selection panel
     ngx-mat-year-view {
       .mat-calendar-table {
         border-collapse: separate;
@@ -201,6 +215,7 @@
         }
       }
     }
+    // timepicker part of panel
     .time-container {
       height: 80px;
       .ngx-mat-timepicker {
@@ -232,11 +247,10 @@
             .mat-icon-button {
               width: 15px;
               height: 14px;
-              top: 2px;
               left: 2px;
               outline-offset: -2px;
               overflow: hidden;
-              top: 45px;
+              top: 48px;
             }
             .mat-button-wrapper {
               display: block;
@@ -317,7 +331,7 @@
             .mat-icon-button {
               width: 15px;
               height: 15px;
-              top: -80px;
+              top: -82px;
               left: 40px;
               outline-offset: -2px;
               overflow: hidden;
@@ -335,9 +349,99 @@
             }
           }
         }
-        
+        // seconds shown
+        &[ng-reflect-show-seconds="true"] {
+          .table {
+            left: -60px;
+            td {
+              border-bottom: none;
+            }
+            tr:nth-of-type(1) {
+              td:nth-of-type(3) {
+                .mat-icon-button {
+                  left: 40px;
+                }
+              }
+              td:nth-of-type(5) {
+                .mat-icon-button {
+                  left: 40px;
+                  z-index: 1;
+                }
+              }
+            }
+            tr:nth-of-type(2) {
+              td:nth-of-type(5) {
+                .mat-form-field::before {
+                  color: black;
+                  content: "Seconds";
+                  position: relative;
+                  top: -5px;
+                  font-size: 15px;
+                }
+              }
+            }
+          }
+          // 12 hour time zone shown
+          &[ng-reflect-enable-meridian="true"] {
+            .table {
+              left: -20px;
+            }
+            tr:nth-of-type(2) {
+              td:nth-of-type(7) {
+                .mat-button {
+                  height: 30px;
+                  left: 20px;
+                  top: -20px;
+                  border-radius: 0px;
+                  color: black;
+                  border-color: black;
+                  background-color: #dee0e2;
+                  .mat-button-wrapper {
+                    position: relative;
+                    top: -2px;
+                  }
+                }
+              }
+            }
+          }
+        }
+        // seconds not shown
+        &[ng-reflect-show-seconds="false"] {
+          // 24 hour time shown
+          &[ng-reflect-enable-meridian="true"] {
+            .table {
+              left: -55px;
+            }
+            tr:nth-of-type(1) {
+              td:nth-of-type(3) {
+                .mat-icon-button {
+                  left: 40px;
+                }
+              }
+            }
+            tr:nth-of-type(2) {
+              td:nth-of-type(5) {
+                border-bottom: none;
+                .mat-button {
+                  height: 30px;
+                  left: 20px;
+                  top: -20px;
+                  border-radius: 0px;
+                  color: black;
+                  border-color: black;
+                  background-color: #dee0e2;
+                  .mat-button-wrapper {
+                    position: relative;
+                    top: -2px;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
+    // bottom of panel for 'Confirm' button
     .actions {
       padding-bottom: 20px;
       .mat-button {
