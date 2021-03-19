@@ -36,7 +36,13 @@ export class CaseField implements Orderable {
   @Expose()
   get value(): any {
     if (this.isDynamic()) {
-      return this._value && this._value.value ? this._value.value.code : this._value;
+      const hasValue = (this._value && this._value.value);
+
+      if (hasValue && Array.isArray(this._value.value)) {
+        return this._value.value;
+      }
+
+      return hasValue ? this._value.value.code : this._value;
     } else {
       return this._value;
     }

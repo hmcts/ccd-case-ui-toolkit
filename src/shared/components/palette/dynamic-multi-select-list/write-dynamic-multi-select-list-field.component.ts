@@ -31,7 +31,8 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
         this.checkboxes.push(new FormControl(value));
       });
     }
-    this.registerControl(this.checkboxes, true);
+
+    this.registerControl(this.checkboxes, true) as FormControl;
   }
 
   onCheckChange(event: Event) {
@@ -55,7 +56,7 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
 
   isSelected(code: string): AbstractControl {
     if (this.checkboxes && this.checkboxes.controls) {
-      return this.checkboxes.controls.find(control => control.value === code);
+      return this.checkboxes.controls.find(control => control.value.code === code);
     }
   }
 
