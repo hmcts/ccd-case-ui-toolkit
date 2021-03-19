@@ -7,6 +7,7 @@ export class FieldTypeSanitiser {
   public static readonly FIELD_TYPE_COMPLEX: FieldTypeEnum = 'Complex';
   public static readonly FIELD_TYPE_COLLECTION: FieldTypeEnum = 'Collection';
   public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
+  public static readonly FIELD_TYPE_DYNAMIC_RADIO_LIST: FieldTypeEnum = 'DynamicRadioList';
 
   /**
    * This method finds dynamiclists in a form and replaces their string
@@ -29,6 +30,7 @@ export class FieldTypeSanitiser {
     caseFields.forEach(caseField => {
 
       switch (caseField.field_type.type) {
+        case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_RADIO_LIST:
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
           this.convertStringToDynamicListOutput(caseField, data);
           break;

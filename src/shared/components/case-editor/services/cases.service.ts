@@ -6,7 +6,7 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
-import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType, FieldTypeEnum } from '../../../domain';
 import { HttpErrorService, HttpService, LoadingService, OrderService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -38,7 +38,7 @@ export class CasesService {
   // Handling of Dynamic Lists in Complex Types
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
-  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
   /**
    *
@@ -126,7 +126,9 @@ export class CasesService {
 
       caseFieldType.complex_fields.forEach(field => {
         try {
-          if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
+          const isDynamicField = CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE.indexOf(field.field_type.type) !== -1;
+
+          if (isDynamicField) {
             const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
             if (dynamicListValue) {
               const list_items = dynamicListValue.list_items;
