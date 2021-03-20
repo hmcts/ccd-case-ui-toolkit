@@ -76,9 +76,10 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent, control: AbstractControl) {
     if (cf) {
       if (cf.display_context === 'HIDDEN') {
-          cf.hidden = true; // display_context === 'HIDDEN' means always hide
+        cf.hidden = true; // display_context === 'HIDDEN' means always hide
       } else if (cf.show_condition) {
-        const condResult = ShowCondition.getInstance(cf.show_condition).match(this.allFieldValues, this.buildPath(component, cf));
+        const showCondition: ShowCondition = ShowCondition.getInstance(cf.show_condition);
+        const condResult = showCondition.match(this.allFieldValues, this.buildPath(component, cf));
         if (cf.hidden === null || cf.hidden === undefined) {
           cf.hidden = false;
         }
@@ -89,6 +90,11 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
             this.greyBarService.removeToggledToShow(cf.id)
           }
           cf.hidden = !condResult;
+        }
+        // EUI-3267. If we've not assessed the hiddenCannotChange flag and
+        // this field is showing, set the flag appropriately now.
+        if (cf.hiddenCannotChange === undefined && !cf.hidden) {
+          cf.hiddenCannotChange = showCondition.hiddenCannotChange(this.caseFields);
         }
         // Disable the control if it's hidden so that it doesn't count towards the
         // validation state of the form, but only if it's actually being validated.
