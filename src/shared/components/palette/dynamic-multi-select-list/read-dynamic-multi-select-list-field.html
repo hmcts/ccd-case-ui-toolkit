@@ -1,7 +1,7 @@
 <table *ngIf="caseField.value && caseField.value.length" class="multi-select-list-field-table">
   <tbody>
     <tr *ngFor="let value of caseField.value">
-      <td><span class="text-16">{{ value | ccdFixedList:caseField.list_items }}</span></td>
+      <td><span class="text-16">{{ value.code | ccdFixedList:caseField.list_items }}</span></td>
     </tr>
   </tbody>
 </table>

@@ -18,6 +18,10 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
+    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
+      this.caseField.value = this.caseField.formatted_value.value.code;
+    }
+
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
 
     if (isNull || !Array.isArray(this.caseField.value)) {
@@ -26,7 +30,8 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
 
     // Initialise array with existing values
     if (this.caseField.value && Array.isArray(this.caseField.value)) {
-      const values: string[] = this.caseField.value;
+      const values = this.caseField.value;
+
       values.forEach(value => {
         this.checkboxes.push(new FormControl(value));
       });
@@ -38,15 +43,17 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
   onCheckChange(event: Event) {
     const target = event.target as HTMLInputElement;
 
-    if (!target) return;
+    if (!target || !target.value) return;
+
+    const selectedListItem: object = this.getValueListItem(target.value);
 
     if (!this.isSelected(target.value)) {
       // Add a new control in the FormArray
-      this.checkboxes.push(new FormControl(target.value));
+      this.checkboxes.push(new FormControl(selectedListItem));
     } else {
       // Remove the control from the FormArray
       this.checkboxes.controls.forEach((ctrl: FormControl, i) => {
-        if (ctrl.value === target.value) {
+        if (ctrl.value.code === target.value) {
           this.checkboxes.removeAt(i);
           return;
         }
@@ -62,5 +69,9 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
 
   buildElementId(name: string): string {
     return `${this.id()}-${name}`;
+  }
+
+  private getValueListItem(value: string) {
+    return this.caseField.list_items.find(i => i.code === value);
   }
 }
