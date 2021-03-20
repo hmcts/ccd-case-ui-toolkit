@@ -19,6 +19,10 @@ export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent 
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
+    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
+      this.caseField.value = this.caseField.formatted_value.value.code;
+    }
+
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
 
     if (isNull || typeof this.caseField.value === 'object') {
