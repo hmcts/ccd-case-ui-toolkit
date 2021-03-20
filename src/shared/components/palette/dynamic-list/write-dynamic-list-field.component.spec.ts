@@ -74,7 +74,7 @@ describe('WriteDynamicListFieldComponent', () => {
   }));
 
   it('should select default value', () => {
-    component.caseField.value = null;
+    component.dynamicListFormControl.setValue(null);
     fixture.detectChanges();
     let options = de.queryAll($OPTION);
 
@@ -100,7 +100,7 @@ describe('WriteDynamicListFieldComponent', () => {
   });
 
   it('should link select element to formControl', () => {
-    component.caseField.value = 'M';
+    component.dynamicListFormControl.setValue('M');
     fixture.detectChanges();
     fixture
         .whenStable()
