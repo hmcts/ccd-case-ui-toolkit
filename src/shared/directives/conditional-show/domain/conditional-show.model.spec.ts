@@ -1364,39 +1364,275 @@ describe('conditional-show', () => {
         expect(matched).toBe(false);
       });
     });
-    xdescribe('New AND OR condition using brackets', () => {
-      it('Mixed of AND OR condition evaluation', () => {        
-        let sc = new ShowCondition('[a="A", AND , [b="B", OR , c="C"]]')
+    describe('Newly supported combination of AND OR conditions using brackets', () => {
+      beforeEach(async(() => {
+        caseField1.value = ['s3','s2'];
+        caseField2.value = 4;
+        caseField3.value = 'temmy';
+        caseField4.value = 's1 AND s2';
+      }));
+
+      it('Mixed of AND OR condition evaluation with combination of CONTAINS, =, != comparators', () => {
+        let sc = new ShowCondition('field1 CONTAINS "s3,s2" AND (field2 != 4 OR field3 = te*) AND field4 = "s1 AND s2"')
         
-        let condEval = [
+        let condition = [
           {
             "fieldReference": "field1",
-            "comparator": "!=",
-            "value": ""
+            "comparator": "CONTAINS",
+            "value": "s3,s2"
+          },
+          "AND",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "!=",
+              "value": 4
+            },
+            "OR",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "te*"
+            }
+          ],
+          "AND",
+          {
+            "fieldReference": "field4",
+            "comparator": "=",
+            "value": "s1 AND s2"
           }
         ];
         
-        // let comparator;
-        // let conditionsResult: boolean[] = [];
-        // if (!!condEval) {
-        //   condEval.forEach(condition => {
-        //     if (!!condition && typeof condition === "object") {
-        //       conditionsResult.push(sc.processCondition(contextFields, condition));
-        //     } else {
-        //       comparator = condition;
-        //     }
-        //   });
-        // }     
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
+      });
+
+      it('Mixed of AND OR condition with bracket possibility type1', () => {
+        let sc = new ShowCondition('field1 CONTAINS "s3,s2" AND (field2 = 3 OR (field3 = te* AND field4 = "s1 AND s2")')
         
-        // if (comparator === 'AND') {          
-        //   return conditionsResult.every(val => val);
-        // } else if (comparator === 'OR') {         
-        //   return conditionsResult.some(val => val);
-        // } else if (conditionsResult.length) {        
-        //   return conditionsResult[0];
-        // } else {
-        //   return false;
-        // }
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "CONTAINS",
+            "value": "s3,s2"
+          },
+          "AND",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": 3
+            },
+            "OR",
+            [
+              {
+                "fieldReference": "field3",
+                "comparator": "=",
+                "value": "te*"
+              },
+              "AND",
+              {
+                "fieldReference": "field4",
+                "comparator": "=",
+                "value": "s1 AND s2"
+              }
+            ]
+          ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
+      });
+
+      it('Mixed of AND OR condition with bracket -possibility type2', () => {
+        let sc = new ShowCondition('field1 CONTAINS "s3,s2" AND (field2 = 3 OR field3 = te* OR field4 = "s1 AND s2")')
+        
+        let condition = [
+          {
+            "fieldReference": "field1",
+            "comparator": "CONTAINS",
+            "value": "s3,s2"
+          },
+          "AND",
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": 3
+            },
+            "OR",            
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "st*"
+            },
+            "OR",
+            {
+              "fieldReference": "field4",
+              "comparator": "=",
+              "value": "s3 AND s2"
+            }            
+          ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(false);
+      });
+
+      it('Mixed of AND OR condition with bracket -possibility type3', () => {
+        let sc = new ShowCondition('(field1 CONTAINS "s3,s2" AND field2 = 3) OR field3 = te*)')
+        
+        let condition = [
+          [
+            [{
+              "fieldReference": "field1",
+              "comparator": "CONTAINS",
+              "value": "s3,s2"
+            }],
+            "AND",
+            [{
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": 4
+            }]
+          ],
+          "OR",
+          {
+            "fieldReference": "field3",
+            "comparator": "=",
+            "value": "st*"
+          }
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
+      });
+
+      it('Mixed of AND OR condition with bracket -possibility type4', () => {
+        let sc = new ShowCondition('(field2 != 4 AND field3 = te*) OR field4 = "s1 AND s2")')
+        
+        let condition = [
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "!=",
+              "value": "4"
+            },
+            "AND",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "te*"
+            }
+          ],
+          "OR",
+          {
+            "fieldReference": "field4",
+            "comparator": "=",
+            "value": "s1 AND s2"
+          }
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
+      });
+      it('Mixed of AND OR condition with bracket -possibility type5', () => {
+        let sc = new ShowCondition('(field2 = 4 AND field3 = te*) OR field4 = "s1 AND s2")')
+        
+        let condition = [
+          [
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "4"
+            },
+            "AND",
+            {
+              "fieldReference": "field3",
+              "comparator": "=",
+              "value": "te*"
+            }
+          ],
+          "OR",
+          {
+            "fieldReference": "field4",
+            "comparator": "=",
+            "value": "s1 AND s2"
+          }
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
+      });
+      it('Mixed of AND OR condition with bracket -possibility type6', () => {
+        let sc = new ShowCondition('field2 = 4 AND (field3 = te* OR field4 = "s1 AND s2")')
+        
+        let condition = [          
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "4"
+            },
+            "AND",
+            [
+              {
+                "fieldReference": "field3",
+                "comparator": "=",
+                "value": "te*"
+              },
+              "OR",
+              {
+                "fieldReference": "field4",
+                "comparator": "=",
+                "value": "s1 AND s2"
+              }
+            ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
+      });
+      it('Mixed of AND OR condition with bracket -possibility type7', () => {
+        let sc = new ShowCondition('field2 = 4 AND (field3 = st* AND field4 = "s1 AND s2")')
+        
+        let condition = [          
+            {
+              "fieldReference": "field2",
+              "comparator": "=",
+              "value": "4"
+            },
+            "AND",
+            [
+              {
+                "fieldReference": "field3",
+                "comparator": "=",
+                "value": "st*"
+              },
+              "AND",
+              {
+                "fieldReference": "field4",
+                "comparator": "=",
+                "value": "s1 AND s2"
+              }
+            ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(false);
+      });
+      it('Mixed of AND OR condition with bracket -possibility type8', () => {
+        let sc = new ShowCondition('(field3 = te* AND field4 = "s1 AND s2")')
+        
+        let condition = [            
+            [
+              {
+                "fieldReference": "field3",
+                "comparator": "=",
+                "value": "te*"
+              },
+              "AND",
+              {
+                "fieldReference": "field4",
+                "comparator": "=",
+                "value": "s1 AND s2"
+              }
+            ]
+        ];
+        let matched = sc.evaluateFormula(contextFields, condition);
+        expect(matched).toBe(true);
       });
     });
   });  
