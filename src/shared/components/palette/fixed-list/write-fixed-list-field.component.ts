@@ -10,20 +10,26 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
 
   fixedListFormControl: FormControl;
 
-  ngOnInit() {
-
-    /**
-     *
-     * Reassigning list_items from formatted_list when list_items is empty for DynamicList's
-     */
-    if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
-      this.caseField.list_items = this.caseField.formatted_value.list_items;
+  public get listItems(): any[] {
+    if (this.caseField) {
+      if (this.caseField.list_items) {
+        return this.caseField.list_items;
+      }
+      if (this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
+        return this.caseField.formatted_value.list_items;
+      }
     }
+    return [];
+  }
 
+  ngOnInit() {
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
+
     if (isNull) {
       this.caseField.value = null;
     }
-    this.fixedListFormControl = this.registerControl(new FormControl(this.caseField.value));
+
+    this.fixedListFormControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    this.fixedListFormControl.setValue(this.caseField.value);
   }
 }

@@ -1,5 +1,10 @@
-<!-- Current Page && Event trigger name -->
-<h1 class="heading-h1"><span *ngIf="currentPage && currentPage.label">{{currentPage.label}}&nbsp;-&nbsp;</span>{{ eventTrigger.name}}</h1>
+<ng-container *ngIf="currentPage">
+  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name}}</h1>
+  <ng-container *ngIf="currentPage.label">
+    <span class="govuk-caption-l">{{ eventTrigger.name}}</span>
+    <h1 class="govuk-heading-l">{{currentPage.label}}</h1>
+  </ng-container>
+</ng-container>
 
 <!-- Case ID -->
 <h2 *ngIf="getCaseId()" class="heading-h2">
@@ -18,7 +23,7 @@
 </div>
 <!-- Event error heading and error message to be displayed if there are specific error details -->
 <div *ngIf="error && error.details" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading">
+  <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading-3">
     The event could not be created
   </h3>
   <p>{{error.message}}</p>

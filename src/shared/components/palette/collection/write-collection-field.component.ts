@@ -1,16 +1,26 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { finalize } from 'rxjs/operators';
-import { Profile } from '../../../domain/profile';
-import { ProfileNotifier } from '../../../services';
+import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { Profile } from '../../../domain/profile';
+import { FieldsUtils, ProfileNotifier } from '../../../services';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
+
+type CollectionItem = {
+  caseField: CaseField;
+  item: any;
+  prefix: string;
+  index: number;
+  container: FormGroup;
+}
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -31,9 +41,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
+  private collItems: CollectionItem[] = [];
 
-  constructor(private formValidatorsService: FormValidatorsService,
-              private dialog: MatDialog,
+  constructor(private dialog: MatDialog,
               private scrollToService: ScrollToService,
               private profileNotifier: ProfileNotifier,
               private createChecker: CollectionCreateCheckerService
@@ -46,8 +56,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
     this.caseField.value = this.caseField.value || [];
-
-    this.formArray = this.registerControl(new FormArray([]));
+    this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
+    this.formArray['caseField'] = this.caseField;
+    this.caseField.value.forEach((item: any, index: number) => {
+      const prefix: string = this.buildIdPrefix(index);
+      const caseField = this.buildCaseField(item, index);
+      const container = this.getContainer(index);
+      if (this.collItems.length <= index) {
+        this.collItems.length = index + 1;
+      }
+      this.collItems[index] = { caseField, item, prefix, index, container };
+    });
   }
 
   ngOnDestroy() {
@@ -57,58 +76,131 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   buildCaseField(item, index: number): CaseField {
-    return this.newCaseField(index, item);
+    /**
+     * What follow is code that makes me want to go jump in the shower!
+     * Basically, we land in here repeatedly because of the binding, and
+     * this is what appears to be happening:
+     *   1. this.formArray contains no controls at all.
+     *      this.formArray.value = [];
+     *   2. this.formArray contains a FormGroup, which contains a single
+     *      FormControl with the id 'code'.
+     *      this.formArray.value = [{ code: null }]
+     *   3. this.formArray contains what is being set up below.
+     *      this.formArray.value = [{ code: null, id: null, value: { code: null } }]
+     *   4, 5, 6, etc - the same as 3.
+     */
+    let group: FormGroup;
+    if (this.formArray && (index < this.formArray.length)) {
+      group = this.formArray.at(index) as FormGroup;
+    } else {
+      group = new FormGroup({});
+    }
+
+    let value;
+    if (this.isCollectionOfSimpleType(this.caseField)) {
+      value = group.get('value') as FormControl
+      if (!value) {
+        value = new FormControl(item.value);
+        // Now add the value FormControl to the outer group.
+        group.addControl('value', value);
+      }
+    } else {
+      value = group.get('value') as FormGroup;
+      if (!value) {
+        value = new FormGroup({});
+        for (const key of Object.keys(group.controls)) {
+          value.addControl(key, group.get(key));
+          // DON'T remove the control for this key from the outer group or it
+          // goes awry. So DON'T uncomment the below line!
+          // group.removeControl(key);
+        }
+        // Now add the value FormGroup to the outer group.
+        group.addControl('value', value);
+      }
+    }
+    let id = group.get('id') as FormControl;
+    // If we're not in scenario 3, above, we need to do some jiggery pokery
+    // and set up the id and value controls.
+    // Also set up an id control if it doesn't yet exist.
+    if (!id) {
+      id = new FormControl(item.id);
+      group.addControl('id', id);
+    }
+
+    /**
+     * Again, very sorry. I've not found a better way to produce the
+     * output needed for what needs to be sent to the server yet.
+     */
+
+    // Now, add the outer group to the array (or replace it).
+    if (index < this.formArray.length) {
+      this.formArray.setControl(index, group);
+    } else {
+      this.formArray.push(group);
+    }
+
+    // Now set up the CaseField and validation.
+    let cfid: string;
+    if (value instanceof FormControl) {
+      cfid = 'value';
+    } else {
+      cfid = index.toString();
+    }
+    let cf: CaseField = this.newCaseField(cfid, item);
+    FormValidatorsService.addValidators(cf, value);
+    FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
+    return cf;
   }
 
-  private newCaseField(index: number, item) {
-    return Object.assign(new CaseField(), {
-      id: index.toString(),
+  private newCaseField(id: string, item) {
+    const isNotAuthorisedToUpdate = this.isNotAuthorisedToUpdate();
+    // Remove the bit setting the hidden flag here as it's an item in the array and
+    // its hidden state isn't independently re-evaluated when the form is changed.
+    return plainToClassFromExist(new CaseField(), {
+      id,
       field_type: this.caseField.field_type.collection_field_type,
-      display_context: this.isNotAuthorisedToUpdate(index) ? 'READONLY' : this.caseField.display_context,
-      hidden: this.caseField.hidden,
+      display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
       value: item.value,
       label: null,
       acls: this.caseField.acls
     });
   }
 
-  buildControlRegistrer(id: string, index: number): (control: FormControl) => AbstractControl {
-    return control => {
-      if (this.formArray.at(index)) {
-        return this.formArray.at(index).get('value');
-      }
-      this.formValidatorsService.addValidators(this.caseField, control);
-      this.formArray.push(
-        new FormGroup({
-          id: new FormControl(id),
-          value: control
-        })
-      );
-      return control;
-    };
+  buildIdPrefix(index: number): string {
+    const prefix = `${this.idPrefix}${this.caseField.id}_`;
+    if (this.caseField.field_type.collection_field_type.type === 'Complex') {
+      return `${prefix}${index}_`;
+    }
+    return prefix;
   }
 
-  buildIdPrefix(index: number): string {
-    if ('Complex' === this.caseField.field_type.collection_field_type.type) {
-      return this.idPrefix + this.caseField.id + '_' + index + '_';
+  private getContainer(index: number): FormGroup {
+    const value = this.formArray.at(index).get('value');
+    if (value instanceof FormGroup) {
+      return value;
     } else {
-      return this.idPrefix + this.caseField.id + '_';
+      return this.formArray.at(index) as FormGroup;
     }
   }
 
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    this.caseField.value.push({ value: null });
+    const item = { value: null }
+    this.caseField.value.push(item);
     // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
 
-    let lastIndex = this.caseField.value.length - 1;
+    const index = this.caseField.value.length - 1;
+    const caseField: CaseField = this.buildCaseField(item, index);
+    const prefix = this.buildIdPrefix(index);
+    const container = this.getContainer(index);
+    this.collItems.push({ caseField, item, index, prefix, container });
 
     // Timeout is required for the collection item to be rendered before it can be scrolled to or focused.
     if (doScroll) {
       setTimeout(() => {
         this.scrollToService.scrollTo({
-          target: this.buildIdPrefix(lastIndex) + lastIndex,
+          target: `${this.buildIdPrefix(index)}${index}`,
           duration: 1000,
           offset: -150,
         })
@@ -121,19 +213,23 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   private focusLastItem() {
-    if (this.items.last.nativeElement.querySelector('.form-control')) {
-      this.items.last.nativeElement.querySelector('.form-control').focus();
+    const item: any = this.items.last.nativeElement.querySelector('.form-control');
+    if (item) {
+      item.focus();
     }
   }
 
   removeItem(index: number): void {
     this.caseField.value.splice(index, 1);
+    this.collItems.splice(index, 1);
     this.formArray.removeAt(index);
   }
 
   itemLabel(index: number) {
-    let displayIndex = index + 1;
-    return index ? `${this.caseField.label} ${displayIndex}` : this.caseField.label;
+    if (index) {
+      return `${this.caseField.label} ${index + 1}`;
+    }
+    return this.caseField.label;
   }
 
   isNotAuthorisedToCreate() {
@@ -150,15 +246,21 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
                 .includes(type);
   }
 
-  isNotAuthorisedToUpdate(index: number) {
+  isNotAuthorisedToUpdate() {
     if (this.isExpanded) {
       return false;
     }
-    let id = false;
-    if (this.formArray.at(index)) {
-      id = this.formArray.at(index).get('id').value;
-    }
-    return !!id && !this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+    // TODO: Reassess the logic around the id when we know what the behaviour should actually
+    // be as what was in place prevents creation of new items as it shows a readonly field
+    // rather than an writable component.
+    // const id = this.getControlIdAt(index);
+    // if (!!id) {
+      if (!!this.profile.user && !!this.profile.user.idam) {
+        const updateRole = this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+        return !updateRole;
+      }
+    // }
+    return false;
   }
 
   hasUpdateAccess(role: any): boolean {
@@ -169,10 +271,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    let id = false;
-    if (this.formArray.at(index)) {
-      id = this.formArray.at(index).get('id').value;
-    }
+    const id = this.getControlIdAt(index);
     return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
   }
 
@@ -199,4 +298,27 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     });
   }
 
+  /**
+   * TODO: Sort out the logic necessary for this once and for all.
+   */
+  private getControlIdAt(index: number): string {
+    // For the moment, simply return undefined.
+    return undefined;
+
+    // What is commented out below the return statement works, except
+    // the id is always null for a newly-created entry, which means it
+    // displays as a readonly field since it appears to require an id
+    // in order to be updatable or deletable, which doesn't seem right.
+
+    // this.formArray contains [ FormGroup( id: FormControl, value: FormGroup ), ... ].
+    // Here, we need to get the value of the id FormControl.
+    // const group: FormGroup = this.formArray.at(index) as FormGroup;
+    // const control: FormControl = group.get('id') as FormControl;
+    // return control ? control.value : undefined;
+  }
+
+  private isCollectionOfSimpleType(caseField: CaseField) {
+    const notSimple = ['Collection', 'Complex'];
+    return notSimple.indexOf( caseField.field_type.collection_field_type.type ) < 0;
+  }
 }

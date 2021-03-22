@@ -104,7 +104,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.route.snapshot.data.case) {
       this.caseSubscription.unsubscribe();
     }
-    this.errorSubscription.unsubscribe();
+    if (!!this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+    }
   }
 
   postViewActivity(): Observable<Activity[]> {
@@ -219,7 +221,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
       .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
-      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
+      .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   private getTabFields(): CaseField[] {

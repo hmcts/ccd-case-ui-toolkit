@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class AppConfig extends AbstractAppConfig {
     'work_allocation_api_url': '/workallocation'
   };
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     super();
   }
 
@@ -138,5 +138,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getWorkAllocationApiUrl(): string {
     return this.config.work_allocation_api_url;
+  }
+
+  public getUserInfoApiUrl(): string {
+    return this.config.user_info_api_url;
   }
 }

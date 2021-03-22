@@ -14,7 +14,7 @@ export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent
     and has to be built manually.
   */
   ngOnInit(): void {
-    let orderSummaryGroup: FormGroup = this.registerControl(new FormGroup({}));
+    let orderSummaryGroup: FormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
     let paymentReference: FormControl = new FormControl(this.caseField.value.PaymentReference);
     orderSummaryGroup.addControl('PaymentReference', paymentReference);
     let paymentTotal: FormControl = new FormControl(this.caseField.value.PaymentTotal);

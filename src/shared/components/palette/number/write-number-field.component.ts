@@ -11,6 +11,6 @@ export class WriteNumberFieldComponent extends AbstractFieldWriteComponent imple
   numberControl: FormControl;
 
   ngOnInit() {
-    this.numberControl = this.registerControl(new FormControl(this.caseField.value));
+    this.numberControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }
