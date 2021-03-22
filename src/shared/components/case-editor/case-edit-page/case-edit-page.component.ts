@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -164,7 +164,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
-    let theControl = formGroup.controls['data'].get(caseFieldId);
+    let theControl = formGroup.controls['data'].get(caseFieldId) as FormControl;
+
     if (theControl) {
       theControl.patchValue(value);
     }

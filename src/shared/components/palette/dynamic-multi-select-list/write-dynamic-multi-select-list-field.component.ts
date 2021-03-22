@@ -10,6 +10,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   checkboxes: FormArray;
+  dynamicListFormControl: FormControl;
 
   ngOnInit(): void {
     this.checkboxes = new FormArray([]);
@@ -19,7 +20,7 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
     }
 
     if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
-      this.caseField.value = this.caseField.formatted_value.value.code;
+      this.caseField.value = this.caseField.formatted_value.value;
     }
 
     let isNull = this.caseField.value === undefined || this.caseField.value === '';
@@ -37,7 +38,8 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
       });
     }
 
-    this.registerControl(this.checkboxes, true) as FormControl;
+    this.dynamicListFormControl = this.registerControl(new FormControl(this.checkboxes.value)) as FormControl;
+    this.dynamicListFormControl.setValue(this.checkboxes.value);
   }
 
   onCheckChange(event: Event) {
@@ -59,6 +61,8 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
         }
       });
     }
+
+    this.dynamicListFormControl.setValue(this.checkboxes.value);
   }
 
   isSelected(code: string): AbstractControl {
