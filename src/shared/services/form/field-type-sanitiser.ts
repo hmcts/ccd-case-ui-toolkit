@@ -60,14 +60,12 @@ export class FieldTypeSanitiser {
 
     if (Array.isArray(values)) {
       const listItems = this.getListItems(field);
-      const matches = listItems.filter(item => values.indexOf(item.code) !== -1);
+      const matches = listItems.filter(item => values.map(v => v.code).indexOf(item.code) !== -1);
 
-      if (matches && matches.length > 0) {
-        data[field.id] = {
-          value: matches,
-          list_items: listItems
-        };
-      }
+      data[field.id] = {
+        value: matches,
+        list_items: listItems
+      };
     }
   }
 

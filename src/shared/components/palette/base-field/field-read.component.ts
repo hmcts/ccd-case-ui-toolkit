@@ -5,7 +5,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
-const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
+const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList' ];
 
 @Component({
   selector: 'ccd-field-read',
