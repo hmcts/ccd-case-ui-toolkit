@@ -1,5 +1,4 @@
 ## RELEASE NOTES
-### Version 2.77.1-colours-inverted-aaa
 **EUI-2032** Fix inverted colours on select dropdown fields for accessibility
 
 ### Version 2.75.0
