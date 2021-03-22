@@ -1,6 +1,7 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
+import { Component, Input, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ThemePalette } from '@angular/material';
+import { MatDatepicker, ThemePalette } from '@angular/material';
 
 @Component({
     selector: 'exui-datetime-picker-wrapper',
@@ -11,11 +12,11 @@ import { ThemePalette } from '@angular/material';
 
 export class DatetimePickerWrapperComponent {
 
-  @ViewChild('picker') picker: any;
+  @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
 
   public disabled = false;
   public showSpinners = true;
-  public showSeconds = true;
+  public showSeconds = false;
   public touchUi = false;
   public enableMeridian = true;
   public minDate: Date;
