@@ -52,7 +52,7 @@ Details inside it are for the actual component first shown on page */
   }
 }
 
-// this is the overlay container from which shows the datetimepicker panel
+// this is the overlay container from which shows the datetimepicker panel in order to access it
 .cdk-overlay-container {
   // all datepicker content shown within mat-datepicker-content
   .mat-datepicker-content {
@@ -156,6 +156,7 @@ Details inside it are for the actual component first shown on page */
           outline: 3px solid orange;
           border: 2px solid black;
           outline-offset: 1px;
+          z-index: 1;
         }
         .mat-calendar-body-cell-content {
           width: 50%;
@@ -173,6 +174,9 @@ Details inside it are for the actual component first shown on page */
           background-color: lightskyblue;
         }
         .mat-calendar-body-cell {
+          .mat-calendar-body-cell-content {
+            border: none;
+          }
           .mat-calendar-body-selected {
             border: none;
             box-shadow: none;
@@ -200,6 +204,9 @@ Details inside it are for the actual component first shown on page */
           background-color: lightskyblue;
         }
         .mat-calendar-body-cell {
+          .mat-calendar-body-cell-content {
+            border: none;
+          }
           .mat-calendar-body-selected {
             border: none;
             box-shadow: none;
