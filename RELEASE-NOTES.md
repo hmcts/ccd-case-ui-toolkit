@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.77.1-colours-inverted-aaa
+**EUI-2032** Fix inverted colours on select dropdown fields for accessibility
 
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
