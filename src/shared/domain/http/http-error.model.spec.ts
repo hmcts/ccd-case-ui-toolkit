@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { HttpError } from './http-error.model';
 
 describe('HttpError', () => {
@@ -30,16 +31,17 @@ describe('HttpError', () => {
       'path': '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
     };
 
-    it('should return default error when given empty object', () => {
-      let error = HttpError.from({});
+    it('should return default error when given null', () => {
+      const error = HttpError.from(null);
 
       expect(error).toEqual(new HttpError());
+      expect(error.status).toBe(500);
     });
 
     it('should copy all known properties from object to error', () => {
-      let error = HttpError.from(ERROR_FULL);
+      const error = HttpError.from(new HttpErrorResponse({ error: ERROR_FULL }));
 
-      let expectedError = new HttpError();
+      const expectedError = new HttpError();
       expectedError.timestamp = ERROR_FULL.timestamp;
       expectedError.status = ERROR_FULL.status;
       expectedError.error = ERROR_FULL.error;
@@ -51,9 +53,9 @@ describe('HttpError', () => {
     });
 
     it('should ignore unknown properties from object to error', () => {
-      let error = HttpError.from(ERROR_PARTIAL);
+      const error = HttpError.from(new HttpErrorResponse({ error: ERROR_PARTIAL }));
 
-      let expectedError = new HttpError();
+      const expectedError = new HttpError();
       expectedError.status = ERROR_PARTIAL.status;
       expectedError.error = ERROR_PARTIAL.error;
       expectedError.exception = ERROR_PARTIAL.exception;
@@ -63,7 +65,7 @@ describe('HttpError', () => {
     });
 
     it('should ignore additional properties of object', () => {
-      let error = HttpError.from({ unknown: 'xxx'});
+      const error = HttpError.from(new HttpErrorResponse({ error: { unknown: 'xxx' } }));
 
       expect(error).toEqual(new HttpError());
     });

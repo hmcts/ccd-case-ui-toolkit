@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { LoadingService } from '.';
+import { LoadingService } from './loading.service';
 
 @NgModule({
     imports: [

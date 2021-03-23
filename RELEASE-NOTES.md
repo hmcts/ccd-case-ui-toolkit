@@ -2,8 +2,23 @@
 
 ### 2.73.4-alpha-task-event-completion-integration
 **EUI-3537** WA integration
+### Version 2.75.0
+**EUI-3267** Reintroducing the grey bars for fields shown by other fields
+
+### Version 2.73.2-collection-date-field
+**EUI-2667** Fix to date field rendering within collections
+
+### Version 2.74.2
+**EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch
+
+### Version 2.74.1
+**EUI-3506** Non-Descriptive Headings (AA) - issue 04
+
 ### Version 2.73.5-ngmodel-deprecation
 **EUI-3410** ngModel deprecation
+
+### Version 2.73.0-hotfix-error-message-display
+**EUI-3594** Fix issue with error message specifics not being displayed
 
 ### Version 2.73.0
 **EUI-3222** Loading spinner
