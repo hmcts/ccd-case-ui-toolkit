@@ -16,6 +16,11 @@ export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadC
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
+
+    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
+      this.caseField.value = this.caseField.formatted_value.value;
+    }
+
     super.ngOnInit();
   }
 }
