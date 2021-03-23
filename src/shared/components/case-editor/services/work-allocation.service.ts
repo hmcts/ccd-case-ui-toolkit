@@ -30,12 +30,18 @@ export class WorkAllocationService {
   public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
-      .post(url, { searchRequest })
+      .post(url, { searchRequest }, null, false)
       .pipe(
         map(response => response),
         catchError(error => {
           this.errorService.setError(error);
-          return throwError(error);
+          //explicitly eat away 401 error and 400 error
+          if(error && error.status && (error.status === 401 || error.status === 400)){
+            // do nothing
+            console.log('error status 401 or 400', error);
+          } else {
+            return throwError(error);
+          }
         })
       );
   }
