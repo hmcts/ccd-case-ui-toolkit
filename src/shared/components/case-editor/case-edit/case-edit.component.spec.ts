@@ -260,12 +260,6 @@ describe('CaseEditComponent', () => {
       expect(routerStub.navigate).toHaveBeenCalled();
     });
 
-    xit('should announce profile when profile exists on a path from root set by Router', () => {
-      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
-      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
-      expect(profileService.get).not.toHaveBeenCalled();
-    });
-
     describe('fieldShowCondition', () => {
 
       describe('next page', () => {
@@ -885,12 +879,6 @@ describe('CaseEditComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
-
-    xit('should announce profile when profile not in route and get profile successful', () => {
-      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
-      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
-      expect(profileService.get).toHaveBeenCalled();
-    });
   });
 
 });
