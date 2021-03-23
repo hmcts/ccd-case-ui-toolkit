@@ -6,15 +6,17 @@ describe('CaseField', () => {
 
   let component: CaseField;
   const VALUE: any = {
-    value: {code: 'Code1', label: 'Label 1'}, list_items: [{code: 'Code1', label: 'Label 1'},
-      {code: 'Code2', label: 'Label 2'}]
+    value: {code: 'Code1', label: 'Label 1'},
+    list_items: [
+      {code: 'Code1', label: 'Label 1'},
+      {code: 'Code2', label: 'Label 2'}
+    ]
   };
   beforeEach(async(() => {
     component = new CaseField();
   }));
 
   it('should be able to retrive right values from the accessors menthods when FieldType is DynamicLists', () => {
-
     let fieldType: FieldType = new FieldType();
     fieldType.type = 'DynamicList'
     component.field_type = fieldType;

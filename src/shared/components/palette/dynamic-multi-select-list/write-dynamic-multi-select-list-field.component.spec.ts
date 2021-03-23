@@ -8,9 +8,18 @@ import { By } from '@angular/platform-browser';
 import { attr } from '../../../test/helpers';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
 
-const VALUES = ['Option1', 'Option2'];
+const VALUES = [{
+  code: 'Option1',
+  label: 'Option 1',
+  order: 1
+},
+{
+  code: 'Option2',
+  label: 'Option 2',
+  order: 2
+}];
 const FIELD_ID = 'DynamicMultiSelectList';
-const FIELD_LIST_ITEMS = [
+const LIST_ITEMS = [
   {
     code: 'Option1',
     label: 'Option 1',
@@ -49,7 +58,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: VALUES,
-        list_items: FIELD_LIST_ITEMS
+        list_items: LIST_ITEMS
       });
 
       TestBed
@@ -97,9 +106,9 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     it('should render a checkbox for each available option', () => {
       const checkboxes = de.queryAll($CHECKBOXES);
 
-      expect(checkboxes.length).toEqual(FIELD_LIST_ITEMS.length);
+      expect(checkboxes.length).toEqual(LIST_ITEMS.length);
 
-      FIELD_LIST_ITEMS.forEach(item => {
+      LIST_ITEMS.forEach(item => {
         expect(checkboxes.find(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
       });
     });
@@ -110,29 +119,19 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       expect(checkboxes.length).toEqual(VALUES.length);
 
       VALUES.forEach(value => {
-        expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
-      });
-    });
-
-    it('should mark as selected the initially selected checkboxes', () => {
-      const checkboxes = de.queryAll($SELECTED_CHECKBOXES);
-
-      expect(checkboxes.length).toEqual(VALUES.length);
-
-      VALUES.forEach(value => {
-        expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
+        expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value.code)).toBeTruthy();
       });
     });
 
     it('should remove option from values when unselected', () => {
       const option1 = de.query($OPTION_1).nativeElement;
-      option1.click();
+      option1.checked ? option1.click() : option1.checked;
 
       fixture.detectChanges();
 
       expect(option1.checked).toBeFalsy();
       expect(component.checkboxes.controls.length).toEqual(1);
-      expect(component.checkboxes.controls[0].value).not.toEqual(FIELD_LIST_ITEMS[0].code);
+      expect(component.checkboxes.controls[0].value).not.toEqual(LIST_ITEMS[0].code);
     });
   });
 
@@ -145,7 +144,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: null,
-        list_items: FIELD_LIST_ITEMS
+        list_items: LIST_ITEMS
       });
 
       TestBed
@@ -192,8 +191,8 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
         label: 'X',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
-        value: FIELD_LIST_ITEMS[0],
-        list_items: FIELD_LIST_ITEMS
+        value: LIST_ITEMS[0],
+        list_items: LIST_ITEMS
       });
 
       TestBed

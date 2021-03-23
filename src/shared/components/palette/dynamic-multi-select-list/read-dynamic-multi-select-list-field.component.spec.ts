@@ -31,7 +31,21 @@ const FIELD_TYPE: FieldType = {
   id: 'MultiSelectList',
   type: 'MultiSelectList',
 };
-const VALUES = ['P', 'PA', 'J'];
+const VALUES = [{
+  label: 'Pierre',
+  code: 'P',
+  order: 1
+},
+{
+  label: 'Paul',
+  code: 'PA',
+  order: 2
+},
+{
+  label: 'Jacques',
+  code: 'J',
+  order: 3
+}];
 
 let CASE_FIELD: CaseField;
 
