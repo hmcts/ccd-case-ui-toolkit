@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.74.4
+**EUI-3335** Incorporating Version 2.74.4-profile-call-before-event-trigger
+
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
 

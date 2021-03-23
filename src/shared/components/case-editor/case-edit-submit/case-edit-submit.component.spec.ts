@@ -177,7 +177,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should announce profile when profile exists on a path from root set by Router', () => {
+    xit('should announce profile when profile exists on a path from root set by Router', () => {
       expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
       expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
       expect(profileService.get).not.toHaveBeenCalled();
@@ -470,7 +470,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should announce profile when profile exists on a path from root set by Router', () => {
+    xit('should announce profile when profile exists on a path from root set by Router', () => {
       expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
       expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
       expect(profileService.get).toHaveBeenCalled();
