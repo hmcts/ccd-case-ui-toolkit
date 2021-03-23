@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpErrorService } from './http-error.service';
 import { catchError } from 'rxjs/operators';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class HttpService {
@@ -27,7 +27,7 @@ export class HttpService {
     return this.httpclient
       .get(url, this.setDefaultValue(options))
       .pipe(
-        catchError(res => {
+        catchError((res: HttpErrorResponse) => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
         })
       );
@@ -45,7 +45,7 @@ export class HttpService {
     return this.httpclient
       .post(url, body, this.setDefaultValue(options))
       .pipe(
-        catchError(res => {
+        catchError((res: HttpErrorResponse) => {
           return this.httpErrorService.handle(res, redirectIfNotAuthorised);
         })
       );
@@ -63,7 +63,7 @@ export class HttpService {
     return this.httpclient
       .put(url, body, this.setDefaultValue(options))
       .pipe(
-        catchError(res => {
+        catchError((res: HttpErrorResponse) => {
           return this.httpErrorService.handle(res);
         })
       );
@@ -80,7 +80,7 @@ export class HttpService {
     return this.httpclient
       .delete(url, this.setDefaultValue(options))
       .pipe(
-        catchError(res => {
+        catchError((res: HttpErrorResponse) => {
           return this.httpErrorService.handle(res);
         })
       );
