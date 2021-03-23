@@ -106,7 +106,7 @@ describe('WorkAllocationService', () => {
       const searchRequest: TaskSearchParameter = { ccdId: '1234567890' };
       workAllocationService.searchTasks(searchRequest).subscribe();
 
-      expect(httpService.post).toHaveBeenCalledWith(TASK_SEARCH_URL, { searchRequest });
+      expect(httpService.post).toHaveBeenCalledWith(TASK_SEARCH_URL, { searchRequest }, null, false);
     });
 
     it('should retrieve a list of matching tasks', (done) => {

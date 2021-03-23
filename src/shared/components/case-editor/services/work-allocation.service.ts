@@ -35,8 +35,8 @@ export class WorkAllocationService {
         map(response => response),
         catchError(error => {
           this.errorService.setError(error);
-          //explicitly eat away 401 error and 400 error
-          if(error && error.status && (error.status === 401 || error.status === 400)){
+          // explicitly eat away 401 error and 400 error
+          if (error && error.status && (error.status === 401 || error.status === 400)) {
             // do nothing
             console.log('error status 401 or 400', error);
           } else {
