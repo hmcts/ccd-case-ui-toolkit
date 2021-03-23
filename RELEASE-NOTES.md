@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### 2.73.4-alpha-task-event-completion-integration
+### 2.75.1-alpha-task-event-completion-integration
 **EUI-3537** WA integration
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
