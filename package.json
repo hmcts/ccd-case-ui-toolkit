@@ -43,7 +43,8 @@
     "install:demo": "yarn --cwd demo install",
     "build:demo": "yarn --cwd demo build",
     "start": "yarn --cwd demo start",
-    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build"
+    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
+    "demo": "yarn build:esm && yarn build:demo && yarn start"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
