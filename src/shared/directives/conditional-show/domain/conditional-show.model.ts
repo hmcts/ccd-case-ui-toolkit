@@ -16,6 +16,75 @@ export class ShowCondition {
   // private dumbCache = new Map<string, boolean>();
   private orConditions: string[] = null;
   private andConditions: string[] = null;
+  
+
+  static updatedAddPathPrefixToCondition(formula: any, pathPrefix): string {    
+    if (!pathPrefix || pathPrefix === '') {
+      if (formula === null) {
+        return formula;
+      } else {
+        return JSON.stringify(formula);
+      }
+    }
+    
+    let finalCondition: string [] = [];    
+    if (!!formula) {
+      if (Array.isArray(formula)) {
+        formula.forEach(condition => {
+          if (!!condition && typeof condition === "object") {
+            if (Array.isArray(condition)) {
+              console.log('Condition1', condition);              
+              finalCondition.push(JSON.parse(this.processAddPathPrefixToCondition(condition, pathPrefix)));
+            } else {
+              console.log('Condition2', condition);
+              finalCondition.push(this.updatedExtractConditions(condition, pathPrefix));
+            }
+          } else {
+            finalCondition.push(condition);
+          }
+        });
+      } else {
+        finalCondition.push(this.updatedExtractConditions(formula, pathPrefix));
+      }
+    }
+    console.log('Final Result', JSON.stringify(finalCondition));
+    return JSON.stringify(finalCondition);
+  }
+
+  private static updatedExtractConditions(condition, pathPrefix): string {
+    if (!condition.fieldReference.startsWith(pathPrefix)) {
+      condition.fieldReference= pathPrefix + '.' + condition.fieldReference;
+      console.log('After Prefix', condition);
+      return condition;
+    } else {
+      console.log('After Prefix', condition);
+      return condition;
+    }
+  }
+
+  private static processAddPathPrefixToCondition(formula: any, pathPrefix): string {
+    let evaluatedCondition: string[] = [];
+    console.log('processAddPathPrefixToCondition', formula);
+    if (Array.isArray(formula)) {
+      formula.forEach(condition => {
+        if (!!condition && typeof condition === "object") {
+          if (Array.isArray(condition)) {
+            console.log('process Condition1', condition);
+            evaluatedCondition.push(JSON.parse(this.processAddPathPrefixToCondition(condition, pathPrefix)));
+          } else {
+            console.log('process Condition2', condition);
+            evaluatedCondition.push(this.updatedExtractConditions(condition, pathPrefix));
+          }
+        } else {
+          evaluatedCondition.push(condition);
+        }
+      });
+    } else {
+      evaluatedCondition.push(this.updatedExtractConditions(formula, pathPrefix));
+    }
+    console.log('evalCondition', JSON.stringify(evaluatedCondition));
+    return JSON.stringify(evaluatedCondition);
+  }
 
   static addPathPrefixToCondition(showCondition: string, pathPrefix): string {
     if (!pathPrefix || pathPrefix === '') {
@@ -31,7 +100,8 @@ export class ShowCondition {
       return andConditions.join(' AND ');
     }
   }
-  private static extractConditions(orConditions, pathPrefix) {
+
+  private static extractConditions(orConditions, pathPrefix) {    
     orConditions = orConditions.map(condition => {
       if (!condition.startsWith(pathPrefix)) {
         return pathPrefix + '.' + condition;
@@ -41,6 +111,7 @@ export class ShowCondition {
     });
     return orConditions;
   }
+
   // Cache instances so that we can cache results more effectively
   public static getInstance(cond: string): ShowCondition {
     const inst = this.instanceCache.get(cond);
@@ -53,6 +124,7 @@ export class ShowCondition {
     }
   }
 
+  // First evaluation: Process the condition for final processing or evaluate the condition if it has multi combination of AND/OR with in condition  
   public evaluateFormula(contextFields: any, formula: any, path?: string): boolean {
     let fields;
     if (Array.isArray(contextFields)) {
@@ -65,31 +137,36 @@ export class ShowCondition {
     let conditionsResult: boolean[] = [];
     
     if (!!formula) {
-      formula.forEach(condition => {
-        if (!!condition && typeof condition === "object") {
-          if (comparator === ShowCondition.AND_CONDITION && conditionsResult.some(val => val === false)) {
-            return false;
-          } else if (comparator === ShowCondition.OR_CONDITION && conditionsResult.some(val => val)) {
-            return true;
+      if (Array.isArray(formula)) {
+        formula.forEach(condition => {
+          if (!!condition && typeof condition === "object") {
+            if (comparator === ShowCondition.AND_CONDITION && conditionsResult.some(val => val === false)) {
+              return false;
+            } else if (comparator === ShowCondition.OR_CONDITION && conditionsResult.some(val => val)) {
+              return true;
+            }
+            conditionsResult.push(this.processCondition(fields, condition, path));
+          } else {
+            comparator = condition;
           }
-          conditionsResult.push(this.processCondition(fields, condition, path));
-        } else {
-          comparator = condition;
-        }
-      });
+        });
+      } else {
+        conditionsResult.push(this.processCondition(fields, formula, path));
+      }      
     }
     
     if (comparator === ShowCondition.AND_CONDITION) {        
       return conditionsResult.every(val => val);
     } else if (comparator === ShowCondition.OR_CONDITION) {        
       return conditionsResult.some(val => val);
-    } else if (conditionsResult.length) {        
+    } else if (conditionsResult.length) {
       return conditionsResult[0];
     } else {
       return true;
     }
   }
 
+  // Process the condition for final processing or evaluate the condition if it has multi combination of AND/OR with in condition
   private processCondition(fields: any, formula: any, path?: string): boolean {
     if (Array.isArray(formula)) {
       return this.evaluateFormulaArray(fields, formula, path);
@@ -98,6 +175,7 @@ export class ShowCondition {
     }    
   }
 
+  // Process the condition for final processing or evaluate the condition if it has multi combination of AND/OR with in condition
   private evaluateFormulaArray(fields: any, formula: any, path?: string): boolean {    
     let comparator;
     let conditionsResult: boolean[] = [];
@@ -125,6 +203,7 @@ export class ShowCondition {
     }
   }
 
+  //Final processing of evaluation of condition and return final result (True/False)
   private evaluateCondition(fields: any, condition: any, path?: string): boolean {
     //const value = isNaN(condition.value) || condition.value.toString().trim() === "" ? JSON.stringify(condition.value) : condition.value;
     const cond = condition.fieldReference + condition.comparator + condition.value;

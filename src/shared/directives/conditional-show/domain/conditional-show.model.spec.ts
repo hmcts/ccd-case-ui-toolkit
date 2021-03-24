@@ -1031,32 +1031,46 @@ describe('conditional-show', () => {
 
   describe('addPathPrefixToCondition()', () => {
     it('should add path', () => {
-      expect(ShowCondition.addPathPrefixToCondition('field1="test"', '')).toBe('field1="test"');
-      expect(ShowCondition.addPathPrefixToCondition('field1="test"', null)).toBe('field1="test"');
-      expect(ShowCondition.addPathPrefixToCondition(null, '')).toBe(null);
-      expect(ShowCondition.addPathPrefixToCondition(null, null)).toBe(null);
-      expect(ShowCondition.addPathPrefixToCondition('', '')).toBe('');
+      expect(ShowCondition.updatedAddPathPrefixToCondition({"fieldReference":"field1","comparator":"=","value": "test"}, '')).toBe('{"fieldReference":"field1","comparator":"=","value":"test"}');
+      expect(ShowCondition.updatedAddPathPrefixToCondition({"fieldReference":"field1","comparator":"=","value": "test"}, null)).toBe('{"fieldReference":"field1","comparator":"=","value":"test"}');
+      expect(ShowCondition.updatedAddPathPrefixToCondition(null, '')).toBe(null);
+      expect(ShowCondition.updatedAddPathPrefixToCondition(null, null)).toBe(null);
+      expect(ShowCondition.updatedAddPathPrefixToCondition([], '')).toBe('[]');
+      
+      expect(ShowCondition.updatedAddPathPrefixToCondition({"fieldReference":"field1","comparator":"=","value": "test"},
+          'ComplexField1.AddressLine1')).toBe('[{"fieldReference":"ComplexField1.AddressLine1.field1","comparator":"=","value":"test"}]');
+      expect(ShowCondition.updatedAddPathPrefixToCondition({"fieldReference":"field1","comparator":"CONTAINS","value": "s1"},
+       'ComplexField1.AddressLine1')).toBe('[{"fieldReference":"ComplexField1.AddressLine1.field1","comparator":"CONTAINS","value":"s1"}]');
+      expect(ShowCondition.updatedAddPathPrefixToCondition([{"fieldReference": "field3","comparator": "=","value": "te*"},"AND",
+      {"fieldReference": "field4","comparator": "=","value": "s1 AND s2"}],'ComplexField1.AddressLine1')).
+      toBe('[{"fieldReference":"ComplexField1.AddressLine1.field3","comparator":"=","value":"te*"},"AND",{"fieldReference":"ComplexField1.AddressLine1.field4","comparator":"=","value":"s1 AND s2"}]');
 
-      expect(ShowCondition.addPathPrefixToCondition('field1="test"',
-        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test"');
-      expect(ShowCondition.addPathPrefixToCondition('field1CONTAINS"s1"',
-        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1CONTAINS"s1"');
+      expect(ShowCondition.updatedAddPathPrefixToCondition([{"fieldReference": "field1","comparator": "CONTAINS","value": "s3,s2"},"AND",
+      [{"fieldReference": "field2","comparator": "=","value": 3},"OR",[{"fieldReference": "field3","comparator": "=","value": "te*"},"AND",
+      {"fieldReference": "field4","comparator": "=","value": "s1 AND s2"}]]],'ComplexField1.AddressLine1')).
+      toBe('[{"fieldReference":"ComplexField1.AddressLine1.field1","comparator":"CONTAINS","value":"s3,s2"},"AND",[{"fieldReference":"ComplexField1.AddressLine1.field2","comparator":"=","value":3},"OR",[{"fieldReference":"ComplexField1.AddressLine1.field3","comparator":"=","value":"te*"},"AND",{"fieldReference":"ComplexField1.AddressLine1.field4","comparator":"=","value":"s1 AND s2"}]]]');
+      
+      expect(ShowCondition.updatedAddPathPrefixToCondition([{"fieldReference": "field1","comparator": "CONTAINS","value": "s3,s2"},"AND",[{"fieldReference": "field2","comparator": "!=","value": 4},"OR",{"fieldReference": "field3","comparator": "=","value": "te*"}]],
+      'ComplexField1.AddressLine1')).toBe('[{"fieldReference":"ComplexField1.AddressLine1.field1","comparator":"CONTAINS","value":"s3,s2"},"AND",[{"fieldReference":"ComplexField1.AddressLine1.field2","comparator":"!=","value":4},"OR",{"fieldReference":"ComplexField1.AddressLine1.field3","comparator":"=","value":"te*"}]]');
 
-      expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2CONTAINS"s1"',
-        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2CONTAINS"s1"');
+      expect(ShowCondition.updatedAddPathPrefixToCondition([{"fieldReference":"field1","comparator":"CONTAINS","value":"s3,s2"},"AND",[{"fieldReference":"field2","comparator":"!=","value":4},"OR",[{"fieldReference":"ComplexField1.AddressLine1.field3","comparator":"=","value":"te*"},"AND",{"fieldReference":"field4","comparator":"=","value":"S4"}]],"AND",{"fieldReference":"field5","comparator":"=","value":"s1 AND s2"}],'ComplexField1.AddressLine1')).
+      toBe('[{"fieldReference":"ComplexField1.AddressLine1.field1","comparator":"CONTAINS","value":"s3,s2"},"AND",[{"fieldReference":"ComplexField1.AddressLine1.field2","comparator":"!=","value":4},"OR",[{"fieldReference":"ComplexField1.AddressLine1.field3","comparator":"=","value":"te*"},"AND",{"fieldReference":"ComplexField1.AddressLine1.field4","comparator":"=","value":"S4"}]],"AND",{"fieldReference":"ComplexField1.AddressLine1.field5","comparator":"=","value":"s1 AND s2"}]');
+
+      expect(ShowCondition.updatedAddPathPrefixToCondition([{"fieldReference": "field1","comparator": "CONTAINS","value": "s3,s2"},"AND",[{"fieldReference": "field2","comparator": "!=","value": 4},"OR",{"fieldReference": "field3","comparator": "=","value": "te*"}],"AND",[{"fieldReference": "field4","comparator": "=","value": "s1 AND s2"}]],'ComplexField1.AddressLine1')).
+      toBe('[{"fieldReference":"ComplexField1.AddressLine1.field1","comparator":"CONTAINS","value":"s3,s2"},"AND",[{"fieldReference":"ComplexField1.AddressLine1.field2","comparator":"!=","value":4},"OR",{"fieldReference":"ComplexField1.AddressLine1.field3","comparator":"=","value":"te*"}],"AND",[{"fieldReference":"ComplexField1.AddressLine1.field4","comparator":"=","value":"s1 AND s2"}]]');
     });
   });
 
   describe('NOT EQUALS', () => {
     it('Scenario1 show: comparator match with specific value', () => {
       let sc = new ShowCondition('field!="MOJ"');
-      let condition = [
+      let condition = 
         {
           "fieldReference": "field",
           "comparator": "!=",
           "value": "MOJ"
         }
-      ];
+      ;
       let fields = {
         field: 'Reform'
       };
@@ -1396,11 +1410,11 @@ describe('conditional-show', () => {
             }
           ],
           "AND",
-          {
+          [{
             "fieldReference": "field4",
             "comparator": "=",
             "value": "s1 AND s2"
-          }
+          }]
         ];
         
         let matched = sc.evaluateFormula(contextFields, condition);
