@@ -1,17 +1,23 @@
-import { ShowCondition } from './conditional-show.model';
 import { async } from '@angular/core/testing';
-import { CaseField, createFieldType } from '../../..';
+
+import { CaseField, createFieldType, FieldType } from '../../..';
 import { newCaseField } from '../../../fixture';
+import { ShowCondition } from './conditional-show.model';
 
 describe('conditional-show', () => {
-  let caseField1: CaseField = newCaseField('field1', 'field1', null, null, 'OPTIONAL', null).build();
-  let caseField2: CaseField = newCaseField('field2', 'field2', null, null, 'OPTIONAL', null).build();
-  let caseField3: CaseField = newCaseField('field3', 'field3', null, null, 'OPTIONAL', null).build();
-  let caseField4: CaseField = newCaseField('field4', 'field4', null, null, 'OPTIONAL', null).build();
-  let complexAddressUK: CaseField = newCaseField('AddressUKCode', 'Address UK', null,
-    createFieldType('AddressUK', 'AddressUK'), 'OPTIONAL', null).build();
-  let claimantDetailsField: CaseField = newCaseField('claimantDetails', 'ClaimantsDetails', null,
-    createFieldType('Complex', 'Complex',  [complexAddressUK]), 'OPTIONAL', null).build();
+  // Shortened the call to create a new case field as it was getting unwieldy.
+  const ncf = (id: string, label: string, fieldType: FieldType, display_context: string): CaseField => {
+    return newCaseField(id, label, null, fieldType, display_context).build();
+  };
+
+  const caseField1: CaseField = ncf('field1', 'field1', null, 'OPTIONAL');
+  const caseField2: CaseField = ncf('field2', 'field2', null, 'OPTIONAL');
+  const caseField3: CaseField = ncf('field3', 'field3', null, 'OPTIONAL');
+  const caseField4: CaseField = ncf('field4', 'field4', null, 'OPTIONAL');
+  const addressFT: FieldType = createFieldType('AddressUK', 'AddressUK');
+  const complexAddressUK: CaseField = ncf('AddressUKCode', 'Address UK', addressFT, 'OPTIONAL');
+  const complexFT: FieldType = createFieldType('Complex', 'Complex', [complexAddressUK]);
+  const claimantDetailsField: CaseField = ncf('claimantDetails', 'ClaimantsDetails', complexFT, 'OPTIONAL');
   const COLLECTION_OF_INTERIM_RETURNS = {
     interimReturns: [
       {
@@ -56,7 +62,7 @@ describe('conditional-show', () => {
     debtorFirstNames: 'John',
     debtorSurname: 'Snow'
   };
-  let contextFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
+  const contextFields = [caseField1, caseField2, caseField3, caseField4, claimantDetailsField];
 
   describe('matches when', () => {
     it('empty condition', () => {
@@ -1649,5 +1655,198 @@ describe('conditional-show', () => {
         expect(matched).toBe(true);
       });
     });
-  });  
+  });
+
+  describe('static hiddenCannotChange', () => {
+    const FIELDS = {
+      OPTIONAL: ncf('optional', 'Optional', null, 'OPTIONAL'),
+      MANDATORY: ncf('mandatory', 'Mandatory', null, 'MANDATORY'),
+      READONLY: ncf('readonly', 'Read-only', null, 'READONLY'),
+      HIDDEN: ncf('hidden', 'Hidden', null, 'HIDDEN')
+    };
+    const FIELDS_ARRAY = [ FIELDS.OPTIONAL, FIELDS.MANDATORY, FIELDS.READONLY, FIELDS.HIDDEN ];
+
+    describe('should return false when', () => {
+      it('the parameters are null', () => {
+        const result = ShowCondition.hiddenCannotChange(null, null);
+        expect(result).toBe(false);
+      });
+
+      it('ShowCondition is null', () => {
+        const result = ShowCondition.hiddenCannotChange(null, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('ShowCondition is undefined', () => {
+        const result = ShowCondition.hiddenCannotChange(undefined, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('caseFields is null', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.OPTIONAL.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, null);
+        expect(result).toBe(false);
+      });
+
+      it('caseFields is undefined', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.OPTIONAL.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, undefined);
+        expect(result).toBe(false);
+      });
+
+      it('caseFields is empty', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.OPTIONAL.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, []);
+        expect(result).toBe(false);
+      });
+
+      it('there is no show_condition', () => {
+        const showCondition = new ShowCondition('');
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('the dependent field is OPTIONAL', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.OPTIONAL.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('the dependent field is MANDATORY', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.MANDATORY.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('at least one dependent field is OPTIONAL', () => {
+        const optional = `${FIELDS.OPTIONAL.id}="Bob"`;
+        const readonly = `${FIELDS.READONLY.id}="Bob"`;
+        const showCondition: ShowCondition = new ShowCondition(`${optional} AND ${readonly}`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('at least one dependent field is MANDATORY', () => {
+        const mandatory = `${FIELDS.MANDATORY.id}="Bob"`;
+        const hidden = `${FIELDS.HIDDEN.id}="Bob"`;
+        const showCondition: ShowCondition = new ShowCondition(`${hidden} AND ${mandatory}`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('dependent field does not exist in caseFields', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.READONLY.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ FIELDS.HIDDEN ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(false);
+      });
+
+      it('dependent field is nested within Complex field and OPTIONAL', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const complexField = ncf('complex', 'Complex', complexFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.HIDDEN.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ complexField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(false);
+      });
+
+      it('dependent field does not exist within Complex field', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const complexField = ncf('complex', 'Complex', complexFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.MANDATORY.id}="Bob"`);
+        // Complex field contains OPTIONAL, we're looking for MANDTORY.
+        const SPECIFIC_FIELDS = [ complexField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(false);
+      });
+
+      it('dependent field does not exist within Complex Collection field', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const collectionFieldType = createFieldType('Collection', 'Collection', [], complexFieldType);
+        const collectionField = ncf('collection', 'Collection', collectionFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${collectionField.id}.${FIELDS.MANDATORY.id}="Bob"`);
+        // Complex Collection contains OPTIONAL, we're looking for MANDTORY.
+        const SPECIFIC_FIELDS = [ collectionField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('should return true when', () => {
+      it('the dependent field is READONLY', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.READONLY.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(true);
+      });
+
+      it('the dependent field is HIDDEN', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.HIDDEN.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(true);
+      });
+
+      it('ALL dependent fields are HIDDEN or READONLY', () => {
+        const hidden = `${FIELDS.HIDDEN.id}="Bob"`;
+        const readonly = `${FIELDS.READONLY.id}="Bob"`;
+        const showCondition: ShowCondition = new ShowCondition(`${hidden} AND ${readonly}`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field is nested within Complex field and HIDDEN', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.HIDDEN ]);
+        const complexField = ncf('complex', 'Complex', complexFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.HIDDEN.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ complexField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field is nested within Complex field that ITSELF is HIDDEN', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const complexField = ncf('complex', 'Complex', complexFieldType, 'HIDDEN');
+        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.OPTIONAL.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ complexField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field is nested within Complex Collection field and HIDDEN', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.HIDDEN ]);
+        const collectionFieldType = createFieldType('Collection', 'Collection', [], complexFieldType);
+        const collectionField = ncf('collection', 'Collection', collectionFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${collectionField.id}.${FIELDS.HIDDEN.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ collectionField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field is nested within Complex Collection field that ITSELF is HIDDEN', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const collectionFieldType = createFieldType('Collection', 'Collection', [], complexFieldType);
+        const collectionField = ncf('collection', 'Collection', collectionFieldType, 'HIDDEN');
+        const showCondition: ShowCondition = new ShowCondition(`${collectionField.id}.${FIELDS.OPTIONAL.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ collectionField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+    });
+  });
+
+  /**
+   * Specifically make sure the static method is called by the instance method and
+   * that it passes the same parameters. We only need one test like this as all the
+   * other scenarios are covered by invoking the static method.
+   */
+  describe('instance hiddenCannotChange', () => {
+    const READONLY_FIELD = ncf('readonly', 'Read-only', null, 'READONLY');
+    const FIELDS = [ READONLY_FIELD ];
+
+    it('should call static method with appropriate parameters', () => {
+      spyOn(ShowCondition, 'hiddenCannotChange');
+      const instance: ShowCondition = new ShowCondition(`${READONLY_FIELD.id}="Bob"`);
+      instance.hiddenCannotChange(FIELDS);
+      expect(ShowCondition.hiddenCannotChange).toHaveBeenCalledWith(instance, FIELDS);
+    });
+  });
 });

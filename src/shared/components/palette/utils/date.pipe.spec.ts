@@ -1,5 +1,5 @@
-import { DatePipe } from './date.pipe';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { DatePipe } from './date.pipe';
 
 describe('DatePipe', () => {
 
@@ -12,7 +12,6 @@ describe('DatePipe', () => {
 
   it('should render correct date if UTC date in yyyy-mm-dd format', () => {
     let message = datePipe.transform('2017-07-26', null, null);
-
     expect(message).toBe('26 Jul 2017');
   });
 
@@ -53,9 +52,10 @@ describe('DatePipe', () => {
   });
 
   it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss PM format', () => {
-    let message = datePipe.transform('2017-07-26T20:10:05', 'local', null);
-
-    expect(message).toBe('26 Jul 2017, ' + getExpectedHour(8) + ':10:05 PM');
+    const firstPass: string = datePipe.transform('2017-07-26T20:10:05', 'local', null);
+    expect(firstPass).toBe('26 Jul 2017, ' + getExpectedHour(8) + ':10:05 PM');
+    const secondPass: string = datePipe.transform(firstPass, 'local', null);
+    expect(secondPass).toEqual(firstPass); // Unchanged.
   });
 
   it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss midnight format', () => {
@@ -107,34 +107,67 @@ describe('DatePipe', () => {
   });
 
   it ('should format dates according to format', () => {
-    let message = datePipe.transform('2017-07-26', null, 'DD MMM YY')
-    expect(message).toBe('26 Jul 17')
-  })
+    let message = datePipe.transform('2017-07-26', null, 'DD MMM YY');
+    expect(message).toBe('26 Jul 17');
+  });
   it ('should format times according to format 12h', () => {
-    let message = datePipe.transform('2017-07-26', null, 'hh:mm:ss.SSS')
-    expect(message).toBe('12:00:00.000')
-  })
+    let message = datePipe.transform('2017-07-26', null, 'hh:mm:ss.SSS');
+    expect(message).toBe('12:00:00.000');
+  });
   it ('should format times according to format 24h', () => {
-    let message = datePipe.transform('2017-07-26', null, 'HH:mm:ss.SSS')
-    expect(message).toBe('00:00:00.000')
-  })
+    let message = datePipe.transform('2017-07-26', null, 'HH:mm:ss.SSS');
+    expect(message).toBe('00:00:00.000');
+  });
 
   it ('should format date times according to format', () => {
-    let message = datePipe.transform('2017-07-26T19:09:05', null, 'dd MMMM yyyy HH:mm:ss.SSS')
-    expect(message).toBe('26 July 2017 19:09:05.000')
-  })
+    const message = datePipe.transform('2017-07-26T19:09:05', null, 'dd MMMM yyyy HH:mm:ss.SSS');
+    expect(message).toBe('26 July 2017 19:09:05.000');
+  });
+
+  // Start of tests for EUI-2667.
+  it ('should handle null dates', () => {
+    const message = datePipe.transform(null, null, null);
+    expect(message).toBeNull();
+  });
+  it ('should handle non-ISO BST dates', () => {
+    const message = datePipe.transform('Apr 10 2019', null, null);
+    expect(message).toEqual('10 Apr 2019');
+  });
+  it ('should handle non-ISO GMT dates', () => {
+    const message = datePipe.transform('Jan 10 2019', null, null);
+    expect(message).toEqual('10 Jan 2019');
+  });
+  it ('should handle already formatted BST date', () => {
+    const ORIGINAL = '2019-04-10';
+    const firstPass = datePipe.transform(ORIGINAL, null, null);
+    expect(firstPass).toEqual('10 Apr 2019');
+    const secondPass = datePipe.transform(firstPass, null, null);
+    expect(secondPass).toEqual(firstPass); // Unchanged.
+  });
+  it ('should handle already formatted GMT date', () => {
+    const ORIGINAL = '2019-01-10';
+    const firstPass = datePipe.transform(ORIGINAL, null, null);
+    expect(firstPass).toEqual('10 Jan 2019');
+    const secondPass = datePipe.transform(firstPass, null, null);
+    expect(secondPass).toEqual(firstPass); // Unchanged.
+  });
+  it ('should handle invalid dates', () => {
+    let message = datePipe.transform('Bob', null, null);
+    expect(message).toBeNull();
+  });
+  // End of tests for EUI-2667.
 
   /**
    * GMT to BST (from 00:59:59 GMT going forward to 02:00:00 BST) on the last Sunday in March
    */
   it ('should handle GMT to BST transition', () => {
     let endOfWinter = new Date(2020, 2, 29, 0, 59, 59)
-    let message = datePipe.transform (endOfWinter.toISOString(), 'GMT', 'dd MMMM yyyy HH:mm:ss.SSS')
-    expect(message).toBe('29 March 2020 00:59:59.000')
+    let message = datePipe.transform (endOfWinter.toISOString(), 'GMT', 'dd MMMM yyyy HH:mm:ss.SSS');
+    expect(message).toBe('29 March 2020 00:59:59.000');
     // tick on 1 second
     endOfWinter.setTime(endOfWinter.getTime() + 1000);
-    message = datePipe.transform (endOfWinter.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS')
-    expect(message).toBe('29 March 2020 02:00:00.000')
+    message = datePipe.transform (endOfWinter.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS');
+    expect(message).toBe('29 March 2020 02:00:00.000');
   })
   function getExpectedHour(hour): number {
     let expectedHour = hour + EXPECTED_OFFSET;
