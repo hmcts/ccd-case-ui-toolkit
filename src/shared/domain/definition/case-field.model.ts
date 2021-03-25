@@ -21,6 +21,8 @@ export class CaseField implements Orderable {
   security_label?: string;
   display_context: string;
   display_context_parameter?: string;
+  entry_context_parameter?: string;
+  month_label?: string;
   show_condition?: string;
   show_summary_change_option?: boolean;
   show_summary_content_option?: number;
@@ -73,9 +75,12 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeEntryFormat(): string {
-    // TODO not yet implemented
+    if (this.entry_context_parameter) {
+      return this.extractBracketValue(this.entry_context_parameter, '#DATETIMEENTRY');
+    }
     return null;
   }
+
   @Expose()
   get dateTimeDisplayFormat(): string {
     if (this.display_context_parameter) {

@@ -56,11 +56,13 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   ngOnInit(): void {
-    this.CUSTOM_MOMENT_FORMATS.parse.dateInput = 'DD_MM_YYYY HH:mm:SS';
-    this.CUSTOM_MOMENT_FORMATS.display.dateInput = 'DD_MM_YYYY HH:mm:SS';
     if (this.caseField) {
       if (this.caseField.dateTimeEntryFormat) {
         this.CUSTOM_MOMENT_FORMATS.parse.dateInput = this.caseField.dateTimeEntryFormat;
+        this.CUSTOM_MOMENT_FORMATS.display.dateInput = this.caseField.dateTimeEntryFormat;
+      }
+      if (this.caseField.month_label) {
+        this.CUSTOM_MOMENT_FORMATS.disp = this.caseField.dateTimeEntryFormat;
         this.CUSTOM_MOMENT_FORMATS.display.dateInput = this.caseField.dateTimeEntryFormat;
       }
     }
