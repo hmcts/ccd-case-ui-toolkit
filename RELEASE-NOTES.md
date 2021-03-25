@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.75.1
+**EUI-3577** Fixing DynamicList regression bugs
+
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
 
