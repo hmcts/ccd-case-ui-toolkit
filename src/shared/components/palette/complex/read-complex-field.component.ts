@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-read-complex-field',
@@ -21,7 +22,10 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
     if (this.caseField.display_context_parameter) {
       this.context = PaletteContext.TABLE_VIEW;
     }
+
     if (this.caseField.field_type) {
+      this.caseField.field_type = plainToClassFromExist(new FieldType(), this.caseField.field_type);
+
       this.caseField.field_type.complex_fields.map(field => {
         if (field.field_type.type === ReadComplexFieldComponent.FIELD_TYPE_DYNAMIC_LIST) {
           field.list_items = this.caseField.value[field.id].list_items;
@@ -32,7 +36,6 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
         }
       });
     }
-
   }
 
 }
