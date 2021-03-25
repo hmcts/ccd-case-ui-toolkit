@@ -1,12 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MAT_DATE_LOCALE, MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import {
-  MatFormFieldModule,
-  MatInputModule,
-  MatDatepickerModule,
-  MAT_DATE_LOCALE
-} from '@angular/material';
-import {
+  NGX_MAT_DATE_FORMATS,
+  NgxMatDateFormats,
   NgxMatDatetimePickerModule,
   NgxMatNativeDateModule,
   NgxMatTimepickerModule,
@@ -37,7 +34,7 @@ import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.com
 import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
 import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
 import { WriteDateFieldComponent } from './date/write-date-field.component';
-import { DatetimePickerWrapperComponent } from './datetime-picker/datetime-picker-wrapper.component';
+import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { DocumentModule } from './document/document.module';
 import { MarkdownModule } from '../markdown/markdown.module';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
@@ -62,6 +59,7 @@ import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { OrganisationModule } from './organisation/organisation.module';
 import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
+import { WriteDateFieldContainerComponent } from './date';
 
 @NgModule({
   imports: [
@@ -102,7 +100,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
   declarations: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
-    DatetimePickerWrapperComponent,
+    DatetimePickerComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -116,6 +114,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     // Write
     WriteCollectionFieldComponent,
     WriteTextFieldComponent,
+    WriteDateFieldContainerComponent,
     WriteTextAreaFieldComponent,
     WritePhoneUKFieldComponent,
     WriteNumberFieldComponent,
@@ -125,7 +124,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
   entryComponents: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
-    DatetimePickerWrapperComponent,
+    DatetimePickerComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -146,7 +145,9 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
+    WriteDateFieldContainerComponent,
     WriteOrganisationFieldComponent
   ],
   exports: [
@@ -154,7 +155,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     PaletteUtilsModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
-    DatetimePickerWrapperComponent,
+    DatetimePickerComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -173,6 +174,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteDateFieldContainerComponent,
   ],
   providers: [
     CollectionCreateCheckerService,
@@ -180,7 +182,8 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })
-export class PaletteModule {}
+export class PaletteModule {
+}

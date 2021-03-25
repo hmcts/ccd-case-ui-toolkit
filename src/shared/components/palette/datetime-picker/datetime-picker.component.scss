@@ -8,47 +8,54 @@ Details inside it are for the actual component first shown on page */
 .datepicker-container {
   display: inline-block;
   position: relative;
-  width: auto;
-  min-width: 500px;
+  min-width: 298px;
+
   .govuk-input {
     height: auto;
+    min-width: 298px;
     width: auto;
     padding-right: 40px;
+    border: 1px solid #000;
+
     &:focus {
-      outline: 2px solid orange;
-      border: 2px solid black;
+      outline: 1px solid orange;
+      border: 1px solid black;
     }
+
     &::-ms-clear {
       display: none;
     }
   }
+
   .datepicker-wrapper-input {
     position: relative;
     display: inline-block;
     top: -20%;
-    border: 0px;
+    border: 0;
+
     &:focus {
-      border: 0px;
+      border: 0;
       outline: none;
     }
   }
+
   .mat-icon-button {
-    height:32px;
-    width: 35px;
-    top: 4px;
+    height: 37px;
+    width: 37px;
+
     &:focus {
-      outline: 2px solid orange;
+      outline: 1px solid orange;
     }
+
     .mat-datepicker-toggle-default-icon {
       position: relative;
       top: -3px;
     }
   }
+
   .mat-datepicker-toggle {
-    position: relative;
-    display: inline-block;
-    left: -40px;
-    top: -3px;
+    position: absolute;
+    right: 0;
   }
 }
 
@@ -56,11 +63,19 @@ Details inside it are for the actual component first shown on page */
 .cdk-overlay-container {
   // all datepicker content shown within mat-datepicker-content
   .mat-datepicker-content {
-    border: 2px solid black;
+    border: 1px solid black;
+    border-top: none;
+    border-radius: 0;
+
+    .mat-calendar-table {
+      width: calc(100% - 1px);
+    }
+
     .mat-calendar-header {
       height: 34px;
       border-bottom: 1px ridge #bfc1c3;
     }
+
     .mat-calendar-period-button {
       left: 14%;
       min-width: 125px;
@@ -69,67 +84,83 @@ Details inside it are for the actual component first shown on page */
       border-radius: 0px;
       top: -20px;
       width: 200%;
+
       .mat-button-wrapper {
         text-align: center;
         font-weight: bold;
       }
+
       &:focus {
         border: 2px solid black;
       }
     }
+
     .mat-calendar-previous-button {
       left: -73%;
       top: -20px;
       border: 2px solid transparent;
       border-radius: 0;
+
       &:focus {
         border-color: black;
       }
+
       &::after {
         padding: 4px;
         top: -2px;
         left: -2px;
       }
     }
+
     .mat-calendar-next-button {
       top: -20px;
       left: 1%;
       border: 2px solid transparent;
       border-radius: 0;
+
       &:focus {
         border-color: black;
       }
+
       &::after {
         padding: 4px;
         top: -2px;
         left: -2px;
       }
     }
+
     .mat-calendar-table-header {
       color: black;
     }
+
     th.ng-star-inserted {
       font-weight: bold;
       font-size: 15px;
       padding-top: 2%;
       padding-bottom: 2%;
     }
+
     .mat-button-wrapper {
       text-transform: capitalize !important;
     }
+
     .mat-calendar {
       border-bottom: 1px solid black;
     }
+
     .mat-calendar-table-header-divider {
       padding: 0px;
       border-bottom: none;
+
       &::after {
         height: 0px;
       }
     }
+
     .mat-calendar-content {
       padding: 0px;
     }
+
     // day selection panel
     ngx-mat-month-view {
       .mat-calendar-body-label {
@@ -137,20 +168,25 @@ Details inside it are for the actual component first shown on page */
         font-size: large;
         color: black;
       }
+
       .mat-calendar-body-selected {
         border: none;
         background-color: transparent;
         color: white;
       }
+
       .mat-calendar-body-active {
         background-color: lightskyblue;
       }
+
       .mat-calendar-body-today {
         border: none;
         box-shadow: none;
       }
+
       .mat-calendar-body-cell {
         border: 1px ridge #bfc1c3;
+
         &[aria-selected="true"] {
           background-color: blue;
           outline: 3px solid orange;
@@ -158,61 +194,70 @@ Details inside it are for the actual component first shown on page */
           outline-offset: 1px;
           z-index: 1;
         }
+
         .mat-calendar-body-cell-content {
-          width: 50%;
-          height: 50%;
-          top: 1px;
         }
       }
     }
+
     // year selection panel
     ngx-mat-multi-year-view {
       .mat-calendar-table {
         border-collapse: separate;
         border-spacing: 10px;
+
         .mat-calendar-body-active {
           background-color: lightskyblue;
         }
+
         .mat-calendar-body-cell {
           .mat-calendar-body-cell-content {
             border: none;
           }
+
           .mat-calendar-body-selected {
             border: none;
             box-shadow: none;
             background-color: transparent;
           }
+
           border: 1px solid #bfc1c3;
+
           &[aria-selected="true"] {
             background-color: blue;
-            outline: 3px solid orange;
-            border: 2px solid black;
-            outline-offset: 1px;
+            outline: 2px solid orange;
           }
         }
       }
     }
+
     // month selection panel
     ngx-mat-year-view {
       .mat-calendar-table {
         border-collapse: separate;
         border-spacing: 20px;
+
         tr:nth-of-type(1) {
           visibility: collapse;
         }
+
         .mat-calendar-body-active {
           background-color: lightskyblue;
         }
+
         .mat-calendar-body-cell {
           .mat-calendar-body-cell-content {
             border: none;
           }
+
           .mat-calendar-body-selected {
             border: none;
             box-shadow: none;
             background-color: transparent;
           }
+
           border: 1px solid #bfc1c3;
+
           &[aria-selected="true"] {
             background-color: blue;
             outline: 3px solid orange;
@@ -222,153 +267,176 @@ Details inside it are for the actual component first shown on page */
         }
       }
     }
+
     // timepicker part of panel
     .time-container {
       height: 80px;
+      padding-top: 0;
+
       .ngx-mat-timepicker {
+        width: 100%;
+
         .table {
-          position: relative;
-          left: -90px;
-          top: -20px;
-          display: block;
-          tr:nth-of-type(1) {
+          margin-left: 0 !important;
+
+          tbody {
+            position: relative;
+          }
+
+          tr {
+
+            &:first-child {
+              position: absolute;
+              left: 60px;
+              top: 20px;
+
+              td {
+                &:first-child {
+                  [aria-label="expand_less icon"] {
+                    position: absolute;
+                    left: -2px;
+                    top: 4px;
+                  }
+                }
+
+                &:nth-child(3) {
+                  [aria-label="expand_less icon"].mat-icon-button {
+                    position: absolute;
+                    left: 67px;
+                    top: 4px;
+                  }
+                }
+              }
+            }
+
+            &:nth-child(2) {
+              display: flex;
+              padding: 2rem 0 2rem 15px;
+
+              td {
+                margin-right: 30px;
+                text-align: right;
+
+                &:last-child {
+                  text-align: left;
+                }
+              }
+            }
+
+            &:last-child {
+              position: absolute;
+              left: 60px;
+              top: 44px;
+
+              td {
+                &:first-child {
+                  [aria-label="expand_more icon"] {
+                    position: absolute;
+                    top: -4px;
+                    left: -2px;
+                  }
+                }
+
+                &:last-child {
+                  [aria-label="expand_more icon"].mat-icon-button {
+                    position: absolute;
+                    top: -4px;
+                    left: 67px;
+                  }
+                }
+              }
+
+            }
+
             td {
-              position: relative;
-              border-bottom: none;
+              padding: 0;
+              border-bottom: 0;
+              position: relative
+
             }
-            td:nth-of-type(1) {
-              .mat-icon-button {
-                left:40px;
-              }
-              z-index: 1;
+
+            .spacer {
+              display: none;
             }
-            td:nth-of-type(3) {
-              .mat-icon-button {
-                left: 50px;
-              }
-              z-index: 2;
-            }
+
             .mat-icon {
               visibility: hidden;
+              display: none;
             }
-            .mat-icon-button {
-              width: 15px;
-              height: 14px;
-              left: 2px;
-              outline-offset: -2px;
-              overflow: hidden;
-              top: 48px;
-            }
+
+
             .mat-button-wrapper {
               display: block;
               width: 15px;
               height: 8px;
             }
-            .mat-button-wrapper::after {
-              content: '\25B2';
-              position: relative;
-              left: -22px;
-              top: -7px;
+
+            .mat-form-field-wrapper {
+              padding-bottom: 0;
             }
-          }
-          tr:nth-of-type(2) {
+
             .mat-form-field {
-              position: relative;
-              top: -20px;
+              width: auto;
+              max-width: none;
             }
+
+            [aria-label="expand_less icon"].mat-icon-button {
+              .mat-button-wrapper::after {
+                content: ' \25B2';
+              }
+            }
+
+
+            [aria-label="expand_more icon"].mat-icon-button {
+              .mat-button-wrapper::after {
+                content: '\25BC';
+              }
+            }
+
             .mat-form-field-flex {
-              width: 300%;
+              width: 100%;
+
               .mat-form-field-infix {
-                border: 2px solid black;
-                height: 10px;
+                border: 1px solid black;
+                height: 20px;
+                width: 37px;
                 display: flex;
+                justify-content: center;
                 align-items: center;
               }
             }
+
             .mat-form-field-underline {
               visibility: hidden;
             }
+
             input {
-              text-align: left;
-              height: 26px;
-              width: 55px;
-              position: relative;
-              top: 2px;
-              border: 2px solid transparent;
+              height: 33px;
+              width: 37px;
+
               &:focus {
-                border-color:black;
+                border-color: black;
               }
-            }
-            td:nth-of-type(1) {
-              border-bottom: none;
-              .mat-form-field::before {
-                color: black;
-                content: "Hour";
-                position: relative;
-                top: -5px;
-                font-size: 15px;
-              }
-            }
-            td:nth-of-type(3) {
-              border-bottom: none;
-              z-index: 1;
-              .mat-form-field::before {
-                color: black;
-                content: "Minutes";
-                position: relative;
-                top: -5px;
-                font-size: 15px;
-              }
-            }
-            .spacer {
-              visibility: hidden;
-              border-bottom: none;
-            }
-          }
-          tr:nth-of-type(3) {
-            td {
-              border-bottom: none;
-            }
-            button {
-              z-index: 4;
-            }
-            .mat-icon {
-              visibility: hidden;
-            }
-            .mat-icon-button {
-              width: 15px;
-              height: 15px;
-              top: -82px;
-              left: 40px;
-              outline-offset: -2px;
-              overflow: hidden;
-            }
-            .mat-button-wrapper {
-              display: block;
-              width: 15px;
-              height: 8px;
-            }
-            .mat-button-wrapper::after {
-              content: ' \25BC';
-              position: relative;
-              left: -26px;
-              top: -9px;
             }
           }
         }
+
         // seconds shown
         &[ng-reflect-show-seconds="true"] {
           .table {
             left: -60px;
+
             td {
               border-bottom: none;
             }
+
             tr:nth-of-type(1) {
               td:nth-of-type(3) {
                 .mat-icon-button {
                   left: 40px;
                 }
               }
+
               td:nth-of-type(5) {
                 .mat-icon-button {
                   left: 40px;
@@ -376,6 +444,7 @@ Details inside it are for the actual component first shown on page */
                 }
               }
             }
+
             tr:nth-of-type(2) {
               td:nth-of-type(5) {
                 .mat-form-field::before {
@@ -388,11 +457,13 @@ Details inside it are for the actual component first shown on page */
               }
             }
           }
+
           // 12 hour time zone shown
           &[ng-reflect-enable-meridian="true"] {
             .table {
               left: -20px;
             }
+
             tr:nth-of-type(2) {
               td:nth-of-type(7) {
                 .mat-button {
@@ -403,6 +474,7 @@ Details inside it are for the actual component first shown on page */
                   color: black;
                   border-color: black;
                   background-color: #dee0e2;
+
                   .mat-button-wrapper {
                     position: relative;
                     top: -2px;
@@ -412,6 +484,7 @@ Details inside it are for the actual component first shown on page */
             }
           }
         }
+
         // seconds not shown
         &[ng-reflect-show-seconds="false"] {
           // 24 hour time shown
@@ -419,6 +492,7 @@ Details inside it are for the actual component first shown on page */
             .table {
               left: -55px;
             }
+
             tr:nth-of-type(1) {
               td:nth-of-type(3) {
                 .mat-icon-button {
@@ -426,9 +500,11 @@ Details inside it are for the actual component first shown on page */
                 }
               }
             }
+
             tr:nth-of-type(2) {
               td:nth-of-type(5) {
                 border-bottom: none;
+
                 .mat-button {
                   height: 30px;
                   left: 20px;
@@ -437,6 +513,7 @@ Details inside it are for the actual component first shown on page */
                   color: black;
                   border-color: black;
                   background-color: #dee0e2;
+
                   .mat-button-wrapper {
                     position: relative;
                     top: -2px;
@@ -448,23 +525,42 @@ Details inside it are for the actual component first shown on page */
         }
       }
     }
+
     // bottom of panel for 'Confirm' button
     .actions {
       padding-bottom: 20px;
+      justify-content: flex-start;
+
       .mat-button {
         background-color: #00823b;
         position: relative;
-        left: -70%;
-        top: 10px;
+        display: -moz-inline-stack;
+        display: inline-block;
+        padding: .526315em .789473em .263157em;
+        border: none;
         border-radius: 0;
+        outline: 1px solid transparent;
+        outline-offset: -1px;
+        -webkit-appearance: none;
+        box-shadow: 0 2px 0 #003618;
+        font-size: 1em;
+        line-height: 1.25;
+        text-decoration: none;
+        -webkit-font-smoothing: antialiased;
+        color: #fff;
+        box-sizing: border-box;
+        vertical-align: top;
         width: 80px;
         cursor: pointer;
+
         &:hover {
           background-color: darkgreen;
         }
+
         .mat-icon {
           visibility: hidden;
         }
+
         .mat-button-wrapper::before {
           color: white;
           content: 'Confirm';

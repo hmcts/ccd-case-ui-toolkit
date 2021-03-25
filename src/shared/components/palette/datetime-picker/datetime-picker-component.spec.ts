@@ -5,13 +5,13 @@ import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testi
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
-import { DatetimePickerWrapperComponent } from './datetime-picker-wrapper.component';
+import { DatetimePickerComponent } from './datetime-picker.component';
 import { By } from '@angular/platform-browser';
 
-describe('DatetimePickerWrapperComponent', () => {
+describe('DatetimePickerComponent', () => {
 
-  let component: DatetimePickerWrapperComponent;
-  let fixture: ComponentFixture<DatetimePickerWrapperComponent>;
+  let component: DatetimePickerComponent;
+  let fixture: ComponentFixture<DatetimePickerComponent>;
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
@@ -26,13 +26,13 @@ describe('DatetimePickerWrapperComponent', () => {
             ReactiveFormsModule
           ],
           declarations: [
-            DatetimePickerWrapperComponent,
+            DatetimePickerComponent,
           ],
           providers: [FormatTranslatorService]
         })
         .compileComponents();
 
-      fixture = TestBed.createComponent(DatetimePickerWrapperComponent);
+      fixture = TestBed.createComponent(DatetimePickerComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
   }));

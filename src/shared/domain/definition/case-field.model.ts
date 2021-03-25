@@ -1,5 +1,5 @@
 import { Orderable } from '../order';
-import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
+import { WizardPageField } from '../../components';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
 import { _ } from 'underscore';
