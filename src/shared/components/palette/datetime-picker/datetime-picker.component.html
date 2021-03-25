@@ -11,6 +11,7 @@
     <div class="datepicker-container">
       <input class="govuk-input"
              #input
+             aria-label="Please enter a date and time in the format DD/MM/YYYY HH:MM"
              [disabled]="disabled"
              [min]="minDate(caseField)"
              [max]="maxDate(caseField)"
@@ -22,6 +23,7 @@
                                [color]="color"
                                [touchUi]="touchUi"
                                [hideTime]="hideTime"
+                               [startView]="startView"
                                [stepHour]="stepHour"
                                [stepSecond]="stepSecond"
                                [stepMinute]="stepMinute"

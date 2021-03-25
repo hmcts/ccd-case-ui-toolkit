@@ -1,13 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DATE_LOCALE, MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import {
-  NGX_MAT_DATE_FORMATS,
-  NgxMatDateFormats,
-  NgxMatDatetimePickerModule,
-  NgxMatNativeDateModule,
-  NgxMatTimepickerModule,
-} from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule, } from '@angular-material-components/datetime-picker';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
 import { PaletteService } from './palette.service';
 import { ReadNumberFieldComponent } from './number/read-number-field.component';
@@ -124,7 +118,6 @@ import { WriteDateFieldContainerComponent } from './date';
   entryComponents: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
-    DatetimePickerComponent,
 
     // Read
     ReadTextFieldComponent,

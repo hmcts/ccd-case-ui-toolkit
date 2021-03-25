@@ -39,7 +39,7 @@ import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } f
 import { CaseHistoryViewerFieldComponent } from './history';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
-import { WriteDateFieldContainerComponent } from './date';
+import { WriteDateFieldContainerComponent } from './date/write-date-field-container.component';
 
 @Injectable()
 export class PaletteService {
