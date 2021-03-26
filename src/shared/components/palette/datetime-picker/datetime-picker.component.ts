@@ -9,11 +9,6 @@ import { FormControl } from '@angular/forms';
 import { ThemePalette } from '@angular/material';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';
-import { Subscription } from 'rxjs/Subscription';
-import { fromEvent } from 'rxjs';
-import { map } from 'rxjs/operators';
-
-import * as moment from 'moment';
 import { FormatTranslationService } from '../format-translation.service';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
@@ -31,7 +26,6 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit, OnDestroy {
   [x: string]: any;
 
-  inputSubscription: Subscription;
   public disabled = false;
   public showSpinners = true;
   public showSeconds = false;
@@ -44,11 +38,12 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public disableMinute = true;
   public hideTime = true;
   public hideMinutes = true;
+  public startView = 'month';
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  startView = 'month';
+  private dateTimePickerFormat = 'DD/MM/YYYY';
 
   constructor(private readonly formatTranslationService: FormatTranslationService,
     // tslint:disable-next-line:no-shadowed-variable
@@ -58,9 +53,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   ngOnInit(): void {
     this.caseFieldEntryFormatting();
-    console.log('caseField', this.caseField);
-    this.subscribeToInputChanges();
-    // this.configureDatePicker(this.caseField);
+    this.configureDatePicker(this.dateTimePickerFormat);
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 
@@ -88,47 +81,36 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     return caseField.field_type.max ? new Date(caseField.field_type.max) : null;
   }
 
-  configureDatePicker(caseField: CaseField): void {
-    if (this.formatTranslationService.hasSeconds(caseField.dateTimeDisplayFormat)) {
+  configureDatePicker(dateTimePickerFormat: string): void {
+    if (this.formatTranslationService.hasSeconds(dateTimePickerFormat)) {
       this.showSeconds = true;
       this.hideMinutes = false;
       this.hideTime = false;
-      return;
     }
 
-    if (this.formatTranslationService.hasMinutes(caseField.dateTimeDisplayFormat)) {
+    if (this.formatTranslationService.hasMinutes(dateTimePickerFormat)) {
       this.hideMinutes = false;
+      this.disableMinute = false;
       this.hideTime = false;
       return;
     }
 
-    if (this.formatTranslationService.hasTime(caseField.dateTimeDisplayFormat) &&
-      this.formatTranslationService.hasDate(caseField.dateTimeDisplayFormat)) {
+    if (this.formatTranslationService.hasHours(dateTimePickerFormat)) {
       this.hideTime = false;
       return;
     }
 
-    if (!this.formatTranslationService.hasDay(caseField.dateTimeDisplayFormat)) {
+    if (this.formatTranslationService.hasDate(dateTimePickerFormat)) {
+      return;
+    }
+
+    if (!this.formatTranslationService.hasDay(dateTimePickerFormat)) {
       this.startView = 'year';
     }
 
-    if (!this.formatTranslationService.hasMonth(caseField.dateTimeDisplayFormat) &&
-      !this.formatTranslationService.hasDay(caseField.dateTimeDisplayFormat)) {
+    if (!this.formatTranslationService.hasMonth(dateTimePickerFormat) &&
+      !this.formatTranslationService.hasDay(dateTimePickerFormat)) {
       this.startView = 'multi-year';
     }
-  }
-
-  subscribeToInputChanges(): void {
-    this.inputSubscription = fromEvent(this.inputElement.nativeElement, 'blur')
-      .pipe(
-        map((inputEvent: Event) => (<HTMLInputElement>inputEvent.target).value)
-      )
-      .subscribe((dateString) => {
-        console.log('dateString', dateString);
-        const format = 'DD/MM/YYYY'
-        const parsed = moment(dateString, format);
-        console.log('parsed', parsed.toISOString());
-        this.dateControl.patchValue(parsed.toDate())
-      })
   }
 }
