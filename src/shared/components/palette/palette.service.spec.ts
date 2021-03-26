@@ -31,6 +31,7 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summary-field.component';
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
+import { WriteDateFieldContainerComponent } from '.';
 
 describe('PaletteService', () => {
 
@@ -112,16 +113,16 @@ describe('PaletteService', () => {
       assertComponent('Date', false, ReadDateFieldComponent, 'AnID');
     });
 
-    it('should get WriteDateField component class for Date input', () => {
-      assertComponent('Date', true, WriteDateFieldComponent, 'AnID');
+    it('should get WriteDateContainer component class for Date input', () => {
+      assertComponent('Date', true, WriteDateFieldContainerComponent, 'AnID');
     });
 
     it('should get ReadDateTimeField component class for DateTime input', () => {
       assertComponent('DateTime', false, ReadDateFieldComponent, 'AnID');
     });
 
-    it('should get WriteDateTimeField component class for DateTime input', () => {
-      assertComponent('DateTime', true, WriteDateFieldComponent, 'AnID');
+    it('should get WriteDateTimeContainer component class for DateTime input', () => {
+      assertComponent('DateTime', true, WriteDateFieldContainerComponent, 'AnID');
     });
 
     it('should get ReadFixedListField component class for FixedList input', () => {
