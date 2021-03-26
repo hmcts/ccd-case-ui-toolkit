@@ -1,4 +1,5 @@
 ## RELEASE NOTES
+**EUI-3550** Replace heading tags with spans on case edit pages 
 
 ### Version 2.75.1
 **EUI-3577** Fixing DynamicList regression bugs

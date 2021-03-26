@@ -2,9 +2,9 @@
 <h1 class="heading-h1">{{ eventTrigger.name}}</h1>
 
 <!-- Case ID -->
-<h2 *ngIf="getCaseId()" class="heading-h2">
-  #{{ getCaseId() | ccdCaseReference}}
-</h2>
+<p *ngIf="getCaseId()">
+  <span class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold" title="Case reference {{ getCaseId() | ccdCaseReference}}" tabindex="0">#{{ getCaseId() | ccdCaseReference}}</span>
+</p>
 
 <form [formGroup]="formGroup" (submit)="submit()">
   <div id="confirmation-header" *ngIf="confirmation.getHeader()">
