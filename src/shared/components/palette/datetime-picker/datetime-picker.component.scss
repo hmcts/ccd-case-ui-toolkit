@@ -295,21 +295,64 @@ Details inside it are for the actual component first shown on page */
                   [aria-label="expand_less icon"] {
                     position: absolute;
                     left: -2px;
-                    top: 4px;
+                    top: 25px;
                   }
                 }
 
                 &:nth-child(3) {
                   [aria-label="expand_less icon"].mat-icon-button {
                     position: absolute;
-                    left: 67px;
-                    top: 4px;
+                    left: 82px !important;
+                    top: 25px;
+                  }
+                }
+
+                &:nth-child(5) {
+                  [aria-label="expand_less icon"].mat-icon-button {
+                    position: absolute;
+                    left: 169px !important;
+                    top: 25px;
                   }
                 }
               }
             }
 
             &:nth-child(2) {
+              display: flex;
+              padding: 2rem 0 2rem 15px;
+
+
+              td {
+                margin-right: 30px;
+                text-align: right;
+
+                &:first-child {
+                  .mat-form-field::before {
+                    color: black;
+                    content: "Hours";
+                    position: relative;
+                    top: -5px;
+                    font-size: 15px;
+                  }
+                }
+
+                &:nth-child(3) {
+                  .mat-form-field::before {
+                    color: black;
+                    content: "Minutes";
+                    position: relative;
+                    top: -5px;
+                    font-size: 15px;
+                  }
+                }
+
+                &:last-child {
+                  text-align: left;
+                }
+              }
+            }
+
+            &:nth-child(4) {
               display: flex;
               padding: 2rem 0 2rem 15px;
 
@@ -332,16 +375,24 @@ Details inside it are for the actual component first shown on page */
                 &:first-child {
                   [aria-label="expand_more icon"] {
                     position: absolute;
-                    top: -4px;
+                    top: 15px;
                     left: -2px;
                   }
                 }
 
-                &:last-child {
+                &:nth-child(3) {
                   [aria-label="expand_more icon"].mat-icon-button {
                     position: absolute;
-                    top: -4px;
-                    left: 67px;
+                    left: 82px !important;
+                    top: 15px;
+                  }
+                }
+
+                &:nth-child(5) {
+                  [aria-label="expand_more icon"].mat-icon-button {
+                    position: absolute;
+                    top: 15px;
+                    left: 169px;
                   }
                 }
               }
@@ -352,7 +403,6 @@ Details inside it are for the actual component first shown on page */
               padding: 0;
               border-bottom: 0;
               position: relative
-
             }
 
             .spacer {
@@ -486,6 +536,14 @@ Details inside it are for the actual component first shown on page */
         }
 
         // seconds not shown
+        &[ng-reflect-disable-minute="true"] {
+          // 24 hour time shown
+
+          table > tbody > tr:nth-child(2) > td:nth-child(3), table > tbody > tr:nth-child(3) > td:nth-child(3), form > table > tbody > tr:nth-child(1) > td:nth-child(3) {
+            display: none;
+          }
+        }
+
         &[ng-reflect-show-seconds="false"] {
           // 24 hour time shown
           &[ng-reflect-enable-meridian="true"] {
@@ -529,6 +587,7 @@ Details inside it are for the actual component first shown on page */
     // bottom of panel for 'Confirm' button
     .actions {
       padding-bottom: 20px;
+      margin-top: 20px;
       justify-content: flex-start;
 
       .mat-button {

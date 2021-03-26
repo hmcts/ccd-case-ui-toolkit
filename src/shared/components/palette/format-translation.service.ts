@@ -4,8 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class FormatTranslationService {
-  public translation = 'DD/MM/YYYY HH:MM';
-  HAS_DATE_FORMAT_REGEX = /[^0-9]{2}\/[^0-9]{2}\/[^0-9]{4}/;
+  HAS_DATE_FORMAT_REGEX = /[^0-9]{2}\/[^0-9]{2}\/[^0-9]{4}$/;
   HAS_MONTH_FORMAT_REGEX = /[^0-9]{2}\/[^0-9]{2}/;
   HAS_DAY_FORMAT_REGEX = /[^0-9]{2}/;
   HAS_TIME_FORMAT_REGEX = /[^0-9]{2}\/[^0-9]{2}\/[^0-9]{4} [^0-9]{2}:[^0-9]{2}/;
