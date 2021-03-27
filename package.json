@@ -60,6 +60,7 @@
     "moment": "^2.26.0",
     "moment-timezone": "^0.5.31",
     "npm-registry-fetch": "^4.0.5",
+    "pegjs": "^0.10.0",
     "rx-polling": "1.1.0",
     "typescript": "3.1.1",
     "underscore": "^1.9.1",

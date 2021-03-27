@@ -2,6 +2,7 @@ import { _ as _score } from 'underscore';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { ConditionParser } from '../services/condition-parser.service';
 
 export class ShowCondition {
 
@@ -14,6 +15,8 @@ export class ShowCondition {
 
   private orConditions: string[] = null;
   private andConditions: string[] = null;
+
+  private conditions = [];
 
   public static addPathPrefixToCondition(showCondition: string, pathPrefix: string): string {
     if (!pathPrefix || pathPrefix === '') {
@@ -118,20 +121,13 @@ export class ShowCondition {
 
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
-    if (!!condition) {
-      if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
-        this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
-      } else {
-        this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-      }
-    }
+    this.conditions = ConditionParser.parse(condition);
   }
 
   public match(fields: object, path?: string): boolean {
-    if (!this.condition) {
-      return true;
-    }
-    return this.matchAndConditions(fields, path);
+    console.log(fields);
+
+    return ConditionParser.evaluate(fields, this.conditions);
   }
 
   public matchByContextFields(contextFields: CaseField[]): boolean {
@@ -147,73 +143,6 @@ export class ShowCondition {
    */
   public hiddenCannotChange(caseFields: CaseField[]): boolean {
     return ShowCondition.hiddenCannotChange(this, caseFields);
-  }
-
-  private matchAndConditions(fields: object, path?: string): boolean {
-    if (!!this.orConditions)  {
-      return this.orConditions.some(orCondition => this.matchEqualityCondition(fields, orCondition, path));
-    } else if (!!this.andConditions) {
-      return this.andConditions.every(andCondition => this.matchEqualityCondition(fields, andCondition, path));
-    } else {
-      return false;
-    }
-  }
-
-  private matchEqualityCondition(fields: object, condition: string, path?: string): boolean {
-    const [field, conditionSeparator] = ShowCondition.getField(condition);
-    const [head, ...tail] = field.split('.');
-    const currentValue = this.findValueForComplexCondition(fields, head, tail, path);
-    const expectedValue = this.unquoted(condition.split(conditionSeparator)[1]);
-    if (conditionSeparator === ShowCondition.CONTAINS) {
-      return this.checkValueContains(expectedValue, currentValue);
-    } else {
-      return this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
-    }
-  }
-
-  private checkValueEquals(expectedValue: string, currentValue: any, conditionSeparaor: string): boolean {
-    if (expectedValue.search('[,]') > -1) { // for  multi-select list
-      return this.checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor);
-    } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== ShowCondition.CONDITION_NOT_EQUALS) {
-      return currentValue.startsWith(this.removeStarChar(expectedValue));
-    } else {
-      // changed from '===' to '==' to cover number field conditions
-      if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
-        return this.checkValueNotEquals(expectedValue, currentValue);
-      } else {
-        return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
-      }
-    }
-  }
-
-  private checkValueNotEquals(expectedValue: string, currentValue: any): boolean {
-    const formatCurrentValue = currentValue ? currentValue.toString().trim() : '';
-    if ('*' === expectedValue && formatCurrentValue !== '') {
-      return false;
-    }
-    const formatExpectedValue = expectedValue ? expectedValue.toString().trim() : '';
-    return formatCurrentValue != formatExpectedValue; // tslint:disable-line
-  }
-
-  private checkMultiSelectListEquals(expectedValue: string, currentValue: any, conditionSeparator: string): boolean {
-    const expectedValues = expectedValue.split(',').sort().toString();
-    const values = currentValue ? currentValue.sort().toString() : '';
-    if (conditionSeparator === ShowCondition.CONDITION_NOT_EQUALS) {
-      return expectedValues !== values;
-    } else {
-      return expectedValues === values;
-    }
-  }
-
-  private checkValueContains(expectedValue: string, currentValue: any): boolean {
-    if (expectedValue.search(',') > -1) {
-      let expectedValues = expectedValue.split(',').sort();
-      let values = currentValue ? currentValue.sort().toString() : '';
-      return expectedValues.every(item => values.search(item) >= 0);
-    } else {
-      let values = currentValue && Array.isArray(currentValue) ? currentValue.toString() : '';
-      return values.search(expectedValue) >= 0;
-    }
   }
 
   private findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
@@ -271,17 +200,4 @@ export class ShowCondition {
     return !_score.isEmpty(dynamiclist) &&
       (_score.has(dynamiclist, 'value') && _score.has(dynamiclist, 'list_items'));
   }
-
-  private unquoted(str: string): string {
-    return str.replace(/^"|"$/g, '');
-  }
-
-  private removeStarChar(str: string): string {
-    return str.substring(0, str.length - 1);
-  }
-
-  private okIfBothEmpty(right: string, value: any): boolean {
-    return value === null && (right === '');
-  }
-
 }
