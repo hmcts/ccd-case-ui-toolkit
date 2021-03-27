@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.75.2
+**EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
 ### Version 2.75.1
 **EUI-3577** Fixing DynamicList regression bugs
