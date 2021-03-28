@@ -5,6 +5,7 @@ import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/
 import { Observable, of } from 'rxjs';
 import { OrganisationService, OrganisationVm } from '../../../services/organisation';
 import { map, switchMap } from 'rxjs/operators';
+import { WindowService } from '../../../services';
 
 @Component({
   selector: 'ccd-write-organisation-field',
@@ -26,8 +27,12 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
-  constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter) {
+  constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter, private windowService: WindowService) {
     super();
+    const selectedOrg = JSON.parse(this.windowService.getLocalStorage('organisation-preselected-value'));
+    if (selectedOrg) {
+      this.caseField.value = {'OrganisationID': selectedOrg.organisationIdentifier, 'OrganisationName': selectedOrg.name};
+    }
   }
 
   ngOnInit() {
@@ -55,6 +60,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       this.organisationNameFormControl = new FormControl(null);
       this.organisationFormGroup.addControl('OrganisationName', this.organisationNameFormControl);
       this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
+      this.windowService.removeLocalStorage('organisation-preselected-value');
     }
   }
 
