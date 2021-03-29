@@ -1,6 +1,6 @@
 import { ConditionParser } from "./condition-parser.service";
 
-fdescribe('ConditionParser', () => {
+describe('ConditionParser', () => {
 
     describe('parse', () => {
         describe('should parse simple, single fomulas', () => {
