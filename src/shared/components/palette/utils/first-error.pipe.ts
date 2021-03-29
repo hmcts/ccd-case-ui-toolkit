@@ -7,7 +7,6 @@ import { ValidationErrors } from '@angular/forms';
 export class FirstErrorPipe implements PipeTransform {
 
   transform(value: ValidationErrors): string {
-    console.log(value);
     if (!value) {
       return '';
     }

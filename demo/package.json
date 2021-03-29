@@ -9,6 +9,8 @@
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\""
   },
   "dependencies": {
+    "@angular-material-components/datetime-picker": "^2.0.4",
+    "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular-devkit/build-angular": "0.10.5",
     "@angular/animations": "~7.0.3",
     "@angular/cdk": "^7.0.3",

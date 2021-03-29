@@ -645,7 +645,7 @@
         "security_label": "PRIVATE",
         "order": null,
         "display_context": "OPTIONAL",
-        "display_context_parameter": "#DATETIMEENTRY",
+        "display_context_parameter": "#DATETIMEENTRY(DD/MM/YYYY HH:mm:ss)",
         "show_condition": null,
         "show_summary_change_option": true
       },

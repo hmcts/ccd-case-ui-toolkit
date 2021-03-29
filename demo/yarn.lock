@@ -139,6 +139,20 @@
     "@angular-devkit/core" "7.0.6"
     rxjs "6.3.3"
 
+"@angular-material-components/datetime-picker@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-2.0.4.tgz#3a298eb29fc4a8adbbb70fe09bab0ae916d0c186"
+  integrity sha512-3nXGFz7GXbFYeBI2/72rcmPFTWtcC1ERlgdkaY+65dFHXPIc8hKGv6o+JbtCoYPg7xmVCCy4xhmOgfd/CFGyOw==
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular-material-components/moment-adapter@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
+  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@angular/animations@~7.0.3":
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.0.4.tgz#f53fc9f1bce3bf1afe60dcbc08b6863472f519e4"
@@ -8164,6 +8178,11 @@ trim-right@^1.0.1:
 tslib@^1.7.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
+
+tslib@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
+  integrity sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==
 
 tty-browserify@0.0.0:
   version "0.0.0"
