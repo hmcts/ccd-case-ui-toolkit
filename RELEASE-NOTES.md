@@ -1,7 +1,11 @@
 ## RELEASE NOTES
 
-### 2.75.1-alpha-task-event-completion-integration
+### 2.75.2
 **EUI-3537** WA integration
+
+### Version 2.75.1
+**EUI-3577** Fixing DynamicList regression bugs
+
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
 
