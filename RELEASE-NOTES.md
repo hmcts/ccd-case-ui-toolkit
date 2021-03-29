@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### 2.75.2
+### 2.79.0
 **EUI-3537** WA integration
 
 ### Version 2.75.1
