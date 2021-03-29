@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain';
-import { CaseField } from '../../../domain';
+import { CaseField, FieldType } from '../../../domain';
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateFieldComponent } from './write-date-field.component';
 import { CaseFieldService } from '../../../services';
@@ -12,7 +11,7 @@ import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.comp
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { isExportDeclaration } from 'typescript';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -56,6 +55,7 @@ describe('WriteDateContainerComponent', () => {
           WriteDateFieldContainerComponent, WriteDateFieldComponent, DatetimePickerComponent
         ],
         providers: [
+          FormatTranslatorService,
           {provide: CaseFieldService, useValue: caseFieldService},
         ]
       })
@@ -85,7 +85,8 @@ describe('WriteDateContainerComponent', () => {
       label: 'X',
       display_context: 'DATETIMEENTRY',
       field_type: FIELD_TYPE,
-      value: VALUE
+      value: VALUE,
+      dateTimeEntryFormat: 'DD/MM/YYYY HH:mm:ss'
     });
     component.caseField = NEW_CASE_FIELD;
     fixture.detectChanges();
