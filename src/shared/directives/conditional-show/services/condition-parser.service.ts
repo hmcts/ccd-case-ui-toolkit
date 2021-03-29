@@ -38,7 +38,6 @@ export class ConditionParser {
 
             if (condition.comparator) {
                 const fieldValue: string = this.getValue(fields, condition.fieldReference);
-                if (!fieldValue) return false;
 
                 currentConditionResult = this.evaluateEqualityCheck(fieldValue, condition.value, condition.comparator);
             }
@@ -56,7 +55,7 @@ export class ConditionParser {
         switch (comparator) {
             case '=': return (fieldValue === conditionValue);
             case '!=': return (fieldValue !== conditionValue);
-            case 'CONTAINS': return (fieldValue.indexOf(conditionValue) !== -1);
+            case 'CONTAINS': return (fieldValue && fieldValue.indexOf(conditionValue) !== -1);
         }
     }
 

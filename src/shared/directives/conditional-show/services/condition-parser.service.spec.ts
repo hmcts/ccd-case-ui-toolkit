@@ -1,6 +1,6 @@
 import { ConditionParser } from "./condition-parser.service";
 
-describe('ConditionParser', () => {
+fdescribe('ConditionParser', () => {
 
     describe('parse', () => {
         describe('should parse simple, single fomulas', () => {
@@ -560,7 +560,7 @@ describe('ConditionParser', () => {
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "hello" },
+                    input: { "TextField0": "hello bye", "TextField1": "nope" },
                     expected: true
                 },
                 {
@@ -569,6 +569,44 @@ describe('ConditionParser', () => {
                 },
                 {
                     input: { "TextField0": "bye", "TextField1": "bye" },
+                    expected: false
+                },
+            ];
+
+            testCases.forEach(test => {
+                it(`should evaluate two OR conditions correctly - ${JSON.stringify(test.input)}`, () => {
+                    const result = ConditionParser.evaluate(test.input, conditions);
+                    expect(result).toEqual(test.expected);
+                });
+            });
+        });
+
+        describe('should evaluate simple, compound enclosed fomulas - with OR inner join', () => {
+            const conditions = [
+                [
+                    { "fieldReference": "TextField0", "comparator": "CONTAINS", "value": "hello" },
+                    "OR",
+                    { "fieldReference": "TextField1", "comparator": "=", "value": "show" }
+                ],
+                "AND",
+                { "fieldReference": "TextField2", "comparator": "=", "value": "must" },
+            ];
+
+            const testCases = [
+                {
+                    input: { "TextField0": "", "TextField1": "show", "TextField2": "must" },
+                    expected: true
+                },
+                {
+                    input: { "TextField0": "hello", "TextField1": "", "TextField2": "must" },
+                    expected: true
+                },
+                {
+                    input: { "TextField0": "hellow", "TextField1": "show", "TextField2": "" },
+                    expected: false
+                },
+                {
+                    input: { "TextField0": "he", "TextField1": "sho", "TextField2": "must" },
                     expected: false
                 },
             ];
