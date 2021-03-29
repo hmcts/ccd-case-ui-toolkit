@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### 2.79.1-nested-multiselect-label-interpolation
+**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections.
+
 ### 2.79.0
 **EUI-3548** WA integration
 
