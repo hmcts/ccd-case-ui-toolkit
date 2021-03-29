@@ -4,14 +4,14 @@ import {
   NgxMatDateFormats,
   NgxMatDatetimePicker
 } from '@angular-material-components/datetime-picker';
-import { Component, ElementRef, Inject, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ThemePalette } from '@angular/material';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';
-import { FormatTranslationService } from '../format-translation.service';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -23,8 +23,7 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
     {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter}]
 })
 
-export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit, OnDestroy {
-  [x: string]: any;
+export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
 
   public disabled = false;
   public showSpinners = true;
@@ -43,34 +42,17 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  private dateTimePickerFormat = 'DD/MM/YYYY';
+  private dateTimePickerFormat = 'DD MM YYYY, hh:mm';
 
-  constructor(private readonly formatTranslationService: FormatTranslationService,
-    // tslint:disable-next-line:no-shadowed-variable
-     @Inject(NGX_MAT_DATE_FORMATS) private CUSTOM_MOMENT_FORMATS: NgxMatDateFormats) {
+  constructor(private readonly formatTranslationService: FormatTranslatorService,
+              @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
     super();
   }
 
   ngOnInit(): void {
     this.caseFieldEntryFormatting();
-    this.configureDatePicker(this.dateTimePickerFormat);
+    this.configureDatePicker(this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat);
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
-  }
-
-  private caseFieldEntryFormatting() {
-    if (this.caseField.dateTimeEntryFormat) {
-      this.CUSTOM_MOMENT_FORMATS.parse.dateInput = this.caseField.dateTimeEntryFormat;
-      this.CUSTOM_MOMENT_FORMATS.display.dateInput = this.caseField.dateTimeEntryFormat;
-    }
-    if (this.caseField.month_format) {
-      this.CUSTOM_MOMENT_FORMATS.display.monthYearLabel = this.caseField.month_format;
-      this.CUSTOM_MOMENT_FORMATS.display.dateA11yLabel = this.caseField.month_format;
-      this.CUSTOM_MOMENT_FORMATS.display.monthYearA11yLabel = this.caseField.month_format;
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.inputSubscription.unsubscribe();
   }
 
   minDate(caseField: CaseField): Date {
@@ -85,18 +67,27 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     if (this.formatTranslationService.hasSeconds(dateTimePickerFormat)) {
       this.showSeconds = true;
       this.hideMinutes = false;
+      this.disableMinute = false;
       this.hideTime = false;
+      if (!this.formatTranslationService.is24Hour(dateTimePickerFormat)) {
+        this.enableMeridian = true;
+      }
+    }
+    if (this.formatTranslationService.hasHours(dateTimePickerFormat)) {
+      this.hideTime = false;
+      if (!this.formatTranslationService.is24Hour(dateTimePickerFormat)) {
+        this.enableMeridian = true;
+      }
+      return;
     }
 
     if (this.formatTranslationService.hasMinutes(dateTimePickerFormat)) {
       this.hideMinutes = false;
       this.disableMinute = false;
       this.hideTime = false;
-      return;
-    }
-
-    if (this.formatTranslationService.hasHours(dateTimePickerFormat)) {
-      this.hideTime = false;
+      if (!this.formatTranslationService.is24Hour(dateTimePickerFormat)) {
+        this.enableMeridian = true;
+      }
       return;
     }
 
@@ -104,13 +95,23 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       return;
     }
 
-    if (!this.formatTranslationService.hasDay(dateTimePickerFormat)) {
+    if (this.formatTranslationService.hasNoDay(dateTimePickerFormat)) {
       this.startView = 'year';
     }
 
-    if (!this.formatTranslationService.hasMonth(dateTimePickerFormat) &&
-      !this.formatTranslationService.hasDay(dateTimePickerFormat)) {
+    if (this.formatTranslationService.hasNoDayAndMonth(dateTimePickerFormat)) {
       this.startView = 'multi-year';
+    }
+  }
+
+  private caseFieldEntryFormatting() {
+    this.ngxMatDateFormats.parse.dateInput = this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat;
+    this.ngxMatDateFormats.display.dateInput = this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat;
+
+    if (this.caseField.month_format) {
+      this.ngxMatDateFormats.display.monthYearLabel = this.caseField.month_format;
+      this.ngxMatDateFormats.display.dateA11yLabel = this.caseField.month_format;
+      this.ngxMatDateFormats.display.monthYearA11yLabel = this.caseField.month_format;
     }
   }
 }

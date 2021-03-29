@@ -1,4 +1,4 @@
-<ng-container *ngIf="caseField.display_context === 'DATETIMEENTRY'; else nativeDatepicker">
+<ng-container *ngIf="!caseField.dateTimeEntryFormat; else nativeDatepicker">
   <ccd-datetime-picker
     [caseField]="caseField"
     [formGroup]="formGroup"
@@ -12,3 +12,4 @@
     [parent]="parent"
   ></ccd-write-date-field>
 </ng-template>
+

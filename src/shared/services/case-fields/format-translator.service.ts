@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition/case-field.model';
 
 /*
 Translate a date time format string from the Java format provided by CCD to the format supported by Angular formatDate()
-Very simple translator that maps unsupported chars to the neqrest equivalent.
+Very simple translator that maps unsupported chars to the nearest equivalent.
 If there is no equivalent puts ***x*** into the output where x is the unsupported character
 
 Java format
@@ -168,5 +167,33 @@ export class FormatTranslatorService {
       prev = c;
     }
     return result.join('');
+  }
+
+  hasDate(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('d') >= 0 && value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
+  }
+
+  is24Hour(value: string): boolean {
+    return this.translate(value).length && value.indexOf('H') >= 0;
+  }
+
+  hasNoDay(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('d') === -1 && value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
+  }
+
+  hasNoDayAndMonth(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('d') === -1 && value.indexOf('M') === -1 && value.toLowerCase().indexOf('y') >= 0;
+  }
+
+  hasHours(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('h') >= 0 && value.indexOf('m') === -1;
+  }
+
+  hasMinutes(value: string): boolean {
+    return this.translate(value).length && value.indexOf('m') >= 0 && value.toLowerCase().indexOf('h') >= 0;
+  }
+
+  hasSeconds(value: string): boolean {
+    return this.translate(value).length && value.indexOf('s') >= 0;
   }
 }

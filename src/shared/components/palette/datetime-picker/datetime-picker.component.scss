@@ -518,12 +518,13 @@ Details inside it are for the actual component first shown on page */
               td:nth-of-type(7) {
                 .mat-button {
                   height: 30px;
-                  left: 20px;
-                  top: -20px;
+                  top: 21px;
                   border-radius: 0px;
                   color: black;
                   border-color: black;
                   background-color: #dee0e2;
+                  display: flex;
+                  justify-content: center;
 
                   .mat-button-wrapper {
                     position: relative;
@@ -565,12 +566,13 @@ Details inside it are for the actual component first shown on page */
 
                 .mat-button {
                   height: 30px;
-                  left: 20px;
-                  top: -20px;
-                  border-radius: 0px;
+                  top: 21px;
+                  border-radius: 0;
                   color: black;
                   border-color: black;
                   background-color: #dee0e2;
+                  display: flex;
+                  justify-content: center;
 
                   .mat-button-wrapper {
                     position: relative;
