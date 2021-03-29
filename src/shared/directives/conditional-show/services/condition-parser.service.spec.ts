@@ -1,12 +1,36 @@
 import { ConditionParser } from "./condition-parser.service";
 
-describe('ConditionParser', () => {
+fdescribe('ConditionParser', () => {
 
     describe('parse', () => {
         describe('should parse simple, single fomulas', () => {
             const testCases = [
                 {
                     input: 'a = "B"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "B" }
+                    ]
+                },
+                {
+                    input: 'a="B"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "B" }
+                    ]
+                },
+                {
+                    input: 'a!="B"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "!=", "value": "B" }
+                    ]
+                },
+                {
+                    input: 'a CONTAINS"B"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "CONTAINS", "value": "B" }
+                    ]
+                },
+                {
+                    input: 'a= "B"',
                     expected: [
                         { "fieldReference": "a", "comparator": "=", "value": "B" }
                     ]
@@ -56,11 +80,18 @@ describe('ConditionParser', () => {
         describe('should NOT parse invalid simple fomulas', () => {
             const testCases = [
                 { input: 'a === "B"' },
+                { input: '"a " = a' },
+                { input: 'a = b' },
+                { input: 'a "B"' },
+                { input: '= "B"' },
                 { input: 'a !== "B"' },
+                { input: 'a != "B' },
                 { input: 'a CONTAIN "B"' },
                 { input: 'a != CONTAIN "B"' },
                 { input: 'a ! = "B"' },
                 { input: 'a = ! "B"' },
+                { input: 'a =! "B"' },
+                { input: 'aCONTAINS"B"' }
             ];
 
             testCases.forEach(test => {
@@ -78,6 +109,12 @@ describe('ConditionParser', () => {
                     input: 'a = "Variable with spaces"',
                     expected: [
                         { "fieldReference": "a", "comparator": "=", "value": "Variable with spaces" }
+                    ]
+                },
+                {
+                    input: 'a="No spaces formula"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "No spaces formula" }
                     ]
                 },
                 {
@@ -119,6 +156,12 @@ describe('ConditionParser', () => {
                     ]
                 },
                 {
+                    input: 'a_p="No spaces test"',
+                    expected: [
+                        { "fieldReference": "a_p", "comparator": "=", "value": "No spaces test" }
+                    ]
+                },
+                {
                     input: 'HELLO_WORLD = "Hello World"',
                     expected: [
                         { "fieldReference": "HELLO_WORLD", "comparator": "=", "value": "Hello World" }
@@ -156,6 +199,22 @@ describe('ConditionParser', () => {
                         { "fieldReference": "a", "comparator": "=", "value": "b" },
                         "AND",
                         { "fieldReference": "x", "comparator": "=", "value": "y" }
+                    ]
+                },
+                {
+                    input: 'a = "b"ANDx = "y"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "b" },
+                        "AND",
+                        { "fieldReference": "x", "comparator": "=", "value": "y" }
+                    ]
+                },
+                {
+                    input: 'a="b"ANDx="No spaces test"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "b" },
+                        "AND",
+                        { "fieldReference": "x", "comparator": "=", "value": "No spaces test" }
                     ]
                 },
                 {
@@ -202,6 +261,29 @@ describe('ConditionParser', () => {
             });
         });
 
+        describe('should NOT parse invalid compound fomulas', () => {
+            const testCases = [
+                { input: 'a = "b" ANDS x = "y"' },
+                { input: 'a = "b" ORS x = "y"' },
+                { input: 'a = "b" = x = "y"' },
+                { input: 'a = "b" CONTAINS x = "y"' },
+                { input: 'a = "b" !== x = "y"' },
+                { input: 'a = "bAND x = "y"' },
+                { input: 'a = "b ORS x = "y"' },
+                { input: 'a =b" = x = "y"' },
+                { input: 'a = "bCONTAINSx = "y"' },
+                { input: 'a = "b" AND x = "y' },
+            ];
+
+            testCases.forEach(test => {
+                it(`should NOT parse and throw error for invalid input: "${test.input}"`, () => {
+                    expect(() => {
+                        ConditionParser.parse(test.input);
+                    }).toThrowError();
+                });
+            });
+        });
+
         describe('parse simple, enclosed compound formulas', () => {
             const testCases = [
                 {
@@ -212,6 +294,16 @@ describe('ConditionParser', () => {
                         { "fieldReference": "x", "comparator": "=", "value": "y" }],
                         "OR",
                         { "fieldReference": "x", "comparator": "=", "value": "x" }
+                    ]
+                },
+                {
+                    input: '(a="b"ANDx="y")ORx="TEST WITH NO SPACES"',
+                    expected: [
+                        [{ "fieldReference": "a", "comparator": "=", "value": "b" },
+                            "AND",
+                        { "fieldReference": "x", "comparator": "=", "value": "y" }],
+                        "OR",
+                        { "fieldReference": "x", "comparator": "=", "value": "TEST WITH NO SPACES" }
                     ]
                 },
                 {
@@ -260,6 +352,27 @@ describe('ConditionParser', () => {
 
                     expect(result).toBeDefined();
                     expect(result).toEqual(test.expected);
+                });
+            });
+        });
+
+        describe('should NOT parse invalid enclosed compound fomulas', () => {
+            const testCases = [
+                { input: '(x = "x" AND a = "b") OR (x = "y" OR x = ("x" AND z = "WE DONT SUPPORT NESTED ENCLOSURES"))' },
+                { input: '(x = "x" AND a = "b" OR (x = "NOT CLOSED BRACKET")' },
+                { input: '(x = "x" AND a = "b"() OR x = "RANDOM BRACKETS")' },
+                { input: '(x = "x" AND a = "b")(OR x = "OPENING BRACKET IN WRONG PLACE")' },
+                { input: 'x = "x" AND a = "b" OR x = "TRAILING BRACKET")' },
+                { input: '(x = "x" AND a = "b") ORS (x = "y" OR x = ("x" AND z = "INVALID JOIN CHARACTER"))' },
+                { input: '(x = "x" AND a = "b" (x = "NO JOIN")' },
+                { input: '(x = "x" AND a = "b OR x = "UNCLOSED QUOTED VALUE")' },
+            ];
+
+            testCases.forEach(test => {
+                it(`should NOT parse and throw error for invalid input: "${test.input}"`, () => {
+                    expect(() => {
+                        ConditionParser.parse(test.input);
+                    }).toThrowError();
                 });
             });
         });
