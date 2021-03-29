@@ -15,6 +15,7 @@ import { FieldLabelPipe, FirstErrorPipe, PaletteUtilsModule } from '../utils';
 import { CaseFieldService } from '../../../services';
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
+import { DatetimeAdapter } from './datetime-adapter.component';
 
 describe('DatetimePickerComponent', () => {
 
@@ -60,7 +61,7 @@ describe('DatetimePickerComponent', () => {
           ],
           providers: [FormatTranslatorService,
             { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-            { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+            { provide: NgxMatDateAdapter, useClass: DatetimeAdapter },
             { provide: CaseFieldService, useValue: caseFieldService }
             ]
         })
