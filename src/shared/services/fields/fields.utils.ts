@@ -1,14 +1,16 @@
+import { CurrencyPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition';
-import { CurrencyPipe, } from '@angular/common';
-import { DatePipe } from '../../components/palette/utils';
-import { WizardPage } from '../../components/case-editor/domain';
-import { Predicate } from '../../domain/predicate.model';
-import { CaseView } from '../../domain/case-view';
-import { plainToClassFromExist } from 'class-transformer';
-import { FormatTranslatorService } from '../case-fields/format-translator.service';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
+
+import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
+import { DatePipe } from '../../components/palette/utils';
+import { CaseView } from '../../domain/case-view';
+import { CaseField } from '../../domain/definition';
+import { Predicate } from '../../domain/predicate.model';
+import { FormatTranslatorService } from '../case-fields/format-translator.service';
+import { FixedListItem } from './../../domain/definition/fixed-list-item.model';
 
 // @dynamic
 @Injectable()
@@ -101,13 +103,13 @@ export class FieldsUtils {
     }
   }
 
-  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any) {
+  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
   };
 
-  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any) {
+  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
@@ -134,6 +136,16 @@ export class FieldsUtils {
         result[field.id] = FieldsUtils.getDate(fieldValue);
         break;
       }
+      case 'Complex': {
+        if (result[field.id] && field.field_type.complex_fields) {
+          field.field_type.complex_fields.forEach((f: CaseField) => {
+            if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+              FieldsUtils.LABEL_MERGE_FUNCTION(f, result[field.id]);
+            }
+          });
+        }
+        break;
+      }
       case 'Collection': {
         let elements = (result[field.id] || field.value);
         if (elements) {
@@ -147,6 +159,16 @@ export class FieldsUtils {
                 elem.value = FieldsUtils.getDate(elem.value);
                 break;
               }
+              case 'Complex': {
+                if (field.field_type.collection_field_type.complex_fields) {
+                  field.field_type.collection_field_type.complex_fields.forEach((f: CaseField) => {
+                    if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+                      FieldsUtils.LABEL_MERGE_FUNCTION(f, elem.value);
+                    }
+                  });
+                }
+                break;
+              }
             }
           });
         }
@@ -155,11 +177,11 @@ export class FieldsUtils {
     }
   };
 
-  private static getMoneyGBP(fieldValue) {
+  private static getMoneyGBP(fieldValue: any): any {
     return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
   }
 
-  private static getDate(fieldValue) {
+  private static getDate(fieldValue: string): string {
     try {
       // Format specified here wasn't previously working and lots of tests depend on it not working
       // Now that formats work correctly many test would break - and this could affect services which may depend on
@@ -170,8 +192,8 @@ export class FieldsUtils {
     }
   }
 
-  private static getFixedListLabelByCodeOrEmpty(field, code) {
-    let relevantItem = code ? field.field_type.fixed_list_items.find(item => item.code === code) : '';
+  private static getFixedListLabelByCodeOrEmpty(field: CaseField, code: any): string {
+    const relevantItem: FixedListItem = code ? field.field_type.fixed_list_items.find(item => item.code === code) : null;
     return relevantItem ? relevantItem.label : '';
   }
 
@@ -191,7 +213,7 @@ export class FieldsUtils {
     };
   }
 
-  public getCurrentEventState(eventTrigger, form): any {
+  public getCurrentEventState(eventTrigger: { case_fields: CaseField[] }, form: FormGroup): object {
     return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
   }
 
@@ -199,21 +221,22 @@ export class FieldsUtils {
     return Object.assign(new CaseField(), obj);
   }
 
-  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
+  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
     return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
   }
 
-  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
+  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
     return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
   }
 
-  public controlIterator(aControl: AbstractControl,
-                         formArrayFn: (AbstractControl, CaseField) => void,
-                         formGroupFn: (FormGroup) => void,
-                         controlFn: (FormControl) => void) {
+  public controlIterator(
+    aControl: AbstractControl,
+    formArrayFn: (array: FormArray) => void,
+    formGroupFn: (group: FormGroup) => void,
+    controlFn: (control: FormControl) => void
+  ): void {
     if (aControl instanceof FormArray) {  // We're in a collection
-      const cf: CaseField =  aControl['caseField'];
-      formArrayFn( aControl, cf);
+      formArrayFn(aControl);
     } else if (aControl instanceof FormGroup) {
       formGroupFn(aControl)
     } else if (aControl instanceof FormControl) {  // FormControl
@@ -221,8 +244,8 @@ export class FieldsUtils {
     }
   }
 
-  private mergeFields(caseFields: CaseField[], formFields: any, mergeFunction: (CaseField, any) => void) {
-    let result = FieldsUtils.cloneObject(formFields);
+  private mergeFields(caseFields: CaseField[], formFields: object, mergeFunction: (field: CaseField, result: object) => void): object {
+    const result: object = FieldsUtils.cloneObject(formFields);
     caseFields.forEach(field => {
       mergeFunction(field, result);
       if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
