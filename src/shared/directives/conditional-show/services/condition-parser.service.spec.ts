@@ -23,6 +23,24 @@ describe('ConditionParser', () => {
                         { "fieldReference": "a", "comparator": "CONTAINS", "value": "B" }
                     ]
                 },
+                {
+                    input: 'a="NoSpacesTest"',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "NoSpacesTest" }
+                    ]
+                },
+                {
+                    input: 'a="TooManySpaces"    ',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "TooManySpaces" }
+                    ]
+                },
+                {
+                    input: '   a="ThisTextNeedsTrimming"    ',
+                    expected: [
+                        { "fieldReference": "a", "comparator": "=", "value": "ThisTextNeedsTrimming" }
+                    ]
+                },
             ];
 
             testCases.forEach(test => {
@@ -31,6 +49,25 @@ describe('ConditionParser', () => {
 
                     expect(result).toBeDefined();
                     expect(result).toEqual(test.expected);
+                });
+            });
+        });
+
+        describe('should NOT parse invalid simple fomulas', () => {
+            const testCases = [
+                { input: 'a === "B"' },
+                { input: 'a !== "B"' },
+                { input: 'a CONTAIN "B"' },
+                { input: 'a != CONTAIN "B"' },
+                { input: 'a ! = "B"' },
+                { input: 'a = ! "B"' },
+            ];
+
+            testCases.forEach(test => {
+                it(`should NOT parse and throw error for invalid input: "${test.input}"`, () => {
+                    expect(() => {
+                        ConditionParser.parse(test.input);
+                    }).toThrowError();
                 });
             });
         });
@@ -59,6 +96,44 @@ describe('ConditionParser', () => {
                     input: 'a = "Variable.Hello"',
                     expected: [
                         { "fieldReference": "a", "comparator": "=", "value": "Variable.Hello" }
+                    ]
+                },
+            ];
+
+            testCases.forEach(test => {
+                it(`should convert "${test.input}" to the correct output`, () => {
+                    const result = ConditionParser.parse(test.input);
+
+                    expect(result).toBeDefined();
+                    expect(result).toEqual(test.expected);
+                });
+            });
+        });
+
+        describe('parse complex fieldReference comparisons', () => {
+            const testCases = [
+                {
+                    input: 'a_p = "Hello World"',
+                    expected: [
+                        { "fieldReference": "a_p", "comparator": "=", "value": "Hello World" }
+                    ]
+                },
+                {
+                    input: 'HELLO_WORLD = "Hello World"',
+                    expected: [
+                        { "fieldReference": "HELLO_WORLD", "comparator": "=", "value": "Hello World" }
+                    ]
+                },
+                {
+                    input: 'Hello_World1 = "Hello World"',
+                    expected: [
+                        { "fieldReference": "Hello_World1", "comparator": "=", "value": "Hello World" }
+                    ]
+                },
+                {
+                    input: 'H1 = "Hello World"',
+                    expected: [
+                        { "fieldReference": "H1", "comparator": "=", "value": "Hello World" }
                     ]
                 },
             ];

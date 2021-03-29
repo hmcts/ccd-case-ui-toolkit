@@ -12,7 +12,7 @@ export class ConditionParser {
     public static parse(condition: string): any {
         if (!condition) return null;
 
-        return peg.parse(condition, {});;
+        return peg.parse(condition.trim(), {});
     }
 
     /**
