@@ -10,7 +10,8 @@ import { WindowService } from '../../../services';
 @Component({
   selector: 'ccd-write-organisation-field',
   templateUrl: './write-organisation-field.component.html',
-  styleUrls: ['./organisation-field.scss']
+  styleUrls: ['./organisation-field.scss'],
+  providers: [WindowService]
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
