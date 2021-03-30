@@ -158,6 +158,11 @@ ___
             return this.pageFormFields[this.fieldIdToSubstitute] ? this.getSubstitutionValueOrEmpty().toString().length : 0;
         }
 
+        /**
+         * Gets the value from `this` field, which could be any of a number of different types:
+         *   string | number | object | string[] | object[] | maybe others...
+         * @returns The value associated with `this` field.
+         */
         private getFieldValue(): any {
             if (this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute]) {
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];

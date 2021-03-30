@@ -177,7 +177,13 @@ export class FieldsUtils {
     }
   };
 
-  private static getMoneyGBP(fieldValue: any): any {
+  /**
+   * Formats a `MoneyGBP` value to include currency units.
+   * @param fieldValue The CurrencyPipe expects an `any` parameter so this must also be `any`,
+   * but it should be "number-like" (e.g., '1234')
+   * @returns A formatted string (e.g., £12.34)
+   */
+  private static getMoneyGBP(fieldValue: any): string {
     return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
   }
 
@@ -192,7 +198,7 @@ export class FieldsUtils {
     }
   }
 
-  private static getFixedListLabelByCodeOrEmpty(field: CaseField, code: any): string {
+  private static getFixedListLabelByCodeOrEmpty(field: CaseField, code: string): string {
     const relevantItem: FixedListItem = code ? field.field_type.fixed_list_items.find(item => item.code === code) : null;
     return relevantItem ? relevantItem.label : '';
   }
