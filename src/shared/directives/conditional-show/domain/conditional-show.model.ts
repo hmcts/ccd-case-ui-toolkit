@@ -12,6 +12,7 @@ export class ShowCondition {
   private static readonly CONDITION_EQUALS = '=';
   private static readonly CONTAINS = 'CONTAINS';
   private static instanceCache = new Map<string, ShowCondition>();
+  private static readonly validJoinComparators = ['AND', 'OR'];
 
   private orConditions: string[] = null;
   private andConditions: string[] = null;
@@ -22,25 +23,47 @@ export class ShowCondition {
     if (!pathPrefix || pathPrefix === '') {
       return showCondition;
     }
-    if (showCondition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
-      let orConditions = showCondition.split(ShowCondition.OR_CONDITION_REGEXP);
-      orConditions = this.extractConditions(orConditions, pathPrefix);
-      return orConditions.join(' OR ');
-    } else {
-      let andConditions = showCondition.split(ShowCondition.AND_CONDITION_REGEXP);
-      andConditions = this.extractConditions(andConditions, pathPrefix);
-      return andConditions.join(' AND ');
+    if (showCondition === null || showCondition === '') {
+      return showCondition;
     }
+
+    const formula = ConditionParser.parse(showCondition);
+    if (!formula) return showCondition;
+
+    let json = JSON.stringify(this.processAddPathPrefixToCondition(formula, pathPrefix));
+    json = json.replace(/\[/g, '(').replace(/\]/g, ')');
+    return json;
+    //return this.processAddPathPrefixToCondition(formula, pathPrefix);
   }
 
-  private static extractConditions(conditionsArray: string[], pathPrefix: string): string[] {
-    const extracted = conditionsArray.map(condition => {
-      if (condition.startsWith(pathPrefix)) {
-        return condition;
-      }
-      return `${pathPrefix}.${condition}`;
-    });
-    return extracted;
+  private static processAddPathPrefixToCondition(formula: any, pathPrefix: string): string {
+    let evaluatedCondition: string[] = [];
+    if (Array.isArray(formula)) {
+      formula.forEach(condition => {
+        if(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1){
+          evaluatedCondition.push(condition);
+        } else {
+          if (Array.isArray(condition)) {
+            evaluatedCondition.push(JSON.parse(this.processAddPathPrefixToCondition(condition, pathPrefix)));
+          } else {
+            evaluatedCondition.push(this.extractConditions(condition, pathPrefix));
+          }
+        }
+      });
+    } else {
+      evaluatedCondition.push(this.extractConditions(formula, pathPrefix));
+    }
+    
+    return JSON.stringify(evaluatedCondition);
+  }
+
+  private static extractConditions(condition: any, pathPrefix: string): string {
+    if (condition.fieldReference.startsWith(pathPrefix)) {
+      return condition.fieldReference + " " + condition.comparator + " " + condition.value;
+    } else {
+      condition.fieldReference = pathPrefix + '.' + condition.fieldReference;
+      return condition.fieldReference + " " + condition.comparator + " " + condition.value;
+    }
   }
 
   // Cache instances so that we can cache results more effectively
@@ -64,6 +87,30 @@ export class ShowCondition {
     return [ condition.split(separator)[0], separator ];
   }
 
+  private static getConditions(formula: any) :string {
+    let cond: string[] = [];
+    const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
+    if (!!formula) {
+      if (Array.isArray(newFormula)) {
+        newFormula.forEach(condition => {
+          //console.log('getCondition condition', condition);
+          if (!(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1)) {
+            if (Array.isArray(condition)) {
+              cond.push(ShowCondition.getConditions(condition).toString());
+            } else {
+              cond.push(condition.fieldReference + condition.comparator + condition.value);
+            }
+          }
+        });
+      } else {
+        //console.log('getCondition formula', newFormula);
+        cond.push(newFormula.fieldReference + newFormula.comparator + newFormula.value);
+      }
+    }
+    //console.log('Return getConditions', cond.toString());
+    return cond.toString();
+  }
+
   /**
    * Determine whether a ShowCondition model is affected by fields that have
    * a display_context of HIDDEN or READONLY, which means they aren't able to
@@ -74,7 +121,8 @@ export class ShowCondition {
    */
   public static hiddenCannotChange(showCondition: ShowCondition, caseFields: CaseField[]): boolean {
     if (showCondition && caseFields) {
-      const conditions: string[] = showCondition.andConditions || showCondition.orConditions;
+      //const conditions: string[] = showCondition.andConditions || showCondition.orConditions;
+      const conditions: string[] = this.getConditions(showCondition.conditions).split(',');
       if (conditions && conditions.length > 0) {
         let allUnchangeable = true;
         for (const condition of conditions) {
@@ -125,9 +173,9 @@ export class ShowCondition {
   }
 
   public match(fields: object, path?: string): boolean {
-    console.log(fields);
+    //console.log(fields);
 
-    return ConditionParser.evaluate(fields, this.conditions);
+    return ConditionParser.evaluate(fields, this.conditions, path);
   }
 
   public matchByContextFields(contextFields: CaseField[]): boolean {
@@ -145,7 +193,7 @@ export class ShowCondition {
     return ShowCondition.hiddenCannotChange(this, caseFields);
   }
 
-  private findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
+  /*private findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
     if (!fields) {
       return undefined;
     }
@@ -199,5 +247,5 @@ export class ShowCondition {
   private isDynamicList(dynamiclist: object): boolean {
     return !_score.isEmpty(dynamiclist) &&
       (_score.has(dynamiclist, 'value') && _score.has(dynamiclist, 'list_items'));
-  }
+  }*/
 }

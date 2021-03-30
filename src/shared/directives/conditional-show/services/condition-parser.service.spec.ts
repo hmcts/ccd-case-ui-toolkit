@@ -1,6 +1,6 @@
 import { ConditionParser } from "./condition-parser.service";
 
-fdescribe('ConditionParser', () => {
+describe('ConditionParser', () => {
 
     describe('parse', () => {
         describe('should parse simple, single fomulas', () => {
@@ -484,19 +484,19 @@ fdescribe('ConditionParser', () => {
 
             const testCases = [
                 {
-                    input: { "TextField0": "hello world", "TextField1": "bye" },
+                    input: { "TextField0": ['hello', 'world'], "TextField1": ['bye'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello", "TextField1": "hello" },
+                    input: { "TextField0": ['hello'], "TextField1": ['hello'] },
                     expected: false
                 },
                 {
-                    input: { "TextField0": "bye hello", "TextField1": "bye hello" },
+                    input: { "TextField0": ['bye', 'hello'], "TextField1": ['bye', 'hello'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "bye", "TextField1": "bye" },
+                    input: { "TextField0": ['bye'], "TextField1": ['bye'] },
                     expected: false
                 },
             ];
@@ -556,19 +556,19 @@ fdescribe('ConditionParser', () => {
 
             const testCases = [
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "nope" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['nope'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "nope" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['nope'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "bye", "TextField1": "nope" },
+                    input: { "TextField0": ['bye'], "TextField1": ['nope'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "bye", "TextField1": "bye" },
+                    input: { "TextField0": ['bye'], "TextField1": ['bye'] },
                     expected: false
                 },
             ];
@@ -594,19 +594,19 @@ fdescribe('ConditionParser', () => {
 
             const testCases = [
                 {
-                    input: { "TextField0": "", "TextField1": "show", "TextField2": "must" },
+                    input: { "TextField0": [''], "TextField1": ['show'], "TextField2": ['must'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello", "TextField1": "", "TextField2": "must" },
+                    input: { "TextField0": ['hello'], "TextField1": [''], "TextField2": ['must'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hellow", "TextField1": "show", "TextField2": "" },
+                    input: { "TextField0": ['hellow'], "TextField1": ['show'], "TextField2": [''] },
                     expected: false
                 },
                 {
-                    input: { "TextField0": "he", "TextField1": "sho", "TextField2": "must" },
+                    input: { "TextField0": ['he'], "TextField1": ['sho'], "TextField2": ['must'] },
                     expected: false
                 },
             ];
@@ -632,19 +632,19 @@ fdescribe('ConditionParser', () => {
 
             const testCases = [
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "nope" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['nope'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "hello" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['hello'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "bye", "TextField1": "nope" },
+                    input: { "TextField0": ['bye'], "TextField1": ['nope'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "bye", "TextField1": "bye" },
+                    input: { "TextField0": ['bye'], "TextField1": ['bye'] },
                     expected: false
                 },
             ];
@@ -674,19 +674,19 @@ fdescribe('ConditionParser', () => {
 
             const testCases = [
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "night day" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['night', 'day'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "night" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['night'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello", "TextField1": "night day" },
+                    input: { "TextField0": ['hello'], "TextField1": ['night', 'day'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello", "TextField1": "night" },
+                    input: { "TextField0": ['hello'], "TextField1": ['night'] },
                     expected: false
                 },
             ];
@@ -716,19 +716,19 @@ fdescribe('ConditionParser', () => {
 
             const testCases = [
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "night day" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['night', 'day'] },
                     expected: true
                 },
                 {
-                    input: { "TextField0": "hello bye", "TextField1": "night" },
+                    input: { "TextField0": ['hello', 'bye'], "TextField1": ['night'] },
                     expected: false
                 },
                 {
-                    input: { "TextField0": "hello", "TextField1": "night day" },
+                    input: { "TextField0": ['hello'], "TextField1": ['night day']},
                     expected: false
                 },
                 {
-                    input: { "TextField0": "hello", "TextField1": "night" },
+                    input: { "TextField0": ['hello'], "TextField1": ['night'] },
                     expected: false
                 },
             ];

@@ -77,7 +77,7 @@ number
  = [0-9]+
 
 quotedValue
- = '"'val:[A-Za-z0-9.,* ]*'"'
+ = '"'val:[A-Za-z0-9.,* _-]*'"'
  { return val.join(""); }
 
 bracket 
@@ -256,8 +256,8 @@ nl "New line"
         peg$c19 = peg$classExpectation([["0", "9"]], false, false),
         peg$c20 = "\"",
         peg$c21 = peg$literalExpectation("\"", false),
-        peg$c22 = /^[A-Za-z0-9.,* ]/,
-        peg$c23 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ".", ",", "*", " "], false, false),
+        peg$c22 = /^[A-Za-z0-9.,* _\-]/,
+        peg$c23 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ".", ",", "*", " ", "_", "-"], false, false),
         peg$c24 = function(val) { return val.join(""); },
         peg$c25 = "(",
         peg$c26 = peg$literalExpectation("(", false),
