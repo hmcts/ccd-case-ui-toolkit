@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### 2.79.0
+**EUI-3548** WA integration
+
 ### Version 2.75.1
 **EUI-3577** Fixing DynamicList regression bugs
 
