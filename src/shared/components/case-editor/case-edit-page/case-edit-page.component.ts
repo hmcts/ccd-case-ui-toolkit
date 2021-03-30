@@ -315,7 +315,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     // Now add the remaining bits and pieces to the CaseEventData,
     // The event_data should be the full context of the event, including values from previous pages, but not labels
 
-    caseEventData.event_data = this.clone(this.editForm.value.data);
+    caseEventData.event_data = this.clone(caseEventData.data || this.editForm.value.data);
     let evCf = this.getCaseFieldsFromCurrentAndPreviousPages();
     this.formValueService.removeUnnecessaryFields(caseEventData.event_data, evCf,
       false, true);
