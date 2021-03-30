@@ -30,7 +30,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
   constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter, private windowService: WindowService) {
     super();
-    const selectedOrg = JSON.parse(this.windowService.getLocalStorage('organisation-preselected-value'));
+    const selectedOrg = JSON.parse(this.windowService.getLocalStorage('organisation-details'));
     if (selectedOrg) {
       this.caseField.value = {'OrganisationID': selectedOrg.organisationIdentifier, 'OrganisationName': selectedOrg.name};
     }
