@@ -25,6 +25,8 @@ import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
+import { FieldsFilterPipe } from '../../palette/complex';
+import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
 
 describe('CaseEditPageComponent', () => {
 
@@ -550,8 +552,12 @@ describe('CaseEditPageComponent', () => {
       spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
-        declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+        declarations: [
+          CaseEditPageComponent,
+          FieldsFilterPipe,
+          CcdPageFieldsPipe,
+          CaseReferencePipe
+        ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
