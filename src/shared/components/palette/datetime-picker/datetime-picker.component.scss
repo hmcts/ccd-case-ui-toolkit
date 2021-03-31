@@ -64,7 +64,6 @@ Details inside it are for the actual component first shown on page */
   // all datepicker content shown within mat-datepicker-content
   .mat-datepicker-content {
     border: 1px solid black;
-    border-top: none;
     border-radius: 0;
 
     .mat-calendar-table {
@@ -188,7 +187,7 @@ Details inside it are for the actual component first shown on page */
         border: 1px ridge #bfc1c3;
 
         &[aria-selected="true"] {
-          background-color: blue;
+          background-color: #1d70b8;
           outline: 3px solid orange;
           border: 2px solid black;
           outline-offset: 1px;
@@ -224,7 +223,7 @@ Details inside it are for the actual component first shown on page */
           border: 1px solid #bfc1c3;
 
           &[aria-selected="true"] {
-            background-color: blue;
+            background-color: #1d70b8;
             outline: 2px solid orange;
           }
         }
@@ -259,7 +258,7 @@ Details inside it are for the actual component first shown on page */
           border: 1px solid #bfc1c3;
 
           &[aria-selected="true"] {
-            background-color: blue;
+            background-color: #1d70b8;
             outline: 3px solid orange;
             border: 2px solid black;
             outline-offset: 1px;
@@ -285,10 +284,21 @@ Details inside it are for the actual component first shown on page */
 
           tr {
 
+
+            .mat-icon-button {
+
+              .mat-button-wrapper {
+                width: auto;
+                height: auto;
+              }
+              &:focus {
+                outline:none;
+              }
+            }
             &:first-child {
               position: absolute;
               left: 60px;
-              top: 20px;
+              top: 29px;
 
               td {
                 &:first-child {
@@ -369,7 +379,7 @@ Details inside it are for the actual component first shown on page */
             &:last-child {
               position: absolute;
               left: 60px;
-              top: 44px;
+              top: 54px;
 
               td {
                 &:first-child {
