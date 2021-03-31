@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### 2.79.1-nested-multiselect-label-interpolation
+### Version 2.79.2
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections.
+
+### Version 2.79.1
+**EUI-3452** Fix to some issues on the Check your answers page.
 
 ### 2.79.0
 **EUI-3548** WA integration
@@ -12,9 +15,6 @@
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
 
-### Version 2.73.2-collection-date-field
-**EUI-2667** Fix to date field rendering within collections
-
 ### Version 2.74.2
 **EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch
 
@@ -23,6 +23,9 @@
 
 ### Version 2.73.5-ngmodel-deprecation
 **EUI-3410** ngModel deprecation
+
+### Version 2.73.2-collection-date-field
+**EUI-2667** Fix to date field rendering within collections
 
 ### Version 2.73.0-hotfix-error-message-display
 **EUI-3594** Fix issue with error message specifics not being displayed

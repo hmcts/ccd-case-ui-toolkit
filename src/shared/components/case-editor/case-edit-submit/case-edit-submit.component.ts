@@ -53,6 +53,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return a.show_summary_content_option - b.show_summary_content_option;
   }
 
+  public get isDisabled(): boolean {
+    // EUI-3452.
+    // We don't need to check the validity of the editForm as it is readonly.
+    // This was causing issues with hidden fields that aren't wanted but have
+    // not been disabled.
+    return this.isSubmitting || this.hasErrors;
+  }
+
   constructor(
     private caseEdit: CaseEditComponent,
     private formValueService: FormValueService,
@@ -111,10 +119,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       );
   }
 
-  isDisabled(): boolean {
-    return this.isSubmitting || !this.editForm.valid || this.hasErrors();
-  }
-
   private getStatus(response) {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
@@ -123,7 +127,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
 
-  private hasErrors(): boolean {
+  private get hasErrors(): boolean {
     return this.error
       && this.error.callbackErrors
       && this.error.callbackErrors.length;
