@@ -639,24 +639,31 @@ describe('conditional-show', () => {
   });
 
   describe('addPathPrefixToCondition()', () => {
-    fit('should add path', () => {
-      /*expect(ShowCondition.addPathPrefixToCondition('field1="test"', '')).toBe('field1="test"');
+    it('should add path', () => {
+      expect(ShowCondition.addPathPrefixToCondition('field1="test"', '')).toBe('field1="test"');
       expect(ShowCondition.addPathPrefixToCondition('field1="test"', null)).toBe('field1="test"');
       expect(ShowCondition.addPathPrefixToCondition(null, '')).toBe(null);
       expect(ShowCondition.addPathPrefixToCondition(null, null)).toBe(null);
-      expect(ShowCondition.addPathPrefixToCondition('', '')).toBe('');*/
+      expect(ShowCondition.addPathPrefixToCondition('', '')).toBe('');
 
-      /*expect(ShowCondition.addPathPrefixToCondition('(field1 CONTAINS "S3,S2" OR field2=3) AND field3="te*"',
-        'ComplexField1.AddressLine1')).toBe('( ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" OR ComplexField1.AddressLine1.field2 = 3 ) AND ComplexField1.AddressLine1.field3 = "te*"');
-      */
+      expect(ShowCondition.addPathPrefixToCondition('(field1 CONTAINS "S3,S2" OR field2=3) AND field3="te*"',
+        'ComplexField1.AddressLine1')).toBe('(ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" OR ComplexField1.AddressLine1.field2=3) AND ComplexField1.AddressLine1.field3="te*"');
+      
       expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS "S3,S2" AND (field2=3 OR field3="te*" OR field4="S1 AND S2")','ComplexField1.AddressLine1')).
-      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2 = 3 OR ComplexField1.AddressLine1.field3 = "te*" OR ComplexField1.AddressLine1.field4="S1 AND S2")');
-      /*expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS "s1"',
+      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*" OR ComplexField1.AddressLine1.field4="S1 AND S2")');
+
+      expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS "S3,S2" AND (field2=3 OR field3="te*") AND field4="S1 AND S2"','ComplexField1.AddressLine1')).
+      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"');
+
+      expect(ShowCondition.addPathPrefixToCondition('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"','ComplexField1.AddressLine1')).
+      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"');
+
+      expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS"s1"',
         'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1 CONTAINS"s1"');
 
-      expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2 CONTAINS "s1"',
+      expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2 CONTAINS"s1"',
         'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2 CONTAINS"s1"');
-      */
+      
     });
   });
 
@@ -941,12 +948,32 @@ describe('conditional-show', () => {
         expect(result).toBe(true);
       });
 
-      it('ALL dependent fields are HIDDEN or READONLY with combination of AND and OR conditions', () => {
+      it('ALL dependent fields are HIDDEN or READONLY with type1 combination of AND and OR conditions', () => {
         const hidden = `${FIELDS.HIDDEN.id}="Bob"`;
         const readonly = `${FIELDS.READONLY.id} CONTAINS "Bob"`;
         const optional = `${FIELDS.OPTIONAL.id}="Bob"`;
         const mandatory = `${FIELDS.MANDATORY.id}!="Bob"`;
         const showCondition: ShowCondition = new ShowCondition(`(${hidden} OR ${readonly} OR ${optional}) AND ${mandatory}`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('ALL dependent fields are HIDDEN or READONLY with type2 combination of AND and OR conditions', () => {
+        const hidden = `${FIELDS.HIDDEN.id}="Bob"`;
+        const readonly = `${FIELDS.READONLY.id} CONTAINS "Bob"`;
+        const optional = `${FIELDS.OPTIONAL.id}="Bob"`;
+        const mandatory = `${FIELDS.MANDATORY.id}!="Bob"`;
+        const showCondition: ShowCondition = new ShowCondition(`${hidden} AND (${readonly} OR ${optional}) AND ${mandatory}`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
+        expect(result).toBe(false);
+      });
+
+      it('ALL dependent fields are HIDDEN or READONLY with type3 combination of AND and OR conditions', () => {
+        const hidden = `${FIELDS.HIDDEN.id}="Bob"`;
+        const readonly = `${FIELDS.READONLY.id} CONTAINS "Bob"`;
+        const optional = `${FIELDS.OPTIONAL.id}="Bob"`;
+        const mandatory = `${FIELDS.MANDATORY.id}!="Bob"`;
+        const showCondition: ShowCondition = new ShowCondition(`${hidden} AND ${readonly} AND (${optional} OR ${mandatory})`);
         const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
         expect(result).toBe(false);
       });

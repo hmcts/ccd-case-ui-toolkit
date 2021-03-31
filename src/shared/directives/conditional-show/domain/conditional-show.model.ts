@@ -23,46 +23,43 @@ export class ShowCondition {
     if (!pathPrefix || pathPrefix === '') {
       return showCondition;
     }
-    if (showCondition === null || showCondition === '') {
+    if (!showCondition) {
       return showCondition;
     }
 
     const formula = ConditionParser.parse(showCondition);
     if (!formula) return showCondition;
 
-    let json = JSON.stringify(this.processAddPathPrefixToCondition(formula, pathPrefix));
-    json = json.replace(/\[/g, '(').replace(/\]/g, ')');
-    return json;
-    //return this.processAddPathPrefixToCondition(formula, pathPrefix);
+    return this.processAddPathPrefixToCondition(formula, pathPrefix, showCondition);
   }
 
-  private static processAddPathPrefixToCondition(formula: any, pathPrefix: string): string {
-    let evaluatedCondition: string[] = [];
+  private static processAddPathPrefixToCondition(formula: any, pathPrefix: string, originalCondition: string): string {
+    let finalCondition: string = originalCondition;
     if (Array.isArray(formula)) {
       formula.forEach(condition => {
         if(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1){
-          evaluatedCondition.push(condition);
+          // do nothing
         } else {
           if (Array.isArray(condition)) {
-            evaluatedCondition.push(JSON.parse(this.processAddPathPrefixToCondition(condition, pathPrefix)));
+            finalCondition = this.processAddPathPrefixToCondition(condition, pathPrefix, finalCondition)
           } else {
-            evaluatedCondition.push(this.extractConditions(condition, pathPrefix));
+            finalCondition = this.extractConditions(condition, pathPrefix, finalCondition)
           }
         }
       });
     } else {
-      evaluatedCondition.push(this.extractConditions(formula, pathPrefix));
+      finalCondition = this.extractConditions(formula, pathPrefix, finalCondition)
     }
-    
-    return JSON.stringify(evaluatedCondition);
+    return finalCondition;
   }
 
-  private static extractConditions(condition: any, pathPrefix: string): string {
+  private static extractConditions(condition: any, pathPrefix: string, originalCondition: string): string {
     if (condition.fieldReference.startsWith(pathPrefix)) {
-      return condition.fieldReference + " " + condition.comparator + " " + condition.value;
+      return originalCondition;
     } else {
-      condition.fieldReference = pathPrefix + '.' + condition.fieldReference;
-      return condition.fieldReference + " " + condition.comparator + " " + condition.value;
+      if(originalCondition.indexOf(condition.fieldReference) > -1) {
+        return originalCondition.replace(condition.fieldReference, pathPrefix + '.' + condition.fieldReference);
+      }
     }
   }
 
@@ -88,27 +85,24 @@ export class ShowCondition {
   }
 
   private static getConditions(formula: any) :string {
-    let cond: string[] = [];
+    let conditionList: string[] = [];
     const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
     if (!!formula) {
       if (Array.isArray(newFormula)) {
         newFormula.forEach(condition => {
-          //console.log('getCondition condition', condition);
           if (!(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1)) {
             if (Array.isArray(condition)) {
-              cond.push(ShowCondition.getConditions(condition).toString());
+              conditionList.push(ShowCondition.getConditions(condition).toString());
             } else {
-              cond.push(condition.fieldReference + condition.comparator + condition.value);
+              conditionList.push(condition.fieldReference + condition.comparator + condition.value);
             }
           }
         });
       } else {
-        //console.log('getCondition formula', newFormula);
-        cond.push(newFormula.fieldReference + newFormula.comparator + newFormula.value);
+        conditionList.push(newFormula.fieldReference + newFormula.comparator + newFormula.value);
       }
     }
-    //console.log('Return getConditions', cond.toString());
-    return cond.toString();
+    return conditionList.toString();
   }
 
   /**
@@ -121,7 +115,6 @@ export class ShowCondition {
    */
   public static hiddenCannotChange(showCondition: ShowCondition, caseFields: CaseField[]): boolean {
     if (showCondition && caseFields) {
-      //const conditions: string[] = showCondition.andConditions || showCondition.orConditions;
       const conditions: string[] = this.getConditions(showCondition.conditions).split(',');
       if (conditions && conditions.length > 0) {
         let allUnchangeable = true;
@@ -169,12 +162,12 @@ export class ShowCondition {
 
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
-    this.conditions = ConditionParser.parse(condition);
+    if (!!condition) {
+      this.conditions = ConditionParser.parse(condition);
+    }
   }
 
   public match(fields: object, path?: string): boolean {
-    //console.log(fields);
-
     return ConditionParser.evaluate(fields, this.conditions, path);
   }
 
@@ -192,60 +185,4 @@ export class ShowCondition {
   public hiddenCannotChange(caseFields: CaseField[]): boolean {
     return ShowCondition.hiddenCannotChange(this, caseFields);
   }
-
-  /*private findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
-    if (!fields) {
-      return undefined;
-    }
-    if (tail.length === 0) {
-      return this.getValue(fields, head);
-    } else {
-      if (FieldsUtils.isArray(fields[head])) {
-        return this.findValueForComplexConditionInArray(fields, head, tail, path);
-      } else {
-        return this.findValueForComplexConditionForPathIfAny(fields, head, tail, path);
-      }
-    }
-  }
-
-  private findValueForComplexConditionForPathIfAny(fields: object, head: string, tail: string[], path?: string): any {
-    if (path) {
-      const [_, ...pathTail] = path.split(/[_]+/g);
-      return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), pathTail.join('_'));
-    } else {
-      return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), path);
-    }
-  }
-
-  private findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
-    // use the path to resolve which array element we refer to
-    if (path.startsWith(head)) {
-      const [_, ...pathTail] = path.split(/[_]+/g);
-      if (pathTail.length > 0) {
-        try {
-          let arrayIndex = Number.parseInt(pathTail[0], 10);
-          const [__, ...dropNumberPath] = pathTail;
-          return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
-            fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
-        } catch (e) {
-          console.log('Error while parsing number', pathTail[0], e);
-        }
-      }
-    } else {
-      console.log('Path in formArray should start with ', head, ', full path: ', path);
-    }
-  }
-
-  private getValue(fields: object, head: string): any {
-    if (this.isDynamicList(fields[head])) {
-      return fields[head].value.code;
-    } else {
-      return fields[head];
-    }
-  }
-
-  private isDynamicList(dynamiclist: object): boolean {
-    return !_score.isEmpty(dynamiclist) &&
-      (_score.has(dynamiclist, 'value') && _score.has(dynamiclist, 'list_items'));
-  }*/
 }
