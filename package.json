@@ -34,7 +34,7 @@
     "prebuild": "rimraf dist tmp",
     "prebuild:watch": "rimraf dist tmp",
     "preversion": "npm run ci",
-    "test": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI --source-map=false",
+    "test": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI --source-map=false && yarn test:functional",
     "test:codacy-upload": "echo `cat ./coverage/lcov.info | codacy-coverage`",
     "test:coverage": "istanbul check-coverage --statements 80 --lines 80 --functions 80 --branches 80",
     "test:watch": "karma start --auto-watch --no-single-run",
@@ -44,7 +44,8 @@
     "build:demo": "yarn --cwd demo build",
     "start": "yarn --cwd demo start",
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
-    "demo": "yarn build:esm && yarn build:demo && yarn start"
+    "demo": "yarn --cwd demo yarn && yarn build:esm && yarn build:demo && yarn start",
+    "test:functional":"yarn --cwd demo  test:functional" 
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
