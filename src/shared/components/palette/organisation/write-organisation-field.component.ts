@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
 import { Observable, of } from 'rxjs';
 import { OrganisationService, OrganisationVm } from '../../../services/organisation';
@@ -17,6 +17,13 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
   private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {'organisationIdentifier': '', 'name': '', 'address': ''};
   private static readonly MAX_RESULT_COUNT = 100;
+  private static readonly ORGANISATION_ID: string = 'OrganisationID';
+  private static readonly ORGANISATION_NAME: string = 'OrganisationName';
+  private static readonly PRE_POPULATE_TO_USERS_ORGANISATION: string = 'PrepopulateToUsersOrganisation';
+  private static readonly ORGANISATION_DETAILS: string = 'organisationDetails';
+  private static readonly YES: string = 'YES';
+  private static readonly MANDATORY: string = 'MANDATORY';
+  private readonly defaultOrg: any;
 
   public organisationFormGroup: FormGroup;
   public searchOrgTextFormControl: FormControl;
@@ -28,15 +35,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
-  constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter, private windowService: WindowService) {
+  constructor(private organisationService: OrganisationService,
+              private organisationConverter: OrganisationConverter,
+              private windowService: WindowService) {
     super();
-    const selectedOrg = JSON.parse(this.windowService.getLocalStorage('organisation-details'));
-    if (selectedOrg) {
-      this.caseField.value = {'OrganisationID': selectedOrg.organisationIdentifier, 'OrganisationName': selectedOrg.name};
-    }
+    this.defaultOrg = JSON.parse(this.windowService.getSessionStorage(WriteOrganisationFieldComponent.ORGANISATION_DETAILS));
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.organisations$ = this.organisationService.getActiveOrganisations();
 
     this.searchOrgTextFormControl = new FormControl('');
@@ -44,24 +50,57 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
     this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
-    if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
-      this.organisationIDFormControl = new FormControl(this.caseField.value.OrganisationID);
-      this.organisationFormGroup.addControl('OrganisationID', this.organisationIDFormControl);
-      this.organisationNameFormControl = new FormControl(this.caseField.value.OrganisationName);
-      this.organisationFormGroup.addControl('OrganisationName', this.organisationNameFormControl);
-      this.selectedOrg$ = this.organisations$.pipe(
-        map(organisations =>
-          organisations.filter(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)
-                       .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))[0]),
-      );
-      this.searchOrgTextFormControl.disable();
+    if (this.parent.controls && this.parent.controls.hasOwnProperty(WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION)
+      && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value
+      && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value.toUpperCase()
+      === WriteOrganisationFieldComponent.YES) {
+      if (this.caseField && this.caseField.value === undefined) {
+        this.caseField.value = {
+          'OrganisationID': this.defaultOrg.organisationIdentifier,
+          'OrganisationName': this.defaultOrg.name
+        };
+      }
+      this.preSelectDefaultOrg();
     } else {
-      this.organisationIDFormControl = new FormControl(null);
-      this.organisationFormGroup.addControl('OrganisationID', this.organisationIDFormControl);
-      this.organisationNameFormControl = new FormControl(null);
-      this.organisationFormGroup.addControl('OrganisationName', this.organisationNameFormControl);
-      this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
-      this.windowService.removeLocalStorage('organisation-preselected-value');
+      if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
+        this.preSelectDefaultOrg();
+      } else {
+        this.preSelectEmptyOrg();
+      }
+    }
+  }
+
+  private preSelectDefaultOrg() {
+    this.organisationIDFormControl = new FormControl(this.caseField.value.OrganisationID);
+    this.addOrganisationValidators();
+    this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_ID, this.organisationIDFormControl);
+    this.organisationNameFormControl = new FormControl(this.caseField.value.OrganisationName);
+    this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_NAME, this.organisationNameFormControl);
+    this.selectedOrg$ = this.organisations$.pipe(
+      map(organisations =>
+        organisations.filter(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)
+          .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))[0]),
+    );
+    this.searchOrgTextFormControl.disable();
+  }
+
+  private preSelectEmptyOrg() {
+    this.organisationIDFormControl = new FormControl(null);
+    this.addOrganisationValidators();
+    this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_ID, this.organisationIDFormControl);
+    this.organisationNameFormControl = new FormControl(null);
+    this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_NAME, this.organisationNameFormControl);
+    this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
+  }
+
+  private addOrganisationValidators() {
+    if (this.caseField.field_type.complex_fields) {
+      const organisationIdField = this.caseField.field_type.complex_fields
+        .find(field => field.id === WriteOrganisationFieldComponent.ORGANISATION_ID);
+      if (organisationIdField && organisationIdField.display_context === WriteOrganisationFieldComponent.MANDATORY) {
+        const validators = [Validators.required];
+        this.organisationIDFormControl.setValidators(validators);
+      }
     }
   }
 
@@ -142,7 +181,10 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.simpleOrganisations$ = of([...[], selectedOrg]);
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.disable();
-    this.caseField.value = {'OrganisationID': selectedOrg.organisationIdentifier, 'OrganisationName': selectedOrg.name};
+    this.caseField.value = {
+      'OrganisationID': selectedOrg.organisationIdentifier,
+      'OrganisationName': selectedOrg.name
+    };
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
