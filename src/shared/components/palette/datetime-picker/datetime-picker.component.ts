@@ -12,6 +12,7 @@ import { CaseField } from '../../../domain';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { Moment } from 'moment/moment';
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -42,7 +43,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  private dateTimePickerFormat = 'DD MM YYYY, hh:mm';
+  private dateTimePickerFormat = 'MM YYYY';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
               @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
@@ -101,6 +102,19 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
     if (this.formatTranslationService.hasNoDayAndMonth(dateTimePickerFormat)) {
       this.startView = 'multi-year';
+    }
+  }
+
+  yearSelected(event: Moment): void {
+    if (this.startView === 'multi-year') {
+      this.dateControl.patchValue(event.toISOString());
+      this.datetimePicker.close();
+    }
+  }
+
+  monthSelected(event: Moment): void {
+    if (this.startView === 'year') {
+      this.dateControl.patchValue(event.toISOString());
     }
   }
 

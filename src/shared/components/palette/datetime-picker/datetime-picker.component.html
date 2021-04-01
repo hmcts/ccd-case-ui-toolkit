@@ -31,6 +31,9 @@
                                [showSpinners]="showSpinners"
                                [disableMinute]="disableMinute"
                                [enableMeridian]="enableMeridian"
+
+                               (yearSelected)="yearSelected($event)"
+                               (monthSelected)="monthSelected($event)"
       >
       </ngx-mat-datetime-picker>
     </div>
