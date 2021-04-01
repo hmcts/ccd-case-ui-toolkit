@@ -1,33 +1,35 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { of, Observable, BehaviorSubject } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+
+import { CaseField, FieldType, FixedListItem, HttpError, Profile } from '../../../domain';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { aCaseField, createCaseField, createFieldType, createMultiSelectListFieldType } from '../../../fixture/shared.test.fixture';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import {
+  CaseFieldService,
+  FieldsPurger,
+  FieldsUtils,
+  FormErrorService,
+  FormValueService,
+  OrderService,
+  ProfileNotifier,
+  ProfileService,
+} from '../../../services';
+import { text } from '../../../test/helpers';
+import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
+import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
+import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
+import { aWizardPage } from '../case-edit.spec';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Wizard, WizardPage, WizardPageField } from '../domain';
+import { CaseEditSubmitComponent } from './case-edit-submit.component';
+
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
-import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField, createCaseField, createFieldType, createMultiSelectListFieldType } from '../../../fixture/shared.test.fixture';
-import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { OrderService } from '../../../services/order/order.service';
-import { aWizardPage } from '../case-edit.spec';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { CaseEditSubmitComponent } from './case-edit-submit.component';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
-import { ProfileService, ProfileNotifier } from '../../../services/profile';
-import { FieldType, FixedListItem, Profile } from '../../../domain';
-import { createAProfile } from '../../../domain/profile/profile.test.fixture';
-import { text } from '../../../test/helpers';
-import { FieldsPurger } from '../../../services';
-import { WizardPageField } from '../domain';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -350,6 +352,9 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -549,6 +554,9 @@ describe('CaseEditSubmitComponent', () => {
       comp.isSubmitting = true;
       fixture.detectChanges();
 
+      // The isDisabled property should immediately pick up on this.
+      expect(comp.isDisabled).toBeTruthy();
+
       let submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeTruthy();
 
@@ -562,6 +570,9 @@ describe('CaseEditSubmitComponent', () => {
     it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
       comp.isSubmitting = false;
       fixture.detectChanges();
+
+      // The isDisabled property should immediately pick up on this.
+      expect(comp.isDisabled).toBeFalsy();
 
       let submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeFalsy();
@@ -640,6 +651,9 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -773,6 +787,9 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          CcdPageFieldsPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
