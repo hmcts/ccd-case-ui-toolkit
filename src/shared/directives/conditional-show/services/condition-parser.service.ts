@@ -1,4 +1,3 @@
-import { PegConditionResult } from '../models/peg-result.model';
 import { _ as _score } from 'underscore';
 import peg from './condition.peg';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -15,13 +14,6 @@ export class ConditionParser {
      */
     public static parse(condition: string): any {
         if (!condition) return null;
-        let parseResolved = null;
-        try {
-            parseResolved = peg.parse(condition.trim(), {});
-            
-        } catch (error) {
-            console.log(error);
-        }            
         return peg.parse(condition.trim(), {});
     }
 
