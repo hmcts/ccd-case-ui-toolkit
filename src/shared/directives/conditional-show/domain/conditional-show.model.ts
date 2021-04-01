@@ -6,18 +6,13 @@ import { ConditionParser } from '../services/condition-parser.service';
 
 export class ShowCondition {
 
-  private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
-  private static readonly OR_CONDITION_REGEXP = new RegExp('\\sOR\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
   private static readonly CONDITION_NOT_EQUALS = '!=';
   private static readonly CONDITION_EQUALS = '=';
   private static readonly CONTAINS = 'CONTAINS';
   private static instanceCache = new Map<string, ShowCondition>();
   private static readonly validJoinComparators = ['AND', 'OR'];
-
-  private orConditions: string[] = null;
-  private andConditions: string[] = null;
-
   private conditions = [];
+  private static fieldList: string[] = [];
 
   public static addPathPrefixToCondition(showCondition: string, pathPrefix: string): string {
     if (!pathPrefix || pathPrefix === '') {
@@ -29,7 +24,7 @@ export class ShowCondition {
 
     const formula = ConditionParser.parse(showCondition);
     if (!formula) return showCondition;
-
+    this.fieldList = [];
     return this.processAddPathPrefixToCondition(formula, pathPrefix, showCondition);
   }
 
@@ -58,7 +53,13 @@ export class ShowCondition {
       return originalCondition;
     } else {
       if(originalCondition.indexOf(condition.fieldReference) > -1) {
-        return originalCondition.replace(condition.fieldReference, pathPrefix + '.' + condition.fieldReference);
+        if (this.fieldList && this.fieldList.indexOf(condition.fieldReference) === -1) {
+          this.fieldList.push(condition.fieldReference);
+          const reguarExp = new RegExp(condition.fieldReference, 'g');
+          return originalCondition.replace(reguarExp, pathPrefix + '.' + condition.fieldReference);
+        } else {
+          return originalCondition;
+        }
       }
     }
   }

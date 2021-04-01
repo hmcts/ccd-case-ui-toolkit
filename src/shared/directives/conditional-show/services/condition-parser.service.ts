@@ -25,8 +25,6 @@ export class ConditionParser {
      * @param conditions The PegJS formula output
      */
     public static evaluate(fields: any, conditions: any[], path?: string): boolean {
-        //console.log('fields',fields);
-        //console.log('conditions',conditions);
         if (!conditions) return true;
         const validJoinComparators = ['AND', 'OR'];
 
@@ -37,31 +35,22 @@ export class ConditionParser {
             let currentConditionResult = true;
 
             if (Array.isArray(condition)) {
-                //console.log('in Array',condition);
                 currentConditionResult = this.evaluate(fields, condition);
 
                 if (isJoinComparator(conditions[index - 1])) return this.evaluateJoin(accumulator, conditions[index - 1], currentConditionResult);
             }
 
             if (condition.comparator) {
-                //const fieldValue: string = this.getValue(fields, condition.fieldReference);
-
-                //console.log('In condition.comparator',condition);
-                //console.log('Compare Value',fieldValue,condition.value);
-                //currentConditionResult = this.evaluateEqualityCheck(fieldValue, condition.value, condition.comparator);
                 const formula = condition.fieldReference + condition.comparator + condition.value;
                 const [field, conditionSeparator] = this.getField(formula);
                 const [head, ...tail] = field.split('.');
                 const currentValue = this.findValueForComplexCondition(fields, head, tail, path);
                 const expectedValue = this.unquoted(formula.split(conditionSeparator)[1]);
-                //currentConditionResult = this.evaluateEqualityCheck(currentValue, expectedValue, formula.comparator);
                 if (conditionSeparator === this.CONTAINS) {
                     currentConditionResult = this.checkValueContains(expectedValue, currentValue);
                 } else {
                     currentConditionResult = this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
                 }
-
-                //console.log('currentConditionResult', currentConditionResult, currentValue, expectedValue);
             }
 
             if (isJoinComparator(conditions[index - 1])) return this.evaluateJoin(accumulator, conditions[index - 1], currentConditionResult);
@@ -70,14 +59,6 @@ export class ConditionParser {
         }, true);
 
         return result;
-    }
-
-    private static evaluateEqualityCheck(fieldValue: any, conditionValue: string, comparator: string): boolean {
-        switch (comparator) {
-            case '=': return (fieldValue.trim() === conditionValue.trim());
-            case '!=': return (fieldValue.trim() !== conditionValue.trim());
-            case 'CONTAINS': return (fieldValue.trim() && fieldValue.trim().indexOf(conditionValue) !== -1);
-        }
     }
 
     private static evaluateJoin(leftResult: boolean, comparator, rightResult: boolean): boolean {
@@ -115,7 +96,10 @@ export class ConditionParser {
         if (expectedValue.search('[,]') > -1) { // for  multi-select list
           return this.checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor);
         } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== this.CONDITION_NOT_EQUALS) {
-          return currentValue.startsWith(this.removeStarChar(expectedValue));
+            if (typeof currentValue === 'string') {
+                return currentValue.startsWith(this.removeStarChar(expectedValue));
+            }
+            return expectedValue === '*';
         } else {
           // changed from '===' to '==' to cover number field conditions
           if (conditionSeparaor === this.CONDITION_NOT_EQUALS) {
@@ -149,12 +133,9 @@ export class ConditionParser {
         if (expectedValue.search(',') > -1) {
             let expectedValues = expectedValue.split(',').sort();
             let values = currentValue ? currentValue.sort().toString() : '';
-            console.log('checkValueContains1', values);
             return expectedValues.every(item => values.search(item) >= 0);
         } else {
             let values = currentValue && Array.isArray(currentValue) ? currentValue.toString() : '';
-            console.log('current value', currentValue, Array.isArray(currentValue));
-            console.log('checkValueContains2', values);
             return values.search(expectedValue) >= 0;
         }
     }
