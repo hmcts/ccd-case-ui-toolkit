@@ -1,4 +1,4 @@
-import { ConditionParser } from "./condition-parser.service";
+import { ConditionParser } from './condition-parser.service';
 
 describe('ConditionParser', () => {
 
@@ -8,61 +8,61 @@ describe('ConditionParser', () => {
                 {
                     input: 'a = "B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a="B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a!="B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "!=", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': '!=', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a CONTAINS"B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "CONTAINS", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': 'CONTAINS', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a= "B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a != "B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "!=", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': '!=', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a CONTAINS "B"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "CONTAINS", "value": "B" }
+                        { 'fieldReference': 'a', 'comparator': 'CONTAINS', 'value': 'B' }
                     ]
                 },
                 {
                     input: 'a="NoSpacesTest"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "NoSpacesTest" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'NoSpacesTest' }
                     ]
                 },
                 {
                     input: 'a="TooManySpaces"    ',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "TooManySpaces" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'TooManySpaces' }
                     ]
                 },
                 {
                     input: '   a="ThisTextNeedsTrimming"    ',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "ThisTextNeedsTrimming" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'ThisTextNeedsTrimming' }
                     ]
                 },
             ];
@@ -108,31 +108,31 @@ describe('ConditionParser', () => {
                 {
                     input: 'a = "Variable with spaces"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "Variable with spaces" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable with spaces' }
                     ]
                 },
                 {
                     input: 'a="No spaces formula"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "No spaces formula" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'No spaces formula' }
                     ]
                 },
                 {
                     input: 'a = "Variable*"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "Variable*" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable*' }
                     ]
                 },
                 {
                     input: 'a = "Variable123"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "Variable123" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable123' }
                     ]
                 },
                 {
                     input: 'a = "Variable.Hello"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "Variable.Hello" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable.Hello' }
                     ]
                 },
             ];
@@ -152,31 +152,31 @@ describe('ConditionParser', () => {
                 {
                     input: 'a_p = "Hello World"',
                     expected: [
-                        { "fieldReference": "a_p", "comparator": "=", "value": "Hello World" }
+                        { 'fieldReference': 'a_p', 'comparator': '=', 'value': 'Hello World' }
                     ]
                 },
                 {
                     input: 'a_p="No spaces test"',
                     expected: [
-                        { "fieldReference": "a_p", "comparator": "=", "value": "No spaces test" }
+                        { 'fieldReference': 'a_p', 'comparator': '=', 'value': 'No spaces test' }
                     ]
                 },
                 {
                     input: 'HELLO_WORLD = "Hello World"',
                     expected: [
-                        { "fieldReference": "HELLO_WORLD", "comparator": "=", "value": "Hello World" }
+                        { 'fieldReference': 'HELLO_WORLD', 'comparator': '=', 'value': 'Hello World' }
                     ]
                 },
                 {
                     input: 'Hello_World1 = "Hello World"',
                     expected: [
-                        { "fieldReference": "Hello_World1", "comparator": "=", "value": "Hello World" }
+                        { 'fieldReference': 'Hello_World1', 'comparator': '=', 'value': 'Hello World' }
                     ]
                 },
                 {
                     input: 'H1 = "Hello World"',
                     expected: [
-                        { "fieldReference": "H1", "comparator": "=", "value": "Hello World" }
+                        { 'fieldReference': 'H1', 'comparator': '=', 'value': 'Hello World' }
                     ]
                 },
             ];
@@ -196,33 +196,33 @@ describe('ConditionParser', () => {
                 {
                     input: 'a = "b" AND x = "y"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "b" },
-                        "AND",
-                        { "fieldReference": "x", "comparator": "=", "value": "y" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+                        'AND',
+                        { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }
                     ]
                 },
                 {
                     input: 'a = "b"ANDx = "y"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "b" },
-                        "AND",
-                        { "fieldReference": "x", "comparator": "=", "value": "y" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+                        'AND',
+                        { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }
                     ]
                 },
                 {
                     input: 'a="b"ANDx="No spaces test"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "b" },
-                        "AND",
-                        { "fieldReference": "x", "comparator": "=", "value": "No spaces test" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+                        'AND',
+                        { 'fieldReference': 'x', 'comparator': '=', 'value': 'No spaces test' }
                     ]
                 },
                 {
                     input: 'a = "b" OR x = "y"',
                     expected: [
-                        { "fieldReference": "a", "comparator": "=", "value": "b" },
-                        "OR",
-                        { "fieldReference": "x", "comparator": "=", "value": "y" }
+                        { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+                        'OR',
+                        { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }
                     ]
                 },
                 {

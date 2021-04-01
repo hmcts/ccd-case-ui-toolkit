@@ -11,8 +11,8 @@ export class ShowCondition {
   private static readonly CONTAINS = 'CONTAINS';
   private static instanceCache = new Map<string, ShowCondition>();
   private static readonly validJoinComparators = ['AND', 'OR'];
-  private conditions = [];
   private static fieldList: string[] = [];
+  private conditions = [];  
 
   public static addPathPrefixToCondition(showCondition: string, pathPrefix: string): string {
     if (!pathPrefix || pathPrefix === '') {
@@ -32,7 +32,7 @@ export class ShowCondition {
     let finalCondition: string = originalCondition;
     if (Array.isArray(formula)) {
       formula.forEach(condition => {
-        if(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1){
+        if (typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1) {
           // do nothing
         } else {
           if (Array.isArray(condition)) {
@@ -52,7 +52,7 @@ export class ShowCondition {
     if (condition.fieldReference.startsWith(pathPrefix)) {
       return originalCondition;
     } else {
-      if(originalCondition.indexOf(condition.fieldReference) > -1) {
+      if (originalCondition.indexOf(condition.fieldReference) > -1) {
         if (this.fieldList && this.fieldList.indexOf(condition.fieldReference) === -1) {
           this.fieldList.push(condition.fieldReference);
           const reguarExp = new RegExp(condition.fieldReference, 'g');
@@ -85,7 +85,7 @@ export class ShowCondition {
     return [ condition.split(separator)[0], separator ];
   }
 
-  private static getConditions(formula: any) :string {
+  private static getConditions(formula: any): string {
     let conditionList: string[] = [];
     const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
     if (!!formula) {

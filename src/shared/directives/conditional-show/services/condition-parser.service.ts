@@ -15,7 +15,13 @@ export class ConditionParser {
      */
     public static parse(condition: string): any {
         if (!condition) return null;
-
+        let parseResolved = null;
+        try {
+            parseResolved = peg.parse(condition.trim(), {});
+            
+        } catch (error) {
+            console.log(error);
+        }            
         return peg.parse(condition.trim(), {});
     }
 
@@ -141,7 +147,8 @@ export class ConditionParser {
     }
 
     private static unquoted(str: string): string {
-        return str.replace(/^"|"$/g, '');
+        const res = str.replace(/^"|"$/g, '');
+        return res;
     }
 
     private static findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
