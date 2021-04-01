@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.73.1-hotfix-mandatory-organisation
+**EUI-3674** Add organisation policy MANDATORY validator check
 
 ### Version 2.73.0-hotfix-error-message-display
 **EUI-3594** Fix issue with error message specifics not being displayed
