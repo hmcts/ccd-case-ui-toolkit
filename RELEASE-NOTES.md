@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 2.75.2
+### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
 ### Version 2.79.1
