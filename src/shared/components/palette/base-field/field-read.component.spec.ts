@@ -48,6 +48,9 @@ class FieldReadLabelComponent {
 
   @Input()
   withLabel: boolean;
+
+  @Input()
+  topLevelFormGroup: FormGroup;
 }
 
 describe('FieldReadComponent', () => {
