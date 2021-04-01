@@ -244,10 +244,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return rawFormValueData;
   }
 
-  isDisabled(): boolean {
-    return this.isSubmitting || !this.editForm.valid || this.hasErrors();
-  }
-
   private getStatus(response) {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
