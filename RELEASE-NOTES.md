@@ -1,5 +1,7 @@
 ## RELEASE NOTES
-### Version 2.79.2
+### Version 2.79.3
+**EUI-3674** Add organisation policy MANDATORY validator check
+
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
 ### Version 2.79.1
