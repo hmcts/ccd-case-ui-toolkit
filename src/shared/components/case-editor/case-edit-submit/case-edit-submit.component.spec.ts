@@ -995,6 +995,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1127,6 +1129,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1259,6 +1263,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1389,6 +1395,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1523,6 +1531,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1651,6 +1661,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1785,6 +1797,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -1926,6 +1940,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -2067,6 +2083,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -2200,6 +2218,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -2337,6 +2357,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -2466,6 +2488,8 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
