@@ -23,7 +23,8 @@ export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent 
      *
      * Reassigning value from formatted_value when value is empty
      */
-    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value && this.caseField.formatted_value.value.code) {
+    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value
+      && this.caseField.formatted_value.value.code) {
       this.caseField.value = this.caseField.formatted_value.value.code;
     }
 
