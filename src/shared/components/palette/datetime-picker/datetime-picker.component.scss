@@ -65,6 +65,7 @@ Details inside it are for the actual component first shown on page */
   .mat-datepicker-content {
     border: 1px solid black;
     border-radius: 0;
+    max-width: 295px;
 
     .mat-calendar-table {
       width: calc(100% - 1px);
@@ -105,6 +106,9 @@ Details inside it are for the actual component first shown on page */
       }
 
       &::after {
+        border-left-width: 5px;
+        border-top-width: 5px;
+        color: black;
         padding: 4px;
         top: -2px;
         left: -2px;
@@ -122,21 +126,13 @@ Details inside it are for the actual component first shown on page */
       }
 
       &::after {
+        border-right-width: 5px;
+        border-top-width: 5px;
+        color: black;
         padding: 4px;
         top: -2px;
         left: -2px;
       }
-    }
-
-    .mat-calendar-table-header {
-      color: black;
-    }
-
-    th.ng-star-inserted {
-      font-weight: bold;
-      font-size: 15px;
-      padding-top: 2%;
-      padding-bottom: 2%;
     }
 
     .mat-button-wrapper {
@@ -162,6 +158,54 @@ Details inside it are for the actual component first shown on page */
 
     // day selection panel
     ngx-mat-month-view {
+
+      .mat-calendar-table-header {
+        color: black;
+        th.ng-star-inserted {
+          font-weight: bold;
+          font-size: 15px;
+          padding-top: 2%;
+          padding-bottom: 2%;
+          column-width: 20px;
+        }
+        tr:nth-of-type(1) {
+          th {
+            visibility: hidden;
+            &::after {
+              visibility: visible;
+              color: black;
+              position: relative;
+              left: -15px;
+            }
+          }
+          th:nth-of-type(1)::after {
+            content: 'MON';
+          }
+          th:nth-of-type(2)::after {
+            left: -12px;
+            content: 'TUE';
+          }
+          th:nth-of-type(3)::after {
+            left: -18px;
+            content: 'WED';
+          }
+          th:nth-of-type(4)::after {
+            left: -14px;
+            content: 'THU';
+          }
+          th:nth-of-type(5)::after {
+            left: -10px;
+            content: 'FRI';
+          }
+          th:nth-of-type(6)::after {
+            content: 'SAT';
+          }
+          th:nth-of-type(7)::after {
+            content: 'SUN';
+          }
+        }
+      }
+
       .mat-calendar-body-label {
         font-weight: bold;
         font-size: large;
@@ -192,9 +236,6 @@ Details inside it are for the actual component first shown on page */
           border: 2px solid black;
           outline-offset: 1px;
           z-index: 1;
-        }
-
-        .mat-calendar-body-cell-content {
         }
       }
     }
@@ -297,9 +338,9 @@ Details inside it are for the actual component first shown on page */
             }
             &:first-child {
               position: absolute;
-              left: 60px;
-              top: 29px;
-
+              left: 49px;
+              top: 15px;
+              z-index: 2;
               td {
                 &:first-child {
                   [aria-label="expand_less icon"] {
@@ -337,11 +378,15 @@ Details inside it are for the actual component first shown on page */
                 text-align: right;
 
                 &:first-child {
+                  .mat-form-field {
+                    width: 50px;
+                  }
                   .mat-form-field::before {
                     color: black;
                     content: "Hours";
                     position: relative;
                     top: -5px;
+                    left: -5px;
                     font-size: 15px;
                   }
                 }
@@ -358,6 +403,7 @@ Details inside it are for the actual component first shown on page */
 
                 &:last-child {
                   text-align: left;
+                  left: -15px;
                 }
               }
             }
@@ -378,8 +424,8 @@ Details inside it are for the actual component first shown on page */
 
             &:last-child {
               position: absolute;
-              left: 60px;
-              top: 54px;
+              left: 49px;
+              top: 40px;
 
               td {
                 &:first-child {

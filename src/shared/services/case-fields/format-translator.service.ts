@@ -169,6 +169,21 @@ export class FormatTranslatorService {
     return result.join('');
   }
 
+  removeTime(dateFormat: string): string {
+    while (dateFormat.includes('H') || dateFormat.includes('h')) {
+      dateFormat = dateFormat.replace('H', '');
+      dateFormat = dateFormat.replace('h', '');
+    }
+    while (dateFormat.includes('m')) {
+      dateFormat = dateFormat.replace('m', '');
+    }
+    while (dateFormat.includes('S') || dateFormat.includes('s')) {
+      dateFormat = dateFormat.replace('S', '');
+      dateFormat = dateFormat.replace('s', '');
+    }
+    return dateFormat;
+  }
+
   hasDate(value: string): boolean {
     return this.translate(value).length &&
       value.toLowerCase().indexOf('d') >= 0 &&
@@ -201,6 +216,6 @@ export class FormatTranslatorService {
   }
 
   hasSeconds(value: string): boolean {
-    return this.translate(value).length && value.indexOf('s') >= 0;
+    return this.translate(value).length && value.toLowerCase().indexOf('s') >= 0;
   }
 }

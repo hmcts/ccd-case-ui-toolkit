@@ -629,11 +629,11 @@
         "id": "DatePickerExample",
         "label": "Date picker example",
         "hidden": null,
-        "value": null,
+        "value": "21/01/2000",
         "hint_text": "Should show a date picker",
         "field_type": {
           "id": "Date",
-          "type": "Date",
+          "type": "DateTime",
           "min": null,
           "max": null,
           "regular_expression": null,
@@ -645,7 +645,7 @@
         "security_label": "PRIVATE",
         "order": null,
         "display_context": "OPTIONAL",
-        "display_context_parameter": "#DATETIMEENTRY(DD/MM/YYYY HH:mm:ss)",
+        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD hh:mm:ss)",
         "show_condition": null,
         "show_summary_change_option": true
       },

@@ -7,7 +7,7 @@ export const CUSTOM_MOMENT_FORMATS: NgxMatDateFormats = {
   display: {
     dateInput: 'DD/MM/YYYY HH:mm:SS',
     monthYearLabel: 'MMMM YYYY',
-    dateA11yLabel: 'LLL',
+    dateA11yLabel: 'EEE/MMM/YYYY',
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
