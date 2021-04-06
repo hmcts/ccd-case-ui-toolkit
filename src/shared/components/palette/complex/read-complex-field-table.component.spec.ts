@@ -39,7 +39,7 @@ describe('ReadComplexFieldTableComponent', () => {
   let component: ReadComplexFieldTableComponent;
   let de: DebugElement;
 
-  describe('when values split accross children fields', () => {
+  describe('when values split across children fields', () => {
     const FIELD_TYPE_WITHOUT_FIELDS: FieldType = {
       id: 'IAmVeryComplex',
       type: 'Complex',
@@ -315,7 +315,7 @@ describe('ReadComplexFieldTableComponent', () => {
       ]
     };
 
-    const CASE_FIELD: CaseField =  <CaseField>({
+    const CASE_FIELD: CaseField = <CaseField>({
       id: '',
       label: 'Complex Field',
       field_type: FIELD_TYPE,
@@ -364,43 +364,6 @@ describe('ReadComplexFieldTableComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
-
-    it('should pass a valid caseField and contextFields to the ccdConditionalShow directive', () => {
-
-      let ccdConditionalShowElements = fixture.debugElement
-        .queryAll(By.directive(StubConditionalShowDirective));
-
-      let directiveElements = ccdConditionalShowElements.map(element => element.injector.get(StubConditionalShowDirective));
-
-      expect(directiveElements.length).toBe(3);
-
-      expect(directiveElements[0].caseField.id).toBe('AddressLine1');
-      expect(directiveElements[0].caseField.value).toBe('Flat 9');
-      expect(directiveElements[1].caseField.id).toBe('AddressLine2');
-      expect(directiveElements[1].caseField.value).toBe('111 East India road');
-      expect(directiveElements[2].caseField.id).toBe('AddressPostcode');
-      expect(directiveElements[2].caseField.field_type.complex_fields[0].id).toBe('PostcodeCity');
-      expect(directiveElements[2].caseField.field_type.complex_fields[1].id).toBe('PostcodeCountry');
-      expect(directiveElements[2].caseField.value).toEqual({
-        PostcodeCity: 'London',
-        PostcodeCountry: 'UK'
-      });
-
-      // all fields should have the same contextFields on the ccdConditionalShow directive
-      for (let i = 0; i < directiveElements.length; i++) {
-        expect(directiveElements[i].contextFields[0].id).toBe('AddressLine1');
-        expect(directiveElements[i].contextFields[0].value).toBe('Flat 9');
-        expect(directiveElements[i].contextFields[1].id).toBe('AddressLine2');
-        expect(directiveElements[i].contextFields[1].value).toBe('111 East India road');
-        expect(directiveElements[i].contextFields[2].id).toBe('AddressPostcode');
-        expect(directiveElements[i].contextFields[2].field_type.complex_fields[0].id).toBe('PostcodeCity');
-        expect(directiveElements[i].contextFields[2].field_type.complex_fields[1].id).toBe('PostcodeCountry');
-        expect(directiveElements[i].contextFields[2].value).toEqual({
-          PostcodeCity: 'London',
-          PostcodeCountry: 'UK'
-        });
-      }
-    });
 
     it('should render a table with a row containing 2 columns for each simple type', () => {
       let values = de
