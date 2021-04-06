@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 2.79.3-case-submission-fix
+**EUI-3708** Fix for case submission regression.
+
 ### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
