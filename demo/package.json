@@ -3,7 +3,7 @@
   "description": "AOT/JIT/UMD build demo of angular library seed",
   "license": "MIT",
   "scripts": {
-    "build": "ng build",
+    "build": "yarn && ng build",
     "prebuild": "gulp copy-lib",
     "start": "node server.js",
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
