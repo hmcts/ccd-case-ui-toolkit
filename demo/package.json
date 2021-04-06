@@ -6,7 +6,9 @@
     "build": "ng build",
     "prebuild": "gulp copy-lib",
     "start": "node server.js",
-    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\""
+    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
+    "test:functional": "yarn && yarn build && webdriver-manager update  &&  ng e2e --webdriver-update=false  --protractorConfig=./test/config/protractor.conf.js",
+    "test:mock" : "nodemon test/nodeMock/app.js --standalone"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
@@ -61,6 +63,17 @@
     "url-loader": "1.1.2",
     "webpack": "^4.20.2",
     "webpack-dev-server": "^3.1.10",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "protractor": "~5.4.0",
+    "protractor-cucumber-framework": "6.1.1",
+    "protractor-multiple-cucumber-html-reporter-plugin": "1.8.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "7.1.1",
+    "cucumber": "5.1.0",
+    "cucumber-html-report": "0.6.5",
+    "cucumber-html-reporter": "^4.0.5",
+    "cucumber-pretty": "1.5.0",
+    "cucumberjs-allure-reporter": "1.0.3",
+    "protractor-screenshot-utils": "^1.0.5"
   }
 }
