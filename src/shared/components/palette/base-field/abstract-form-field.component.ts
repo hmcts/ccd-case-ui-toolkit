@@ -16,6 +16,13 @@ export abstract class AbstractFormFieldComponent {
   @Input()
   parent?: FormContainer;
 
+  @Input()
+  idPrefix = '';
+
+  public id() {
+    return this.idPrefix + this.caseField.id;
+  }
+
   protected registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
     const container: FormContainer = this.parent || this.formGroup;
     if (!container) {
