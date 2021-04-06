@@ -660,8 +660,8 @@ describe('conditional-show', () => {
     });
 
     it('should add path with combination of AND/OR available in condition scenario-1', () => {
-      expect(ShowCondition.addPathPrefixToCondition('(field1 CONTAINS "s1" OR field1=3 OR field1 !="s2") AND (field3="te*" OR field1=10)', 'ComplexField1.AddressLine1')).
-      toBe('(ComplexField1.AddressLine1.field1 CONTAINS "s1" OR ComplexField1.AddressLine1.field1=3 OR ComplexField1.AddressLine1.field1 !="s2") AND (ComplexField1.AddressLine1.field3="te*" OR ComplexField1.AddressLine1.field1=10)');
+      expect(ShowCondition.addPathPrefixToCondition('(field1 CONTAINS "s1" OR field1=3 OR field1 !="field 1") AND (ield="field1" OR field=10)', 'ComplexField1.AddressLine1')).
+      toBe('(ComplexField1.AddressLine1.field1 CONTAINS "s1" OR ComplexField1.AddressLine1.field1=3 OR ComplexField1.AddressLine1.field1 !="field 1") AND (ComplexField1.AddressLine1.ield="field1" OR ComplexField1.AddressLine1.field=10)');
     });
 
     it('should add path with combination of AND/OR available in condition scenario-2', () => {
