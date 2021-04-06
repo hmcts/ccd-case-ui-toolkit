@@ -645,9 +645,7 @@
         "security_label": "PRIVATE",
         "order": null,
         "display_context": "OPTIONAL",
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD hh:mm:ss)",
-        "show_condition": null,
-        "show_summary_change_option": true
+        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD hh:mm:ss)"
       },
       {
         "id": "PersonAddress",
@@ -1451,12 +1449,6 @@
           {
             "case_field_id": "DatePickerExample",
             "order": 2,
-            "page_column_no": 1,
-            "display_context": "OPTIONAL"
-          },
-          {
-            "case_field_id": "DateTimePickerExample",
-            "order": 3,
             "page_column_no": 1,
             "display_context": "OPTIONAL"
           }
