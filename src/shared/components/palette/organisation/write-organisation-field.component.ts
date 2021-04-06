@@ -55,7 +55,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
-  private instantiateOrganisationFormGroup(orgIDState: any, orgNameState: any) {
+  private instantiateOrganisationFormGroup(orgIDState: any, orgNameState: any): void {
     this.organisationIDFormControl = new FormControl(orgIDState);
     this.addOrganisationValidators(this.caseField, this.organisationIDFormControl);
     this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_ID, this.organisationIDFormControl);
@@ -63,7 +63,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_NAME, this.organisationNameFormControl);
   }
 
-  private addOrganisationValidators(caseField: CaseField, control: AbstractControl) {
+  private addOrganisationValidators(caseField: CaseField, control: AbstractControl): void {
     if (caseField.field_type && caseField.field_type.complex_fields) {
       const organisationIdField = caseField.field_type.complex_fields
         .find(field => field.id === WriteOrganisationFieldComponent.ORGANISATION_ID);
@@ -71,7 +71,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
-  public onSearchOrg(orgSearchText: string) {
+  public onSearchOrg(orgSearchText: string): void {
     if (orgSearchText && orgSearchText.length >= 2) {
       const lowerOrgSearchText = orgSearchText.toLowerCase();
       this.simpleOrganisations$ = this.organisations$.pipe(
