@@ -13,7 +13,7 @@ export class ConditionParser {
      * @param condition raw formula e.g. TextField = "Hello"
      */
     public static parse(condition: string): any {
-        if (!condition) return null;
+        if (!condition) { return null };
         return peg.parse(condition.trim(), {});
     }
 
@@ -23,19 +23,23 @@ export class ConditionParser {
      * @param conditions The PegJS formula output
      */
     public static evaluate(fields: any, conditions: any[], path?: string): boolean {
-        if (!conditions) return true;
+        if (!conditions) { return true };
         const validJoinComparators = ['AND', 'OR'];
 
         const result: boolean = conditions.reduce((accumulator: boolean, condition, index: number) => {
-            const isJoinComparator = (comparator: string): boolean => (typeof comparator === 'string' && validJoinComparators.indexOf(comparator) !== -1);
-            if (isJoinComparator(condition)) return accumulator;
+            const isJoinComparator = (comparator: string): boolean =>
+            (typeof comparator === 'string' && validJoinComparators.indexOf(comparator) !== -1);
+
+            if (isJoinComparator(condition)) { return accumulator };
 
             let currentConditionResult = true;
 
             if (Array.isArray(condition)) {
                 currentConditionResult = this.evaluate(fields, condition);
 
-                if (isJoinComparator(conditions[index - 1])) return this.evaluateJoin(accumulator, conditions[index - 1], currentConditionResult);
+                if (isJoinComparator(conditions[index - 1])) {
+                    return this.evaluateJoin(accumulator, conditions[index - 1], currentConditionResult);
+                }
             }
 
             if (condition.comparator) {
@@ -51,7 +55,9 @@ export class ConditionParser {
                 }
             }
 
-            if (isJoinComparator(conditions[index - 1])) return this.evaluateJoin(accumulator, conditions[index - 1], currentConditionResult);
+            if (isJoinComparator(conditions[index - 1])) {
+                return this.evaluateJoin(accumulator, conditions[index - 1], currentConditionResult);
+            }
 
             return currentConditionResult;
         }, true);
