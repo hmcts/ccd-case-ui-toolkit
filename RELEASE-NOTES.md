@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.73.2-hotfix-feature-toggle-wa-service
+**EUI-3548** Feature toggle WA service
+
 ### Version 2.73.1-hotfix-mandatory-organisation
 **EUI-3674** Add organisation policy MANDATORY validator check
 
