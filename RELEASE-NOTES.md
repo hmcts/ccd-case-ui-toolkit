@@ -2,6 +2,9 @@
 ### Version 2.79.5-default-organisation-pre-release
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
+### Version 2.79.2
+**EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
+
 ### Version 2.79.1
 **EUI-3452** Fix to some issues on the Check your answers page.
 
