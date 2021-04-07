@@ -22,6 +22,10 @@ export class WindowService {
     window.localStorage.removeItem(key);
   }
 
+  setSessionStorage(key: string, value: string) {
+    window.sessionStorage.setItem(key, value);
+  }
+
   getSessionStorage(key: string) {
     return window.sessionStorage.getItem(key);
   }

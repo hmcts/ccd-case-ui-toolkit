@@ -8,6 +8,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationService } from '../../../services/organisation';
 import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
+import { WindowService } from '../../../services/window';
 
 describe('WrieteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
@@ -57,6 +58,7 @@ describe('WrieteOrganisationFieldComponent', () => {
       country: 'UK',
       postCode: 'RG11EX'
   }];
+  let organisationID = new CaseField();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -69,6 +71,7 @@ describe('WrieteOrganisationFieldComponent', () => {
         WriteOrganisationComplexFieldComponent
       ],
       providers: [
+        WindowService,
         { provide: OrganisationService, useValue: mockOrganisationService },
         OrganisationConverter
       ]
@@ -81,6 +84,31 @@ describe('WrieteOrganisationFieldComponent', () => {
     component = fixture.componentInstance;
     mockOrganisationService.getActiveOrganisations.and.returnValue(of([]));
     component.organisations$ = of(ORGANISATIONS);
+
+    organisationID.id = 'OrganisationID';
+    organisationID.display_context = 'MANDATORY';
+    organisationID.field_type = {
+      id: 'Text',
+      type: 'Text'
+    };
+    const organisationName = new CaseField();
+    organisationName.id = 'OrganisationName';
+    organisationName.field_type = {
+      id: 'Text',
+      type: 'Text'
+    };
+    component.caseField = new CaseField();
+    component.caseField.field_type = {
+      id: 'Organisation',
+      type: 'Organisation'
+    };
+    component.caseField.field_type.complex_fields = [
+      organisationID,
+      organisationName
+    ];
+    const prepopulateToUsersOrganisationControl = new FormControl('YES');
+    component.parent = new FormGroup({'PrepopulateToUsersOrganisation': prepopulateToUsersOrganisationControl});
+    component.defaultOrg = {organisationIdentifier: 'O333333', name: 'The Ethical solicitor'};
     fixture.detectChanges();
   });
 
@@ -89,8 +117,34 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should pre-select organisation', () => {
-    component.caseField = new CaseField();
+  it('should be invalid control if organisation ID is null when OrganisationID is MANDATORY', () => {
+    component.organisations$ = of([]);
+    organisationID.display_context = 'MANDATORY';
+    component.ngOnInit();
+    component.organisationIDFormControl.setValue(null);
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.invalid).toBeTruthy();
+  });
+
+  it('should be valid control if organisation ID is set when OrganisationID is MANDATORY', () => {
+    component.organisations$ = of([]);
+    organisationID.display_context = 'MANDATORY';
+    component.ngOnInit();
+    component.organisationIDFormControl.setValue('TEST12345');
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should be valid control if organisation ID is null when OrganisationID is OPTIONAL', () => {
+    component.organisations$ = of([]);
+    organisationID.display_context = 'OPTIONAL';
+    component.ngOnInit();
+    component.organisationIDFormControl.setValue(null);
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', () => {
     component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
@@ -98,6 +152,25 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.selectedOrg$.toPromise().then(selectedOrg => {
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>')
     });
+  });
+
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({'PrepopulateToUsersOrganisation': prepopulateToUsersOrganisationControl});
+    component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should not pre-select organisation when PrepopulateToUsersOrganisationControl is NO', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({'PrepopulateToUsersOrganisation': prepopulateToUsersOrganisationControl});
+    component.caseField.value = null;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.invalid).toBeTruthy();
   });
 
   it('should not search org if enter characters less than 2', () => {
@@ -317,7 +390,6 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
     component.organisationNameFormControl = new FormControl(null);
     component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
-    component.caseField = new CaseField();
     const selectedOrg = {
       organisationIdentifier: 'O111111',
       name: 'Woodford solicitor',
@@ -334,7 +406,6 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
     component.organisationNameFormControl = new FormControl(null);
     component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
-    component.caseField = new CaseField();
     const selectedOrg = {
       organisationIdentifier: 'O111111',
       name: 'Woodford solicitor',
