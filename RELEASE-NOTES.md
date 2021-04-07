@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 2.79.5-default-organisation-pre-release
+### Version 2.79.6-default-organisation-pre-release
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
 ### Version 2.79.2
