@@ -15,7 +15,7 @@ import { CaseField } from '../../../domain/definition';
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {'organisationIdentifier': '', 'name': '', 'address': ''};
+  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {organisationIdentifier: '', name: '', address: ''};
   private static readonly MAX_RESULT_COUNT = 100;
   private static readonly ORGANISATION_ID: string = 'OrganisationID';
   private static readonly ORGANISATION_NAME: string = 'OrganisationName';
@@ -54,10 +54,10 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value.toUpperCase()
       === WriteOrganisationFieldComponent.YES) {
-      if (this.caseField && this.caseField.value === undefined) {
+      if (this.caseField && !this.caseField.value) {
         this.caseField.value = {
-          'OrganisationID': this.defaultOrg.organisationIdentifier,
-          'OrganisationName': this.defaultOrg.name
+          OrganisationID: this.defaultOrg ? this.defaultOrg.organisationIdentifier : null,
+          OrganisationName: this.defaultOrg ? this.defaultOrg.name : null
         };
       }
       this.preSelectDefaultOrg();
@@ -77,7 +77,9 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         organisations.filter(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)
           .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))[0]),
     );
-    this.searchOrgTextFormControl.disable();
+    if (this.caseField.value && this.caseField.value.OrganisationID) {
+      this.searchOrgTextFormControl.disable();
+    }
   }
 
   private preSelectEmptyOrg(): void {
@@ -89,7 +91,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationIDFormControl = new FormControl(orgIDState);
     this.addOrganisationValidators(this.caseField, this.organisationIDFormControl);
     this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_ID, this.organisationIDFormControl);
-      this.organisationNameFormControl = new FormControl(orgNameState);
+    this.organisationNameFormControl = new FormControl(orgNameState);
     this.organisationFormGroup.addControl(WriteOrganisationFieldComponent.ORGANISATION_NAME, this.organisationNameFormControl);
   }
 
@@ -117,8 +119,8 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
     return organisations.filter(organisation => {
-        return this.searchCriteria(organisation, lowerOrgSearchText) || this.searchWithSpace(organisation, lowerOrgSearchText);
-      })
+      return this.searchCriteria(organisation, lowerOrgSearchText) || this.searchWithSpace(organisation, lowerOrgSearchText);
+    })
       .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
       .slice(0, WriteOrganisationFieldComponent.MAX_RESULT_COUNT);
   }
@@ -179,8 +181,8 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.disable();
     this.caseField.value = {
-      'OrganisationID': selectedOrg.organisationIdentifier,
-      'OrganisationName': selectedOrg.name
+      OrganisationID: selectedOrg.organisationIdentifier,
+      OrganisationName: selectedOrg.name
     };
     this.organisationFormGroup.setValue(this.caseField.value);
   }
@@ -192,7 +194,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.simpleOrganisations$ = of([]);
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.enable();
-    this.caseField.value = {'OrganisationID': null, 'OrganisationName': null};
+    this.caseField.value = {OrganisationID: null, OrganisationName: null};
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
