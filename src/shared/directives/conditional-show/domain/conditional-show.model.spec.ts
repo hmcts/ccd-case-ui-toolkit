@@ -351,7 +351,7 @@ describe('conditional-show', () => {
     });
 
     it('field mentioned in condition has no value asked in CONTAINS condition', () => {
-      let sc = new ShowCondition('field CONTAINS"test,mest"');
+      let sc = new ShowCondition('fieldCONTAINS"test,mest"');
       let fields = {
         field : []
       };
@@ -361,7 +361,7 @@ describe('conditional-show', () => {
     });
 
     it('field mentioned in condition has no value', () => {
-      let sc = new ShowCondition('field CONTAINS"test,mest"');
+      let sc = new ShowCondition('fieldCONTAINS"test,mest"');
       let fields = {
         field : undefined
       };
@@ -371,7 +371,7 @@ describe('conditional-show', () => {
     });
 
     it('field mentioned in single value condition has no value', () => {
-      let sc = new ShowCondition('field CONTAINS"test"');
+      let sc = new ShowCondition('fieldCONTAINS"test"');
       let fields = {
         field : undefined
       };
@@ -515,7 +515,7 @@ describe('conditional-show', () => {
 
     it('should return true when all conditions are true', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1 CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
+      let sc = new ShowCondition('field1CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -539,7 +539,7 @@ describe('conditional-show', () => {
 
     it('should evaluate AND conditions correctly for a mix of EQUALS and CONTAINS', () => {
       caseField2.value = ['s4', 's2', 's3'];
-      let sc = new ShowCondition('field4="s1 AND s2" AND field2 CONTAINS "s3,s4"');
+      let sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINS"s3,s4"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -549,7 +549,7 @@ describe('conditional-show', () => {
     it('should return true when all conditions are true when using Complex fields', () => {
       caseField1.value = ['s1', 's2', 's3'];
       let sc = new ShowCondition(
-        'field1 CONTAINS"s3,s2" AND claimantDetails.AddressUKCode.PostTown="London" AND claimantDetails.AddressUKCode.Country="UK"');
+        'field1CONTAINS"s3,s2" AND claimantDetails.AddressUKCode.PostTown="London" AND claimantDetails.AddressUKCode.Country="UK"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -566,7 +566,7 @@ describe('conditional-show', () => {
     }));
 
     it('should return true when single value matches ', () => {
-      let sc = new ShowCondition('field1 CONTAINS"s1"');
+      let sc = new ShowCondition('field1CONTAINS"s1"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -575,7 +575,7 @@ describe('conditional-show', () => {
 
     it('should return true when values match', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1 CONTAINS"s1,s3"');
+      let sc = new ShowCondition('field1CONTAINS"s1,s3"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -584,7 +584,7 @@ describe('conditional-show', () => {
 
     it('should return true when value match regardless of order', () => {
       caseField1.value = ['s3', 's1', 's2'];
-      let sc = new ShowCondition('field1 CONTAINS"s2,s1"');
+      let sc = new ShowCondition('field1CONTAINS"s2,s1"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -593,7 +593,7 @@ describe('conditional-show', () => {
 
     it('should return false when values do not match', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1 CONTAINS"s1,s4"');
+      let sc = new ShowCondition('field1CONTAINS"s1,s4"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -602,7 +602,7 @@ describe('conditional-show', () => {
 
     it('should return true when single value condition matches', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1 CONTAINS"s3"');
+      let sc = new ShowCondition('field1CONTAINS"s3"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -610,7 +610,7 @@ describe('conditional-show', () => {
     });
 
     it('should return false for non multi select fields', () => {
-      let sc = new ShowCondition('field3 CONTAINS"temmy"');
+      let sc = new ShowCondition('field3CONTAINS"temmy"');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -619,18 +619,19 @@ describe('conditional-show', () => {
 
     it('should return false when value does not exist', () => {
       caseField1.value = undefined;
-      let sc = new ShowCondition('field1 CONTAINS"s1,s4"');
+      let sc = new ShowCondition('field1CONTAINS"s1,s4"');
 
       let matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
-    it('should return true when single value condition matches when using Complex field', () => {
+    it('should return true when multiple CONTAINS condition matches when using Complex field with AND and OR condition', () => {
       complexAddressUK.value = {
         County: ['Middlesex', 'London'],
       };
-      let sc = new ShowCondition('claimantDetails.AddressUKCode.County CONTAINS"London"');
+      caseField1.value = ['s1', 's2', 's3'];
+      let sc = new ShowCondition('field1CONTAINS"s1,s3" AND (claimantDetails.AddressUKCode.CountyCONTAINS"Middlesex" OR claimantDetails.AddressUKCode.CountyCONTAINS"London")');
 
       let matched = sc.matchByContextFields(contextFields);
 
@@ -660,33 +661,38 @@ describe('conditional-show', () => {
     });
 
     it('should add path with combination of AND/OR available in condition scenario-1', () => {
-      expect(ShowCondition.addPathPrefixToCondition('(field1 CONTAINS "s1" OR field1=3 OR field1 !="field 1") AND (ield="field1" OR field=10)', 'ComplexField1.AddressLine1')).
-      toBe('(ComplexField1.AddressLine1.field1 CONTAINS "s1" OR ComplexField1.AddressLine1.field1=3 OR ComplexField1.AddressLine1.field1 !="field 1") AND (ComplexField1.AddressLine1.ield="field1" OR ComplexField1.AddressLine1.field=10)');
+      expect(ShowCondition.addPathPrefixToCondition('(field1CONTAINS"s1" OR field1=3 OR field1!="field 1") AND (ield="field1" OR field=10)', 'ComplexField1.AddressLine1')).
+      toBe('(ComplexField1.AddressLine1.field1CONTAINS"s1" OR ComplexField1.AddressLine1.field1=3 OR ComplexField1.AddressLine1.field1!="field 1") AND (ComplexField1.AddressLine1.ield="field1" OR ComplexField1.AddressLine1.field=10)');
     });
 
     it('should add path with combination of AND/OR available in condition scenario-2', () => {
-      expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS "S3,S2" AND (field2=3 OR field3="te*" OR field4="S1 AND S2")', 'ComplexField1.AddressLine1')).
-      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*" OR ComplexField1.AddressLine1.field4="S1 AND S2")');
+      expect(ShowCondition.addPathPrefixToCondition('field1CONTAINS"S3,S2" AND (field2=3 OR field3="te*" OR field4="S1 AND S2")', 'ComplexField1.AddressLine1')).
+      toBe('ComplexField1.AddressLine1.field1CONTAINS"S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*" OR ComplexField1.AddressLine1.field4="S1 AND S2")');
     });
 
     it('should add path with combination of AND/OR available in condition scenario-3', () => {
-      expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS "S3,S2" AND (field2=3 OR field3="te*") AND field4="S1 AND S2"', 'ComplexField1.AddressLine1')).
-      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"');
+      expect(ShowCondition.addPathPrefixToCondition('field1CONTAINS"S3,S2" AND (field2=3 OR field3="te*") AND field4="S1 AND S2"', 'ComplexField1.AddressLine1')).
+      toBe('ComplexField1.AddressLine1.field1CONTAINS"S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"');
+    });
+
+    it('should add path with combination of AND/OR available in condition scenario-4', () => {
+      expect(ShowCondition.addPathPrefixToCondition('(field1CONTAINS"s1" OR field1CONTAINS"s2" OR field2!="field 1") AND (ieldCONTAINS"field1" OR field=10)', 'ComplexField1.AddressLine1')).
+      toBe('(ComplexField1.AddressLine1.field1CONTAINS"s1" OR ComplexField1.AddressLine1.field1CONTAINS"s2" OR ComplexField1.AddressLine1.field2!="field 1") AND (ComplexField1.AddressLine1.ieldCONTAINS"field1" OR ComplexField1.AddressLine1.field=10)');
     });
 
     it('should not add path with when already path prefixed', () => {
-      expect(ShowCondition.addPathPrefixToCondition('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"', 'ComplexField1.AddressLine1')).
-      toBe('ComplexField1.AddressLine1.field1 CONTAINS "S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"');
+      expect(ShowCondition.addPathPrefixToCondition('ComplexField1.AddressLine1.field1CONTAINS"S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"', 'ComplexField1.AddressLine1')).
+      toBe('ComplexField1.AddressLine1.field1CONTAINS"S3,S2" AND (ComplexField1.AddressLine1.field2=3 OR ComplexField1.AddressLine1.field3="te*") AND ComplexField1.AddressLine1.field4="S1 AND S2"');
     });
 
     it('should add path with simple condition', () => {
-      expect(ShowCondition.addPathPrefixToCondition('field1 CONTAINS"s1"',
-        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1 CONTAINS"s1"');
+      expect(ShowCondition.addPathPrefixToCondition('field1CONTAINS"s1"',
+        'ComplexField1.AddressLine1')).toBe('ComplexField1.AddressLine1.field1CONTAINS"s1"');
     });
 
     it('should add path with simple AND condition', () => {
-      expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2 CONTAINS"s1"', 'ComplexField1.AddressLine1'))
-      .toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2 CONTAINS"s1"');
+      expect(ShowCondition.addPathPrefixToCondition('field1="test" AND field2CONTAINS"s1"', 'ComplexField1.AddressLine1'))
+      .toBe('ComplexField1.AddressLine1.field1="test" AND ComplexField1.AddressLine1.field2CONTAINS"s1"');
     });
   });
 
