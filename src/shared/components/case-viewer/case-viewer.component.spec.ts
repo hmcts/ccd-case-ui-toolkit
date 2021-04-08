@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseViewerComponent } from './case-viewer.component';
@@ -855,11 +856,11 @@ xdescribe('CaseViewerComponent', () => {
   });
 
   it('should pass flag to disable button when form valid but callback errors exist', () => {
-    component.error = HttpError.from({});
+    component.error = HttpError.from(null);
     fixture.detectChanges();
 
     expect(component.isTriggerButtonDisabled()).toBeFalsy();
-    let error = HttpError.from({});
+    const error = HttpError.from(null);
     error.callbackErrors = ['anErrors'];
     component.error = error;
     fixture.detectChanges();
@@ -878,11 +879,11 @@ xdescribe('CaseViewerComponent', () => {
         field_errors: FIELD_ERRORS
       }
     };
-    let httpError = HttpError.from(VALID_ERROR);
+    const httpError = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR }));
     component.error = httpError;
 
-    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    let eventTrigger = eventTriggerElement.componentInstance;
+    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    const eventTrigger = eventTriggerElement.componentInstance;
 
     eventTrigger.onTriggerChange.next(null);
     fixture.detectChanges();
