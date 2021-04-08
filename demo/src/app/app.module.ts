@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule, isPlatformBrowser, APP_BASE_HREF } from '@angular/common';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CaseCreateConsumerComponent } from './case-create-consumer.component';
@@ -39,8 +39,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    BrowserAnimationsModule,
-    HttpModule,
+    BrowserAnimationsModule,    
+    HttpClientModule,
     CreateCaseFiltersModule,
     CaseTimelineModule,
     routing,

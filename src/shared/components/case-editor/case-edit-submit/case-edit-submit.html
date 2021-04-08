@@ -1,5 +1,5 @@
-<!-- Current Page && Event trigger name -->
-<h1 class="heading-h1">{{ eventTrigger.name}}</h1>
+<!-- Event trigger name -->
+<h1 class="govuk-heading-l">{{ eventTrigger.name}}</h1>
 
 <!-- Case ID -->
 <h2 *ngIf="getCaseId()" class="heading-h2">
@@ -39,17 +39,19 @@
       <tbody>
       <ng-container *ngFor="let page of this.wizard.pages">
         <ng-container *ngIf="isShown(page)">
-          <ng-container *ngFor="let field of page.case_fields">
+          <ng-container *ngFor="let field of page | ccdPageFields | ccdReadFieldsFilter: false :undefined :true :editForm.controls['data']">
             <ng-container *ngIf="canShowFieldInCYA(field)">
-              <tr ccdConditionalShow ccdLabelSubstitutor [caseField]="field"
-                [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">
+              <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
+                  [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">
                 <th *ngIf="!isLabel(field)" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
                 <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
-                  <ccd-field-read [caseField]="summaryCaseField(field)" [context]="paletteContext"></ccd-field-read>
+                  <ccd-field-read
+                    [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
+                    [caseField]="summaryCaseField(field)" [context]="paletteContext"></ccd-field-read>
                 </td>
                 <td class="valign-top check-your-answers__change case-field-change">
                   <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
-                    href="javascript:void(0)"><span class="text-16">Change</span></a>
+                     href="javascript:void(0)"><span class="text-16">Change</span></a>
                 </td>
               </tr>
             </ng-container>
@@ -68,14 +70,14 @@
               <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">
                 <th>{{field.label}}</th>
                 <td class="form-cell">
-                  <ccd-field-read [caseField]="summaryCaseField(field)"></ccd-field-read>
+                  <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
                 </td>
               </tr>
               <tr *ngSwitchCase="false" class="compound-field" ccdLabelSubstitutor [caseField]="field"
                   [formGroup]="editForm.controls['data']"
                   [contextFields]="eventTrigger.case_fields">
                 <td colspan="2">
-                  <ccd-field-read [caseField]="summaryCaseField(field)"></ccd-field-read>
+                  <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
                 </td>
               </tr>
             </ng-container>
@@ -101,7 +103,7 @@
   </ng-container>
   <div class="form-group form-group-related">
     <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || isSubmitting" (click)="previous()">Previous</button>
-    <button type="submit" [disabled]="isDisabled()" class="button">{{triggerText}}</button>
+    <button type="submit" [disabled]="isDisabled" class="button">{{triggerText}}</button>
   </div>
   <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="isSubmitting">{{getCancelText()}}</a></p>
 </form>

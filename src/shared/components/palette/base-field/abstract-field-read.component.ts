@@ -1,12 +1,16 @@
 import { Input, OnInit } from '@angular/core';
-import { PaletteContext } from './palette-context.enum';
+import { FormControl, FormGroup } from '@angular/forms';
+
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
-import { FormControl } from '@angular/forms';
+import { PaletteContext } from './palette-context.enum';
 
 export abstract class AbstractFieldReadComponent extends AbstractFormFieldComponent implements OnInit {
 
   @Input()
   caseReference: string;
+
+  @Input()
+  topLevelFormGroup: FormGroup;
 
   /**
    * Optional. Enable context-aware rendering of fields.
@@ -15,7 +19,7 @@ export abstract class AbstractFieldReadComponent extends AbstractFormFieldCompon
   context: PaletteContext = PaletteContext.DEFAULT;
 
   ngOnInit(): void {
-    if (this.registerControl && !this.caseField.metadata) {
+    if (!this.caseField.metadata) {
       this.registerControl(new FormControl(this.caseField.value));
     }
   }

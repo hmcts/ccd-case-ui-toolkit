@@ -19,11 +19,22 @@ export abstract class AbstractAppConfig {
   abstract getActivityMaxRequestPerBatch(): number;
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   abstract getPrintServiceUrl(): string;
-  abstract getRemotePrintServiceUrl(): string;
+  /**
+   * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
+   * @deprecated
+   * @returns `undefined`
+   */
+  getRemotePrintServiceUrl(): string {
+    return undefined;
+  }
   abstract getPaginationPageSize(): number;
   abstract getBannersUrl(): string;
   abstract getPrdUrl(): string;
   abstract getCacheTimeOut(): number;
+  abstract getWorkAllocationApiUrl(): string;
+  getUserInfoApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
@@ -43,8 +54,14 @@ export class CaseEditorConfig {
   activity_url: string;
   activity_max_request_per_batch: number;
   print_service_url: string;
-  remote_print_service_url: string;
+  /**
+   * remote_print_service_url marked as optional since deprecation, ahead of removal in next major release
+   * @deprecated
+   */
+  remote_print_service_url?: string;
   pagination_page_size: number;
   prd_url: string;
   cache_time_out: number;
+  work_allocation_api_url: string;
+  user_info_api_url: string;
 }

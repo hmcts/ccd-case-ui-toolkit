@@ -6,7 +6,6 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
 import { WriteFixedListFieldComponent } from './write-fixed-list-field.component';
-import { attr, text } from '../../../test/helpers';
 
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
@@ -68,18 +67,13 @@ describe('WriteFixedListFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const REGISTER_CONTROL = (control) => {
-      FORM_GROUP.addControl(FIELD_ID, control);
-      return control;
-    };
-    component.registerControl = REGISTER_CONTROL;
 
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
   it('should select default value', () => {
-    component.caseField.value = null;
+    component.fixedListFormControl.setValue(null);
     fixture.detectChanges();
     let options = de.queryAll($OPTION);
 
@@ -105,7 +99,7 @@ describe('WriteFixedListFieldComponent', () => {
   });
 
   it('should link select element to formControl', () => {
-    component.caseField.value = 'M';
+    component.fixedListFormControl.setValue('M');
     fixture.detectChanges();
     fixture
         .whenStable()

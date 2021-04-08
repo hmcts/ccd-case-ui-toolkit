@@ -1,14 +1,16 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { AbstractAppConfig } from '../../../../app.config';
 import { plainToClass } from 'class-transformer';
-import { Headers } from '@angular/http';
-import { HttpErrorService, HttpService, OrderService } from '../../../services';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
-import { catchError, map, tap } from 'rxjs/operators';
-import { CaseEventData, CaseEventTrigger, CasePrintDocument, CaseView, Draft } from '../../../domain';
+import { Observable, throwError } from 'rxjs';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
+
+import { AbstractAppConfig } from '../../../../app.config';
+import { ShowCondition } from '../../../directives';
+import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType } from '../../../domain';
+import { HttpErrorService, HttpService, LoadingService, OrderService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import { WorkAllocationService } from './work-allocation.service';
 
 @Injectable()
 export class CasesService {
@@ -34,6 +36,7 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8';
 
   // Handling of Dynamic Lists in Complex Types
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
 
@@ -49,7 +52,9 @@ export class CasesService {
     private appConfig: AbstractAppConfig,
     private orderService: OrderService,
     private errorService: HttpErrorService,
-    private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper
+    private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
+    private readonly workAllocationService: WorkAllocationService,
+    private loadingService: LoadingService
   ) {
   }
 
@@ -62,68 +67,106 @@ export class CasesService {
       + `/case-types/${caseTypeId}`
       + `/cases/${caseId}`;
 
+    const loadingToken = this.loadingService.register();
     return this.http
       .get(url)
       .pipe(
-        map(response => response.json()),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
-    const headers = new Headers({
-      'Accept': CasesService.V2_MEDIATYPE_CASE_VIEW,
-      'experimental': 'true',
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
+      .set('Content-Type', 'application/json');
 
+    const loadingToken = this.loadingService.register();
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json()),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
-        })
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
       );
   }
 
   /**
-   * handleNestedDynamicListsInComplexTypes()
-   * Reassigns list_item and value data to DymanicList children
+   * handleNestedDynamicLists()
+   * Reassigns list_item and value data to DynamicList children
    * down the tree. Server response returns data only in
    * the `value` object of parent complex type
    *
    * EUI-2530 Dynamic Lists for Elements in a Complex Type
    *
-   * @param jsonResponse - {}
+   * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
    */
-  private handleNestedDynamicListsInComplexTypes(jsonResponse) {
+  private handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
 
-    if (jsonResponse.case_fields) {
-      jsonResponse.case_fields.forEach(caseField => {
-        if (caseField.field_type && caseField.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
-
-          caseField.field_type.complex_fields.forEach(field => {
-
-            if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
-              const list_items = caseField.value[field.id].list_items;
-              const value = caseField.value[field.id].value;
-              field.value = {
-                list_items: list_items,
-                value: value ? value : undefined
-              };
-              field.formatted_value = field.value;
-            }
-          });
+    if (jsonBody.case_fields) {
+      jsonBody.case_fields.forEach(caseField => {
+        if (caseField.field_type) {
+          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
         }
       });
     }
 
-    return jsonResponse;
+    return jsonBody;
+  }
+
+  private setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {
+    if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
+
+      caseFieldType.complex_fields.forEach(field => {
+        try {
+          if (field.field_type.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST) {
+            const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
+            if (dynamicListValue) {
+              const list_items = dynamicListValue.list_items;
+              const value = dynamicListValue.value;
+              field.value = {
+                list_items: list_items,
+                value: value ? value : undefined
+              };
+              field.formatted_value = {
+                ...field.formatted_value,
+                ...field.value
+              };
+            }
+          } else {
+            this.setDynamicListDefinition(field, field.field_type, rootCaseField);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
+      if (caseFieldType.collection_field_type) {
+        this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
+      }
+    }
+  }
+
+  private getDynamicListValue(jsonBlock: any, key: string) {
+
+    if (jsonBlock[key]) {
+      return jsonBlock[key];
+    } else  {
+      for (const elementKey in jsonBlock) {
+        if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
+          return this.getDynamicListValue(jsonBlock[elementKey], key);
+        }
+      }
+    }
+
+    return null;
   }
 
   getEventTrigger(caseTypeId: string,
@@ -132,25 +175,25 @@ export class CasesService {
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
-    let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
+    const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new Headers({
-      'experimental': 'true'
-    });
+    let headers = new HttpHeaders()
+    headers = headers.set('experimental', 'true')
+    headers = headers.set('Content-Type', 'application/json');
+
     if (Draft.isDraft(caseId)) {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
+      headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
     } else if (caseId !== undefined && caseId !== null) {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
+      headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
     } else {
-      headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
+      headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
     }
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => {
-
-          return this.handleNestedDynamicListsInComplexTypes(response.json());
+        map(body => {
+          return this.handleNestedDynamicLists(body);
         }),
         catchError(error => {
           this.errorService.setError(error);
@@ -165,15 +208,15 @@ export class CasesService {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => this.processResponse(response)),
+        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -186,15 +229,14 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/validate${pageIdString}`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json()),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -211,15 +253,15 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
-        map(response => this.processResponse(response)),
+        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -232,15 +274,15 @@ export class CasesService {
       + `/cases/${caseId}`
       + `/documents`;
 
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
-    });
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
+      .set('Content-Type', 'application/json');
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json().documentResources),
+        map(body => body.documentResources),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -271,11 +313,9 @@ export class CasesService {
     return url;
   }
 
-  private processResponse(response) {
-    if (response.headers && response.headers.get('content-type').match(/application\/.*json/)) {
-      return response.json();
-    }
-    return {'id': ''};
+  private processResponseBody(body: any, eventData: CaseEventData): any {
+    this.processTasksOnSuccess(body, eventData.event);
+    return body;
   }
 
   private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
@@ -284,10 +324,23 @@ export class CasesService {
     }
 
     eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
-      wizardPage.parsedShowCondition = new ShowCondition(wizardPage.show_condition);
+      wizardPage.parsedShowCondition = ShowCondition.getInstance(wizardPage.show_condition);
       wizardPage.case_fields = this.orderService.sort(
         this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });
   }
 
+  private processTasksOnSuccess(caseData: any, eventData: any): void {
+    // This is used a feature toggle to
+    // control the work allocation
+    if (this.appConfig.getWorkAllocationApiUrl()) {
+        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
+          .subscribe(() => {
+            // Success. Do nothing.
+          }, error => {
+            // Show an appropriate warning about something that went wrong.
+            console.warn('Could not process tasks for this case event', error);
+          });
+    }
+  }
 }

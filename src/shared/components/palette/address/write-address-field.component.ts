@@ -34,7 +34,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   missingPostcode = false;
 
-  constructor (addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
+  constructor(addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
     super();
     this.addressesService = addressesService;
   }
@@ -49,7 +49,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   findAddress() {
-
     if (!this.postcode.value) {
       this.missingPostcode = true;
     } else {
@@ -91,7 +90,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   isComplexWithHiddenFields() {
     if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
-      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true )) {
+      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true)) {
       return true;
     }
   }
@@ -124,7 +123,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['caseField']) {
+    super.ngOnChanges(changes);
+    let change = changes['caseField'];
+    if (change) {
       this.setFormValue();
     }
   }

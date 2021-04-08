@@ -1,7 +1,6 @@
 import { DocumentManagementService } from './document-management.service';
 import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
-import { Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { CaseField, DocumentData, FieldType } from '../../domain';
@@ -43,9 +42,7 @@ describe('DocumentManagementService', () => {
     };
 
     beforeEach(() => {
-      httpService.post.and.returnValue(of(new Response(new ResponseOptions({
-        body: JSON.stringify(RESPONSE)
-      }))));
+      httpService.post.and.returnValue(of(RESPONSE));
     });
 
     it('should use HttpService.post with the correct URL', () => {
@@ -55,10 +52,11 @@ describe('DocumentManagementService', () => {
     });
 
     it('should set Content-Type header to null', () => {
-      documentManagementService.uploadFile(new FormData()).subscribe();
-      let headers = httpService.post.calls.mostRecent().args[2].headers;
+      documentManagementService.uploadFile(new FormData()).subscribe(() => {
 
-      expect(headers.get('Content-Type')).toBe(null);
+        let headers = httpService.post.calls.mostRecent().args[2].headers;
+        expect(headers.get('Content-Type')).toBe(null);
+      });
     });
 
     it('should return document metadata', () => {

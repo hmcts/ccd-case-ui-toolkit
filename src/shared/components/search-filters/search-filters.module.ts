@@ -27,7 +27,7 @@ import { SearchFiltersWrapperComponent } from './search-filters-wrapper.componen
         SearchService,
         OrderService,
         JurisdictionService,
-        WindowService,
+        WindowService
     ]
 })
 export class SearchFiltersModule {}

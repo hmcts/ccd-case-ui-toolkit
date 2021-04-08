@@ -15,9 +15,9 @@ table {
   tbody tr td {
     font-size: 16px;
     word-wrap: break-word;
+
     a {
-      color: $blue_table;
-      background-color: $white;
+      float: left;
     }
   }
 

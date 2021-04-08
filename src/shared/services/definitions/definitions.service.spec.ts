@@ -1,4 +1,3 @@
-import { Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
 import { DefinitionsService } from './definitions.service';
@@ -30,9 +29,7 @@ describe('DefinitionsService', () => {
 
   describe('getCaseTypes()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([createCaseType(CTID), createCaseType(CTID_2)])
-      }))));
+      httpService.get.and.returnValue(Observable.of([createCaseType(CTID), createCaseType(CTID_2)]));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -54,9 +51,7 @@ describe('DefinitionsService', () => {
 
   describe('getJurisdictions()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify([createJurisdiction('jId1'), createJurisdiction('jId2')])
-      }))));
+      httpService.get.and.returnValue(Observable.of([createJurisdiction('jId1'), createJurisdiction('jId2')]));
     });
 
     it('should retrieve jurisdiction from server', () => {
