@@ -6,9 +6,9 @@ import { ConditionParser } from '../services/condition-parser.service';
 
 export class ShowCondition {
 
-  private static readonly CONDITION_NOT_EQUALS = '!=';
-  private static readonly CONDITION_EQUALS = '=';
-  private static readonly CONTAINS = 'CONTAINS';
+  public static readonly CONDITION_NOT_EQUALS = '!=';
+  public static readonly CONDITION_EQUALS = '=';
+  public static readonly CONTAINS = 'CONTAINS';
   private static instanceCache = new Map<string, ShowCondition>();
   private static readonly validJoinComparators = ['AND', 'OR'];
   private static processedList: string[] = [];
@@ -27,7 +27,9 @@ export class ShowCondition {
       return showCondition;
     }
     this.processedList = [];
-    return this.processAddPathPrefixToCondition(formula, pathPrefix, showCondition);
+    showCondition = showCondition.replace(/CONTAINS/g, ' CONTAINS');
+    const processedCondition = this.processAddPathPrefixToCondition(formula, pathPrefix, showCondition);
+    return processedCondition.replace(/ CONTAINS/g, 'CONTAINS');
   }
 
   private static processAddPathPrefixToCondition(formula: any, pathPrefix: string, originalCondition: string): string {

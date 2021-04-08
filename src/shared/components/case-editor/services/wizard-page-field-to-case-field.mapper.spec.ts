@@ -15,7 +15,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
 
   let wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper;
   const INCOMPLETE_SHOW_CONDITION_ONE = 'AddressLine2="test"';
-  const INCOMPLETE_SHOW_CONDITION_TWO = 'AddressLine1 CONTAINS"test"';
+  const INCOMPLETE_SHOW_CONDITION_TWO = 'AddressLine1CONTAINS"test"';
   const INCOMPLETE_SHOW_CONDITION = INCOMPLETE_SHOW_CONDITION_ONE + ' AND ' + INCOMPLETE_SHOW_CONDITION_TWO;
 
   const CASE_FIELDS = [
