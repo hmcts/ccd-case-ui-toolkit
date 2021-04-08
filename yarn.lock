@@ -530,7 +530,7 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.17.tgz#7a183163a9e6ff720d86502db23ba4aade5999b8"
   integrity sha512-gpNnRnZP3VWzzj5k3qrpRC6Rk3H/uclhAVo1aIvwzK5p5cOrs9yEyQ8H/HBsBY0u5rrWxXEiVPQ0dEB6pkjE8Q==
 
-"@types/pegjs@^0.10.2":
+"@types/pegjs@^0.10.0":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@types/pegjs/-/pegjs-0.10.2.tgz#25ecdef12a210bb2e8b6ef3105bacb4a85a666bc"
   integrity sha512-HSiQX7133jjMBOrN3kWaLlpelS6Bg95uJaesr3nwf8qz9MTQorXqbLlErYGxKqXuYgRCKmSLUk0faCKS4yzT3g==
