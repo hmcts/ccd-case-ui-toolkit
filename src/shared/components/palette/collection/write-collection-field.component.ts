@@ -12,7 +12,6 @@ import { FieldsUtils, ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 type CollectionItem = {
   caseField: CaseField;
@@ -45,8 +44,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   constructor(private dialog: MatDialog,
               private scrollToService: ScrollToService,
-              private profileNotifier: ProfileNotifier,
-              private createChecker: CollectionCreateCheckerService
+              private profileNotifier: ProfileNotifier
   ) {
     super();
   }
@@ -181,6 +179,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     } else {
       return this.formArray.at(index) as FormGroup;
     }
+  }
+
+  isSearchFilter() {
+    return this.isInSearchBlock && this.collItems.length > 0;
   }
 
   addItem(doScroll: boolean): void {
