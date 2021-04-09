@@ -74,8 +74,10 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeEntryFormat(): string {
-    if (this.display_context_parameter) {
-      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
+    if (this.display_context && this.display_context.toUpperCase() !== "READONLY") {
+      if (this.display_context_parameter) {
+        return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
+      }
     }
     return null;
   }

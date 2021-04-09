@@ -4025,6 +4025,26 @@
               "collection_field_type":null
             }
         }
+      },
+      {
+        "label": "Date Field (Search)",
+        "order": 2,
+        "field": {
+          "id": "DateField",
+          "metadata": false,
+          "field_type": {
+            "id": "Date",
+            "type": "CREATED_DATE",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": [],
+            "complex_fields": [],
+            "collection_field_type": null
+          },
+          "display_context": "Optional",
+          "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD) #DATETIMEDISPLAY(dddd, mmmm dS, yyyy, h:MM:s TT)"
+        }
       }
     ]
   },
@@ -4091,6 +4111,25 @@
           "field_type": {
             "id": "Text",
             "type": "Text",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": [],
+            "complex_fields": [],
+            "collection_field_type": null
+          }
+        }
+      },
+      {
+        "label": "Date Field",
+        "order": 2,
+        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD)",
+        "field": {
+          "id": "DateField",
+          "metadata": false,
+          "field_type": {
+            "id": "Date",
+            "type": "Date",
             "min": null,
             "max": null,
             "regular_expression": null,
