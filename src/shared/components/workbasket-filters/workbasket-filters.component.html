@@ -33,7 +33,7 @@
 
   <div id="dynamicFilters" *ngIf="isSearchableAndWorkbasketInputsReady()">
     <div class="form-group" *ngFor="let workbasketInput of workbasketInputs">
-      <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply(null)"></ccd-field-write>
+      <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" [isInSearchBlock]="true" (keyup.enter)="apply(null)"></ccd-field-write>
     </div>
   </div>
 
