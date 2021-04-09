@@ -114,7 +114,8 @@ export class FieldsUtils {
       result[field.id] = field.value;
     }
     switch (field.field_type.type) {
-      case 'FixedList': {
+      case 'FixedList':
+      case 'FixedRadioList': {
         result[field.id] = FieldsUtils.getFixedListLabelByCodeOrEmpty(field, result[field.id] || field.value);
         break;
       }

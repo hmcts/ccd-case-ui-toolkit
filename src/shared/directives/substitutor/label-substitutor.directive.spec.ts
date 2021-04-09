@@ -257,6 +257,84 @@ describe('LabelSubstitutorDirective', () => {
     });
   });
 
+  describe('radio fixed list type fields', () => {
+
+    it('should pass form field value when field is not read only and no case field value but form field value present', () => {
+      let label = 'someLabel';
+      comp.caseField = textField('LabelB', '', label);
+      comp.caseFields = [comp.caseField, field('LabelA', '', {
+        id: 'LabelA',
+        type: 'FixedRadioList',
+        fixed_list_items: [
+          {
+            code: 'ValueA',
+            label: 'Option A'
+          },
+          {
+            code: 'ValueC',
+            label: 'Option C'
+          }
+        ]
+      }, '')];
+      comp.formGroup = new FormGroup({
+        LabelA: new FormControl('ValueA')
+      });
+      fixture.detectChanges();
+
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+        {LabelB: '', LabelA: 'Option A'}, label);
+    });
+
+    it('should pass case field value when field is read only and no form field but case field value present', () => {
+      let label = 'someLabel';
+      comp.caseField = textField('LabelB', '', label);
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
+        id: 'LabelA',
+        type: 'FixedRadioList',
+        fixed_list_items: [
+          {
+            code: 'ValueA',
+            label: 'Option A'
+          },
+          {
+            code: 'ValueC',
+            label: 'Option C'
+          }
+        ]
+      }, '')];
+      fixture.detectChanges();
+
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+        {LabelB: '', LabelA: 'Option C'}, label);
+    });
+
+    it('should pass field form value when field is not read only and both form and case field values present', () => {
+      let label = 'someLabel';
+      comp.caseField = textField('LabelB', '', label);
+      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
+        id: 'LabelA',
+        type: 'FixedRadioList',
+        fixed_list_items: [
+          {
+            code: 'ValueA',
+            label: 'Option A'
+          },
+          {
+            code: 'ValueC',
+            label: 'Option C'
+          }
+        ]
+      }, '')];
+      comp.formGroup = new FormGroup({
+        LabelA: new FormControl('ValueA')
+      });
+      fixture.detectChanges();
+
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+        {LabelB: '', LabelA: 'Option A'}, label);
+    });
+  });
+
   describe('multi list type fields', () => {
 
     it('should pass form field value when field is not read only and no case field value but form field value present', () => {

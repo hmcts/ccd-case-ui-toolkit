@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 2.79.2
-**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections.
+**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label.
 
 ### Version 2.79.1
 **EUI-3452** Fix to some issues on the Check your answers page.
