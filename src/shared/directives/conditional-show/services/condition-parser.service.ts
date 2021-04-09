@@ -187,11 +187,11 @@ export class ConditionParser {
           return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
           fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
         } catch (e) {
-          console.log('Error while parsing number', pathTail[0], e);
+          console.error('Error while parsing number', pathTail[0], e);
         }
       }
     } else {
-      console.log('Path in formArray should start with ', head, ', full path: ', path);
+      console.error('Path in formArray should start with ', head, ', full path: ', path);
     }
   }
 
