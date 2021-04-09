@@ -148,7 +148,8 @@ export class ConditionParser {
   }
 
   private static unquoted(str: string): string {
-    return str.replace(/^"|"$/g, '');
+    const res = str.replace(/^"|"$/g, '');
+    return res;
   }
 
   private static findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
