@@ -43,15 +43,7 @@ export class ConditionParser {
 
       if (condition.comparator) {
         const formula = condition.fieldReference + condition.comparator + condition.value;
-        const [field, conditionSeparator] = this.getField(formula);
-        const [head, ...tail] = field.split('.');
-        const currentValue = this.findValueForComplexCondition(fields, head, tail, path);
-        const expectedValue = this.unquoted(formula.split(conditionSeparator)[1]);
-        if (conditionSeparator === ShowCondition.CONTAINS) {
-          currentConditionResult = this.checkValueContains(expectedValue, currentValue);
-        } else {
-          currentConditionResult = this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
-        }
+        currentConditionResult = this.matchEqualityCondition(fields, formula, path);
       }
 
       if (isJoinComparator(conditions[index - 1])) {
@@ -68,6 +60,18 @@ export class ConditionParser {
     switch (comparator) {
       case 'OR': return leftResult || rightResult;
       case 'AND': return leftResult && rightResult;
+    }
+  }
+
+  private static matchEqualityCondition(fields: object, condition: string, path?: string): boolean {
+    const [field, conditionSeparator] = this.getField(condition);
+    const [head, ...tail] = field.split('.');
+    const currentValue = this.findValueForComplexCondition(fields, head, tail, path);
+    const expectedValue = this.unquoted(condition.split(conditionSeparator)[1]);
+    if (conditionSeparator === ShowCondition.CONTAINS) {
+      return this.checkValueContains(expectedValue, currentValue);
+    } else {
+      return this.checkValueEquals(expectedValue, currentValue, conditionSeparator);
     }
   }
 
@@ -134,18 +138,17 @@ export class ConditionParser {
 
   private static checkValueContains(expectedValue: string, currentValue: any): boolean {
     if (expectedValue.search(',') > -1) {
-      let expectedValues = expectedValue.split(',').sort();
-      let values = currentValue ? currentValue.sort().toString() : '';
+      const expectedValues = expectedValue.split(',').sort();
+      const values = currentValue ? currentValue.sort().toString() : '';
       return expectedValues.every(item => values.search(item) >= 0);
     } else {
-      let values = currentValue && Array.isArray(currentValue) ? currentValue.toString() : '';
+      const values = currentValue && Array.isArray(currentValue) ? currentValue.toString() : '';
       return values.search(expectedValue) >= 0;
     }
   }
 
   private static unquoted(str: string): string {
-    const res = str.replace(/^"|"$/g, '');
-    return res;
+    return str.replace(/^"|"$/g, '');
   }
 
   private static findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {

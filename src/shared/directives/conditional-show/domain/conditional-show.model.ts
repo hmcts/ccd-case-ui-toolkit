@@ -1,5 +1,3 @@
-import { _ as _score } from 'underscore';
-
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ConditionParser } from '../services/condition-parser.service';
@@ -19,7 +17,7 @@ export class ShowCondition {
       return showCondition;
     }
     if (!showCondition) {
-      return showCondition;
+      return '';
     }
 
     const formula = ConditionParser.parse(showCondition);
@@ -91,8 +89,8 @@ export class ShowCondition {
 
   private static getConditions(formula: any): string {
     let conditionList: string[] = [];
-    const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
     if (!!formula) {
+      const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
       if (Array.isArray(newFormula)) {
         newFormula.forEach(condition => {
           if (!(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1)) {
