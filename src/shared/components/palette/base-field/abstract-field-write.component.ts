@@ -11,6 +11,9 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
   @Input()
   isExpanded = false;
 
+  @Input()
+  isInSearchBlock = false;
+
   public constructor() {
     super();
     this.fixCaseField();
