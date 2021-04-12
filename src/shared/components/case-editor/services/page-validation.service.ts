@@ -8,7 +8,8 @@ import { WizardPage } from '../domain/wizard-page.model';
 
 @Injectable()
 export class PageValidationService {
-  constructor(private caseFieldService: CaseFieldService) {}
+  constructor(private caseFieldService: CaseFieldService) {
+  }
 
   isPageValid(page: WizardPage, editForm: FormGroup): boolean {
     return page.case_fields
@@ -16,6 +17,7 @@ export class PageValidationService {
       .filter(caseField => !this.isHidden(caseField, editForm))
       .every(caseField => {
         let theControl = editForm.controls['data'].get(caseField.id);
+        console.log('checking control', caseField.id, caseField)
         return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
   }
@@ -24,6 +26,7 @@ export class PageValidationService {
     if (caseField.field_type.id !== 'Document') {
       return true;
     }
+    console.log('checking document')
     return !(this.checkMandatoryField(caseField, theControl));
   }
 
@@ -36,9 +39,8 @@ export class PageValidationService {
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
     if (!theControl) {
       return this.caseFieldService.isOptional(caseField);
-    } else {
-      return theControl.valid || theControl.disabled;
     }
+    return theControl.valid || theControl.disabled;
   }
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {

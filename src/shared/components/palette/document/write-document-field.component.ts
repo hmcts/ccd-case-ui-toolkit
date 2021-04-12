@@ -59,7 +59,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     // EUI-3403. The field was not being registered when there was no value and the field
     // itself was not mandatory, which meant that show_conditions would not be evaluated.
     // I've cleaned up the logic and it's now always registered.
-    const document = this.caseField.value || { document_url: null, docment_binary_url: null, document_filename: null };
+    const document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
     if (this.isAMandatoryComponent()) {
       this.createDocumentFormWithValidator(document.document_url, document.document_binary_url, document.document_filename);
     } else {
@@ -128,7 +128,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
       documentUpload.append('classification', 'PUBLIC');
       this.fileUploadStateService.setUploadInProgress(true);
+      console.log('documentUpload', documentUpload);
       this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe(result => {
+        console.log('result', result)
         if (!this.uploadedDocument) {
           this.createDocumentForm(null, null, null);
         }
@@ -151,6 +153,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
         this.fileUploadStateService.setUploadInProgress(false);
+      }, () => {
+        console.log('completed');
       });
     } else {
       this.resetUpload();
