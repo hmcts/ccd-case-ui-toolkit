@@ -16,6 +16,9 @@
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
 
+### Version 2.73.3-crud-fixes
+**EUI-3505** Fix to disable and enable collection remove button
+
 ### Version 2.73.2-collection-date-field
 **EUI-2667** Fix to date field rendering within collections
 
