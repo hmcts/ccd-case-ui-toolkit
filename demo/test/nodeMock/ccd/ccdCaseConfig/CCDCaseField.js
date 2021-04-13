@@ -126,7 +126,7 @@ class CCDcaseField{
 
     ConfigureCCDField(parentField, fieldConfig) {
 
-        if (fieldConfig.type === "Complex") {
+        if (fieldConfig.type === "Complex" && fieldConfig.complex_fields) {
             fieldConfig.complex_fields.forEach((complexFieldConfig) => {
                 // console.log(" complex field config " + JSON.stringify(complexFieldConfig));
 
@@ -134,7 +134,7 @@ class CCDcaseField{
                 parentField.field_type.complex_fields.push(complexCCDField);
                 // this.ConfigureCCDField(complexCCDField, complexFieldConfig);
             });
-        } else if (fieldConfig.type === "Collection") {
+        } else if (fieldConfig.type === "Collection" && fieldConfig.collection_field_type) {
             const collectionCCDField = this.getCCDFieldTemplateCopy(fieldConfig.collection_field_type)
             parentField.field_type.collection_field_type = collectionCCDField.field_type;
             // this.ConfigureCCDField(collectionCCDField, fieldConfig.collectionField);

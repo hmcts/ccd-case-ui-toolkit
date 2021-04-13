@@ -7,7 +7,9 @@ const minimist = require('minimist');
 
 let { requestMapping} = require('./reqResMapping');
 const { browser } = require('protractor');
-const { getDateTimeTestEvent } = require('../mockData/caseEvent');
+const { getDateTimeTestEvent, getDateTimeInComplexTestEvent } = require('../mockData/caseEvent');
+const { getMockJurisdictionWorkbaseketConfig, getConfigWithDate } = require('../mockData/workbasketSearchInput');
+
 
 const port = 8080;
 
@@ -114,9 +116,13 @@ if (args.standalone){
 
 function setUpcaseConfig() {
     mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-       
-
         res.send(getDateTimeTestEvent().getCase());
+    });
+
+    mockInstance.onGet('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
+        let config = getConfigWithDate();
+     
+        res.send(config.getConfig());
     });
 
 }

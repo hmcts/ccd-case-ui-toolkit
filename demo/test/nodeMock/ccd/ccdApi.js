@@ -223,10 +223,10 @@ class CCDApi{
             "label": "Case reference",
             "order": 1,
             "metadata": true,
-            "case_field_id": "[CASE_REFERENCE]",
+            "case_field_id": "[CREATED_DATE]",
             "case_field_type": {
                 "id": "Number",
-                "type": "Number",
+                "type": "DateTime",
                 "min": null,
                 "max": null,
                 "regular_expression": null,
