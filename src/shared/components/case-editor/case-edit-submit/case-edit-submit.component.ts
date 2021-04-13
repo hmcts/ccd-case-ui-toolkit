@@ -18,6 +18,7 @@ import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
+import { UnsavedChangesComponent } from '../unsaved-changes/unsaved-changes.component';
 
 // @dynamic
 @Component({
@@ -25,7 +26,7 @@ import { Confirmation, Wizard, WizardPage } from '../domain';
   templateUrl: 'case-edit-submit.html',
   styleUrls: ['../case-edit.scss']
 })
-export class CaseEditSubmitComponent implements OnInit, OnDestroy {
+export class CaseEditSubmitComponent extends UnsavedChangesComponent implements OnInit, OnDestroy {
   eventTrigger: CaseEventTrigger;
   editForm: FormGroup;
   error: HttpError;
@@ -38,6 +39,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
   isSubmitting: boolean;
   profileSubscription: Subscription;
+  isNavigatingToPage: boolean;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField) => {
     let aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -72,6 +74,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private profileService: ProfileService,
     private profileNotifier: ProfileNotifier,
   ) {
+    super();
   }
 
   ngOnInit(): void {
@@ -83,10 +86,20 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
+    this.isNavigatingToPage = false;
   }
 
   ngOnDestroy() {
     this.profileSubscription.unsubscribe();
+  }
+
+  /**
+   * Overriding the one in UnsavedChangesComponent.
+   * @returns a boolean indication of whether this component can deactivate.
+   */
+  canDeactivate(): boolean {
+    // When on here, can NEVER deactivate unless submitting or going back another page.
+    return this.isSubmitting || this.isNavigatingToPage;
   }
 
   submit(): void {
@@ -134,6 +147,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   navigateToPage(pageId: string): void {
+    this.isNavigatingToPage = true;
     this.caseEdit.navigateToPage(pageId);
   }
 

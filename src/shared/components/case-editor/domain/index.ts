@@ -1,3 +1,4 @@
+export * from './component-can-deactivate.interface';
 export * from './wizard.model';
 export * from './confirmation.model';
 export * from './wizard-page.model';

@@ -1,29 +1,24 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { PageValidationService } from '../services/page-validation.service';
+
+import { CaseEventData, CaseEventTrigger, CaseField, DRAFT_PREFIX, HttpError } from '../../../domain';
+import { FieldsUtils, FormErrorService, FormValueService } from '../../../services';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
-import { WizardPage } from '../domain/wizard-page.model';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { CaseEventData } from '../../../domain/case-event-data.model';
-import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition';
-import { FieldsUtils } from '../../../services/fields';
+import { CallbackErrorsContext } from '../../error/domain/error-context';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Wizard, WizardPage } from '../domain';
+import { PageValidationService } from '../services/page-validation.service';
+import { UnsavedChangesComponent } from '../unsaved-changes/unsaved-changes.component';
 
 @Component({
   selector: 'ccd-case-edit-page',
   templateUrl: 'case-edit-page.html',
   styleUrls: ['./case-edit-page.scss']
 })
-export class CaseEditPageComponent implements OnInit, AfterViewChecked {
+export class CaseEditPageComponent extends UnsavedChangesComponent implements OnInit, AfterViewChecked {
 
   static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
@@ -46,6 +41,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   triggerText: string;
   isSubmitting = false;
   formValuesChanged = false;
+  isNavigatingToPage = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
 
@@ -57,7 +53,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private cdRef: ChangeDetectorRef,
     private pageValidationService: PageValidationService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.initDialog();
@@ -68,6 +66,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.triggerText = this.getTriggerText();
 
     this.route.params.subscribe(params => {
+      this.isNavigatingToPage = false;
       let pageId = params['page'];
       if (!this.currentPage || pageId !== this.currentPage.id) {
         let page = this.caseEdit.getPage(pageId);
@@ -87,6 +86,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.cdRef.detectChanges();
+  }
+
+  /**
+   * Overriding the one in UnsavedChangesComponent.
+   * @returns a boolean indication of whether this component can deactivate.
+   */
+  public canDeactivate(): boolean {
+    // Any attempt to leave, other than navigating to another page (Next/Previous)
+    // should be "disallowed".
+    return this.isNavigatingToPage;
   }
 
   applyValuesChanged(valuesChanged: boolean): void {
@@ -178,6 +187,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   next(): Promise<boolean> {
     this.resetErrors();
     this.isSubmitting = false;
+    this.isNavigatingToPage = true;
     this.formValuesChanged = false;
     this.pageChangeSubject.next(true);
     return this.caseEdit.next(this.currentPage.id);
@@ -187,6 +197,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.resetErrors();
     this.saveDraft();
     this.formValuesChanged = false;
+    this.isNavigatingToPage = true;
     this.pageChangeSubject.next(true);
     return this.caseEdit.previous(this.currentPage.id);
   }

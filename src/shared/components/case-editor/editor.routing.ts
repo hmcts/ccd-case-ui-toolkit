@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
-import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
-import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
-import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+
+import { CaseEditConfirmComponent, CaseEditPageComponent, CaseEditSubmitComponent } from '.';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
+import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { CaseEditWizardGuard } from './services';
 
 export const editorRouting: Routes = [
   {
@@ -16,6 +16,7 @@ export const editorRouting: Routes = [
   {
     path: 'submit',
     component: CaseEditSubmitComponent,
+    canDeactivate: [UnsavedChangesGuard],
   },
   {
     path: 'confirm',
@@ -26,7 +27,7 @@ export const editorRouting: Routes = [
     resolve: {
       caseEditWizardGuard: CaseEditWizardGuard,
     },
-    canDeactivate: [FileUploadProgressGuard],
+    canDeactivate: [FileUploadProgressGuard, UnsavedChangesGuard],
     component: CaseEditPageComponent,
   }
 ];
