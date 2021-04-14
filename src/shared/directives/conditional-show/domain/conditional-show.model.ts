@@ -1,4 +1,4 @@
-import * as _score from 'underscore';
+import { _ as _score } from 'underscore';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';

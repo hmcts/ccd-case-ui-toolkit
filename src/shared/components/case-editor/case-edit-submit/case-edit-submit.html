@@ -39,7 +39,7 @@
       <tbody>
       <ng-container *ngFor="let page of this.wizard.pages">
         <ng-container *ngIf="isShown(page)">
-          <ng-container *ngFor="let field of page | ccdPageFields:editForm.controls['data'] | ccdReadFieldsFilter: false :undefined :true :editForm.controls['data']">
+          <ng-container *ngFor="let field of page | ccdPageFields | ccdReadFieldsFilter: false :undefined :true :editForm.controls['data']">
             <ng-container *ngIf="canShowFieldInCYA(field)">
               <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                   [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">

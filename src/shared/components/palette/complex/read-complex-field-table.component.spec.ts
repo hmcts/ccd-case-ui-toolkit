@@ -12,7 +12,6 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
-import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 @Directive({
   selector: '[ccdConditionalShow]'
@@ -86,7 +85,6 @@ describe('ReadComplexFieldTableComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-          hidden: false,
           value: 'Flat 9'
         }),
         <CaseField>({
@@ -97,7 +95,6 @@ describe('ReadComplexFieldTableComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-          hidden: false,
           value: '111 East India road'
         }),
         <CaseField>({
@@ -129,8 +126,7 @@ describe('ReadComplexFieldTableComponent', () => {
                 value: 'UK'
               })
             ]
-          },
-          hidden: false
+          }
         })
       ]
     };
@@ -156,7 +152,6 @@ describe('ReadComplexFieldTableComponent', () => {
           declarations: [
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
-            ReadFieldsFilterPipe,
             StubConditionalShowDirective,
 
             // Mock
@@ -348,7 +343,6 @@ describe('ReadComplexFieldTableComponent', () => {
           declarations: [
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
-            ReadFieldsFilterPipe,
             StubConditionalShowDirective,
 
             // Mock
@@ -384,7 +378,6 @@ describe('ReadComplexFieldTableComponent', () => {
         label: line1.label,
         display_context: 'OPTIONAL',
         field_type: line1.field_type,
-        hidden: false,
         value: CASE_FIELD.value['AddressLine1']
       });
 
@@ -394,7 +387,6 @@ describe('ReadComplexFieldTableComponent', () => {
         label: line2.label,
         display_context: 'OPTIONAL',
         field_type: line2.field_type,
-        hidden: false,
         value: CASE_FIELD.value['AddressLine2']
       });
 
@@ -404,7 +396,6 @@ describe('ReadComplexFieldTableComponent', () => {
         label: postcode.label,
         display_context: 'OPTIONAL',
         field_type: postcode.field_type,
-        hidden: false,
         value: CASE_FIELD.value['AddressPostcode']
       });
     });

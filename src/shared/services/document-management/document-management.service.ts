@@ -3,7 +3,7 @@ import { DocumentData } from '../../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -27,6 +27,8 @@ export class DocumentManagementService {
     const headers = new HttpHeaders();
     return this.http
       .post(url, formData, {headers, observe: 'body'})
+      .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
+      .pipe();
   }
 
   getMediaViewerInfo(documentFieldValue: any): string {

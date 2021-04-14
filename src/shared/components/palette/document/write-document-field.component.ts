@@ -128,9 +128,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentUpload.append('files', this.selectedFile, this.selectedFile.name);
       documentUpload.append('classification', 'PUBLIC');
       this.fileUploadStateService.setUploadInProgress(true);
-      console.log('documentUpload', documentUpload);
       this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe(result => {
-        console.log('result', result)
         if (!this.uploadedDocument) {
           this.createDocumentForm(null, null, null);
         }
@@ -153,8 +151,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
         this.fileUploadStateService.setUploadInProgress(false);
-      }, () => {
-        console.log('completed');
       });
     } else {
       this.resetUpload();
