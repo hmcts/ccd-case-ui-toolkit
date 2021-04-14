@@ -118,6 +118,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   toPreviousPage() {
     let caseEventData: CaseEventData = this.buildCaseEventData();
+    // caseEventData.event_data contains all the values from the previous pages so we set caseEventData.data = caseEventData.event_data
+    // This builds the form with data from the previous pages
+    // EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
