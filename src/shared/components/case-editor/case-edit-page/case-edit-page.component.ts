@@ -294,43 +294,64 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private getCaseFieldsFromCurrentAndPreviousPages(): CaseField[] {
-    const result: CaseField[] = []
-    this.wizard.pages.forEach ( page => {
+    const result: CaseField[] = [];
+    this.wizard.pages.forEach(page => {
       if (page.order <= this.currentPage.order) {
-        page.case_fields.forEach( field => result.push(field));
+        page.case_fields.forEach(field => result.push(field));
       }
-    })
+    });
     return result;
   }
 
   private buildCaseEventData(): CaseEventData {
-    // Get hold of the fields specific to the current page that we're going to submit.
-    const pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
+    const formValue: object = this.editForm.value;
 
-    // Sort out the dynamic lists.
-    this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields, pageFormFields);
+    // Get the CaseEventData for the current page.
+    const pageFields: CaseField[] = this.currentPage.case_fields;
+    const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formValue, true);
 
-    // Get hold of the CaseEventData and immediately tidy it up.
-    const caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
-    this.formValueService.removeUnnecessaryFields(caseEventData.data, this.currentPage.case_fields, true);
+    // Get the CaseEventData for the entire form (all pages).
+    const allCaseFields = this.getCaseFieldsFromCurrentAndPreviousPages();
+    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true);
 
-    // Now add the remaining bits and pieces to the CaseEventData,
-    // The event_data should be the full context of the event, including values from previous pages, but not labels
+    // Now here's the key thing - the pageEventData has a property called `event_data` and
+    // we need THAT to be the value of the entire form: `formEventData.data`.
+    pageEventData.event_data = formEventData.data;
 
-    caseEventData.event_data = this.clone(caseEventData.data || this.editForm.value.data);
-    let evCf = this.getCaseFieldsFromCurrentAndPreviousPages();
-    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, evCf,
-      false, true);
-    // we are not calling santise on event_data to be consistent with previous code. Seeems like we ought to though
-    caseEventData.event_token = this.eventTrigger.event_token;
-    caseEventData.ignore_warning = this.ignoreWarning;
+    // Finalise the CaseEventData object.
+    pageEventData.event_token = this.eventTrigger.event_token;
+    pageEventData.ignore_warning = this.ignoreWarning;
 
     // Finally, try to set up the case_reference.
     if (this.caseEdit.caseDetails) {
-      caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
+      pageEventData.case_reference = this.caseEdit.caseDetails.case_id;
     }
 
     // Return the now hopefully sane CaseEventData.
+    return pageEventData;
+  }
+
+  /**
+   * Abstracted this method from buildCaseEventData to remove duplication.
+   * @param caseFields The fields to filter the data by.
+   * @param formValue The original value of the form.
+   * @param clearEmpty Whether or not to clear out empty values.
+   * @param clearNonCase Whether or not to clear out fields that are not part of the case.
+   * @returns CaseEventData for the specified parameters.
+   */
+  private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false, clearNonCase = false): CaseEventData {
+    // Get the data for the fields specified.
+    const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
+
+    // Sort out the dynamic lists.
+    this.formValueService.sanitiseDynamicLists(caseFields, formFields);
+
+    // Get hold of the CaseEventData.
+    const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
+
+    // Tidy it up before we return it.
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase);
+
     return caseEventData;
   }
 
