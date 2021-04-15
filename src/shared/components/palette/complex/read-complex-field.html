@@ -3,16 +3,22 @@
     *ngSwitchCase="paletteContext.CHECK_YOUR_ANSWER"
     [caseField]="caseField"
     [context]="context"
+    [topLevelFormGroup]="topLevelFormGroup"
+    [idPrefix]="idPrefix"
   ></ccd-read-complex-field-raw>
   <ccd-read-complex-field-collection-table
     *ngSwitchCase="paletteContext.TABLE_VIEW"
     [caseField]="caseField"
     [context]="context"
+    [topLevelFormGroup]="topLevelFormGroup"
+    [idPrefix]="idPrefix"
   ></ccd-read-complex-field-collection-table>
   <ccd-read-complex-field-table
     *ngSwitchDefault
     [caseField]="caseField"
     [caseFields]="caseFields"
     [context]="context"
+    [topLevelFormGroup]="topLevelFormGroup"
+    [idPrefix]="idPrefix"
   ></ccd-read-complex-field-table>
 </ng-container>

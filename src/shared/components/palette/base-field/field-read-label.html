@@ -1,4 +1,4 @@
-<div [hidden]="caseField.hidden">
+<div [hidden]="caseField.hidden" [class.grey-bar]="canHaveGreyBar && !caseField.hiddenCannotChange">
   <dl class="case-field" *ngIf="withLabel && !isLabel() && (!isComplex() || isCaseLink()); else caseFieldValue">
     <dt class="case-field__label">{{caseField.label}}</dt>
     <dd class="case-field__value">

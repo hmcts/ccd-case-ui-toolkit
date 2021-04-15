@@ -10,6 +10,7 @@ import { FixedListItem } from './fixed-list-item.model';
 export class CaseField implements Orderable {
   id: string;
   hidden: boolean;
+  hiddenCannotChange: boolean;
   label: string;
   order?: number;
 
