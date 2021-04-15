@@ -1,12 +1,4 @@
 ## RELEASE NOTES
-### Version 2.73.2-hotfix-feature-toggle-wa-service
-**EUI-3548** Feature toggle WA service
-
-### Version 2.73.1-hotfix-mandatory-organisation
-**EUI-3674** Add organisation policy MANDATORY validator check
-
-### Version 2.73.0-hotfix-error-message-display
-**EUI-3594** Fix issue with error message specifics not being displayed
 
 ### Version 2.79.4
 **EUI-3708** Fix for case submission regression.
@@ -39,8 +31,14 @@
 ### Version 2.73.5-ngmodel-deprecation
 **EUI-3410** ngModel deprecation
 
+### Version 2.73.2-hotfix-feature-toggle-wa-service
+**EUI-3548** Feature toggle WA service
+
 ### Version 2.73.2-collection-date-field
 **EUI-2667** Fix to date field rendering within collections
+
+### Version 2.73.1-hotfix-mandatory-organisation
+**EUI-3674** Add organisation policy MANDATORY validator check
 
 ### Version 2.73.0-hotfix-error-message-display
 **EUI-3594** Fix issue with error message specifics not being displayed
