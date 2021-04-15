@@ -64,15 +64,14 @@ describe('CasePrinterComponent', () => {
   let de: DebugElement;
 
   let caseService: CaseNotifier;
-  let casesService;
-  let alertService;
+  let casesService: jasmine.SpyObj<CasesService>;
+  let alertService: jasmine.SpyObj<AlertService>;
 
-  let appConfig;
+  let appConfig: jasmine.SpyObj<AbstractAppConfig>;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj('AbstractAppConfig', ['getPrintServiceUrl', 'getRemotePrintServiceUrl']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getPrintServiceUrl']);
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
-    appConfig.getRemotePrintServiceUrl.and.returnValue(REMOTE_PRINT_SERVICE_URL);
 
     caseService = new CaseNotifier();
     caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
@@ -108,12 +107,12 @@ describe('CasePrinterComponent', () => {
 
   it('should render a case header', () => {
     caseService.announceCase(CASE_VIEW);
-    let header = de.query(By.directive(CaseHeaderComponent));
+    const header = de.query(By.directive(CaseHeaderComponent));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });
 
-  it('should call get print documents on init', () => {
+  it('should call getPrintDocuments() on init', () => {
     expect(casesService.getPrintDocuments).toHaveBeenCalledWith(CASE_VIEW.case_id);
   });
 
@@ -123,13 +122,12 @@ describe('CasePrinterComponent', () => {
   });
 
   it('should display each document', () => {
-    let documents = de.queryAll($DOCUMENTS);
-
+    const documents = de.queryAll($DOCUMENTS);
     expect(documents.length).toEqual(DOCUMENTS.length);
 
     DOCUMENTS.forEach((document, index) => {
-      let documentName = documents[index].query($DOCUMENT_NAME);
-      let documentType = documents[index].query($DOCUMENT_TYPE);
+      const documentName = documents[index].query($DOCUMENT_NAME);
+      const documentType = documents[index].query($DOCUMENT_TYPE);
 
       expect(text(documentName)).toEqual(document.name);
       expect(text(documentType)).toEqual(document.type);
@@ -137,5 +135,4 @@ describe('CasePrinterComponent', () => {
         document.url.replace(REMOTE_PRINT_SERVICE_URL, ''));
     });
   });
-
 });

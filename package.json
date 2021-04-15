@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.73.2-hotfix-feature-toggle-wa-service",
+  "version": "2.79.4",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
