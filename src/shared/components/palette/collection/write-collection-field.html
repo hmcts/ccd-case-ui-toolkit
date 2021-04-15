@@ -29,7 +29,9 @@
                          [formGroup]="formGroup"
                          [parent]="item.container"
                          [idPrefix]="item.prefix"
-                         [hidden]="item.caseField.hidden">
+                         [hidden]="item.caseField.hidden"
+                         [isExpanded]="isExpanded"
+                         [isInSearchBlock]="isInSearchBlock">
         </ccd-field-write>
       </div>
 
