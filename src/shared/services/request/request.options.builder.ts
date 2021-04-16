@@ -46,7 +46,7 @@ export class RequestOptionsBuilder {
       if (caseCriteria) {
         for (let criterion of Object.keys(caseCriteria)) {
           if (RequestOptionsBuilder.includeParam(caseCriteria[criterion])) {
-            params = params.set(RequestOptionsBuilder.FIELD_PREFIX + criterion, caseCriteria[criterion].trim());
+            params = params.set(RequestOptionsBuilder.FIELD_PREFIX + criterion, caseCriteria[criterion].trim ? caseCriteria[criterion].trim() : caseCriteria[criterion]);
           }
         }
       }
