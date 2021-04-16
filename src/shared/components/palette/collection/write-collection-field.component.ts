@@ -42,9 +42,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private items: QueryList<ElementRef>;
   private collItems: CollectionItem[] = [];
 
-  constructor(private dialog: MatDialog,
-              private scrollToService: ScrollToService,
-              private profileNotifier: ProfileNotifier
+  constructor(private readonly dialog: MatDialog,
+              private readonly scrollToService: ScrollToService,
+              private readonly profileNotifier: ProfileNotifier
   ) {
     super();
   }
@@ -181,7 +181,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  isSearchFilter() {
+  isSearchFilter(): boolean {
     return this.isInSearchBlock && this.collItems.length > 0;
   }
 
