@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 3.0.0-zeta
+**EUI-3622** Re-tag of previous pre-release, following PR corrections
+
 ### Version 3.0.0-epsilon
 **EUI-3622** Pre-release candidate modifying Case Data payload submission, following reinterpretation of "retain hidden value" semantics
 
