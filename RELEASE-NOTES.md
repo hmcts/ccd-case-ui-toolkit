@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
 ### Version 2.79.4
 **EUI-3708** Fix for case submission regression.
 **EUI-3728** Fix for labels showing on tabs that should be hidden.
