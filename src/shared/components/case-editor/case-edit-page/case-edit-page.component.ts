@@ -76,7 +76,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       let pageId = params['page'];
       if (!this.currentPage || pageId !== this.currentPage.id) {
         let page = this.caseEdit.getPage(pageId);
-        console.log('page', page);
         if (page) {
           this.currentPage = page;
         } else {
@@ -123,15 +122,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (!this.isSubmitting) {
       this.isSubmitting = true;
       this.error = null;
-      console.log('before BE call', this.caseEdit.getPage(this.currentPage.id).case_fields[8].value);
       let caseEventData: CaseEventData = this.buildCaseEventData();
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
-          console.log('after BE call', this.caseEdit.getPage(this.currentPage.id).case_fields[8].value);
           if (jsonData) {
             this.updateFormData(jsonData as CaseEventData);
           }
-          console.log('after updating form data call', this.caseEdit.getPage(this.currentPage.id).case_fields[8].value);
           this.saveDraft();
           this.next();
         }, error => this.handleError(error));
