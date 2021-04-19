@@ -31,7 +31,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
 
     // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although a CaseLink
     // field uses the Complex type, it is meant to be treated as one field
-    if (this.caseField) {
+    if (this.caseField && this.caseField.field_type.type === 'Complex') {
       for (const caseLinkSubField of this.caseField.field_type.complex_fields) {
         caseLinkSubField.retain_hidden_value = this.caseField.retain_hidden_value;
       }

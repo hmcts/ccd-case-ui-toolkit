@@ -91,7 +91,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.isSubmitting = true;
-    let caseEventData: CaseEventData = {
+    console.log('Raw values:');
+    console.log((this.editForm.get('data') as FormGroup).getRawValue());
+    const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise((this.editForm.get('data') as FormGroup).getRawValue())),
       event: this.editForm.value.event

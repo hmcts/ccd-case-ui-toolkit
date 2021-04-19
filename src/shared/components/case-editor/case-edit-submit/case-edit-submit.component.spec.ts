@@ -238,12 +238,19 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
+  // Clone of DOCUMENT_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
+  const DOCUMENT_ELEMENT_HIDDEN_3 = new FormGroup({
+    document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
+    document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
+    document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
+  });
+  DOCUMENT_ELEMENT_HIDDEN_3.disable();
   const DOCUMENT_COLLECTION_ELEMENT_HIDDEN = new FormArray([
     new FormGroup({
       // Each Document field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
       // and a "value" attribute, which is the Document field FormGroup itself
       id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: DOCUMENT_ELEMENT_HIDDEN_2
+      value: DOCUMENT_ELEMENT_HIDDEN_3
     })
   ]);
   DOCUMENT_COLLECTION_ELEMENT_HIDDEN.disable();
@@ -1340,6 +1347,140 @@ describe('CaseEditSubmitComponent', () => {
             document_filename: DOCUMENT_FILENAME_VALUE,
             document_url: DOCUMENT_URL_VALUE
           },
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for MultiSelectList and Document field types, both retain_hidden_value = false', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
+    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
+    firstPage.case_fields = [countryMultiSelectField, documentField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      countryMultiSelectField.retain_hidden_value = false;
+      countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
+      countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
+      documentField.retain_hidden_value = false;
+      documentField.show_condition = FIELD_3_SHOW_CONDITION;
+      documentField.value = {
+        document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+        document_filename: DOCUMENT_FILENAME_VALUE,
+        document_url: DOCUMENT_URL_VALUE
+      };
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS_2,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [countryMultiSelectField, documentField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with an empty array for the multi-select list field and null for the Document field', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          countrySelection: [],
+          documentField: null,
           field3: 'Hide all'
         },
         event: undefined,
