@@ -236,8 +236,12 @@ export class FieldsUtils {
    * Recursive check of an array or object and its descendants for the presence of any non-empty values.
    *
    * @param object The array or object to check
+   * @returns `true` if the array or object (or a descendant) contains at least one non-empty value; `false` otherwise
    */
   public static containsNonEmptyValues(object: object): boolean {
+    if (!object) {
+      return false;
+    }
     const values = Object.keys(object).map(key => object[key]);
     const objectRefs = [];
     // Note that pushing to an array is truthy (returns new length of the array), hence using ! to make it falsy.

@@ -7,9 +7,9 @@ import { WriteOrganisationComplexFieldComponent } from './write-organisation-com
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationService } from '../../../services/organisation';
 import { of } from 'rxjs';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
 
-describe('WrieteOrganisationFieldComponent', () => {
+describe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
   let fixture: ComponentFixture<WriteOrganisationFieldComponent>;
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
@@ -58,6 +58,38 @@ describe('WrieteOrganisationFieldComponent', () => {
       postCode: 'RG11EX'
   }];
   let organisationID = new CaseField();
+
+  const VALUE = {
+    OrganisationID: 'Org1234',
+    OrganisationName: 'Test Organisation'
+  };
+  const FIELD_ID = 'NewOrganisation';
+  const FIELD_TYPE: FieldType = {
+    id: 'Organisation',
+    type: 'Complex',
+  };
+  const ORGANISATION_ID: CaseField = <CaseField>({
+    id: 'OrganisationID',
+    label: 'Organisation ID',
+    field_type: { id: 'Text', type: 'Text' }
+  });
+  const ORGANISATION_NAME: CaseField = <CaseField>({
+    id: 'OrganisationName',
+    label: 'Name',
+    field_type: { id: 'Text', type: 'Text' }
+  });
+
+  const CASE_FIELD: CaseField = <CaseField>({
+    id: FIELD_ID,
+    label: 'New Organisation',
+    display_context: 'OPTIONAL',
+    field_type: {
+      ...FIELD_TYPE,
+      complex_fields: [ ORGANISATION_ID, ORGANISATION_NAME ]
+    },
+    value: VALUE,
+    retain_hidden_value: true
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -140,6 +172,11 @@ describe('WrieteOrganisationFieldComponent', () => {
   });
 
   it('should pre-select organisation', () => {
+    component.caseField = new CaseField();
+    component.caseField.field_type = {
+      ...FIELD_TYPE,
+      complex_fields: [ ORGANISATION_ID, ORGANISATION_NAME ]
+    }
     component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
@@ -391,5 +428,15 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
     expect(component.caseField.value).toEqual({'OrganisationID': null, 'OrganisationName': null});
+  });
+
+  it('should set retain_hidden_value to true for all sub-fields that are part of an Organisation field', () => {
+    component.caseField = CASE_FIELD;
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component.caseField.field_type.complex_fields.length).toEqual(2);
+    expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
+    expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toEqual(true);
   });
 });

@@ -41,22 +41,23 @@ describe('CaseEditSubmitComponent', () => {
   let formValueService: jasmine.SpyObj<FormValueService>;
   let formErrorService: jasmine.SpyObj<FormErrorService>;
   const caseFieldService = new CaseFieldService();
-  const fieldsUtils: FieldsUtils = new FieldsUtils();
+  const fieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
     data: new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })
   });
   const HIDE_ALL_TEXT_ELEMENT = new FormControl('Hide all');
   const COMPLEX_SUBFIELD_1_VALUE_RETAINED = '1st child field of complex type (retain)';
   const COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED = '2nd child field of complex type (do not retain)';
+  const COMPLEX_SUBFIELD_1_VALUE_EMPTY = '';
   const COMPLEX_ELEMENT_HIDDEN = new FormGroup({
     childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED),
     childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
   });
   COMPLEX_ELEMENT_HIDDEN.disable();
-  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormGroup({
-    childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED)
+  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormGroup({
+    childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_EMPTY)
   });
-  COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
   const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormGroup({
     childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
   });
@@ -94,6 +95,28 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
+  // Clone of MULTI_SELECT_ELEMENT_HIDDEN to avoid problems caused by the FormArray being modified during testing
+  const MULTI_SELECT_ELEMENT_HIDDEN_2 = new FormArray([
+    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_1, disabled: true }),
+    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_2, disabled: true })
+  ]);
+  MULTI_SELECT_ELEMENT_HIDDEN_2.disable();
+  // Clone of DOCUMENT_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
+  const DOCUMENT_ELEMENT_HIDDEN_2 = new FormGroup({
+    document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
+    document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
+    document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
+  });
+  DOCUMENT_ELEMENT_HIDDEN_2.disable();
+  // Clone of FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS to avoid problems caused by the FormGroup being
+  // modified during testing
+  const FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS_2 = new FormGroup({
+    data: new FormGroup({
+      countrySelection: MULTI_SELECT_ELEMENT_HIDDEN_2,
+      documentField: DOCUMENT_ELEMENT_HIDDEN_2,
+      field3: HIDE_ALL_TEXT_ELEMENT
+    })
+  });
   // Representative dummy UUID value
   const COLLECTION_ELEMENT_ID_ATTRIBUTE = '0a1b2c3d-a1b2-c3d4-e5f6-00aa11bb22cc';
   const COMPLEX_COLLECTION_ELEMENT_HIDDEN = new FormArray([
@@ -111,18 +134,18 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
-  const COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormArray([
+  const COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormArray([
     new FormGroup({
       // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
       // and a "value" attribute, which is the Complex field FormGroup itself
       id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED
+      value: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY
     })
   ]);
-  COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
   const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_2 = new FormGroup({
     data: new FormGroup({
-      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED,
+      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY,
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
@@ -145,10 +168,10 @@ describe('CaseEditSubmitComponent', () => {
     complexField1: COMPLEX_ELEMENT_HIDDEN
   });
   NESTED_COMPLEX_ELEMENT_HIDDEN.disable();
-  const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormGroup({
-    complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED
+  const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormGroup({
+    complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY
   });
-  NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
   const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormGroup({
     complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
   });
@@ -159,12 +182,23 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
+  // Clone of COMPLEX_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
+  const COMPLEX_ELEMENT_HIDDEN_2 = new FormGroup({
+    childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED),
+    childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
+  });
+  COMPLEX_ELEMENT_HIDDEN_2.disable();
+  // Clone of NESTED_COMPLEX_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
+  const NESTED_COMPLEX_ELEMENT_HIDDEN_2 = new FormGroup({
+    complexField1: COMPLEX_ELEMENT_HIDDEN_2
+  });
+  NESTED_COMPLEX_ELEMENT_HIDDEN_2.disable();
   const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN = new FormArray([
     new FormGroup({
       // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
       // and a "value" attribute, which is the nested Complex field FormGroup itself
       id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: NESTED_COMPLEX_ELEMENT_HIDDEN
+      value: NESTED_COMPLEX_ELEMENT_HIDDEN_2
     })
   ]);
   NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN.disable();
@@ -174,18 +208,18 @@ describe('CaseEditSubmitComponent', () => {
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
-  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED = new FormArray([
+  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormArray([
     new FormGroup({
       // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
       // and a "value" attribute, which is the nested Complex field FormGroup itself
       id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED
+      value: NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY
     })
   ]);
-  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED.disable();
+  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
   const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_2 = new FormGroup({
     data: new FormGroup({
-      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_RETAINED,
+      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY,
       field3: HIDE_ALL_TEXT_ELEMENT
     })
   });
@@ -209,7 +243,7 @@ describe('CaseEditSubmitComponent', () => {
       // Each Document field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
       // and a "value" attribute, which is the Document field FormGroup itself
       id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: DOCUMENT_ELEMENT_HIDDEN
+      value: DOCUMENT_ELEMENT_HIDDEN_2
     })
   ]);
   DOCUMENT_COLLECTION_ELEMENT_HIDDEN.disable();
@@ -1030,9 +1064,11 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
+          field1: FIELD_1_VALUE_RETAINED,
           field2: null,
           field3: 'Hide all',
           complexField1: {
+            childField1: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
             childField2: null
           }
         },
@@ -1230,7 +1266,7 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS,
+        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS_2,
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1290,7 +1326,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData without both the multi-select list field and Document field (effectively no update)', () => {
+    it('should submit CaseEventData with both the multi-select list field and Document field, maintaining existing values', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -1298,6 +1334,12 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
+          countrySelection: [ MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2 ],
+          documentField: {
+            document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+            document_filename: DOCUMENT_FILENAME_VALUE,
+            document_url: DOCUMENT_URL_VALUE
+          },
           field3: 'Hide all'
         },
         event: undefined,
@@ -1433,6 +1475,7 @@ describe('CaseEditSubmitComponent', () => {
           collectionField1: [{
             id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
             value: {
+              childField1: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
               childField2: null
             }
           }],
@@ -1490,10 +1533,10 @@ describe('CaseEditSubmitComponent', () => {
       complexCollectionField.value = [{
         id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
         value: {
-          [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+          [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_EMPTY
         }
       }];
-      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_EMPTY;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -1558,7 +1601,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData without the Complex collection field altogether (effectively no update)', () => {
+    it('should submit CaseEventData with an empty array for the Complex collection field', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -1566,6 +1609,7 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
+          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -1688,7 +1732,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with an array containing the Complex field, with null for any sub-fields NOT to be retained', () => {
+    it('should submit CaseEventData with an empty array for the Complex collection field', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -1696,12 +1740,7 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [{
-            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
-            value: {
-              childField2: null
-            }
-          }],
+          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -1834,9 +1873,142 @@ describe('CaseEditSubmitComponent', () => {
         data: {
           nestedComplexField1: {
             complexField1: {
+              childField1: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
               childField2: null
             }
           },
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test for nested Complex field type, retain_hidden_value = false, descendant fields with retain_hidden_value = true', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCaseField.id };
+    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [nestedComplexCaseField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      nestedComplexCaseField.retain_hidden_value = false;
+      nestedComplexCaseField.show_condition = FIELD_3_SHOW_CONDITION;
+      nestedComplexCaseField.value = {
+        [complexCaseField.id]: {
+          [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+          [complexSubField2.id]: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+        }
+      };
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': FORM_GROUP_WITH_NESTED_COMPLEX_FIELD,
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [nestedComplexCaseField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
+          CaseReferencePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueServiceReal },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileService, useValue: profileService },
+          { provide: ProfileNotifier, useValue: profileNotifier }
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with null for the nested Complex field', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          nestedComplexField1: null,
           field3: 'Hide all'
         },
         event: undefined,
@@ -1979,6 +2151,7 @@ describe('CaseEditSubmitComponent', () => {
             id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
             value: {
               complexField1: {
+                childField1: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
                 childField2: null
               }
             }
@@ -2038,14 +2211,14 @@ describe('CaseEditSubmitComponent', () => {
         id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
         value: {
           [complexCaseField.id]: {
-            [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED
+            [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_EMPTY
           }
         }
       }];
       complexCaseField.value = {
-        [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_RETAINED
+        [complexSubField1.id]: COMPLEX_SUBFIELD_1_VALUE_EMPTY
       };
-      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_RETAINED;
+      complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_EMPTY;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
@@ -2110,7 +2283,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData without the nested Complex collection field altogether (effectively no update)', () => {
+    it('should submit CaseEventData with an empty array for the nested Complex collection field', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -2118,6 +2291,7 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
+          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -2245,7 +2419,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with an array containing the nested Complex field, with null for any sub-fields NOT to be retained', () => {
+    it('should submit CaseEventData with an empty array for the nested Complex collection field', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -2253,14 +2427,7 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [{
-            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
-            value: {
-              complexField1: {
-                childField2: null
-              }
-            }
-          }],
+          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -2384,7 +2551,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData without the Document collection field altogether (effectively no update)', () => {
+    it('should submit CaseEventData with the Document collection field, maintaining existing values', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -2392,6 +2559,14 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+              document_filename: DOCUMENT_FILENAME_VALUE,
+              document_url: DOCUMENT_URL_VALUE
+            }
+          }],
           field3: 'Hide all'
         },
         event: undefined,

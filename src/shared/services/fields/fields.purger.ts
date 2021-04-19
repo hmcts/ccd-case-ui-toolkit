@@ -181,8 +181,10 @@ export class FieldsPurger {
    *
    * @param formGroup The `FormGroup` instance containing the `FormControl` for the specified field
    * @param field The `CaseField` whose value is to be deleted in the backend
+   * @param parentField Reference to the parent `CaseField`. Used for checking specifically where a Complex field and
+   * its sub-fields have `retain_hidden_value` set to `true`, but the field's parent has it set to `false` or undefined
    */
-  public deleteFieldValue(formGroup: FormGroup, field: CaseField) {
+  public deleteFieldValue(formGroup: FormGroup, field: CaseField, parentField?: CaseField) {
     const fieldType: FieldTypeEnum = field.field_type.type;
     const fieldControl = formGroup.get(field.id);
 
@@ -192,8 +194,11 @@ export class FieldsPurger {
           /**
            * If the field is a Complex type, loop over its sub-fields and call deleteFieldValue() for:
            *
-           * * Any sub-fields where retain_hidden_value is false, if the parent field has retain_hidden_value = true;
-           * * ALL sub-fields if the parent field has retain_hidden_value = false;
+           * * Any sub-fields where retain_hidden_value is false/undefined, if the parent field has
+           * retain_hidden_value = true;
+           * * ALL sub-fields if the parent field has retain_hidden_value = true BUT its _own_ parent has
+           * retain_hidden_value = false/undefined (thus overriding anything else);
+           * * ALL sub-fields if the parent field has retain_hidden_value = false/undefined;
            * * Any Complex sub-fields *regardless of their retain_hidden_value* (in order to inspect the sub-fields
            * of a Complex type within another Complex type)
            */
@@ -201,10 +206,12 @@ export class FieldsPurger {
             for (const complexSubField of field.field_type.complex_fields) {
               if ((complexSubField.field_type.type === 'Complex' && complexSubField.field_type.complex_fields.length > 0) ||
                   (complexSubField.field_type.type !== 'Complex' &&
-                  (field.retain_hidden_value ? !complexSubField.retain_hidden_value : true))) {
+                  (field.retain_hidden_value
+                    ? !complexSubField.retain_hidden_value || (parentField && !parentField.retain_hidden_value)
+                    : true))) {
                 // The fieldControl is cast to a FormGroup because a Complex field type uses this as its underlying
                 // implementation
-                this.deleteFieldValue(fieldControl as FormGroup, complexSubField);
+                this.deleteFieldValue(fieldControl as FormGroup, complexSubField, field);
               }
             }
           }
@@ -257,9 +264,13 @@ export class FieldsPurger {
           // tslint:disable-next-line: no-switch-case-fall-through
         case 'MultiSelectList':
           // Field control should be a FormArray, so map each of its values to null
+          // NOTE: The FormArray cannot just be set to an empty array because Angular checks that all existing values
+          // of a FormArray are present; setting the control's value to an empty array causes a runtime error
           fieldControl.setValue(fieldControl.value.map(() => null));
           break;
         case 'Document':
+          // NOTE: The field control (a FormGroup in this case) cannot just be set to null because Angular checks that
+          // all existing values of a FormGroup are present; setting the control's value to null causes a runtime error
           const documentFieldValue = fieldControl.value;
           for (const key in documentFieldValue) {
             if (fieldControl.get(key)) {
@@ -269,6 +280,9 @@ export class FieldsPurger {
               fieldControl.get(key).setValue(null);
             }
           }
+          break;
+        case 'DynamicList':
+          // TODO Handling to be implemented under EUI-3528
           break;
         default:
           fieldControl.setValue(null);

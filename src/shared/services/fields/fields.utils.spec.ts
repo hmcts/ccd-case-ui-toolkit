@@ -148,6 +148,10 @@ describe('FieldsUtils', () => {
   });
 
   describe('containsNonEmptyValues() function tests', () => {
+    it('should return false for null', () => {
+      expect(FieldsUtils.containsNonEmptyValues(null)).toBe(false);
+    });
+
     it('should return true for a non-empty object', () => {
       expect(FieldsUtils.containsNonEmptyValues({ field1: 'value' })).toBe(true);
     });

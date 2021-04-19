@@ -2,25 +2,34 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 import { DebugElement } from '@angular/core';
 import { CaseField, FieldType } from '../../../domain/definition';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { PaletteUtilsModule } from '../utils';
 
-const VALUE = '1234-5678-1234-5678';
-const FIELD_ID = 'CaseReference';
+const VALUE = {
+  CaseReference: '1234-5678-1234-5678'
+};
+const FIELD_ID = 'NewCaseLink';
 const FIELD_TYPE: FieldType = {
   id: 'CaseLink',
   type: 'Complex',
 };
-
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_REFERENCE: CaseField = <CaseField>({
   id: 'CaseReference',
-  label: 'New Case Reference',
-  display_context: 'OPTIONAL',
-  field_type: FIELD_TYPE,
-  value: VALUE
+  label: 'Case Reference',
+  field_type: { id: 'TextCaseReference', type: 'Text' }
 });
 
-const FORM_GROUP: FormGroup = new FormGroup({});
+const CASE_FIELD: CaseField = <CaseField>({
+  id: FIELD_ID,
+  label: 'New Case Link',
+  display_context: 'OPTIONAL',
+  field_type: {
+    ...FIELD_TYPE,
+    complex_fields: [ CASE_REFERENCE ]
+  },
+  value: VALUE,
+  retain_hidden_value: true
+});
 
 describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
@@ -48,7 +57,7 @@ describe('WriteCaseLinkFieldComponent', () => {
   }));
 
   it('should render the case reference', () => {
-      expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it('should validate the case reference number', () => {
@@ -57,5 +66,10 @@ describe('WriteCaseLinkFieldComponent', () => {
     expect(component.validCaseReference('1234-5678-1234-5678')).toBeTruthy();
     expect(component.validCaseReference('123456781234567890')).toBeFalsy();
     expect(component.validCaseReference('1234Invalid')).toBeFalsy();
+  });
+
+  it('should set retain_hidden_value to true for all sub-fields that are part of a CaseLink field', () => {
+    expect(component.caseField.field_type.complex_fields.length).toEqual(1);
+    expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
   });
 });

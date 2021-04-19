@@ -69,6 +69,15 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
       // It's not an address so set it up according to its own display_context.
       this.formValidatorsService.addValidators(caseField, control);
     }
+
+    // For Address-type fields, ensure that all sub-fields inherit the same value for retain_hidden_value as this
+    // parent; although address fields use the Complex type, each of them is meant to be treated as one field
+    if (this.isAddressUK() && this.caseField) {
+      for (const addressSubField of this.caseField.field_type.complex_fields) {
+        addressSubField.retain_hidden_value = this.caseField.retain_hidden_value;
+      }
+    }
+
     FieldsUtils.addCaseFieldAndComponentReferences(control, caseField, this);
     return caseField;
   }

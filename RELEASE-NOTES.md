@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 3.0.0-epsilon
+**EUI-3622** Pre-release candidate modifying Case Data payload submission, following reinterpretation of "retain hidden value" semantics
+
 ### Version 3.0.0-delta
 Incorporating fixes in Version 2.72.9-prerelease-fix-case-submission for EUI-3494 and EUI-3495
 

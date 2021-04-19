@@ -53,6 +53,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       this.instantiateOrganisationFormGroup(null, null);
       this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
     }
+
+    // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an
+    // Organisation field uses the Complex type, it is meant to be treated as one field
+    if (this.caseField) {
+      for (const organisationSubField of this.caseField.field_type.complex_fields) {
+        organisationSubField.retain_hidden_value = this.caseField.retain_hidden_value;
+      }
+    }
   }
 
   private instantiateOrganisationFormGroup(orgIDState: any, orgNameState: any): void {
