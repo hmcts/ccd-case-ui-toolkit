@@ -48,14 +48,14 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   private dateTimePickerFormat = 'MM YYYY';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
-              @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats,
-              @Inject(NgxMatDateAdapter) private datetimeAdapter: NgxMatMomentAdapter) {
+              @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
+                
     super();
   }
 
   ngOnInit(): void {
-    this.datetimeAdapter.getDayOfWeekNames('long');
     this.caseFieldEntryFormatting();
+    console.log(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat);
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
@@ -136,8 +136,13 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   private caseFieldEntryFormatting() {
+    console.log(this.ngxMatDateFormats);
+    console.log(this.caseField.dateTimeEntryFormat);
     this.ngxMatDateFormats.parse.dateInput = this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat;
     this.ngxMatDateFormats.display.dateInput = this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat;
+    console.log('After setting dateInput');
+    console.log(this.ngxMatDateFormats);
+    console.log(this.caseField.dateTimeEntryFormat);
 
     if (this.caseField.month_format) {
       this.ngxMatDateFormats.display.monthYearLabel = this.caseField.month_format;
