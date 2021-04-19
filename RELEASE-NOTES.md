@@ -11,6 +11,13 @@ Incorporating fix in Version 2.72.5-remove-null-http-request-headers for EUI-346
 ### Version 3.0.0-alpha
 **EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
 
+### Version 2.79.4
+**EUI-3708** Fix for case submission regression.
+**EUI-3728** Fix for labels showing on tabs that should be hidden.
+
+### Version 2.79.3-mandatory-organisation-hotfix
+**EUI-3674** Add organisation policy MANDATORY validator check
+
 ### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
