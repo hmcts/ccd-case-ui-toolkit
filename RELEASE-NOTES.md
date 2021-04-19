@@ -14,6 +14,9 @@ Incorporating fix in Version 2.72.5-remove-null-http-request-headers for EUI-346
 ### Version 3.0.0-alpha
 **EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
 
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
 ### Version 2.79.4
 **EUI-3708** Fix for case submission regression.
 **EUI-3728** Fix for labels showing on tabs that should be hidden.
