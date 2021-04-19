@@ -1,5 +1,24 @@
 ## RELEASE NOTES
 
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
+### Version 2.79.4
+**EUI-3708** Fix for case submission regression.
+**EUI-3728** Fix for labels showing on tabs that should be hidden.
+
+### Version 2.79.3-mandatory-organisation-hotfix
+**EUI-3674** Add organisation policy MANDATORY validator check
+
+### Version 2.79.2
+**EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
+
+### Version 2.79.1
+**EUI-3452** Fix to some issues on the Check your answers page.
+
+### 2.79.0
+**EUI-3548** WA integration
+
 ### Version 2.75.1
 **EUI-3577** Fixing DynamicList regression bugs
 
@@ -17,6 +36,9 @@
 
 ### Version 2.73.5-ngmodel-deprecation
 **EUI-3410** ngModel deprecation
+
+### Version 2.73.2-collection-date-field
+**EUI-2667** Fix to date field rendering within collections
 
 ### Version 2.73.0-hotfix-error-message-display
 **EUI-3594** Fix issue with error message specifics not being displayed

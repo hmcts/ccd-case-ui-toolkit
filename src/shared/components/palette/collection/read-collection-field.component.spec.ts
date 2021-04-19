@@ -41,7 +41,7 @@ describe('ReadCollectionFieldComponent', () => {
   });
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'context']
+    inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
 
   let fixture: ComponentFixture<ReadCollectionFieldComponent>;
@@ -166,7 +166,7 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   });
   let FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'context']
+    inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
 
   let fixture: ComponentFixture<ReadCollectionFieldComponent>;
