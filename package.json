@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.79.6-breathing-data-not-being-persisted",
+  "version": "2.79.7-error-on-previous-pages",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
