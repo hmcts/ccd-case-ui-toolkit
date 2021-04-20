@@ -17,7 +17,6 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-edit-page',
