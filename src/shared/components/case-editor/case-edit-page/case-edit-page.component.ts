@@ -51,6 +51,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  private static scrollToTop(): void {
+    window.scrollTo(0, 0);
+  }
+
+  private static setFocusToTop() {
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
+  }
+
   constructor(
     private caseEdit: CaseEditComponent,
     private route: ActivatedRoute,
@@ -72,22 +83,22 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     this.route.params
       .subscribe(params => {
-      let pageId = params['page'];
-      if (!this.currentPage || pageId !== this.currentPage.id) {
-        let page = this.caseEdit.getPage(pageId);
-        if (page) {
-          this.currentPage = page;
-        } else {
-          if (this.currentPage) {
-            return this.next();
+        let pageId = params['page'];
+        if (!this.currentPage || pageId !== this.currentPage.id) {
+          let page = this.caseEdit.getPage(pageId);
+          if (page) {
+            this.currentPage = page;
           } else {
-            return this.first();
+            if (this.currentPage) {
+              return this.next();
+            } else {
+              return this.first();
+            }
           }
+          this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage.id))
         }
-        this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage.id))
-      }
-    });
-    this.setFocusToTop();
+      });
+    CaseEditPageComponent.setFocusToTop();
   }
 
   ngAfterViewChecked(): void {
@@ -106,15 +117,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
   }
 
+  /**
+   * caseEventData.event_data contains all the values from the previous pages so we set caseEventData.data = caseEventData.event_data
+   * This builds the form with data from the previous pages
+   * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
+   */
   toPreviousPage() {
     let caseEventData: CaseEventData = this.buildCaseEventData();
-    // caseEventData.event_data contains all the values from the previous pages so we set caseEventData.data = caseEventData.event_data
-    // This builds the form with data from the previous pages
-    // EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
-    this.setFocusToTop();
+    CaseEditPageComponent.setFocusToTop();
   }
 
   submit() {
@@ -130,9 +143,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           this.saveDraft();
           this.next();
         }, error => this.handleError(error));
-      this.scrollToTop();
+      CaseEditPageComponent.scrollToTop();
     }
-    this.setFocusToTop();
+    CaseEditPageComponent.setFocusToTop();
   }
 
   updateFormData(jsonData: CaseEventData): void {
@@ -217,24 +230,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.isSubmitting;
   }
 
-  getCaseId(): String {
+  getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  getCancelText(): String {
-    if (this.eventTrigger.can_save_draft) {
-      return 'Return to case list';
-    } else {
-      return 'Cancel';
-    }
+  getCancelText(): string {
+    return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Return to case list';
   }
 
   getTriggerText(): string {
-    if (this.eventTrigger && this.eventTrigger.can_save_draft) {
-      return CaseEditPageComponent.TRIGGER_TEXT_SAVE;
-    } else {
-      return CaseEditPageComponent.TRIGGER_TEXT_START;
-    }
+    return this.eventTrigger && this.eventTrigger.can_save_draft
+      ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
+      : CaseEditPageComponent.TRIGGER_TEXT_START
   }
 
   private initDialog() {
@@ -252,16 +259,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private discard() {
+  private discard(): void {
     if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
       this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
     } else {
       this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
     }
-  }
-
-  private scrollToTop(): void {
-    window.scrollTo(0, 0);
   }
 
   private handleError(error) {
@@ -360,16 +363,5 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase);
 
     return caseEventData;
-  }
-
-  private clone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
-
-  private setFocusToTop() {
-    const topContainer = document.getElementById('top');
-    if (topContainer) {
-      topContainer.focus();
-    }
   }
 }
