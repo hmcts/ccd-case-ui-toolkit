@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.0.0-unsaved-changes-alpha
+**EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
+
 ### Version 2.79.5
 **EUI-3797** Hotfix for missing content in the Payment History tab.
 
