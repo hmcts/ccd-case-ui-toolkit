@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 
-import { CaseEditConfirmComponent, CaseEditPageComponent, CaseEditSubmitComponent } from '.';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
-import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { CaseEditConfirmComponent } from './case-edit-confirm';
+import { CaseEditPageComponent } from './case-edit-page';
+import { CaseEditSubmitComponent } from './case-edit-submit';
+import { UnsavedChangesGuard } from './guards';
 import { CaseEditWizardGuard } from './services';
 
 export const editorRouting: Routes = [

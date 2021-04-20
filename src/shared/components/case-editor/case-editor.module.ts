@@ -3,16 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import {
-  CaseCreateComponent,
-  CaseEditComponent,
-  CaseEditConfirmComponent,
-  CaseEditFormComponent,
-  CaseEditPageComponent,
-  CaseEditSubmitComponent,
-  CaseProgressComponent,
-} from '.';
-import { CallbackErrorsComponent, MarkdownModule } from '../../components';
+import { CallbackErrorsComponent } from '../../components/error';
+import { MarkdownModule } from '../../components/markdown';
 import { ConditionalShowModule, ConditionalShowRegistrarService, LabelSubstitutorModule } from '../../directives';
 import { PipesModule } from '../../pipes/pipes.module';
 import {
@@ -31,6 +23,13 @@ import {
 } from '../../services';
 import { ErrorsModule } from '../error/errors.module';
 import { ComplexModule, PaletteModule } from '../palette';
+import { CaseCreateComponent } from './case-create';
+import { CaseEditConfirmComponent } from './case-edit-confirm';
+import { CaseEditFormComponent } from './case-edit-form';
+import { CaseEditPageComponent } from './case-edit-page';
+import { CaseEditSubmitComponent } from './case-edit-submit';
+import { CaseEditComponent } from './case-edit/case-edit.component';
+import { CaseProgressComponent } from './case-progress';
 import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
 import {
   CaseEditWizardGuard,
@@ -41,59 +40,59 @@ import {
 } from './services';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        PipesModule,
-        MarkdownModule,
-        FormsModule,
-        ReactiveFormsModule,
-        PaletteModule,
-        ConditionalShowModule,
-        LabelSubstitutorModule,
-        ErrorsModule,
-        ComplexModule,
-    ],
-    declarations: [
-        CaseEditConfirmComponent,
-        CaseEditComponent,
-        CaseEditPageComponent,
-        CaseEditFormComponent,
-        CaseEditSubmitComponent,
-        CaseCreateComponent,
-        CaseProgressComponent
-    ],
-    exports: [
-        CaseEditConfirmComponent,
-        CaseEditComponent,
-        CaseEditPageComponent,
-        CaseEditFormComponent,
-        CaseEditSubmitComponent,
-        CaseCreateComponent,
-        CaseProgressComponent,
-        CallbackErrorsComponent,
-    ],
-    providers: [
-        FieldsUtils,
-        FieldsPurger,
-        ConditionalShowRegistrarService,
-        WizardFactoryService,
-        FieldTypeSanitiser,
-        FormValueService,
-        FormErrorService,
-        PageValidationService,
-        CaseFieldService,
-        OrderService,
-        EventTriggerService,
-        ProfileService,
-        ProfileNotifier,
-        AddressesService,
-        DocumentManagementService,
-        RouterHelperService,
-        ProfileService,
-        CaseEditWizardGuard,
-        WorkAllocationService,
-        UnsavedChangesGuard
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    PipesModule,
+    MarkdownModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PaletteModule,
+    ConditionalShowModule,
+    LabelSubstitutorModule,
+    ErrorsModule,
+    ComplexModule,
+  ],
+  declarations: [
+    CaseCreateComponent,
+    CaseEditComponent,
+    CaseEditConfirmComponent,
+    CaseEditFormComponent,
+    CaseEditPageComponent,
+    CaseEditSubmitComponent,
+    CaseProgressComponent
+  ],
+  exports: [
+    CaseCreateComponent,
+    CaseEditComponent,
+    CaseEditConfirmComponent,
+    CaseEditFormComponent,
+    CaseEditPageComponent,
+    CaseEditSubmitComponent,
+    CaseProgressComponent,
+    CallbackErrorsComponent
+  ],
+  providers: [
+    FieldsUtils,
+    FieldsPurger,
+    ConditionalShowRegistrarService,
+    WizardFactoryService,
+    FieldTypeSanitiser,
+    FormValueService,
+    FormErrorService,
+    PageValidationService,
+    CaseFieldService,
+    OrderService,
+    EventTriggerService,
+    ProfileService,
+    ProfileNotifier,
+    AddressesService,
+    DocumentManagementService,
+    RouterHelperService,
+    ProfileService,
+    CaseEditWizardGuard,
+    UnsavedChangesGuard,
+    WorkAllocationService
+  ]
 })
 export class CaseEditorModule {}

@@ -1,7 +1,7 @@
 import { HostListener } from '@angular/core';
 
-import { ComponentCanDeactivate } from '../domain/component-can-deactivate.interface';
-import { UnsavedChangesGuard } from '../guards/unsaved-changes.guard';
+import { ComponentCanDeactivate } from '../domain';
+import { UnsavedChangesGuard } from '../guards';
 
 export class UnsavedChangesComponent implements ComponentCanDeactivate {
   /**

@@ -18,7 +18,7 @@ import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
-import { UnsavedChangesComponent } from '../unsaved-changes/unsaved-changes.component';
+import { UnsavedChangesComponent } from '../unsaved-changes';
 
 // @dynamic
 @Component({

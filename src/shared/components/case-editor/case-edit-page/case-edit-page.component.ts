@@ -11,7 +11,7 @@ import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services/page-validation.service';
-import { UnsavedChangesComponent } from '../unsaved-changes/unsaved-changes.component';
+import { UnsavedChangesComponent } from '../unsaved-changes';
 
 @Component({
   selector: 'ccd-case-edit-page',

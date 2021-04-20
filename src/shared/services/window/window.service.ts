@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { UrlTree } from '@angular/router';
 
 @Injectable()
 export class WindowService {
