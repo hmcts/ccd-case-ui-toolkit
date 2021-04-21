@@ -1,5 +1,19 @@
 ## RELEASE NOTES
 
+### Version 2.79.14-grey-bars-depending-on-fields-on-other-pages-alpha
+**EUI-3854** Fix for grey bars showing when they shouldn't because enabling fields are on other pages.
+
+### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+
+### Version 2.79.12
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+
+### Version 2.79.11-crud-issues
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
+
+### Version 2.79.10-input-type-accessibility
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
 
 ### Version 2.79.9-Unresponsive-and-laggy-show-hide-conditions
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
