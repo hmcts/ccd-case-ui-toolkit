@@ -235,7 +235,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   getCancelText(): string {
-    return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Return to case list';
+    return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
 
   getTriggerText(): string {
