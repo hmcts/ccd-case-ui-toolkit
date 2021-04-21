@@ -82,7 +82,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
   }
 
-  public ngOnInit(): void {
+  ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
@@ -109,7 +109,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.caseDetails.case_type.printEnabled;
   }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
