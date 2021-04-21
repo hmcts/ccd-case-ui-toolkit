@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.79.6-missing-ftpa-tab-alpha
+**EUI-3825** Fix for missing FTPA tab contents.
+
 ### Version 2.79.5
 **EUI-3797** Hotfix for missing content in the Payment History tab.
 
