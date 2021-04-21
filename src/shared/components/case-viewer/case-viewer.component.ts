@@ -223,8 +223,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
-
-    // EUI-3825. Build a FormGroup for use in the filtering.
     this.formGroup = this.buildFormGroup(this.caseFields);
 
     if (this.activityPollingService.isEnabled) {
@@ -255,6 +253,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
+   * For EUI-3825:
    * Builds a FormGroup from all the CaseFields contained within the view.
    * This FormGroup is necessary for evaluation the show/hide conditions of
    * fields that are dependent on a field only available on a DIFFERENT tab.
