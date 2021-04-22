@@ -2,16 +2,16 @@
   <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
   <table class="complex-panel-table">
     <tbody>
-      <ng-container *ngFor="let field of caseField | ccdFieldsFilter">
+      <ng-container *ngFor="let field of caseField | ccdReadFieldsFilter:false :undefined :true">
         <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
-          <tr class="complex-panel-compound-field">
+          <tr class="complex-panel-compound-field" [hidden]="field.hidden">
             <td colspan="2">
               <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
             </td>
           </tr>
         </ng-container>
         <ng-template #SimpleRow>
-          <tr class="complex-panel-simple-field">
+          <tr class="complex-panel-simple-field" [hidden]="field.hidden">
             <th><span class="text-16">{{field.label}}</span></th>
             <td>
                 <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>

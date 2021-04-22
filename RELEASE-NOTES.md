@@ -1,7 +1,20 @@
 ## RELEASE NOTES
 
-### Version 2.79.2
+### Version 2.79.6-nested-multi-select-labels-gamma
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label.
+
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
+### Version 2.79.4
+**EUI-3708** Fix for case submission regression.
+**EUI-3728** Fix for labels showing on tabs that should be hidden.
+
+### Version 2.79.3-mandatory-organisation-hotfix
+**EUI-3674** Add organisation policy MANDATORY validator check
+
+### Version 2.79.2
+**EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
 ### Version 2.79.1
 **EUI-3452** Fix to some issues on the Check your answers page.
