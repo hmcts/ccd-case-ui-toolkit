@@ -24,7 +24,7 @@ import { ProfileNotifier } from '../../services/profile';
 import { ProfileService } from '../../services/profile/profile.service';
 import { RouterHelperService } from '../../services/router';
 import { ErrorsModule } from '../error/errors.module';
-import { PaletteModule } from '../palette';
+import { ComplexModule, PaletteModule } from '../palette';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
@@ -50,6 +50,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ConditionalShowModule,
         LabelSubstitutorModule,
         ErrorsModule,
+        ComplexModule,
     ],
     declarations: [
         CaseEditConfirmComponent,

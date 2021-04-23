@@ -22,7 +22,6 @@ export class AppConfig extends AbstractAppConfig {
     'activity_url': '',
     'activity_max_request_per_batch': 25,
     'print_service_url': '/print',
-    'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
@@ -72,7 +71,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentsUrl() {
     return this.config.payments_url;
   }
-  
+
   public getPayBulkScanBaseUrl() {
     return this.config.pay_bulk_scan_url;
   }
@@ -114,10 +113,6 @@ export class AppConfig extends AbstractAppConfig {
 
   public getPrintServiceUrl() {
     return this.config.print_service_url;
-  }
-
-  public getRemotePrintServiceUrl() {
-    return this.config.remote_print_service_url;
   }
 
   public getPaginationPageSize() {
