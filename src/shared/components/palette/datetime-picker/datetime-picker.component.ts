@@ -6,13 +6,14 @@ import {
 } from '@angular-material-components/datetime-picker';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ThemePalette } from '@angular/material';
+import { MAT_DATE_LOCALE, ThemePalette } from '@angular/material';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { Moment } from 'moment/moment';
+import moment = require('moment/moment');
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -21,7 +22,8 @@ import { Moment } from 'moment/moment';
   encapsulation: ViewEncapsulation.None,
   providers: [
     {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS},
-    {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter}]
+    {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter},
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
@@ -41,23 +43,42 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public startView = 'month';
   public yearSelection = false;
   public checkTime = true;
+  public stringEdited = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  private dateTimePickerFormat = 'MM YYYY';
+  private dateTimeEntryFormat;
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
               @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
-                
+
     super();
   }
 
   ngOnInit(): void {
-    this.caseFieldEntryFormatting();
-    console.log(this.caseField.dateTimeEntryFormat);
-    this.configureDatePicker(this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat);
+    this.dateTimeEntryFormat = this.caseField.dateTimeEntryFormat;
+    this.configureDatePicker(this.dateTimeEntryFormat);
+    this.setDateTimeFormat();
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    // in resetting the format just after the page initialises, the input can be reformatted
+    // otherwise the last format given will be how the text shown will be displayed
+    setTimeout(() => {
+      this.setDateTimeFormat();
+    }, 1);
+  }
+
+  setDateTimeFormat(): void {
+    this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
+    this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
+  }
+
+  focusIn(): void {
+    this.setDateTimeFormat();
+  }
+
+  toggleClick(): void {
+    this.setDateTimeFormat();
   }
 
   minDate(caseField: CaseField): Date {
@@ -72,8 +93,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     if (this.caseField.field_type.type === 'Date') {
       this.hideTime = true;
       this.checkTime = false;
-      this.ngxMatDateFormats.parse.dateInput = this.formatTranslationService.removeTime(this.caseField.dateTimeEntryFormat);
-      this.ngxMatDateFormats.display.dateInput = this.formatTranslationService.removeTime(this.caseField.dateTimeEntryFormat);
+      this.dateTimeEntryFormat = this.formatTranslationService.removeTime(this.dateTimeEntryFormat);
     }
 
     if (this.checkTime) {
@@ -132,22 +152,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.dateControl.patchValue(event.toISOString());
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
-    }
-  }
-
-  private caseFieldEntryFormatting() {
-    console.log(this.ngxMatDateFormats);
-    console.log(this.caseField.dateTimeEntryFormat);
-    this.ngxMatDateFormats.parse.dateInput = this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat;
-    this.ngxMatDateFormats.display.dateInput = this.caseField.dateTimeEntryFormat || this.dateTimePickerFormat;
-    console.log('After setting dateInput');
-    console.log(this.ngxMatDateFormats);
-    console.log(this.caseField.dateTimeEntryFormat);
-
-    if (this.caseField.month_format) {
-      this.ngxMatDateFormats.display.monthYearLabel = this.caseField.month_format;
-      this.ngxMatDateFormats.display.dateA11yLabel = this.caseField.month_format;
-      this.ngxMatDateFormats.display.monthYearA11yLabel = this.caseField.month_format;
     }
   }
 }

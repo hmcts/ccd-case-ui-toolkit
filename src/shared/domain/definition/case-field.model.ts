@@ -74,10 +74,8 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeEntryFormat(): string {
-    if (this.display_context) {
-      if (this.display_context.toUpperCase() === "READONLY") {
-        return null;
-      }
+    if (this.isComplexDisplay()) {
+      return null;
     }
     if (this.display_context_parameter) {
       return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
@@ -87,6 +85,9 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeDisplayFormat(): string {
+    if (this.isComplexEntry()) {
+      return null;
+    }
     if (this.display_context_parameter) {
       return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
     }
@@ -94,9 +95,31 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
+  public isComplexDisplay() {
+    return (this.isComplex() || this.isCollection()) && this.isReadonly();
+  }
+
+  @Expose()
+  public isComplexEntry() {
+    return (this.isComplex() || this.isCollection()) && (this.isOptional() || this.isMandatory());
+  }
+
+  @Expose()
   public isReadonly() {
     return !_.isEmpty(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
+  }
+
+  @Expose()
+  public isOptional() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'OPTIONAL';
+  }
+
+  @Expose()
+  public isMandatory() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'MANDATORY';
   }
 
   @Expose()
@@ -116,7 +139,7 @@ export class CaseField implements Orderable {
       && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
   }
   private extractBracketValue(fmt: string, paramName: string, leftBracket= '(', rightBracket= ')' ): string {
-      fmt.split(',')
+      fmt = fmt.split(',')
         .find(a => a.trim().startsWith(paramName));
       if (fmt) {
         let s = fmt.indexOf(leftBracket) + 1;

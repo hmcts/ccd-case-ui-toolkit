@@ -67,6 +67,11 @@ describe('CaseField', () => {
     expect(component.dateTimeEntryFormat).toBe('wibble');
   })
 
+  it ( 'should be able to extract format from different bracket values ', () => {
+    component.display_context_parameter = '#test(bla), foo, bar, #DATETIMEENTRY(wibble), thud '
+    expect(component.dateTimeEntryFormat).toBe('wibble');
+  })
+
   it ('should be return null for null/undef/empty display context parameterm', () => {
     component.display_context_parameter = null;
     expect(component.dateTimeDisplayFormat).toBeNull();

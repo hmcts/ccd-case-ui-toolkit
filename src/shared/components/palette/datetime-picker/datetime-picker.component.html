@@ -7,7 +7,6 @@
       <span class="error-message"
             *ngIf="dateControl && dateControl.errors && dateControl.touched">{{dateControl.errors | ccdFirstError}}</span>
     </legend>
-
     <div class="datepicker-container">
       <input class="govuk-input"
              #input
@@ -17,6 +16,7 @@
              [max]="maxDate(caseField)"
              [formControl]="dateControl"
              [ngxMatDatetimePicker]="picker"
+             (focusin)="focusIn()"
       >
       <mat-datepicker-toggle matSuffix [for]="picker" id="pickerOpener"></mat-datepicker-toggle>
       <ngx-mat-datetime-picker #picker
@@ -34,6 +34,7 @@
 
                                (yearSelected)="yearSelected($event)"
                                (monthSelected)="monthSelected($event)"
+                               (opened)="toggleClick()"
       >
       </ngx-mat-datetime-picker>
     </div>
