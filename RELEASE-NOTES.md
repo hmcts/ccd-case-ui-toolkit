@@ -1,4 +1,15 @@
 ## RELEASE NOTES
+
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
+### Version 2.79.4
+**EUI-3708** Fix for case submission regression.
+**EUI-3728** Fix for labels showing on tabs that should be hidden.
+
+### Version 2.79.3-mandatory-organisation-hotfix
+**EUI-3674** Add organisation policy MANDATORY validator check
+
 ### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
