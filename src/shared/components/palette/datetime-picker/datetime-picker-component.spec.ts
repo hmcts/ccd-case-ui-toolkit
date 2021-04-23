@@ -15,7 +15,7 @@ import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 import { CaseFieldService } from '../../../services';
 import { CaseField, FieldType } from '../../../domain';
 
-describe('DatetimePickerComponent', () => {
+fdescribe('DatetimePickerComponent', () => {
 
   let component: DatetimePickerComponent;
   let fixture: ComponentFixture<DatetimePickerComponent>;
@@ -89,6 +89,24 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
     tick(1);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(null);
+    flush();
+  }));
+
+  it('should set datetime format when input clicked', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+    spyOn(component, 'setDateTimeFormat');
+    component.focusIn();
+    expect(component.setDateTimeFormat).toHaveBeenCalled();
+    flush();
+  }));
+
+  it('should set datetime format when datetime picker opened', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+    spyOn(component, 'setDateTimeFormat');
+    component.toggleClick();
+    expect(component.setDateTimeFormat).toHaveBeenCalled();
     flush();
   }));
 
