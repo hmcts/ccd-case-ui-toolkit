@@ -84,6 +84,8 @@ export class FieldsFilterPipe implements PipeTransform {
    *
    * @param complexField
    * @param keepEmpty
+   * @param index
+   * @param stripHidden
    * @returns {any}
    */
   transform(complexField: CaseField, keepEmpty?: boolean, index?: number, stripHidden= false): CaseField[] {
