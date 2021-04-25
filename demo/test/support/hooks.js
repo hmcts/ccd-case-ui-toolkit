@@ -5,7 +5,8 @@ const fs = require('fs');
 
 const CucumberReportLog = require("./reportLogger");
 const MockApp = require('../nodeMock/app');
-
+const browserWaits = require('./customWaits');
+const minimist = require('minimist');
 
 
 defineSupportCode(({ Before,After }) => {
@@ -16,6 +17,10 @@ defineSupportCode(({ Before,After }) => {
     });
 
     After(async function(scenario) {
+        const argv = minimist(process.argv.slice(2));
+        if (argv.dev){
+            await browserWaits.waitForSeconds(30*60);
+        }
         await MockApp.stopServer();
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
         const world = this;

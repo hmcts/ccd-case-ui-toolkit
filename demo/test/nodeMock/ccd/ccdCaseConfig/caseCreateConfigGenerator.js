@@ -60,7 +60,7 @@ class CCDCaseConfig extends CCDCaseField{
    
 
     addCCDFieldToPage(wizardPage,fieldConfig){
-        
+        const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
         this.caseConfigTemplate.case_fields.push(ccdField);
         wizardPage.wizard_page_fields.push({
             "case_field_id": fieldConfig.id,
@@ -121,8 +121,28 @@ class CCDCaseConfig extends CCDCaseField{
         return this; 
     }
 
+    setFieldPropsForField(fieldConfig,fieldprops) {
+        this.setObjectProps(fieldConfig, fieldprops);
+        return this;
+    }
+
+
     updateFieldProps(fieldId, fieldprops) {
-        const fieldConfig = this.getCaseFieldConfig(fieldId);
+        const fieldStructure = fieldId.split(".");
+        let fieldConfig = this.getCaseFieldConfig(fieldStructure[0]);
+        for (let i = 1; i < fieldStructure.length; i++) {
+            if (fieldConfig.field_type.type === "Complex") {
+                for (let complexFieldCtr = 0; complexFieldCtr < fieldConfig.field_type.complex_fields.length; complexFieldCtr++) {
+                    let complexFieldElement = fieldConfig.field_type.complex_fields[complexFieldCtr];
+                    if (complexFieldElement.id === fieldStructure[i]) {
+                        fieldConfig = complexFieldElement;
+                        break;
+                    }
+                }
+            } else if (fieldConfig.field_type.type === "Collection") {
+                fieldConfig = fieldConfig.field_type.collection_field_type;
+            }
+        };
 
         this.setObjectProps(fieldConfig, fieldprops);
         return this;
@@ -169,8 +189,148 @@ class CCDCaseConfig extends CCDCaseField{
         return fields[0];
 
     }
- 
-    
+
+    addComplexFieldOverridesToCaseField(caseFieldId,overrides){
+        this.caseConfigTemplate.wizard_pages
+        for (let i = 0; i < this.caseConfigTemplate.wizard_pages.length; i++){
+            const wizardPage = this.caseConfigTemplate.wizard_pages[i];
+            
+            for (let j = 0; j < wizardPage.wizard_page_fields.length; j++){
+                const caseField = wizardPage.wizard_page_fields[j];
+                if (caseField.case_field_id === caseFieldId){
+                    for (let overridesCtr = 0; overridesCtr < overrides.length; overrides++){
+                        let complexFieldOverride = {
+                            "complex_field_element_id": "",
+                            "display_context": "",
+                            "label": null,
+                            "hint_text": null,
+                            "show_condition": "",
+                            "retain_hidden_value": null
+                        };
+
+                        this.setObjectProps(complexFieldOverride, overrides[overridesCtr]);
+                        caseField.complex_field_overrides.push(complexFieldOverride);
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    setCaseFieldValue(fieldId, value){
+        const fieldStructure = fieldId.split(".");
+        let fieldConfig = this.getCaseFieldConfig(fieldStructure[0]);
+        let caseFieldValue = fieldConfig.value;
+
+        let fieldValTracker = caseFieldValue;
+        if (fieldStructure.length === 1){
+            fieldConfig.value = value;
+        }else{
+
+        }
+
+        for (let i = 1; i < fieldStructure.length; i++){
+            fieldConfig = fieldConfig.field_type.complex_fields.filter(complexField => complexField.id === fieldStructure[i])[0];
+
+            if (fieldConfig.field_type.type === "Complex"){
+                fieldValTracker = fieldValTracker[fieldStructure[i]];
+            } else if (fieldConfig.field_type.type === "Collection"){
+                var myRegexp = /(?:^|\s)[(.*?)(?:\n|$)]/g;
+                var match = myRegexp.exec(fieldStructure[i]);
+
+                while (fieldValTracker.length === parseInt(match)+1){
+                    const collectionFieldType = { id: "", label: "", field_type: fieldConfig.field_type.collection_field_type }
+                    fieldValTracker.push(this.getFieldValue(collectionFieldType));
+                }
+                
+                fieldValTracker = fieldValTracker[parseInt(match)];
+                fieldConfig = collectionFieldType;
+            }else{
+                fieldValTracker[fieldStructure[i]] = value;
+            }
+        }
+        
+    }
+
+    getCaseFieldDefaultValue(fieldId){
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+        return this.getFieldValue(fieldConfig);
+    }
+
+    getFieldValue(fieldConfig){
+        let fieldVal = null;
+        if (fieldConfig.field_type.type === "Collection"){
+            fieldVal = [];
+            const collectionFieldType = { id: "", label: "", field_type: fieldConfig.field_type.collection_field_type }
+            fieldVal.push(this.getFieldValue(collectionFieldType));
+        }
+        if (fieldConfig.field_type.type === "Complex") {
+            fieldVal = {};
+            const complexFields = fieldConfig.field_type.complex_fields;
+            for (let i = 0; i < complexFields.length ; i++){
+                fieldVal[complexFields[i].id] = this.getFieldValue(complexFields[i]);
+            }
+        }else{
+
+            fieldVal = this.getFieldTypeMockValue(fieldConfig)
+        }
+        return fieldVal;
+    }
+
+    getFieldTypeMockValue(fieldConfig){
+        let value = null;
+        switch (fieldConfig.field_type.type){
+            case "Text":
+            case "TextArea":
+                value = "test " + fieldConfig.label;
+                break;
+            case "Postcode":
+                value = "SW1 2AB"
+                break;
+            case "Number":
+                value = 10;
+                break;
+            case "YesOrNo":
+                value = true;
+                break;
+            case "Email":
+                value = fieldConfig.id+".test@test.com";
+                break;
+            case "PhoneUK":
+                value = "07123456789"
+                break;
+            case "Date":
+            case "DateTime":
+                value = "2021-04-15T22:21:30.000Z";
+                break;
+            case "MoneyGBP":
+                value = 10000;
+                break;
+            case "DynamicList":
+                value = { value: this.getDummyListItems()[0] , list_items: this.getDummyListItems() }
+                break;
+            case "FixedList":
+            case "FixedRadioList":
+                value = fieldConfig.field_type.fixed_list_items[0];
+                break;
+            case "MultiSelectList":
+                value = [fieldConfig.field_type.fixed_list_items[0], fieldConfig.field_type.fixed_list_items[1]];
+                break;
+            case "Document":
+                value = {}
+                break;
+        }
+        return value;
+    }
+
+    getDummyListItems(){
+        const listItems = [];
+        listItems.push({ code: "item1", value:"Item 1"});
+        listItems.push({ code: "item2", value: "Item 2" });
+        listItems.push({ code: "item3", value: "Item 3" });
+        return listItems;
+    }
+  
 }
 
 module.exports = CCDCaseConfig;

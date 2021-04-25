@@ -7,6 +7,26 @@ function getEventTemplate(){
 
 }
 
+function getBlankEvent(){
+    const eventConfig = getEventTemplate();
+    return eventConfig;
+}
+
+function addPageToEvent(event, pageId, PageHeader) {
+    event.addWizardPage(pageId, PageHeader)
+    return event;
+}
+
+function addCaseField(event, fieldConfig) {
+    event.addCaseField(fieldConfig)
+    return event;
+}
+
+function setCaseFieldProps(event, fieldId, fieldProps) {
+    
+    event.setFieldProps(fieldProps)
+    return event;
+}
 
 function getDateTimeTestEvent(){
     const eventConfig = getEventTemplate();
@@ -34,4 +54,4 @@ function getDateTimeInComplexTestEvent() {
 }
 
 
-module.exports = { getEventTemplate, getDateTimeTestEvent, getDateTimeInComplexTestEvent }
+module.exports = { getEventTemplate, getDateTimeTestEvent, getDateTimeInComplexTestEvent, getBlankEvent, addPageToEvent, addCaseField, setCaseFieldProps}

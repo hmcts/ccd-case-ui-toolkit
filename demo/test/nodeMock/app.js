@@ -115,9 +115,9 @@ if (args.standalone){
 }
 
 function setUpcaseConfig() {
-    mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-        res.send(getDateTimeTestEvent().getCase());
-    });
+    // mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
+    //     // res.send(event);
+    // });
 
     mockInstance.onGet('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
         let config = getConfigWithDate();
@@ -126,5 +126,3 @@ function setUpcaseConfig() {
     });
 
 }
-
-

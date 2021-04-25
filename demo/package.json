@@ -8,6 +8,7 @@
     "start": "node server.js",
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
     "test:functional": "yarn && yarn build && webdriver-manager update  &&  ng e2e --webdriver-update=false  --protractorConfig=./test/config/protractor.conf.js",
+    "testDev:functional": "webdriver-manager update  &&  protractor ./test/config/protractor.conf.js --dev",
     "test:mock" : "nodemon test/nodeMock/app.js --standalone"
   },
   "dependencies": {
