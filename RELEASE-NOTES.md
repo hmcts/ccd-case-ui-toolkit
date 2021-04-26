@@ -1,7 +1,14 @@
 ## RELEASE NOTES
 
-### Version 2.79.11
+### Version 2.79.13
 **EUI-3049** Create datetime picker for use in write date fields
+
+### Version 2.79.7
+**EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
+**EUI-2925** Review implementation of Activity tracker in MC Demo Int env
+
+### Version 2.79.6
+**EUI-3770** Hotfix for previous pages not populating default field values.
 
 ### Version 2.79.5
 **EUI-3797** Hotfix for missing content in the Payment History tab.
