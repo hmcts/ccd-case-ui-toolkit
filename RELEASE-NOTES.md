@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 2.79.7
+**EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
+**EUI-2925** Review implementation of Activity tracker in MC Demo Int env
+
 ### Version 2.79.6
 **EUI-3770** Hotfix for previous pages not populating default field values.
 
