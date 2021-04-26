@@ -21,7 +21,7 @@ defineSupportCode(({ Before,After }) => {
         if (argv.dev){
             await browserWaits.waitForSeconds(30*60);
         }
-        await MockApp.stopServer();
+        
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
         const world = this;
         try{
@@ -42,6 +42,7 @@ defineSupportCode(({ Before,After }) => {
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
-        }        
+        }
+        await MockApp.stopServer();
     });
 });

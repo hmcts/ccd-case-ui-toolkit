@@ -1,6 +1,6 @@
 
 const browserWaits = require('../support/customWaits')
-
+const CucumberReporter = require('../support/reportLogger');
 class DateTimePickerComponent{
 
     constructor(){
@@ -33,7 +33,10 @@ class DateTimePickerComponent{
     }
 
     async getCurrentView(){
-        return await $('.mat-calendar-content').getAttribute('ng-reflect-ng-switch')
+        return await browserWaits.retryWithActionCallback(async () => {
+            return await $('.mat-calendar-content').getAttribute('ng-reflect-ng-switch')
+        });
+        
     }
 
     async isDateTimePickerDisplayed(){
@@ -92,19 +95,37 @@ class DateTimePickerComponent{
     }
 
     async selectYear(year){
+       
         let currentView = await this.getCurrentView();
+        CucumberReporter.AddMessage(`1 in ${currentView} view : To select year `);
         if(currentView === "month"){
-            await this.calendarPeriodBtn.click();
-            currentView = await this.getCurrentView();
-        }
+           
 
-        if (currentView === "multi-year"){
-            await this.selectCalendarCellContent(year);
+            await browserWaits.retryWithActionCallback(async () => {
+                CucumberReporter.AddMessage(`Clicking view chnage btn to get multi-year view`);
+                await this.calendarPeriodBtn.click();
+                await browserWaits.waitForSeconds(0.5);
+                currentView = await this.getCurrentView();
+                if (currentView !== "multi-year"){
+                    throw new Error('multi-year view not displayed');
+                }
+            });
+
+           
         }
+        CucumberReporter.AddMessage(`2 in ${currentView} view : To select year `);
+        if (currentView === "multi-year"){
+            CucumberReporter.AddMessage(`in view ${currentView} clicking year  `);
+            await this.selectCalendarCellContent(year);
+        }else{
+            CucumberReporter.AddMessage(`multi-year view not displayed `);
+        }
+        await browserWaits.waitForSeconds(0.5);
     }
 
 
     async selectMonth(month) {
+    
         let currentView = await this.getCurrentView();
         if (currentView === "year") {
             if (month === "1" || month === "01"){
@@ -138,9 +159,12 @@ class DateTimePickerComponent{
         }else {
             throw new Error(`current view is ${currentView}. select year to get to month selection view`)
         }
+        await browserWaits.waitForSeconds(0.5);
     }
 
     async selectDay(day) {
+        
+
         let currentView = await this.getCurrentView();
         if (currentView === "month") {
             if(day.startsWith("0")){
@@ -151,10 +175,11 @@ class DateTimePickerComponent{
         else {
             throw new Error(`current view is ${currentView}. not valid view for date selection `)
         }
-
+        await browserWaits.waitForSeconds(0.5);
     }
 
     async setHours(hour){
+        
         const incrementEle = $$('ngx-mat-timepicker tbody tr td button[aria-label = "expand_less icon"]')
         const hourIncrement = incrementEle.get(0);
         const expectedVal = parseInt(hour);
@@ -165,6 +190,8 @@ class DateTimePickerComponent{
             }
             await hourIncrement.click();
         }
+        await browserWaits.waitForSeconds(0.5);
+
     }
 
     async setMinutes(minute) {
@@ -179,6 +206,8 @@ class DateTimePickerComponent{
             }
             await minuteIncrement.click();
         }
+        await browserWaits.waitForSeconds(0.5);
+
     }
 
     async setSeconds(second) {
@@ -194,6 +223,8 @@ class DateTimePickerComponent{
             }
             await secondIncrement.click();
         }
+        await browserWaits.waitForSeconds(0.5);
+
     }
 
     async selectCalendarCellContent(cellContent){
@@ -206,6 +237,7 @@ class DateTimePickerComponent{
         if (!currentVal.includes(meridian)){
             await meridianElement.click();
         }
+        await browserWaits.waitForSeconds(0.5);
     }
  
 }

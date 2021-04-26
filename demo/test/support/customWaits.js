@@ -132,7 +132,7 @@ class BrowserWaits{
         let isSuccess = false;
         while (retryCounter < 3) {
             try {
-                await callback();
+                return await callback();
                 isSuccess = true;
                 break;
             }

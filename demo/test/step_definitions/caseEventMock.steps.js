@@ -82,7 +82,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const mockCaseEvent = global.scenarioData[eventRef];
         // console.log(mockCaseEvent.getCase());
         MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req,res) => {
+            CucumberReportLogger.AddMessage(`event /data/internal/case-types/:jurisdiction/event-triggers/:caseType `);
+            CucumberReportLogger.AddJson(mockCaseEvent.getCase());
             res.send(mockCaseEvent.getCase());
+
         });
     });
 
@@ -90,6 +93,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const mockCaseEvent = getDateTimeTestEvent() ;
         global.scenarioData[eventRef] = mockCaseEvent;
         MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
+            CucumberReportLogger.AddMessage(`event /data/internal/case-types/:jurisdiction/event-triggers/:caseType `);
+            CucumberReportLogger.AddJson(mockCaseEvent.getCase());
             res.send(mockCaseEvent.getCase());
         });
 

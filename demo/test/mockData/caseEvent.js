@@ -32,8 +32,8 @@ function getDateTimeTestEvent(){
     const eventConfig = getEventTemplate();
     eventConfig.addWizardPage("dateTimeFieldsPage", "Date time fields test page")
     .addCaseField({ id : "dateField", type: "Date", label:  "Date only" })
-        .setFieldProps({ display_context_parameter: "#test(YYYY YYYY YY),#DATETIMEDISPLAY(YYYY-MM),#DATETIMEENTRY(YYYY-MM-DD)"})
-    // .addCaseField({ id: "dateTimeField", type: "DateTime", label: "Date and time" })
+        // .setFieldProps({ display_context_parameter: "#test(YYYY YYYY YY),#DATETIMEDISPLAY(YYYY-MM),#DATETIMEENTRY(YYYY-MM-DD)"})
+    .addCaseField({ id: "dateTimeField", type: "DateTime", label: "Date and time" })
     //     .setFieldProps({ display_context_parameter: "#DATETIMEENTRY(YYYY)" })
     return eventConfig;
 }
