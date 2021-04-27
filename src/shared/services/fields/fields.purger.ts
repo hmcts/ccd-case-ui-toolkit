@@ -4,7 +4,7 @@ import { FieldsUtils } from './fields.utils';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 import { Wizard, WizardPage, WizardPageField } from '../../components';
 import { CaseField, FieldTypeEnum } from '../../domain/definition';
-import { CaseEventTrigger } from '../../domain/case-view/case-event-trigger.model';
+import { CaseEventTrigger } from '../../domain';
 
 // @dynamic
 @Injectable()
@@ -14,7 +14,7 @@ export class FieldsPurger {
     private fieldsUtils: FieldsUtils,
   ) {}
 
-  clearHiddenFields(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string) {
+  clearHiddenFields(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string): void {
     this.clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger);
     this.clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger);
   }
@@ -31,7 +31,7 @@ export class FieldsPurger {
     });
   }
 
-  private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger) {
+  private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
     let formFields = form.getRawValue();
     let currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
@@ -46,7 +46,7 @@ export class FieldsPurger {
     });
   }
 
-  private retainHiddenValueByFieldType(field, form) {
+  private retainHiddenValueByFieldType(field: CaseField, form: any): void {
     // so far only applies to the new field type OrganisationPolicy which needs to retain the default case role value
     // for other case fields there should be no side effects
     if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
@@ -87,7 +87,7 @@ export class FieldsPurger {
     return show_condition.split(/!=|=/)[0];
   }
 
-  private resetField(form: FormGroup, field: CaseField) {
+  private resetField(form: FormGroup, field: CaseField): void {
     /**
      * If the hidden field's value is to be retained, do nothing (except if it is a Complex type or collection of
      * Complex types). This is a change to the previous behaviour (which used to clear the field value but remove it
