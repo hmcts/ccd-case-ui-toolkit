@@ -19,11 +19,11 @@ export class FieldsPurger {
     this.clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger);
   }
 
-  private clearHiddenFieldForPageShowCondition(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger) {
-    let currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
+  private clearHiddenFieldForPageShowCondition(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
+    const currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
     wizard.pages.forEach(wp => {
       if (this.hasShowConditionPage(wp, currentEventState)) {
-        let condition = new ShowCondition(wp.show_condition);
+        const condition = new ShowCondition(wp.show_condition);
         if (this.isHidden(condition, currentEventState)) {
           this.resetPage(form, wp);
         }
@@ -32,12 +32,12 @@ export class FieldsPurger {
   }
 
   private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
-    let formFields = form.getRawValue();
-    let currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
+    const formFields = form.getRawValue();
+    const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
-      let case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
+      const case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
       if (this.hasShowConditionField(case_field, formFields)) {
-        let condition = new ShowCondition(case_field.show_condition);
+        const condition = new ShowCondition(case_field.show_condition);
         if (this.isHidden(condition, formFields.data) && !(this.isReadonly(case_field))) {
           this.resetField(form, case_field);
         }
@@ -154,9 +154,9 @@ export class FieldsPurger {
     }
   }
 
-  private resetPage(form: FormGroup, wizardPage: WizardPage) {
+  private resetPage(form: FormGroup, wizardPage: WizardPage): void {
     wizardPage.wizard_page_fields.forEach(wpf => {
-      let case_field = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
+      const case_field = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
       this.resetField(form, case_field);
     });
   }
@@ -185,7 +185,7 @@ export class FieldsPurger {
    * @param parentField Reference to the parent `CaseField`. Used for checking specifically where a Complex field and
    * its sub-fields have `retain_hidden_value` set to `true`, but the field's parent has it set to `false` or undefined
    */
-  public deleteFieldValue(formGroup: FormGroup, field: CaseField, parentField?: CaseField) {
+  public deleteFieldValue(formGroup: FormGroup, field: CaseField, parentField?: CaseField): void {
     const fieldType: FieldTypeEnum = field.field_type.type;
     const fieldControl = formGroup.get(field.id);
 
