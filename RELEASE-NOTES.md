@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.79.10-input-type-accessibility
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+
 ### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
