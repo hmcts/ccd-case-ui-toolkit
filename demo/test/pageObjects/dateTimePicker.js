@@ -13,23 +13,23 @@ class DateTimePickerComponent{
         this.CalendarPeriodValue = $('.mat-calendar-period-button span')
     }
 
-    async getFieldValue(fieldId){
-        const fieldStructure = fieldId.split(".");
-        if (fieldStructure.length === 1){
-            return await $(`#${fieldId} .datepicker-container input`).getAttribute("value");
-        }
-        else{
-            
-        }
-        
+    async getFieldValue(cssSelector){
+        return await $(`${cssSelector} .datepicker-container input`).getAttribute("value");
+    }
+
+    async getReadonlyFieldValue(fieldLabel) {
+        return await browserWaits.retryWithActionCallback(async () => {
+            return await element(by.xpath(`//dt[@class = 'case-field__label' and contains(text(),'${fieldLabel}')]/..//ccd-read-date-field/span`)).getText();     
+       }); 
     }
 
     async waitForPickerContainer(){
         await browserWaits.waitForElementInSeconds(this.dateTimeContainer,2);
     }
     
-    async openDateTimePicker(fieldId){
-        await $(`#${fieldId} button .mat-datepicker-toggle-default-icon`).click();
+    async openDateTimePicker(cssSelector){
+
+        await $(`${cssSelector} button .mat-datepicker-toggle-default-icon`).click();
     }
 
     async getCurrentView(){

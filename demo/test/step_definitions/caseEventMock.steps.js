@@ -8,7 +8,6 @@ const MockApp = require('../nodeMock/app');
 const CCDCaseConfig = require('../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const {getDateTimeTestEvent,getBlankEvent,addPageToEvent,addCaseField,setCaseFieldProps} = require('../mockData/caseEvent');
 const caseEditPage = require('../pageObjects/ccdCaseEditPages')
-const dateTimePickerComponent = require('../pageObjects/dateTimePicker');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -53,12 +52,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
                 }
                 const fieldConfigToAdd = mockCaseEvent.getCCDFieldTemplateCopy({ id: fieldStructure[fieldStructure.length - 1], type: fieldConfig.type, label: fieldConfig.label });
-
-                if (deepFieldConfig.field_type.type === "Complex") {
-                    deepFieldConfig.field_type.complex_fields.push(fieldConfigToAdd);
-                } else if (deepFieldConfig.field_type.type === "Collection") {
-                    deepFieldConfig.field_type.collection_field_type = fieldConfigToAdd;
+                if (deepFieldConfig.field_type){
+                    if (deepFieldConfig.field_type.type === "Complex") {
+                        deepFieldConfig.field_type.complex_fields.push(fieldConfigToAdd);
+                    } else if (deepFieldConfig.field_type.type === "Collection") {
+                        deepFieldConfig.field_type.collection_field_type = fieldConfigToAdd.field_type;
+                    }
+                }else{
+                    if (deepFieldConfig.type === "Complex") {
+                        deepFieldConfig.complex_fields.push(fieldConfigToAdd);
+                    } else if (deepFieldConfig.type === "Collection") {
+                        deepFieldConfig.field_type.collection_field_type = fieldConfigToAdd.field_type;
+                    }
                 }
+                
 
             } 
         }
@@ -113,18 +120,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const mockCaseEvent = global.scenarioData[eventRef] ;
         const fieldValues = fielValuesDT.hashes();
         for (let i = 0; i < fieldValues.length; i++) {
-            const fieldConfig = mockCaseEvent.getCaseFieldConfig(fieldValues[i].fieldId);
-            await caseEditPage.inputCaseField(fieldConfig, fieldValues[i].value, null)
+            const pathArr = fieldValues[i].path.split(".");
+            
+            const fieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
+            const inputFieldConfig = mockCaseEvent.getInputFieldConfig(fieldConfig, pathArr);
+            await caseEditPage.inputCaseField(inputFieldConfig, fieldValues[i].value, fieldValues[i].cssSelector)
         }
-    });
-
-    When('I validate datetime field values in case edit page', async function (fielValuesDT) {
-        const fieldValues = fielValuesDT.hashes();
-        for (let i = 0; i < fieldValues.length; i++) {
-            const fieldVal = await dateTimePickerComponent.getFieldValue(fieldValues[i].fieldId, null)
-            expect(fieldVal).to.equal(fieldValues[i].value)
-        }
-
     });
 
     Given('I set complex field overrides for case field {string} in event {string}', async function (fieldId, eventRef, overrides){
@@ -155,5 +156,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         console.log(JSON.stringify(eventData))
     });
 
+    When('I click collection add new btn for field {string} in event {string}', async function (fieldPath,eventRef){
+        const mockCaseEvent = global.scenarioData[eventRef];
+        const pathArr = fieldPath.split(".");
+        const caseFieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
+        await caseEditPage.clickAddNewCollectionItemBtn(caseFieldConfig, fieldPath);
+    });
 
 });

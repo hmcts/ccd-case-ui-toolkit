@@ -198,7 +198,7 @@ class CCDCaseConfig extends CCDCaseField{
             for (let j = 0; j < wizardPage.wizard_page_fields.length; j++){
                 const caseField = wizardPage.wizard_page_fields[j];
                 if (caseField.case_field_id === caseFieldId){
-                    for (let overridesCtr = 0; overridesCtr < overrides.length; overrides++){
+                    for (let overridesCtr = 0; overridesCtr < overrides.length; overridesCtr++){
                         let complexFieldOverride = {
                             "complex_field_element_id": "",
                             "display_context": "",
@@ -230,7 +230,7 @@ class CCDCaseConfig extends CCDCaseField{
         }
 
         for (let i = 1; i < fieldStructure.length; i++){
-            fieldConfig = fieldConfig.field_type.complex_fields.filter(complexField => complexField.id === fieldStructure[i])[0];
+                fieldConfig = fieldConfig.field_type.complex_fields.filter(complexField => complexField.id === fieldStructure[i] )[0];
 
             if (fieldConfig.field_type.type === "Complex"){
                 fieldValTracker = fieldValTracker[fieldStructure[i]];
@@ -329,6 +329,25 @@ class CCDCaseConfig extends CCDCaseField{
         listItems.push({ code: "item2", value: "Item 2" });
         listItems.push({ code: "item3", value: "Item 3" });
         return listItems;
+    }
+
+
+    getInputFieldConfig(caseFieldConfig, inputFieldPathArr) {
+        let fieldConfig = caseFieldConfig;
+        for (let i = 1; i < inputFieldPathArr.length; i++) {
+            let childFieldId = inputFieldPathArr[i]
+            let thisFieldType = fieldConfig.field_type ? fieldConfig.field_type.type : fieldConfig.type;
+            if (thisFieldType === "Complex") {
+                let complexFields = fieldConfig.field_type ? fieldConfig.field_type.complex_fields : fieldConfig.complex_fields;
+                fieldConfig = complexFields.filter(complexField => complexField.id === childFieldId)[0];
+            } else if (thisFieldType === "Collection") {
+                let colletionField = fieldConfig.field_type ? fieldConfig.field_type.collection_field_type : fieldConfig.collection_field_type;
+                fieldConfig = colletionField;
+            } else {
+                fieldConfig = fieldConfig;
+            }
+        }
+        return fieldConfig;
     }
   
 }
