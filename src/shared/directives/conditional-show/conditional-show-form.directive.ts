@@ -55,7 +55,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   }
 
   /*
-  * Delay the execution of evalShowHideConditions for 500ms
+  * Delay the execution of evalShowHideConditions for 100ms
   * Evaluating showHideConditions on input is inefficient as all forms are evaluated
   * whilst the user is still typing. We are better off allowing the user to finish typing
   * then evaluate the show hide conditions.
@@ -64,7 +64,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     this.unsubscribeFromFormChanges();
     this.formChangesSubscription = this.formGroup.valueChanges
       .pipe(
-        debounceTime(500)
+        debounceTime(100)
       )
       .subscribe(_ => {
       this.evalAllShowHideConditions();
