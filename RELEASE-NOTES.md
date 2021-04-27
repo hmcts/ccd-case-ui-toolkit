@@ -2,6 +2,23 @@
 ### Version 2.79.10-input-type-accessibility
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
 
+### Version 2.79.7
+**EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
+**EUI-2925** Review implementation of Activity tracker in MC Demo Int env
+
+### Version 2.79.6
+**EUI-3770** Hotfix for previous pages not populating default field values.
+
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
+### Version 2.79.4
+**EUI-3708** Fix for case submission regression.
+**EUI-3728** Fix for labels showing on tabs that should be hidden.
+
+### Version 2.79.3-mandatory-organisation-hotfix
+**EUI-3674** Add organisation policy MANDATORY validator check
+
 ### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
