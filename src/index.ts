@@ -30,6 +30,8 @@ export { FieldTypeSanitiser,
          NavigationNotifierService,
          NavigationOrigin,
          OrganisationService,
+         LoadingService,
+         LoadingModule,
 } from './shared/services';
 export { DocumentData,
          AddressModel,

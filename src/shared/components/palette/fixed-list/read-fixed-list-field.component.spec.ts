@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { FixedListPipe } from './fixed-list.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+
+import { CaseField, FieldType } from '../../../domain/definition';
+import { FixedListPipe } from './fixed-list.pipe';
+import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 
 describe('ReadFixedListFieldComponent', () => {
 

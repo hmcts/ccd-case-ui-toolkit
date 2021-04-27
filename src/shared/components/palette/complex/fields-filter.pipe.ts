@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
+
+import { ShowCondition } from '../../../directives';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields';
-import { ShowCondition } from '../../../directives';
 
 @Pipe({
   name: 'ccdFieldsFilter'
@@ -53,6 +54,11 @@ export class FieldsFilterPipe implements PipeTransform {
   }
 
   private static keepField(field: CaseField, value?: object): boolean {
+    // We shouldn't ditch labels.
+    if (field.field_type.type === 'Label' && (field.label || '').length > 0) {
+      return true;
+    }
+
     value = value || {};
 
     if (FieldsFilterPipe.isCompound(field)) {
@@ -85,26 +91,24 @@ export class FieldsFilterPipe implements PipeTransform {
       return [];
     }
 
-    let fields = complexField.field_type.complex_fields || [];
-    let values = complexField.value || {};
+    const fields = complexField.field_type.complex_fields || [];
+    const values = complexField.value || {};
+    const checkConditionsAgainst = { [complexField.id]: values };
 
     return fields
       .filter( f => {
         if (stripHidden && f.show_condition) {
           const cond = ShowCondition.getInstance(f.show_condition)
-          return cond.match(fields);
+          return cond.match(checkConditionsAgainst);
         }
         return true;
       })
       .map(f => {
-        let clone = FieldsUtils.cloneObject(f);
-
-        let value = FieldsFilterPipe.getValue(f, values, index);
-
+        const clone = FieldsUtils.cloneObject(f);
+        const value = FieldsFilterPipe.getValue(f, values, index);
         if (!FieldsFilterPipe.isEmpty(value)) {
           clone.value = value;
         }
-
         return clone;
       })
       .filter(f => keepEmpty || FieldsFilterPipe.keepField(f))

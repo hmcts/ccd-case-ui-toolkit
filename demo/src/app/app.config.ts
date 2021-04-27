@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
@@ -22,14 +22,13 @@ export class AppConfig extends AbstractAppConfig {
     'activity_url': '',
     'activity_max_request_per_batch': 25,
     'print_service_url': '/print',
-    'remote_print_service_url': '/remote_print',
     'pagination_page_size': 25,
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
     'work_allocation_api_url': '/workallocation'
   };
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     super();
   }
 
@@ -72,7 +71,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentsUrl() {
     return this.config.payments_url;
   }
-  
+
   public getPayBulkScanBaseUrl() {
     return this.config.pay_bulk_scan_url;
   }
@@ -116,10 +115,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.print_service_url;
   }
 
-  public getRemotePrintServiceUrl() {
-    return this.config.remote_print_service_url;
-  }
-
   public getPaginationPageSize() {
     return this.config.pagination_page_size;
   }
@@ -138,5 +133,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getWorkAllocationApiUrl(): string {
     return this.config.work_allocation_api_url;
+  }
+
+  public getUserInfoApiUrl(): string {
+    return this.config.user_info_api_url;
   }
 }

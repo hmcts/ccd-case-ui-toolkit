@@ -11,13 +11,6 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
   @Input()
   isExpanded = false;
 
-  @Input()
-  idPrefix = '';
-
-  public id() {
-    return this.idPrefix + this.caseField.id;
-  }
-
   public constructor() {
     super();
     this.fixCaseField();

@@ -1,4 +1,64 @@
 ## RELEASE NOTES
+### Version 2.79.2
+**EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
+
+### Version 2.79.1
+**EUI-3452** Fix to some issues on the Check your answers page.
+
+### 2.79.0
+**EUI-3548** WA integration
+
+### Version 2.75.1
+**EUI-3577** Fixing DynamicList regression bugs
+
+### Version 2.75.0
+**EUI-3267** Reintroducing the grey bars for fields shown by other fields
+
+### Version 2.73.2-collection-date-field
+**EUI-2667** Fix to date field rendering within collections
+
+### Version 2.74.2
+**EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch
+
+### Version 2.74.1
+**EUI-3506** Non-Descriptive Headings (AA) - issue 04
+
+### Version 2.73.5-ngmodel-deprecation
+**EUI-3410** ngModel deprecation
+
+### Version 2.73.2-collection-date-field
+**EUI-2667** Fix to date field rendering within collections
+
+### Version 2.73.0-hotfix-error-message-display
+**EUI-3594** Fix issue with error message specifics not being displayed
+
+### Version 2.73.0
+**EUI-3222** Loading spinner
+
+### Version 2.72.9-fix-case-submission
+**EUI-3494** Fixed the missing case ID on case creation.
+**EUI-3495** Fixed an issue where the user was return to Case list following case creation.
+
+### Version 2.72.6-fix-filter-any-state
+**EUI-3490** Fixed an issue with the Case list filter where "Any" state is selected.
+
+### Version 2.72.5-remove-null-http-request-headers
+**EUI-3464** Fix Document field uploads by removing setting of null HTTP "Accept" and "Content-Type" headers
+
+### Version 2.72.4-check-your-answers
+Fix EUI-3452 - fix for show/hide conditions on Check Your Answers page.
+
+### Version 2.72.3-dynamic-list-null-values
+EUI-3045 Handle null values appropriately.
+
+### Version 2.72.2
+EUI-3045 performance enhancements and 3045 work
+
+### Version 2.72.1-do-not-send-empty-documents
+Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.
+
+### Version 2.72.0-task-event-completion
+**EUI-3229** Task event completion - part 2
 
 ### Version 2.71.4-optional-top-level-documents
 Fix EUI-3403 - fix for optional top-level documents incorrectly showing.
