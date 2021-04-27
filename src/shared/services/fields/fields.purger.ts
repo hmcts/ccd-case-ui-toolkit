@@ -84,7 +84,8 @@ export class FieldsPurger {
 
   private getShowConditionKey(show_condition: string): string {
     // Need to allow for negated conditions, i.e. !=, as well as regular ones (=)
-    return show_condition.split(/!=|=/)[0];
+    // Also need to allow for conditions specified using the "CONTAINS" keyword
+    return show_condition.split(/!=|=|CONTAINS/)[0];
   }
 
   private resetField(form: FormGroup, field: CaseField): void {
