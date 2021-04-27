@@ -163,7 +163,7 @@ export class FieldsUtils {
     return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
   }
 
-  private static getLabel(fieldValue: CaseField) {
+  private static getLabel(fieldValue: CaseField): string {
     return fieldValue ? fieldValue.label : '';
   }
 

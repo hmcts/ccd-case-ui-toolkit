@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.79.8-labels-not-displaying-in-case-heading
+**EUI-2569** Labels not displaying in Case Heading
+
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
 **EUI-2925** Review implementation of Activity tracker in MC Demo Int env
