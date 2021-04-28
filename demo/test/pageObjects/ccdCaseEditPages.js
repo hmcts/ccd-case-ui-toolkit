@@ -114,7 +114,9 @@ class CaseEdit {
         return domId;
     }
 
-    async inputTextField(fieldConfig, inputtext, parentId) {
+    
+
+    async inputTextField(fieldConfig, inputtext, cssSelector) {
         let inputValue = null;
         if (inputtext) {
             inputValue = inputtext;
@@ -122,12 +124,12 @@ class CaseEdit {
             inputValue = fieldConfig.label ? fieldConfig.label + "Test" : fieldConfig.id + " Test";
         }
 
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).clear();
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputValue);
+        await $(`${cssSelector}`).clear();
+        await $(`${cssSelector}`).sendKeys(inputValue);
         return inputValue;
     }
 
-    async inputPostCode(fieldConfig, value, parentId) {
+    async inputPostCode(fieldConfig, value, cssSelector) {
         // await ccdField.$('.form-control').sendKeys("SW1");
         // await ccdField.$('button').click();
         // var addressSelectionField = ccdField.$('select.form-control')
@@ -142,39 +144,37 @@ class CaseEdit {
             inputValue = "SW20 9DJ";
         }
 
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).clear();
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputValue);
+        await $(`${cssSelector}`).clear();
+        await $(`${cssSelector}`).sendKeys(inputValue);
         return inputValue;
     }
 
-    async inputNumberField(fieldConfig, inputNumber, parentId) {
+    async inputNumberField(fieldConfig, inputNumber, cssSelector) {
         let inputValue = null;
         if (inputNumber) {
             inputValue = inputNumber;
         } else {
             inputValue = 12345;
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputValue);
+        await $(`${cssSelector}`).sendKeys(inputValue);
         return inputValue.toString();
     }
 
-    async inputYesOrNoField(fieldConfig, inputOption, parentId) {
+    async inputYesOrNoField(fieldConfig, inputOption, cssSelector) {
 
         let inputoptionId = null;
         if (inputOption) {
-            inputoptionId = fieldConfig.id + "-" + inputOption;
+            inputoptionId = "-" + inputOption;
         } else {
-            inputoptionId = fieldConfig.id + "-Yes";
+            inputoptionId ="-Yes";
         }
 
-        if(parentId) inputoptionId = parentId +"_"+ inputoptionId;
-
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)} #${inputoptionId}`).click();
+        await $(`${cssSelector}${inputoptionId}`).click();
         // return inputoptionId.includes("Yes");
         return "Yes";
     }
 
-    async inputFixedRadioListField(fieldConfig, inputOption, parentId) {
+    async inputFixedRadioListField(fieldConfig, inputOption, cssSelector) {
 
         let inputoptionId = null;
         let selectedVal = null;
@@ -184,12 +184,12 @@ class CaseEdit {
             selectedVal = fieldConfig.field_type.fixed_list_items[0];
             inputoptionId = selectedVal;
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${inputoptionId.code}`).click();
+        await $(`${cssSelector}-${inputoptionId.code}`).click();
 
         return inputoptionId;
     }
 
-    async inputFixedListField(fieldConfig, inputOption, parentId) {
+    async inputFixedListField(fieldConfig, inputOption, cssSelector) {
 
         let inputoptionId = null;
         let selectedVal = null;
@@ -198,12 +198,12 @@ class CaseEdit {
         } else {
             selectedVal = fieldConfig.field_type.fixed_list_items[0];
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)} option[ng-reflect-ng-value="${selectedVal.code}"]`).click();
+        await $(`${cssSelector} option[ng-reflect-ng-value="${selectedVal.code}"]`).click();
         return selectedVal;
     }
 
 
-    async inputMultiSelectListField(fieldConfig, inputOptions, parentId) {
+    async inputMultiSelectListField(fieldConfig, inputOptions, cssSelector) {
         let inputoptionId = [];
         let selectedVal = [];
         if (inputOptions) {
@@ -213,20 +213,20 @@ class CaseEdit {
         }
         for (const option of selectedVal) {
 
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)} #${this.getFieldId(fieldConfig.id, parentId)}-${option.code}`).click();
+            await $(`${cssSelector}-${option.code}`).click();
 
         }
         return selectedVal;
     }
 
-    async inputEmailField(fieldConfig, email, parentId) {
+    async inputEmailField(fieldConfig, email, cssSelector) {
         let inputEmail = null;
         if (email) {
             inputEmail = fieldConfig.id + "-" + inputOption;
         } else {
             inputEmail = "test@test.com";
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputEmail);
+        await $(`${cssSelector}`).sendKeys(inputEmail);
         return inputEmail
     }
 
@@ -301,29 +301,29 @@ class CaseEdit {
         fieldValue['organisationName'] = await organisationName.getAttribute("value");
         return fieldValue;
     }
-    async inputPhoneUKField(fieldConfig, inputPhone, parentId) {
+    async inputPhoneUKField(fieldConfig, inputPhone, cssSelector) {
         let inputPhoneNumber = null;
         if (inputPhone) {
             inputPhoneNumber = inputPhone;
         } else {
             inputPhoneNumber = "07123456789";
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputPhoneNumber);
+        await $(`${cssSelector}`).sendKeys(inputPhoneNumber);
         return inputPhoneNumber.toString();
     }
 
-    async inputMoneyGBP(fieldConfig, moneyVal, parentId) {
+    async inputMoneyGBP(fieldConfig, moneyVal, cssSelector) {
         let moneyGBPVal = null;
         if (moneyVal) {
             moneyGBPVal = moneyVal;
         } else {
             moneyGBPVal = 10000;
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(moneyGBPVal);
+        await $(`${cssSelector}`).sendKeys(moneyGBPVal);
         return moneyGBPVal*100+"";
     }
 
-    async inputDate(fieldConfig, dateVal, parentId) {
+    async inputDate(fieldConfig, dateVal, cssSelector) {
         let inputDate = null;
         if (dateVal) {
             inputDate = dateVal;
@@ -332,21 +332,21 @@ class CaseEdit {
         }
 
         if (fieldConfig.display_context_parameter.includes("DATETIMEENTRY")){
-            await dateTimePicker.openDateTimePicker(fieldConfig.id);
+            await dateTimePicker.openDateTimePicker(cssSelector);
             await dateTimePicker.setDateTime(inputDate);
-            console.log(await dateTimePicker.getFieldValue(fieldConfig.id));
+            console.log(await dateTimePicker.getFieldValue(cssSelector));
 
         }else{
             let datesValues = inputDate.split('-');
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-day`).sendKeys(datesValues[2]);
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-month`).sendKeys(datesValues[1]);
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-year`).sendKeys(datesValues[0]);
+            await $(`${cssSelector}-day`).sendKeys(datesValues[2]);
+            await $(`${cssSelector}-month`).sendKeys(datesValues[1]);
+            await $(`${cssSelector}-year`).sendKeys(datesValues[0]);
 
         }
         return inputDate;
     }
 
-    async inputDateTime(fieldConfig, dateVal, parentId) {
+    async inputDateTime(fieldConfig, dateVal, cssSelector) {
         let inputDate = null;
         if (dateVal) {
             inputDate = dateVal;
@@ -355,22 +355,28 @@ class CaseEdit {
         }
 
         if (fieldConfig.display_context_parameter.includes("DATETIMEENTRY")) { 
-            await dateTimePicker.openDateTimePicker(fieldConfig.id);
+            await dateTimePicker.openDateTimePicker(cssSelector);
             await dateTimePicker.setDateTime(inputDate);
-            console.log("input set val "+await dateTimePicker.getFieldValue(fieldConfig.id));
-            inputDate = await dateTimePicker.getFieldValue(fieldConfig.id);
+            console.log("input set val " + await dateTimePicker.getFieldValue(cssSelector));
+            inputDate = await dateTimePicker.getFieldValue(cssSelector);
         } else {
             let datesValues = inputDate.split('-');
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-day`).sendKeys(datesValues[2]);
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-month`).sendKeys(datesValues[1]);
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-year`).sendKeys(datesValues[0]);
+            await $(`${cssSelector}-day`).sendKeys(datesValues[2]);
+            await $(`${cssSelector}-month`).sendKeys(datesValues[1]);
+            await $(`${cssSelector}-year`).sendKeys(datesValues[0]);
 
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-hour`).sendKeys("02");
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-minute`).sendKeys("30");
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)}-second`).sendKeys("45");
+            await $(`${cssSelector}-hour`).sendKeys("02");
+            await $(`${cssSelector}-minute`).sendKeys("30");
+            await $(`${cssSelector}-second`).sendKeys("45");
             inputDate = `${inputDate}T02:30:45.000`;
         } 
         return inputDate;
+    }
+
+    async clickAddNewCollectionItemBtn(caseFieldConfig, fieldPathArr){
+        const collectionFieldId = this.getInputFieldId(caseFieldConfig, fieldPathArr.split("."));
+        const collectionAddBtn = $(`#${collectionFieldId} > div > button`);
+        await collectionAddBtn.click();
     }
 
     async getSummaryPageDisplayElements() {
@@ -465,40 +471,45 @@ class CaseEdit {
         return await this.checkYourAnswersPageElement.isPresent();
     }
 
-    async inputCaseField(fieldConfig, value, parentId) {
+    async inputCaseField(fieldConfig, value, cssSelector) {
+       
+        // const inputFieldPathArr = inputFieldPath.split(".");
+        // const fieldConfig = this.getInputFieldConfig(caseFieldConfig, inputFieldPathArr);
+        // const inputFieldId = this.getInputFieldId(caseFieldConfig, inputFieldPathArr);
         // await BrowserWaits.waitForSeconds(1);
         // console.log(`******** input : parentId ${parentId} , value ${value}, fieldId ${fieldConfig.id}`);
         let fieldValue = null;
-        switch (fieldConfig.field_type.type) {
+        const fieldType = fieldConfig.field_type ? fieldConfig.field_type.type : fieldConfig.type;
+        switch (fieldType) {
             case "Text":
             case "TextArea":
-                fieldValue = await this.inputTextField(fieldConfig, value, parentId);
+                fieldValue = await this.inputTextField(fieldConfig, value, cssSelector);
                 break;
             case "Postcode":
-                fieldValue = await this.inputPostCode(fieldConfig, value, parentId);
+                fieldValue = await this.inputPostCode(fieldConfig, value, cssSelector);
                 break;
             case "Number":
-                fieldValue = await this.inputNumberField(fieldConfig, value, parentId);
+                fieldValue = await this.inputNumberField(fieldConfig, value, cssSelector);
                 break;
             case "YesOrNo":
-                fieldValue = await this.inputYesOrNoField(fieldConfig, value, parentId);
+                fieldValue = await this.inputYesOrNoField(fieldConfig, value, cssSelector);
                 break;
             case "Email":
-                fieldValue = await this.inputEmailField(fieldConfig, value, parentId);
+                fieldValue = await this.inputEmailField(fieldConfig, value, cssSelector);
                 break;
             case "Complex":
-                fieldValue = await this.inputComplexField(fieldConfig, value, parentId);
+                fieldValue = await this.inputComplexField(fieldConfig, value, cssSelector);
                 break;
             case "FixedRadioList":
-                fieldValue = await this.inputFixedRadioListField(fieldConfig, value, parentId);
+                fieldValue = await this.inputFixedRadioListField(fieldConfig, value, cssSelector);
                 fieldValue = fieldValue.code
                 break;
             case "FixedList":
-                fieldValue = await this.inputFixedListField(fieldConfig, value, parentId);
+                fieldValue = await this.inputFixedListField(fieldConfig, value, cssSelector);
                 fieldValue = fieldValue.code
                 break;
             case "MultiSelectList":
-                const multiSelectVal = await this.inputMultiSelectListField(fieldConfig, value, parentId);
+                const multiSelectVal = await this.inputMultiSelectListField(fieldConfig, value, cssSelector);
                 const fieldValues = [];
                 for (const val of multiSelectVal){
                     fieldValues.push(val.code);
@@ -506,22 +517,89 @@ class CaseEdit {
                 fieldValue = fieldValues; 
                 break;
             case "PhoneUK":
-                fieldValue = await this.inputPhoneUKField(fieldConfig, value, parentId);
+                fieldValue = await this.inputPhoneUKField(fieldConfig, value, cssSelector);
                 break;
             case "MoneyGBP":
-                fieldValue = await this.inputMoneyGBP(fieldConfig, value, parentId);
+                fieldValue = await this.inputMoneyGBP(fieldConfig, value, cssSelector);
                 break;
             case "Date":
-                fieldValue = await this.inputDate(fieldConfig, value, parentId);
+                fieldValue = await this.inputDate(fieldConfig, value, cssSelector);
                 break;
             case "DateTime":
-                fieldValue = await this.inputDateTime(fieldConfig, value, parentId);
+                fieldValue = await this.inputDateTime(fieldConfig, value, cssSelector);
                 break;
         }
-        reportLogger.AddMessage("Field set value for " + fieldConfig.field_type.type)
+        reportLogger.AddMessage("Field set value for " + fieldType)
         reportLogger.AddJson(JSON.stringify(fieldValue))
 
         return fieldValue;
+    }
+
+
+    isPathArrFieldCollection(field) {
+        const pathFiedlProps = { isColl: false, fieldId: null, arrNum: null }
+        const arrText = field.match(/\[([^\][]*)]/g)
+        if (arrText) {
+            pathFiedlProps.isColl = true;
+            const arrNum = arrText[0].match(/([0-9]+)/g)
+            pathFiedlProps.arrNum = arrNum;
+            pathFiedlProps.fieldId = field.replace(arrText[0], "");
+        } else {
+            pathFiedlProps.fieldId = field;
+        }
+        return pathFiedlProps;
+    }
+    getInputFieldId(fieldConfig, pathArray) {
+
+        let fieldId = null;
+        const thisFieldId = pathArray[0];
+        const collectionFieldArr = this.isPathArrFieldCollection(thisFieldId);
+        const immediateChildId = pathArray.length > 1 ? pathArray[1] : null;
+
+        const fieldType = fieldConfig.field_type ? fieldConfig.field_type.type : fieldConfig.type;
+
+        if (fieldType === "Complex") {
+
+            if (immediateChildId) {
+                const childFieldConfig = fieldConfig.field_type.complex_fields.filter(child => child.id === immediateChildId)[0];
+                const grandChildAndSuccessorIds = pathArray.slice((pathArray.length - 1) * -1)
+                if (fieldConfig.field_type){
+                    fieldId = `${fieldConfig.id}_${this.getInputFieldId(childFieldConfig, grandChildAndSuccessorIds)}`
+                }else{
+                    fieldId = `${this.getInputFieldId(childFieldConfig, grandChildAndSuccessorIds)}`
+                }
+                
+            } else {
+                if (fieldConfig.field_type) {
+                    fieldId = `${fieldConfig.id}_`
+                }
+               
+            }
+        } else if (fieldType === "Collection") {
+            if (immediateChildId) {
+                const arrNum = collectionFieldArr.arrNum ? collectionFieldArr.arrNum : 0;
+                const childFieldConfig = fieldConfig.field_type.collection_field_type;
+                const grandChildAndSuccessorIds = pathArray.slice((pathArray.length - 1) * -1)
+                const childId = this.getInputFieldId(childFieldConfig, grandChildAndSuccessorIds);
+                if (childId === "value"){
+                    fieldId = `${fieldConfig.id}_${this.getInputFieldId(childFieldConfig, grandChildAndSuccessorIds)}`
+                }else{
+                    fieldId = `${fieldConfig.id}_${arrNum}_${this.getInputFieldId(childFieldConfig, grandChildAndSuccessorIds)}`
+                }
+                
+            } else {
+                fieldId = `${fieldConfig.id}`
+            }            
+        } else {
+            if (fieldConfig.field_type) {
+                fieldId = `${fieldConfig.id}`
+            }else{
+                fieldId = "value"
+            }
+            
+        }
+        reportLogger.AddMessage(`${fieldConfig.id} field and child path ${pathArray} cssSelector : ${fieldId}`)
+        return fieldId;
     }
 
     async validateCheckYourAnswersPage(eventConfig){
@@ -551,6 +629,8 @@ class CaseEdit {
         }
         softAssert.finally();
     }
+
+
 
 }
 

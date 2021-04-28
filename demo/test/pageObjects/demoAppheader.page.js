@@ -40,6 +40,10 @@ class AppHeader{
         switch (header){
             case "Create Case":
                 componentTag = "ccd-case-create";
+                break;
+            case "Search Result":
+                componentTag = "ccd-search-result";
+                break;
         }
         return componentTag;
     }
