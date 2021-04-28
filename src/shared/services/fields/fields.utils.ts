@@ -4,7 +4,7 @@ import { CurrencyPipe, } from '@angular/common';
 import { DatePipe } from '../../components/palette/utils';
 import { WizardPage } from '../../components/case-editor/domain';
 import { Predicate } from '../../domain/predicate.model';
-import { CaseView } from '../../domain/case-view';
+import { CaseEventTrigger, CaseView } from '../../domain/case-view';
 import { plainToClassFromExist } from 'class-transformer';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
@@ -184,7 +184,7 @@ export class FieldsUtils {
     c['component'] = comp;
   }
 
-  public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
+  public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
     let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
