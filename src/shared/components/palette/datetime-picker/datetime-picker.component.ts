@@ -9,7 +9,7 @@ import { FormControl } from '@angular/forms';
 import { MAT_DATE_LOCALE, ThemePalette } from '@angular/material';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { Moment } from 'moment/moment';
@@ -23,7 +23,9 @@ import moment = require('moment/moment');
   providers: [
     {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS},
     {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter},
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+    {provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
+    ]
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
