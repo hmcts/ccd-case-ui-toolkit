@@ -22,9 +22,7 @@ import moment = require('moment/moment');
   encapsulation: ViewEncapsulation.None,
   providers: [
     {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS},
-    {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter},
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
-    {provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
+    {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter}
     ]
 })
 
