@@ -61,7 +61,7 @@
     </fieldset>
 
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="toPreviousPage()">
+      <button class="button button-secondary" type="button" [disabled]="!(hasPreviousPage$ | async)" (click)="toPreviousPage()">
         Previous
       </button>
       <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">{{triggerText}}</button>
