@@ -32,7 +32,7 @@ Feature: Case field Date and Datetime picker
         Then I see field with cssLocator displayed "ccd-write-date-container-field ccd-datetime-picker  #dateTimeField"
 
 
-
+@test
     Scenario: Multiple date time fields in page
         Given I create mock Case event "muliDateFields"
         Given I add page to event "muliDateFields"
@@ -46,7 +46,7 @@ Feature: Case field Date and Datetime picker
             | dt4 | DateTime | Date 24 hour |
         Given I set field properties for field with id "dt1" in event "muliDateFields"
             | key                       | value                                                 |
-            | display_context_parameter | #TEST(YYYY-MM-DD),#DATETIMEENTRY(YYYY-MM-DD hh:mm:ss) |
+            | display_context_parameter | #TEST(YYYY-MM-DD),#DATETIMEENTRY(YYYY-MM-DD hh:mm:ss A) |
 
         Given I set field properties for field with id "dt2" in event "muliDateFields"
             | key                       | value                      |
@@ -253,34 +253,43 @@ Feature: Case field Date and Datetime picker
     #         | f2.c.t1 | f2_c_t1 | complex in comsample text |
     #         | f3.c.t3 | f3_0_t3 | coll val 1                |
 
-    @test
+    
     Scenario: Date and Date time fields in Case list
         Given I setup caselist mock "caseListtest"
         Given I add case field columns to caselist config "caseListtest"
-            | case_field_id | label          | display_context_parameter          |
-            | caseReference | Case reference |                                    |
-            | caseName      | Case name      |                                    |
-            | creationDate  | Created on     | #DATETIMEDISPLAY(YYYY-MMM hh:mm:ss) |
-            | dueDate       | Due on         | #DATETIMEDISPLAY(YYYY-MM-DD)       |
+            | case_field_id | label          | display_context_parameter               |
+            | caseReference | Case reference |                                         |
+            | caseName      | Case name      |                                         |
+            | dateTime1     | Datetime 12    | #DATETIMEDISPLAY(YYYY-MM-DD hh:mm:ss TT) |
+            | dateTime2     | Datetime 24    | #DATETIMEDISPLAY(YYYY-MM:DD HH:mm:ss)   |
+            | dateTime3     | Datetime 12 hh | #DATETIMEDISPLAY(YYYY-MM-DD hh TT)       |
+            | date1         | Date 1         | #DATETIMEDISPLAY(YYYY-MM-DD)            |
+            | date2         | Date 2         | #DATETIMEDISPLAY(YYYY-MM)               |
+            | date3         | Date 3         | #DATETIMEDISPLAY(YYYY)                  |
         Given I add case field type props to caselist config "caseListtest"
-            | case_field_id | id           | type     |
-            | caseReference | caseRef      | Text     |
-            | caseName      | name         | Text     |
-            | creationDate  | creationDate | Date     |
-            | dueDate       | dueDate      | DateTime |
+            | case_field_id | id        | type     |
+            | caseReference | caseRef   | Text     |
+            | caseName      | name      | Text     |
+            | dateTime1     | dateTime1 | DateTime |
+            | dateTime2     | dateTime2 | DateTime |
+            | dateTime3     | dateTime3 | DateTime |
+            | date1         | date1     | Date     |
+            | date2         | date2     | Date     |
+            | date3         | date3     | Date     |
         Given I add case list data rows for config "caseListtest"
-            | caseReference | caseName | creationDate               | dueDate                    |
-            | 12345678      | case 1   | 2020-07-23T15:19:16.093575 | 2021-07-23T15:19:16.093575 |
-            | 12345678      | case 1   | 2020-08-23T15:19:16.093575 | 2022-07-23T15:19:16.093575 |
-            | 12345679      | case 2   | 2020-09-23T15:19:16.093575 | 2021-06-23T15:19:16.093575 |
-            | 12345671      | case 2   | 2020-10-23T15:19:16.093575 | 2021-08-23T15:19:16.093575 |
-            | 12345672      | case 4   | 2020-11-23T15:19:16.093575 | 2021-09-23T15:19:16.093575 |
-            | 12345673      | case 5   | 2020-12-23T15:19:16.093575 | 2021-03-23T15:19:16.093575 |
-            | 12345674      | case 6   | 2020-01-23T15:19:16.093575 | 2021-01-23T15:19:16.093575 |
+            | caseReference | caseName | dateTime1               | dateTime2               | dateTime3               | date1                   | date2                   | date3                   |
+            | 12345677      | case 1   | 2020-07-23T15:11:16.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 |
+            | 12345678      | case 2   | 2020-07-23T15:11:16.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 |
+            | 12345679      | case 3   | 2020-07-23T15:11:16.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 | 2021-07-23T15:19:10.093 |
+
         Given I set mock case list config "caseListtest"
 
         Given I start MockApp
         Given I navigate to demo app
         Given I navigate to module page "Search Result"
-        Then I validate case list data rows
-            | Case reference | Case name | Created on | Due on |
+        Then I validate case list column values
+            | Case reference | Case name | Datetime 12            | Datetime 24         | Datetime 12 hh   | Date 1     | Date 2  | Date 3 |
+            | 12345677       | case 1    | 2020-07-23 03:11:16 PM | 2020-07-23 15:11:16 | 2020-07-23 03 PM | 2020-07-23 | 2020-07 | 2020   |
+            | 12345678       | case 2    | 2020-07-23 03:11:16 PM | 2020-07-23 15:11:16 | 2020-07-23 03 PM | 2020-07-23 | 2020-07 | 2020   |
+            | 12345679       | case 3    | 2020-07-23 03:11:16 PM | 2020-07-23 15:11:16 | 2020-07-23 03 PM | 2020-07-23 | 2020-07 | 2020   |
+

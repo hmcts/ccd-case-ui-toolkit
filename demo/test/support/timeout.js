@@ -1,6 +1,12 @@
 // timeout.js
-var { setDefaultTimeout } = require("cucumber");
+const minimist = require('minimist');
+const { setDefaultTimeout } = require('cucumber');
 
-setDefaultTimeout(600 * 1000);
-// this timeout value is global setting impact all step definition function,
-// thus it doesn't means the value is more large more better.
+const argv = minimist(process.argv.slice(2));
+
+if (argv.dev) {
+    setDefaultTimeout(30*60 * 1000);
+
+} else {
+    setDefaultTimeout(180 * 1000);
+}

@@ -7,6 +7,8 @@ const MockApp = require('../nodeMock/app');
 const CucumberReporter = require('../support/reportLogger');
 const dateTimePickerComponent = require('../pageObjects/dateTimePicker');
 const CaseListConfig = require('../nodeMock/ccd/ccdCaseConfig/caseListConfigGenerator');
+const caseListPage = require('../pageObjects/caselistPage');
+const SoftAssert = require('../support/softAssert');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -48,6 +50,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         MockApp.onPost('/data/internal/searchCases', (req, res) => {
             res.send(caseListConfigGenerator.getCaseListConfig());
         });
+    });
+
+    Then('I validate case list column values', async function(datatable){
+        const softAssert = new SoftAssert(this);
+        const dataRowsHash = datatable.hashes();
+        const columns = Object.keys(dataRowsHash[0]);
+        const columnValueDisplayed = {};
+        for (let i = 0; i < columns.length; i++){
+            columnValueDisplayed[columns[i]] = await caseListPage.getColumnValues(columns[i]);
+        }
+        for (let i = 0; i < dataRowsHash.length; i++ ){
+            const expectedRow = dataRowsHash[i];
+            for (let j = 0; j < columns.length; j++){
+                const expectedVal = expectedRow[columns[j]];
+                const actualVal = columnValueDisplayed[columns[j]][i];
+                softAssert.setScenario(`row ${i + 1} column ${columns[j]}`);
+                softAssert.assert(() => expect(actualVal, `${columns[j]} value at row ${i} mismatch `).to.equal(expectedVal))
+                
+            } 
+        }
+        softAssert.finally();
+        
     });
 
 
