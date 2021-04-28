@@ -1,6 +1,4 @@
 ## RELEASE NOTES
-### Version 2.68.8-wcag-status-message
-**EUI-2029** WCAG AA Status Message Fixes
 
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
