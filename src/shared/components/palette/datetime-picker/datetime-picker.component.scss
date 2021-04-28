@@ -529,21 +529,52 @@ Details inside it are for the actual component first shown on page */
 
         // seconds shown
         &[ng-reflect-show-seconds="true"] {
+          &[ng-reflect-enable-meridian="false"] {
+            tr:nth-of-type(1) {
+
+              td:nth-of-type(5) {
+                .mat-icon-button {
+                  left: 152px !important;
+                  z-index: 1;
+                }
+              }
+            }
+            tr:nth-of-type(3) {
+
+              td:nth-of-type(5) {
+                .mat-icon-button {
+                  left: 152px !important;
+                  z-index: 1;
+                }
+              }
+            }
+          }
+          &[ng-reflect-enable-meridian="true"] {
+            tr:nth-of-type(1) {
+
+              td:nth-of-type(5) {
+                .mat-icon-button {
+                  left: 165px !important;
+                  z-index: 1;
+                }
+              }
+            }
+            tr:nth-of-type(3) {
+
+              td:nth-of-type(5) {
+                .mat-icon-button {
+                  left: 165px !important;
+                  z-index: 1;
+                }
+              }
+            }
+          }
+
           .table {
             left: -60px;
 
             td {
               border-bottom: none;
-            }
-
-            tr:nth-of-type(1) {
-
-              td:nth-of-type(5) {
-                .mat-icon-button {
-                  left: 153px !important;
-                  z-index: 1;
-                }
-              }
             }
 
             tr:nth-of-type(2) {
@@ -554,14 +585,6 @@ Details inside it are for the actual component first shown on page */
                   position: relative;
                   top: -5px;
                   font-size: 15px;
-                }
-              }
-            }
-            tr:nth-of-type(3) {
-              td:nth-of-type(5) {
-                .mat-icon-button {
-                  left: 153px !important;
-                  z-index: 1;
                 }
               }
             }
