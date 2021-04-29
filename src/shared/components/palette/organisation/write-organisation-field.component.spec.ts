@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
 import { MarkdownModule } from '../../markdown';
 import { OrganisationConverter } from '../../../domain/organisation';
