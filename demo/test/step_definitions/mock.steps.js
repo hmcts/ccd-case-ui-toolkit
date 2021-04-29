@@ -42,4 +42,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
+    Given('I set request intercept on mock api {string} with reference {string}', async function (endpoint, reference) {   
+        MockApp.addIntercept(endpoint, (req,res,next) =>{
+            global.scenarioData[reference] = req.body;
+            next();
+        });
+    });
+
+    Given('I set response intercept on mock api {string} with reference {string}', async function (endpoint, reference) {
+        MockApp.addIntercept(endpoint, (req, res, next) => {
+            global.scenarioData[reference] = res.body;
+            next();
+        });
+    });
+
+
+
 });

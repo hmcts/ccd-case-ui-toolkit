@@ -44,6 +44,9 @@ class AppHeader{
             case "Search Result":
                 componentTag = "ccd-search-result";
                 break;
+            case "Case List Filters":
+                componentTag = "ccd-case-list-filters";
+                break;
         }
         return componentTag;
     }
