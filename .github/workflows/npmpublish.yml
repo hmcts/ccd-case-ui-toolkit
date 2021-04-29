@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - master
+      - Release
   push:
     branches:
       - master
+      - Release
       - refs/tags/*
     tags:
       - '*'
@@ -20,6 +22,7 @@ jobs:
         with:
           node-version: 10
       - run: yarn install
+      - run: yarn lint
       - run: yarn build
       - run: yarn test
 
