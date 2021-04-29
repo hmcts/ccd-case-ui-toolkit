@@ -22,8 +22,8 @@ import moment = require('moment/moment');
   encapsulation: ViewEncapsulation.None,
   providers: [
     {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS},
-    {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter}
-    ]
+    {provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter},
+    {provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}]
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {

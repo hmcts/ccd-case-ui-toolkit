@@ -17,6 +17,7 @@
              [formControl]="dateControl"
              [ngxMatDatetimePicker]="picker"
              (focusin)="focusIn()"
+             ng-model-options="{timezone:'utc'}"
       >
       <mat-datepicker-toggle matSuffix [for]="picker" id="pickerOpener"></mat-datepicker-toggle>
       <ngx-mat-datetime-picker #picker
