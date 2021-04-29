@@ -3,11 +3,14 @@
 const CucumberReportLogger = require('../support/reportLogger');
 
 var { defineSupportCode } = require('cucumber');
+const jsonpath = require('jsonpath');
 
+const BrowserWaits = require('../support/customWaits');
 const MockApp = require('../nodeMock/app');
 const CCDCaseConfig = require('../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const {getDateTimeTestEvent,getBlankEvent,addPageToEvent,addCaseField,setCaseFieldProps} = require('../mockData/caseEvent');
 const caseEditPage = require('../pageObjects/ccdCaseEditPages')
+const SoftAssert = require('../support/softAssert');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -162,5 +165,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const caseFieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
         await caseEditPage.clickAddNewCollectionItemBtn(caseFieldConfig, fieldPath);
     });
+
+    Then('I validate request body {string} of event validate api', async function(requestBodyReference,datatable){
+    // step definition code here
+        await BrowserWaits.waitForCondition(() =>  global.scenarioData[requestBodyReference] !== null );
+        const reqBody = global.scenarioData[requestBodyReference];
+        const softAsseert = new SoftAssert();
+        const dataTableHashes = datatable.hashes();
+        CucumberReportLogger.AddMessage("Request body in validation");
+        CucumberReportLogger.AddJson(reqBody);
+        for(let i = 0; i < dataTableHashes.length; i++){
+            const matchValues = jsonpath.query(reqBody, dataTableHashes[i].pathExpression);
+            softAsseert.assert(() => expect(matchValues.length  > 0, `path ${dataTableHashes[i].pathExpression} not found in req body`).to.be.true);
+            if (matchValues.length > 0){
+                softAsseert.assert(() => expect(matchValues[0], `path ${dataTableHashes[i].pathExpression} not matching expected`).to.equal(dataTableHashes[i].value));
+            }
+        }
+        softAsseert.finally();
+    });
+
+    When('I click continue in event edit page', async function(){
+       await caseEditPage.clickContinue();
+    });
+
 
 });

@@ -18,5 +18,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     
     })
 
+    Given('I reset reference variable {string} value to null', async function(reference){
+        global.scenarioData[reference] = null;
+    });
+
 
 });

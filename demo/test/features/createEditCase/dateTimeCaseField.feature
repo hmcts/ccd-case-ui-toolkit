@@ -15,7 +15,6 @@ Feature: Case field Date and Datetime picker
         Then I see field with cssLocator displayed "ccd-write-date-field #dateTimeField cut-date-input"
 
 
-
     Scenario: Date time picker displayed when displat_context_parametr is supplied else no
         Given I set field properties for field with id "dateField" in event "DateTimeFieldTestEvent"
             | key                       | value                                                 |
@@ -32,7 +31,7 @@ Feature: Case field Date and Datetime picker
         Then I see field with cssLocator displayed "ccd-write-date-container-field ccd-datetime-picker  #dateTimeField"
 
 
-@test
+
     Scenario: Multiple date time fields in page
         Given I create mock Case event "muliDateFields"
         Given I add page to event "muliDateFields"
@@ -45,7 +44,7 @@ Feature: Case field Date and Datetime picker
             | dt3 | DateTime | Date 3       |
             | dt4 | DateTime | Date 24 hour |
         Given I set field properties for field with id "dt1" in event "muliDateFields"
-            | key                       | value                                                 |
+            | key                       | value                                                   |
             | display_context_parameter | #TEST(YYYY-MM-DD),#DATETIMEENTRY(YYYY-MM-DD hh:mm:ss A) |
 
         Given I set field properties for field with id "dt2" in event "muliDateFields"
@@ -127,26 +126,26 @@ Feature: Case field Date and Datetime picker
         Given I add fields to page "page1" in event "muliDateFields"
             | id  | type     | label  |
             | dt1 | DateTime | Date 1 |
-            | dt2 | Date     | Date 2 |
+            | dt2 | DateTime | Date 2 |
             | dt3 | DateTime | Date 3 |
             | dt4 | DateTime | Date 4 |
         Given I set field properties for field with id "dt1" in event "muliDateFields"
-            | key                       | value                               |
-            | display_context_parameter | #DATETIMEENTRY(YYYY-MM-DD hh:mm:ss) |
+            | key                       | value                                                                     |
+            | display_context_parameter | #DATETIMEENTRY(YYYY-MM-DD hh:mm:ss),#DATETIMEDISPLAY(YYYY-MM-DD hh:mm:ss) |
 
         Given I set field properties for field with id "dt2" in event "muliDateFields"
-            | key                       | value                      |
-            | display_context_parameter | #DATETIMEENTRY(YYYY-MM-DD) |
+            | key                       | value                                                   |
+            | display_context_parameter | #DATETIMEENTRY(YYYY-MM-DD),#DATETIMEDISPLAY(YYYY-MM-DD) |
 
         Given I set field properties for field with id "dt3" in event "muliDateFields"
-            | key                       | value                   |
-            | display_context_parameter | #DATETIMEENTRY(YYYY-MM) |
+            | key                       | value                                             |
+            | display_context_parameter | #DATETIMEENTRY(YYYY-MM),#DATETIMEDISPLAY(YYYY-MM) |
         Given I set field properties for field with id "dt4" in event "muliDateFields"
-            | key                       | value                |
-            | display_context_parameter | #DATETIMEENTRY(YYYY) |
+            | key                       | value                                       |
+            | display_context_parameter | #DATETIMEENTRY(YYYY),#DATETIMEDISPLAY(YYYY) |
         Given I set case event "muliDateFields" in mock
 
-
+        Given I set request intercept on mock api "/data/case-types/:caseType/validate" with reference "eventValidateReq"
         Given I start MockApp
 
         Given I navigate to demo app
@@ -163,6 +162,14 @@ Feature: Case field Date and Datetime picker
             | #dt2        | 2020-01-10             |
             | #dt3        | 2020-03                |
             | #dt4        | 2022                   |
+        Given I reset reference variable "eventValidateReq" value to null
+        When I click continue in event edit page
+        Then I validate request body "eventValidateReq" of event validate api
+            | pathExpression | value                   |
+            | $.data.dt1     | 2020-02-20T10:20:30.000 |
+            | $.data.dt2     | 2020-01-10T00:00:00.000 |
+            | $.data.dt3     | 2020-03-01T00:00:00.000 |
+            | $.data.dt4     | 2022-01-01T00:00:00.000 |
 
 
 
@@ -217,52 +224,16 @@ Feature: Case field Date and Datetime picker
             | DateTime readonly | 2021  |
 
 
-    # @test
-    # Scenario: Dev work example
-    #     Given I create mock Case event "muliDateFields"
-    #     Given I add page to event "muliDateFields"
-    #         | reference | id    | label                 |
-    #         | page1     | page1 | Page 1 for mock event |
-    #     Given I add fields to page "page1" in event "muliDateFields"
-    #         | id      | type    | label           |
-    #         | f2      | Complex | complex 1       |
-    #         # | f2.col    | Complex     | text in complex   |
-    #         | f2.t1   | Text    | text in complex |
-    #         | f2.c    | Complex | complex complex |
-    #         | f2.c.t1 | Text    | complex complex |
 
-    #         | f3      | Collection | collection 1 |
-    #         | f3.c    | Complex    | complex 1    |
-    #         | f3.c.t3 | Text       | collection 1 |
-
-    #     Given I set field properties for field with id "f3" in event "muliDateFields"
-    #         | key                       | value                   |
-    #         | display_context_parameter | #COLLECTION(allowInsert |
-
-
-    #     Given I set case event "muliDateFields" in mock
-
-    #     Given I start MockApp
-    #     Given I navigate to demo app
-    #     Given I navigate to module page "Create Case"
-
-    #     When I click collection add new btn for field "f3" in event "muliDateFields"
-    #     When I enter case event field values for event "muliDateFields"
-    #         | path    | fieldId | value                     |
-    #         # | f2.t1 | sample text|
-    #         | f2.c.t1 | f2_c_t1 | complex in comsample text |
-    #         | f3.c.t3 | f3_0_t3 | coll val 1                |
-
-    
     Scenario: Date and Date time fields in Case list
         Given I setup caselist mock "caseListtest"
         Given I add case field columns to caselist config "caseListtest"
             | case_field_id | label          | display_context_parameter               |
             | caseReference | Case reference |                                         |
             | caseName      | Case name      |                                         |
-            | dateTime1     | Datetime 12    | #DATETIMEDISPLAY(YYYY-MM-DD hh:mm:ss TT) |
+            | dateTime1     | Datetime 12    | #DATETIMEDISPLAY(YYYY-MM-DD hh:mm:ss a) |
             | dateTime2     | Datetime 24    | #DATETIMEDISPLAY(YYYY-MM:DD HH:mm:ss)   |
-            | dateTime3     | Datetime 12 hh | #DATETIMEDISPLAY(YYYY-MM-DD hh TT)       |
+            | dateTime3     | Datetime 12 hh | #DATETIMEDISPLAY(YYYY-MM-DD hh a)       |
             | date1         | Date 1         | #DATETIMEDISPLAY(YYYY-MM-DD)            |
             | date2         | Date 2         | #DATETIMEDISPLAY(YYYY-MM)               |
             | date3         | Date 3         | #DATETIMEDISPLAY(YYYY)                  |
@@ -292,4 +263,37 @@ Feature: Case field Date and Datetime picker
             | 12345677       | case 1    | 2020-07-23 03:11:16 PM | 2020-07-23 15:11:16 | 2020-07-23 03 PM | 2020-07-23 | 2020-07 | 2020   |
             | 12345678       | case 2    | 2020-07-23 03:11:16 PM | 2020-07-23 15:11:16 | 2020-07-23 03 PM | 2020-07-23 | 2020-07 | 2020   |
             | 12345679       | case 3    | 2020-07-23 03:11:16 PM | 2020-07-23 15:11:16 | 2020-07-23 03 PM | 2020-07-23 | 2020-07 | 2020   |
+
+
+
+    @test
+    Scenario: DAte and Datetime fields in workbasket
+        Given I setup workbasket mock "workBasketConfig"
+        Given I add case field to workbasket config "workBasketConfig"
+            | label      | id    | type     | display_context_parameter        |
+            | Date field | date1 | Date     |                                  |
+            | Date field | date2 | Date     | #DATETIMEENTRY(YYYY-MM-DD)          |
+            | Date field | date3 | DateTime |                                  |
+            | Date field | date4 | DateTime | #DATETIMEENTRY(YYYY-MM hh:mm:ss) |
+        Given I set mock workbasket config "workBasketConfig"
+        Given I start MockApp
+        Given I navigate to demo app
+        Given I navigate to module page "Case List Filters"
+        Given I select jurisdiction in case list filters
+        Given I select case type in case list filters
+        Then I validate workbasket filters displayed
+            | cssSelector                |
+            | #date1 cut-date-input      |
+            | ccd-datetime-picker #date2 |
+            | #date3 cut-date-input      |
+            | ccd-datetime-picker #date4 |
+        When I set date time picker value for fields in workbasket
+            | fieldId | value                  |
+            | date2   | 2020-02-20             |
+            | date4   | 2020-02-20 10:20:30 AM |
+
+        Then I validate date time picker field values in workbasket
+            | fieldId | value                  |
+            | date2   | 2020-02                |
+            | date4   | 2020-02-20 10:20:30 AM |
 
