@@ -148,13 +148,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
 
     // isNew:
-    let cf: CaseField = this.newCaseField(cfid, item, index, isNew);
+    const cf: CaseField = this.newCaseField(cfid, item, index, isNew);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
     return cf;
   }
 
-  private newCaseField(id: string, item, index, isNew = false) {
+  private newCaseField(id: string, item, index: number, isNew = false): any {
     const isNotAuthorisedToUpdate = !isNew && this.isNotAuthorisedToUpdate(index);
     // Remove the bit setting the hidden flag here as it's an item in the array and
     // its hidden state isn't independently re-evaluated when the form is changed.
@@ -246,7 +246,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
                 .includes(type);
   }
 
-  isNotAuthorisedToUpdate(index) {
+  isNotAuthorisedToUpdate(index: number): boolean {
     if (this.isExpanded) {
       return false;
     }
