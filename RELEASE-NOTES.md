@@ -15,9 +15,6 @@
 ### Version 2.79.10-input-type-accessibility
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
 
-### Version 2.79.9-Unresponsive-and-laggy-show-hide-conditions
-**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
-
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
 **EUI-2925** Review implementation of Activity tracker in MC Demo Int env
