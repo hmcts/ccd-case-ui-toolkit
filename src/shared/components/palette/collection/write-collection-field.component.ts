@@ -75,7 +75,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  buildCaseField(item, index: number, isNew = false): CaseField {
+  buildCaseField(item, index: number): CaseField {
     /**
      * What follow is code that makes me want to go jump in the shower!
      * Basically, we land in here repeatedly because of the binding, and
@@ -146,16 +146,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     } else {
       cfid = index.toString();
     }
-
-    // isNew:
-    const cf: CaseField = this.newCaseField(cfid, item, index, isNew);
+    let cf: CaseField = this.newCaseField(cfid, item);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
     return cf;
   }
 
-  private newCaseField(id: string, item, index: number, isNew = false): any {
-    const isNotAuthorisedToUpdate = !isNew && this.isNotAuthorisedToUpdate(index);
+  private newCaseField(id: string, item) {
+    const isNotAuthorisedToUpdate = this.isNotAuthorisedToUpdate();
     // Remove the bit setting the hidden flag here as it's an item in the array and
     // its hidden state isn't independently re-evaluated when the form is changed.
     return plainToClassFromExist(new CaseField(), {
@@ -190,8 +188,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     const item = { value: null }
     this.caseField.value.push(item);
+    // this.createChecker.setDisplayContextForChildren(this.caseField, this.profile);
+
     const index = this.caseField.value.length - 1;
-    const caseField: CaseField = this.buildCaseField(item, index, true);
+    const caseField: CaseField = this.buildCaseField(item, index);
     const prefix = this.buildIdPrefix(index);
     const container = this.getContainer(index);
     this.collItems.push({ caseField, item, index, prefix, container });
@@ -246,18 +246,20 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
                 .includes(type);
   }
 
-  isNotAuthorisedToUpdate(index: number): boolean {
+  isNotAuthorisedToUpdate() {
     if (this.isExpanded) {
       return false;
     }
-    // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
-    const id = this.getControlIdAt(index);
-    if (id) {
+    // TODO: Reassess the logic around the id when we know what the behaviour should actually
+    // be as what was in place prevents creation of new items as it shows a readonly field
+    // rather than an writable component.
+    // const id = this.getControlIdAt(index);
+    // if (!!id) {
       if (!!this.profile.user && !!this.profile.user.idam) {
         const updateRole = this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
         return !updateRole;
       }
-    }
+    // }
     return false;
   }
 
@@ -269,7 +271,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    // Should be able to delete if creating a case even if "D" is absent, hence:
     const id = this.getControlIdAt(index);
     return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
   }
@@ -298,15 +299,22 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   /**
-   * Applied full solution as part of EUI-3505
+   * TODO: Sort out the logic necessary for this once and for all.
    */
   private getControlIdAt(index: number): string {
+    // For the moment, simply return undefined.
+    return undefined;
+
+    // What is commented out below the return statement works, except
+    // the id is always null for a newly-created entry, which means it
+    // displays as a readonly field since it appears to require an id
+    // in order to be updatable or deletable, which doesn't seem right.
 
     // this.formArray contains [ FormGroup( id: FormControl, value: FormGroup ), ... ].
     // Here, we need to get the value of the id FormControl.
-    const group: FormGroup = this.formArray.at(index) as FormGroup;
-    const control: FormControl = group.get('id') as FormControl;
-    return control ? control.value : undefined;
+    // const group: FormGroup = this.formArray.at(index) as FormGroup;
+    // const control: FormControl = group.get('id') as FormControl;
+    // return control ? control.value : undefined;
   }
 
   private isCollectionOfSimpleType(caseField: CaseField) {
