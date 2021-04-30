@@ -102,9 +102,9 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
           }
           cf.hidden = !condResult;
         }
-        // EUI-3267. If we've not assessed the hiddenCannotChange flag and
-        // this field is showing, set the flag appropriately now.
-        if (cf.hiddenCannotChange === undefined && !cf.hidden) {
+        // EUI-3267. If this field is showing, set the hiddenCannotChange flag.
+        // This is used in the display of the grey bar.
+        if (!cf.hidden) {
           cf.hiddenCannotChange = showCondition.hiddenCannotChange(this.caseFields);
         }
         // Disable the control if it's hidden so that it doesn't count towards the
