@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.79.9-Unresponsive-and-laggy-show-hide-conditions",
+  "version": "2.79.12-Unresponsive-and-laggy-show-hide-conditions",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

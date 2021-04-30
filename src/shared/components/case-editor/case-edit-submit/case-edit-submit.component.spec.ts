@@ -26,8 +26,8 @@ import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
-
 import createSpyObj = jasmine.createSpyObj;
+
 describe('CaseEditSubmitComponent', () => {
 
   let comp: CaseEditSubmitComponent;
@@ -40,7 +40,7 @@ describe('CaseEditSubmitComponent', () => {
   let caseFieldService = new CaseFieldService();
   let fieldsUtils: FieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })
+    'data': new FormGroup({'PersonLastName': new FormControl('Khaleesi')})
   });
   let caseEditComponent: any;
   let pages: WizardPage[];
@@ -113,7 +113,7 @@ describe('CaseEditSubmitComponent', () => {
   const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors'
 
   describe('Save and Resume disabled', () => {
-    pages  = [
+    pages = [
       aWizardPage('page1', 'Page 1', 1),
       aWizardPage('page2', 'Page 2', 2),
       aWizardPage('page3', 'Page 3', 3)
@@ -430,7 +430,7 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         'form': FORM_GROUP,
         'data': '',
-        'eventTrigger': { 'case_fields': [], 'can_save_draft': true },
+        'eventTrigger': {'case_fields': [], 'can_save_draft': true},
         'wizard': wizard,
         'hasPrevious': () => true,
         'getPage': () => firstPage,
@@ -461,16 +461,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueService },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
 
@@ -570,7 +570,7 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         'form': FORM_GROUP,
         'data': '',
-        'eventTrigger': { 'case_fields': [], 'can_save_draft': true },
+        'eventTrigger': {'case_fields': [], 'can_save_draft': true},
         'wizard': wizard,
         'hasPrevious': () => true,
         'getPage': () => firstPage,
@@ -598,16 +598,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueService },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -677,6 +677,29 @@ describe('CaseEditSubmitComponent', () => {
         expect(text(firstFieldError)).toBe('First field error');
         const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
         expect(text(secondFieldError)).toBe('Second field error');
+      });
+    });
+
+    it('should display specific error heading and message when callback errors, callback warnings and details are set to null', () => {
+      comp.error = {
+        status: 422,
+        callbackErrors: null,
+        callbackWarnings: null,
+        details: null,
+        message: 'There are field validation errors'
+      } as HttpError;
+
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => {
+        const error = de.query($SELECT_ERROR_SUMMARY);
+        expect(error).toBeTruthy();
+
+        const errorHeading = error.query($SELECT_ERROR_HEADING_SPECIFIC);
+        expect(text(errorHeading)).toBe(ERROR_HEADING_SPECIFIC);
+
+        const errorMessage = error.query($SELECT_ERROR_MESSAGE_SPECIFIC);
+        expect(text(errorMessage)).toBe(ERROR_MESSAGE_SPECIFIC);
       });
     });
 
