@@ -120,7 +120,7 @@ export class ActivityPollingService {
 
     const pollingConfig = {
       ...this.pollConfig,
-      interval: 5000
+      interval: 15000
     };
 
     return polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
