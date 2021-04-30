@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 2.79.14-labels-not-displaying-case-heading
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+
 ### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
 
