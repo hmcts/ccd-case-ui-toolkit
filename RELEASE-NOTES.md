@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 2.79.11-crud-issues
+### Version 2.79.13-crud-issues
 **EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
 
 ### Version 2.79.10-input-type-accessibility
