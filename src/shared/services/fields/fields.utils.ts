@@ -1,14 +1,13 @@
+import { CurrencyPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition';
-import { CurrencyPipe, } from '@angular/common';
-import { DatePipe } from '../../components/palette/utils';
-import { WizardPage } from '../../components/case-editor/domain';
-import { Predicate } from '../../domain/predicate.model';
-import { CaseEventTrigger, CaseView } from '../../domain/case-view';
-import { plainToClassFromExist } from 'class-transformer';
-import { FormatTranslatorService } from '../case-fields/format-translator.service';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
+
+import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
+import { DatePipe } from '../../components/palette/utils';
+import { CaseEventTrigger, CaseField, CaseTab, CaseView, FixedListItem, Predicate } from '../../domain';
+import { FormatTranslatorService } from '../case-fields/format-translator.service';
 
 // @dynamic
 @Injectable()
@@ -33,44 +32,44 @@ export class FieldsUtils {
     return valueMap;
   }
 
-  public static getType(elem): string {
+  public static getType(elem: any): string {
     return Object.prototype.toString.call(elem).slice(8, -1);
   }
 
-  public static isObject(elem) {
+  public static isObject(elem: any): boolean {
     return typeof elem === 'object' && elem !== null;
   }
 
-  public static isNonEmptyObject(elem) {
+  public static isNonEmptyObject(elem: any): boolean {
       return this.isObject(elem) && Object.keys(elem).length !== 0;
   }
 
-  public static isArray(elem) {
+  public static isArray(elem: any): boolean {
     return Array.isArray(elem);
   }
 
-  public static areCollectionValuesSimpleFields(fieldValue) {
-      return !this.isObject(fieldValue[0]['value']) && !Array.isArray(fieldValue[0]['value']) && fieldValue[0]['value'] !== undefined;
+  public static areCollectionValuesSimpleFields(fieldValue: any[]): boolean {
+    return !this.isObject(fieldValue[0]['value']) && !Array.isArray(fieldValue[0]['value']) && fieldValue[0]['value'] !== undefined;
   }
 
-  public static isCollectionOfSimpleTypes(fieldValue) {
-      return this.isCollection(fieldValue) &&  this.areCollectionValuesSimpleFields(fieldValue);
+  public static isCollectionOfSimpleTypes(fieldValue: any): boolean {
+    return this.isCollection(fieldValue) && this.areCollectionValuesSimpleFields(fieldValue);
   }
 
-  public static isMultiSelectValue(form) {
+  public static isMultiSelectValue(form: any): boolean {
     return this.isNonEmptyArray(form) && !this.isCollectionWithValue(form);
   }
 
-  public static isNonEmptyArray(pageFormFields): boolean {
-      return Array.isArray(pageFormFields) && pageFormFields[0] !== undefined;
+  public static isNonEmptyArray(pageFormFields: any): boolean {
+    return Array.isArray(pageFormFields) && pageFormFields[0] !== undefined;
   }
 
-  public static isCollection(pageFormFields): boolean {
-      return this.isNonEmptyArray(pageFormFields) && this.isCollectionWithValue(pageFormFields);
+  public static isCollection(pageFormFields: any): boolean {
+    return this.isNonEmptyArray(pageFormFields) && this.isCollectionWithValue(pageFormFields);
   }
 
-  public static isCollectionWithValue(pageFormFields): boolean {
-      return pageFormFields[0]['value'] !== undefined;
+  public static isCollectionWithValue(pageFormFields: any[]): boolean {
+    return pageFormFields[0]['value'] !== undefined;
   }
 
   public static cloneObject(obj: any): any {
@@ -79,21 +78,21 @@ export class FieldsUtils {
 
   // temporary function until this can be moved to CaseView class (RDM-2681)
   public static getCaseFields(caseView: CaseView): CaseField[] {
-    let caseDataFields = caseView.tabs.reduce((acc, tab) => {
+    const caseDataFields: CaseField[] = caseView.tabs.reduce((acc: CaseField[], tab: CaseTab) => {
       return acc.concat(tab.fields);
     }, []);
 
-    let metadataFields = caseView.metadataFields;
-    return metadataFields.concat(caseDataFields.filter(function (caseField) {
+    const metadataFields: CaseField[] = caseView.metadataFields;
+    return metadataFields.concat(caseDataFields.filter((caseField: CaseField) => {
       return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
     }));
   }
 
-  private static prepareValue(field: CaseField) {
+  private static prepareValue(field: CaseField): any {
     if (field.value) {
       return field.value;
     } else if (field.isComplex()) {
-      let valueMap = {};
+      const valueMap = {};
       field.field_type.complex_fields.forEach(complexField => {
         valueMap[complexField.id] = FieldsUtils.prepareValue(complexField);
       });
@@ -155,11 +154,11 @@ export class FieldsUtils {
     }
   };
 
-  private static getMoneyGBP(fieldValue) {
+  private static getMoneyGBP(fieldValue: any): string {
     return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
   }
 
-  private static getDate(fieldValue) {
+  private static getDate(fieldValue: string): string {
     try {
       // Format specified here wasn't previously working and lots of tests depend on it not working
       // Now that formats work correctly many test would break - and this could affect services which may depend on
@@ -170,8 +169,8 @@ export class FieldsUtils {
     }
   }
 
-  private static getFixedListLabelByCodeOrEmpty(field, code) {
-    let relevantItem = code ? field.field_type.fixed_list_items.find(item => item.code === code) : '';
+  private static getFixedListLabelByCodeOrEmpty(field: CaseField, code: string): string {
+    const relevantItem: FixedListItem = code ? field.field_type.fixed_list_items.find(item => item.code === code) : null;
     return relevantItem ? relevantItem.label : '';
   }
 
@@ -185,13 +184,13 @@ export class FieldsUtils {
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
-    let currentState = this.getCurrentEventState(eventTrigger, form);
+    const currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
     };
   }
 
-  public getCurrentEventState(eventTrigger, form): any {
+  public getCurrentEventState(eventTrigger: any, form: FormGroup): any {
     return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
   }
 
@@ -207,22 +206,25 @@ export class FieldsUtils {
     return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
   }
 
-  public controlIterator(aControl: AbstractControl,
-                         formArrayFn: (AbstractControl, CaseField) => void,
-                         formGroupFn: (FormGroup) => void,
-                         controlFn: (FormControl) => void) {
-    if (aControl instanceof FormArray) {  // We're in a collection
-      const cf: CaseField =  aControl['caseField'];
-      formArrayFn( aControl, cf);
-    } else if (aControl instanceof FormGroup) {
+  public controlIterator(
+    aControl: AbstractControl,
+    formArrayFn: (a: FormArray) => void,
+    formGroupFn: (g: FormGroup) => void,
+    controlFn: (c: FormControl) => void): void {
+    if (aControl instanceof FormArray) { // We're in a collection
+      formArrayFn(aControl);
+    } else if (aControl instanceof FormGroup) { // We're in a complex type.
       formGroupFn(aControl)
-    } else if (aControl instanceof FormControl) {  // FormControl
+    } else if (aControl instanceof FormControl) { // FormControl
       controlFn(aControl);
     }
   }
 
-  private mergeFields(caseFields: CaseField[], formFields: any, mergeFunction: (CaseField, any) => void) {
-    let result = FieldsUtils.cloneObject(formFields);
+  private mergeFields(
+    caseFields: CaseField[],
+    formFields: any,
+    mergeFunction: (field: CaseField, result: any) => void): any {
+    const result = FieldsUtils.cloneObject(formFields);
     caseFields.forEach(field => {
       mergeFunction(field, result);
       if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
