@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 2.79.14-grey-bars-depending-on-fields-on-other-pages-alpha
+### Version 2.79.14-grey-bars-depending-on-fields-on-other-pages-beta
 **EUI-3854** Fix for grey bars showing when they shouldn't because enabling fields are on other pages.
 
 ### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
