@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 2.79.10-input-type-accessibility
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
 
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
