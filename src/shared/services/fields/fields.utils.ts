@@ -123,6 +123,10 @@ export class FieldsUtils {
         });
         break;
       }
+      case 'Label': {
+        result[field.id] = FieldsUtils.getLabel(field);
+        break;
+      }
       case 'MoneyGBP': {
         let fieldValue = (result[field.id] || field.value);
         result[field.id] = FieldsUtils.getMoneyGBP(fieldValue);
@@ -156,6 +160,10 @@ export class FieldsUtils {
 
   private static getMoneyGBP(fieldValue: any): string {
     return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
+  }
+
+  private static getLabel(fieldValue: CaseField): string {
+    return fieldValue ? fieldValue.label : '';
   }
 
   private static getDate(fieldValue: string): string {

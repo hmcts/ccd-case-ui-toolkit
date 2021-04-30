@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 2.79.14-grey-bars-depending-on-fields-on-other-pages-beta
+### Version 2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma
 **EUI-3854** Fix for grey bars showing when they shouldn't because enabling fields are on other pages.
+
+### Version 2.79.14-labels-not-displaying-case-heading
+**EUI-2569** ExUI - Labels not displaying in Case Heading
 
 ### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
