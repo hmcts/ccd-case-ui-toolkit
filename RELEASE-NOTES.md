@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+
 ### Version 2.79.12
 **EUI-3682** Callback Error still not showing proper error message in XUI screen
 
