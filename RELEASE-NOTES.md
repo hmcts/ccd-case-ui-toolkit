@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 2.79.12
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+
 ### Version 2.79.11-crud-issues
 **EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
 
