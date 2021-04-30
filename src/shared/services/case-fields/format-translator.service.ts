@@ -154,6 +154,7 @@ export class FormatTranslatorService {
         // added 'a' specification to stop discrepancy in am/AM pm/PM formatting
         case 'a':
           maybePush(result, 'A', inQuote);
+          break;
         case 'n':
         case 'N':
           maybePush(result, '***' + c + '***', inQuote); // No way to support A - millisec of day, n - nano of second, N - nano of Day
