@@ -51,12 +51,14 @@ describe('DatePipe', () => {
     expect(message).toBe('26 Jul 2017, ' + getExpectedHour(12) + ':09:05 PM');
   });
 
-  it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss PM format', () => {
+  /* requirement to no longer have effectively changing timezones negates test
+    it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss PM format', () => {
     const firstPass: string = datePipe.transform('2017-07-26T20:10:05', 'local', null);
     expect(firstPass).toBe('26 Jul 2017, ' + getExpectedHour(8) + ':10:05 PM');
     const secondPass: string = datePipe.transform(firstPass, 'local', null);
     expect(secondPass).toEqual(firstPass); // Unchanged.
   });
+ */
 
   it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss midnight format', () => {
     let message = datePipe.transform('2017-07-26T00:10:05', 'local', null);
@@ -120,7 +122,7 @@ describe('DatePipe', () => {
   });
 
   it ('should format date times according to format', () => {
-    const message = datePipe.transform('2017-07-26T19:09:05', null, 'dd MMMM yyyy HH:mm:ss.SSS');
+    const message = datePipe.transform('2017-07-26T19:09:05', null, 'DD MMMM yyyy HH:mm:ss.SSS');
     expect(message).toBe('26 July 2017 19:09:05.000');
   });
 
@@ -162,11 +164,11 @@ describe('DatePipe', () => {
    */
   it ('should handle GMT to BST transition', () => {
     let endOfWinter = new Date(2020, 2, 29, 0, 59, 59)
-    let message = datePipe.transform (endOfWinter.toISOString(), 'GMT', 'dd MMMM yyyy HH:mm:ss.SSS');
+    let message = datePipe.transform (endOfWinter.toISOString(), 'GMT', 'DD MMMM yyyy HH:mm:ss.SSS');
     expect(message).toBe('29 March 2020 00:59:59.000');
     // tick on 1 second
     endOfWinter.setTime(endOfWinter.getTime() + 1000);
-    message = datePipe.transform (endOfWinter.toISOString(), '+0100', 'dd MMMM yyyy HH:mm:ss.SSS');
+    message = datePipe.transform (endOfWinter.toISOString(), '+0100', 'DD MMMM yyyy HH:mm:ss.SSS');
     expect(message).toBe('29 March 2020 02:00:00.000');
   })
   function getExpectedHour(hour): number {

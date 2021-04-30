@@ -15,7 +15,7 @@ import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 import { CaseFieldService } from '../../../services';
 import { CaseField, FieldType } from '../../../domain';
 
-fdescribe('DatetimePickerComponent', () => {
+describe('DatetimePickerComponent', () => {
 
   let component: DatetimePickerComponent;
   let fixture: ComponentFixture<DatetimePickerComponent>;

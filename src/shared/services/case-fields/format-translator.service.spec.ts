@@ -9,10 +9,10 @@ describe('FormatTranslatorService', () => {
       expect(formatTranslator.translate('dd MMM yyyy HH:mm:ss')).toBe('dd MMM yyyy HH:mm:ss');
     });
     it('should translate unhandled characters', () => {
-      expect(formatTranslator.translate('DYecFKkVOxX')).toBe('dyEEWHhzzZZ');
+      expect(formatTranslator.translate('DYecFKkVOxX')).toBe('DYEEWHhzzZZ');
     });
     it('should reject AnN', () => {
-      expect(formatTranslator.translate('AnN')).toBe('***A******n******N***');
+      expect(formatTranslator.translate('AnN')).toBe('A***n******N***');
     });
     it ('should ignore the contents of quoted strings', () => {
       // tslint:disable-next-line:quotemark
