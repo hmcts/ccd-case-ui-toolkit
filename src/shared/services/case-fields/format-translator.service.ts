@@ -129,12 +129,14 @@ export class FormatTranslatorService {
             inQuote = !inQuote;
           }
           break;
+        /* use of moment library negates these changes
+         (if necessary in other scenario, might need to add format type as parameter)
         case 'D':
           maybePush(result, 'd', inQuote);
           break;
         case 'Y':
           maybePush(result, 'y', inQuote);
-          break;
+          break; */
         case 'e':
         case 'c':
           maybePush(result, 'E', inQuote); // no lower case E
@@ -148,7 +150,8 @@ export class FormatTranslatorService {
         case 'k':
           maybePush(result, 'h', inQuote);
           break;
-        case 'A':
+        // commented out due to use in moment library for AM/PM
+        // case 'A':
         case 'n':
         case 'N':
           maybePush(result, '***' + c + '***', inQuote); // No way to support A - millisec of day, n - nano of second, N - nano of Day

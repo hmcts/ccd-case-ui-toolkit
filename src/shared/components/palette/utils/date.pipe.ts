@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import moment = require('moment');
 
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
@@ -24,7 +25,6 @@ export class DatePipe implements PipeTransform {
 
   transform(value: string, zone: string, format: string): string {
     let resultDate = null;
-
     if (value) {
       const match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
       // Make sure we actually have a match.
@@ -40,7 +40,8 @@ export class DatePipe implements PipeTransform {
         if (this.formatTrans && format && format !== 'short') {
           // support for java style formatting strings for dates
           format = this.translateDateFormat(format);
-          resultDate = formatDate(date, format, 'en-GB', zone)
+          let thisMoment = moment(date).format(format);
+          resultDate = thisMoment;
         } else {
           // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
           resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
@@ -56,7 +57,6 @@ export class DatePipe implements PipeTransform {
         // EUI-2667. See if what we've been given is actually a formatted date that
         // we could attempt to do something with.
         const parsedDate: number = Date.parse(value);
-
         // We successfully parsed it so let's use it.
         if (!isNaN(parsedDate)) {
           const d: Date = new Date(parsedDate);
@@ -67,7 +67,8 @@ export class DatePipe implements PipeTransform {
             return this.transform(shortISO, zone, format);
           }
           // If it did include time, we want a full ISO string.
-          return this.transform(d.toISOString(), zone, format);
+          let thisMoment = moment(d).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+          return this.transform(thisMoment, zone, format);
         }
       }
     }
