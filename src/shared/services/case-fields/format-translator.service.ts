@@ -150,8 +150,10 @@ export class FormatTranslatorService {
         case 'k':
           maybePush(result, 'h', inQuote);
           break;
-        // commented out due to use in moment library for AM/PM
-        // case 'A':
+        // commented out A change to '***' due to use in moment library for AM/PM
+        // added 'a' specification to stop discrepancy in am/AM pm/PM formatting
+        case 'a':
+          maybePush(result, 'A', inQuote);
         case 'n':
         case 'N':
           maybePush(result, '***' + c + '***', inQuote); // No way to support A - millisec of day, n - nano of second, N - nano of Day
