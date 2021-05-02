@@ -192,6 +192,28 @@ export class FieldsUtils {
     c['component'] = comp;
   }
 
+  /**
+   * Recursive check of an array or object and its descendants for the presence of any non-empty values.
+   *
+   * @param object The array or object to check
+   * @returns `true` if the array or object (or a descendant) contains at least one non-empty value; `false` otherwise
+   */
+  public static containsNonEmptyValues(object: object): boolean {
+    if (!object) {
+      return false;
+    }
+    const values = Object.keys(object).map(key => object[key]);
+    const objectRefs = [];
+    // Note that pushing to an array is truthy (returns new length of the array), hence using ! to make it falsy.
+    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays
+    const hasNonNullPrimitive = values.some(x => (x !== null &&
+      ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
+        ? !objectRefs.push(x)
+        : typeof x === 'number' || x.length > 0)
+    ));
+    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
+  }
+
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
     let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
@@ -238,27 +260,5 @@ export class FieldsUtils {
       }
     });
     return result;
-  }
-
-  /**
-   * Recursive check of an array or object and its descendants for the presence of any non-empty values.
-   *
-   * @param object The array or object to check
-   * @returns `true` if the array or object (or a descendant) contains at least one non-empty value; `false` otherwise
-   */
-  public static containsNonEmptyValues(object: object): boolean {
-    if (!object) {
-      return false;
-    }
-    const values = Object.keys(object).map(key => object[key]);
-    const objectRefs = [];
-    // Note that pushing to an array is truthy (returns new length of the array), hence using ! to make it falsy.
-    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays
-    const hasNonNullPrimitive = values.some(x => (x !== null &&
-      ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
-        ? !objectRefs.push(x)
-        : typeof x === 'number' || x.length > 0)
-    ));
-    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
   }
 }

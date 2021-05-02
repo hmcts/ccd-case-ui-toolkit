@@ -661,8 +661,8 @@ describe('WriteComplexFieldComponent', () => {
       fixture.detectChanges();
 
       expect(component.caseField.field_type.complex_fields.length).toEqual(2);
-      expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toBeUndefined;
-      expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toBeUndefined;
+      expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toBeUndefined();
+      expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toBeUndefined();
     });
   });
 });

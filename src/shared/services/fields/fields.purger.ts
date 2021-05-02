@@ -31,7 +31,8 @@ export class FieldsPurger {
     });
   }
 
-  private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
+  private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: FormGroup, wizard: Wizard,
+    eventTrigger: CaseEventTrigger): void {
     const formFields = form.getRawValue();
     const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {

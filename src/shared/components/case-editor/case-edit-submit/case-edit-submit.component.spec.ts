@@ -2050,7 +2050,8 @@ describe('CaseEditSubmitComponent', () => {
     });
   });
 
-  describe('Form submit test for nested Complex field type, retain_hidden_value = false, descendant fields with retain_hidden_value = true', () => {
+  describe('Form submit test for nested Complex field type, retain_hidden_value = false, descendant fields with retain_hidden_value = true',
+  () => {
     const pages: WizardPage[] = [
       aWizardPage('page1', 'Page 1', 1),
     ];
@@ -2303,7 +2304,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with an array containing the nested Complex field, with null for any sub-fields NOT to be retained', () => {
+    it('should submit CaseEventData with an array containing the nested Complex field, with null for any sub-fields NOT to be retained',
+    () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
