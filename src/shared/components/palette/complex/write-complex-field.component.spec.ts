@@ -593,7 +593,7 @@ describe('WriteComplexFieldComponent', () => {
     });
   });
 
-  describe('inheritance of "retain_hidden_value" value from Complex parent', () => {
+  describe('inheritance of "retain_hidden_value" value from Address parent type', () => {
     const ADDRESS_LINE_1: CaseField = <CaseField>({
       id: 'AddressLine1',
       label: 'Line 1',
@@ -608,11 +608,7 @@ describe('WriteComplexFieldComponent', () => {
     });
     const ADDRESS_TYPE: FieldType = {
       id: 'AddressUK',
-      type: 'AddressUK',
-    }
-    const COMPLEX_TYPE: FieldType = {
-      id: 'AddressUK',
-      type: 'Complex',
+      type: 'Complex'
     }
 
     const FIELD_ID = 'AnAddressField';
@@ -651,12 +647,55 @@ describe('WriteComplexFieldComponent', () => {
       expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
       expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toEqual(true);
     });
+  });
 
-    it('should NOT set retain_hidden_value for all sub-fields that are part of a Complex field', () => {
-      component.caseField.field_type = {
+  describe('inheritance of "retain_hidden_value" value from Complex parent type', () => {
+    const ADDRESS_LINE_1: CaseField = <CaseField>({
+      id: 'AddressLine1',
+      label: 'Line 1',
+      field_type: { id: 'TextMax150', type: 'Text' },
+      value: ''
+    });
+    const ADDRESS_LINE_2: CaseField = <CaseField>({
+      id: 'AddressLine2',
+      label: 'Line 2',
+      field_type: { id: 'Text', type: 'Text' },
+      value: '111 East India road'
+    });
+    const COMPLEX_TYPE: FieldType = {
+      id: 'OtherAddress',
+      type: 'Complex'
+    }
+
+    const FIELD_ID = 'AnAddressField';
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'Address Field',
+      field_type: {
         ...COMPLEX_TYPE,
         complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
       },
+      retain_hidden_value: true
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+      component.ignoreMandatory = true;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should NOT set retain_hidden_value for all sub-fields that are part of a Complex field', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
