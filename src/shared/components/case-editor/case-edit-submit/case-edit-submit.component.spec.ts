@@ -74,193 +74,139 @@ describe('CaseEditSubmitComponent', () => {
   });
   const MULTI_SELECT_FIELD_VALUE_1 = 'UK';
   const MULTI_SELECT_FIELD_VALUE_2 = 'US';
-  const MULTI_SELECT_ELEMENT_HIDDEN = new FormArray([
-    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_1, disabled: true }),
-    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_2, disabled: true })
-  ]);
-  MULTI_SELECT_ELEMENT_HIDDEN.disable();
   const DOCUMENT_BINARY_URL_VALUE = 'http://document_binary.url';
   const DOCUMENT_FILENAME_VALUE = 'document.dummy';
   const DOCUMENT_URL_VALUE = 'http://document.url';
-  const DOCUMENT_ELEMENT_HIDDEN = new FormGroup({
-    document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
-    document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
-    document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
-  });
-  DOCUMENT_ELEMENT_HIDDEN.disable();
-  const FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS = new FormGroup({
-    data: new FormGroup({
-      countrySelection: MULTI_SELECT_ELEMENT_HIDDEN,
-      documentField: DOCUMENT_ELEMENT_HIDDEN,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  // Clone of MULTI_SELECT_ELEMENT_HIDDEN to avoid problems caused by the FormArray being modified during testing
-  const MULTI_SELECT_ELEMENT_HIDDEN_2 = new FormArray([
-    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_1, disabled: true }),
-    new FormControl({ value: MULTI_SELECT_FIELD_VALUE_2, disabled: true })
-  ]);
-  MULTI_SELECT_ELEMENT_HIDDEN_2.disable();
-  // Clone of DOCUMENT_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
-  const DOCUMENT_ELEMENT_HIDDEN_2 = new FormGroup({
-    document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
-    document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
-    document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
-  });
-  DOCUMENT_ELEMENT_HIDDEN_2.disable();
-  // Clone of FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS to avoid problems caused by the FormGroup being
-  // modified during testing
-  const FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS_2 = new FormGroup({
-    data: new FormGroup({
-      countrySelection: MULTI_SELECT_ELEMENT_HIDDEN_2,
-      documentField: DOCUMENT_ELEMENT_HIDDEN_2,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
   // Representative dummy UUID value
   const COLLECTION_ELEMENT_ID_ATTRIBUTE = '0a1b2c3d-a1b2-c3d4-e5f6-00aa11bb22cc';
-  const COMPLEX_COLLECTION_ELEMENT_HIDDEN = new FormArray([
-    new FormGroup({
-      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the Complex field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: COMPLEX_ELEMENT_HIDDEN
-    })
-  ]);
-  COMPLEX_COLLECTION_ELEMENT_HIDDEN.disable();
-  const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD = new FormGroup({
-    data: new FormGroup({
-      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  const COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormArray([
-    new FormGroup({
-      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the Complex field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY
-    })
-  ]);
-  COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
-  const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_2 = new FormGroup({
-    data: new FormGroup({
-      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  const COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormArray([
-    new FormGroup({
-      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the Complex field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
-    })
-  ]);
-  COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
-  const FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_3 = new FormGroup({
-    data: new FormGroup({
-      collectionField1: COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  const NESTED_COMPLEX_ELEMENT_HIDDEN = new FormGroup({
-    complexField1: COMPLEX_ELEMENT_HIDDEN
-  });
-  NESTED_COMPLEX_ELEMENT_HIDDEN.disable();
-  const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormGroup({
-    complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY
-  });
-  NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
-  const NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormGroup({
-    complexField1: COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
-  });
-  NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
-  const FORM_GROUP_WITH_NESTED_COMPLEX_FIELD = new FormGroup({
-    data: new FormGroup({
-      nestedComplexField1: NESTED_COMPLEX_ELEMENT_HIDDEN,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  // Clone of COMPLEX_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
-  const COMPLEX_ELEMENT_HIDDEN_2 = new FormGroup({
-    childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED),
-    childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
-  });
-  COMPLEX_ELEMENT_HIDDEN_2.disable();
-  // Clone of NESTED_COMPLEX_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
-  const NESTED_COMPLEX_ELEMENT_HIDDEN_2 = new FormGroup({
-    complexField1: COMPLEX_ELEMENT_HIDDEN_2
-  });
-  NESTED_COMPLEX_ELEMENT_HIDDEN_2.disable();
-  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN = new FormArray([
-    new FormGroup({
-      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the nested Complex field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: NESTED_COMPLEX_ELEMENT_HIDDEN_2
-    })
-  ]);
-  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN.disable();
-  const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD = new FormGroup({
-    data: new FormGroup({
-      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormArray([
-    new FormGroup({
-      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the nested Complex field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY
-    })
-  ]);
-  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
-  const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_2 = new FormGroup({
-    data: new FormGroup({
-      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  const NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormArray([
-    new FormGroup({
-      // Each Complex field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the nested Complex field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: NESTED_COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED
-    })
-  ]);
-  NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();
-  const FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_3 = new FormGroup({
-    data: new FormGroup({
-      collectionField1: NESTED_COMPLEX_COLLECTION_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
-  // Clone of DOCUMENT_ELEMENT_HIDDEN to avoid problems caused by the FormGroup being modified during testing
-  const DOCUMENT_ELEMENT_HIDDEN_3 = new FormGroup({
-    document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
-    document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
-    document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
-  });
-  DOCUMENT_ELEMENT_HIDDEN_3.disable();
-  const DOCUMENT_COLLECTION_ELEMENT_HIDDEN = new FormArray([
-    new FormGroup({
-      // Each Document field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID,
-      // and a "value" attribute, which is the Document field FormGroup itself
-      id: new FormControl(COLLECTION_ELEMENT_ID_ATTRIBUTE),
-      value: DOCUMENT_ELEMENT_HIDDEN_3
-    })
-  ]);
-  DOCUMENT_COLLECTION_ELEMENT_HIDDEN.disable();
-  const FORM_GROUP_WITH_DOCUMENT_COLLECTION_FIELD = new FormGroup({
-    data: new FormGroup({
-      collectionField1: DOCUMENT_COLLECTION_ELEMENT_HIDDEN,
-      field3: HIDE_ALL_TEXT_ELEMENT
-    })
-  });
   const FIELD_3_SHOW_CONDITION = 'field3!="Hide all"';
+
+  /**
+   * Helper function for creating a multi-select element that is hidden.
+   *
+   * @returns A `FormArray` with a `FormControl` for each multi-select option
+   */
+  const createMultiSelectElementHidden = (): FormArray => {
+    const multiSelectElement = new FormArray([
+      new FormControl({ value: MULTI_SELECT_FIELD_VALUE_1, disabled: true }),
+      new FormControl({ value: MULTI_SELECT_FIELD_VALUE_2, disabled: true })
+    ]);
+    multiSelectElement.disable();
+    return multiSelectElement;
+  };
+
+  /**
+   * Helper function for creating a Document element that is hidden.
+   *
+   * @returns A `FormGroup` with a `FormControl` for each of the three fields that constitute a Document field
+   */
+  const createDocumentElementHidden = (): FormGroup => {
+    const documentElement = new FormGroup({
+      document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
+      document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
+      document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
+    });
+    documentElement.disable();
+    return documentElement;
+  };
+
+  /**
+   * Helper function for creating a `FormGroup` with hidden multi-select and Document fields.
+   *
+   * @returns A `FormGroup` with a `data` object comprising multi-select and Document fields, and the "Hide all" text
+   * field
+   */
+  const createFormGroupWithHiddenMultiSelectAndDocumentFields = (): FormGroup => {
+    return new FormGroup({
+      data: new FormGroup({
+        countrySelection: createMultiSelectElementHidden(),
+        documentField: createDocumentElementHidden(),
+        field3: HIDE_ALL_TEXT_ELEMENT
+      })
+    });
+  };
+
+  /**
+   * Helper function for creating a Collection element that is hidden.
+   *
+   * @param id The unique identifier of the item in the Collection
+   * @param value The `FormGroup` to use as the value of the item in the Collection
+   * @returns A `FormArray` with a `FormGroup` containing an object, which represents a field value, comprising "id"
+   * `FormControl` and "value" `FormGroup` attributes
+   */
+  const createCollectionElementHidden = (id: string, value: FormGroup): FormArray => {
+    const collectionElement = new FormArray([
+      new FormGroup({
+        // Each field value in a collection is wrapped in an object comprising an "id" FormControl with a UUID, and a
+        // "value" attribute, which is the field FormGroup itself
+        id: new FormControl(id),
+        value
+      })
+    ]);
+    collectionElement.disable();
+    return collectionElement;
+  };
+
+  /**
+   * Helper function for creating a `FormGroup` with a Collection field.
+   *
+   * @param collection The `FormArray` to use for the Collection field
+   * @returns A `FormGroup` with a `data` object comprising a Collection field with the specified `FormArray`, and the
+   * "Hide all" text field
+   */
+  const createFormGroupWithCollectionField = (collection: FormArray): FormGroup => {
+    return new FormGroup({
+      data: new FormGroup({
+        collectionField1: collection,
+        field3: HIDE_ALL_TEXT_ELEMENT
+      })
+    });
+  };
+
+  /**
+   * Helper function for creating a Complex element, containing two fields, that is hidden.
+   *
+   * @returns A `FormGroup` with a `FormControl` for each of the two fields that constitute the Complex field
+   */
+  const createComplexElementHidden = (): FormGroup => {
+    const complexElement = new FormGroup({
+      childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_RETAINED),
+      childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
+    });
+    complexElement.disable();
+    return complexElement;
+  };
+
+  /**
+   * Helper function for creating a nested Complex element that is hidden.
+   *
+   * @param complexField The `FormGroup` to nest
+   * @returns A `FormGroup` containing the specified `FormGroup` as a Complex field of this one
+   */
+  const createNestedComplexElementHidden = (complexField: FormGroup): FormGroup => {
+    const nestedComplexElement = new FormGroup({
+      complexField1: complexField
+    });
+    nestedComplexElement.disable();
+    return nestedComplexElement;
+  };
+
+  /**
+   * Helper function for creating a `FormGroup` with a nested Complex field.
+   *
+   * @param nestedComplex The `FormGroup` to use for the nested Complex field
+   * @returns A `FormGroup` with a `data` object comprising a nested Complex field with the specified `FormGroup`,
+   * and the "Hide all" text field
+   */
+  const createFormGroupWithNestedComplexField = (nestedComplex: FormGroup): FormGroup => {
+    return new FormGroup({
+      data: new FormGroup({
+        nestedComplexField1: nestedComplex,
+        field3: HIDE_ALL_TEXT_ELEMENT
+      })
+    });
+  };
+
   let caseEditComponent: any;
   let orderService: OrderService;
   let profileService: jasmine.SpyObj<ProfileService>;
@@ -1162,7 +1108,7 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS,
+        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1296,7 +1242,7 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS_2,
+        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1434,7 +1380,7 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_HIDDEN_MULTI_SELECT_AND_DOCUMENT_FIELDS_2,
+        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1568,7 +1514,8 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createComplexElementHidden())),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1705,7 +1652,8 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_2,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY)),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1836,7 +1784,8 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_COMPLEX_COLLECTION_FIELD_3,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED)),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -1967,7 +1916,7 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_NESTED_COMPLEX_FIELD,
+        'form': createFormGroupWithNestedComplexField(createNestedComplexElementHidden(createComplexElementHidden())),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -2105,7 +2054,7 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_NESTED_COMPLEX_FIELD,
+        'form': createFormGroupWithNestedComplexField(createNestedComplexElementHidden(createComplexElementHidden())),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -2244,7 +2193,9 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(
+            COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(createComplexElementHidden()))),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -2389,7 +2340,9 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_2,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(
+            COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY))),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -2525,7 +2478,9 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_NESTED_COMPLEX_COLLECTION_FIELD_3,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(
+            COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED))),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -2657,7 +2612,8 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_DOCUMENT_COLLECTION_FIELD,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
@@ -2796,7 +2752,8 @@ describe('CaseEditSubmitComponent', () => {
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit'])
       caseEditComponent = {
-        'form': FORM_GROUP_WITH_DOCUMENT_COLLECTION_FIELD,
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
         'eventTrigger': {
