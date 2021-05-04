@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.79.8-breathing-space-data-not-being-persisted
+**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
+
 ### Version 2.79.14-labels-not-displaying-case-heading
 **EUI-2569** ExUI - Labels not displaying in Case Heading
 
