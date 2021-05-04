@@ -6,7 +6,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { DatePipe } from '../../components/palette/utils';
-import { CaseView } from '../../domain/case-view';
+import { CaseEventTrigger, CaseView } from '../../domain/case-view';
 import { CaseField } from '../../domain/definition';
 import { Predicate } from '../../domain/predicate.model';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
@@ -127,6 +127,10 @@ export class FieldsUtils {
         });
         break;
       }
+      case 'Label': {
+        result[field.id] = FieldsUtils.getLabel(field);
+        break;
+      }
       case 'MoneyGBP': {
         let fieldValue = (result[field.id] || field.value);
         result[field.id] = FieldsUtils.getMoneyGBP(fieldValue);
@@ -188,6 +192,10 @@ export class FieldsUtils {
     return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
   }
 
+  private static getLabel(fieldValue: CaseField): string {
+    return fieldValue ? fieldValue.label : '';
+  }
+
   private static getDate(fieldValue: string): string {
     try {
       // Format specified here wasn't previously working and lots of tests depend on it not working
@@ -213,7 +221,7 @@ export class FieldsUtils {
     c['component'] = comp;
   }
 
-  public buildCanShowPredicate(eventTrigger, form): Predicate<WizardPage> {
+  public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
     let currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
       return page.parsedShowCondition.match(currentState);
