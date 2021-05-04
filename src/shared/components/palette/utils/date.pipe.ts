@@ -40,7 +40,7 @@ export class DatePipe implements PipeTransform {
         if (this.formatTrans && format && format !== 'short') {
           // support for java style formatting strings for dates
           format = this.translateDateFormat(format);
-          let thisMoment = moment(date).format(format);
+          const thisMoment = moment(date).format(format);
           resultDate = thisMoment;
         } else {
           // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
@@ -67,7 +67,7 @@ export class DatePipe implements PipeTransform {
             return this.transform(shortISO, zone, format);
           }
           // If it did include time, we want a full ISO string.
-          let thisMoment = moment(d).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+          const thisMoment = moment(d).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
           return this.transform(thisMoment, zone, format);
         }
       }
