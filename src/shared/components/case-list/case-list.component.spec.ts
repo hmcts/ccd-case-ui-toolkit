@@ -116,9 +116,9 @@ describe('CaseListComponent', () => {
         '-');
       expect(firstRowData[1].nativeElement.textContent.trim()).toEqual(
         formatDate(firstRowExpectedResult.caseDueDate, 'dd MMM yyyy', 'en-GB'));
-      
+
       expect(component.formatDateAtTime(firstRowExpectedResult.caseCreatedDate)).toEqual('-');
-      
+
       expect(component.formatDateAtTime(firstRowExpectedResult.caseDueDate)).toEqual('18 Apr 2021 at 12:58 am');
 
       expect(firstRowData[2].nativeElement.textContent.trim()).toEqual(firstRowExpectedResult.caseRef);
