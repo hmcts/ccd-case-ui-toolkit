@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.0.1-Spinner-issue-in-demo-MO-unassigned-cases-page
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+
 ### Version 2.79.8-breathing-space-data-not-being-persisted
 **EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
 
