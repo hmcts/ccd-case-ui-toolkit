@@ -1,7 +1,22 @@
 ## RELEASE NOTES
 
-### Version 2.79.13
-**EUI-3049** Create datetime picker for use in write date fields
+### Version 2.79.15
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
+
+### Version 2.79.8-breathing-space-data-not-being-persisted
+**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
+
+### Version 2.79.14-labels-not-displaying-case-heading
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+
+### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+
+### Version 2.79.12
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+
+### Version 2.79.10-input-type-accessibility
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
 
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
