@@ -1,20 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { of } from 'rxjs';
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
 import { MarkdownModule } from '../../markdown';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationService } from '../../../services/organisation';
-import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 
 describe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
   let fixture: ComponentFixture<WriteOrganisationFieldComponent>;
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
-
-  const FORM_GROUP: FormGroup = new FormGroup({});
 
   const ORGANISATIONS = [{
     organisationIdentifier: 'O111111',
@@ -47,17 +44,17 @@ describe('WriteOrganisationFieldComponent', () => {
     country: 'UK',
     postCode: 'RG11EB'
   }, {
-      organisationIdentifier: 'O444444',
-      name: 'The SN1 solicitor',
-      addressLine1: 'Davidson House',
-      addressLine2: '44',
-      addressLine3: 'The square',
-      townCity: 'Reading',
-      county: 'Berkshire',
-      country: 'UK',
-      postCode: 'RG11EX'
+    organisationIdentifier: 'O444444',
+    name: 'The SN1 solicitor',
+    addressLine1: 'Davidson House',
+    addressLine2: '44',
+    addressLine3: 'The square',
+    townCity: 'Reading',
+    county: 'Berkshire',
+    country: 'UK',
+    postCode: 'RG11EX'
   }];
-  let organisationID = new CaseField();
+  const organisationID = new CaseField();
 
   const VALUE = {
     OrganisationID: 'Org1234',
@@ -71,12 +68,12 @@ describe('WriteOrganisationFieldComponent', () => {
   const ORGANISATION_ID: CaseField = <CaseField>({
     id: 'OrganisationID',
     label: 'Organisation ID',
-    field_type: { id: 'Text', type: 'Text' }
+    field_type: {id: 'Text', type: 'Text'}
   });
   const ORGANISATION_NAME: CaseField = <CaseField>({
     id: 'OrganisationName',
     label: 'Name',
-    field_type: { id: 'Text', type: 'Text' }
+    field_type: {id: 'Text', type: 'Text'}
   });
 
   const CASE_FIELD: CaseField = <CaseField>({
@@ -85,7 +82,7 @@ describe('WriteOrganisationFieldComponent', () => {
     display_context: 'OPTIONAL',
     field_type: {
       ...FIELD_TYPE,
-      complex_fields: [ ORGANISATION_ID, ORGANISATION_NAME ]
+      complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
     },
     value: VALUE,
     retain_hidden_value: true
@@ -102,7 +99,7 @@ describe('WriteOrganisationFieldComponent', () => {
         WriteOrganisationComplexFieldComponent
       ],
       providers: [
-        { provide: OrganisationService, useValue: mockOrganisationService },
+        {provide: OrganisationService, useValue: mockOrganisationService},
         OrganisationConverter
       ]
     })
@@ -175,7 +172,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.caseField = new CaseField();
     component.caseField.field_type = {
       ...FIELD_TYPE,
-      complex_fields: [ ORGANISATION_ID, ORGANISATION_NAME ]
+      complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
     }
     component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
     component.ngOnInit();
@@ -299,15 +296,15 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should search organisation using both org name and postcode', () => {
     const SIMILAR_ORGANISATION = [{
-        organisationIdentifier: 'O555555',
-        name: 'Smith LLP',
-        addressLine1: 'Davidson House',
-        addressLine2: '55',
-        addressLine3: 'The square',
-        townCity: 'Reading',
-        county: 'Berkshire',
-        country: 'UK',
-        postCode: 'RG11EY'
+      organisationIdentifier: 'O555555',
+      name: 'Smith LLP',
+      addressLine1: 'Davidson House',
+      addressLine2: '55',
+      addressLine3: 'The square',
+      townCity: 'Reading',
+      county: 'Berkshire',
+      country: 'UK',
+      postCode: 'RG11EY'
     }, {
       organisationIdentifier: 'O666666',
       name: 'KMG solicitor',
@@ -419,12 +416,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
     component.organisationNameFormControl = new FormControl(null);
     component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
-    const selectedOrg = {
-      organisationIdentifier: 'O111111',
-      name: 'Woodford solicitor',
-      address: '12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>'
-    }
-    component.deSelectOrg(selectedOrg);
+    component.deSelectOrg();
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
     expect(component.caseField.value).toEqual({'OrganisationID': null, 'OrganisationName': null});

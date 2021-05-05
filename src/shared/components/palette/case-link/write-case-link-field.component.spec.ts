@@ -16,7 +16,7 @@ const FIELD_TYPE: FieldType = {
 const CASE_REFERENCE: CaseField = <CaseField>({
   id: 'CaseReference',
   label: 'Case Reference',
-  field_type: { id: 'TextCaseReference', type: 'Text' }
+  field_type: {id: 'TextCaseReference', type: 'Text'}
 });
 
 const CASE_FIELD: CaseField = <CaseField>({
@@ -25,7 +25,7 @@ const CASE_FIELD: CaseField = <CaseField>({
   display_context: 'OPTIONAL',
   field_type: {
     ...FIELD_TYPE,
-    complex_fields: [ CASE_REFERENCE ]
+    complex_fields: [CASE_REFERENCE]
   },
   value: VALUE,
   retain_hidden_value: true

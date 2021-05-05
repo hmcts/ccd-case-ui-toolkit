@@ -10,11 +10,9 @@ import { CaseEventTrigger } from '../../domain';
 @Injectable()
 export class FieldsPurger {
 
-  constructor(
-    private fieldsUtils: FieldsUtils,
-  ) {}
+  constructor(private fieldsUtils: FieldsUtils) {}
 
-  clearHiddenFields(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string): void {
+  public clearHiddenFields(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string): void {
     this.clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger);
     this.clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger);
   }

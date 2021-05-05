@@ -93,9 +93,9 @@ describe('CaseEditSubmitComponent', () => {
    */
   const createDocumentElementHidden = (): FormGroup => {
     const documentElement = new FormGroup({
-      document_binary_url: new FormControl({ value: DOCUMENT_BINARY_URL_VALUE, disabled: true }),
-      document_filename: new FormControl({ value: DOCUMENT_FILENAME_VALUE, disabled: true }),
-      document_url: new FormControl({ value: DOCUMENT_URL_VALUE, disabled: true })
+      document_binary_url: new FormControl({value: DOCUMENT_BINARY_URL_VALUE, disabled: true}),
+      document_filename: new FormControl({value: DOCUMENT_FILENAME_VALUE, disabled: true}),
+      document_url: new FormControl({value: DOCUMENT_URL_VALUE, disabled: true})
     });
     documentElement.disable();
     return documentElement;
@@ -393,7 +393,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('must render correct button label', () => {
-      let buttons = de.queryAll(By.css('div>button'));
+      const buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual(END_BUTTON_LABEL);
     });
 
@@ -408,26 +408,26 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should not allow changes for READONLY fields', () => {
-      let changeAllowed = comp.isChangeAllowed(aCaseField('field1', 'field1', 'Text', 'READONLY', null));
+      const changeAllowed = comp.isChangeAllowed(aCaseField('field1', 'field1', 'Text', 'READONLY', null));
       expect(changeAllowed).toBeFalsy();
     });
 
     it('should allow changes for non READONLY fields', () => {
-      let changeAllowed = comp.isChangeAllowed(aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null));
+      const changeAllowed = comp.isChangeAllowed(aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null));
       expect(changeAllowed).toBeTruthy();
     });
 
     it('should return TRUE for canShowFieldInCYA when caseField show_summary_change_option is TRUE', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
       caseField.show_summary_change_option = true;
-      let canShow = comp.canShowFieldInCYA(caseField);
+      const canShow = comp.canShowFieldInCYA(caseField);
       expect(canShow).toBeTruthy();
     });
 
     it('should return FALSE for canShowFieldInCYA when caseField show_summary_change_option is FALSE', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
       caseField.show_summary_change_option = false;
-      let canShow = comp.canShowFieldInCYA(caseField);
+      const canShow = comp.canShowFieldInCYA(caseField);
       expect(canShow).toBeFalsy();
     });
 
@@ -441,18 +441,18 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should return false when no field exists and checkYourAnswerFieldsToDisplayExists is called', () => {
-      let result = comp.checkYourAnswerFieldsToDisplayExists();
+      const result = comp.checkYourAnswerFieldsToDisplayExists();
 
       expect(result).toBeFalsy();
     });
 
     it('should return true when no Fields to Display exists and checkYourAnswerFieldsToDisplayExists is called', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
       caseField.show_summary_change_option = true;
       comp.wizard.pages[0].case_fields = [caseField];
       comp.eventTrigger.show_summary = true;
 
-      let result = comp.checkYourAnswerFieldsToDisplayExists();
+      const result = comp.checkYourAnswerFieldsToDisplayExists();
       expect(result).toBeTruthy();
     });
 
@@ -460,17 +460,17 @@ describe('CaseEditSubmitComponent', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
 
-      let result = comp.readOnlySummaryFieldsToDisplayExists();
+      const result = comp.readOnlySummaryFieldsToDisplayExists();
 
       expect(result).toBeFalsy();
     });
 
     it('should return true when no Fields to Display exists and readOnlySummaryFieldsToDisplayExists is called', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
       caseField.show_summary_content_option = 3;
       comp.eventTrigger.case_fields = [caseField];
 
-      let result = comp.readOnlySummaryFieldsToDisplayExists();
+      const result = comp.readOnlySummaryFieldsToDisplayExists();
 
       expect(result).toBeTruthy();
     });
@@ -478,9 +478,9 @@ describe('CaseEditSubmitComponent', () => {
     it('should show event notes when set in event trigger and showEventNotes is called', () => {
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
-      let eventNotes = de.query($EVENT_NOTES);
+      const eventNotes = de.query($EVENT_NOTES);
 
-      let result = comp.showEventNotes();
+      const result = comp.showEventNotes();
 
       expect(result).toBeTruthy();
       expect(eventNotes).not.toBeNull();
@@ -489,9 +489,9 @@ describe('CaseEditSubmitComponent', () => {
     it('should show event notes when not set in event trigger and showEventNotes is called', () => {
       comp.eventTrigger.show_event_notes = null;
       fixture.detectChanges();
-      let eventNotes = de.query($EVENT_NOTES);
+      const eventNotes = de.query($EVENT_NOTES);
 
-      let result = comp.showEventNotes();
+      const result = comp.showEventNotes();
 
       expect(result).toBeTruthy();
       expect(eventNotes).not.toBeNull();
@@ -500,9 +500,9 @@ describe('CaseEditSubmitComponent', () => {
     it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
       comp.eventTrigger.show_event_notes = undefined;
       fixture.detectChanges();
-      let eventNotes = de.query($EVENT_NOTES);
+      const eventNotes = de.query($EVENT_NOTES);
 
-      let result = comp.showEventNotes();
+      const result = comp.showEventNotes();
 
       expect(result).toBeTruthy();
       expect(eventNotes).not.toBeNull();
@@ -511,9 +511,9 @@ describe('CaseEditSubmitComponent', () => {
     it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
       comp.eventTrigger.show_event_notes = false;
       fixture.detectChanges();
-      let eventNotes = de.query($EVENT_NOTES);
+      const eventNotes = de.query($EVENT_NOTES);
 
-      let result = comp.showEventNotes();
+      const result = comp.showEventNotes();
 
       expect(result).toBeFalsy();
       expect(eventNotes).toBeNull();
@@ -523,17 +523,17 @@ describe('CaseEditSubmitComponent', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
 
-      let result = comp.readOnlySummaryFieldsToDisplayExists();
+      const result = comp.readOnlySummaryFieldsToDisplayExists();
 
       expect(result).toBeFalsy();
     });
 
     it('should return true when no Fields to Display exists and readOnlySummaryFieldsToDisplayExists is called', () => {
-      let caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
       caseField.show_summary_content_option = 3;
       comp.eventTrigger.case_fields = [caseField];
 
-      let result = comp.readOnlySummaryFieldsToDisplayExists();
+      const result = comp.readOnlySummaryFieldsToDisplayExists();
 
       expect(result).toBeTruthy();
     });
@@ -552,7 +552,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should return "Cancel" text label for cancel button when save and resume disabled', () => {
-      let result = comp.getCancelText();
+      const result = comp.getCancelText();
       expect(result).toBe('Cancel');
     });
 
@@ -563,13 +563,13 @@ describe('CaseEditSubmitComponent', () => {
       // The isDisabled property should immediately pick up on this.
       expect(comp.isDisabled).toBeTruthy();
 
-      let submitButton = de.query(By.css('button[type=submit]'));
+      const submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeTruthy();
 
-      let prevButton = de.query(By.css('button[type=button]'));
+      const prevButton = de.query(By.css('button[type=button]'));
       expect(prevButton.nativeElement.disabled).toBeTruthy();
 
-      let cancelLink = de.query(By.css('a[class=disabled]'));
+      const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink.nativeElement).toBeTruthy();
     });
 
@@ -580,13 +580,13 @@ describe('CaseEditSubmitComponent', () => {
       // The isDisabled property should immediately pick up on this.
       expect(comp.isDisabled).toBeFalsy();
 
-      let submitButton = de.query(By.css('button[type=submit]'));
+      const submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeFalsy();
 
-      let prevButton = de.query(By.css('button[type=button]'));
+      const prevButton = de.query(By.css('button[type=button]'));
       expect(prevButton.nativeElement.disabled).toBeFalsy();
 
-      let cancelLink = de.query(By.css('a[class=disabled]'));
+      const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink).toBeNull();
     });
   });
@@ -597,8 +597,8 @@ describe('CaseEditSubmitComponent', () => {
     ];
     const firstPage = pages[0];
     const wizard: Wizard = new Wizard(pages);
-    let queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
-    let snapshotNoProfile = {
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
       pathFromRoot: [
         {},
         {
@@ -620,8 +620,8 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
-    let mockRouteNoProfile = {
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
     };
@@ -692,7 +692,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('must render default button label when custom one is not supplied', () => {
-      let buttons = de.queryAll(By.css('div>button'));
+      const buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual('Submit');
     });
 
@@ -725,7 +725,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
-      let result = comp.getCancelText();
+      const result = comp.getCancelText();
       expect(result).toBe('Return to case list');
     });
   });
@@ -759,7 +759,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -939,10 +939,10 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: caseFieldRetainHiddenValue.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField2.id };
-    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
-    const WP_FIELD_4: WizardPageField = { case_field_id: complexCaseField.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: caseFieldRetainHiddenValue.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField2.id};
+    const WP_FIELD_3: WizardPageField = {case_field_id: caseField3.id};
+    const WP_FIELD_4: WizardPageField = {case_field_id: complexCaseField.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3, WP_FIELD_4];
     firstPage.case_fields = [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField];
     const wizard: Wizard = new Wizard(pages);
@@ -969,7 +969,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1035,16 +1035,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1084,9 +1084,9 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
-    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: countryMultiSelectField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: documentField.id};
+    const WP_FIELD_3: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
     firstPage.case_fields = [countryMultiSelectField, documentField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1113,7 +1113,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1171,16 +1171,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1216,9 +1216,9 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
-    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: countryMultiSelectField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: documentField.id};
+    const WP_FIELD_3: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
     firstPage.case_fields = [countryMultiSelectField, documentField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1245,7 +1245,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1311,16 +1311,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1360,9 +1360,9 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
-    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: countryMultiSelectField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: documentField.id};
+    const WP_FIELD_3: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
     firstPage.case_fields = [countryMultiSelectField, documentField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1389,7 +1389,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1449,16 +1449,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1494,8 +1494,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: complexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1522,7 +1522,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1591,16 +1591,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1643,8 +1643,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: complexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1671,7 +1671,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1737,16 +1737,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1781,8 +1781,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: complexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1809,7 +1809,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1869,16 +1869,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -1913,8 +1913,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCaseField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCaseField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCaseField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -1941,7 +1941,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2000,16 +2000,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2050,8 +2050,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCaseField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCaseField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCaseField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -2078,7 +2078,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2138,16 +2138,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2182,8 +2182,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -2210,7 +2210,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2288,16 +2288,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2309,8 +2309,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with an array containing the nested Complex field, with *original* values for all sub-fields',
-    () => {
+    it('should submit CaseEventData with an array containing the nested Complex field, with *original* values for all sub-fields', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -2343,8 +2342,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -2371,7 +2370,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2445,16 +2444,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2489,8 +2488,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -2517,7 +2516,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2583,16 +2582,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2627,8 +2626,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: documentCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: documentCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [documentCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -2655,7 +2654,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2724,16 +2723,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2775,8 +2774,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: documentCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: documentCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [documentCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -2803,7 +2802,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2864,16 +2863,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -2908,10 +2907,10 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: caseFieldRetainHiddenValue.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField2.id };
-    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
-    const WP_FIELD_4: WizardPageField = { case_field_id: complexCaseField.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: caseFieldRetainHiddenValue.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField2.id};
+    const WP_FIELD_3: WizardPageField = {case_field_id: caseField3.id};
+    const WP_FIELD_4: WizardPageField = {case_field_id: complexCaseField.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3, WP_FIELD_4];
     firstPage.case_fields = [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField];
     const wizard: Wizard = new Wizard(pages);
@@ -2938,7 +2937,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3004,16 +3003,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -3053,9 +3052,9 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: countryMultiSelectField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: documentField.id };
-    const WP_FIELD_3: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: countryMultiSelectField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: documentField.id};
+    const WP_FIELD_3: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2, WP_FIELD_3];
     firstPage.case_fields = [countryMultiSelectField, documentField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -3082,7 +3081,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3148,16 +3147,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -3197,8 +3196,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: complexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -3225,7 +3224,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3294,16 +3293,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -3346,8 +3345,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: complexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: complexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -3374,7 +3373,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3440,16 +3439,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -3491,8 +3490,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -3519,7 +3518,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3597,16 +3596,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -3618,8 +3617,7 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with an array containing the nested Complex field, with *original* values for all sub-fields',
-    () => {
+    it('should submit CaseEventData with an array containing the nested Complex field, with *original* values for all sub-fields', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
@@ -3652,8 +3650,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: nestedComplexCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: nestedComplexCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [nestedComplexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -3680,7 +3678,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3754,16 +3752,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -3807,8 +3805,8 @@ describe('CaseEditSubmitComponent', () => {
       aWizardPage('page1', 'Page 1', 1),
     ];
     const firstPage = pages[0];
-    const WP_FIELD_1: WizardPageField = { case_field_id: documentCollectionField.id };
-    const WP_FIELD_2: WizardPageField = { case_field_id: caseField3.id };
+    const WP_FIELD_1: WizardPageField = {case_field_id: documentCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
     firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
     firstPage.case_fields = [documentCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
@@ -3835,7 +3833,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3904,16 +3902,16 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueServiceReal },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));

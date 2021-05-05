@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 
@@ -39,9 +39,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   isSubmitting: boolean;
   profileSubscription: Subscription;
 
-  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField) => {
-    let aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
-    let bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
+  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
+    const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
+    const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
 
     if (!aCaseField) {
       return !bCaseField ? 0 : 1;
@@ -74,7 +74,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
@@ -85,11 +85,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.isSubmitting = false;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.profileSubscription.unsubscribe();
   }
 
-  submit(): void {
+  public submit(): void {
     this.isSubmitting = true;
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
@@ -106,7 +106,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
-          let confirmation: Confirmation = this.buildConfirmation(response);
+          const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);
           } else {
@@ -228,11 +228,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return data;
   }
 
-  private getStatus(response) {
+  private getStatus(response: object): any {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
 
-  private hasCallbackFailed(response) {
+  private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
 
@@ -242,28 +242,28 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       && this.error.callbackErrors.length;
   }
 
-  navigateToPage(pageId: string): void {
+  public navigateToPage(pageId: string): void {
     this.caseEdit.navigateToPage(pageId);
   }
 
-  callbackErrorsNotify(errorContext: CallbackErrorsContext) {
+  public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
     this.ignoreWarning = errorContext.ignore_warning;
     this.triggerText = errorContext.trigger_text;
   }
 
-  summaryCaseField(field: CaseField): CaseField {
+  public summaryCaseField(field: CaseField): CaseField {
     if (null == this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
     }
 
-    let cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
+    const cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
     cloneField.value = this.editForm.get('data').get(field.id).value;
 
     return cloneField;
   }
 
-  cancel(): void {
+  public cancel(): void {
     if (this.eventTrigger.can_save_draft) {
       if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
         this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
@@ -275,23 +275,22 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
-  isLabel(field: CaseField): boolean {
+  public isLabel(field: CaseField): boolean {
     return this.caseFieldService.isLabel(field);
   }
 
-  isChangeAllowed(field: CaseField): boolean {
+  public isChangeAllowed(field: CaseField): boolean {
     return !this.caseFieldService.isReadOnly(field);
   }
 
-  checkYourAnswerFieldsToDisplayExists(): boolean {
-
+  public checkYourAnswerFieldsToDisplayExists(): boolean {
     if (!this.eventTrigger.show_summary) {
       return false;
     }
 
-    for (let page of this.wizard.pages) {
+    for (const page of this.wizard.pages) {
       if (this.isShown(page)) {
-        for (let field of page.case_fields) {
+        for (const field of page.case_fields) {
           if (this.canShowFieldInCYA(field)) {
             // at least one field needs showing
             return true;
@@ -304,11 +303,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  readOnlySummaryFieldsToDisplayExists(): boolean {
+  public readOnlySummaryFieldsToDisplayExists(): boolean {
     return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0 );
   }
 
-  showEventNotes(): boolean {
+  public showEventNotes(): boolean {
     return this.eventTrigger.show_event_notes !== false;
   }
 
@@ -323,27 +322,27 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return lastPage;
   }
 
-  previous() {
+  public previous(): void {
     if (this.hasPrevious()) {
       this.navigateToPage(this.getLastPageShown().id);
     }
   }
 
-  hasPrevious(): boolean {
+  public hasPrevious(): boolean {
     return !!this.getLastPageShown();
   }
 
-  isShown(page: WizardPage): boolean {
-    let fields = this.fieldsUtils
+  public isShown(page: WizardPage): boolean {
+    const fields = this.fieldsUtils
       .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
     return page.parsedShowCondition.match(fields);
   }
 
-  canShowFieldInCYA(field: CaseField): boolean {
+  public canShowFieldInCYA(field: CaseField): boolean {
     return field.show_summary_change_option;
   }
 
-  isSolicitor(): boolean {
+  public isSolicitor(): boolean {
     return this.profile.isSolicitor();
   }
 
@@ -353,7 +352,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
-  private buildConfirmation(response: any): Confirmation {
+  private buildConfirmation(response: object): Confirmation {
     if (response['after_submit_callback_response']) {
       return new Confirmation(
         response['id'],
@@ -372,11 +371,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       .filter(cf => cf.show_summary_content_option);
   }
 
-  getCaseId(): String {
+  public getCaseId(): String {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  getCancelText(): String {
+  public getCancelText(): String {
     if (this.eventTrigger.can_save_draft) {
       return 'Return to case list';
     } else {

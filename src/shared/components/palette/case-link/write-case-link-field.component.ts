@@ -16,7 +16,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
-  ngOnInit() {
+  public ngOnInit(): void {
     if (this.caseField.value) {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(this.caseField.value.CaseReference),

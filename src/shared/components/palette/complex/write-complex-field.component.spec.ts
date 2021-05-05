@@ -6,11 +6,9 @@ import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
-import { IsCompoundPipe, IsReadOnlyPipe } from '../utils';
-import { PaletteUtilsModule } from '../utils/utils.module';
+import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 
@@ -53,7 +51,7 @@ describe('WriteComplexFieldComponent', () => {
   let de: DebugElement;
   let formValidatorService: jasmine.SpyObj<FormValidatorsService>;
 
-  function prepareTestBed() {
+  function prepareTestBed(): void {
     TestBed
       .configureTestingModule({
         imports: [
@@ -597,13 +595,13 @@ describe('WriteComplexFieldComponent', () => {
     const ADDRESS_LINE_1: CaseField = <CaseField>({
       id: 'AddressLine1',
       label: 'Line 1',
-      field_type: { id: 'TextMax150', type: 'Text' },
+      field_type: {id: 'TextMax150', type: 'Text'},
       value: ''
     });
     const ADDRESS_LINE_2: CaseField = <CaseField>({
       id: 'AddressLine2',
       label: 'Line 2',
-      field_type: { id: 'Text', type: 'Text' },
+      field_type: {id: 'Text', type: 'Text'},
       value: '111 East India road'
     });
     const ADDRESS_TYPE: FieldType = {
@@ -617,7 +615,7 @@ describe('WriteComplexFieldComponent', () => {
       label: 'Address Field',
       field_type: {
         ...ADDRESS_TYPE,
-        complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+        complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
       },
       retain_hidden_value: true
     });
@@ -653,13 +651,13 @@ describe('WriteComplexFieldComponent', () => {
     const ADDRESS_LINE_1: CaseField = <CaseField>({
       id: 'AddressLine1',
       label: 'Line 1',
-      field_type: { id: 'TextMax150', type: 'Text' },
+      field_type: {id: 'TextMax150', type: 'Text'},
       value: ''
     });
     const ADDRESS_LINE_2: CaseField = <CaseField>({
       id: 'AddressLine2',
       label: 'Line 2',
-      field_type: { id: 'Text', type: 'Text' },
+      field_type: {id: 'Text', type: 'Text'},
       value: '111 East India road'
     });
     const COMPLEX_TYPE: FieldType = {
@@ -673,7 +671,7 @@ describe('WriteComplexFieldComponent', () => {
       label: 'Address Field',
       field_type: {
         ...COMPLEX_TYPE,
-        complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+        complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
       },
       retain_hidden_value: true
     });

@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { Constants } from '../../../commons/constants';
-import { CaseField, FieldTypeEnum } from '../../../domain/definition';
+import { CaseField } from '../../../domain/definition';
 import { FieldsUtils, FormValidatorsService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -34,12 +34,12 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   public complexFields: CaseField[];
 
-  constructor (private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
+  constructor(private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
     super();
     this.complexGroup = new FormGroup({});
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Are we inside of a collection? If so, the parent is the complexGroup we want.
     if (this.isTopLevelWithinCollection()) {
       this.complexGroup = this.parent as FormGroup;
@@ -53,7 +53,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     this.complexGroup.updateValueAndValidity({ emitEvent: true });
   }
 
-  buildField(caseField: CaseField): CaseField {
+  public buildField(caseField: CaseField): CaseField {
     let control: AbstractControl = this.complexGroup.get(caseField.id);
     if (!control) {
       control = new FormControl(caseField.value);
@@ -82,7 +82,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     return caseField;
   }
 
-  buildIdPrefix(field: CaseField): string {
+  public buildIdPrefix(field: CaseField): string {
     return this.isCompoundPipe.transform(field) ? `${this.idPrefix}${field.id}_` : `${this.idPrefix}`;
   }
 
@@ -122,7 +122,6 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     const fieldsFilterPipe: FieldsFilterPipe = new FieldsFilterPipe();
     this.complexFields = fieldsFilterPipe.transform(this.caseField, true).map(field => {
       if (field && field.id) {
-        const id = field.id;
         if (!(field instanceof CaseField)) {
           return this.buildField(plainToClassFromExist(new CaseField(), field));
         }

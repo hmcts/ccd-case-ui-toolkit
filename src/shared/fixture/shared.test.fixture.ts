@@ -1,20 +1,19 @@
-import { CaseField } from '../domain/definition/case-field.model';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { FieldType, FieldTypeEnum } from '../domain';
 import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-page-field-complex-override.model';
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ShowCondition } from '../directives/conditional-show/domain';
-import { FixedListItem } from '../domain/definition';
+import { CaseField, FixedListItem } from '../domain/definition';
 import { AccessControlList } from '../domain/definition/access-control-list.model';
 import { CaseFieldBuilder } from './case-field-builder';
 
-export let createCaseEventTrigger = (id: string,
-                                     name: string,
-                                     case_id: string,
-                                     show_summary: boolean,
-                                     case_fields: CaseField[],
-                                     wizard_pages = [],
-                                     can_save_draft = false) => {
+export const createCaseEventTrigger = (id: string,
+                                       name: string,
+                                       case_id: string,
+                                       show_summary: boolean,
+                                       case_fields: CaseField[],
+                                       wizard_pages = [],
+                                       can_save_draft = false): CaseEventTrigger => {
   const eventTrigger = new CaseEventTrigger();
 
   eventTrigger.id = id;
@@ -28,9 +27,9 @@ export let createCaseEventTrigger = (id: string,
   return eventTrigger;
 };
 
-export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-                         show_summary_content_option: number, typeComplexFields: CaseField[] = [],
-                         retain_hidden_value?: boolean, hidden?: boolean): CaseField => {
+export const aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
+                           show_summary_content_option: number, typeComplexFields: CaseField[] = [],
+                           retain_hidden_value?: boolean, hidden?: boolean): CaseField => {
   return <CaseField>({
     id: id || 'personFirstName',
     field_type: {
@@ -46,13 +45,13 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
   });
 };
 
-export let createWizardPage = (id: string,
-                               label: string,
-                               order: number,
-                               wizardPageFields: WizardPageField[] = [],
-                               caseFields: CaseField[] = [],
-                               showCondition: string,
-                               parsedShowCondition: ShowCondition = null): WizardPage => {
+export const createWizardPage = (id: string,
+                                 label: string,
+                                 order: number,
+                                 wizardPageFields: WizardPageField[] = [],
+                                 caseFields: CaseField[] = [],
+                                 showCondition: string,
+                                 parsedShowCondition: ShowCondition = null): WizardPage => {
   const wizardPage = new WizardPage();
   wizardPage.id = id;
   wizardPage.label = label;
@@ -64,10 +63,10 @@ export let createWizardPage = (id: string,
   return wizardPage;
 };
 
-export let createWizardPageField = (id: string,
-                                    order: number,
-                                    pageColumnNumber: number,
-                                    complexFieldOverrides: ComplexFieldOverride[] = []): WizardPageField => {
+export const createWizardPageField = (id: string,
+                                      order: number,
+                                      pageColumnNumber: number,
+                                      complexFieldOverrides: ComplexFieldOverride[] = []): WizardPageField => {
   const wizardPageField = new WizardPageField();
   wizardPageField.case_field_id = id;
   wizardPageField.order = order;
@@ -76,12 +75,12 @@ export let createWizardPageField = (id: string,
   return wizardPageField;
 };
 
-export let createComplexFieldOverride = (id: string,
-                                         order: number,
-                                         displayContext: string,
-                                         label: string,
-                                         hint: string,
-                                         showCondition: string): ComplexFieldOverride => {
+export const createComplexFieldOverride = (id: string,
+                                           order: number,
+                                           displayContext: string,
+                                           label: string,
+                                           hint: string,
+                                           showCondition: string): ComplexFieldOverride => {
   const complexFieldOverride = new ComplexFieldOverride();
   complexFieldOverride.complex_field_element_id = id;
   complexFieldOverride.display_context = displayContext;
@@ -91,22 +90,22 @@ export let createComplexFieldOverride = (id: string,
   return complexFieldOverride;
 };
 
-export let createHiddenComplexFieldOverride = (id: string): ComplexFieldOverride => {
+export const createHiddenComplexFieldOverride = (id: string): ComplexFieldOverride => {
   const complexFieldOverride = new ComplexFieldOverride();
   complexFieldOverride.complex_field_element_id = id;
   complexFieldOverride.display_context = 'HIDDEN';
   return complexFieldOverride;
 };
 
-export let createCaseField = (id: string,
-                              label: string,
-                              hint: string,
-                              fieldType: FieldType,
-                              display_context: string,
-                              order = undefined,
-                              show_condition = undefined,
-                              ACLs: AccessControlList[] = undefined,
-                              hidden?: boolean): CaseField => {
+export const createCaseField = (id: string,
+                                label: string,
+                                hint: string,
+                                fieldType: FieldType,
+                                display_context: string,
+                                order = undefined,
+                                show_condition = undefined,
+                                ACLs: AccessControlList[] = undefined,
+                                hidden?: boolean): CaseField => {
   return CaseFieldBuilder.create()
     .withId(id || 'personFirstName')
     .withFieldType(fieldType || textFieldType())
@@ -121,12 +120,12 @@ export let createCaseField = (id: string,
     .build();
 };
 
-export let newCaseField = (id: string,
-                           label: string,
-                           hint: string,
-                           fieldType: FieldType,
-                           display_context: string,
-                           order = undefined): CaseFieldBuilder => {
+export const newCaseField = (id: string,
+                             label: string,
+                             hint: string,
+                             fieldType: FieldType,
+                             display_context: string,
+                             order = undefined): CaseFieldBuilder => {
   return CaseFieldBuilder.create()
     .withId(id || 'personFirstName')
     .withFieldType(fieldType || textFieldType())
@@ -137,10 +136,10 @@ export let newCaseField = (id: string,
     .withShowSummaryContentOption(0);
 };
 
-export let createFieldType = (typeId: string,
-                              type: FieldTypeEnum,
-                              complex_fields: CaseField[] = [],
-                              collection_field_type: FieldType = undefined): FieldType => {
+export const createFieldType = (typeId: string,
+                                type: FieldTypeEnum,
+                                complex_fields: CaseField[] = [],
+                                collection_field_type: FieldType = undefined): FieldType => {
   return {
     id: typeId || 'Text',
     type: type || 'Text',
@@ -149,8 +148,8 @@ export let createFieldType = (typeId: string,
   };
 };
 
-export let createFixedListFieldType = (typeId: string,
-                                       fixedListItems: FixedListItem[] = []): FieldType => {
+export const createFixedListFieldType = (typeId: string,
+                                         fixedListItems: FixedListItem[] = []): FieldType => {
   return {
     id: 'FixedList-' + typeId,
     type: 'FixedList',
@@ -158,8 +157,8 @@ export let createFixedListFieldType = (typeId: string,
   };
 };
 
-export let createMultiSelectListFieldType = (typeId: string,
-                                             fixedListItems: FixedListItem[] = []): FieldType => {
+export const createMultiSelectListFieldType = (typeId: string,
+                                               fixedListItems: FixedListItem[] = []): FieldType => {
   return {
     id: 'MultiSelectList-' + typeId,
     type: 'MultiSelectList',
@@ -167,7 +166,7 @@ export let createMultiSelectListFieldType = (typeId: string,
   };
 };
 
-export let textFieldType = (): FieldType => {
+export const textFieldType = (): FieldType => {
   return {
     id: 'Text',
     type: 'Text',
@@ -175,7 +174,7 @@ export let textFieldType = (): FieldType => {
   };
 };
 
-export let createACL = (role: string, create: boolean, read: boolean, update: boolean, _delete: boolean): AccessControlList => {
+export const createACL = (role: string, create: boolean, read: boolean, update: boolean, _delete: boolean): AccessControlList => {
   return <AccessControlList>({
     role: role || 'roleX',
     create: create,

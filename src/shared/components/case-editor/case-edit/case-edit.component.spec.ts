@@ -10,14 +10,11 @@ import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../.
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { FormValueService } from '../../../services/form/form-value.service';
+import { FormErrorService, FormValueService } from '../../../services/form';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { WizardPageField } from '../domain/wizard-page-field.model';
+import { Wizard, WizardPage, WizardPageField } from '../domain';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { Wizard } from '../domain/wizard.model';
-import { WizardPage } from '../domain/wizard-page.model';
 import { FieldType, Profile } from '../../../domain';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -181,17 +178,17 @@ describe('CaseEditComponent', () => {
   let component: CaseEditComponent;
   let de: DebugElement;
 
-  let EventTriggerHeaderComponent: any = MockComponent({
+  const EventTriggerHeaderComponent: any = MockComponent({
     selector: 'ccd-event-trigger-header',
     inputs: ['eventTrigger']
   });
 
-  let FieldRead: any = MockComponent({
+  const FieldRead: any = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField']
   });
 
-  let FieldWrite: any = MockComponent({
+  const FieldWrite: any = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
@@ -203,27 +200,26 @@ describe('CaseEditComponent', () => {
 
   let cancelHandler: any;
   let submitHandler: any;
-  let formErrorService: any;
-  let formValueService: any;
+  let formErrorService: jasmine.SpyObj<FormErrorService>;
+  let formValueService: jasmine.SpyObj<FormValueService>;
   let callbackErrorsSubject: any;
-  let wizard: any;
+  let wizard: jasmine.SpyObj<Wizard>;
   let routerStub: any;
-  let fieldsUtils = new FieldsUtils();
-  let fieldsPurger = new FieldsPurger(fieldsUtils);
-  let registrarService = new ConditionalShowRegistrarService();
+  const fieldsUtils = new FieldsUtils();
+  const fieldsPurger = new FieldsPurger(fieldsUtils);
+  const registrarService = new ConditionalShowRegistrarService();
   let route: any;
-  let profileService;
-  let profileNotifier;
-  let profileNotifierSpy;
+  let profileService: jasmine.SpyObj<ProfileService>;
+  let profileNotifier: ProfileNotifier;
+  let profileNotifierSpy: jasmine.Spy;
 
   describe('profile available in route', () => {
-
     routerStub = {
       navigate: jasmine.createSpy('navigate'),
       routerState: {}
     };
 
-    let USER = {
+    const USER = {
       idam: {
         id: 'userId',
         email: 'string',
@@ -232,8 +228,8 @@ describe('CaseEditComponent', () => {
         roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
       }
     };
-    let FUNC = () => false;
-    let PROFILE: Profile = {
+    const FUNC = () => false;
+    const PROFILE: Profile = {
       channels: [],
       jurisdictions: [],
       default: {
@@ -302,15 +298,15 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            { provide: FormErrorService, useValue: formErrorService },
-            { provide: FormValueService, useValue: formValueService },
-            { provide: FieldsUtils, useValue: fieldsUtils },
-            { provide: FieldsPurger, useValue: fieldsPurger },
-            { provide: ConditionalShowRegistrarService, useValue: registrarService },
-            { provide: Router, useValue: routerStub },
-            { provide: ActivatedRoute, useValue: route },
-            { provide: ProfileService, useValue: profileService },
-            { provide: ProfileNotifier, useValue: profileNotifier }
+            {provide: FormErrorService, useValue: formErrorService},
+            {provide: FormValueService, useValue: formValueService},
+            {provide: FieldsUtils, useValue: fieldsUtils},
+            {provide: FieldsPurger, useValue: fieldsPurger},
+            {provide: ConditionalShowRegistrarService, useValue: registrarService},
+            {provide: Router, useValue: routerStub},
+            {provide: ActivatedRoute, useValue: route},
+            {provide: ProfileService, useValue: profileService},
+            {provide: ProfileNotifier, useValue: profileNotifier}
           ]
         })
         .compileComponents();
@@ -321,7 +317,6 @@ describe('CaseEditComponent', () => {
       component.eventTrigger = EVENT_TRIGGER;
       component.cancelled.subscribe(cancelHandler.applyFilters);
       component.submitted.subscribe(submitHandler.applyFilters);
-      // component.errorsSubject = errorSubject;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -361,7 +356,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and do not clear READONLY hidden field value', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -384,7 +379,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and do not clear visible field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -407,7 +402,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and clear hidden simple form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -430,7 +425,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and clear hidden complex form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -453,7 +448,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and clear hidden collection form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -478,7 +473,7 @@ describe('CaseEditComponent', () => {
       describe('previous page', () => {
         it('should navigate to previous page when previous is called and do not clear READONLY hidden field value', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -501,7 +496,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when previous is called and do not clear visible field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -524,7 +519,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when previous is called and clear hidden simple form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -547,7 +542,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when next is called and clear hidden complex form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -570,7 +565,7 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when next is called and clear hidden collection form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
@@ -599,11 +594,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and do not clear visible field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let nextPage = new WizardPage();
+          const nextPage = new WizardPage();
           nextPage.show_condition = 'PersonFirstName=\"John\"';
           nextPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
@@ -629,11 +624,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and retain hidden simple form fields with retain_hidden_value = true', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let nextPage = new WizardPage();
+          const nextPage = new WizardPage();
           nextPage.show_condition = 'PersonFirstName=\"John\"';
           CASE_FIELD_3.retain_hidden_value = true;
           nextPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
@@ -660,11 +655,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and clear hidden complex form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let nextPage = new WizardPage();
+          const nextPage = new WizardPage();
           nextPage.show_condition = 'PersonFirstName=\"John\"';
           CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
           CASE_FIELD_3_COMPLEX.retain_hidden_value = false;
@@ -698,11 +693,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to next page when next is called and clear hidden collection form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let nextPage = new WizardPage();
+          const nextPage = new WizardPage();
           nextPage.show_condition = 'PersonFirstName=\"John\"';
           CASE_FIELD_2_COLLECTION.retain_hidden_value = true;
           CASE_FIELD_3_COLLECTION.retain_hidden_value = false;
@@ -747,11 +742,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when previous is called and do not clear visible field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let previousPage = new WizardPage();
+          const previousPage = new WizardPage();
           previousPage.show_condition = 'PersonFirstName=\"John\"';
           previousPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
           previousPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
@@ -778,11 +773,11 @@ describe('CaseEditComponent', () => {
         it('should navigate to previous page when previous is called and retain hidden simple form fields with ' +
         'retain_hidden_value = true', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let previousPage = new WizardPage();
+          const previousPage = new WizardPage();
           previousPage.show_condition = 'PersonFirstName=\"John\"';
           CASE_FIELD_3.retain_hidden_value = true;
           previousPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
@@ -809,11 +804,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when previous is called and clear hidden complex form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let previousPage = new WizardPage();
+          const previousPage = new WizardPage();
           previousPage.show_condition = 'PersonFirstName=\"John\"';
           CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
           CASE_FIELD_3_COMPLEX.retain_hidden_value = false;
@@ -847,11 +842,11 @@ describe('CaseEditComponent', () => {
 
         it('should navigate to previous page when previous is called and clear hidden collection form field', () => {
           component.wizard = wizard;
-          let currentPage = new WizardPage();
+          const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
-          let previousPage = new WizardPage();
+          const previousPage = new WizardPage();
           previousPage.show_condition = 'PersonFirstName=\"John\"';
           CASE_FIELD_2_COLLECTION.retain_hidden_value = true;
           CASE_FIELD_3_COLLECTION.retain_hidden_value = false;
@@ -910,7 +905,7 @@ describe('CaseEditComponent', () => {
 
   describe('profile not available in route', () => {
 
-    let USER = {
+    const USER = {
       idam: {
         id: 'userId',
         email: 'string',
@@ -919,8 +914,8 @@ describe('CaseEditComponent', () => {
         roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
       }
     };
-    let FUNC = () => false;
-    let PROFILE: Profile = {
+    const FUNC = () => false;
+    const PROFILE: Profile = {
       channels: [],
       jurisdictions: [],
       default: {
@@ -935,7 +930,7 @@ describe('CaseEditComponent', () => {
       'isCourtAdmin': FUNC
     };
 
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
 
     beforeEach(async(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -956,7 +951,7 @@ describe('CaseEditComponent', () => {
       profileNotifier = new ProfileNotifier();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      let snapshotNoProfile = {
+      const snapshotNoProfile = {
         pathFromRoot: [
           {},
           {
@@ -977,7 +972,7 @@ describe('CaseEditComponent', () => {
           }
         ]
       };
-      let mockRouteNoProfile = {
+      const mockRouteNoProfile = {
         queryParams: of({Origin: 'viewDraft'}),
         params: of({id: 123}),
         snapshot: snapshotNoProfile
@@ -1001,15 +996,15 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            { provide: FormErrorService, useValue: formErrorService },
-            { provide: FormValueService, useValue: formValueService },
-            { provide: FieldsUtils, useValue: fieldsUtils },
-            { provide: FieldsPurger, useValue: fieldsPurger },
-            { provide: ConditionalShowRegistrarService, useValue: registrarService },
-            { provide: Router, useValue: routerStub },
-            { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-            { provide: ProfileService, useValue: profileService },
-            { provide: ProfileNotifier, useValue: profileNotifier }
+            {provide: FormErrorService, useValue: formErrorService},
+            {provide: FormValueService, useValue: formValueService},
+            {provide: FieldsUtils, useValue: fieldsUtils},
+            {provide: FieldsPurger, useValue: fieldsPurger},
+            {provide: ConditionalShowRegistrarService, useValue: registrarService},
+            {provide: Router, useValue: routerStub},
+            {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+            {provide: ProfileService, useValue: profileService},
+            {provide: ProfileNotifier, useValue: profileNotifier}
           ]
         })
         .compileComponents();
@@ -1020,7 +1015,6 @@ describe('CaseEditComponent', () => {
       component.eventTrigger = EVENT_TRIGGER;
       component.cancelled.subscribe(cancelHandler.applyFilters);
       component.submitted.subscribe(submitHandler.applyFilters);
-      // component.errorsSubject = errorSubject;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -1032,5 +1026,4 @@ describe('CaseEditComponent', () => {
       expect(profileService.get).toHaveBeenCalled();
     });
   });
-
 });
