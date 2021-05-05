@@ -93,7 +93,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
-        this.formValueService.sanitise((this.editForm.get('data') as FormGroup).getRawValue())),
+        this.formValueService.sanitise(
+          this.replaceHiddenFormValuesWithOriginalCaseData(
+            this.editForm.get('data') as FormGroup, this.eventTrigger.case_fields))),
       event: this.editForm.value.event
     } as CaseEventData
     this.formValueService.clearNonCaseFields(caseEventData.data, this.eventTrigger.case_fields);
@@ -121,6 +123,92 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
           this.isSubmitting = false;
         }
       );
+  }
+
+  /**
+   * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
+   * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
+   * the *original* value held in the `CaseField` object.
+   *
+   * This is as per design in EUI-3622, where any user-driven updates to hidden fields with `retain_hidden_value` =
+   * `true` are ignored (thus retaining the value displayed originally).
+   *
+   * * For Complex field types, the replacement above is performed recursively for all hidden sub-fields with
+   * `retain_hidden_value` = `true`.
+   *
+   * * For Collection field types, including collections of Complex and Document field types, the replacement is
+   * performed for all fields in the collection.
+   *
+   * @param formGroup The `FormGroup` instance whose raw values are to be traversed
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
+   * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
+   * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
+   * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
+   */
+  private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
+    // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
+    const rawFormValueData = formGroup.getRawValue();
+
+    // Place all case fields in a lookup object, so they can be retrieved by id
+    const caseFieldsLookup = {};
+    for (let i = 0, len = caseFields.length; i < len; i++) {
+      caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    }
+
+    /**
+     * Replace any form value with the original, where its CaseField is hidden AND has the retain_hidden_value flag set
+     * to true.
+     *
+     * If the CaseField's `hidden` attribute is null or undefined, then check this attribute in the parent CaseField (if
+     * one exists). This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type, or an
+     * item in a Collection type.
+     *
+     * If the field is a Complex type with retain_hidden_value = true, perform a recursive replacement for all (hidden)
+     * sub-fields with retain_hidden_value = true, using their original CaseField values (from the `formatted_value`
+     * attribute).
+     *
+     * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
+     * original from `formatted_value`. This applies to *all* types of Collections.
+     */
+    Object.keys(rawFormValueData).forEach((key) => {
+      const caseField: CaseField = caseFieldsLookup[key];
+      // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
+      // both null and undefined are equal to *neither false nor true*)
+      if (caseField &&
+        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+        const fieldType: FieldTypeEnum = caseField.field_type.type;
+        switch (fieldType) {
+          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
+          // handle both null and undefined values
+          case 'Complex':
+            if (caseField.retain_hidden_value && caseField.value != null) {
+              // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
+              // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
+              // parent)
+              const resultantObject = this.replaceHiddenFormValuesWithOriginalCaseData(
+                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
+              // Update rawFormValueData for this field
+              rawFormValueData[key] = resultantObject;
+            }
+            break;
+          default:
+            // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
+            // replaced with the original from formatted_value
+            if (caseField.retain_hidden_value) {
+              // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
+              // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
+              // from the CaseField itself.
+              if (parentField && parentField.formatted_value) {
+                rawFormValueData[key] = parentField.formatted_value[caseField.id];
+              } else {
+                rawFormValueData[key] = caseField.formatted_value;
+              }
+            }
+        }
+      }
+    });
+
+    return rawFormValueData;
   }
 
   /**

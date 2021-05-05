@@ -204,9 +204,9 @@ export class FieldsUtils {
     }
     const values = Object.keys(object).map(key => object[key]);
     const objectRefs = [];
-    // Note that pushing to an array is truthy (returns new length of the array), hence using ! to make it falsy.
-    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays
-    const hasNonNullPrimitive = values.some(x => (x !== null &&
+    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays.
+    // Note: Deliberate use of non-equality (!=) operator for null check, to handle both null and undefined values.
+    const hasNonNullPrimitive = values.some(x => (x != null &&
       ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
         ? !objectRefs.push(x)
         : typeof x === 'number' || x.length > 0)

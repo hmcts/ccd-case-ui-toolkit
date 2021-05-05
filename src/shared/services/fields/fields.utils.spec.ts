@@ -164,6 +164,10 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.containsNonEmptyValues({ field1: null, field2: '' })).toBe(false);
     });
 
+    it('should return false for an object containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: undefined })).toBe(false);
+    });
+
     it('should return true for an object containing a zero number value', () => {
       expect(FieldsUtils.containsNonEmptyValues({ field1: 0 })).toBe(true);
     });
@@ -172,7 +176,8 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.containsNonEmptyValues({
         field1: {
           field1_1: null,
-          field1_2: ''
+          field1_2: '',
+          field1_3: undefined
         }
       })).toBe(false);
     });
@@ -198,6 +203,10 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.containsNonEmptyValues({ field1: [null, ''] })).toBe(false);
     });
 
+    it('should return false for an object with an array containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [undefined] })).toBe(false);
+    });
+
     it('should return true for an object with an array containing a zero number value', () => {
       expect(FieldsUtils.containsNonEmptyValues({ field1: [0] })).toBe(true);
     });
@@ -212,6 +221,10 @@ describe('FieldsUtils', () => {
 
     it('should return false for an array containing only null and empty string values', () => {
       expect(FieldsUtils.containsNonEmptyValues([null, ''])).toBe(false);
+    });
+
+    it('should return false for an array containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([undefined])).toBe(false);
     });
 
     it('should return true for an array containing a zero number value', () => {
@@ -230,6 +243,10 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.containsNonEmptyValues([{ field1: null, field2: '' }])).toBe(false);
     });
 
+    it('should return false for an array with an object containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: undefined }])).toBe(false);
+    });
+
     it('should return true for an array with an object containing a zero number value', () => {
       expect(FieldsUtils.containsNonEmptyValues([{ field1: 0 }])).toBe(true);
     });
@@ -238,7 +255,8 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.containsNonEmptyValues([{
         field1: {
           field1_1: null,
-          field1_2: ''
+          field1_2: '',
+          field1_3: undefined
         }
       }])).toBe(false);
     });

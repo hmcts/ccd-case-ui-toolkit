@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 3.0.0-eta
+**EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 where "RetainHiddenValue" = "Yes"
+
 ### Version 3.0.0-zeta
 **EUI-3622** Re-tag of previous pre-release, following PR corrections
 
