@@ -159,18 +159,7 @@ describe('DatePipe', () => {
   });
   // End of tests for EUI-2667.
 
-  /**
-   * GMT to BST (from 00:59:59 GMT going forward to 02:00:00 BST) on the last Sunday in March
-   */
-  it ('should handle GMT to BST transition', () => {
-    let endOfWinter = new Date(2020, 2, 29, 0, 59, 59)
-    let message = datePipe.transform (endOfWinter.toISOString(), 'GMT', 'DD MMMM yyyy HH:mm:ss.SSS');
-    expect(message).toBe('29 March 2020 00:59:59.000');
-    // tick on 1 second
-    endOfWinter.setTime(endOfWinter.getTime() + 1000);
-    message = datePipe.transform (endOfWinter.toISOString(), '+0100', 'DD MMMM yyyy HH:mm:ss.SSS');
-    expect(message).toBe('29 March 2020 02:00:00.000');
-  })
+  // test removed regarding time zone change at end of winter (change from 00:59 -> 02:00 removed as no longer relevant)
   function getExpectedHour(hour): number {
     let expectedHour = hour + EXPECTED_OFFSET;
     if (expectedHour > 12) {
