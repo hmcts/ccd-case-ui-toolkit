@@ -171,7 +171,8 @@ export class FieldsUtils {
       // Format specified here wasn't previously working and lots of tests depend on it not working
       // Now that formats work correctly many test would break - and this could affect services which may depend on
       // the orginal behaviour of returning dates in "d MMM yyyy"
-      return FieldsUtils.datePipe.transform(fieldValue, null, 'd MMM yyyy');
+      // Note - replaced 'd' with 'D' as datepipe using moment to avoid timezone discrepancies
+      return FieldsUtils.datePipe.transform(fieldValue, null, 'D MMM yyyy');
     } catch (e) {
       return this.textForInvalidField('Date', fieldValue);
     }
