@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma
+**EUI-3854** Fix for grey bars showing when they shouldn't because enabling fields are on other pages.
+
 ### Version 2.79.8-breathing-space-data-not-being-persisted
 **EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
 
@@ -11,6 +14,9 @@
 
 ### Version 2.79.12
 **EUI-3682** Callback Error still not showing proper error message in XUI screen
+
+### Version 2.79.11-crud-issues
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
 
 ### Version 2.79.10-input-type-accessibility
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
