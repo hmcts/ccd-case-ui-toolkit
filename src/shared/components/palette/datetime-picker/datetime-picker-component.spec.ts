@@ -1,19 +1,20 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
-  from '@angular-material-components/datetime-picker';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { By } from '@angular/platform-browser';
 import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
+  from '@angular-material-components/datetime-picker';
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
-import { DatetimePickerComponent } from './datetime-picker.component';
-import { By } from '@angular/platform-browser';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
-import { FieldLabelPipe, FirstErrorPipe } from '../utils';
-import { CaseFieldService } from '../../../services';
+import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
 import { CaseField, FieldType } from '../../../domain';
+import { CaseFieldService } from '../../../services';
+import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+import { DatetimePickerComponent } from './datetime-picker.component';
+import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 
 describe('DatetimePickerComponent', () => {
 
@@ -21,8 +22,8 @@ describe('DatetimePickerComponent', () => {
   let fixture: ComponentFixture<DatetimePickerComponent>;
   let caseFieldService = new CaseFieldService();
   // changing custom formats to make it easier to get date from input
-  CUSTOM_MOMENT_FORMATS.parse.dateInput = 'MM/DD/YYYY, HH:mm:SS';
-  CUSTOM_MOMENT_FORMATS.display.dateInput = 'MM/DD/YYYY, HH:mm:SS';
+  CUSTOM_MOMENT_FORMATS.parse.dateInput = 'DD/MM/YYYY, HH:mm:ss';
+  CUSTOM_MOMENT_FORMATS.display.dateInput = 'DD/MM/YYYY, HH:mm:ss';
 
   const FIELD_ID = 'ReadOnlyFieldId';
   const FIELD_TYPE: FieldType = {
@@ -30,7 +31,7 @@ describe('DatetimePickerComponent', () => {
     type: 'DateTime'
   };
   const initialDateTime = new Date();
-  const initialDateEntryParameter = 'MM/DD/YYYY HH:mm:SS'
+  const initialDateEntryParameter = 'DD/MM/YYYY HH:mm:ss'
 
   const CASE_FIELD: CaseField = <CaseField>({
     id: FIELD_ID,
@@ -136,7 +137,7 @@ describe('DatetimePickerComponent', () => {
   }));
 
   it('should be able to change the format via caseField', fakeAsync(() => {
-    const firstDateEntryParameter = 'MM-DD-YYYY HH+mm+SS'
+    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss'
 
     const FIRST_CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
@@ -159,7 +160,7 @@ describe('DatetimePickerComponent', () => {
     expect(firstFormattedDate.substring(13, 14)).toBe('+');
     expect(firstFormattedDate.substring(16, 17)).toBe('+');
 
-    const secondDateEntryParameter = 'MM+DD+YYYY ss*mm*HH'
+    const secondDateEntryParameter = 'DD+MM+YYYY ss*mm*HH'
 
     const SECOND_CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
@@ -229,8 +230,13 @@ describe('DatetimePickerComponent', () => {
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
+    let setDay = fixture.nativeElement.querySelector('input').value.split('/');
+    const d = parseInt(setDay[0], 10);
+    const m = parseInt(setDay[1], 10);
+    const y = parseInt(setDay[2], 10);
+    setDay = new Date(y, m - 1, d);
+
     // check the new input against the first day of the month of the year in order to verify
-    let setDay = new Date(fixture.nativeElement.querySelector('input').value);
     const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
@@ -244,7 +250,7 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
     tick(1);
 
-    const firstDateEntryParameter = 'MM-DD-YYYY HH+mm+SS'
+    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss'
 
     const FIRST_CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
@@ -471,8 +477,13 @@ describe('DatetimePickerComponent', () => {
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
+    let setDate = fixture.nativeElement.querySelector('input').value.split('/');
+    const d = parseInt(setDate[0], 10);
+    const m = parseInt(setDate[1], 10);
+    const y = parseInt(setDate[2], 10);
+    setDate = new Date(y, m - 1, d);
+
     // check all are first values (apart from year which can check is not initial selected year)
-    let setDate = new Date(fixture.nativeElement.querySelector('input').value);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     expect(setDate.getFullYear()).not.toBe(initialDate.getFullYear());
     expect(setDate.getMonth()).toBe(1);

@@ -13,10 +13,6 @@ function getDatetimefieldsResults(){
         results: [],
         total: 0
     }
-    
-    
-
-
 }
 
 module.exports = { getEventTemplate, getDateTimeTestEvent }

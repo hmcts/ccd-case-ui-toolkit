@@ -69,7 +69,6 @@
     "rx-polling": "1.1.0",
     "typescript": "3.1.1",
     "underscore": "^1.9.1",
-    "xlsx": "^0.15.4",
     "yargs-parser": "18.1.2"
   },
   "peerDependencies": {
@@ -164,6 +163,7 @@
     "webpack-cli": "^4.2.0",
     "webpack-dev-middleware": "^4.0.2",
     "webpack-rxjs-externals": "^2.0.0",
+    "xlsx": "^0.15.4",
     "zone.js": "^0.8.26"
   },
   "resolutions": {

@@ -2,7 +2,6 @@
 const CCDWorkbasketConfig = require('../nodeMock/ccd/ccdCaseConfig/workBasketInputGenerator');
 const CCDSearchInputConfig = require('../nodeMock/ccd/ccdCaseConfig/searchInputGenerator');
 
-
 function getMockJurisdictionWorkbaseketConfig() {
     const workBasketConfig = new CCDWorkbasketConfig();
     workBasketConfig
@@ -15,7 +14,6 @@ function getMockJurisdictionWorkbaseketConfig() {
         .getConfig();
     return workBasketConfig;
 }
-
 
 function getConfigWithDate(fieldId) {
     const workBasketConfig = new CCDWorkbasketConfig();

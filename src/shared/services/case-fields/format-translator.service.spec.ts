@@ -32,7 +32,7 @@ describe('FormatTranslatorService', () => {
     })
 
     it ('should remove time', () => {
-      expect(formatTranslator.removeTime('YYYY/MM/DD hh:mm:ss')).toBe('YYYY/MM/DD ::');
+      expect(formatTranslator.removeTime('YYYY/MM/DD hh:mm:ss')).toBe('YYYY/MM/DD');
     });
 
     it ('should check if date present', () => {

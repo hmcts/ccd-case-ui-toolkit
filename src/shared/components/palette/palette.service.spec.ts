@@ -23,7 +23,6 @@ import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.com
 import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
 import { WriteMultiSelectListFieldComponent } from './multi-select-list/write-multi-select-list-field.component';
-import { WriteDateFieldComponent } from './date/write-date-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { CaseField }  from '../../domain/definition/case-field.model';
@@ -31,7 +30,7 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summary-field.component';
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
-import { WriteDateFieldContainerComponent } from '.';
+import { WriteDateContainerFieldComponent } from '.';
 
 describe('PaletteService', () => {
 
@@ -114,7 +113,7 @@ describe('PaletteService', () => {
     });
 
     it('should get WriteDateContainer component class for Date input', () => {
-      assertComponent('Date', true, WriteDateFieldContainerComponent, 'AnID');
+      assertComponent('Date', true, WriteDateContainerFieldComponent, 'AnID');
     });
 
     it('should get ReadDateTimeField component class for DateTime input', () => {
@@ -122,7 +121,7 @@ describe('PaletteService', () => {
     });
 
     it('should get WriteDateTimeContainer component class for DateTime input', () => {
-      assertComponent('DateTime', true, WriteDateFieldContainerComponent, 'AnID');
+      assertComponent('DateTime', true, WriteDateContainerFieldComponent, 'AnID');
     });
 
     it('should get ReadFixedListField component class for FixedList input', () => {

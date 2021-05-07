@@ -1,17 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DebugElement } from '@angular/core';
-import { CaseField, FieldType } from '../../../domain';
-import { PaletteUtilsModule } from '../utils';
-import { WriteDateFieldComponent } from './write-date-field.component';
-import { CaseFieldService } from '../../../services';
-import { FormModule } from '../../../../components/form/form.module';
-import { WriteDateFieldContainerComponent } from './write-date-field-container.component';
-import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.component';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+
+import { CaseField, FieldType } from '../../../domain';
+import { CaseFieldService } from '../../../services';
+import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.component';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { FormModule } from '../../../../components/form/form.module';
+import { PaletteUtilsModule } from '../utils';
+import { WriteDateFieldComponent } from './write-date-field.component';
+import { WriteDateContainerFieldComponent } from './write-date-container-field.component';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -29,10 +30,10 @@ const CASE_FIELD: CaseField = <CaseField>({
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 
-describe('WriteDateContainerComponent', () => {
+describe('WriteDateContainerFieldComponent', () => {
 
-  let fixture: ComponentFixture<WriteDateFieldContainerComponent>;
-  let component: WriteDateFieldContainerComponent;
+  let fixture: ComponentFixture<WriteDateContainerFieldComponent>;
+  let component: WriteDateContainerFieldComponent;
   let de: DebugElement;
   let caseFieldService = new CaseFieldService();
 
@@ -52,7 +53,7 @@ describe('WriteDateContainerComponent', () => {
           FormModule,
         ],
         declarations: [
-          WriteDateFieldContainerComponent, WriteDateFieldComponent, DatetimePickerComponent
+          WriteDateContainerFieldComponent, WriteDateFieldComponent, DatetimePickerComponent
         ],
         providers: [
           FormatTranslatorService,
@@ -61,7 +62,7 @@ describe('WriteDateContainerComponent', () => {
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(WriteDateFieldContainerComponent);
+    fixture = TestBed.createComponent(WriteDateContainerFieldComponent);
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;

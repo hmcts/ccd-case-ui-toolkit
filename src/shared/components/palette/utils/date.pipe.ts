@@ -25,6 +25,7 @@ export class DatePipe implements PipeTransform {
 
   transform(value: string, zone: string, format: string): string {
     let resultDate = null;
+    const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     if (value) {
       const match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
       // Make sure we actually have a match.
@@ -40,8 +41,7 @@ export class DatePipe implements PipeTransform {
         if (this.formatTrans && format && format !== 'short') {
           // support for java style formatting strings for dates
           format = this.translateDateFormat(format);
-          const thisMoment = moment(date).format(format);
-          resultDate = thisMoment;
+          resultDate = moment(date).format(format);
         } else {
           // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
           resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
@@ -67,7 +67,7 @@ export class DatePipe implements PipeTransform {
             return this.transform(shortISO, zone, format);
           }
           // If it did include time, we want a full ISO string.
-          const thisMoment = moment(d).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+          const thisMoment = moment(d).format(ISO_FORMAT);
           return this.transform(thisMoment, zone, format);
         }
       }

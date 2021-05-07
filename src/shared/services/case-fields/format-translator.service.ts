@@ -176,18 +176,25 @@ export class FormatTranslatorService {
   }
 
   removeTime(dateFormat: string): string {
+    // remove hours irrelevant of whether 12 or 24 hour clock
     while (dateFormat.includes('H') || dateFormat.includes('h')) {
       dateFormat = dateFormat.replace('H', '');
       dateFormat = dateFormat.replace('h', '');
     }
+    // remove minutes
     while (dateFormat.includes('m')) {
       dateFormat = dateFormat.replace('m', '');
     }
+    // remove seconds (s) and micro seconds (S)
     while (dateFormat.includes('S') || dateFormat.includes('s')) {
       dateFormat = dateFormat.replace('S', '');
       dateFormat = dateFormat.replace('s', '');
     }
-    return dateFormat;
+    // because there is time removal algorithm can make reasonable assumption to remove colons
+    while (dateFormat.includes(':')) {
+      dateFormat = dateFormat.replace(':', '');
+    }
+    return dateFormat.trim();
   }
 
   hasDate(value: string): boolean {

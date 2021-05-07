@@ -1,19 +1,19 @@
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Moment } from 'moment/moment';
 import {
   NGX_MAT_DATE_FORMATS,
   NgxMatDateAdapter,
   NgxMatDateFormats,
   NgxMatDatetimePicker
 } from '@angular-material-components/datetime-picker';
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MAT_DATE_LOCALE, ThemePalette } from '@angular/material';
+import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
+import { ThemePalette } from '@angular/material';
+
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';
-import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
-import { Moment } from 'moment/moment';
-import moment = require('moment/moment');
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -28,7 +28,6 @@ import moment = require('moment/moment');
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
 
-  public disabled = false;
   public showSpinners = true;
   public showSeconds = false;
   public touchUi = false;

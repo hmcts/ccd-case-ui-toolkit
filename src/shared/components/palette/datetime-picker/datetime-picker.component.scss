@@ -18,7 +18,7 @@ Details inside it are for the actual component first shown on page */
     border: 1px solid #000;
 
     &:focus {
-      outline: 1px solid orange;
+      outline: 1px solid #ffdd00;
       border: 1px solid black;
     }
 
@@ -44,7 +44,7 @@ Details inside it are for the actual component first shown on page */
     width: 37px;
 
     &:focus {
-      outline: 1px solid orange;
+      outline: 1px solid #ffdd00;
     }
 
     .mat-datepicker-toggle-default-icon {
@@ -219,7 +219,7 @@ Details inside it are for the actual component first shown on page */
       }
 
       .mat-calendar-body-active {
-        background-color: lightskyblue;
+        background-color:	#5694ca;
       }
 
       .mat-calendar-body-today {
@@ -232,7 +232,7 @@ Details inside it are for the actual component first shown on page */
 
         &[aria-selected="true"] {
           background-color: #1d70b8;
-          outline: 3px solid orange;
+          outline: 3px solid #ffdd00;
           border: 2px solid black;
           outline-offset: 1px;
           z-index: 1;
@@ -247,7 +247,7 @@ Details inside it are for the actual component first shown on page */
         border-spacing: 10px;
 
         .mat-calendar-body-active {
-          background-color: lightskyblue;
+          background-color:	#5694ca;
         }
 
         .mat-calendar-body-cell {
@@ -265,7 +265,7 @@ Details inside it are for the actual component first shown on page */
 
           &[aria-selected="true"] {
             background-color: #1d70b8;
-            outline: 2px solid orange;
+            outline: 2px solid #ffdd00;
           }
         }
       }
@@ -282,7 +282,7 @@ Details inside it are for the actual component first shown on page */
         }
 
         .mat-calendar-body-active {
-          background-color: lightskyblue;
+          background-color:	#5694ca;
         }
 
         .mat-calendar-body-cell {
@@ -300,7 +300,7 @@ Details inside it are for the actual component first shown on page */
 
           &[aria-selected="true"] {
             background-color: #1d70b8;
-            outline: 3px solid orange;
+            outline: 3px solid #ffdd00;
             border: 2px solid black;
             outline-offset: 1px;
           }
@@ -703,6 +703,10 @@ Details inside it are for the actual component first shown on page */
         vertical-align: top;
         width: 80px;
         cursor: pointer;
+
+        &:focus {
+          outline: 2px solid #ffdd00;
+        }
 
         &:hover {
           background-color: darkgreen;

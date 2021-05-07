@@ -14,6 +14,7 @@ import { WriteTextFieldComponent } from './text/write-text-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { WriteNumberFieldComponent } from './number/write-number-field.component';
 import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component';
@@ -39,7 +40,6 @@ import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } f
 import { CaseHistoryViewerFieldComponent } from './history';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
-import { WriteDateFieldContainerComponent } from './date/write-date-field-container.component';
 
 @Injectable()
 export class PaletteService {
@@ -61,7 +61,7 @@ export class PaletteService {
         return write ? WritePhoneUKFieldComponent : ReadPhoneUKFieldComponent;
       case 'Date':
       case 'DateTime':
-        return write ? WriteDateFieldContainerComponent : ReadDateFieldComponent;
+        return write ? WriteDateContainerFieldComponent : ReadDateFieldComponent;
       case 'MoneyGBP':
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
       case 'DynamicList':

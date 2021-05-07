@@ -5,8 +5,4 @@ import { Component, OnInit } from '@angular/core';
   selector: 'ccd-write-date-container-field',
   templateUrl: './write-date-container-field.html'
 })
-export class WriteDateFieldContainerComponent extends AbstractFormFieldComponent implements OnInit {
-
-  ngOnInit(): void {
-  }
-}
+export class WriteDateContainerFieldComponent extends AbstractFormFieldComponent {}

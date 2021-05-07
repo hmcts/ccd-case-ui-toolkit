@@ -61,7 +61,7 @@ describe('CaseField', () => {
     component.display_context = 'Optional';
     expect(component.isMandatory()).toBe(false);
     expect(component.isOptional()).toBe(true);
-    component.display_context = 'REAdOnlY';
+    component.display_context = 'Readonly';
     expect(component.isMandatory()).toBe(false);
     expect(component.isOptional()).toBe(false);
   });

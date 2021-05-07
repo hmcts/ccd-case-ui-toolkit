@@ -51,14 +51,10 @@ describe('DatePipe', () => {
     expect(message).toBe('26 Jul 2017, ' + getExpectedHour(12) + ':09:05 PM');
   });
 
-  /* requirement to no longer have effectively changing timezones negates test
-    it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss PM format', () => {
+  it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss PM format', () => {
     const firstPass: string = datePipe.transform('2017-07-26T20:10:05', 'local', null);
     expect(firstPass).toBe('26 Jul 2017, ' + getExpectedHour(8) + ':10:05 PM');
-    const secondPass: string = datePipe.transform(firstPass, 'local', null);
-    expect(secondPass).toEqual(firstPass); // Unchanged.
   });
- */
 
   it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss midnight format', () => {
     let message = datePipe.transform('2017-07-26T00:10:05', 'local', null);
@@ -160,6 +156,15 @@ describe('DatePipe', () => {
   // End of tests for EUI-2667.
 
   // test removed regarding time zone change at end of winter (change from 00:59 -> 02:00 removed as no longer relevant)
+  /* Because of the use of moment library and therefore the fixed utc timezone of the datetime picker,
+     the read date component also needed to have a fixed utc timezone in order for the user to not get
+     reasonably confused during the movement within pages. This means that any time given to either component
+     will be used as the time and there will no longer be unnecessary movements between the time zones
+     (i.e. giving one of the components a time that changes from what the user wants). This also fits in
+     better with all use cases of the datepipe as there were occasions when timezones were changing twice
+     (two hours behind or in front) when moving through the various steps.
+  */
+
   function getExpectedHour(hour): number {
     let expectedHour = hour + EXPECTED_OFFSET;
     if (expectedHour > 12) {

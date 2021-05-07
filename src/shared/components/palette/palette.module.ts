@@ -8,6 +8,7 @@ import { ReadNumberFieldComponent } from './number/read-number-field.component';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
+import { WriteDateContainerFieldComponent } from './date';
 import { FixedListModule } from './fixed-list/fixed-list.module';
 import { DynamicListModule } from './dynamic-list/dynamic-list.module';
 import { YesNoModule } from './yes-no/yes-no.module';
@@ -53,7 +54,6 @@ import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { OrganisationModule } from './organisation/organisation.module';
 import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
-import { WriteDateFieldContainerComponent } from './date';
 
 @NgModule({
   imports: [
@@ -108,7 +108,7 @@ import { WriteDateFieldContainerComponent } from './date';
     // Write
     WriteCollectionFieldComponent,
     WriteTextFieldComponent,
-    WriteDateFieldContainerComponent,
+    WriteDateContainerFieldComponent,
     WriteTextAreaFieldComponent,
     WritePhoneUKFieldComponent,
     WriteNumberFieldComponent,
@@ -140,7 +140,7 @@ import { WriteDateFieldContainerComponent } from './date';
     WriteDateFieldComponent,
     DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
-    WriteDateFieldContainerComponent,
+    WriteDateContainerFieldComponent,
     WriteOrganisationFieldComponent
   ],
   exports: [
@@ -167,7 +167,7 @@ import { WriteDateFieldContainerComponent } from './date';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
-    WriteDateFieldContainerComponent,
+    WriteDateContainerFieldComponent,
   ],
   providers: [
     CollectionCreateCheckerService,
