@@ -55,7 +55,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.dateTimeEntryFormat = this.caseField.dateTimeEntryFormat;
     this.configureDatePicker(this.dateTimeEntryFormat);
     this.setDateTimeFormat();
@@ -67,28 +67,28 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     }, 1);
   }
 
-  setDateTimeFormat(): void {
+  public setDateTimeFormat(): void {
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
 
-  focusIn(): void {
+  public focusIn(): void {
     this.setDateTimeFormat();
   }
 
-  toggleClick(): void {
+  public toggleClick(): void {
     this.setDateTimeFormat();
   }
 
-  minDate(caseField: CaseField): Date {
+  public minDate(caseField: CaseField): Date {
     return caseField.field_type.min ? new Date(caseField.field_type.min) : null;
   }
 
-  maxDate(caseField: CaseField): Date {
+  public maxDate(caseField: CaseField): Date {
     return caseField.field_type.max ? new Date(caseField.field_type.max) : null;
   }
 
-  configureDatePicker(dateTimePickerFormat: string): void {
+  public configureDatePicker(dateTimePickerFormat: string): void {
     if (this.caseField.field_type.type === 'Date') {
       this.hideTime = true;
       this.checkTime = false;
@@ -139,14 +139,14 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     }
   }
 
-  yearSelected(event: Moment): void {
+  public yearSelected(event: Moment): void {
     if (this.startView === 'multi-year' && this.yearSelection) {
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
     }
   }
 
-  monthSelected(event: Moment): void {
+  public monthSelected(event: Moment): void {
     if (this.startView === 'multi-year') {
       this.dateControl.patchValue(event.toISOString());
       this.dateControl.patchValue(event.toISOString());
