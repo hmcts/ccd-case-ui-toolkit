@@ -27,6 +27,11 @@ export class DatePipe implements PipeTransform {
     let resultDate = null;
     const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     if (value) {
+      // comment included to avoid editing the hour twice on second pass through
+      // this occurs on case details when datepipe is applied twice
+      if (!value.includes('T')) {
+        zone = 'utc';
+      }
       const match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
       // Make sure we actually have a match.
       if (match) {
