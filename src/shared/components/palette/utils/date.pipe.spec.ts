@@ -54,8 +54,7 @@ describe('DatePipe', () => {
   fit('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss PM format', () => {
     const firstPass: string = datePipe.transform('2017-07-26T20:10:05', 'local', null);
     expect(firstPass).toBe('26 Jul 2017, ' + getExpectedHour(8) + ':10:05 PM');
-    const secondPass: string = datePipe.transform(firstPass, 'local', null);
-    expect(secondPass).toEqual(firstPass); // Unchanged.
+    
   });
 
   it('should render correct date if UTC date in yyyy-mm-ddThh:mm:ss midnight format', () => {
