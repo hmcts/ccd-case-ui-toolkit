@@ -1,18 +1,10 @@
 ## RELEASE NOTES
 
-### Version 3.0.0 Master release
-**EUI-3998** Master release candidate
-
-### Version 2.79.14-labels-not-displaying-case-heading
+### Version 3.0.0 
+**EUI-3997** Master release candidate
 **EUI-2569** ExUI - Labels not displaying in Case Heading
-
-### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
-
-### Version 2.79.12
 **EUI-3682** Callback Error still not showing proper error message in XUI screen
-
-### Version 2.79.10-input-type-accessibility
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
 
 ### Version 2.79.7
