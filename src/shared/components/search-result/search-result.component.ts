@@ -287,8 +287,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       label: col.label,
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
-      display_context_parameter: col.display_context_parameter,
-      display_context: col.display_context,
+      display_context: null,
     });
   }
 

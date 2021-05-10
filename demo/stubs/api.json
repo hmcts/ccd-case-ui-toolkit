@@ -626,72 +626,6 @@
         "show_summary_change_option": true
       },
       {
-        "id": "DatePickerExample",
-        "label": "Date picker example",
-        "hidden": null,
-        "value": "21/01/2000",
-        "hint_text": "Should show a date picker ()",
-        "field_type": {
-          "id": "Date",
-          "type": "DateTime",
-          "min": null,
-          "max": null,
-          "regular_expression": null,
-          "fixed_list_items": [],
-          "complex_fields": [],
-          "collection_field_type": null
-        },
-        "validation_expr": null,
-        "security_label": "PRIVATE",
-        "order": null,
-        "display_context": "OPTIONAL",
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD)"
-      },
-      {
-        "id": "DatePickerExample2",
-        "label": "Date picker example Second",
-        "hidden": null,
-        "value": "21/01/2000",
-        "hint_text": "Should show a date picker",
-        "field_type": {
-          "id": "Date",
-          "type": "DateTime",
-          "min": null,
-          "max": null,
-          "regular_expression": null,
-          "fixed_list_items": [],
-          "complex_fields": [],
-          "collection_field_type": null
-        },
-        "validation_expr": null,
-        "security_label": "PRIVATE",
-        "order": null,
-        "display_context": "OPTIONAL",
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD hh:mm)"
-      },
-      {
-        "id": "DatePickerExample3",
-        "label": "Date picker example Third",
-        "hidden": null,
-        "value": "21/01/2000",
-        "hint_text": "Should show a date picker",
-        "field_type": {
-          "id": "Date",
-          "type": "DateTime",
-          "min": null,
-          "max": null,
-          "regular_expression": null,
-          "fixed_list_items": [],
-          "complex_fields": [],
-          "collection_field_type": null
-        },
-        "validation_expr": null,
-        "security_label": "PRIVATE",
-        "order": null,
-        "display_context": "OPTIONAL",
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD hh:mm:ss)"
-      },
-      {
         "id": "PersonAddress",
         "label": "Address",
         "hidden": null,
@@ -1487,24 +1421,6 @@
           {
             "case_field_id": "HasOtherInfo",
             "order": 1,
-            "page_column_no": 1,
-            "display_context": "OPTIONAL"
-          },
-          {
-            "case_field_id": "DatePickerExample",
-            "order": 2,
-            "page_column_no": 1,
-            "display_context": "OPTIONAL"
-          },
-          {
-            "case_field_id": "DatePickerExample2",
-            "order": 3,
-            "page_column_no": 1,
-            "display_context": "OPTIONAL"
-          },
-          {
-            "case_field_id": "DatePickerExample3",
-            "order": 4,
             "page_column_no": 1,
             "display_context": "OPTIONAL"
           }
@@ -4081,26 +3997,6 @@
               "collection_field_type":null
             }
         }
-      },
-      {
-        "label": "Date Field (Search)",
-        "order": 2,
-        "field": {
-          "id": "DateField",
-          "metadata": false,
-          "field_type": {
-            "id": "Date",
-            "type": "CREATED_DATE",
-            "min": null,
-            "max": null,
-            "regular_expression": null,
-            "fixed_list_items": [],
-            "complex_fields": [],
-            "collection_field_type": null
-          },
-          "display_context": "Optional",
-          "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD) #DATETIMEDISPLAY(dddd, mmmm dS, yyyy, h:MM:s TT)"
-        }
       }
     ]
   },
@@ -4167,44 +4063,6 @@
           "field_type": {
             "id": "Text",
             "type": "Text",
-            "min": null,
-            "max": null,
-            "regular_expression": null,
-            "fixed_list_items": [],
-            "complex_fields": [],
-            "collection_field_type": null
-          }
-        }
-      },
-      {
-        "label": "Date Field",
-        "order": 2,
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD HH)",
-        "field": {
-          "id": "DateField",
-          "metadata": false,
-          "field_type": {
-            "id": "Date",
-            "type": "Date",
-            "min": null,
-            "max": null,
-            "regular_expression": null,
-            "fixed_list_items": [],
-            "complex_fields": [],
-            "collection_field_type": null
-          }
-        }
-      },
-      {
-        "label": "Date Field",
-        "order": 2,
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD HH:mm)",
-        "field": {
-          "id": "DateField",
-          "metadata": false,
-          "field_type": {
-            "id": "Datetime",
-            "type": "DateTime",
             "min": null,
             "max": null,
             "regular_expression": null,

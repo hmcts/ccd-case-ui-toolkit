@@ -9,5 +9,4 @@ export class SearchResultViewItem {
   hydrated_case_fields?: CaseField[];
   columns?: object;
   supplementary_data?: any;
-  display_context_parameter?: any;
 }

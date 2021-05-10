@@ -24,8 +24,6 @@ export class FirstErrorPipe implements PipeTransform {
       return 'Required minimum length';
     } else if (keys[0] ===  'maxlength') {
       return 'Exceeds maximum length';
-    } else if (value.hasOwnProperty('matDatetimePickerParse')) {
-      return 'The date entered is not valid. Please provide a valid date'
     }
     return value[keys[0]];
   }

@@ -79,7 +79,6 @@ export class SearchService {
           if (this.isDataValid(jurisdictionId, caseTypeId)) {
             searchInputs.forEach(item => {
               item.field.label = item.label;
-              item.field.display_context_parameter = item.display_context_parameter;
             });
           } else {
             throw new Error('Response expired');

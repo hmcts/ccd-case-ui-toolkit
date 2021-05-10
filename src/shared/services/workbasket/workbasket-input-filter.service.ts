@@ -37,9 +37,6 @@ export class WorkbasketInputFilterService {
         if (this.isDataValid(jurisdictionId, caseTypeId)) {
           workbasketInputs.forEach(item => {
             item.field.label = item.label;
-            if (item.display_context_parameter) {
-              item.field.display_context_parameter = item.display_context_parameter;
-            }
           });
         } else {
           throw new Error('Response expired');

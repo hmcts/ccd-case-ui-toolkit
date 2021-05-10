@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 2.80.0-alpha-datetime-picker
-**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
+### Version 2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma
+**EUI-3854** Fix for grey bars showing when they shouldn't because enabling fields are on other pages.
 
 ### Version 2.79.8-breathing-space-data-not-being-persisted
 **EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo

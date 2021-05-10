@@ -61,12 +61,6 @@ yarn start
 
 You can also have a quick look at an example usage of the UI Toolkit demo project (after both folders had `yarn install` ran on them) by:
 ```bash
-# Build the toolkit and fire up the demo application to view it
-yarn demo
-```
-
-Broken down into individual steps, this does the following:
-```bash
 # build UI Toolkit
 yarn build:esm
 

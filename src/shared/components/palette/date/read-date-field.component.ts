@@ -5,6 +5,4 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   selector: 'ccd-read-date-field',
   template: `<span class="text-16">{{caseField.value | ccdDate:'utc':caseField.dateTimeDisplayFormat}}</span>`
 })
-export class ReadDateFieldComponent extends AbstractFieldReadComponent {
-  public timeZone = 'utc';
-}
+export class ReadDateFieldComponent extends AbstractFieldReadComponent {}
