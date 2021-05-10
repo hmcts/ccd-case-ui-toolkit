@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.0.0 Master release
+**EUI-3998** Master release candidate
+
 ### Version 2.79.14-labels-not-displaying-case-heading
 **EUI-2569** ExUI - Labels not displaying in Case Heading
 
