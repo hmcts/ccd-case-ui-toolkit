@@ -1,5 +1,7 @@
 ## RELEASE NOTES
 
+### Version 3.0.0
+
 ### Version 2.80.0-alpha-datetime-picker
 **EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
 
