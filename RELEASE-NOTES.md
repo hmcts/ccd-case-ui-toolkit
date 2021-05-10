@@ -1,5 +1,12 @@
 ## RELEASE NOTES
 
+### Version 3.0.0 
+**EUI-3997** Master release candidate
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
 **EUI-2925** Review implementation of Activity tracker in MC Demo Int env
