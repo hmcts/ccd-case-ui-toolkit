@@ -128,7 +128,7 @@ export class FieldsUtils {
         break;
       }
       case 'MoneyGBP': {
-        let fieldValue = (result[field.id] || result[field.id] === 0) ? result[field.id] : field.value;
+        const fieldValue = (result[field.id] || result[field.id] === 0) ? result[field.id] : field.value;
         result[field.id] = FieldsUtils.getMoneyGBP(fieldValue);
         break;
       }
