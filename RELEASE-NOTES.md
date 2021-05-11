@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version v3.0.3-datetime-picker-integration
+**EUI-2792** Tag datetime picker in order to test integration with webapp
+
 ### Version 3.0.0
 
 ### Version 2.80.0-alpha-datetime-picker
