@@ -1,7 +1,12 @@
 ## RELEASE NOTES
 
-### Version 3.0.1-Spinner-issue-in-demo-MO-unassigned-cases-page
+### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
 **EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+
+### Version 3.0.0
+
+### Version 2.80.0-alpha-datetime-picker
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
 
 ### Version 2.79.8-breathing-space-data-not-being-persisted
 **EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
@@ -14,6 +19,9 @@
 
 ### Version 2.79.12
 **EUI-3682** Callback Error still not showing proper error message in XUI screen
+
+### Version 2.79.11-crud-issues
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
 
 ### Version 2.79.10-input-type-accessibility
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
