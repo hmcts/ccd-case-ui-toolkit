@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
+
 ### Version 3.0.0
 
 ### Version 2.80.0-alpha-datetime-picker
