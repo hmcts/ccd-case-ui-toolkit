@@ -159,7 +159,7 @@ export class FieldsUtils {
   };
 
   private static getMoneyGBP(fieldValue: any): string {
-    if (!isNaN(parseInt(fieldValue))) {
+    if (!isNaN(parseInt(fieldValue, 10))) {
       return FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol');
     }
     return '';
