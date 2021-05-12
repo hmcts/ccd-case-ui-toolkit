@@ -212,7 +212,7 @@ export class SearchFiltersComponent implements OnInit {
     }
   }
 
-  private getCaseFields() {
+  private getCaseFields(): void {
     if (this.searchInputs) {
       this.caseFields = this.searchInputs.map(item => FieldsUtils.convertToCaseField(item.field));
     }

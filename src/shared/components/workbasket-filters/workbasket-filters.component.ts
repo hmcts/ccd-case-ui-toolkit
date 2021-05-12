@@ -281,7 +281,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.selectedJurisdictionCaseTypes = null;
   }
 
-  private getCaseFields() {
+  private getCaseFields(): void {
     if (this.workbasketInputs) {
       this.caseFields = this.workbasketInputs.map(item => FieldsUtils.convertToCaseField(item.field));
     }
