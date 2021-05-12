@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldsUtils } from './fields.utils';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
-import { WizardPage } from '../../components';
+import { Wizard, WizardPage, WizardPageField } from '../../components';
 import { CaseField } from '../../domain/definition';
+import { CaseEventTrigger } from '../../domain';
 
 // @dynamic
 @Injectable()
@@ -13,7 +14,7 @@ export class FieldsPurger {
     private fieldsUtils: FieldsUtils,
   ) {}
 
-  clearHiddenFields(form, wizard, eventTrigger, currentPageId) {
+  clearHiddenFields(form: any, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string): void {
     this.clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger);
     this.clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger);
   }
@@ -30,7 +31,7 @@ export class FieldsPurger {
     });
   }
 
-  private clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger) {
+  private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: any, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
     let formFields = form.getRawValue();
     let currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
@@ -45,7 +46,7 @@ export class FieldsPurger {
     });
   }
 
-  private retainHiddenValueByFieldType(field, form) {
+  private retainHiddenValueByFieldType(field: CaseField, form: any): void {
     // so far only applies to the new field type OrganisationPolicy which needs to retain the default case role value
     // for other case fields there should be no side effects
     if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
@@ -69,7 +70,7 @@ export class FieldsPurger {
     return !condition.match(formFields);
   }
 
-  private findCaseFieldByWizardPageFieldId(currentPage, wizardPageField) {
+  private findCaseFieldByWizardPageFieldId(currentPage: WizardPage, wizardPageField: WizardPageField) {
     return currentPage.case_fields.find(cf => cf.id === wizardPageField.case_field_id);
   }
 
@@ -81,15 +82,19 @@ export class FieldsPurger {
     return case_field.show_condition && formFields.data[this.getShowConditionKey(case_field.show_condition)];
   }
 
-  private getShowConditionKey(show_condition) {
+  private getShowConditionKey(show_condition): string {
     return show_condition.split('=')[0];
   }
 
-  private resetField(form, field) {
+  private resetField(form: any, field: CaseField): void {
     if (Array.isArray(field.value)) {
       field.value.splice(0, field.value.length);
     } else if (this.isObject(field.value)) {
-      field.value = {};
+      if (field.formatted_value) {
+        field.value = field.formatted_value;
+      } else {
+        field.value = {};
+      }
     } else {
       field.value = '';
     }
