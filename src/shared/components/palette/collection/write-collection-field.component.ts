@@ -147,7 +147,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       cfid = index.toString();
     }
 
-    // isNew: 
+    // isNew:
     let cf: CaseField = this.newCaseField(cfid, item, index, isNew);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
