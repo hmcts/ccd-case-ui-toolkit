@@ -34,7 +34,7 @@
         <h2 class="heading-h2">Organisation name and address</h2>
       </label>
       <hr class="govuk-section-break govuk-section-break--visible">
-      <div *ngIf="!(selectedOrg$ | async)?.organisationIdentifier" [ngClass]="{'scroll-container ': (simpleOrganisations$ | async)?.length > 10}">
+      <div *ngIf="!(selectedOrg$ | async)?.organisationIdentifier; else selectedOrganisation" [ngClass]="{'scroll-container ': (simpleOrganisations$ | async)?.length > 10}">
         <table id="organisation-table" *ngFor="let organisation of (simpleOrganisations$ | async)">
           <caption><h3 class="name-header">{{organisation.name}}</h3></caption>
           <tbody>
@@ -43,7 +43,7 @@
               <ccd-markdown [content]="organisation.address"></ccd-markdown>
             </td>
             <td class="td-select">
-              <a *ngIf="!(selectedOrg$ | async)?.organisationIdentifier" href="javascript:void(0);" (click)="selectOrg(organisation)" title="Select the organisation {{organisation.name}}">Select</a>
+              <a href="javascript:void(0);" (click)="selectOrg(organisation)" title="Select the organisation {{organisation.name}}">Select</a>
             </td>
           </tr>
           </tbody>
@@ -54,7 +54,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="(selectedOrg$ | async)?.organisationIdentifier">
+      <ng-template #selectedOrganisation>
         <table id="organisation-selected-table" *ngIf="(selectedOrg$ | async) as selectedOrg">
           <caption><h3 class="name-header">{{selectedOrg.name}}</h3></caption>
           <tbody>
@@ -68,7 +68,7 @@
           </tr>
           </tbody>
         </table>
-      </div>
+      </ng-template>
     </div>
     <ccd-write-organisation-complex-field [caseField]="caseField"
                                           [formGroup]="formGroup"

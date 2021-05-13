@@ -35,14 +35,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
-  constructor(private organisationService: OrganisationService,
-              private organisationConverter: OrganisationConverter,
-              private windowService: WindowService) {
+  constructor(private readonly organisationService: OrganisationService,
+              private readonly organisationConverter: OrganisationConverter,
+              private readonly windowService: WindowService) {
     super();
     this.defaultOrg = JSON.parse(this.windowService.getSessionStorage(WriteOrganisationFieldComponent.ORGANISATION_DETAILS));
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.organisations$ = this.organisationService.getActiveOrganisations();
 
     this.searchOrgTextFormControl = new FormControl('');
