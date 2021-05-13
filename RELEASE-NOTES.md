@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.0.3-field-show-condition
+**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
+
 ### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
 **EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
 **EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
