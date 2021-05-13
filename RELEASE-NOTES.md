@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 2.75.3-replace-h2-tags-a
+### Version 3.0.3-replace-h2-tags-a
 **EUI-3550** Replace heading tags with spans on case edit pages 
 
 ### Version 3.0.3
