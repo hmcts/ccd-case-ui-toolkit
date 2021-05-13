@@ -116,6 +116,7 @@ export class SearchFiltersComponent implements OnInit {
       selected: this.selected,
       queryParams: this.getQueryParams()
     });
+    this.setFocusToTop();
   }
 
   populateValuesInLocalStorage(): void {
@@ -209,6 +210,15 @@ export class SearchFiltersComponent implements OnInit {
         this.selected.caseType = caseTypes[0];
       }
       this.onCaseTypeIdChange();
+    }
+  }
+
+  private setFocusToTop() {
+    window.scrollTo(0, 0);
+
+    const topContainer = document.getElementById('search-result-heading__text');
+    if (topContainer) {
+      topContainer.focus();
     }
   }
 

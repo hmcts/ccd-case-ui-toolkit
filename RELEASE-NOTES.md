@@ -163,6 +163,9 @@ Merge master to simplify final branch merge
 ### Version 2.68.9-prerelease-conditional-show-perf
 **EUI-3151** dynamic lists and nested complex in collection fixes
 
+### Version 2.68.8-wcag-status-message
+**EUI-2029** WCAG AA Status Message Fixes
+
 ### Version 2.68.8-prerelease-conditional-show-perf
 **EUI-3151** form validation and label fixes
 
