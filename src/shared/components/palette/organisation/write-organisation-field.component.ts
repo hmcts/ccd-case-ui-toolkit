@@ -16,7 +16,7 @@ import { CaseField } from '../../../domain/definition';
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {organisationIdentifier: '', name: '', address: ''};
-  private static readonly MAX_RESULT_COUNT = 100;
+  private static readonly MAX_RESULT_COUNT: number = 100;
   private static readonly ORGANISATION_ID: string = 'OrganisationID';
   private static readonly ORGANISATION_NAME: string = 'OrganisationName';
   private static readonly PRE_POPULATE_TO_USERS_ORGANISATION: string = 'PrepopulateToUsersOrganisation';
