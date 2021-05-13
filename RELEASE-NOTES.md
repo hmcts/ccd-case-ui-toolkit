@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version v3.0.4-datetime-picker-integration-issues-fix
-**EUI-2792** Tag datetime picker in order to test integration with webapp
+**EUI-2792** Datetime picker fixes after testing integration with webapp
 
 ### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
 **EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
