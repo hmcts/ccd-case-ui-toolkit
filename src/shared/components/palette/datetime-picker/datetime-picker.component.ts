@@ -14,6 +14,7 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
 import { CaseField } from '../../../domain';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import moment = require('moment/moment');
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -56,7 +57,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public ngOnInit(): void {
-    this.dateTimeEntryFormat = this.caseField.dateTimeEntryFormat;
+    this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
     this.setDateTimeFormat();
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;

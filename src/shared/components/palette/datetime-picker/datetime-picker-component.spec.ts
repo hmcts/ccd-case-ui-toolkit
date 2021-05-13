@@ -354,7 +354,6 @@ describe('DatetimePickerComponent', () => {
     tick(1);
 
     const initialValue = fixture.nativeElement.querySelector('input').value;
-    let originalSeconds = +initialValue.substring(18);
 
     let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
@@ -375,11 +374,8 @@ describe('DatetimePickerComponent', () => {
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
-    // check that the the amount of seconds is more than the original amount
-    const secondChangeString = fixture.nativeElement.querySelector('input').value;
-    let secondChange: number = +secondChangeString.substring(18);
+    // check that the the amount of seconds has been changed
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
-    expect(secondChange).not.toBe(originalSeconds);
 
     flush();
     discardPeriodicTasks();
