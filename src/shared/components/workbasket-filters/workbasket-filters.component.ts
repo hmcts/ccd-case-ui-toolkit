@@ -105,6 +105,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
     // Apply filters
     this.onApply.emit({selected: this.selected, queryParams: queryParams});
+    this.setFocusToTop();
   }
 
   reset(): void {
@@ -278,5 +279,14 @@ export class WorkbasketFiltersComponent implements OnInit {
   private resetCaseType() {
     this.selected.caseType = undefined; // option should be blank rather than "Select a value" in case of reset.
     this.selectedJurisdictionCaseTypes = null;
+  }
+
+  private setFocusToTop() {
+    window.scrollTo(0, 0);
+
+    const topContainer = document.getElementById('search-result-heading__text');
+    if (topContainer) {
+      topContainer.focus();
+    }
   }
 }
