@@ -1,6 +1,16 @@
 ## RELEASE NOTES
-### Version 2.79.8
+### Version 3.1.0
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
+
+### Version 3.0.3
+**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued..
+
+### Version 3.0.0 
+**EUI-3997** Master release candidate
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
 
 ### Version 2.79.7
 **EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
