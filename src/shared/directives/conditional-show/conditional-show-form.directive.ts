@@ -9,6 +9,7 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ShowCondition } from './domain';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import { GreyBarService } from './services/grey-bar.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Directive({ selector: '[ccdConditionalShowForm]' })
 /** Hides and shows all fields in a form. Works on read only fields and form fields.
@@ -60,9 +61,19 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     this.unsubscribeFromFormChanges();
   }
 
+  /*
+  * Delay the execution of evalShowHideConditions for 100ms
+  * Evaluating showHideConditions on input is inefficient as all forms are evaluated
+  * whilst the user is still typing. We are better off allowing the user to finish typing
+  * then evaluate the show hide conditions.
+  */
   private subscribeToFormChanges() {
     this.unsubscribeFromFormChanges();
-    this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
+    this.formChangesSubscription = this.formGroup.valueChanges
+      .pipe(
+        debounceTime(100)
+      )
+      .subscribe(_ => {
       this.evalAllShowHideConditions();
     });
   }

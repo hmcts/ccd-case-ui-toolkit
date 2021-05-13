@@ -12,7 +12,8 @@
 </span>
 
 <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
-<div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+<div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
+     role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
     Something went wrong
   </h1>
@@ -22,7 +23,8 @@
   </div>
 </div>
 <!-- Event error heading and error message to be displayed if there are specific error details -->
-<div *ngIf="error && error.details" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+<div *ngIf="error && error.details" class="error-summary" role="group"
+     aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading-3">
     The event could not be created
   </h3>
@@ -41,20 +43,27 @@
   <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
     <fieldset id="fieldset-case-data">
       <!-- single column -->
-      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [caseFields]="caseFields" [pageChangeSubject]="pageChangeSubject" (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
+      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()"
+                          [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
+                          [pageChangeSubject]="pageChangeSubject"
+                          (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
       <!-- two columns -->
       <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
         <div class="column-two-thirds rightBorderSeparator">
-          <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()" [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
+          <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()"
+                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
         </div>
         <div class="column-one-third">
-          <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()" [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
+          <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()"
+                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
         </div>
       </div>
     </fieldset>
 
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!hasPrevious()" (click)="toPreviousPage()">Previous</button>
+      <button class="button button-secondary" type="button" [disabled]="!(hasPreviousPage$ | async)" (click)="toPreviousPage()">
+        Previous
+      </button>
       <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">{{triggerText}}</button>
     </div>
 
