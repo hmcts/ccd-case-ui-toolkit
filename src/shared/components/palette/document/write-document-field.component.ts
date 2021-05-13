@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, OnDestroy } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
-import { Constants } from '../../../commons/constants'
 import { Subscription } from 'rxjs';
+
+import { Constants } from '../../../commons/constants';
+import { HttpError } from '../../../domain/http/http-error.model';
+import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
 
   private uploadedDocument: FormGroup;
-  private selectedFile: File;
+  public selectedFile: File;
   private dialogConfig: MatDialogConfig;
   @ViewChild('fileInput') fileInput: ElementRef;
 
@@ -47,7 +48,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   constructor(
     private documentManagement: DocumentManagementService,
-    private dialog: MatDialog,
+    public dialog: MatDialog,
     private fileUploadStateService: FileUploadStateService,
   ) {
     super();
@@ -55,18 +56,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   ngOnInit() {
     this.initDialog();
-    let document = this.caseField.value;
-    if (document) {
-      if (this.isAMandatoryComponent()) {
-        this.createDocumentFormWithValidator(document.document_url, document.document_binary_url, document.document_filename);
-      } else {
-        this.createDocumentForm(document.document_url, document.document_binary_url, document.document_filename);
-      }
+    // EUI-3403. The field was not being registered when there was no value and the field
+    // itself was not mandatory, which meant that show_conditions would not be evaluated.
+    // I've cleaned up the logic and it's now always registered.
+    const document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
+    if (this.isAMandatoryComponent()) {
+      this.createDocumentFormWithValidator(document.document_url, document.document_binary_url, document.document_filename);
     } else {
-      if (this.isAMandatoryComponent()) {
-        this.createDocumentFormWithValidator(null, null, null);
-        this.selectedFile = null;
-      }
+      this.createDocumentForm(document.document_url, document.document_binary_url, document.document_filename);
     }
   }
 
@@ -144,6 +141,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
         this.valid = true;
         this.fileUploadStateService.setUploadInProgress(false);
+        // refresh replaced document info
+        if (this.caseField.value) {
+          this.caseField.value.document_binary_url = document._links.binary.href;
+          this.caseField.value.document_filename = document.originalDocumentName;
+          this.caseField.value.document_url = document._links.self.href;
+        }
       }, (error: HttpError) => {
         this.fileUploadMessages = this.getErrorMessage(error);
         this.valid = false;
@@ -159,7 +162,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileSelectEvent() {
-    if (this.caseField.value) {
+    if ((this.caseField.value && this.caseField.value.document_filename) ||
+      (this.selectedFile && this.selectedFile.name)) {
       this.openDialog(this.dialogConfig);
     } else {
       this.openFileDialog();
@@ -168,7 +172,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   openDialog(dialogConfig) {
     const dialogRef = this.dialog.open(DocumentDialogComponent, dialogConfig);
-    this.dialogSubscription = dialogRef.beforeClose().subscribe(result => {
+    this.dialogSubscription = dialogRef.beforeClosed().subscribe(result => {
       this.confirmReplaceResult = result;
       this.triggerReplace();
     });
@@ -237,7 +241,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url, Validators.required),
       document_binary_url: new FormControl(binaryUrl, Validators.required),
       document_filename: new FormControl(filename, Validators.required)
-    }));
+    }), true) as FormGroup;
   }
 
   private createDocumentForm(url: string, binaryUrl: string, filename: string) {
@@ -245,7 +249,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_url: new FormControl(url),
       document_binary_url: new FormControl(binaryUrl),
       document_filename: new FormControl(filename)
-    }));
+    }), true) as FormGroup;
   }
 
   private getErrorMessage(error: HttpError): string {

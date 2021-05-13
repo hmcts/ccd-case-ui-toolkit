@@ -1,9 +1,12 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { plainToClassFromExist } from 'class-transformer';
+
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FormGroup } from '@angular/forms';
-import { FieldsUtils } from '../../../services/fields';
+
+const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
 
 @Component({
   selector: 'ccd-field-read',
@@ -15,7 +18,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   withLabel = false;
 
   @Input()
-  formGroup: FormGroup;
+  formGroup: FormGroup = new FormGroup({});
 
   @Input()
   caseFields: CaseField[] = [];
@@ -28,8 +31,6 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   }
 
   ngOnInit(): void {
-    // Ensure this.caseField is actually a CaseField instance even if instantiated with {}
-    this.caseField = FieldsUtils.convertToCaseField(this.caseField);
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
       let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
@@ -37,13 +38,22 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
       // Provide component @Inputs
-      component.instance['caseField'] = this.caseField;
+      // Only Fixed list use plainToClassFromExist
+      // Better performance
+      // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist
+      // Added a check to make sure it's NOT already a CaseField and then
+      // assigning it back to this.caseField so we don't create separation.
+      if (FIX_CASEFIELD_FOR.indexOf(this.caseField.field_type.type) > -1 && !(this.caseField instanceof CaseField)) {
+        this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
+      }
+      component.instance['caseField'] =  this.caseField;
       component.instance['caseFields'] = this.caseFields;
       component.instance['formGroup'] = this.formGroup;
+      component.instance['topLevelFormGroup'] = this.topLevelFormGroup;
+      component.instance['idPrefix'] = this.idPrefix;
+      component.instance['parent'] = this.parent;
       component.instance['caseReference'] = this.caseReference;
       component.instance['context'] = this.context;
-      component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
-
       this.fieldContainer.insert(component.hostView);
     });
   }

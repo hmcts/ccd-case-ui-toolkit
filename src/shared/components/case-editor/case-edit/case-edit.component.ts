@@ -1,17 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { FieldsUtils, FieldsPurger } from '../../../services/fields';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { WizardFactoryService } from '../services/wizard-factory.service';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Draft } from '../../../domain/draft.model';
-import { CaseView } from '../../../domain/case-view/case-view.model';
-import { Wizard } from '../domain/wizard.model';
-import { Confirmation } from '../domain/confirmation.model';
-import { WizardPage } from '../domain/wizard-page.model';
-import { ProfileService, ProfileNotifier } from '../../../services';
+import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
+import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
+import { Confirmation, Wizard, WizardPage } from '../domain';
+import { WizardFactoryService } from '../services';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -26,7 +22,7 @@ export class CaseEditComponent implements OnInit {
   eventTrigger: CaseEventTrigger;
 
   @Input()
-  submit: (CaseEventData) => Observable<object>;
+  submit: (CaseEventData, profile?: Profile) => Observable<object>;
 
   @Input()
   validate: (CaseEventData, pageId: string) => Observable<object>;

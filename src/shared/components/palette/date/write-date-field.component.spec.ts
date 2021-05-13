@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
+import { FieldType } from '../../../domain';
+import { CaseField } from '../../../domain';
+import { PaletteUtilsModule } from '../utils';
 import { WriteDateFieldComponent } from './write-date-field.component';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { CaseFieldService } from '../../../services';
 import { FormModule } from '../../../../components/form/form.module';
 
 const FIELD_ID = 'CreatedAt';
@@ -23,10 +23,6 @@ const CASE_FIELD: CaseField = <CaseField>({
 });
 
 const FORM_GROUP: FormGroup = new FormGroup({});
-const REGISTER_CONTROL = (control) => {
-  FORM_GROUP.addControl(FIELD_ID, control);
-  return control;
-};
 
 describe('WriteDateFieldComponent', () => {
 
@@ -55,8 +51,8 @@ describe('WriteDateFieldComponent', () => {
     fixture = TestBed.createComponent(WriteDateFieldComponent);
     component = fixture.componentInstance;
 
-    component.registerControl = REGISTER_CONTROL;
     component.caseField = CASE_FIELD;
+    component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
     fixture.detectChanges();

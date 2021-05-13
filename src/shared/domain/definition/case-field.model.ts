@@ -1,14 +1,16 @@
 import { Orderable } from '../order';
-import { FieldType } from './field-type.model';
-import { WizardPageField } from '../../components/case-editor/domain';
+import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
-import { _ } from 'underscore';
+import * as _  from 'underscore';
+import { FieldTypeEnum } from './field-type-enum.model';
+import { FixedListItem } from './fixed-list-item.model';
 
 // @dynamic
 export class CaseField implements Orderable {
   id: string;
-  hidden?: boolean;
+  hidden: boolean;
+  hiddenCannotChange: boolean;
   label: string;
   order?: number;
 
@@ -19,6 +21,7 @@ export class CaseField implements Orderable {
   security_label?: string;
   display_context: string;
   display_context_parameter?: string;
+  month_format?: string;
   show_condition?: string;
   show_summary_change_option?: boolean;
   show_summary_content_option?: number;
@@ -42,6 +45,17 @@ export class CaseField implements Orderable {
   }
 
   set value(value: any) {
+    if (this.field_type && this.field_type.type === 'DynamicList') {
+      if (value && value instanceof Object && value.list_items) {
+        this._list_items = value.list_items;
+      } else if (!this._list_items || this._list_items.length === 0) {
+        // Extract the list items from the current value if that's the only place they exist.
+        this._list_items = this.list_items;
+        if (!value || !value.value) {
+          value = null;
+        }
+      }
+    }
     this._value = value;
   }
 
@@ -60,11 +74,20 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeEntryFormat(): string {
-    // TODO not yet implemented
+    if (this.isComplexDisplay()) {
+      return null;
+    }
+    if (this.display_context_parameter) {
+      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
+    }
     return null;
   }
+
   @Expose()
   get dateTimeDisplayFormat(): string {
+    if (this.isComplexEntry()) {
+      return null;
+    }
     if (this.display_context_parameter) {
       return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
     }
@@ -72,9 +95,31 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
+  public isComplexDisplay() {
+    return (this.isComplex() || this.isCollection()) && this.isReadonly();
+  }
+
+  @Expose()
+  public isComplexEntry() {
+    return (this.isComplex() || this.isCollection()) && (this.isOptional() || this.isMandatory());
+  }
+
+  @Expose()
   public isReadonly() {
     return !_.isEmpty(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
+  }
+
+  @Expose()
+  public isOptional() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'OPTIONAL';
+  }
+
+  @Expose()
+  public isMandatory() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'MANDATORY';
   }
 
   @Expose()
@@ -94,7 +139,7 @@ export class CaseField implements Orderable {
       && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
   }
   private extractBracketValue(fmt: string, paramName: string, leftBracket= '(', rightBracket= ')' ): string {
-      fmt.split(',')
+      fmt = fmt.split(',')
         .find(a => a.trim().startsWith(paramName));
       if (fmt) {
         let s = fmt.indexOf(leftBracket) + 1;
@@ -105,4 +150,22 @@ export class CaseField implements Orderable {
       }
       return null;
   }
+}
+
+// @dynamic
+export class FieldType {
+  id: string;
+  type: FieldTypeEnum;
+  min?: number;
+  max?: number;
+  regular_expression?: string;
+
+  @Type(() => FixedListItem)
+  fixed_list_items?: FixedListItem[];
+
+  @Type(() => CaseField)
+  complex_fields?: CaseField[];
+
+  @Type(() => FieldType)
+  collection_field_type?: FieldType;
 }

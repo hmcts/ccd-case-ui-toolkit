@@ -1,55 +1,55 @@
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
-    <h2 class="heading-h2">{{ caseState ? 'Case List' : 'Search result' }}</h2>
+    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Case List' : 'Search result' }}</h2>
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
-         attr.aria-label="{{ getTotalResults() }} results have been found">
-      <span class="text-16">Displaying {{ getFirstResult() }} - {{ getLastResult() }} out of {{ getTotalResults() }} results</span>
+      attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
+      <span class="text-16" id="search-result-summary__text">Displaying {{ getFirstResult() }} - {{ getLastResult() }} 
+        out of {{ getTotalResults() }} results</span>
     </div>
     <div *ngIf="(hasResults() || hasDrafts()) && selectionEnabled" class="reset-selection"
-         attr.aria-label="Reset selection">
+      attr.aria-label="Reset selection">
       <span><a class="search-result-reset-link" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
     </div>
   </caption>
   <thead>
-  <tr>
-    <th *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
-      <div class="govuk-checkboxes__item">
-        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
-        <label class="govuk-label govuk-checkboxes__label" for="select-all">
-        </label>
-      </div>
-    </th>
-    <th *ngFor="let col of resultView.columns">
-      <table class="search-result-column-header"
-             attr.aria-label="Sort by {{col.label}} {{ isSortAscending(col)? 'ascending' : 'descending' }}">
-        <tr>
-          <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
-          <div *ngIf="comparator(col)" class="search-result-column-sort">
-            <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
-          </div>
-        </tr>
-      </table>
-    </th>
-    <th *ngIf="activityEnabled()" style="width: 110px;"></th>
-  </tr>
+    <tr scope="row">
+      <th *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
+          <label class="govuk-label govuk-checkboxes__label" for="select-all">
+          </label>
+        </div>
+      </th>
+      <th *ngFor="let col of resultView.columns">
+        <table class="search-result-column-header"
+          attr.aria-label="Sort by {{col.label}} {{ isSortAscending(col)? 'ascending' : 'descending' }}">
+          <tr>
+            <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
+            <div *ngIf="comparator(col)" class="search-result-column-sort">
+              <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
+            </div>
+          </tr>
+        </table>
+      </th>
+      <th *ngIf="activityEnabled()" style="width: 110px;"></th>
+    </tr>
   </thead>
   <tbody>
 
-  <!-- sorted by consumer -->
+    <!-- sorted by consumer -->
     <ng-container *ngIf="consumerSortingEnabled">
       <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-                  type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
+              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
             </label>
           </div>
         </td>
-        <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index">
-
+        <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index" scope="row">
           <a *ngIf="colIndex == 0" [routerLink]="prepareCaseLinkUrl(result.case_id)"
-            attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}">
+            attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}" class="govuk-link">
             <ng-container class="text-16" *ngIf="!hideRows">
               <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
                               ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
@@ -72,21 +72,21 @@
         </td>
       </tr>
     </ng-container>
-  <!-- sorted by toolkit -->
+    <!-- sorted by toolkit -->
     <ng-container *ngIf="!consumerSortingEnabled">
       <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-                  type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" (keyup)="onKeyUp($event, result)" />
+              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" (keyup)="onKeyUp($event, result)" />
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
             </label>
           </div>
         </td>
-        <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index">
+        <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index" scope="row">
 
           <a *ngIf="colIndex == 0" [routerLink]="prepareCaseLinkUrl(result.case_id)"
-            attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}">
+            attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}" class="govuk-link">
             <ng-container class="text-16" *ngIf="!hideRows">
               <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
                               ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
@@ -114,6 +114,6 @@
 </table>
 <pagination-controls [style.visibility]="hideRows ? 'hidden' : 'visible'" *ngIf="hasResults()" class="pagination" (pageChange)="goToPage($event)" autoHide="true" maxSize="8" screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page"></pagination-controls>
 <div *ngIf="!(hasResults() || hasDrafts())" class="notification"
-     aria-label="No cases found. Try using different filters.">
+  aria-label="No cases found. Try using different filters.">
   No cases found. Try using different filters.
 </div>

@@ -17,6 +17,8 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public isHidden: boolean[] = [];
 
   ngOnInit(): void {
+    super.ngOnInit();
+    console.log('this should be used somehow')
     if (this.caseField.display_context_parameter
       && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
 

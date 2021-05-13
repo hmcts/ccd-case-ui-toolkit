@@ -98,19 +98,5 @@ describe('FieldWriteComponent', () => {
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
-    expect(fieldTest.registerControl).not.toBeNull();
-  });
-
-  it('should inject component instance with valid default `registerControl` function', () => {
-    let ngContent = de.children[0];
-    let fieldTestComponent = ngContent.children[0];
-    let fieldTest = fieldTestComponent.componentInstance;
-
-    expect(Object.keys(formGroup.controls).length).toEqual(0);
-
-    let control = new FormControl();
-    fieldTest.registerControl(control);
-
-    expect(formGroup.controls[CASE_FIELD.id]).toBe(control);
   });
 });

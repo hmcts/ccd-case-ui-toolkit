@@ -1,15 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import { DebugElement } from '@angular/core';
-import { MockComponent } from 'ng2-mock-component';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { Observable } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { MockComponent } from 'ng2-mock-component';
+import { Observable } from 'rxjs';
+
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
-import { CasesService, CaseNotifier } from '../../case-editor';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
+import { CaseEventTriggerComponent } from './case-event-trigger.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventTriggerComponent', () => {
@@ -96,7 +98,7 @@ describe('CaseEventTriggerComponent', () => {
 
   let FieldWrite: any = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded']
+    inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
   const RouterLinkComponent: any = MockComponent({

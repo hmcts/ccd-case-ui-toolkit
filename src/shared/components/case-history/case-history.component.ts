@@ -68,12 +68,12 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
   }
 
   isDataLoaded() {
-    return this.caseDetails && this.caseHistory ? true : false;
+    return !!(this.caseDetails && this.caseHistory);
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
       .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
-      .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(tab.fields));
+      .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(tab.fields));
   }
 }

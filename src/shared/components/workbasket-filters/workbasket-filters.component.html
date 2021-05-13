@@ -1,3 +1,4 @@
+
 <h2 class="heading-h2" aria-label="Filters">Filters</h2>
 <form class="global-display">
   <div class="form-group">
@@ -25,13 +26,14 @@
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
             name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
             aria-controls="search-result">
+      <option [ngValue]="null">Any</option>
       <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name}}</option>
     </select>
   </div>
 
   <div id="dynamicFilters" *ngIf="isSearchableAndWorkbasketInputsReady()">
     <div class="form-group" *ngFor="let workbasketInput of workbasketInputs">
-      <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply()"></ccd-field-write>
+      <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply(null)"></ccd-field-write>
     </div>
   </div>
 
