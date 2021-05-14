@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.0.3-Navigate in table using keyboard
+**EUI-2017** ExUI - Navigate in table using keyboard
+
 ### Version 3.0.3-field-show-condition
 **EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
 
