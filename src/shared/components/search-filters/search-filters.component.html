@@ -17,11 +17,13 @@
     </select>
   </div>
 
-  <div id="dynamicFilters" *ngIf="isSearchableAndSearchInputsReady()">
-    <div class="form-group" *ngFor="let searchInput of searchInputs">
-      <ccd-field-write [caseField]="searchInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply()"></ccd-field-write>
+  <ng-container ccdConditionalShowForm *ngIf="isSearchableAndSearchInputsReady()" [formGroup]="formGroup" [contextFields]="caseFields">
+    <div id="dynamicFilters">
+      <div class="form-group" *ngFor="let searchInput of searchInputs">
+        <ccd-field-write [caseField]="searchInput.field" [formGroup]="formGroup" [isExpanded]="true" (keyup.enter)="apply()"></ccd-field-write>
+      </div>
     </div>
-  </div>
+  </ng-container>
 
   <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" >Apply</button> &nbsp;&nbsp;&nbsp;
   <button id="reset" type="button" (click)="reset()" class="button button-secondary">Reset</button>
