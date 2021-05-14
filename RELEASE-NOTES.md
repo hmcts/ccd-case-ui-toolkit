@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 3.1.0
+### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
 ### Version 3.0.3
