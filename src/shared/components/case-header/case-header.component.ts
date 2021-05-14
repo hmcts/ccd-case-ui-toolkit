@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CaseView, CaseField, Draft } from '../../domain';
-import { CasesService } from '../case-editor';
 
 @Component({
   selector: 'ccd-case-header',
@@ -25,10 +24,6 @@ export class CaseHeaderComponent implements OnInit {
 
   isDraft(): boolean {
     return Draft.isDraft(this.caseDetails.case_id);
-  }
-
-  showCaseReference(): boolean {
-    return !this.caseTitle.label;
   }
 
   private getCaseFields(): CaseField[] {

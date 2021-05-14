@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 
@@ -15,19 +16,15 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
-  constructor() {
-    super();
-  }
-
   ngOnInit() {
     if (this.caseField.value) {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(this.caseField.value.CaseReference),
-      }));
+      }), true) as FormGroup;
     } else {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(),
-      }));
+      }), true) as FormGroup;
     }
     this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
     this.caseReferenceControl.setValidators(this.caseReferenceValidator());

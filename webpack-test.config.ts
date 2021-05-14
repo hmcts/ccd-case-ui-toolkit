@@ -6,6 +6,10 @@ export default {
     extensions: [ '.ts', '.js', '.json' ]
   },
   module: {
+    mode: 'development',
+    optimization: {
+      noEmitOnErrors: true,
+    },
     rules: [
       {
         test: /\.ts$/,
@@ -64,7 +68,5 @@ export default {
       /angular(\\|\/)core(\\|\/)@angular/,
       path.join(__dirname, 'src')
     ),
-
-    new webpack.NoEmitOnErrorsPlugin()
   ]
 } as webpack.Configuration;

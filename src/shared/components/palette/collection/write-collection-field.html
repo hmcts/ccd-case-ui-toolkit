@@ -1,6 +1,6 @@
 <div class="form-group" [id]="id()">
 
-  <div class="panel panel-border-wide">
+  <div class="panel collection-indicator">
 
     <h2 class="heading-h2">
       {{caseField | ccdFieldLabel}}
@@ -11,12 +11,12 @@
       <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError:caseField.label}}</span>
     </h2>
 
-    <div class="form-group" *ngIf="caseField.value && caseField.value.length">
+    <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
 
-      <div class="form-group" *ngFor="let item of caseField.value; let i = index" #collectionItem>
+      <div class="form-group" *ngFor="let item of collItems; let i = index" #collectionItem>
         <div class="collection-title">
           <div class="float-left">
-            <label [for]="buildIdPrefix(i) + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
+            <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i)}}</h3></label>
           </div>
           <div class="float-right">
             <button class="button button-secondary" type="button" (click)="openModal(i)"
@@ -24,17 +24,18 @@
                     attr.aria-label="Remove {{ itemLabel(i) }}">Remove</button>
           </div>
         </div>
-        <ccd-field-write [caseField]="buildCaseField(item, i)"
+        <ccd-field-write [caseField]="item.caseField"
                          [caseFields]="caseFields"
                          [formGroup]="formGroup"
-                         [registerControl]="buildControlRegistrer(item.id, i)"
-                         [idPrefix]="buildIdPrefix(i)">
+                         [parent]="item.container"
+                         [idPrefix]="item.prefix"
+                         [hidden]="item.caseField.hidden">
         </ccd-field-write>
       </div>
 
     </div>
 
-    <button class="button" type="button" (click)="addItem()" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
+    <button class="button" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
 
   </div>
 

@@ -2,7 +2,7 @@ import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular
 import { FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -51,6 +51,19 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   caseFields: CaseField[];
   validationErrors: {id: string, message: string}[] = [];
 
+  hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  private static scrollToTop(): void {
+    window.scrollTo(0, 0);
+  }
+
+  private static setFocusToTop() {
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
+  }
+
   constructor(
     private caseEdit: CaseEditComponent,
     private route: ActivatedRoute,
@@ -70,22 +83,24 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseFields = this.getCaseFields();
     this.triggerText = this.getTriggerText();
 
-    this.route.params.subscribe(params => {
-      let pageId = params['page'];
-      if (!this.currentPage || pageId !== this.currentPage.id) {
-        let page = this.caseEdit.getPage(pageId);
-        if (page) {
-          this.currentPage = page;
-        } else {
-          if (this.currentPage) {
-            return this.next();
+    this.route.params
+      .subscribe(params => {
+        let pageId = params['page'];
+        if (!this.currentPage || pageId !== this.currentPage.id) {
+          let page = this.caseEdit.getPage(pageId);
+          if (page) {
+            this.currentPage = page;
           } else {
-            return this.first();
+            if (this.currentPage) {
+              return this.next();
+            } else {
+              return this.first();
+            }
           }
+          this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage.id))
         }
-      }
-    });
-    this.setFocusToTop();
+      });
+    CaseEditPageComponent.setFocusToTop();
   }
 
   ngAfterViewChecked(): void {
@@ -96,21 +111,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.formValuesChanged = valuesChanged;
   }
 
-  private initDialog() {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
-  }
-
   first(): Promise<boolean> {
     return this.caseEdit.first();
   }
@@ -119,18 +119,24 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
   }
 
+  /**
+   * caseEventData.event_data contains all the values from the previous pages so we set caseEventData.data = caseEventData.event_data
+   * This builds the form with data from the previous pages
+   * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
+   */
   toPreviousPage() {
     this.validationErrors = [];
     let caseEventData: CaseEventData = this.buildCaseEventData();
+    caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
-    this.setFocusToTop();
+    CaseEditPageComponent.setFocusToTop();
   }
 
   // Adding validation message to show it as Error Summary
   generateErrorMessage(fields: CaseField[]) {
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-          .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm.getRawValue()))
+          .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
           .forEach(casefield => {
             const fieldElement = this.editForm.controls['data'].get(casefield.id);
             if (fieldElement) {
@@ -149,7 +155,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               }
             }
           })
-    this.scrollToTop();
+    CaseEditPageComponent.scrollToTop();
   }
 
   navigateToErrorElement(elementId: string): void {
@@ -174,9 +180,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           this.saveDraft();
           this.next();
         }, error => this.handleError(error));
-      this.scrollToTop();
+      CaseEditPageComponent.scrollToTop();
     }
-    this.setFocusToTop();
+    CaseEditPageComponent.setFocusToTop();
   }
 
   updateFormData(jsonData: CaseEventData): void {
@@ -257,20 +263,45 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private discard() {
+  submitting(): boolean {
+    return this.isSubmitting;
+  }
+
+  getCaseId(): string {
+    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  getCancelText(): string {
+    return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
+  }
+
+  getTriggerText(): string {
+    return this.eventTrigger && this.eventTrigger.can_save_draft
+      ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
+      : CaseEditPageComponent.TRIGGER_TEXT_START
+  }
+
+  private initDialog() {
+    this.dialogConfig = new MatDialogConfig();
+    this.dialogConfig.disableClose = true;
+    this.dialogConfig.autoFocus = true;
+    this.dialogConfig.ariaLabel = 'Label';
+    this.dialogConfig.height = '245px';
+    this.dialogConfig.width = '550px';
+    this.dialogConfig.panelClass = 'dialog';
+
+    this.dialogConfig.closeOnNavigation = false;
+    this.dialogConfig.position = {
+      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
+    }
+  }
+
+  private discard(): void {
     if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
       this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
     } else {
       this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
     }
-  }
-
-  submitting(): boolean {
-    return this.isSubmitting;
-  }
-
-  private scrollToTop(): void {
-    window.scrollTo(0, 0);
   }
 
   private handleError(error) {
@@ -290,10 +321,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.callbackErrorsSubject.next(null);
   }
 
-  getCaseId(): String {
-    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
-  }
-
   private saveDraft() {
     if (this.eventTrigger.can_save_draft) {
       let draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
@@ -305,22 +332,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  getCancelText(): String {
-    if (this.eventTrigger.can_save_draft) {
-      return 'Return to case list';
-    } else {
-      return 'Cancel';
-    }
-  }
-
-  getTriggerText(): string {
-    if (this.eventTrigger && this.eventTrigger.can_save_draft) {
-      return CaseEditPageComponent.TRIGGER_TEXT_SAVE;
-    } else {
-      return CaseEditPageComponent.TRIGGER_TEXT_START;
-    }
-  }
-
   private getCaseFields(): CaseField[] {
     if (this.caseEdit.caseDetails) {
       return FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
@@ -329,23 +340,65 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.eventTrigger.case_fields;
   }
 
-  private buildCaseEventData(): CaseEventData {
-    let pageFormFields = this.formValueService.filterCurrentPageFields(this.currentPage.case_fields, this.editForm.value);
-    this.formValueService.sanitiseDynamicLists(this.currentPage.case_fields, pageFormFields);
-    let caseEventData: CaseEventData = this.formValueService.sanitise(pageFormFields) as CaseEventData;
-    caseEventData.event_token = this.eventTrigger.event_token;
-    caseEventData.ignore_warning = this.ignoreWarning;
-    caseEventData.event_data = this.editForm.value.data;
-    if (this.caseEdit.caseDetails) {
-      caseEventData.case_reference = this.caseEdit.caseDetails.case_id;
-    }
-    return caseEventData;
+  private getCaseFieldsFromCurrentAndPreviousPages(): CaseField[] {
+    const result: CaseField[] = [];
+    this.wizard.pages.forEach(page => {
+      if (page.order <= this.currentPage.order) {
+        page.case_fields.forEach(field => result.push(field));
+      }
+    });
+    return result;
   }
 
-  private setFocusToTop() {
-    const topContainer = document.getElementById('top');
-    if (topContainer) {
-      topContainer.focus();
+  private buildCaseEventData(): CaseEventData {
+    const formValue: object = this.editForm.value;
+
+    // Get the CaseEventData for the current page.
+    const pageFields: CaseField[] = this.currentPage.case_fields;
+    const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formValue, true);
+
+    // Get the CaseEventData for the entire form (all pages).
+    const allCaseFields = this.getCaseFieldsFromCurrentAndPreviousPages();
+    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true);
+
+    // Now here's the key thing - the pageEventData has a property called `event_data` and
+    // we need THAT to be the value of the entire form: `formEventData.data`.
+    pageEventData.event_data = formEventData.data;
+
+    // Finalise the CaseEventData object.
+    pageEventData.event_token = this.eventTrigger.event_token;
+    pageEventData.ignore_warning = this.ignoreWarning;
+
+    // Finally, try to set up the case_reference.
+    if (this.caseEdit.caseDetails) {
+      pageEventData.case_reference = this.caseEdit.caseDetails.case_id;
     }
+
+    // Return the now hopefully sane CaseEventData.
+    return pageEventData;
+  }
+
+  /**
+   * Abstracted this method from buildCaseEventData to remove duplication.
+   * @param caseFields The fields to filter the data by.
+   * @param formValue The original value of the form.
+   * @param clearEmpty Whether or not to clear out empty values.
+   * @param clearNonCase Whether or not to clear out fields that are not part of the case.
+   * @returns CaseEventData for the specified parameters.
+   */
+  private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false, clearNonCase = false): CaseEventData {
+    // Get the data for the fields specified.
+    const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
+
+    // Sort out the dynamic lists.
+    this.formValueService.sanitiseDynamicLists(caseFields, formFields);
+
+    // Get hold of the CaseEventData.
+    const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
+
+    // Tidy it up before we return it.
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase);
+
+    return caseEventData;
   }
 }

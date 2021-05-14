@@ -1,7 +1,7 @@
 import { HttpErrorService } from './http-error.service';
 import { HttpError } from '../../domain/http/http-error.model';
-import { Headers, Response, ResponseOptions } from '@angular/http';
 import { AuthService } from '../auth/auth.service';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 describe('HttpErrorService', () => {
   const CURRENT_URL = 'http://core-case-data.common-components.reform';
@@ -29,43 +29,38 @@ describe('HttpErrorService', () => {
     'message': 'The server understood the request but refuses to authorize it....',
     'path': CURRENT_URL
   };
-  const VALID_ERROR_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(VALID_ERROR_BODY),
+  const VALID_ERROR_RESPONSE = new HttpErrorResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),
+    error: VALID_ERROR_BODY,
     status: 422
-  }));
-  const VALID_ERROR_RESPONSE_WITH_CHARSET = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json;charset=UTF-8',
-    }),
-    body: JSON.stringify(VALID_ERROR_BODY),
+  });
+  const VALID_ERROR_RESPONSE_WITH_CHARSET = new HttpErrorResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json;charset=UTF-8'),
+    error: VALID_ERROR_BODY,
     status: 422
-  }));
+  });
 
-  const NOT_VALID_ERROR_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: '{notvalidjson}'
-  }));
+  const NOT_VALID_ERROR_RESPONSE = new HttpErrorResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),
+    error: '{notvalidjson}'
+  });
 
-  const HTTP_401_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(HTTP_401_ERROR_BODY),
+  const HTTP_401_RESPONSE = new HttpErrorResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),
+    error: HTTP_401_ERROR_BODY,
     status: 401
-  }));
+  });
 
-  const HTTP_403_RESPONSE = new Response(new ResponseOptions({
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(HTTP_403_ERROR_BODY),
+  const HTTP_403_RESPONSE = new HttpErrorResponse({
+    headers: new HttpHeaders()
+      .set('Content-Type', 'application/json'),
+    error: HTTP_403_ERROR_BODY,
     status: 403
-  }));
+  });
 
   let authService: any;
   let errorService: HttpErrorService;
@@ -99,34 +94,35 @@ describe('HttpErrorService', () => {
         );
     });
 
-    it('should convert a valid Response error into an HttpError', (done) => {
+    it('should convert a valid HttpErrorResponse error into an HttpError', (done) => {
       errorService.handle(VALID_ERROR_RESPONSE)
         .subscribe(
           () => fail('no error'),
           error => {
-            expect(error).toEqual(HttpError.from(VALID_ERROR_BODY));
+            expect(error).toEqual(HttpError.from(VALID_ERROR_RESPONSE));
             done();
           }
         );
     });
 
-    it('should handle a valid Response with charsetInfo', (done) => {
+    it('should handle a valid HttpErrorResponse with charsetInfo', (done) => {
       errorService.handle(VALID_ERROR_RESPONSE_WITH_CHARSET)
         .subscribe(
           () => fail('no error'),
           error => {
-            expect(error).toEqual(HttpError.from(VALID_ERROR_BODY));
+            expect(error).toEqual(HttpError.from(VALID_ERROR_RESPONSE_WITH_CHARSET));
             done();
           }
         );
     });
 
-    it('should convert a non-valid Response error into an HttpError', (done) => {
+    it('should convert a non-valid HttpErrorResponse error into an HttpError', (done) => {
       errorService.handle(NOT_VALID_ERROR_RESPONSE)
         .subscribe(
           () => fail('no error'),
           error => {
-            expect(error).toEqual(new HttpError());
+            expect(error).toEqual(HttpError.from(NOT_VALID_ERROR_RESPONSE));
+            expect(error.status).toBe(500);
             done();
           }
         );

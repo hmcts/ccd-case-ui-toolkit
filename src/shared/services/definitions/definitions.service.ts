@@ -17,7 +17,7 @@ export class DefinitionsService {
 
     return this.http
       .get(url)
-      .map(response => response.json());
+      .map(response => response);
   }
 
   getJurisdictions(access: string): Observable<Jurisdiction[]> {
@@ -27,6 +27,6 @@ export class DefinitionsService {
 
     return this.http
       .get(url)
-      .map(response => response.json());
+      .map(response => response);
   }
 }

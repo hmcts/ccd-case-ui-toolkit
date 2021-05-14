@@ -1,6 +1,6 @@
 import { FormValidatorsService } from './form-validators.service';
 import { CaseField } from '../../domain/definition/case-field.model';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 
 describe('FormValidatorsService', () => {
@@ -10,7 +10,7 @@ describe('FormValidatorsService', () => {
   it('should not add REQUIRED validator for OPTIONAL fields', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeFalsy();
@@ -19,7 +19,7 @@ describe('FormValidatorsService', () => {
   it('should validate for OPTIONAL fields', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('testing-optional.valid@test.com');
     result.markAsTouched();
     result.updateValueAndValidity();
@@ -29,7 +29,7 @@ describe('FormValidatorsService', () => {
   it('should return add REQUIRED validator for MANDATORY fields', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeTruthy();
@@ -39,7 +39,7 @@ describe('FormValidatorsService', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
     caseField.field_type.regular_expression = '^(Test)$';
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('Test');
     result.markAsTouched();
     result.updateValueAndValidity();
@@ -57,7 +57,7 @@ describe('FormValidatorsService', () => {
   it('should validate text field for MANDATORY without regular expression', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('No regular expression, but valid');
     result.markAsTouched();
     result.updateValueAndValidity();
@@ -81,7 +81,7 @@ describe('FormValidatorsService', () => {
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
     caseField.field_type.min = 3;
     caseField.field_type.max = 9;
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('Hi');
     result.markAsTouched();
     result.updateValueAndValidity();
@@ -103,7 +103,7 @@ describe('FormValidatorsService', () => {
   it('should validate text field for MANDATORY with email', () => {
     let formControl: FormControl = new FormControl();
     let caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
-    let result: FormControl = formValidatorsService.addValidators(caseField, formControl);
+    let result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('testing-mandatory.valid@test.com');
     result.markAsTouched();
     result.updateValueAndValidity();

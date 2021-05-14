@@ -15,11 +15,6 @@ describe('WrieteOrganisationFieldComponent', () => {
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
 
   const FORM_GROUP: FormGroup = new FormGroup({});
-  const REGISTER_CONTROL = (control) => {
-    FORM_GROUP.addControl('OrganisationId', control);
-    FORM_GROUP.addControl('OrganisationName', control);
-    return control;
-  };
 
   const ORGANISATIONS = [{
     organisationIdentifier: 'O111111',
@@ -62,6 +57,7 @@ describe('WrieteOrganisationFieldComponent', () => {
       country: 'UK',
       postCode: 'RG11EX'
   }];
+  let organisationID = new CaseField();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -84,9 +80,30 @@ describe('WrieteOrganisationFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteOrganisationFieldComponent);
     component = fixture.componentInstance;
-    component.registerControl = REGISTER_CONTROL;
     mockOrganisationService.getActiveOrganisations.and.returnValue(of([]));
     component.organisations$ = of(ORGANISATIONS);
+
+    organisationID.id = 'OrganisationID';
+    organisationID.display_context = 'MANDATORY';
+    organisationID.field_type = {
+      id: 'Text',
+      type: 'Text'
+    };
+    const organisationName = new CaseField();
+    organisationName.id = 'OrganisationName';
+    organisationName.field_type = {
+      id: 'Text',
+      type: 'Text'
+    };
+    component.caseField = new CaseField();
+    component.caseField.field_type = {
+      id: 'Organisation',
+      type: 'Organisation'
+    };
+    component.caseField.field_type.complex_fields = [
+      organisationID,
+      organisationName
+    ];
     fixture.detectChanges();
   });
 
@@ -95,8 +112,34 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should be invalid control if organisation ID is null when OrganisationID is MANDATORY', () => {
+    component.organisations$ = of([]);
+    organisationID.display_context = 'MANDATORY';
+    component.ngOnInit();
+    component.organisationIDFormControl.setValue(null);
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.invalid).toBeTruthy();
+  });
+
+  it('should be valid control if organisation ID is set when OrganisationID is MANDATORY', () => {
+    component.organisations$ = of([]);
+    organisationID.display_context = 'MANDATORY';
+    component.ngOnInit();
+    component.organisationIDFormControl.setValue('TEST12345');
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should be valid control if organisation ID is null when OrganisationID is OPTIONAL', () => {
+    component.organisations$ = of([]);
+    organisationID.display_context = 'OPTIONAL';
+    component.ngOnInit();
+    component.organisationIDFormControl.setValue(null);
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
   it('should pre-select organisation', () => {
-    component.caseField = new CaseField();
     component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
@@ -323,7 +366,6 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
     component.organisationNameFormControl = new FormControl(null);
     component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
-    component.caseField = new CaseField();
     const selectedOrg = {
       organisationIdentifier: 'O111111',
       name: 'Woodford solicitor',
@@ -340,7 +382,6 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
     component.organisationNameFormControl = new FormControl(null);
     component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
-    component.caseField = new CaseField();
     const selectedOrg = {
       organisationIdentifier: 'O111111',
       name: 'Woodford solicitor',

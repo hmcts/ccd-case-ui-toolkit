@@ -1,12 +1,13 @@
 import { SearchService } from './search.service';
-import { Headers, Response, ResponseOptions, URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import createSpyObj = jasmine.createSpyObj;
 import { of, Observable } from 'rxjs';
 import { SearchInput } from '../../components/search-filters';
 import { FieldType, Field } from '../../domain';
 import { RequestOptionsBuilder } from '../request';
-import { HttpService } from '../http';
+import { HttpService, OptionsType } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
+import { LoadingService } from '../loading';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 describe('SearchService', () => {
 
@@ -39,12 +40,13 @@ describe('SearchService', () => {
   const SEARCH_INPUT: SearchInput = new SearchInput(SEARCH_INPUT_LABEL, SEARCH_INPUT_ORDER, TEST_FIELD);
   const SEARCH_INPUTS = { searchInputs: [SEARCH_INPUT]};
 
-  let params: URLSearchParams;
+  let params: HttpParams;
   let appConfig: any;
   let httpService: any;
   let searchService: SearchService;
-  let requestOptionsArgs: RequestOptionsArgs;
+  let requestOptionsArgs: OptionsType;
   let requestOptionsBuilder: any;
+  let loadingService: any;
 
   describe('get()', () => {
 
@@ -62,17 +64,17 @@ describe('SearchService', () => {
       appConfig.getCaseDataUrl.and.returnValue(DATA_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({})
-      }))));
+      httpService.get.and.returnValue(Observable.of({}));
 
-      params = new URLSearchParams();
-      requestOptionsArgs = { params };
+      params = new HttpParams();
+      requestOptionsArgs = { params, observe: 'body' };
 
       requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);
       requestOptionsBuilder.buildOptions.and.returnValue(requestOptionsArgs);
 
-      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder);
+      loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+
+      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
     });
 
     it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
@@ -80,7 +82,7 @@ describe('SearchService', () => {
         .search(JID, CTID, {}, {})
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params});
+      expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
@@ -100,7 +102,7 @@ describe('SearchService', () => {
         .subscribe();
 
       params.set('view', SearchService.VIEW_WORKBASKET);
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params});
+      expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
@@ -200,31 +202,44 @@ describe('SearchService', () => {
     });
 
     it('should call backend with right URL, authorization and method for search input', () => {
-      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
-        body: JSON.stringify(SEARCH_INPUTS)
-      }))));
+      httpService.get.and.returnValue(of(SEARCH_INPUTS))
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe();
 
       expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {
-        headers: new Headers({
-          'Accept': SearchService.V2_MEDIATYPE_SEARCH_INPUTS,
-          'experimental': 'true',
-        })
+        headers: new HttpHeaders()
+          .set('experimental', 'true')
+          .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
+          .set('Content-Type', 'application/json'),
+        observe: 'body'
       });
     });
 
     it('should return search input results', () => {
-      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
-        body: JSON.stringify(SEARCH_INPUTS)
-      }))));
+      httpService.get.and.returnValue(of(SEARCH_INPUTS));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
         .subscribe(resultInputModel => {
           expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS.searchInputs[0].field.id);
+        });
+    });
+
+    it('should register loading token when called', () => {
+      searchService
+      .search(JID, CTID, {}, {})
+        .subscribe();
+
+      expect(loadingService.register).toHaveBeenCalled();
+    });
+
+    it('should unregister loading token when finished', () => {
+      searchService
+        .search(JID, CTID, {}, {})
+        .finally(() => {
+          expect(loadingService.unregister).toHaveBeenCalled();
         });
     });
 
@@ -247,17 +262,17 @@ describe('SearchService', () => {
       appConfig.getPaginationPageSize.and.returnValue(25);
 
       httpService = createSpyObj<HttpService>('httpService', ['post']);
-      httpService.post.and.returnValue(Observable.of(new Response(new ResponseOptions({
-        body: JSON.stringify({})
-      }))));
+      httpService.post.and.returnValue(Observable.of({}));
 
-      params = new URLSearchParams();
-      requestOptionsArgs = { params };
+      params = new HttpParams();
+      requestOptionsArgs = { params, observe: 'body' };
 
       requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('requestOptionsBuilder', ['buildOptions']);
       requestOptionsBuilder.buildOptions.and.returnValue(requestOptionsArgs);
 
-      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder);
+      loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+
+      searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
     });
 
     it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
@@ -265,7 +280,7 @@ describe('SearchService', () => {
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
         .subscribe();
 
-      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params});
+      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
@@ -285,7 +300,7 @@ describe('SearchService', () => {
         .subscribe();
 
       params.set('view', SearchService.VIEW_WORKBASKET);
-      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params});
+      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
@@ -298,5 +313,20 @@ describe('SearchService', () => {
       expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
     });
 
+    it('should register loading token when called', () => {
+      searchService
+        .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
+        .subscribe();
+
+      expect(loadingService.register).toHaveBeenCalled();
+    });
+
+    it('should unregister loading token when finished', () => {
+      searchService
+        .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
+        .finally(() => {
+          expect(loadingService.unregister).toHaveBeenCalled();
+        });
+    });
   });
 });

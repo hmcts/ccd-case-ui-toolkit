@@ -16,9 +16,9 @@ table {
   tbody tr td {
     font-size: 16px;
     word-wrap: break-word;
+
     a {
-      color: $blue_table;
-      background-color: $white;
+      float: left;
     }
   }
 
@@ -101,4 +101,8 @@ span.heading-medium {
 .govuk-table__checkbox {
   vertical-align: middle;
   padding-left: 3px;
+}
+
+#search-result-heading__text:focus {
+  outline: none; 
 }
