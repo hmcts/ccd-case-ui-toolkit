@@ -65,17 +65,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   constructor(
-    private caseEdit: CaseEditComponent,
-    private route: ActivatedRoute,
-    private formValueService: FormValueService,
-    private formErrorService: FormErrorService,
-    private cdRef: ChangeDetectorRef,
-    private pageValidationService: PageValidationService,
-    private dialog: MatDialog,
-    private caseFieldService: CaseFieldService
+    private readonly caseEdit: CaseEditComponent,
+    private readonly route: ActivatedRoute,
+    private readonly formValueService: FormValueService,
+    private readonly formErrorService: FormErrorService,
+    private readonly cdRef: ChangeDetectorRef,
+    private readonly pageValidationService: PageValidationService,
+    private readonly dialog: MatDialog,
+    private readonly caseFieldService: CaseFieldService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
@@ -124,7 +124,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * This builds the form with data from the previous pages
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
-  toPreviousPage() {
+  public toPreviousPage(): void {
     this.validationErrors = [];
     let caseEventData: CaseEventData = this.buildCaseEventData();
     caseEventData.data = caseEventData.event_data;
@@ -134,7 +134,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  generateErrorMessage(fields: CaseField[]) {
+  generateErrorMessage(fields: CaseField[]): void {
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
           .forEach(casefield => {
@@ -158,11 +158,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     CaseEditPageComponent.scrollToTop();
   }
 
-  navigateToErrorElement(elementId: string): void {
+  public navigateToErrorElement(elementId: string): void {
     document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 
-  submit() {
+  public submit(): void {
     this.validationErrors = [];
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
