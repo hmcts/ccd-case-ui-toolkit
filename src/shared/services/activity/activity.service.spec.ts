@@ -23,7 +23,7 @@ describe('ActivityService', () => {
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
     httpService.get.and.returnValue(Observable.of(response));
     httpService.post.and.returnValue(Observable.of(response));
-    sessionStorageService.getItem.and.returnValue({token: 'any'})
+    sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"')
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   });
