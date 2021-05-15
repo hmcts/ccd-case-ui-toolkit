@@ -1,6 +1,6 @@
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
-    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Case List' : 'Search result' }}</h2>
+    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
       <span class="text-16" id="search-result-summary__text">Displaying {{ getFirstResult() }} - {{ getLastResult() }} 
