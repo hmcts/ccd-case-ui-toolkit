@@ -3,6 +3,10 @@
 ### Version 3.0.3-Navigate in table using keyboard
 **EUI-2017** ExUI - Navigate in table using keyboard
 
+### Version 3.0.3-validation-error-message-changes
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+
 ### Version 3.0.3-field-show-condition
 **EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
 
