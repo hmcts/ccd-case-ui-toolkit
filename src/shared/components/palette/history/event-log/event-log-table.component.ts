@@ -23,7 +23,7 @@ export class EventLogTableComponent implements OnInit {
 
   isPartOfCaseTimeline = false;
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
   }
 
@@ -51,11 +51,11 @@ export class EventLogTableComponent implements OnInit {
     }
   }
 
-  caseHistoryClicked(eventId: string) {
+  public caseHistoryClicked(eventId: string) {
     this.onCaseHistory.emit(eventId);
   }
 
-  getAriaLabelforColumn(event: CaseViewEvent): string {
+  public getAriaLabelforColumn(event: CaseViewEvent): string {
     if (this.selected !== event) {
       return `date ${formatDate(event.timestamp, 'dd MMM yyyy hh:mm:ss a', 'en-GB')},
         press enter key for event ${event.event_name} details`;
@@ -64,11 +64,11 @@ export class EventLogTableComponent implements OnInit {
     }
   }
 
-  getAriaLabelforRow(event: CaseViewEvent): string {
+  public getAriaLabelforRow(event: CaseViewEvent): string {
     return `you are on event ${event.event_name} row, press tab key to navigate to columns`;
   }
 
-  getAriaLabelforLink(event: CaseViewEvent): string {
+  public getAriaLabelforLink(event: CaseViewEvent): string {
     return `press enter key to open event ${event.event_name} link in separate window`;
   }
 }
