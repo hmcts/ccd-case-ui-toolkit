@@ -1,6 +1,7 @@
 ## RELEASE NOTES
 
-### Version 3.0.3-replace-h2-tags-a
+### Version 3.0.3-ph-merge-rc-22-1
+**EUI-2027** Accessibility amends for button labels
 **EUI-3155** Accessibility amends for non-descriptive headings
 **EUI-3550** Replace heading tags with spans on case edit pages
 

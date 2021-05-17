@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.0.3-replace-h2-tags-a",
+  "version": "3.0.3-ph-merge-rc-22-1",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
