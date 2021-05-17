@@ -134,7 +134,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  generateErrorMessage(fields: CaseField[]): void {
+  public generateErrorMessage(fields: CaseField[]): void {
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
           .forEach(casefield => {
