@@ -49,7 +49,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
   private dateTimeEntryFormat: string;
-  private momentFormat: string = 'YYYY-MM-DDTHH:mm:ss.SSS';
+  private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
               @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
@@ -67,7 +67,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     setTimeout(() => {
       this.setDateTimeFormat();
       if (this.dateControl.value) {
-        let formatInitialDate = moment(new Date(this.inputElement.nativeElement.value)).format(this.momentFormat);
+        let formatInitialDate = moment(this.inputElement.nativeElement.value, this.dateTimeEntryFormat).format(this.momentFormat);
         if (formatInitialDate && formatInitialDate !== 'Invalid date') {
           this.dateControl.setValue(formatInitialDate);
         }
@@ -80,13 +80,13 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
 
-  /* 
+  /*
   When the value changes, update the form control
   */
   public valueChanged(): void {
     if (this.dateControl.value) {
       let formValue = this.inputElement.nativeElement.value;
-      formValue = formValue === '' ? undefined : moment(new Date(formValue)).format(this.momentFormat);
+      formValue = formValue === '' ? undefined : moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
       this.dateControl.setValue(formValue);
     } else {
       if (this.caseField.isMandatory()) {
