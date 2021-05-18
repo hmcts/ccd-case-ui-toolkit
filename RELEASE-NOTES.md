@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 3.1.1
+**EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
+
 ### Version 3.0.0-eta
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 where "RetainHiddenValue" = "Yes"
 
@@ -20,8 +23,34 @@ Incorporating fix in Version 2.72.5-remove-null-http-request-headers for EUI-346
 ### Version 3.0.0-alpha
 **EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
 
-### Version 2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma
-**EUI-3854** Fix for grey bars showing when they shouldn't because enabling fields are on other pages.
+### Version 3.0.3
+**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued..
+
+### Version 3.0.0 
+**EUI-3997** Master release candidate
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+
+### Version 3.0.3-Navigate in table using keyboard
+**EUI-2017** ExUI - Navigate in table using keyboard
+
+### Version 3.0.3-validation-error-message-changes
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+
+### Version 3.0.3-field-show-condition
+**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
+
+### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
+
+### Version 3.0.0
+
+### Version 2.80.0-alpha-datetime-picker
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
 
 ### Version 2.79.8-breathing-space-data-not-being-persisted
 **EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
@@ -173,6 +202,9 @@ Merge master to simplify final branch merge
 
 ### Version 2.68.9-prerelease-conditional-show-perf
 **EUI-3151** dynamic lists and nested complex in collection fixes
+
+### Version 2.68.8-wcag-status-message
+**EUI-2029** WCAG AA Status Message Fixes
 
 ### Version 2.68.8-prerelease-conditional-show-perf
 **EUI-3151** form validation and label fixes

@@ -7,6 +7,7 @@ import { OrganisationConverter } from '../../../domain/organisation';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
 import { OrganisationService } from '../../../services/organisation';
 import { CaseField, FieldType } from '../../../domain/definition';
+import { WindowService } from '../../../services/window';
 
 describe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
@@ -99,11 +100,12 @@ describe('WriteOrganisationFieldComponent', () => {
         WriteOrganisationComplexFieldComponent
       ],
       providers: [
+        WindowService,
         {provide: OrganisationService, useValue: mockOrganisationService},
         OrganisationConverter
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -133,6 +135,9 @@ describe('WriteOrganisationFieldComponent', () => {
       organisationID,
       organisationName
     ];
+    const prepopulateToUsersOrganisationControl = new FormControl('YES');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.defaultOrg = {organisationIdentifier: 'O333333', name: 'The Ethical solicitor'};
     fixture.detectChanges();
   });
 
@@ -168,19 +173,38 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.valid).toBeTruthy();
   });
 
-  it('should pre-select organisation', () => {
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', () => {
     component.caseField = new CaseField();
     component.caseField.field_type = {
       ...FIELD_TYPE,
       complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
     }
-    component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
     component.selectedOrg$.toPromise().then(selectedOrg => {
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>')
     });
+  });
+
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should not pre-select organisation when PrepopulateToUsersOrganisationControl is NO', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.caseField.value = null;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.invalid).toBeTruthy();
   });
 
   it('should not search org if enter characters less than 2', () => {
@@ -408,7 +432,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.selectOrg(selectedOrg);
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({'OrganisationID': 'O111111', 'OrganisationName': 'Woodford solicitor'});
+    expect(component.caseField.value).toEqual({OrganisationID: 'O111111', OrganisationName: 'Woodford solicitor'});
   });
 
   it('should deselect organisation', () => {
@@ -419,7 +443,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.deSelectOrg();
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({'OrganisationID': null, 'OrganisationName': null});
+    expect(component.caseField.value).toEqual({OrganisationID: null, OrganisationName: null});
   });
 
   it('should set retain_hidden_value to true for all sub-fields that are part of an Organisation field', () => {
