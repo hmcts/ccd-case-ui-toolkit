@@ -66,7 +66,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
-      if (this.dateControl.value) {
+      if (this.inputElement.nativeElement.value) {
         let formatInitialDate = moment(this.inputElement.nativeElement.value, this.dateTimeEntryFormat).format(this.momentFormat);
         if (formatInitialDate && formatInitialDate !== 'Invalid date') {
           this.dateControl.setValue(formatInitialDate);
@@ -84,13 +84,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   When the value changes, update the form control
   */
   public valueChanged(): void {
-    if (this.dateControl.value) {
+    if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
-      formValue = formValue === '' ? undefined : moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
-      this.dateControl.setValue(formValue);
-    } else {
-      if (this.caseField.isMandatory()) {
-        this.dateControl.setErrors({'required': true});
+      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
+      if (formValue !== 'Invalid date') {
+        this.dateControl.setValue(formValue);
       }
     }
   }
