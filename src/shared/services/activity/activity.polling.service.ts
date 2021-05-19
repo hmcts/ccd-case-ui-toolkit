@@ -120,7 +120,7 @@ export class ActivityPollingService {
 
     const pollingConfig = {
       ...this.pollConfig,
-      interval: 10000
+      interval: 5000 // inline with CCD Backend
     };
 
     return polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
