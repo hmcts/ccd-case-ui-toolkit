@@ -4,7 +4,6 @@
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
 
 $blue_table: #005ea5;
-$blue_pagination: #005da6;
 $black: #231F20;
 
 table {
@@ -24,29 +23,6 @@ table {
 
   .caseid-col {
     white-space: nowrap;
-  }
-}
-
-.pagination /deep/ .ngx-pagination {
-  padding-top: 25px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 16px;
-
-  @include media(desktop) {
-    font-size: 16px;
-  }
-  a {
-    color: $blue_pagination;
-  }
-
-  .current {
-    background-color: $white;
-    color: #4C2C92;
-  }
-
-  .disabled {
-    display: none;
   }
 }
 
@@ -101,4 +77,8 @@ span.heading-medium {
 .govuk-table__checkbox {
   vertical-align: middle;
   padding-left: 3px;
+}
+
+#search-result-heading__text:focus {
+  outline: none; 
 }
