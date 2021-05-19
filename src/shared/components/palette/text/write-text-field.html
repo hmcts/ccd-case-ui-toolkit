@@ -1,10 +1,12 @@
 <div class="form-group" [ngClass]="{'form-group-error': !textControl.valid && textControl.touched}">
 
   <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="textControl.errors && textControl.touched">{{textControl.errors | ccdFirstError}}</span>
+    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>    
   </label>
-  <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="textControl">
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+  <span class="error-message" *ngIf="textControl.errors && textControl.touched">{{textControl.errors | ccdFirstError:caseField.label}}</span>
+
+  <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl.errors && textControl.touched}"
+  [id]="id()" type="text" [formControl]="textControl">
 
 </div>

@@ -1,14 +1,13 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { AbstractFieldWriteComponent } from '../../components/palette/base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ShowCondition } from './domain';
-import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
-import { GreyBarService } from './services/grey-bar.service';
 
 @Directive({ selector: '[ccdConditionalShowForm]' })
 /** Hides and shows all fields in a form. Works on read only fields and form fields.
@@ -28,16 +27,11 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   private allFieldValues: any;
   private formChangesSubscription: Subscription;
 
-  constructor(private el: ElementRef,
-              private fieldsUtils: FieldsUtils,
-              private registry: ConditionalShowRegistrarService,
-              private renderer: Renderer2,
-              private greyBarService: GreyBarService) {
+  constructor(private readonly fieldsUtils: FieldsUtils) {
   }
 
   ngOnInit() {
     if (!this.formGroup) {
-      console.log ('**** no form group in conditional-show-form directive');
       this.formGroup = new FormGroup({});
     }
   }
@@ -60,9 +54,19 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     this.unsubscribeFromFormChanges();
   }
 
+  /*
+  * Delay the execution of evalShowHideConditions for 100ms
+  * Evaluating showHideConditions on input is inefficient as all forms are evaluated
+  * whilst the user is still typing. We are better off allowing the user to finish typing
+  * then evaluate the show hide conditions.
+  */
   private subscribeToFormChanges() {
     this.unsubscribeFromFormChanges();
-    this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
+    this.formChangesSubscription = this.formGroup.valueChanges
+      .pipe(
+        debounceTime(100)
+      )
+      .subscribe(_ => {
       this.evalAllShowHideConditions();
     });
   }
@@ -84,16 +88,11 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
           cf.hidden = false;
         }
         if (condResult === cf.hidden) {
-          if (cf.hidden) {
-            this.greyBarService.addToggledToShow(cf.id);
-          } else {
-            this.greyBarService.removeToggledToShow(cf.id)
-          }
           cf.hidden = !condResult;
         }
-        // EUI-3267. If we've not assessed the hiddenCannotChange flag and
-        // this field is showing, set the flag appropriately now.
-        if (cf.hiddenCannotChange === undefined && !cf.hidden) {
+        // EUI-3267. If this field is showing, set the hiddenCannotChange flag.
+        // This is used in the display of the grey bar.
+        if (!cf.hidden) {
           cf.hiddenCannotChange = showCondition.hiddenCannotChange(this.caseFields);
         }
         // Disable the control if it's hidden so that it doesn't count towards the
@@ -110,18 +109,18 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   }
 
   // make sure for the 3 callbacks that we are bound to this via an arrow function
-  private handleFormControl = (c: FormControl) => {
+  private handleFormControl = (c: FormControl): void => {
     this.evaluateControl(c);
   }
 
-  private handleFormArray = (c: FormArray, caseField: CaseField) => {
-    this.evaluateControl(c);
-    c.controls.forEach((formControl, ix) => {
-      this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl)
+  private handleFormArray = (a: FormArray): void => {
+    this.evaluateControl(a);
+    a.controls.forEach(formControl => {
+      this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
    });
   }
 
-  private handleFormGroup = (g: FormGroup) => {
+  private handleFormGroup = (g: FormGroup): void => {
     this.evaluateControl(g);
     let groupControl = g;
     if (g.get('value') && g.get('value') instanceof FormGroup) { // Complex Field
@@ -138,17 +137,17 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
         // full stops in cKey as delimeters for being nested within an array,
         // which makes no sense in this situation.
         const control = groupControl.controls[cKey];
-        this.fieldsUtils.controlIterator(control, this.handleFormArray, this.handleFormGroup, this.handleFormControl)
+        this.fieldsUtils.controlIterator(control, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
       });
     }
   }
 
-  private evalAllShowHideConditions() {
-    this.getCurrentPagesReadOnlyAndFormFieldValues()
-    this.fieldsUtils.controlIterator(this.formGroup, this.handleFormArray, this.handleFormGroup, this.handleFormControl)
+  private evalAllShowHideConditions(): void {
+    this.getCurrentPagesReadOnlyAndFormFieldValues();
+    this.fieldsUtils.controlIterator(this.formGroup, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
   }
 
-  private buildPath(c: AbstractFormFieldComponent, field: CaseField) {
+  private buildPath(c: AbstractFormFieldComponent, field: CaseField): string {
     if (c && c instanceof AbstractFieldWriteComponent) {
       if (c.idPrefix) {
         return c.idPrefix + field.id;
@@ -157,30 +156,19 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     return field.id;
   }
 
-  private getCurrentPagesReadOnlyAndFormFieldValues() {
+  private getCurrentPagesReadOnlyAndFormFieldValues(): any {
     let formFields = this.getFormFieldsValuesIncludingDisabled();
     this.allFieldValues = this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
     return this.allFieldValues;
   }
 
-  private getFormFieldsValuesIncludingDisabled() {
+  private getFormFieldsValuesIncludingDisabled(): any {
     return this.formGroup.getRawValue();
   }
 
-  private unsubscribeFromFormChanges() {
+  private unsubscribeFromFormChanges(): void {
     if (this.formChangesSubscription) {
       this.formChangesSubscription.unsubscribe();
-    }
-  }
-
-  // TODO - remove or make work for a specific field
-  private updateGreyBar(caseField: CaseField, shown: boolean) {
-    if (shown) {
-      this.greyBarService.addToggledToShow(caseField.id);
-      this.greyBarService.showGreyBar(caseField, this.el);
-    } else {
-      this.greyBarService.removeToggledToShow(caseField.id);
-      this.greyBarService.removeGreyBar(this.el);
     }
   }
 }

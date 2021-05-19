@@ -1,4 +1,71 @@
 ## RELEASE NOTES
+### Version 3.1.1
+**EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
+
+### Version 3.0.3
+**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued..
+
+### Version 3.0.0 
+**EUI-3997** Master release candidate
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+
+### Version 3.0.3-Navigate in table using keyboard
+**EUI-2017** ExUI - Navigate in table using keyboard
+
+### Version 3.0.3-validation-error-message-changes
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+
+### Version 3.0.3-field-show-condition
+**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
+
+### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
+
+### Version 3.0.0
+
+### Version 2.80.0-alpha-datetime-picker
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
+
+### Version 2.79.8-breathing-space-data-not-being-persisted
+**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
+
+### Version 2.79.14-labels-not-displaying-case-heading
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+
+### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+
+### Version 2.79.12
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+
+### Version 2.79.11-crud-issues
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
+
+### Version 2.79.10-input-type-accessibility
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+
+### Version 2.79.7
+**EUI-3638** ExUI - Activity Tracker not shown on UI as expected by business
+**EUI-2925** Review implementation of Activity tracker in MC Demo Int env
+
+### Version 2.79.6
+**EUI-3770** Hotfix for previous pages not populating default field values.
+
+### Version 2.79.5
+**EUI-3797** Hotfix for missing content in the Payment History tab.
+
+### Version 2.79.4
+**EUI-3708** Fix for case submission regression.
+**EUI-3728** Fix for labels showing on tabs that should be hidden.
+
+### Version 2.79.3-mandatory-organisation-hotfix
+**EUI-3674** Add organisation policy MANDATORY validator check
+
 ### Version 2.79.2
 **EUI-3587** Fix "Print URL" pipe for rewriting remote Print Service URLs to a "local" version for the front-end
 
@@ -114,6 +181,9 @@ Merge master to simplify final branch merge
 
 ### Version 2.68.9-prerelease-conditional-show-perf
 **EUI-3151** dynamic lists and nested complex in collection fixes
+
+### Version 2.68.8-wcag-status-message
+**EUI-2029** WCAG AA Status Message Fixes
 
 ### Version 2.68.8-prerelease-conditional-show-perf
 **EUI-3151** form validation and label fixes

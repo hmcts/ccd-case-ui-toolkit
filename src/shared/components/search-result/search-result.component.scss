@@ -78,3 +78,7 @@ span.heading-medium {
   vertical-align: middle;
   padding-left: 3px;
 }
+
+#search-result-heading__text:focus {
+  outline: none; 
+}

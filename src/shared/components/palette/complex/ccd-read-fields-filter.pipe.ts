@@ -59,6 +59,10 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     if (field.field_type.type === 'Label' && (field.label || '').length > 0) {
       return true;
     }
+    // We also shouldn't ditch CasePaymentHistoryViewer fields.
+    if (field.field_type.type === 'CasePaymentHistoryViewer') {
+      return true;
+    }
 
     value = value || {};
 
