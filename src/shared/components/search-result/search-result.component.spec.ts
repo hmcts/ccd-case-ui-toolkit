@@ -251,7 +251,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render pagination controls if results and metadata not empty', () => {
-      let pagination = de.queryAll(By.css('pagination-controls.pagination'));
+      let pagination = de.queryAll(By.css('ccd-pagination'));
 
       expect(pagination.length).toBeTruthy();
     });
