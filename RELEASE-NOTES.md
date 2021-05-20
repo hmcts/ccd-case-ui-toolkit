@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 3.1.2-missing-ftpa-tab-beta
+**EUI-3825** Fix for missing FTPA tab contents.
+
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
@@ -55,9 +59,6 @@
 
 ### Version 2.79.6
 **EUI-3770** Hotfix for previous pages not populating default field values.
-
-### Version 2.79.6-missing-ftpa-tab-alpha
-**EUI-3825** Fix for missing FTPA tab contents.
 
 ### Version 2.79.5
 **EUI-3797** Hotfix for missing content in the Payment History tab.
