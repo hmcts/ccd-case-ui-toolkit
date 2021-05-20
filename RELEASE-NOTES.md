@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
+### Version 3.1.2
+TO BE UPDATED, I ASSUME?
+
 ### Version 3.1.2-nested-multi-select-labels-zeta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label.
+
+### Version 3.1.2-missing-ftpa-tab-beta
+**EUI-3825** Fix for missing FTPA tab contents.
 
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
