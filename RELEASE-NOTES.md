@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 3.1.2-nested-multi-select-labels-zeta
+**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label.
+
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
@@ -33,9 +37,6 @@
 
 ### Version 2.79.8-breathing-space-data-not-being-persisted
 **EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
-
-### Version 2.79.15-nested-multi-select-labels-epsilon
-**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label.
 
 ### Version 2.79.14-labels-not-displaying-case-heading
 **EUI-2569** ExUI - Labels not displaying in Case Heading
