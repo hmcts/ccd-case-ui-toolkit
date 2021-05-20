@@ -799,12 +799,6 @@ describe('conditional-show', () => {
         expect(result).toBe(false);
       });
 
-      it('caseFields is empty', () => {
-        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.OPTIONAL.id}="Bob"`);
-        const result = ShowCondition.hiddenCannotChange(showCondition, []);
-        expect(result).toBe(false);
-      });
-
       it('there is no show_condition', () => {
         const showCondition = new ShowCondition('');
         const result = ShowCondition.hiddenCannotChange(showCondition, FIELDS_ARRAY);
@@ -839,39 +833,11 @@ describe('conditional-show', () => {
         expect(result).toBe(false);
       });
 
-      it('dependent field does not exist in caseFields', () => {
-        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.READONLY.id}="Bob"`);
-        const SPECIFIC_FIELDS = [ FIELDS.HIDDEN ];
-        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
-        expect(result).toBe(false);
-      });
-
       it('dependent field is nested within Complex field and OPTIONAL', () => {
         const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
         const complexField = ncf('complex', 'Complex', complexFieldType, 'OPTIONAL');
-        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.HIDDEN.id}="Bob"`);
+        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.OPTIONAL.id}="Bob"`);
         const SPECIFIC_FIELDS = [ complexField ];
-        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
-        expect(result).toBe(false);
-      });
-
-      it('dependent field does not exist within Complex field', () => {
-        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
-        const complexField = ncf('complex', 'Complex', complexFieldType, 'OPTIONAL');
-        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.MANDATORY.id}="Bob"`);
-        // Complex field contains OPTIONAL, we're looking for MANDTORY.
-        const SPECIFIC_FIELDS = [ complexField ];
-        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
-        expect(result).toBe(false);
-      });
-
-      it('dependent field does not exist within Complex Collection field', () => {
-        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
-        const collectionFieldType = createFieldType('Collection', 'Collection', [], complexFieldType);
-        const collectionField = ncf('collection', 'Collection', collectionFieldType, 'OPTIONAL');
-        const showCondition: ShowCondition = new ShowCondition(`${collectionField.id}.${FIELDS.MANDATORY.id}="Bob"`);
-        // Complex Collection contains OPTIONAL, we're looking for MANDTORY.
-        const SPECIFIC_FIELDS = [ collectionField ];
         const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
         expect(result).toBe(false);
       });
@@ -931,6 +897,40 @@ describe('conditional-show', () => {
         const collectionFieldType = createFieldType('Collection', 'Collection', [], complexFieldType);
         const collectionField = ncf('collection', 'Collection', collectionFieldType, 'HIDDEN');
         const showCondition: ShowCondition = new ShowCondition(`${collectionField.id}.${FIELDS.OPTIONAL.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ collectionField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+
+      it('caseFields is empty', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.OPTIONAL.id}="Bob"`);
+        const result = ShowCondition.hiddenCannotChange(showCondition, []);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field does not exist in caseFields', () => {
+        const showCondition: ShowCondition = new ShowCondition(`${FIELDS.READONLY.id}="Bob"`);
+        const SPECIFIC_FIELDS = [ FIELDS.HIDDEN ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field does not exist within Complex field', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const complexField = ncf('complex', 'Complex', complexFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${complexField.id}.${FIELDS.MANDATORY.id}="Bob"`);
+        // Complex field contains OPTIONAL, we're looking for MANDTORY.
+        const SPECIFIC_FIELDS = [ complexField ];
+        const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
+        expect(result).toBe(true);
+      });
+
+      it('dependent field does not exist within Complex Collection field', () => {
+        const complexFieldType = createFieldType('Complex', 'Complex', [ FIELDS.OPTIONAL ]);
+        const collectionFieldType = createFieldType('Collection', 'Collection', [], complexFieldType);
+        const collectionField = ncf('collection', 'Collection', collectionFieldType, 'OPTIONAL');
+        const showCondition: ShowCondition = new ShowCondition(`${collectionField.id}.${FIELDS.MANDATORY.id}="Bob"`);
+        // Complex Collection contains OPTIONAL, we're looking for MANDTORY.
         const SPECIFIC_FIELDS = [ collectionField ];
         const result = ShowCondition.hiddenCannotChange(showCondition, SPECIFIC_FIELDS);
         expect(result).toBe(true);
