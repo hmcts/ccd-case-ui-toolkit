@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SearchInput } from './domain/search-input.model';
-import { SearchService, WindowService, OrderService, JurisdictionService } from '../../services';
-import { Jurisdiction, CaseTypeLite, CaseState } from '../../domain';
+import { SearchService, WindowService, OrderService, JurisdictionService, FieldsUtils } from '../../services';
+import { Jurisdiction, CaseTypeLite, CaseState, CaseField } from '../../domain';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
 const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
@@ -17,6 +17,7 @@ export class SearchFiltersComponent implements OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
+  public caseFields: CaseField[];
 
   @Input()
   jurisdictions: Jurisdiction[];
@@ -55,7 +56,7 @@ export class SearchFiltersComponent implements OnInit {
     private windowService: WindowService) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.selected = {};
     const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
     if (this.jurisdictions.length === 1 || jurisdiction) {
@@ -115,6 +116,7 @@ export class SearchFiltersComponent implements OnInit {
       selected: this.selected,
       queryParams: this.getQueryParams()
     });
+    this.setFocusToTop();
   }
 
   populateValuesInLocalStorage(): void {
@@ -181,6 +183,7 @@ export class SearchFiltersComponent implements OnInit {
             item.field.value = formValueObject[item.field.id];
           }
         });
+        this.getCaseFields();
       }, error => {
         console.log('Search input fields request will be discarded reason: ', error.message);
       });
@@ -207,6 +210,21 @@ export class SearchFiltersComponent implements OnInit {
         this.selected.caseType = caseTypes[0];
       }
       this.onCaseTypeIdChange();
+    }
+  }
+
+  private setFocusToTop() {
+    window.scrollTo(0, 0);
+
+    const topContainer = document.getElementById('search-result-heading__text');
+    if (topContainer) {
+      topContainer.focus();
+    }
+  }
+
+  private getCaseFields(): void {
+    if (this.searchInputs) {
+      this.caseFields = this.searchInputs.map(item => FieldsUtils.convertToCaseField(item.field));
     }
   }
 }

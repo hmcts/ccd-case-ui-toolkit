@@ -1,4 +1,4 @@
-import { _ as _score } from 'underscore';
+import  * as _score from 'underscore';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -106,8 +106,6 @@ export class ShowCondition {
           }
           if (caseField) {
             allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1;
-          } else {
-            allUnchangeable = false;
           }
         }
         return allUnchangeable;
