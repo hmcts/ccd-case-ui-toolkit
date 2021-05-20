@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 4.0.0-unsaved-changes-beta
+**EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
+
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
@@ -55,9 +59,6 @@
 
 ### Version 2.79.6
 **EUI-3770** Hotfix for previous pages not populating default field values.
-
-### Version 4.0.0-unsaved-changes-alpha
-**EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
 
 ### Version 2.79.5
 **EUI-3797** Hotfix for missing content in the Payment History tab.
