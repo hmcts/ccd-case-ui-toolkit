@@ -69,6 +69,7 @@ Details inside it are for the actual component first shown on page */
 
     .mat-calendar-table {
       width: calc(100% - 1px);
+      table-layout: fixed;
     }
 
     .mat-calendar-header {
