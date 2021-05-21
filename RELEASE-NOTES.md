@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 3.1.2-missing-ftpa-tab-beta
+**EUI-3825** Fix for missing FTPA tab contents.
+
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
