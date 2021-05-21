@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.0.0-unsaved-changes-beta",
+  "version": "5.0.0-unsaved-changes-beta",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

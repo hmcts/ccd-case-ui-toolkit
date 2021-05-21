@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.0.0-unsaved-changes-beta
+### Version 5.0.0-unsaved-changes-beta
 **EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
 
 ### Version 3.1.1
