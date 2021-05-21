@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.1.2-datetime-picker-integration-issues-fix-3",
+  "version": "3.1.2-datetime-picker-style-fix",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
