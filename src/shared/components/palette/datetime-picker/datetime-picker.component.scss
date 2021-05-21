@@ -40,8 +40,8 @@ Details inside it are for the actual component first shown on page */
   }
 
   .mat-icon-button {
-    height: 37px;
-    width: 37px;
+    height: 32px;
+    width: 32px;
 
     &:focus {
       outline: 1px solid #ffdd00;
@@ -49,7 +49,7 @@ Details inside it are for the actual component first shown on page */
 
     .mat-datepicker-toggle-default-icon {
       position: relative;
-      top: -3px;
+      top: -5px;
     }
   }
 
