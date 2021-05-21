@@ -334,15 +334,8 @@ describe('DatetimePickerComponent', () => {
     const oneHourChangeValue = +oneHourAndMinuteChangeString.substring(11, 13);
     const oneMinuteChangeValue = +oneHourAndMinuteChangeString.substring(14, 16);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
-    if (oneHourChangeValue !== 0) {
-      expect(oneHourChangeValue > originalHourValue).toBe(true);
-    } else {
-      expect(originalHourValue === 23).toBe(true);
-    }
-    // checks less than two as there are issues at end of minutes where datetime picker initialises and sets different minute values
-    if (oneMinuteChangeValue < 2) {
-      expect(oneMinuteChangeValue > originalMinuteValue).toBe(true);
-    }
+    expect(oneHourChangeValue).not.toBe(originalHourValue);
+    expect(oneMinuteChangeValue).not.toBe(originalMinuteValue);
 
     flush();
     discardPeriodicTasks();
