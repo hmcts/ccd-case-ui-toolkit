@@ -176,9 +176,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         CucumberReportLogger.AddJson(reqBody);
         for(let i = 0; i < dataTableHashes.length; i++){
             const matchValues = jsonpath.query(reqBody, dataTableHashes[i].pathExpression);
-            softAsseert.assert(() => expect(matchValues.length  > 0, `path ${dataTableHashes[i].pathExpression} not found in req body`).to.be.true);
+            softAsseert.setScenario(`Validate case field present in req body ${dataTableHashes[i].pathExpression}`);
+            await softAsseert.assert(() => expect(matchValues.length  > 0, `path ${dataTableHashes[i].pathExpression} not found in req body`).to.be.true);
             if (matchValues.length > 0){
-                softAsseert.assert(() => expect(matchValues[0], `path ${dataTableHashes[i].pathExpression} not matching expected`).to.equal(dataTableHashes[i].value));
+                softAsseert.setScenario(`Validate feidl valUe in req body ${dataTableHashes[i].pathExpression}`)
+                await softAsseert.assert(() => expect(matchValues[0], `path ${dataTableHashes[i].pathExpression} not matching expected`).to.equal(dataTableHashes[i].value));
             }
         }
         softAsseert.finally();
