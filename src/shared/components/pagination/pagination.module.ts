@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PaginationComponent } from './pagination.component';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -9,10 +9,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule
   ],
   declarations: [
-    PaginationComponent,
+    PaginationComponent
   ],
   exports: [
     PaginationComponent,
+    PaginatePipe
   ],
 })
 export class PaginationModule {}
