@@ -35,4 +35,8 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
       this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
     }
   }
+
+  createElementId(elementId: string): string {
+    return `${this.id()}_${elementId}`;
+  }
 }
