@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { PaginatePipe } from 'ngx-pagination';
 import { HeadersModule } from './components/header/headers.module';
 import { FootersModule } from './components/footer/footers.module';
 import { BodyModule } from './components/body/body.module';
@@ -110,6 +111,8 @@ import { CaseHistoryModule } from './shared/components/case-history';
       ConditionalShowDirective,
       LabelSubstitutorDirective,
       FocusElementDirective,
+
+      PaginatePipe
     ]
 })
 export class CaseUIToolkitModule {}
