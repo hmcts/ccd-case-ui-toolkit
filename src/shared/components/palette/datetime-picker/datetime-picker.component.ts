@@ -14,6 +14,7 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
 import { CaseField } from '../../../domain';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import moment = require('moment/moment');
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -47,7 +48,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  private dateTimeEntryFormat;
+  private dateTimeEntryFormat: string;
+  private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
               @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
@@ -56,7 +58,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public ngOnInit(): void {
-    this.dateTimeEntryFormat = this.caseField.dateTimeEntryFormat;
+    this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
     this.setDateTimeFormat();
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
@@ -64,12 +66,30 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
+      this.formatValue();
     }, 1);
   }
 
   public setDateTimeFormat(): void {
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
+  }
+
+  /*
+  When the value changes, update the form control
+  */
+  public valueChanged(): void {
+    this.formatValue();
+  }
+
+  public formatValue(): void {
+    if (this.inputElement.nativeElement.value) {
+      let formValue = this.inputElement.nativeElement.value;
+      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
+      if (formValue !== 'Invalid date') {
+        this.dateControl.setValue(formValue);
+      }
+    }
   }
 
   public focusIn(): void {
@@ -93,6 +113,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.hideTime = true;
       this.checkTime = false;
       this.dateTimeEntryFormat = this.formatTranslationService.removeTime(this.dateTimeEntryFormat);
+      this.momentFormat = 'YYYY-MM-DD'
     }
 
     if (this.checkTime) {
@@ -143,6 +164,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     if (this.startView === 'multi-year' && this.yearSelection) {
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
+      this.valueChanged();
     }
   }
 
@@ -151,6 +173,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.dateControl.patchValue(event.toISOString());
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
+      this.valueChanged();
     }
   }
 }

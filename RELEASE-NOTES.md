@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.2-datetime-picker-webapp-resolution
+**EUI-2792** Datetime picker fixes after testing integration with webapp
+
 ### Version 3.1.2-missing-ftpa-tab-beta
 **EUI-3825** Fix for missing FTPA tab contents.
 
