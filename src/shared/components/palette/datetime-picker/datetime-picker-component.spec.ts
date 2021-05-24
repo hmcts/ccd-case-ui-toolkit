@@ -334,6 +334,7 @@ describe('DatetimePickerComponent', () => {
     const oneHourChangeValue = +oneHourAndMinuteChangeString.substring(11, 13);
     const oneMinuteChangeValue = +oneHourAndMinuteChangeString.substring(14, 16);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    // check verifies difference rather than change because tests were failing intermittently
     expect(oneHourChangeValue).not.toBe(originalHourValue);
     expect(oneMinuteChangeValue).not.toBe(originalMinuteValue);
 
@@ -367,7 +368,7 @@ describe('DatetimePickerComponent', () => {
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
-    // check that the the amount of seconds has been changed
+    // check that the the amount of seconds has been changed (avoids intermittent test failure issue)
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
 
     flush();
