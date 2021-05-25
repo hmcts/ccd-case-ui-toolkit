@@ -26,6 +26,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.initialHintText = this.caseField.hint_text;
     this.formGroup = this.formGroup || new FormGroup({});
 
+    console.log('ccdLabelSubstitutor casefield', this.caseField);
+    console.log('ccdLabelSubstitutor contextFields', this.contextFields);
     let fields = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {

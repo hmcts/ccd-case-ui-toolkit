@@ -42,7 +42,7 @@
           <ng-container *ngFor="let field of page | ccdPageFields:editForm.controls['data'] | ccdReadFieldsFilter: false :undefined :true :editForm.controls['data']">
             <ng-container *ngIf="canShowFieldInCYA(field)">
               <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
-                  [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">
+                  [formGroup]="editForm.controls['data']" [contextFields]="caseFields">
                 <th *ngIf="!isLabel(field)" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
                 <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
                   <ccd-field-read
@@ -67,7 +67,7 @@
       <tbody>
         <ng-container *ngFor="let field of this.showSummaryFields">
             <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-              <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="eventTrigger.case_fields">
+              <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="caseFields">
                 <th>{{field.label}}</th>
                 <td class="form-cell">
                   <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
@@ -75,7 +75,7 @@
               </tr>
               <tr *ngSwitchCase="false" class="compound-field" ccdLabelSubstitutor [caseField]="field"
                   [formGroup]="editForm.controls['data']"
-                  [contextFields]="eventTrigger.case_fields">
+                  [contextFields]="caseFields">
                 <td colspan="2">
                   <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
                 </td>
