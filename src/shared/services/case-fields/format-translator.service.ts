@@ -129,14 +129,11 @@ export class FormatTranslatorService {
             inQuote = !inQuote;
           }
           break;
-        /* use of moment library negates these changes
-         (if necessary in other scenario, might need to add format type as parameter)
-        case 'D':
-          maybePush(result, 'd', inQuote);
+        // Due to formatting constraints on the webapp, all 'd' characters should be replaced with 'D' (for Moment library)
+        // This is because we want the date, not the day (this format will need to be converted back)
+        case 'd':
+          maybePush(result, 'D', inQuote);
           break;
-        case 'Y':
-          maybePush(result, 'y', inQuote);
-          break; */
         case 'e':
         case 'c':
           maybePush(result, 'E', inQuote); // no lower case E
@@ -173,6 +170,15 @@ export class FormatTranslatorService {
       prev = c;
     }
     return result.join('');
+  }
+
+  showOnlyDates(dateFormat: string): string {
+    // replace 'd' character with 'D' for the moment library
+    // This ensures only dates allowed
+    while (dateFormat.includes('d')) {
+      dateFormat = dateFormat.replace('d', 'D');
+    }
+    return dateFormat;
   }
 
   removeTime(dateFormat: string): string {

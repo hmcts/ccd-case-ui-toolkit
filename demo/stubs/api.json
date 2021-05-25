@@ -4198,9 +4198,28 @@
       {
         "label": "Date Field",
         "order": 2,
-        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD HH:mm)",
+        "display_context_parameter": "#DATETIMEENTRY(YYYY MM DD HH:mm:ss)",
         "field": {
-          "id": "DateField",
+          "id": "DateField2",
+          "metadata": false,
+          "field_type": {
+            "id": "Datetime",
+            "type": "DateTime",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": [],
+            "complex_fields": [],
+            "collection_field_type": null
+          }
+        }
+      },
+      {
+        "label": "Date Field 3",
+        "order": 3,
+        "display_context_parameter": null,
+        "field": {
+          "id": "DateField3",
           "metadata": false,
           "field_type": {
             "id": "Datetime",
