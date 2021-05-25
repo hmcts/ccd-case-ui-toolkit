@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.2-pcm-role-non-completion
+**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
+
 ### Version 3.1.2-datetime-picker-webapp-resolution
 **EUI-2792** Datetime picker fixes after testing integration with webapp
 
