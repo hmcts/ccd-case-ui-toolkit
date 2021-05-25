@@ -278,7 +278,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   private getCaseFields(): CaseField[] {
-    if (this.caseEdit.caseDetails) {      
+    if (this.caseEdit.caseDetails) {
       const caseFieldsList = FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
       return caseFieldsList;
     }
