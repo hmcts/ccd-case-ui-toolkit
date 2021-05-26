@@ -41,6 +41,8 @@ export class CasesService {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
 
+  public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
+
   /**
    *
    * @type {(caseId:string)=>"../../Observable".Observable<Case>}
@@ -353,7 +355,7 @@ export class CasesService {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      if (userInfo && userInfo.roles.indexOf('pui-case-manager') !== -1) {
+      if (userInfo && userInfo.roles && userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1) {
         return true;
       }
     }
