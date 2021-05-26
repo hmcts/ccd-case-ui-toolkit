@@ -355,7 +355,7 @@ export class CasesService {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return userInfo && userInfo.roles && userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1
+      return userInfo && userInfo.roles && (userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1);
     }
     return false;
   }
