@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 3.1.5 - ph-merge-rc-22-2
+**EUI-2027** Accessibility amends for button labels
+**EUI-3155** Accessibility amends for non-descriptive headings
+**EUI-3550** Replace heading tags with spans on case edit pages
+
 ### Version 3.1.2-datetime-picker-webapp-resolution
 **EUI-2792** Datetime picker fixes after testing integration with webapp
 

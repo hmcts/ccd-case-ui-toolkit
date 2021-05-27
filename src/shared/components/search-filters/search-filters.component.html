@@ -1,4 +1,5 @@
-<form>
+<h2 class="heading-h2" aria-label="Filters">Filters</h2>
+<form class="global-display">
   <div class="form-group" style="margin-top: 13px;">
     <label class="form-label" for="s-jurisdiction">Jurisdiction*</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="s-jurisdiction"
@@ -25,6 +26,6 @@
     </div>
   </ng-container>
 
-  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" >Apply</button> &nbsp;&nbsp;&nbsp;
-  <button id="reset" type="button" (click)="reset()" class="button button-secondary">Reset</button>
+  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" title="Apply filter" aria-label="Apply filter">Apply</button> &nbsp;&nbsp;&nbsp;
+  <button id="reset" type="button" (click)="reset()" class="button button-secondary" title="Reset filter" aria-label="Reset filter">Reset</button>
 </form>
