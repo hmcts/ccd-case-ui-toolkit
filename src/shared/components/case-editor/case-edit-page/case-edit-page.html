@@ -7,9 +7,10 @@
 </ng-container>
 
 <!-- Case ID -->
-<h2 *ngIf="getCaseId()" class="heading-h2">
+<span *ngIf="getCaseId()" class="heading-span" title="Case reference {{ getCaseId() | ccdCaseReference}}">
   #{{ getCaseId() | ccdCaseReference}}
-</h2>
+</span>
+
 <!-- Error message summary -->
 <div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
   <h2 class="govuk-error-summary__title" id="error-summary-title">
@@ -23,6 +24,7 @@
     </ul>
   </div>
 </div>  
+
 <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
 <div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
      role="status" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
