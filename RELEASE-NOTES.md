@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 3.1.5 - ph-merge-rc-22-2
+### Version 3.1.5 - ph-merge-rc-22-2-a
 **EUI-2027** Accessibility amends for button labels
 **EUI-3155** Accessibility amends for non-descriptive headings
 **EUI-3550** Replace heading tags with spans on case edit pages
