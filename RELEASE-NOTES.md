@@ -14,6 +14,9 @@
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
+### Version 3.0.0-theta
+**EUI-2744** Remove empty collection fields that have min validation set on the FieldType
+
 ### Version 3.0.0-eta
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 where "RetainHiddenValue" = "Yes"
 

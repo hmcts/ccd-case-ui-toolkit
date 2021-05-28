@@ -465,4 +465,75 @@ describe('FormValueService', () => {
       });
     });
   });
+
+  describe('removeEmptyCollectionsWithMinValidation', () => {
+    it('should remove the collection field if empty, the FieldType is \"Collection\", with min attribute greater than zero', () => {
+      const data = {collection1: []};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if not empty, the FieldType is \"Collection\", min attribute greater than zero', () => {
+      const data = {collection1: ['Test']};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":[\"Test\"]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if empty, the FieldType is \"Collection\", with no min attribute value', () => {
+      const data = {collection1: []};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":[]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if empty, the FieldType is not \"Collection\", min attribute greater than zero', () => {
+      const data = {collection1: []};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'FixedList';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":[]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if not an array, the FieldType is \"Collection\", min attribute greater than zero', () => {
+      const data = {collection1: {}};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":{}}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+  });
 });

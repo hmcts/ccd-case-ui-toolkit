@@ -101,6 +101,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.formValueService.clearNonCaseFields(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeNullLabels(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeEmptyDocuments(caseEventData.data, this.eventTrigger.case_fields);
+    // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
+    // these will fail validation
+    this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     this.caseEdit.submit(caseEventData)

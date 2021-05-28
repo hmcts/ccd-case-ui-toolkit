@@ -423,4 +423,22 @@ export class FormValueService {
       }
     }
   }
+
+  /**
+   * Remove any empty collection fields where a value of greater than zero is specified in the field's {@link FieldType}
+   * `min` attribute.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      for (const field of caseFields) {
+        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
+            Array.isArray(data[field.id]) && data[field.id].length === 0) {
+          delete data[field.id];
+        }
+      }
+    }
+  }
 }
