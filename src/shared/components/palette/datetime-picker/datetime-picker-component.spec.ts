@@ -238,7 +238,9 @@ describe('DatetimePickerComponent', () => {
 
     // check the new input against the first day of the month of the year in order to verify
     const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
-    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    if (initialDate.getDate() !== 1) {
+      expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    };
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
     expect(setDay.getMonth()).toBe(firstDay.getMonth());
     expect(setDay.getDay()).toBe(firstDay.getDay());
@@ -293,7 +295,9 @@ describe('DatetimePickerComponent', () => {
 
     // check the new input against the first day of the month of the year in order to verify
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
-    expect(newFormattedDate).not.toBe(initialFormattedDate);
+    if (initialDateTime.getDate() !== 1) {
+      expect(newFormattedDate).not.toBe(initialFormattedDate);
+    };
     expect(newFormattedDate.substring(2, 3)).toBe('-');
     expect(newFormattedDate.substring(5, 6)).toBe('-');
     expect(newFormattedDate.substring(13, 14)).toBe('+');
