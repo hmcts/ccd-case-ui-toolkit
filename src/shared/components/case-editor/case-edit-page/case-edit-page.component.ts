@@ -140,7 +140,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           .forEach(casefield => {
             const fieldElement = this.editForm.controls['data'].get(casefield.id);
             if (fieldElement) {
-              if (fieldElement.hasError('pattern') || fieldElement.hasError('matDatetimPickerParse')) {
+              if (fieldElement.hasError('pattern') || fieldElement.hasError('matDatetimePickerParse')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
                 fieldElement.markAsTouched();
               } else if (fieldElement.hasError('required')) {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Moment } from 'moment/moment';
 import {
@@ -15,8 +15,6 @@ import { CaseField } from '../../../domain';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import moment = require('moment/moment');
-import { FormValidatorsService } from '../../../services';
-import { concat } from 'rxjs';
 
 @Component({
   selector: 'ccd-datetime-picker',
