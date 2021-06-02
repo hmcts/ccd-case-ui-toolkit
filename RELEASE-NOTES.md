@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
 ### Version 3.1.5 - ph-merge-rc-22-2-a
 **EUI-2027** Accessibility amends for button labels
 **EUI-3155** Accessibility amends for non-descriptive headings
