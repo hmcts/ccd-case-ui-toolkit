@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-event-log-local
+**EUI-4095** Event logs to display local time
+
 ### Version 3.1.5 - ph-merge-rc-22-2-a
 **EUI-2027** Accessibility amends for button labels
 **EUI-3155** Accessibility amends for non-descriptive headings
