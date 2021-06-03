@@ -79,7 +79,7 @@ describe('DatetimePickerComponent', () => {
     flush();
   }));
 
-  it('should create with no issuee via constructor', fakeAsync(() => {
+  it('should create with no issue via constructor', fakeAsync(() => {
     fixture.detectChanges();
     tick(1);
     expect(component).toBeDefined();
@@ -119,8 +119,7 @@ describe('DatetimePickerComponent', () => {
     component.datetimePicker.open();
     fixture.detectChanges();
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should open view when toggle clicked', fakeAsync(() => {
@@ -132,8 +131,7 @@ describe('DatetimePickerComponent', () => {
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to change the format via caseField', fakeAsync(() => {
@@ -172,8 +170,7 @@ describe('DatetimePickerComponent', () => {
     expect(newFormattedDate.substring(5, 6)).toBe('/');
     expect(newFormattedDate.substring(13, 14)).toBe(':');
     expect(newFormattedDate.substring(16, 17)).toBe(':');
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to confirm the selected datetime', fakeAsync(() => {
@@ -192,8 +189,7 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('input').value).toBe(initialValue);
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to change the selected date', fakeAsync(() => {
@@ -214,12 +210,11 @@ describe('DatetimePickerComponent', () => {
     const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
     if (initialDate.getDate() !== 1) {
       expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
-    };
+    }
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
     expect(setDay.getMonth()).toBe(firstDay.getMonth());
     expect(setDay.getDay()).toBe(firstDay.getDay());
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to confirm datepicker concurs with formatting', fakeAsync(() => {
@@ -256,14 +251,13 @@ describe('DatetimePickerComponent', () => {
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
     if (initialDateTime.getDate() !== 1) {
       expect(newFormattedDate).not.toBe(initialFormattedDate);
-    };
+    }
     expect(newFormattedDate.substring(2, 3)).toBe('-');
     expect(newFormattedDate.substring(5, 6)).toBe('-');
     expect(newFormattedDate.substring(13, 14)).toBe('+');
     expect(newFormattedDate.substring(16, 17)).toBe('+');
 
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
@@ -301,8 +295,7 @@ describe('DatetimePickerComponent', () => {
     expect(oneHourChangeValue).not.toBe(originalHourValue);
     expect(oneMinuteChangeValue).not.toBe(originalMinuteValue);
 
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to change the selected time (seconds)', fakeAsync(() => {
@@ -334,8 +327,7 @@ describe('DatetimePickerComponent', () => {
     // check that the the amount of seconds has been changed (avoids intermittent test failure issue)
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
 
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to change the selected time (hours) via AM and PM button', fakeAsync(() => {
@@ -377,8 +369,7 @@ describe('DatetimePickerComponent', () => {
       expect(originalHourValue).toBe(meridianChangeValue);
     }
 
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to change the selected year, month and date', fakeAsync(() => {
@@ -442,8 +433,7 @@ describe('DatetimePickerComponent', () => {
     expect(setDate.getMonth()).toBe(1);
     expect(setDate.getDay()).toBe(1);
 
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should have the correct date control format', fakeAsync(() => {
@@ -454,8 +444,7 @@ describe('DatetimePickerComponent', () => {
 
     expect(component.dateControl.value.includes('Z')).toBe(false);
 
-    flush();
-    discardPeriodicTasks();
+    endTest();
   }));
 
   it('should set the correct maximum and minimum', fakeAsync(() => {
@@ -494,4 +483,10 @@ function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
   let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
   confirm.dispatchEvent(new MouseEvent('click'));
   fixture.detectChanges();
+}
+
+// function made to improve sonar analysis
+function endTest() {
+  flush();
+  discardPeriodicTasks()
 }
