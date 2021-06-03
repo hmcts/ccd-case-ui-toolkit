@@ -202,23 +202,7 @@ describe('DatetimePickerComponent', () => {
     const initialValue = fixture.nativeElement.querySelector('input').value;
     const initialDate = new Date();
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
-    toggle.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
-
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-
-    let dayCells = fixture.debugElement.queryAll(
-      By.css('.mat-calendar-body-cell')
-    );
-
-    // get the collection of day buttons in order to click them
-    dayCells[0].nativeElement.click();
-    fixture.detectChanges();
-
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
-    confirm.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
+    clickFirstElement(fixture);
 
     let setDay = fixture.nativeElement.querySelector('input').value.split('/');
     const d = parseInt(setDay[0], 10);
@@ -228,7 +212,9 @@ describe('DatetimePickerComponent', () => {
 
     // check the new input against the first day of the month of the year in order to verify
     const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
-    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    if (initialDate.getDate() !== 1) {
+      expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    };
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
     expect(setDay.getMonth()).toBe(firstDay.getMonth());
     expect(setDay.getDay()).toBe(firstDay.getDay());
@@ -264,27 +250,13 @@ describe('DatetimePickerComponent', () => {
     expect(initialFormattedDate.substring(13, 14)).toBe('+');
     expect(initialFormattedDate.substring(16, 17)).toBe('+');
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
-    toggle.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
-
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-
-    let dayCells = fixture.debugElement.queryAll(
-      By.css('.mat-calendar-body-cell')
-    );
-
-    // get the collection of day buttons in order to click them
-    dayCells[0].nativeElement.click();
-    fixture.detectChanges();
-
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
-    confirm.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
+    clickFirstElement(fixture);
 
     // check the new input against the first day of the month of the year in order to verify
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
-    expect(newFormattedDate).not.toBe(initialFormattedDate);
+    if (initialDateTime.getDate() !== 1) {
+      expect(newFormattedDate).not.toBe(initialFormattedDate);
+    };
     expect(newFormattedDate.substring(2, 3)).toBe('-');
     expect(newFormattedDate.substring(5, 6)).toBe('-');
     expect(newFormattedDate.substring(13, 14)).toBe('+');
@@ -478,27 +450,48 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
     tick(1);
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
-    toggle.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
-
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-
-    let dayCells = fixture.debugElement.queryAll(
-      By.css('.mat-calendar-body-cell')
-    );
-
-    // get the collection of day buttons in order to click them
-    dayCells[0].nativeElement.click();
-    fixture.detectChanges();
-
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
-    confirm.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
+    clickFirstElement(fixture);
 
     expect(component.dateControl.value.includes('Z')).toBe(false);
 
     flush();
     discardPeriodicTasks();
   }));
+
+  it('should set the correct maximum and minimum', fakeAsync(() => {
+    const miniDate = new Date('01-01-1500')
+    const maxiDate = new Date('01-01-4000')
+    const MIN_MAX_FIELD_TYPE: FieldType = {
+      id: 'Date',
+      type: 'DateTime',
+      min: miniDate,
+      max: maxiDate
+    };
+    const MIN_MAX_CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: MIN_MAX_FIELD_TYPE,
+      value: initialDateTime,
+      dateTimeEntryFormat: initialDateEntryParameter
+    });
+    expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
+    expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
+  }));
 });
+
+function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
+  let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+  toggle.dispatchEvent(new MouseEvent('click'));
+  fixture.detectChanges();
+  expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
+  let dayCells = fixture.debugElement.queryAll(
+    By.css('.mat-calendar-body-cell')
+  );
+  // get the collection of day buttons in order to click them
+  dayCells[0].nativeElement.click();
+  fixture.detectChanges();
+  let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+  confirm.dispatchEvent(new MouseEvent('click'));
+  fixture.detectChanges();
+}

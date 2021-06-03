@@ -44,8 +44,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public yearSelection = false;
   public checkTime = true;
   public stringEdited = false;
-  public minimumDate = new Date('01/01/1800');
-  public maximumDate = null;
+  private minimumDate = new Date('01/01/1800');
+  private maximumDate = null;
   public minError = false;
   public maxError = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
@@ -95,7 +95,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.formatValueAndSetErrors();
   }
 
-  public formatValueAndSetErrors(): void {
+  private formatValueAndSetErrors(): void {
     if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
       formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
@@ -129,13 +129,17 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   public minDate(caseField: CaseField): Date {
     // set minimum date
-    this.minimumDate = caseField.field_type.min ? new Date(caseField.field_type.min) : this.minimumDate;
+    if (caseField.field_type.min instanceof Date) {
+      this.minimumDate = caseField.field_type.min ? new Date(caseField.field_type.min) : this.minimumDate;
+    }
     return this.minimumDate;
   }
 
   public maxDate(caseField: CaseField): Date {
     // set maximum date
-    this.maximumDate = caseField.field_type.max ? new Date(caseField.field_type.max) : this.maximumDate;
+    if (caseField.field_type.max instanceof Date) {
+      this.maximumDate = caseField.field_type.max ? new Date(caseField.field_type.max) : this.maximumDate;
+    }
     return this.maximumDate;
   }
 
