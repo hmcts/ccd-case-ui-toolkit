@@ -153,10 +153,7 @@ describe('DatetimePickerComponent', () => {
 
     const firstFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(firstFormattedDate).not.toBe(null);
-    expect(firstFormattedDate.substring(2, 3)).toBe('-');
-    expect(firstFormattedDate.substring(5, 6)).toBe('-');
-    expect(firstFormattedDate.substring(13, 14)).toBe('+');
-    expect(firstFormattedDate.substring(16, 17)).toBe('+');
+    expectSeparatorCharacters(firstFormattedDate, '-', '+');
 
     // EUI-4118 - changed test to refer back to previous case field due to intermittent errors based on reactive form
     component.caseField = CASE_FIELD;
@@ -166,10 +163,7 @@ describe('DatetimePickerComponent', () => {
 
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(newFormattedDate).not.toBe(null);
-    expect(newFormattedDate.substring(2, 3)).toBe('/');
-    expect(newFormattedDate.substring(5, 6)).toBe('/');
-    expect(newFormattedDate.substring(13, 14)).toBe(':');
-    expect(newFormattedDate.substring(16, 17)).toBe(':');
+    expectSeparatorCharacters(newFormattedDate, '/', ':');
     endTest();
   }));
 
@@ -240,10 +234,7 @@ describe('DatetimePickerComponent', () => {
 
     const initialFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(initialFormattedDate).not.toBe(null);
-    expect(initialFormattedDate.substring(2, 3)).toBe('-');
-    expect(initialFormattedDate.substring(5, 6)).toBe('-');
-    expect(initialFormattedDate.substring(13, 14)).toBe('+');
-    expect(initialFormattedDate.substring(16, 17)).toBe('+');
+    expectSeparatorCharacters(initialFormattedDate, '-', '+');
 
     clickFirstElement(fixture);
 
@@ -252,11 +243,7 @@ describe('DatetimePickerComponent', () => {
     if (initialDateTime.getDate() !== 1) {
       expect(newFormattedDate).not.toBe(initialFormattedDate);
     }
-    expect(newFormattedDate.substring(2, 3)).toBe('-');
-    expect(newFormattedDate.substring(5, 6)).toBe('-');
-    expect(newFormattedDate.substring(13, 14)).toBe('+');
-    expect(newFormattedDate.substring(16, 17)).toBe('+');
-
+    expectSeparatorCharacters(newFormattedDate, '-', '+');
     endTest();
   }));
 
@@ -489,4 +476,11 @@ function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
 function endTest() {
   flush();
   discardPeriodicTasks()
+}
+
+function expectSeparatorCharacters(checkedDate: string, firstChar: string, secondChar: string) {
+  expect(checkedDate.substring(2, 3)).toBe(firstChar);
+  expect(checkedDate.substring(5, 6)).toBe(firstChar);
+  expect(checkedDate.substring(13, 14)).toBe(secondChar);
+  expect(checkedDate.substring(16, 17)).toBe(secondChar);
 }
