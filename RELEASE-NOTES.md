@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-complex-field-check-answers
+**EUI-4033** Ensured complex fields were interpolated on check you answers page
+
 ### Version 3.1.5-pcm-role-non-completion
 **EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
 
