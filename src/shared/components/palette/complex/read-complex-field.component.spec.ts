@@ -19,6 +19,23 @@ describe('ReadComplexFieldComponent', () => {
   let ReadComplexFieldTableComponent;
   let ReadComplexFieldNewTableComponent;
 
+  function setupComponents() {
+    ReadComplexFieldRawComponent = MockComponent({
+      selector: 'ccd-read-complex-field-raw',
+      inputs
+    });
+
+    ReadComplexFieldTableComponent = MockComponent({
+      selector: 'ccd-read-complex-field-table',
+      inputs
+    });
+
+    ReadComplexFieldNewTableComponent = MockComponent({
+      selector: 'ccd-read-complex-field-collection-table',
+      inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+    });
+  }
+
   describe('Non-persistable readonly complex field', () => {
 
     describe('when context is DEFAULT or CHECK_YOUR_ANSWER', () => {
@@ -55,21 +72,7 @@ describe('ReadComplexFieldComponent', () => {
       };
 
       beforeEach(async(() => {
-
-        ReadComplexFieldRawComponent = MockComponent({
-          selector: 'ccd-read-complex-field-raw',
-          inputs
-        });
-
-        ReadComplexFieldTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-table',
-          inputs
-        });
-
-        ReadComplexFieldNewTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-collection-table',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
+        setupComponents();
 
         TestBed
           .configureTestingModule({
@@ -155,21 +158,7 @@ describe('ReadComplexFieldComponent', () => {
       caseField_dsp.display_context_parameter = '#TABLE(AddressLine1, AddressLine2)';
 
       beforeEach(async(() => {
-
-        ReadComplexFieldRawComponent = MockComponent({
-          selector: 'ccd-read-complex-field-raw',
-          inputs
-        });
-
-        ReadComplexFieldTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-table',
-          inputs
-        });
-
-        ReadComplexFieldNewTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-collection-table',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
+        setupComponents();
 
         TestBed
           .configureTestingModule({
@@ -254,21 +243,7 @@ describe('ReadComplexFieldComponent', () => {
     let de: DebugElement;
 
     beforeEach(async(() => {
-
-      ReadComplexFieldRawComponent = MockComponent({
-        selector: 'ccd-read-complex-field-raw',
-        inputs
-      });
-
-      ReadComplexFieldTableComponent = MockComponent({
-        selector: 'ccd-read-complex-field-table',
-        inputs
-      });
-
-      ReadComplexFieldNewTableComponent = MockComponent({
-        selector: 'ccd-read-complex-field-collection-table',
-        inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-      });
+      setupComponents();
 
       TestBed
         .configureTestingModule({
