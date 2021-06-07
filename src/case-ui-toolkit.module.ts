@@ -33,7 +33,7 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   UnsupportedFieldComponent, LabelFieldComponent, ReadTextFieldComponent, ReadTextAreaFieldComponent, ReadNumberFieldComponent,
   ReadEmailFieldComponent, ReadPhoneUKFieldComponent, ReadDateFieldComponent, ReadCollectionFieldComponent, WriteCollectionFieldComponent,
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
-  WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
+  WriteDateFieldComponent, ConditionalShowModule, LabelSubstitutorModule,
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, FocusElementModule,
   FocusElementDirective, LoadingModule, PaginationModule, PaginationComponent } from './shared';
 import { CaseHistoryModule } from './shared/components/case-history';
@@ -108,7 +108,6 @@ import { CaseHistoryModule } from './shared/components/case-history';
       WriteEmailFieldComponent,
       WriteDateFieldComponent,
 
-      ConditionalShowDirective,
       LabelSubstitutorDirective,
       FocusElementDirective,
 

@@ -1,45 +1,36 @@
-import { ConditionalShowDirective } from '../conditional-show.directive';
 import { ConditionalShowRegistrarService } from './conditional-show-registrar.service';
 import { async } from '@angular/core/testing';
+import { CaseField } from '../../../domain/definition';
+import { aCaseField } from '../../../fixture';
+import { ConditionalShowFormDirective } from '../conditional-show-form.directive';
 import createSpyObj = jasmine.createSpyObj;
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
 
 let registrarService: ConditionalShowRegistrarService;
-let conditionalShowDirective1: any;
-let conditionalShowDirective2: any;
+let conditionalShowFormDirective1: any;
+let conditionalShowFormDirective2: any;
 
 describe('ConditionalShowRegistrarService', () => {
 
-  beforeEach( async(() => {
+  beforeEach(async(() => {
     registrarService = new ConditionalShowRegistrarService();
-    conditionalShowDirective1 = createSpyObj<ConditionalShowDirective>('conditionalShowDirective1', ['refreshVisibility']);
-    conditionalShowDirective2 = createSpyObj<ConditionalShowDirective>('conditionalShowDirective2', ['refreshVisibility']);
+    conditionalShowFormDirective1 = createSpyObj<ConditionalShowFormDirective>('conditionalShowFormDirective1', ['ngAfterViewInit']);
+    conditionalShowFormDirective2 = createSpyObj<ConditionalShowFormDirective>('conditionalShowFormDirective2', ['ngAfterViewInit']);
     let caseField1: CaseField = aCaseField('id1', 'label', 'Text', 'OPTIONAL', null);
     let caseField2: CaseField = aCaseField('id2', 'label', 'Text', 'OPTIONAL', null);
-    conditionalShowDirective1.caseField = caseField1;
-    conditionalShowDirective2.caseField = caseField2;
+    conditionalShowFormDirective1.caseField = caseField1;
+    conditionalShowFormDirective2.caseField = caseField2;
   }));
 
   it('should register', () => {
-    registrarService.register(conditionalShowDirective1);
-    registrarService.register(conditionalShowDirective2);
+    registrarService.register(conditionalShowFormDirective1);
+    registrarService.register(conditionalShowFormDirective2);
     expect(registrarService.registeredDirectives.length).toEqual(2);
   });
 
   it('should reset', () => {
-    registrarService.register(conditionalShowDirective1);
-    registrarService.register(conditionalShowDirective2);
+    registrarService.register(conditionalShowFormDirective1);
+    registrarService.register(conditionalShowFormDirective2);
     registrarService.reset();
     expect(registrarService.registeredDirectives.length).toEqual(0);
   });
-
-  it('should refresh visibility of registered directives', () => {
-    registrarService.register(conditionalShowDirective1);
-    registrarService.register(conditionalShowDirective2);
-    registrarService.refresh();
-    expect(conditionalShowDirective1.refreshVisibility).toHaveBeenCalled();
-    expect(conditionalShowDirective2.refreshVisibility).toHaveBeenCalled();
-  });
-
 });

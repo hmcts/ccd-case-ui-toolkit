@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { SortOrder } from './sort-order'
+import { CaseField } from '../../../domain/definition';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-read-complex-field-collection-table',
@@ -24,7 +26,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
       let displayContextParameter = this.caseField.display_context_parameter.trim();
       let result: string = displayContextParameter.replace('#TABLE(', '');
-      this.columns = result.replace(')', '').split(',');
+      this.columns = result.replace(')', '').split(',').map((c: string) => c.trim());
 
       let labelsVertical: { [k: string]: any } = {};
       let labelsHorizontal: { [k: string]: any } = {};
@@ -36,7 +38,6 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
       this.columnsAllLabels = allLabels;
-
     }
   }
 
@@ -90,9 +91,9 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   /**
    * Needs to be called before 'ccdFieldsFilter' pipe is used, as it needs a caseField value.
    */
-  addCaseFieldValue(field, value) {
+  addCaseFieldValue(field, value): boolean {
     field.value = value;
-    return true;
+    return true
   }
 
   isNotBlank(value: string) {
@@ -102,6 +103,16 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   addCaseReferenceValue(field, value: any) {
     field.value = { CaseReference: value};
     return field;
+  }
+
+  toCaseField(id: string, label: string, field_type: any, value: any): CaseField {
+    return plainToClassFromExist(new CaseField(), {
+      id,
+      label,
+      display_context: 'READONLY',
+      value,
+      field_type
+    });
   }
 
   private isVerticleDataNotEmpty(row) {
