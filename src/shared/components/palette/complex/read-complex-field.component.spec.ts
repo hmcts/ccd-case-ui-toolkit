@@ -11,6 +11,8 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 
+const inputs: string[] = ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix'];
+
 describe('ReadComplexFieldComponent', () => {
 
   let ReadComplexFieldRawComponent;
@@ -56,12 +58,12 @@ describe('ReadComplexFieldComponent', () => {
 
         ReadComplexFieldRawComponent = MockComponent({
           selector: 'ccd-read-complex-field-raw',
-          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+          inputs
         });
 
         ReadComplexFieldTableComponent = MockComponent({
           selector: 'ccd-read-complex-field-table',
-          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+          inputs
         });
 
         ReadComplexFieldNewTableComponent = MockComponent({
@@ -156,12 +158,12 @@ describe('ReadComplexFieldComponent', () => {
 
         ReadComplexFieldRawComponent = MockComponent({
           selector: 'ccd-read-complex-field-raw',
-          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+          inputs
         });
 
         ReadComplexFieldTableComponent = MockComponent({
           selector: 'ccd-read-complex-field-table',
-          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+          inputs
         });
 
         ReadComplexFieldNewTableComponent = MockComponent({
@@ -255,12 +257,12 @@ describe('ReadComplexFieldComponent', () => {
 
       ReadComplexFieldRawComponent = MockComponent({
         selector: 'ccd-read-complex-field-raw',
-        inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+        inputs
       });
 
       ReadComplexFieldTableComponent = MockComponent({
         selector: 'ccd-read-complex-field-table',
-        inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+        inputs
       });
 
       ReadComplexFieldNewTableComponent = MockComponent({
