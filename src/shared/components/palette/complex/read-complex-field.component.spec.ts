@@ -56,7 +56,7 @@ describe('ReadComplexFieldComponent', () => {
 
         ReadComplexFieldRawComponent = MockComponent({
           selector: 'ccd-read-complex-field-raw',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
         });
 
         ReadComplexFieldTableComponent = MockComponent({
@@ -156,7 +156,7 @@ describe('ReadComplexFieldComponent', () => {
 
         ReadComplexFieldRawComponent = MockComponent({
           selector: 'ccd-read-complex-field-raw',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
         });
 
         ReadComplexFieldTableComponent = MockComponent({
@@ -255,7 +255,7 @@ describe('ReadComplexFieldComponent', () => {
 
       ReadComplexFieldRawComponent = MockComponent({
         selector: 'ccd-read-complex-field-raw',
-        inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+        inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
       });
 
       ReadComplexFieldTableComponent = MockComponent({
