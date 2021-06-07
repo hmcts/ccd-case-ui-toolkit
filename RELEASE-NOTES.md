@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-empty-complex-type-showing-in-tab
+**EUI-3798** 'Empty' complex type showing in tab (due to Label)
+
 ### Version 3.1.5-pcm-role-non-completion
 **EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
 
