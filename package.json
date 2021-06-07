@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.1.5-empty-complex-type-showing-in-tab",
+  "version": "3.1.5-complex-field-check-answers",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
