@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 3.1.5-complex-field-check-answers
+### Version 3.1.5-Nested-collection-is-not-rendering-correctly
 **EUI-3943** Nested collection is not rendering correctly on CaseTypeTab for Table view
 
 ### Version 3.1.5-complex-field-check-answers
