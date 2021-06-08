@@ -7,7 +7,7 @@
     <tbody>
     <!-- <COMPLEX table field header>-->
     <tr>
-      <th *ngFor="let heading of columns">
+      <th *ngFor="let heading of columns" scope="col">
         <span class="text-16">{{columnsAllLabels[heading].label}}</span>
         <a href="javascript:void(0)"
            (click)="sortRowsByColumns(heading)"
@@ -49,7 +49,7 @@
               *ngFor="let vLabel of columnsVerticalLabel | keyvalue: keepOriginalOrder | ccdCollectionTableCaseFieldsFilter: caseField: rows[i] | ccdReadFieldsFilter:true :undefined :true">
               <!-- <COMPLEX table expandable body simple field>-->
               <tr class="complex-panel-simple-field accordion-body" *ngIf="item[vLabel.id]" [hidden]="vLabel.hidden">
-                <th><span class="text-16">{{vLabel.label}}</span></th>
+                <th scope="col"><span class="text-16">{{vLabel.label}}</span></th>
                 <td *ngIf="vLabel['type'] !== 'Complex'" class="text-16">
                   <ccd-field-read [caseField]="toCaseField('', vLabel.label, vLabel.field_type, item[vLabel.id])"
                                   [context]="context"></ccd-field-read>
@@ -68,7 +68,7 @@
                       </tr>
                       <ng-template #SimpleRow>
                         <tr class="complex-panel-nested-field" [hidden]="caseField.hidden">
-                          <th><span class="text-16">{{caseField.label}}</span></th>
+                          <th scope="col"><span class="text-16">{{caseField.label}}</span></th>
                           <td *ngIf="!item[vLabel.id].hasOwnProperty('CaseReference')">
                             <span class="text-16"><ccd-field-read [caseField]="caseField" [context]="context"></ccd-field-read></span>
                           </td>
