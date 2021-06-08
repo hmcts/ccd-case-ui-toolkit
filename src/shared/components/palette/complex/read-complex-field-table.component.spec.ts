@@ -14,14 +14,6 @@ import { ConditionalShowRegistrarService } from '../../../directives/conditional
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
-@Directive({
-  selector: '[ccdConditionalShow]'
-})
-export class StubConditionalShowDirective {
-  @Input() caseField: CaseField;
-  @Input() contextFields: CaseField[] = [];
-}
-
 describe('ReadComplexFieldTableComponent', () => {
 
   const $COMPLEX_PANEL = By.css('div.complex-panel');
@@ -157,7 +149,6 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
-            StubConditionalShowDirective,
 
             // Mock
             FieldReadComponent,
@@ -349,7 +340,6 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
-            StubConditionalShowDirective,
 
             // Mock
             FieldReadComponent,

@@ -6,8 +6,8 @@
   <table class="complex-panel-table">
     <tbody>
     <!-- <COMPLEX table field header>-->
-    <tr *ngFor="let heading of columns">
-      <th>
+    <tr>
+      <th *ngFor="let heading of columns">
         <span class="text-16">{{columnsAllLabels[heading].label}}</span>
         <a href="javascript:void(0)"
            (click)="sortRowsByColumns(heading)"
@@ -17,7 +17,7 @@
       <th></th>
     </tr>
     <!-- </COMPLEX table field header>-->
-    <ng-container *ngFor="let item of rows; let i = index; trackBy: trackByIndex;">
+    <ng-container *ngFor="let item of rows; let i = index;">
       <!-- <COMPLEX table collapsed view>-->
       <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]"
           [class.last-accordion]="isHidden[i]">
