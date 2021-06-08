@@ -19,10 +19,9 @@ describe('ActivitySocketService', () => {
 });
 
 let http = require('http');
-//let IOSocket = require('./activity-socket.service').WrappedSocket;
+// let IOSocket = require('./activity-socket.service').WrappedSocket;
 let enableDestroy = require('server-destroy');
 let server, io;
-
 
 beforeEach(() => {
   server = http.createServer();
@@ -44,35 +43,35 @@ afterEach(function() {
   server.destroy();
 });
 
-//const ioClient = require('socket.io-client');
-//const socketURL = 'http://localhost:3000';
-const socket = io('http://localhost:3000');
+// const ioClient = require('socket.io-client');
+// const socketURL = 'http://localhost:3000';
+const sock = io('http://localhost:3000');
 
-fdescribe('fromEvent', function() {
+describe('fromEvent', function() {
   it('should be equal', (done) => {
-    //let socket = new IOSocket({url: socketURL});
-    socket.fromEvent('event').subscribe((data) => {
+    // let socket = new IOSocket({url: socketURL});
+    sock.fromEvent('event').subscribe((data) => {
       expect(data).toEqual('someData');
       done();
     });
   });
 })
 
-fdescribe('on', function() {
+describe('on', function() {
   it('should be equal', (done) => {
-    //let socket = new IOSocket({url: socketURL});
-    socket.on('event', (data) => {
+    // let socket = new IOSocket({url: socketURL});
+    sock.on('event', (data) => {
       expect(data).toEqual('someData');
       done();
     });
   });
 })
 
-fdescribe('emit', function() {
+describe('emit', function() {
   it('should be equal', (done) => {
-    //let socket = new IOSocket({url: socketURL});
-    socket.emit('otherEvent');
-    socket.on('otherEvent', function(data) {
+    // let socket = new IOSocket({url: socketURL});
+    sock.emit('otherEvent');
+    sock.on('otherEvent', function(data) {
       expect(data).toEqual('Msg Received');
       done();
     });
@@ -84,7 +83,7 @@ import SocketMock from 'socket.io-mock';
 //import { expect } from 'chai';
 const expect = require('chai').expect;
 describe('Fast and isolated socket tests', function(){
-    fit('Sockets should be able to talk to each other without a server', function(done) {
+    it('Sockets should be able to talk to each other without a server', function(done) {
         let socket = new SocketMock();
 
         socket.on('message', function (message) {
@@ -94,4 +93,3 @@ describe('Fast and isolated socket tests', function(){
     });
 });
 */
-
