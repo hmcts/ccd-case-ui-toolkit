@@ -19,67 +19,65 @@ describe('ActivitySocketService', () => {
 });
 
 let http = require('http');
-let IOSocket = require("./activity-socket.service").WrappedSocket;
+//let IOSocket = require('./activity-socket.service').WrappedSocket;
 let enableDestroy = require('server-destroy');
 let server, io;
 
-fdescribe('ActivitySocketService', () => {
-  beforeEach(() => {
-    server = http.createServer();
 
-    io = require('socket.io')(server);
-    io.on('connection', function(socket) {
-      socket.emit('event',"someData");
-      socket.on("otherEvent",function() {
-        socket.emit('otherEvent',"Msg Received");
-      });
-      socket.emit('secondEvent',"someData");
-      socket.emit('thirdEvent',"someDatasss");
+beforeEach(() => {
+  server = http.createServer();
+
+  io = require('socket.io')(server);
+  io.on('connection', function(socket) {
+    socket.emit('event', 'someData');
+    socket.on('otherEvent', function() {
+      socket.emit('otherEvent', 'Msg Received');
     });
-    server.listen(3000);
-    enableDestroy(server);
+    socket.emit('secondEvent', 'someData');
+    socket.emit('thirdEvent', 'someDatasss');
   });
-
-  afterEach(function() {
-    server.destroy();
-  });
+  server.listen(3000);
+  enableDestroy(server);
 });
 
-var ioClient = require('socket.io-client');
-var socketURL = 'http://localhost:3000';
+afterEach(function() {
+  server.destroy();
+});
 
-fdescribe("fromEvent",function() {
+//const ioClient = require('socket.io-client');
+//const socketURL = 'http://localhost:3000';
+const socket = io('http://localhost:3000');
+
+fdescribe('fromEvent', function() {
   it('should be equal', (done) => {
-    let socket = new IOSocket({url: socketURL});
-    socket.fromEvent("event").subscribe((data)=> {
-      expect(data).toEqual("someData"); 
+    //let socket = new IOSocket({url: socketURL});
+    socket.fromEvent('event').subscribe((data) => {
+      expect(data).toEqual('someData');
       done();
     });
   });
 })
 
-describe("on",function(){
+fdescribe('on', function() {
   it('should be equal', (done) => {
-    let socket = new IOSocket({url: socketURL});
-    socket.on("event",(data) => {
-      expect(data).toEqual("someData");
+    //let socket = new IOSocket({url: socketURL});
+    socket.on('event', (data) => {
+      expect(data).toEqual('someData');
       done();
     });
   });
 })
 
-describe("emit",function(){
+fdescribe('emit', function() {
   it('should be equal', (done) => {
-    let socket = new IOSocket({url: socketURL});
-    let count = 0;
+    //let socket = new IOSocket({url: socketURL});
     socket.emit('otherEvent');
-    socket.on("otherEvent",function(data){
-      expect(data).toEqual("Msg Received");
+    socket.on('otherEvent', function(data) {
+      expect(data).toEqual('Msg Received');
       done();
     });
   });
 })
-
 
 /*
 import SocketMock from 'socket.io-mock';
@@ -97,36 +95,3 @@ describe('Fast and isolated socket tests', function(){
 });
 */
 
-
-/*
-var os = require('os');
-var should = require("chai").should();
-var socketio_client = require('socket.io-client');
-
-var end_point = 'http://localhost:3000';
-var opts = {forceNew: true};
-
-describe("async test with socket.io", function () {
-this.timeout(10000);
-
-fit('Response should be an object', function (done) {
-    setTimeout(function () {
-        var socket_client = socketio_client(end_point, opts);  
-
-        socket_client.emit('event', 'ABCDEF');
-
-        socket_client.on('event response', function (data) {
-            data.should.be.an('object');
-            socket_client.disconnect();
-            done();
-        });
-
-        socket_client.on('event response error', function (data) {
-            console.error(data);
-            socket_client.disconnect();
-            done();
-            });
-        }, 4000);
-    });
-});
-*/
