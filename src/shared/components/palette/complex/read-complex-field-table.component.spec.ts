@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
-import { DebugElement, Directive, Input } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { By } from '@angular/platform-browser';
 import { FieldsFilterPipe } from './fields-filter.pipe';
