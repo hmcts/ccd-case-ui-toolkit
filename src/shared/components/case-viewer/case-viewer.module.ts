@@ -10,7 +10,8 @@ import {
   DraftService,
   HttpService,
   NavigationNotifierService,
-  ErrorNotifierService
+  ErrorNotifierService,
+  ActivitySocketService
 } from '../../services';
 import { ErrorsModule } from '../error/errors.module';
 import { ActivityModule } from '../activity/activity.module';
@@ -69,6 +70,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
     HttpService,
     CaseResolver,
     ErrorNotifierService,
+    ActivitySocketService,
   ]
 })
 export class CaseViewerModule {

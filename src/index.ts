@@ -1,6 +1,7 @@
 export { CaseUIToolkitModule } from './case-ui-toolkit.module';
 export { CaseEditorConfig,
-         AbstractAppConfig } from './app.config';
+         AbstractAppConfig,
+         socketConfig } from './app.config';
 export { FieldTypeSanitiser,
          FormValueService,
          FormErrorService,
@@ -32,6 +33,7 @@ export { FieldTypeSanitiser,
          OrganisationService,
          LoadingService,
          LoadingModule,
+         ActivitySocketService
 } from './shared/services';
 export { DocumentData,
          AddressModel,

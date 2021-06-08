@@ -37,6 +37,8 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, FocusElementModule,
   FocusElementDirective, LoadingModule, PaginationModule, PaginationComponent } from './shared';
 import { CaseHistoryModule } from './shared/components/case-history';
+import { SocketIoModule } from 'ngx-socket-io';
+import { socketConfig } from './app.config'
 
 @NgModule({
     imports: [
@@ -58,7 +60,8 @@ import { CaseHistoryModule } from './shared/components/case-history';
       SearchFiltersModule,
       FocusElementModule,
       LoadingModule,
-      PaginationModule
+      PaginationModule,
+      SocketIoModule.forRoot(socketConfig)
     ],
     exports: [
       AlertComponent,

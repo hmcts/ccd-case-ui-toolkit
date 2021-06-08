@@ -1,3 +1,5 @@
+import { SocketIoConfig } from 'ngx-socket-io';
+
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
@@ -65,3 +67,10 @@ export class CaseEditorConfig {
   work_allocation_api_url: string;
   user_info_api_url: string;
 }
+
+const port = 3460;
+export const socketConfig: SocketIoConfig = { url: `http://localhost:${port}`, options: {
+  reconnection: true,
+  reconnectionDelayMax: 10000,
+  upgrade: false
+} };
