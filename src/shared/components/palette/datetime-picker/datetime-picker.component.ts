@@ -66,9 +66,9 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.configureDatePicker(this.dateTimeEntryFormat);
     this.setDateTimeFormat();
     // set date control based on mandatory field
-    this.dateControl = this.caseField.isMandatory ?
-     this.registerControl(new FormControl(this.caseField.value || '', [Validators.required])) as FormControl
-      : this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    this.dateControl = (this.caseField.isMandatory ?
+     this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
+      : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
