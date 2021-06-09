@@ -160,7 +160,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     const fieldType = plainToClassFromExist(new FieldType(), this.caseField.field_type.collection_field_type);
     if (fieldType.complex_fields) {
       fieldType.complex_fields
-        .filter((cf: CaseField) => !cf.show_condition)
+        .filter((cf: CaseField) => !!cf.show_condition)
         .map((cf: CaseField) => cf.hidden = true);
     }
 
