@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-complex-hidden-collection-show
+**EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
+
 ### Version 3.1.5-complex-field-check-answers
 **EUI-4033** Ensured complex fields were interpolated on check you answers page
 

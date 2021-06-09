@@ -2,11 +2,11 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildre
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { plainToClassFromExist } from 'class-transformer';
+import { plainToClass, plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
 import { Profile } from '../../../domain/profile';
 import { FieldsUtils, ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
@@ -156,11 +156,19 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private newCaseField(id: string, item, index, isNew = false) {
     const isNotAuthorisedToUpdate = !isNew && this.isNotAuthorisedToUpdate(index);
+
+    const fieldType = plainToClassFromExist(new FieldType(), this.caseField.field_type.collection_field_type);
+    if (fieldType.complex_fields) {
+      fieldType.complex_fields
+        .filter((cf: CaseField) => cf.show_condition !== null)
+        .map((cf: CaseField) => cf.hidden = true);
+    }
+
     // Remove the bit setting the hidden flag here as it's an item in the array and
     // its hidden state isn't independently re-evaluated when the form is changed.
     return plainToClassFromExist(new CaseField(), {
       id,
-      field_type: this.caseField.field_type.collection_field_type,
+      field_type: fieldType,
       display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
       value: item.value,
       label: null,
