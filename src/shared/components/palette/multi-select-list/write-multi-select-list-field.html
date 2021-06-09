@@ -4,14 +4,14 @@
 
     <legend>
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-      <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
-      <span *ngIf="checkboxes.errors && checkboxes.touched" class="error-message">{{checkboxes.errors | ccdFirstError}}</span>
     </legend>
+    <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
+    <span *ngIf="checkboxes.errors && checkboxes.touched" class="error-message">{{checkboxes.errors | ccdFirstError:caseField.label}}</span>
 
     <ng-container *ngFor="let checkbox of caseField.field_type.fixed_list_items">
 
       <div class="multiple-choice">
-        <input class="form-control" [id]="id()+'-'+checkbox.code" [name]="id()" type="checkbox" [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
+        <input class="form-control" (blur)="inputBlur()" [id]="id()+'-'+checkbox.code" [name]="id()" type="checkbox" [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
         <label class="form-label" [for]="id()+'-'+checkbox.code">{{checkbox.label}}</label>
       </div>
 

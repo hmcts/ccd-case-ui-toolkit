@@ -20,4 +20,8 @@ export class WriteYesNoFieldComponent extends AbstractFieldWriteComponent implem
     this.yesNoControl = this.registerControl(new FormControl(this.yesNoService.format(this.caseField.value))) as FormControl;
   }
 
+  public inputBlur() {
+    this.yesNoControl.markAsUntouched();
+  }
+
 }

@@ -13,4 +13,8 @@ export class WriteEmailFieldComponent extends AbstractFieldWriteComponent implem
   ngOnInit() {
     this.emailControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
+
+  public inputBlur() {
+    this.emailControl.markAsUntouched();
+  }
 }

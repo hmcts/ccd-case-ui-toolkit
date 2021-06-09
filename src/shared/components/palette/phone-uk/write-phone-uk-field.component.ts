@@ -14,4 +14,8 @@ export class WritePhoneUKFieldComponent extends AbstractFieldWriteComponent impl
     this.phoneUkControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 
+  public inputBlur() {
+    this.phoneUkControl.markAsUntouched();
+  }
+
 }

@@ -2,11 +2,11 @@
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="fixedListFormControl.errors && fixedListFormControl.touched">{{fixedListFormControl.errors | ccdFirstError}}</span>
   </label>
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+  <span class="error-message" *ngIf="fixedListFormControl.errors && fixedListFormControl.touched">{{fixedListFormControl.errors | ccdFirstError:caseField.label}}</span>  
 
-  <select class="form-control ccd-dropdown bottom-30" [id]="id()" [formControl]="fixedListFormControl">
+  <select class="form-control ccd-dropdown bottom-30" [id]="id()" (blur)="inputBlur()" [formControl]="fixedListFormControl">
     <option [ngValue]=null>--Select a value--</option>
     <option [ngValue]="type.code" *ngFor="let type of listItems">{{type.label}}</option>
   </select>

@@ -27,4 +27,8 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  public inputBlur() {
+    this.textareaControl.markAsUntouched();
+  }
+
 }

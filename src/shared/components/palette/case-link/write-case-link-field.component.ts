@@ -48,4 +48,8 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     }
     return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());
   }
+
+  public inputBlur() {
+    this.caseReferenceControl.markAsUntouched();
+  }
 }
