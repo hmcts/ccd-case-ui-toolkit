@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildre
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { plainToClass, plainToClassFromExist } from 'class-transformer';
+import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
