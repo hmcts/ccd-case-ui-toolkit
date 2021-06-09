@@ -143,16 +143,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             if (fieldElement) {
               if (fieldElement.hasError('required')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
-                fieldElement.markAsTouched();
+                fieldElement.markAsDirty();
               } else if (fieldElement.hasError('pattern')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
-                fieldElement.markAsTouched();
+                fieldElement.markAsDirty();
               } else if (fieldElement.hasError('minlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
-                fieldElement.markAsTouched();
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is below the minimum length`});
+                fieldElement.markAsDirty();
               } else if (fieldElement.hasError('maxlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
-                fieldElement.markAsTouched();
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds the maximum length`});
+                fieldElement.markAsDirty();
               }
             }
           })

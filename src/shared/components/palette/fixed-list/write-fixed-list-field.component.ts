@@ -32,8 +32,4 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
     this.fixedListFormControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
     this.fixedListFormControl.setValue(this.caseField.value);
   }
-
-  public inputBlur() {
-    this.fixedListFormControl.markAsUntouched();
-  }
 }

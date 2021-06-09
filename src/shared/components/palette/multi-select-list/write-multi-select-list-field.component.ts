@@ -44,8 +44,4 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
       return this.checkboxes.controls.find(control => control.value === code);
     }
   }
-
-  public inputBlur() {
-    this.checkboxes.markAsUntouched();
-  }
 }

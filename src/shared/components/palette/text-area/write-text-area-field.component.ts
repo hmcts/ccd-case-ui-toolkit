@@ -26,9 +26,4 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
       event.target.scrollTop = event.target.scrollHeight;
     }
   }
-
-  public inputBlur() {
-    this.textareaControl.markAsUntouched();
-  }
-
 }

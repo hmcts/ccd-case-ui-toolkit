@@ -1,4 +1,4 @@
-<div [id]="id()" class="form-group bottom-30" [ngClass]="{'form-group-error': !yesNoControl.valid && yesNoControl.touched}">
+<div [id]="id()" class="form-group bottom-30" [ngClass]="{'form-group-error': !yesNoControl.valid && yesNoControl.dirty}">
 
 	<fieldset class="inline">
 
@@ -6,12 +6,12 @@
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
     </legend>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | ccdFirstError:caseField.label}}</span>
+    <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.dirty">{{yesNoControl.errors | ccdFirstError:caseField.label}}</span>
 
     <div [id]="id()">
 
   	  <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{selected: yesNoControl.value === value}">
-  	    <input class="form-control" [id]="id()+'-'+value" (blur)="inputBlur()" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
+  	    <input class="form-control" [id]="id()+'-'+value" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
   	    <label class="form-label" [for]="id()+'-'+value">{{value}}</label>
   	  </div>
 
