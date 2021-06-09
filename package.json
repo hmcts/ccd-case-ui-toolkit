@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.1.5-Nested-collection-is-not-rendering-correctly",
+  "version": "4.0.0-Nested-collection-is-not-rendering-correctly",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

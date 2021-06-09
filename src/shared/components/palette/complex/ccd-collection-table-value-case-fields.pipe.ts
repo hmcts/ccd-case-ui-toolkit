@@ -13,12 +13,12 @@ export class CcdCollectionTableCaseFieldsFilterPipe implements PipeTransform {
       type: obj.value.type.type ? obj.value.type.type : obj.value.type
     }));
     return plainToClassFromExist(new CaseField(), {
-      id: caseField.id,
-      label: caseField.label,
+      id: caseField ? caseField.id : '',
+      label: caseField ? caseField.label : '',
       display_context: 'READONLY',
       value,
       field_type: {
-        id: caseField.id,
+        id: caseField ? caseField.id : '',
         type: 'Complex',
         complex_fields: fields,
       }

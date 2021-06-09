@@ -65,7 +65,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     return true
   }
 
-  public addCaseReferenceValue(field, value: any) {
+  public addCaseReferenceValue(field, value: any): any {
     field.value = {CaseReference: value};
     return field;
   }
