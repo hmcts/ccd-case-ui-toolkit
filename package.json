@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "2.64.7-EUI-CCD-RDM-8661-MoneyGBP",
+  "version": "2.64.7-EUI-CCD-CCD-1047-Underscore",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

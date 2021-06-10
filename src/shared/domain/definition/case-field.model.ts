@@ -60,6 +60,7 @@ export class CaseField implements Orderable {
   @Expose()
   public isReadonly() {
     return !_.isUndefined(this.display_context)
+      && !_.isNull(this.display_context)
       && _.isString(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
   }
