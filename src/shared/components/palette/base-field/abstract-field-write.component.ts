@@ -11,13 +11,6 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
   @Input()
   isExpanded = false;
 
-  @Input()
-  idPrefix = '';
-
-  public id() {
-    return this.idPrefix + this.caseField.id;
-  }
-
   public constructor() {
     super();
     this.fixCaseField();
@@ -41,5 +34,9 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
     if (this.caseField && !(this.caseField instanceof CaseField)) {
       this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
     }
+  }
+
+  createElementId(elementId: string): string {
+    return `${this.id()}_${elementId}`;
   }
 }

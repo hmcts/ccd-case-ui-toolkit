@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
-import { PaletteUtilsModule } from '../../palette';
+import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
@@ -208,6 +208,7 @@ describe('CaseEditComponent', () => {
             // Mock
             EventTriggerHeaderComponent,
             RouterLinkComponent,
+            FieldsFilterPipe,
             FieldRead,
             FieldWrite
           ],

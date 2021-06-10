@@ -51,6 +51,7 @@ docs/
 # demo
 demo/dist/
 demo/node_modules
+demo/reports
 
 # package-lock
 package-lock.json

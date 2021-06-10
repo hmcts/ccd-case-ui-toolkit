@@ -68,7 +68,7 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
   }
 
   isDataLoaded() {
-    return this.caseDetails && this.caseHistory ? true : false;
+    return !!(this.caseDetails && this.caseHistory);
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {

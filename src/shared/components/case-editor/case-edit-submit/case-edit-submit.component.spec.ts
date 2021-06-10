@@ -1,30 +1,32 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { of, Observable, BehaviorSubject } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import createSpyObj = jasmine.createSpyObj;
-import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
-import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { OrderService } from '../../../services/order/order.service';
-import { aWizardPage } from '../case-edit.spec';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { CaseEditSubmitComponent } from './case-edit-submit.component';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
-import { ProfileService, ProfileNotifier } from '../../../services/profile';
-import { Profile } from '../../../domain';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+
+import { CaseField, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import {
+  CaseFieldService,
+  FieldsUtils,
+  FormErrorService,
+  FormValueService,
+  OrderService,
+  ProfileNotifier,
+  ProfileService,
+} from '../../../services';
 import { text } from '../../../test/helpers';
+import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
+import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
+import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
+import { aWizardPage } from '../case-edit.spec';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Wizard, WizardPage } from '../domain';
+import { CaseEditSubmitComponent } from './case-edit-submit.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -38,7 +40,7 @@ describe('CaseEditSubmitComponent', () => {
   let caseFieldService = new CaseFieldService();
   let fieldsUtils: FieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({ 'PersonLastName': new FormControl('Khaleesi') })
+    'data': new FormGroup({'PersonLastName': new FormControl('Khaleesi')})
   });
   let caseEditComponent: any;
   let pages: WizardPage[];
@@ -111,7 +113,7 @@ describe('CaseEditSubmitComponent', () => {
   const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors'
 
   describe('Save and Resume disabled', () => {
-    pages  = [
+    pages = [
       aWizardPage('page1', 'Page 1', 1),
       aWizardPage('page2', 'Page 2', 2),
       aWizardPage('page3', 'Page 3', 3)
@@ -151,6 +153,9 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -345,6 +350,9 @@ describe('CaseEditSubmitComponent', () => {
       comp.isSubmitting = true;
       fixture.detectChanges();
 
+      // The isDisabled property should immediately pick up on this.
+      expect(comp.isDisabled).toBeTruthy();
+
       let submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeTruthy();
 
@@ -352,13 +360,15 @@ describe('CaseEditSubmitComponent', () => {
       expect(prevButton.nativeElement.disabled).toBeTruthy();
 
       let cancelLink = de.query(By.css('a[class=disabled]'));
-      console.log(cancelLink);
       expect(cancelLink.nativeElement).toBeTruthy();
     });
 
     it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
       comp.isSubmitting = false;
       fixture.detectChanges();
+
+      // The isDisabled property should immediately pick up on this.
+      expect(comp.isDisabled).toBeFalsy();
 
       let submitButton = de.query(By.css('button[type=submit]'));
       expect(submitButton.nativeElement.disabled).toBeFalsy();
@@ -414,7 +424,7 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         'form': FORM_GROUP,
         'data': '',
-        'eventTrigger': { 'case_fields': [], 'can_save_draft': true },
+        'eventTrigger': {'case_fields': [], 'can_save_draft': true},
         'wizard': wizard,
         'hasPrevious': () => true,
         'getPage': () => firstPage,
@@ -438,20 +448,23 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
+          CcdPageFieldsPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueService },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
 
@@ -545,7 +558,7 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         'form': FORM_GROUP,
         'data': '',
-        'eventTrigger': { 'case_fields': [], 'can_save_draft': true },
+        'eventTrigger': {'case_fields': [], 'can_save_draft': true},
         'wizard': wizard,
         'hasPrevious': () => true,
         'getPage': () => firstPage,
@@ -566,20 +579,23 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          CcdPageFieldsPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponent },
-          { provide: FormValueService, useValue: formValueService },
-          { provide: FormErrorService, useValue: formErrorService },
-          { provide: CaseFieldService, useValue: caseFieldService },
-          { provide: FieldsUtils, useValue: fieldsUtils },
-          { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
-          { provide: OrderService, useValue: orderService },
-          { provide: ProfileService, useValue: profileService },
-          { provide: ProfileNotifier, useValue: profileNotifier }
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier}
         ]
       }).compileComponents();
     }));
@@ -649,6 +665,29 @@ describe('CaseEditSubmitComponent', () => {
         expect(text(firstFieldError)).toBe('First field error');
         const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
         expect(text(secondFieldError)).toBe('Second field error');
+      });
+    });
+
+    it('should display specific error heading and message when callback errors, callback warnings and details are set to null', () => {
+      comp.error = {
+        status: 422,
+        callbackErrors: null,
+        callbackWarnings: null,
+        details: null,
+        message: 'There are field validation errors'
+      } as HttpError;
+
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => {
+        const error = de.query($SELECT_ERROR_SUMMARY);
+        expect(error).toBeTruthy();
+
+        const errorHeading = error.query($SELECT_ERROR_HEADING_SPECIFIC);
+        expect(text(errorHeading)).toBe(ERROR_HEADING_SPECIFIC);
+
+        const errorMessage = error.query($SELECT_ERROR_MESSAGE_SPECIFIC);
+        expect(text(errorMessage)).toBe(ERROR_MESSAGE_SPECIFIC);
       });
     });
 

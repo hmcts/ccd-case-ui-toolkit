@@ -97,6 +97,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   isDataLoaded(): boolean {
-    return this.eventTrigger && this.caseDetails ? true : false;
+    return !!(this.eventTrigger && this.caseDetails);
   }
 }
