@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 3.1.2.pagination
+### Version 3.1.4-alpha-pagination
 **EUI-4013**
 **EUI-4024**
 **EUI-4029**
