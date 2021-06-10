@@ -608,6 +608,7 @@ import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
 //       });
 //     });
 
+        // tslint:disable-next-line:max-line-length
 //     it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
 //       comp.error = {
 //         status: 200,
