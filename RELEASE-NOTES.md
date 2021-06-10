@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-phme-flag-not-appearing-on-summary-tab
+**EUI-4033** Update phme flag not seen in ExUI on Summary page
+
 ### Version 3.1.5-complex-field-check-answers
 **EUI-4033** Ensured complex fields were interpolated on check you answers page
 
