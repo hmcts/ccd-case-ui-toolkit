@@ -37,7 +37,7 @@ yarn start
 
 ```bash
 # Install all dependencies
-yarn install
+yarn install 
 
 # Build library in watch mode
 yarn build:watch
