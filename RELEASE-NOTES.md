@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 3.0.0-validation-error-message-changes
+### Version 3.0.1-validation-error-message-changes
 **EUI-2022** ExUI - Error Messages (A)
 **EUI-2023** ExUI - Labels (A)
 
