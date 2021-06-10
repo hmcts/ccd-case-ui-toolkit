@@ -59,6 +59,12 @@ export class CaseField implements Orderable {
 
   @Expose()
   public isReadonly() {
+    console.log(this.display_context);
+    console.log(!_.isUndefined(this.display_context));
+    console.log(_.isNull(this.display_context));
+    console.log(_.isString(this.display_context));
+    console.log(_.isEmpty(this.display_context));
+
     return !_.isUndefined(this.display_context)
       && !_.isNull(this.display_context)
       && _.isString(this.display_context)
