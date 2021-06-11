@@ -1,3 +1,5 @@
+import * as _ from 'underscore'
+
 import { Orderable } from '../order';
 import { FieldType } from './field-type.model';
 import { WizardPageField } from '../../components/case-editor/domain';
@@ -58,7 +60,7 @@ export class CaseField implements Orderable {
 
   @Expose()
   public isReadonly() {
-    return !(!this.display_context || this.display_context.length === 0) //to check if a string is not null or not empty
+    return !_.isEmpty(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
   }
 
