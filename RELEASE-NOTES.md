@@ -1,9 +1,12 @@
 ## RELEASE NOTES
-### Version 3.1.1-alpha-pagination-1
+### Version 3.1.2-alpha-pagination-1
 **EUI-4013**
 **EUI-4024**
 **EUI-4029**
 **EUI-4031**
+
+### Version 3.1.2
+Activity Tracker Permformance changes
 
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
