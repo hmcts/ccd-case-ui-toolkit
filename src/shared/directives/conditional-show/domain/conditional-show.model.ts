@@ -1,6 +1,6 @@
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
-import { _ } from 'lodash';
+import * as _ from 'lodash';
 
 export class ShowCondition {
 
