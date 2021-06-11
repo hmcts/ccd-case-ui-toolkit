@@ -2,7 +2,6 @@ import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { _ } from 'lodash';
 
-
 export class ShowCondition {
 
   private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
@@ -176,7 +175,7 @@ export class ShowCondition {
   }
 
   private isDynamicList(dynamiclist) {
-    return !_.isEmpty(dynamiclist) &&
+    return (dynamiclist && dynamiclist !== 'null' && dynamiclist !== 'undefined') &&
       (_.has(dynamiclist, 'value') && _.has(dynamiclist, 'list_items'));
   }
 
