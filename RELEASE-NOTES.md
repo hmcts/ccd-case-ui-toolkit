@@ -1,5 +1,4 @@
 ## RELEASE NOTES
-
 ### Version 3.1.5-complex-field-check-answers
 **EUI-4033** Ensured complex fields were interpolated on check you answers page
 
@@ -20,32 +19,12 @@
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
-### Version 3.0.0-theta
-**EUI-2744** Remove empty collection fields that have min validation set on the FieldType
-
-### Version 3.0.0-eta
-**EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 where "RetainHiddenValue" = "Yes"
-
-### Version 3.0.0-zeta
-**EUI-3622** Re-tag of previous pre-release, following PR corrections
-
-### Version 3.0.0-epsilon
-**EUI-3622** Pre-release candidate modifying Case Data payload submission, following reinterpretation of "retain hidden value" semantics
-
-### Version 3.0.0-delta
-Incorporating fixes in Version 2.72.9-prerelease-fix-case-submission for EUI-3494 and EUI-3495
-
-### Version 3.0.0-gamma
-Incorporating fix in Version 2.72.6-fix-filter-any-state for EUI-3490
-
-### Version 3.0.0-beta
-Incorporating fix in Version 2.72.5-remove-null-http-request-headers for EUI-3464
-
-### Version 3.0.0-alpha
-**EUI-3038** Pre-release candidate fixing "retain hidden fields" functionality; fixes superfluous null value submission for empty fields
-
 ### Version 3.0.3
 **EUI-3505** OCMC: OCON9x paper response form button should be disabled continued..
+
+### Version 3.0.1-validation-error-message-changes
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
 
 ### Version 3.0.0 
 **EUI-3997** Master release candidate
