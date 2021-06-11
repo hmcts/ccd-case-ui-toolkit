@@ -8,7 +8,8 @@
         <span class="form-label">Enter a UK postcode</span>
       </label>
       <span class="error-message" *ngIf="missingPostcode">Enter the Postcode</span>
-      <input type="text" [id]="createId('postcodeInput')" name="postcode" class="form-control postcodeinput inline-block" [formControl]="postcode">
+      <input type="text" [ngClass]="{'govuk-input--error': missingPostcode}" 
+      [id]="createId('postcodeInput')" name="postcode" class="form-control postcodeinput inline-block" [formControl]="postcode">
       <button type="button" class="button button-30" (click)="findAddress()">Find address</button>
     </div>
 

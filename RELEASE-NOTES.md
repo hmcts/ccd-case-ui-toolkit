@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 3.0.1-validation-error-message-changes
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+
 ### Version 3.0.0 
 **EUI-3997** Master release candidate
 **EUI-2569** ExUI - Labels not displaying in Case Heading
