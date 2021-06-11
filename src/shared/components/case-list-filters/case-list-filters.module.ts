@@ -27,7 +27,7 @@ import { WorkbasketFiltersModule } from '../workbasket-filters';
         OrderService,
         JurisdictionService,
         AlertService,
-        WindowService,
+        WindowService
     ]
 })
 export class CaseListFiltersModule {}

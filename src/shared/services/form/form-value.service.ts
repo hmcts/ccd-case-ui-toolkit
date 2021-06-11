@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { CaseEventData, CaseField } from '../../domain';
+import { CaseField } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
@@ -218,13 +218,19 @@ export class FormValueService {
     }
 
     let sanitisedObject = {};
-    Object.keys(rawObject).forEach(key => {
-      if ('CaseReference' === key) {
+    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
+    for (const key in rawObject) {
+      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+      // properties is null, the entire sanitised object to be returned should be null
+      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
+        sanitisedObject = null;
+        break;
+      } else if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
       }
-    });
+    };
     return sanitisedObject;
   }
 
@@ -234,12 +240,17 @@ export class FormValueService {
     }
 
     rawArray.forEach(item => {
-      if (item.hasOwnProperty('value')) {
+      if (item && item.hasOwnProperty('value')) {
         item.value = this.sanitiseValue(item.value);
       }
     });
 
-    return rawArray;
+    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
+    // association of a value. In addition, if the array contains items with a "value" object property, return only
+    // those whose value object contains non-empty values, including for any descendant objects
+    return rawArray
+      .filter(item => !!item)
+      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -333,7 +344,9 @@ export class FormValueService {
               }
               break;
             case 'Document':
-              if (FormValueService.isEmptyData(data[field.id])) {
+              // Ensure this is executed only if the Document field is NOT hidden and is empty of data; hidden Document
+              // fields are handled by the filterRawFormValues() function in CaseEditSubmit component
+              if (field.hidden !== true && FormValueService.isEmptyData(data[field.id])) {
                 delete data[field.id];
               }
               break;
@@ -411,4 +424,21 @@ export class FormValueService {
     }
   }
 
+  /**
+   * Remove any empty collection fields where a value of greater than zero is specified in the field's {@link FieldType}
+   * `min` attribute.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      for (const field of caseFields) {
+        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
+            Array.isArray(data[field.id]) && data[field.id].length === 0) {
+          delete data[field.id];
+        }
+      }
+    }
+  }
 }

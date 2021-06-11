@@ -72,9 +72,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly cdRef: ChangeDetectorRef,
     private readonly pageValidationService: PageValidationService,
     private readonly dialog: MatDialog,
-    private readonly caseFieldService: CaseFieldService,
-  ) {
-  }
+    private readonly caseFieldService: CaseFieldService
+  ) {}
 
   public ngOnInit(): void {
     this.initDialog();
@@ -163,7 +162,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 
-  submit() {
+  public submit(): void {
     this.validationErrors = [];
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);

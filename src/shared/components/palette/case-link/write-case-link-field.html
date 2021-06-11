@@ -4,6 +4,5 @@
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
   <span class="error-message" *ngIf="caseReferenceControl.errors && caseReferenceControl.dirty">{{caseReferenceControl.errors | ccdFirstError:caseField.label}}</span>
-  
   <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
 </div>
