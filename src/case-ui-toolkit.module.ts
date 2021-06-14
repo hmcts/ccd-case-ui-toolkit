@@ -35,7 +35,11 @@ import { PipesModule, CaseReferencePipe, MarkdownComponent, MarkdownModule, Base
   WriteTextFieldComponent, WriteTextAreaFieldComponent, WritePhoneUKFieldComponent, WriteNumberFieldComponent, WriteEmailFieldComponent,
   WriteDateFieldComponent, ConditionalShowModule, ConditionalShowDirective, LabelSubstitutorModule,
   LabelSubstitutorDirective, CaseViewerComponent, CaseViewComponent, SearchFiltersModule, FocusElementModule,
+<<<<<<< HEAD
   FocusElementDirective, LoadingModule, PaginationModule, PaginationComponent } from './shared';
+=======
+  FocusElementDirective, LoadingModule, PaginationModule, PaginationComponent} from './shared';
+>>>>>>> master
 import { CaseHistoryModule } from './shared/components/case-history';
 
 @NgModule({
@@ -111,7 +115,6 @@ import { CaseHistoryModule } from './shared/components/case-history';
       ConditionalShowDirective,
       LabelSubstitutorDirective,
       FocusElementDirective,
-
       PaginatePipe
     ]
 })
