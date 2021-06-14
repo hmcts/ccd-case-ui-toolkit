@@ -1,4 +1,3 @@
-
 <div class="form-group" [ngClass]="{'form-group-error': !textareaControl.valid && textareaControl.dirty}">
 
   <label [for]="id()">
@@ -7,9 +6,7 @@
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
   <span class="error-message" *ngIf="textareaControl.errors && textareaControl.dirty">{{textareaControl.errors | ccdFirstError:caseField.label}}</span>
 
-  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [id]="id()" 
+  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [id]="id()"
   [ngClass]="{'govuk-textarea--error': textareaControl.errors && textareaControl.dirty}" rows="3" [formControl]="textareaControl"></textarea>
 
 </div>
-
-

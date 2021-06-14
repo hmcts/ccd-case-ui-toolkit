@@ -20,14 +20,16 @@ export class FirstErrorPipe implements PipeTransform {
     if (!keys.length) {
       return '';
     }
-    if (keys[0] ===  'required') {
+    if (keys[0] === 'required') {
       return `${args} is required`;
-    } else if (keys[0] ===  'pattern') {
+    } else if (keys[0] === 'pattern') {
       return `The data entered is not valid for ${args}`;
-    } else if (keys[0] ===  'minlength') {
+    } else if (keys[0] === 'minlength') {
       return `${args} is below the minimum length`;
-    } else if (keys[0] ===  'maxlength') {
+    } else if (keys[0] === 'maxlength') {
       return `${args} exceeds the maximum length`;
+    } else if (value.hasOwnProperty('matDatetimePickerParse')) {
+      return 'The date entered is not valid. Please provide a valid date'
     }
     return value[keys[0]];
   }

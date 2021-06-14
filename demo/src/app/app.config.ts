@@ -25,7 +25,8 @@ export class AppConfig extends AbstractAppConfig {
     'pagination_page_size': 25,
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
-    'work_allocation_api_url': '/workallocation'
+    'work_allocation_api_url': '/workallocation',
+    'user_info_api_url': '/user-info'
   };
 
   constructor(private http: HttpClient) {
