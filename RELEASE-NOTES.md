@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 ### Version 3.1.5-complex-field-check-answers
-**EUI-4033** Ensured complex fields were interpolated on check you answers page
+**EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
 
 ### Version 3.1.5-pcm-role-non-completion
 **EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
@@ -27,11 +27,7 @@ Activity Tracker Performance changes
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
 ### Version 3.0.3
-**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued..
-
-### Version 3.0.1-validation-error-message-changes
-**EUI-2022** ExUI - Error Messages (A)
-**EUI-2023** ExUI - Labels (A)
+**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued...
 
 ### Version 3.0.1-validation-error-message-changes
 **EUI-2022** ExUI - Error Messages (A)
@@ -57,8 +53,6 @@ Activity Tracker Performance changes
 ### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
 **EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
 **EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
-
-### Version 3.0.0
 
 ### Version 2.80.0-alpha-datetime-picker
 **EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
