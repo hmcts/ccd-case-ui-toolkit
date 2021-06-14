@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.1.5-phme-flag-not-appearing-on-summary-tab",
+  "version": "3.1.5-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

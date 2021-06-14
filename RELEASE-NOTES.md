@@ -1,7 +1,9 @@
 ## RELEASE NOTES
 
-### Version 3.1.5-phme-flag-not-appearing-on-summary-tab
-**EUI-4033** Update phme flag not seen in ExUI on Summary page
+### Version 
+
+### Version 3.1.5-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
+**EUI-2276** Case field showing on summary screen when complex type field is hidden
 
 ### Version 3.1.5-complex-field-check-answers
 **EUI-4033** Ensured complex fields were interpolated on check you answers page
