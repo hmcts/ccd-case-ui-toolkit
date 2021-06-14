@@ -66,7 +66,6 @@ describe('LoadingService', () => {
       }
       index++;
     }, 1);
-
   });
 
   afterEach(() => {

@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 ### Version 3.1.2
+**EUI-4013**
+**EUI-4024**
+**EUI-4029**
+**EUI-4031**
+
+### Version 3.1.2
 Activity Tracker Permformance changes
 
 ### Version 3.1.1
