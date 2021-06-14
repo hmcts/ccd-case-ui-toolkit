@@ -166,11 +166,6 @@ export class FieldsUtils {
     return fieldValue ? fieldValue.label : '';
   }
 
-  private static getDate(fieldValue) {
-  private static getLabel(fieldValue: CaseField): string {
-    return fieldValue ? fieldValue.label : '';
-  }
-
   private static getDate(fieldValue: string): string {
     try {
       // Format specified here wasn't previously working and lots of tests depend on it not working

@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 4.0.0-rc1
+### Version 4.0.0
 **EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
 **EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
 **EUI-2027** Accessibility amends for button labels
@@ -24,10 +24,10 @@
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
 **EUI-2029** WCAG AA Status Message Fixes
 **EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
-**EUI-3622** re-valuate retain hidden value matrix
-**EUI-3868** retain hidden value matrix
-**EUI-2744** event to complex type
-**EUI-4106** show/hide functionality
+**EUI-3622** Re-evaluate retain hidden value matrix
+**EUI-3868** Retain hidden value matrix
+**EUI-2744** Event to complex type
+**EUI-4106** Show/hide functionality
 
 ### Version 3.1.2
 **EUI-4013**
@@ -40,7 +40,7 @@ Activity Tracker Performance changes
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
 
 ### Version 3.0.3
-**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued..
+**EUI-3505** OCMC: OCON9x paper response form button should be disabled continued...
 
 ### Version 3.0.0 
 **EUI-3997** Master release candidate
