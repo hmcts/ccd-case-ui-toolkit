@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseField } from '../../../domain/definition';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
-import { WindowService } from '../../../services';
+import { Observable, of } from 'rxjs';
 import { OrganisationService, OrganisationVm } from '../../../services/organisation';
+import { map, switchMap } from 'rxjs/operators';
+import { WindowService } from '../../../services';
+import { CaseField } from '../../../domain/definition';
 
 @Component({
   selector: 'ccd-write-organisation-field',
@@ -66,14 +66,6 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         this.preSelectDefaultOrg();
       } else {
         this.preSelectEmptyOrg();
-      }
-    }
-
-    // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an
-    // Organisation field uses the Complex type, it is meant to be treated as one field
-    if (this.caseField && this.caseField.field_type.type === 'Complex') {
-      for (const organisationSubField of this.caseField.field_type.complex_fields) {
-        organisationSubField.retain_hidden_value = this.caseField.retain_hidden_value;
       }
     }
   }
@@ -168,7 +160,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     return false;
   }
 
-  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
+  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string) {
     const searchTextArray: string[] = lowerOrgSearchText.split(/\s+/g);
     for (const singleSearchText of searchTextArray) {
       if (singleSearchText && this.searchCriteria(organisation, singleSearchText)) {
@@ -181,7 +173,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     return oldText.replace(/\s+/g, '');
   }
 
-  public selectOrg(selectedOrg: SimpleOrganisationModel): void {
+  public selectOrg(selectedOrg: SimpleOrganisationModel) {
     this.organisationIDFormControl.setValue(selectedOrg.organisationIdentifier);
     this.organisationNameFormControl.setValue(selectedOrg.name);
     this.selectedOrg$ = of(selectedOrg);
@@ -195,7 +187,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
-  public deSelectOrg(): void {
+  public deSelectOrg(selectedOrg) {
     this.organisationIDFormControl.reset();
     this.organisationNameFormControl.reset();
     this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
@@ -205,4 +197,5 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.caseField.value = {OrganisationID: null, OrganisationName: null};
     this.organisationFormGroup.setValue(this.caseField.value);
   }
+
 }
