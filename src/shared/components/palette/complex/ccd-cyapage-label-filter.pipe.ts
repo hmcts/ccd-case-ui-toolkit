@@ -10,13 +10,13 @@ export class CcdCYAPageLabelFilterPipe implements PipeTransform {
     return caseFields.map((caseField: CaseField) => {
 
       if (caseField.field_type.complex_fields && caseField.field_type.complex_fields.length) {
-        caseField.field_type.complex_fields = this.removeLabels(caseField.field_type.complex_fields);
+        caseField.field_type.complex_fields = this.getNonLabelComplexFieldType(caseField.field_type.complex_fields);
       }
 
       return caseField;
     });
   }
 
-  private removeLabels = (complexFields: CaseField[]): CaseField[] =>
+  private getNonLabelComplexFieldType = (complexFields: CaseField[]): CaseField[] =>
     complexFields.filter((caseField: CaseField) => caseField.field_type.type !== 'Label');
 }
