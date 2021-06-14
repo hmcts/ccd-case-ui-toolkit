@@ -1,7 +1,5 @@
 ## RELEASE NOTES
 
-### Version 
-
 ### Version 3.1.5-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
 **EUI-2276** Case field showing on summary screen when complex type field is hidden
 
