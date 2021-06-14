@@ -27,6 +27,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import createSpyObj = jasmine.createSpyObj;
+import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -155,6 +156,7 @@ describe('CaseEditSubmitComponent', () => {
           IsCompoundPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -457,6 +459,7 @@ describe('CaseEditSubmitComponent', () => {
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
+          CcdCYAPageLabelFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
@@ -594,6 +597,7 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
