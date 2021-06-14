@@ -18,37 +18,9 @@
   </h2>
   <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
     <ul class="govuk-list govuk-error-summary__list">
-      <li> 
+      <li>
         <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message}}</a>
-      </li>      
-    </ul>
-  </div>
-</div>  
-
-<!-- Error message summary -->
-<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
-    There is a problem
-  </h2>
-  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li> 
-        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message}}</a>
-      </li>      
-    </ul>
-  </div>
-</div>
-
-<!-- Error message summary -->
-<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
-    There is a problem
-  </h2>
-  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li> 
-        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message}}</a>
-      </li>      
+      </li>
     </ul>
   </div>
 </div>
