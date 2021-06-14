@@ -69,7 +69,7 @@ export class CaseEditComponent implements OnInit {
         'summary': [''],
         'description': ['']
       })
-    }, {updateOn: 'submit'});
+    });
 
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
