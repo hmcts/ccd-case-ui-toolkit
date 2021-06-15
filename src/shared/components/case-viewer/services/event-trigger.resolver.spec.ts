@@ -42,17 +42,17 @@ describe('EventTriggerResolver', () => {
   let httpService: any;
   const MOCK_PROFILE: Profile = createAProfile();
   const API_URL = 'http://data.ccd.reform';
-  let USER = {
-    idam: {
-      id: 'userId',
-      email: 'string',
-      forename: 'string',
-      surname: 'string',
-      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
-    }
-  };
   let FUNC = () => false;
   let PROFILE: Profile = {
+    user: {
+      idam: {
+        id: 'user1',
+      email: 'test@mail.com',
+      forename: 'first',
+      surname: 'last',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+      }
+    },
     channels: [],
     jurisdictions: [],
     default: {
@@ -62,7 +62,6 @@ describe('EventTriggerResolver', () => {
         state_id: ''
       }
     },
-    user: USER,
     'isSolicitor': FUNC,
     'isCourtAdmin': FUNC
   };
