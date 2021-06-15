@@ -61,7 +61,7 @@
     "ngx-md": "~6.0.0",
     "ngx-pagination": "^3.2.1",
     "node-sass": "^4.6.1",
-    "postcss": "7.0.5",
+    "postcss": "7.0.36",
     "protractor": "~5.4.0",
     "protractor-cucumber-framework": "6.1.1",
     "protractor-multiple-cucumber-html-reporter-plugin": "1.8.0",
