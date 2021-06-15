@@ -20,8 +20,8 @@ import {
   Draft,
   DRAFT_QUERY_PARAM,
 } from '../../domain';
+import { CaseActivity } from '../../domain/activity';
 import {
-  ActivityPollingService,
   AlertService,
   DraftService,
   ErrorNotifierService,
@@ -29,6 +29,7 @@ import {
   NavigationOrigin,
   OrderService,
 } from '../../services';
+import { ActivityPollingService, ActivitySocketService } from '../../services/activity';
 import { CaseNotifier } from '../case-editor';
 import { CallbackErrorsContext } from '../error/domain';
 
@@ -60,6 +61,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public triggerText: string = CaseViewerComponent.TRIGGER_TEXT_START;
   public ignoreWarning = false;
   public activitySubscription: Subscription;
+  public socketConnectSub: Subscription;
+  public socketActivitySub: Subscription;
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
@@ -73,6 +76,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
     private readonly activityPollingService: ActivityPollingService,
+    private readonly activitySocketService: ActivitySocketService,
     private readonly dialog: MatDialog,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
@@ -112,6 +116,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
+    }
+    if (this.socketConnectSub) {
+      this.socketConnectSub.unsubscribe();
+    }
+    if (this.socketActivitySub) {
+      this.socketActivitySub.unsubscribe();
     }
     this.callbackErrorsSubject.unsubscribe();
     if (!this.route.snapshot.data.case) {
@@ -232,6 +242,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       });
     }
+    this.socketConnectSub = this.activitySocketService.connect.subscribe(() => {
+      this.activitySocketService.viewCase(this.caseDetails.case_id);
+    });
+    this.socketActivitySub = this.activitySocketService.activity.subscribe((activity: CaseActivity) => {
+      console.log('case activity', activity);
+    });
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();

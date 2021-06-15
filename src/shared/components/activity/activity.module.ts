@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ActivityService, ActivityPollingService } from '../../services';
-import { ActivityComponent } from './activity.component';
+
+import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services';
+import { SessionStorageService } from '../../services/session/session-storage.service';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
-import { SessionStorageService } from '../../services/session/session-storage.service';
+import { ActivityComponent } from './activity.component';
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { SessionStorageService } from '../../services/session/session-storage.se
     providers: [
         ActivityService,
         ActivityPollingService,
+        ActivitySocketService,
         SessionStorageService
     ]
 })

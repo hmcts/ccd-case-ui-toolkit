@@ -6,6 +6,7 @@ import { MatTabsModule } from '@angular/material';
 import {
   ActivityService,
   ActivityPollingService,
+  ActivitySocketService,
   OrderService,
   DraftService,
   HttpService,
@@ -64,6 +65,7 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
     EventTriggerResolver,
     ActivityService,
     ActivityPollingService,
+    ActivitySocketService,
     OrderService,
     DraftService,
     HttpService,
