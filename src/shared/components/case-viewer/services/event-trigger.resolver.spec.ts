@@ -41,7 +41,7 @@ describe('EventTriggerResolver', () => {
   let appConfig: any;
   let httpService: any;
   const MOCK_PROFILE: Profile = createAProfile();
-  const API_URL = 'http://data.ccd.reform';
+  const API_URL = 'https://data.ccd.reform';
   let FUNC = () => false;
   let PROFILE: Profile = {
     user: {
