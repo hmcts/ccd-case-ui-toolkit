@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-profile-call-before-event-trigger
+**EUI-3335** profile call needs to happen first
+
 ### Version 3.1.5-complex-field-check-answers
 **EUI-4033** Ensured complex fields were interpolated on check you answers page
 
