@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
 ### Version 3.1.5-profile-call-before-event-trigger
 **EUI-3335** profile call needs to happen first
 
