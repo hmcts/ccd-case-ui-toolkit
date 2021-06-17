@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
 import { MarkdownModule } from '../../markdown';
 import { OrganisationConverter } from '../../../domain/organisation';
@@ -8,6 +7,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationService } from '../../../services/organisation';
 import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
+import { WindowService } from '../../../services/window';
 
 describe('WrieteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
@@ -47,15 +47,15 @@ describe('WrieteOrganisationFieldComponent', () => {
     country: 'UK',
     postCode: 'RG11EB'
   }, {
-      organisationIdentifier: 'O444444',
-      name: 'The SN1 solicitor',
-      addressLine1: 'Davidson House',
-      addressLine2: '44',
-      addressLine3: 'The square',
-      townCity: 'Reading',
-      county: 'Berkshire',
-      country: 'UK',
-      postCode: 'RG11EX'
+    organisationIdentifier: 'O444444',
+    name: 'The SN1 solicitor',
+    addressLine1: 'Davidson House',
+    addressLine2: '44',
+    addressLine3: 'The square',
+    townCity: 'Reading',
+    county: 'Berkshire',
+    country: 'UK',
+    postCode: 'RG11EX'
   }];
   let organisationID = new CaseField();
 
@@ -70,11 +70,12 @@ describe('WrieteOrganisationFieldComponent', () => {
         WriteOrganisationComplexFieldComponent
       ],
       providers: [
-        { provide: OrganisationService, useValue: mockOrganisationService },
+        WindowService,
+        {provide: OrganisationService, useValue: mockOrganisationService},
         OrganisationConverter
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -104,6 +105,9 @@ describe('WrieteOrganisationFieldComponent', () => {
       organisationID,
       organisationName
     ];
+    const prepopulateToUsersOrganisationControl = new FormControl('YES');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.defaultOrg = {organisationIdentifier: 'O333333', name: 'The Ethical solicitor'};
     fixture.detectChanges();
   });
 
@@ -139,14 +143,33 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.valid).toBeTruthy();
   });
 
-  it('should pre-select organisation', () => {
-    component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', () => {
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
     component.selectedOrg$.toPromise().then(selectedOrg => {
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>')
     });
+  });
+
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should not pre-select organisation when PrepopulateToUsersOrganisationControl is NO', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.caseField.value = null;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.invalid).toBeTruthy();
   });
 
   it('should not search org if enter characters less than 2', () => {
@@ -262,15 +285,15 @@ describe('WrieteOrganisationFieldComponent', () => {
 
   it('should search organisation using both org name and postcode', () => {
     const SIMILAR_ORGANISATION = [{
-        organisationIdentifier: 'O555555',
-        name: 'Smith LLP',
-        addressLine1: 'Davidson House',
-        addressLine2: '55',
-        addressLine3: 'The square',
-        townCity: 'Reading',
-        county: 'Berkshire',
-        country: 'UK',
-        postCode: 'RG11EY'
+      organisationIdentifier: 'O555555',
+      name: 'Smith LLP',
+      addressLine1: 'Davidson House',
+      addressLine2: '55',
+      addressLine3: 'The square',
+      townCity: 'Reading',
+      county: 'Berkshire',
+      country: 'UK',
+      postCode: 'RG11EY'
     }, {
       organisationIdentifier: 'O666666',
       name: 'KMG solicitor',
@@ -374,7 +397,7 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.selectOrg(selectedOrg);
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({'OrganisationID': 'O111111', 'OrganisationName': 'Woodford solicitor'});
+    expect(component.caseField.value).toEqual({OrganisationID: 'O111111', OrganisationName: 'Woodford solicitor'});
   });
 
   it('should deselect organisation', () => {
@@ -390,6 +413,6 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.deSelectOrg(selectedOrg);
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({'OrganisationID': null, 'OrganisationName': null});
+    expect(component.caseField.value).toEqual({OrganisationID: null, OrganisationName: null});
   });
 });

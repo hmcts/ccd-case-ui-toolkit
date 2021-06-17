@@ -38,6 +38,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
   isSubmitting: boolean;
   profileSubscription: Subscription;
+  contextFields: CaseField[];
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField) => {
     let aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -80,9 +81,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
-    this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
+    this.contextFields = this.getCaseFields();
   }
 
   ngOnDestroy() {
@@ -238,12 +239,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.profile.isSolicitor();
   }
 
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
-  }
-
   private buildConfirmation(response: any): Confirmation {
     if (response['after_submit_callback_response']) {
       return new Confirmation(
@@ -261,6 +256,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.orderService
       .sort(fields, CaseEditSubmitComponent.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION)
       .filter(cf => cf.show_summary_content_option);
+  }
+
+  private getCaseFields(): CaseField[] {
+    if (this.caseEdit.caseDetails) {
+      return FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
+    }
+
+    return this.eventTrigger.case_fields;
   }
 
   getCaseId(): String {

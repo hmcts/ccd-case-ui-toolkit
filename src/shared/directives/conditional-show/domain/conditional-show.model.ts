@@ -106,8 +106,6 @@ export class ShowCondition {
           }
           if (caseField) {
             allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1;
-          } else {
-            allUnchangeable = false;
           }
         }
         return allUnchangeable;

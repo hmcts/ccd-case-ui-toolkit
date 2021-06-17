@@ -17,6 +17,7 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -48,6 +49,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
+  validationErrors: {id: string, message: string}[] = [];
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -63,17 +65,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   constructor(
-    private caseEdit: CaseEditComponent,
-    private route: ActivatedRoute,
-    private formValueService: FormValueService,
-    private formErrorService: FormErrorService,
-    private cdRef: ChangeDetectorRef,
-    private pageValidationService: PageValidationService,
-    private dialog: MatDialog,
-  ) {
-  }
+    private readonly caseEdit: CaseEditComponent,
+    private readonly route: ActivatedRoute,
+    private readonly formValueService: FormValueService,
+    private readonly formErrorService: FormErrorService,
+    private readonly cdRef: ChangeDetectorRef,
+    private readonly pageValidationService: PageValidationService,
+    private readonly dialog: MatDialog,
+    private readonly caseFieldService: CaseFieldService
+  ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
@@ -122,7 +124,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * This builds the form with data from the previous pages
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
-  toPreviousPage() {
+  public toPreviousPage(): void {
+    this.validationErrors = [];
     let caseEventData: CaseEventData = this.buildCaseEventData();
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
@@ -130,8 +133,48 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     CaseEditPageComponent.setFocusToTop();
   }
 
-  submit() {
-    if (!this.isSubmitting) {
+  // Adding validation message to show it as Error Summary
+  public generateErrorMessage(fields: CaseField[]): void {
+    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+          .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
+          .forEach(casefield => {
+            const fieldElement = this.editForm.controls['data'].get(casefield.id);
+            if (fieldElement) {
+              if (fieldElement.hasError('pattern') || fieldElement.hasError('matDatetimePickerParse')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('required')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('minlength')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('maxlength')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('matDatetimePickerMin')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is below the set minimum date threshold`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('matDatetimePickerMax')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is above the set maximum date threshold`});
+                fieldElement.markAsTouched();
+              }
+            }
+          })
+    CaseEditPageComponent.scrollToTop();
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'center'});
+  }
+
+  public submit(): void {
+    this.validationErrors = [];
+    if (this.currentPageIsNotValid()) {
+      this.generateErrorMessage(this.currentPage.case_fields);
+    }
+
+    if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
       this.error = null;
       let caseEventData: CaseEventData = this.buildCaseEventData();
