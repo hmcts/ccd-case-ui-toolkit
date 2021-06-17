@@ -1,4 +1,5 @@
 const BrowserWaits = require('../support/customWaits');
+const BrowserUtil = require('../support/browserUtil');
 const reportLogger = require('../support/reportLogger');
 
 class CaseListPage{
@@ -23,6 +24,9 @@ class CaseListPage{
 
     async getColumnValues(columnLabel){
         const colPos = await this.getColumnDisplayPosition(columnLabel);
+        if (colPos === -1){
+            throw new Error(`Test error, col with label ${columnLabel} not found`);
+        }
         const dataRows = $$(`ccd-search-result > table > tbody > tr`);
         const rowsCount = await dataRows.count();
         const columnValues = [];
@@ -40,6 +44,7 @@ class CaseListPage{
         const columnsCount = await columnHeaders.count();
         for (let i = 1; i <= columnsCount; i++){
             const columnHeader = await columnHeaders.get(i - 1);
+            await BrowserUtil.scrollToElement(columnHeader);
             const thisColLabel = await columnHeader.$('.search-result-column-label').getText();
             if (thisColLabel === columnLabel){
                 return i;

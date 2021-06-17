@@ -67,15 +67,27 @@ describe('FieldsUtils', () => {
     });
 
     it('should merge simple MoneyGBP field', () => {
-      const formFieldsData = {
-        someText: 'This is test.',
-        caseAmountToPay: '1245'
-      };
-
-      const caseFields = fieldUtils
-        .mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], formFieldsData);
-
+      const data = { someText: 'Test', caseAmountToPay: '1245' };
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);
       expect(caseFields['caseAmountToPay']).toBe('£12.45');
+    });
+
+    it('should handle zero string in MoneyGBP field', () => {
+      const data = { someText: 'Test', caseAmountToPay: '0' };
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);
+      expect(caseFields['caseAmountToPay']).toBe('£0.00');
+    });
+
+    it('should handle numeric zero in MoneyGBP field', () => {
+      const data = { someText: 'Test', caseAmountToPay: 0 };
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);
+      expect(caseFields['caseAmountToPay']).toBe('£0.00');
+    });
+
+    it('should handle invalid value in MoneyGBP field', () => {
+      const data = { someText: 'Test', caseAmountToPay: 'bob' };
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);
+      expect(caseFields['caseAmountToPay']).toBe('');
     });
 
     it('should merge complex field containing Date and Money field', () => {

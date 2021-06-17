@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.1.2-nested-multi-select-labels-zeta",
+  "version": "3.1.5-nested-multi-select-labels-eta",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -45,7 +45,7 @@
     "start": "yarn --cwd demo start",
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
     "demo": "yarn build:esm && yarn build:demo && yarn start",
-    "test:functional":"yarn --cwd demo  testDev:functional"
+    "test:functional":"yarn --cwd demo  test:functional"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",

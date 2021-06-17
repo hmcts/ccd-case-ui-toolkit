@@ -27,7 +27,7 @@ export class DatePipe implements PipeTransform {
     let resultDate = null;
     const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     if (value) {
-      // comment included to avoid editing the hour twice on second pass through
+      // included to avoid editing the hour twice on second pass through
       // this occurs on case details when datepipe is applied twice
       if (!value.includes('T')) {
         zone = 'utc';

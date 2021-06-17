@@ -234,7 +234,7 @@ class DateTimePickerComponent{
     async selectMeridian(meridian){
         const meridianElement = $('ngx-mat-timepicker .meridian button');
         const currentVal = await meridianElement.getText();
-        if (!currentVal.includes(meridian)){
+        if (!currentVal.includes(meridian.toUpperCase())){
             await meridianElement.click();
         }
         await browserWaits.waitForSeconds(0.5);

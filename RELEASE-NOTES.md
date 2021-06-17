@@ -1,10 +1,27 @@
 ## RELEASE NOTES
 
-### Version 3.1.2
-TO BE UPDATED, I ASSUME?
-
-### Version 3.1.2-nested-multi-select-labels-zeta
+### Version 3.1.5-nested-multi-select-labels-eta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label.
+
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
+### Version 3.1.5-profile-call-before-event-trigger
+**EUI-3335** profile call needs to happen first
+
+### Version 3.1.5-complex-field-check-answers
+**EUI-4033** Ensured complex fields were interpolated on check you answers page
+
+### Version 3.1.5-pcm-role-non-completion
+**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
+
+### Version 3.1.5 - ph-merge-rc-22-2-a
+**EUI-2027** Accessibility amends for button labels
+**EUI-3155** Accessibility amends for non-descriptive headings
+**EUI-3550** Replace heading tags with spans on case edit pages
+
+### Version 3.1.2-datetime-picker-webapp-resolution
+**EUI-2792** Datetime picker fixes after testing integration with webapp
 
 ### Version 3.1.2-missing-ftpa-tab-beta
 **EUI-3825** Fix for missing FTPA tab contents.

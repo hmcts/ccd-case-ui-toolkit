@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { Moment } from 'moment/moment';
 import {
   NGX_MAT_DATE_FORMATS,
@@ -14,6 +14,7 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
 import { CaseField } from '../../../domain';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import moment = require('moment/moment');
 
 @Component({
   selector: 'ccd-datetime-picker',
@@ -43,11 +44,16 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public yearSelection = false;
   public checkTime = true;
   public stringEdited = false;
+  private minimumDate = new Date('01/01/1800');
+  private maximumDate = null;
+  public minError = false;
+  public maxError = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  private dateTimeEntryFormat;
+  public dateTimeEntryFormat: string;
+  private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
               @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
@@ -56,24 +62,65 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public ngOnInit(): void {
-    this.dateTimeEntryFormat = this.caseField.dateTimeEntryFormat;
+    this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
     this.setDateTimeFormat();
-    this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    // set date control based on mandatory field
+    this.dateControl = (this.caseField.isMandatory ?
+     this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
+      : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
+      this.formatValueAndSetErrors();
     }, 1);
+    // when the status changes check that the maximum/minimum date has not been exceeded
+    this.dateControl.statusChanges.subscribe(() => {
+      this.minError = this.dateControl.hasError('matDatetimePickerMin');
+      this.maxError = this.dateControl.hasError('matDatetimePickerMax');
+    });
   }
 
+  // reset format whenever changes are made for specific instance
   public setDateTimeFormat(): void {
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
 
+  /*
+  When the value changes, update the form control
+  */
+  public valueChanged(): void {
+    this.formatValueAndSetErrors();
+  }
+
+  private formatValueAndSetErrors(): void {
+    if (this.inputElement.nativeElement.value) {
+      let formValue = this.inputElement.nativeElement.value;
+      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
+      if (formValue !== 'Invalid date') {
+        // if not invalid set the value as the formatted value
+        this.dateControl.setValue(formValue);
+      } else {
+        // ensure that the datepicker picks up the invalid error
+        const keepErrorText = this.inputElement.nativeElement.value;
+        this.dateControl.setValue(keepErrorText);
+        this.inputElement.nativeElement.value = keepErrorText;
+      }
+    } else {
+      // ensure required errors are picked up if relevant
+      this.dateControl.setValue('');
+    }
+  }
+
   public focusIn(): void {
     this.setDateTimeFormat();
+  }
+
+  public focusOut(): void {
+    // focus out needed to obtain errors (relevant to formatting)
+    this.formatValueAndSetErrors();
   }
 
   public toggleClick(): void {
@@ -81,11 +128,19 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public minDate(caseField: CaseField): Date {
-    return caseField.field_type.min ? new Date(caseField.field_type.min) : null;
+    // set minimum date
+    if (caseField.field_type.min instanceof Date) {
+      this.minimumDate = caseField.field_type.min ? new Date(caseField.field_type.min) : this.minimumDate;
+    }
+    return this.minimumDate;
   }
 
   public maxDate(caseField: CaseField): Date {
-    return caseField.field_type.max ? new Date(caseField.field_type.max) : null;
+    // set maximum date
+    if (caseField.field_type.max instanceof Date) {
+      this.maximumDate = caseField.field_type.max ? new Date(caseField.field_type.max) : this.maximumDate;
+    }
+    return this.maximumDate;
   }
 
   public configureDatePicker(dateTimePickerFormat: string): void {
@@ -93,6 +148,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.hideTime = true;
       this.checkTime = false;
       this.dateTimeEntryFormat = this.formatTranslationService.removeTime(this.dateTimeEntryFormat);
+      this.momentFormat = 'YYYY-MM-DD';
     }
 
     if (this.checkTime) {
@@ -143,6 +199,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     if (this.startView === 'multi-year' && this.yearSelection) {
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
+      this.valueChanged();
     }
   }
 
@@ -151,6 +208,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.dateControl.patchValue(event.toISOString());
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
+      this.valueChanged();
     }
   }
 }

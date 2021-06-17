@@ -427,7 +427,7 @@ describe('LabelSubstitutorDirective', () => {
 
   describe('MoneyGBP type fields', () => {
 
-    it('should pass null value for null MoneyGBP', () => {
+    it('should pass empty value for null MoneyGBP', () => {
       let label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', null, {
@@ -436,7 +436,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: ''}, label);
     });
 
     it('should pass case field value with MoneyGBP when case field value but no form field value present', () => {
