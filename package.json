@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "3.1.5-complex-field-check-answers",
+  "version": "3.1.5-datetime-picker-validation",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
