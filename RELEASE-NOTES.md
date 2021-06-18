@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-accessibility-issues
+**EUI-3720** FPLA: Accessibility Issues Found in ExUI
+
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
 
