@@ -540,7 +540,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when next is called and clear hidden complex form field', () => {
+        it('should navigate to previous page when previous is called and clear hidden complex form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -563,7 +563,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when next is called and clear hidden collection form field', () => {
+        it('should navigate to previous page when previous is called and clear hidden collection form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -736,6 +736,66 @@ describe('CaseEditComponent', () => {
           expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
             .get('value.AddressLine1').value).toBeNull();
         });
+
+        it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
+          spyOn(fieldsPurger, 'deleteFieldValue');
+          component.wizard = wizard;
+          const currentPage = new WizardPage();
+          currentPage.wizard_page_fields = [WIZARD_PAGE_1];
+          currentPage.case_fields = [CASE_FIELD_1];
+          wizard.getPage.and.returnValue(currentPage);
+          const nextPage = new WizardPage();
+          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
+          nextPage.case_fields = [CASE_FIELD_2_COMPLEX];
+          nextPage.wizard_page_fields = [WIZARD_PAGE_2];
+          wizard.nextPage.and.returnValue(nextPage);
+          wizard.pages = [currentPage, nextPage];
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormControl('Other'),
+              PersonFamilyName: new FormGroup({PersonMiddleName: new FormControl('John')})
+            })
+          });
+          fixture.detectChanges();
+
+          component.next('somePage');
+
+          expect(wizard.nextPage).toHaveBeenCalled();
+          expect(routerStub.navigate).toHaveBeenCalled();
+          expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
+        });
+
+        it('should not delete sub-field values if the FormArray for Complex hidden field parents collection cannot be determined', () => {
+          spyOn(fieldsPurger, 'deleteFieldValue');
+          component.wizard = wizard;
+          const currentPage = new WizardPage();
+          currentPage.wizard_page_fields = [WIZARD_PAGE_1];
+          currentPage.case_fields = [CASE_FIELD_1];
+          wizard.getPage.and.returnValue(currentPage);
+          const nextPage = new WizardPage();
+          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          CASE_FIELD_3_COLLECTION.retain_hidden_value = true;
+          nextPage.case_fields = [CASE_FIELD_3_COLLECTION];
+          nextPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
+          wizard.nextPage.and.returnValue(nextPage);
+          wizard.pages = [currentPage, nextPage];
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormControl('Other'),
+              AddressList: new FormArray([new FormGroup({
+                value: new FormGroup({AddressLine1: new FormControl('Street')})
+              })])
+            })
+          });
+          fixture.detectChanges();
+
+          component.next('somePage');
+
+          expect(wizard.nextPage).toHaveBeenCalled();
+          expect(routerStub.navigate).toHaveBeenCalled();
+          expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
+        });
       });
 
       describe('previous page', () => {
@@ -884,6 +944,66 @@ describe('CaseEditComponent', () => {
             .get('value.AddressLine1')).not.toBeNull();
           expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
             .get('value.AddressLine1').value).toBeNull();
+        });
+
+        it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
+          spyOn(fieldsPurger, 'deleteFieldValue');
+          component.wizard = wizard;
+          const currentPage = new WizardPage();
+          currentPage.wizard_page_fields = [WIZARD_PAGE_1];
+          currentPage.case_fields = [CASE_FIELD_1];
+          wizard.getPage.and.returnValue(currentPage);
+          const previousPage = new WizardPage();
+          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
+          previousPage.case_fields = [CASE_FIELD_2_COMPLEX];
+          previousPage.wizard_page_fields = [WIZARD_PAGE_2];
+          wizard.previousPage.and.returnValue(previousPage);
+          wizard.pages = [currentPage, previousPage];
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormControl('Other'),
+              PersonFamilyName: new FormGroup({PersonMiddleName: new FormControl('John')})
+            })
+          });
+          fixture.detectChanges();
+
+          component.previous('somePage');
+
+          expect(wizard.previousPage).toHaveBeenCalled();
+          expect(routerStub.navigate).toHaveBeenCalled();
+          expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
+        });
+
+        it('should not delete sub-field values if the FormArray for Complex hidden field parents collection cannot be determined', () => {
+          spyOn(fieldsPurger, 'deleteFieldValue');
+          component.wizard = wizard;
+          const currentPage = new WizardPage();
+          currentPage.wizard_page_fields = [WIZARD_PAGE_1];
+          currentPage.case_fields = [CASE_FIELD_1];
+          wizard.getPage.and.returnValue(currentPage);
+          const previousPage = new WizardPage();
+          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          CASE_FIELD_3_COLLECTION.retain_hidden_value = true;
+          previousPage.case_fields = [CASE_FIELD_3_COLLECTION];
+          previousPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
+          wizard.previousPage.and.returnValue(previousPage);
+          wizard.pages = [currentPage, previousPage];
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormControl('Other'),
+              AddressList: new FormArray([new FormGroup({
+                value: new FormGroup({AddressLine1: new FormControl('Street')})
+              })])
+            })
+          });
+          fixture.detectChanges();
+
+          component.previous('somePage');
+
+          expect(wizard.previousPage).toHaveBeenCalled();
+          expect(routerStub.navigate).toHaveBeenCalled();
+          expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
         });
       });
     });
