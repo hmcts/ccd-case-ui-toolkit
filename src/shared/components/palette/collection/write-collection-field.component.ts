@@ -29,15 +29,17 @@ type CollectionItem = {
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  formArray: FormArray;
+  public formArray: FormArray;
 
-  profile: Profile;
-  profileSubscription: Subscription;
+  public profile: Profile;
+  public profileSubscription: Subscription;
+
+  public defaultItem: CollectionItem;
 
   @ViewChildren('collectionItem')
   private items: QueryList<ElementRef>;
@@ -67,6 +69,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       }
       this.collItems[index] = { caseField, item, prefix, index, container };
     });
+
+    this.defaultItem = this.collItems[0].item;
   }
 
   ngOnDestroy() {
@@ -188,7 +192,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    const item = { value: null }
+    // const item = { value: null };
+    const item = this.defaultItem;
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index, true);
