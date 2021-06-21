@@ -70,7 +70,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       this.collItems[index] = { caseField, item, prefix, index, container };
     });
 
-    this.defaultItem = this.collItems[0].item;
+    this.defaultItem = this.collItems[0] && this.collItems[0].item ? this.collItems[0].item : { value: null };
   }
 
   ngOnDestroy() {
