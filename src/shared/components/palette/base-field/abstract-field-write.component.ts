@@ -9,10 +9,10 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent implements OnChanges {
 
   @Input()
-  isExpanded = false;
+  public isExpanded = false;
 
   @Input()
-  isInSearchBlock = false;
+  public isInSearchBlock = false;
 
   public constructor() {
     super();
