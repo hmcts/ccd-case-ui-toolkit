@@ -99,7 +99,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
           this.replaceHiddenFormValuesWithOriginalCaseData(
             this.editForm.get('data') as FormGroup, this.eventTrigger.case_fields))),
       event: this.editForm.value.event
-    } as CaseEventData
+    } as CaseEventData;
     this.formValueService.clearNonCaseFields(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeNullLabels(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeEmptyDocuments(caseEventData.data, this.eventTrigger.case_fields);
@@ -190,10 +190,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
               // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
               // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
               // parent)
-              const resultantObject = this.replaceHiddenFormValuesWithOriginalCaseData(
-                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
               // Update rawFormValueData for this field
-              rawFormValueData[key] = resultantObject;
+              rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
             }
             break;
           default:
@@ -384,11 +383,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.eventTrigger.case_fields;
   }
 
-  public getCaseId(): String {
+  public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  public getCancelText(): String {
+  public getCancelText(): string {
     if (this.eventTrigger.can_save_draft) {
       return 'Return to case list';
     } else {
