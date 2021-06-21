@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+### Version 4.0.0-EUI-3528-4205-enhancements
+**EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
+**EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
+
 ### Version 4.0.0
 **EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
 **EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
