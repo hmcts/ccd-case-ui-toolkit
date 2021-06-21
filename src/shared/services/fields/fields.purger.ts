@@ -281,9 +281,7 @@ export class FieldsPurger {
             }
           }
           break;
-        case 'DynamicList':
-          // TODO Handling to be implemented under EUI-3528
-          break;
+        // Note: the default case applies to DynamicList fields, too
         default:
           fieldControl.setValue(null);
       }
