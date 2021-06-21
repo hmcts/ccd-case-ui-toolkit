@@ -394,7 +394,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to next page when next is called and clear hidden simple form field', () => {
+        it('should navigate to next page when next is called and not clear hidden simple form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -417,7 +417,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to next page when next is called and clear hidden complex form field', () => {
+        it('should navigate to next page when next is called and not clear hidden complex form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -440,7 +440,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to next page when next is called and clear hidden collection form field', () => {
+        it('should navigate to next page when next is called and not clear hidden collection form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -511,7 +511,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when previous is called and clear hidden simple form field', () => {
+        it('should navigate to previous page when previous is called and not clear hidden simple form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -534,7 +534,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when previous is called and clear hidden complex form field', () => {
+        it('should navigate to previous page when previous is called and not clear hidden complex form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
@@ -557,7 +557,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_2.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when previous is called and clear hidden collection form field', () => {
+        it('should navigate to previous page when previous is called and not clear hidden collection form field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];
