@@ -183,11 +183,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  isSearchFilter(): boolean {
+  public isSearchFilter(): boolean {
     return this.isInSearchBlock && this.collItems.length > 0;
   }
 
-  addItem(doScroll: boolean): void {
+  public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     const item = { value: null }
