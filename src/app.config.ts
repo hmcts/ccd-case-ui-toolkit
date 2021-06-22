@@ -5,6 +5,8 @@ export abstract class AbstractAppConfig {
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
   abstract getRemoteDocumentManagementUrl(): string;
+  abstract getHrsUrl(): string;
+  abstract getRemoteHrsUrl(): string;
   abstract getAnnotationApiUrl(): string;
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
