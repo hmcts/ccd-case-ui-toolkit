@@ -20,6 +20,12 @@ import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { FieldsFilterPipe } from '../../palette/complex';
+import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
+import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
+import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+
 describe('CaseEditPageComponent', () => {
 
   let de: DebugElement;
@@ -111,7 +117,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -120,7 +126,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -375,7 +383,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -384,7 +392,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -452,12 +462,17 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678'},
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [], 'state': {'id': 'incompleteApplication', 'name': 'Incomplete Application', 'title_display': '# 1234567812345678: test'}},
+      };
+
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
       };
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -466,7 +481,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -495,6 +512,14 @@ describe('CaseEditPageComponent', () => {
       comp.updateFormData(jsonData);
 
       expect(eventTrigger.case_fields.filter(element => element.id === id).pop().value).toBe(updatedValue);
+    });
+
+    it('should show valid title on the page', () => {
+      wizardPage.isMultiColumn = () => true;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      const title = comp.getCaseTitle();
+      expect(title).toEqual('# 1234567812345678: test');
     });
   });
 
@@ -551,7 +576,8 @@ describe('CaseEditPageComponent', () => {
           CaseEditPageComponent,
           FieldsFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -561,7 +587,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -750,7 +778,7 @@ describe('CaseEditPageComponent', () => {
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -759,7 +787,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -859,7 +889,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -868,7 +898,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
