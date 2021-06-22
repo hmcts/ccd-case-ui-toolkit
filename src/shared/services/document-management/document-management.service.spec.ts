@@ -8,6 +8,8 @@ import { CaseField, DocumentData, FieldType } from '../../domain';
 describe('DocumentManagementService', () => {
   const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
   const REMOTE_DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
+  const HRS_URL = 'https://www.example.com/binary';
+  const REMOTE_HRS_URL = 'http://docmanagement.ccd.reform/documents';
 
   let appConfig: any;
   let httpService: any;
@@ -16,9 +18,14 @@ describe('DocumentManagementService', () => {
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
-      'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl', 'getAnnotationApiUrl']);
+      'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
+      'getHrsUrl', 'getRemoteHrsUrl',
+      'getAnnotationApiUrl'
+    ]);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
+    appConfig.getRemoteHrsUrl.and.returnValue(REMOTE_HRS_URL);
+    appConfig.getHrsUrl.and.returnValue(HRS_URL);
 
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     documentManagementService = new DocumentManagementService(httpService, appConfig);
