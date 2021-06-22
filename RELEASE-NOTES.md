@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.0.0-EUI-2022-ComplexField-Validation-Fix
+### Version 4.0.0-EUI-2022-ComplexField-Validation-Fix-1
 **EUI-2022** ExUI - Error Messages (Complex Type)
 
 ### Version 4.0.0
