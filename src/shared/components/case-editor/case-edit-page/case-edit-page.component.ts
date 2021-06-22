@@ -181,6 +181,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       const htmlElement = document.getElementById(elementId);
       if (htmlElement) {
         htmlElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+        htmlElement.focus();
       }
     }
   }

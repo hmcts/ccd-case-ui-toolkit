@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 4.0.0-EUI-2022-ComplexField-Validation-Fix
+**EUI-2022** ExUI - Error Messages (Complex Type)
+
 ### Version 4.0.0
 **EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
 **EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
