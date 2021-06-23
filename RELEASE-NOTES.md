@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 3.1.5-disabled-continue-button-with-complex-types
+### Version 3.1.6-disabled-continue-button-with-complex-types
 **EUI-4213** "No" option doesn't enable Continue button when Yes/No and other field in complex object
 
 ### Version 3.1.5-datetime-picker-validation
