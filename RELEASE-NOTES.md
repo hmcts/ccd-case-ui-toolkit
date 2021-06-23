@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-add-appellant-name-next-to-caseid
+**EUI-4164** Add Appellant Name Next to Caseid
+
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
 
