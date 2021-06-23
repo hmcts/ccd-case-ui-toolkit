@@ -246,6 +246,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
     this.formArray.removeAt(this.formArray.length - 1);
     this.collItems.pop();
+    this.caseField.value.pop();
   }
 
   itemLabel(index: number) {
