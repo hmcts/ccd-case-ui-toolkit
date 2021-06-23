@@ -28,8 +28,14 @@ export let createCaseEventTrigger = (id: string,
   return eventTrigger;
 };
 
-export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-                         show_summary_content_option: number, typeComplexFields: CaseField[] = []): CaseField => {
+export let aCaseField = (id: string,
+                         label: string,
+                         type: FieldTypeEnum,
+                         display_context: string,
+                         show_summary_content_option: number,
+                         typeComplexFields: CaseField[] = [],
+                         show_condition?: string,
+                         value?: any): CaseField => {
   return <CaseField>({
     id: id || 'personFirstName',
     field_type: {
@@ -39,6 +45,8 @@ export let aCaseField = (id: string, label: string, type: FieldTypeEnum, display
     },
     display_context: display_context || 'OPTIONAL',
     label: label || 'First name',
+    show_condition,
+    value,
     show_summary_content_option: show_summary_content_option
   });
 };

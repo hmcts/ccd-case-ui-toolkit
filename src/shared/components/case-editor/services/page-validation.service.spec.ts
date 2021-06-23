@@ -1,5 +1,5 @@
 import { async } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageValidationService } from './page-validation.service';
 import { WizardPage } from '../domain/wizard-page.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -14,7 +14,7 @@ describe('PageValidationService', () => {
   let readOnly = new CaseField();
   let firstPage = new WizardPage();
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({ 'field1': new FormControl('SOME_VALUE') })
+    'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
   });
 
   beforeEach(async(() => {
@@ -84,4 +84,35 @@ describe('PageValidationService', () => {
     wizardPage.isMultiColumn = () => false;
     expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
   });
+
+  it('should set the page to be valid if there is a hidden complex type', () => {
+    const radioButtonCaseField = aCaseField('radioButton', 'Please select yes or no', 'YesOrNo', 'YesOrNo', null, [])
+    const nestedComplex = aCaseField('nestedComplex', 'This is  a nested complex type', 'Complex', null, null, [
+      aCaseField('text', 'Some text here', 'Text', 'MANDATORY', null, []),
+      aCaseField('textArea', 'More text!', 'TextArea', 'MANDATORY', null, []),
+    ], 'mandatoryHiddenField.radioButton=\\"Yes\\"')
+
+    const nestedWizardPage = new WizardPage();
+    nestedWizardPage.case_fields = [aCaseField('mandatoryHiddenField',
+      'Test complex type with mandatory hidden field',
+      'Complex',
+      'Complex',
+      null,
+      [radioButtonCaseField, nestedComplex]
+    )]
+    const NESTED_FORM_GROUP = new FormGroup({
+      data: new FormGroup({
+        mandatoryHiddenField: new FormGroup({
+          radioButton: new FormControl('No', [Validators.required]),
+          nestedComplex: new FormGroup({
+            text: new FormControl(null, [Validators.required]),
+            textArea: new FormControl(null, [Validators.required])
+          })
+        })
+      })
+    })
+
+    expect(service.isPageValid(nestedWizardPage, NESTED_FORM_GROUP)).toBeTruthy();
+
+  })
 });

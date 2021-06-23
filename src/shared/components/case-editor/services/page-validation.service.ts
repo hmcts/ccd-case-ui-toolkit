@@ -8,16 +8,26 @@ import { WizardPage } from '../domain/wizard-page.model';
 
 @Injectable()
 export class PageValidationService {
-  constructor(private caseFieldService: CaseFieldService) {}
+  constructor(private caseFieldService: CaseFieldService) {
+  }
 
   isPageValid(page: WizardPage, editForm: FormGroup): boolean {
     return page.case_fields
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
-      .filter(caseField => !this.isHidden(caseField, editForm))
+      .filter(caseField => this.isHidden(caseField, editForm))
       .every(caseField => {
         let theControl = editForm.controls['data'].get(caseField.id);
         return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
+  }
+
+  public isHidden(caseField: CaseField, editForm: FormGroup): boolean {
+    const formFields = editForm.getRawValue();
+    if (caseField.field_type.complex_fields && caseField.field_type.complex_fields.length) {
+      return !caseField.field_type.complex_fields.some((cf: CaseField) => this.isHidden(cf, editForm))
+    }
+    const condition = ShowCondition.getInstance(caseField.show_condition);
+    return condition.match(formFields.data);
   }
 
   private checkDocumentField(caseField: CaseField, theControl: AbstractControl): boolean {
@@ -25,12 +35,6 @@ export class PageValidationService {
       return true;
     }
     return !(this.checkMandatoryField(caseField, theControl));
-  }
-
-  public isHidden(caseField: CaseField, editForm: FormGroup): boolean {
-    const formFields = editForm.getRawValue();
-    const condition = ShowCondition.getInstance(caseField.show_condition);
-    return !condition.match(formFields.data);
   }
 
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
