@@ -140,17 +140,23 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           .forEach(casefield => {
             const fieldElement = this.editForm.controls['data'].get(casefield.id);
             if (fieldElement) {
-              if (fieldElement.hasError('required')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('pattern')) {
+              if (fieldElement.hasError('pattern') || fieldElement.hasError('matDatetimePickerParse')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('required')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
                 fieldElement.markAsTouched();
               } else if (fieldElement.hasError('minlength')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
                 fieldElement.markAsTouched();
               } else if (fieldElement.hasError('maxlength')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('matDatetimePickerMin')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is below the set minimum date threshold`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('matDatetimePickerMax')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is above the set maximum date threshold`});
                 fieldElement.markAsTouched();
               }
             }

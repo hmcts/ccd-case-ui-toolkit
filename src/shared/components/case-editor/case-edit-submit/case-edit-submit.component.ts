@@ -81,7 +81,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
-    this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
     this.contextFields = this.getCaseFields();
@@ -238,12 +237,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   isSolicitor(): boolean {
     return this.profile.isSolicitor();
-  }
-
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: any): Confirmation {

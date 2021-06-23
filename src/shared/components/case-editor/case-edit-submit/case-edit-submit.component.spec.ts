@@ -186,12 +186,6 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should announce profile when profile exists on a path from root set by Router', () => {
-      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
-      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
-      expect(profileService.get).not.toHaveBeenCalled();
-    });
-
     it('must render correct button label', () => {
       let buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual(END_BUTTON_LABEL);
@@ -488,12 +482,6 @@ describe('CaseEditSubmitComponent', () => {
       comp = fixture.componentInstance;
       de = fixture.debugElement;
       fixture.detectChanges();
-    });
-
-    it('should announce profile when profile exists on a path from root set by Router', () => {
-      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
-      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
-      expect(profileService.get).toHaveBeenCalled();
     });
 
     it('must render default button label when custom one is not supplied', () => {
