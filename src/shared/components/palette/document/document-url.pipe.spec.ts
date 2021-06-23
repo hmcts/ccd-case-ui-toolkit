@@ -16,7 +16,7 @@ describe('DocumentUrlPipe', () => {
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
-      'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl','getHrsUrl', 'getRemoteHrsUrl'
+      'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl', 'getHrsUrl', 'getRemoteHrsUrl'
     ]);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_PATTERN);
