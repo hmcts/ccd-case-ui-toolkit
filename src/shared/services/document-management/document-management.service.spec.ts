@@ -8,8 +8,8 @@ import { CaseField, DocumentData, FieldType } from '../../domain';
 describe('DocumentManagementService', () => {
   const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
   const REMOTE_DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
-  const HRS_URL = 'https://www.example.com/binary';
-  const REMOTE_HRS_URL = 'http://docmanagement.ccd.reform/documents';
+  const HRS_URL = 'https://manage-case.hmcts.reform.net/hearing-recording';
+  const REMOTE_HRS_URL = 'https://em-hrs-api.hmcts.reform.net/hearing-recordings';
 
   let appConfig: any;
   let httpService: any;
