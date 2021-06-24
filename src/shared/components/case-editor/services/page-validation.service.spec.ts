@@ -17,6 +17,21 @@ describe('PageValidationService', () => {
     'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
   });
 
+  const radioButtonCaseField = aCaseField('radioButton', 'Please select yes or no', 'YesOrNo', 'YesOrNo', null, [])
+  const nestedComplex = aCaseField('nestedComplex', 'This is  a nested complex type', 'Complex', null, null, [
+    aCaseField('text', 'Some text here', 'Text', 'MANDATORY', null, []),
+    aCaseField('textArea', 'More text!', 'TextArea', 'MANDATORY', null, [], 'mandatoryHiddenField.radioButton="Yes"'),
+  ])
+
+  const nestedWizardPage = new WizardPage();
+  nestedWizardPage.case_fields = [aCaseField('mandatoryHiddenField',
+    'Test complex type with mandatory hidden field',
+    'Complex',
+    'Complex',
+    null,
+    [radioButtonCaseField, nestedComplex]
+  )]
+
   beforeEach(async(() => {
     firstPage.id = 'first page';
     service = new PageValidationService(caseFieldService);
@@ -86,20 +101,6 @@ describe('PageValidationService', () => {
   });
 
   it('should set the page to be valid if there is a hidden complex type', () => {
-    const radioButtonCaseField = aCaseField('radioButton', 'Please select yes or no', 'YesOrNo', 'YesOrNo', null, [])
-    const nestedComplex = aCaseField('nestedComplex', 'This is  a nested complex type', 'Complex', null, null, [
-      aCaseField('text', 'Some text here', 'Text', 'MANDATORY', null, []),
-      aCaseField('textArea', 'More text!', 'TextArea', 'MANDATORY', null, []),
-    ], 'mandatoryHiddenField.radioButton=\\"Yes\\"')
-
-    const nestedWizardPage = new WizardPage();
-    nestedWizardPage.case_fields = [aCaseField('mandatoryHiddenField',
-      'Test complex type with mandatory hidden field',
-      'Complex',
-      'Complex',
-      null,
-      [radioButtonCaseField, nestedComplex]
-    )]
     const NESTED_FORM_GROUP = new FormGroup({
       data: new FormGroup({
         mandatoryHiddenField: new FormGroup({
@@ -107,6 +108,38 @@ describe('PageValidationService', () => {
           nestedComplex: new FormGroup({
             text: new FormControl(null, [Validators.required]),
             textArea: new FormControl(null, [Validators.required])
+          })
+        })
+      })
+    })
+    expect(service.isPageValid(nestedWizardPage, NESTED_FORM_GROUP)).toBeTruthy();
+  })
+
+  it('should set the page not valid if there is a hidden complex type but the show_condition is meet', () => {
+    const NESTED_FORM_GROUP = new FormGroup({
+      data: new FormGroup({
+        mandatoryHiddenField: new FormGroup({
+          radioButton: new FormControl('Yes', [Validators.required]),
+          nestedComplex: new FormGroup({
+            text: new FormControl(null, [Validators.required]),
+            textArea: new FormControl(null, [Validators.required])
+          })
+        })
+      })
+    })
+
+    expect(service.isPageValid(nestedWizardPage, NESTED_FORM_GROUP)).toBeFalsy();
+
+  })
+
+  it('should set the page valid if there is a hidden complex type but the show_condition is meet and the values are populated', () => {
+    const NESTED_FORM_GROUP = new FormGroup({
+      data: new FormGroup({
+        mandatoryHiddenField: new FormGroup({
+          radioButton: new FormControl('Yes', [Validators.required]),
+          nestedComplex: new FormGroup({
+            text: new FormControl('Some text', [Validators.required]),
+            textArea: new FormControl('Some text', [Validators.required])
           })
         })
       })
