@@ -103,7 +103,7 @@ describe('CaseEditConfirmComponent', () => {
     expect(title).toEqual('# 1234567812345678: test');
   });
 
-  it('should show valid title on the page', () => {
+  it('should return case fields count', () => {
     const caseFields: CaseField[] = component.caseFields;
     expect(caseFields.length).toBe(3);
   });

@@ -59,10 +59,6 @@ describe('CcdCaseTitlePipe', () => {
     ccdCaseTitle = new CcdCaseTitlePipe(placeholderService, fieldsUtils);
   });
 
-  it('create an instance', () => {
-    expect(ccdCaseTitle).toBeTruthy();
-  });
-
   it('should replace field interpolation and return actual value', () => {
     const title = '# ${Case_ReferenceId}: ${LastNameId}';
     expect(ccdCaseTitle.transform(title, caseFields, FORM_GROUP)).toBe('# 123456: West');
