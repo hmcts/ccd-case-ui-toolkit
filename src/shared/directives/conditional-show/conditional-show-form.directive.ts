@@ -9,7 +9,7 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ShowCondition } from './domain';
 
-@Directive({ selector: '[ccdConditionalShowForm]' })
+@Directive({selector: '[ccdConditionalShowForm]'})
 /** Hides and shows all fields in a form. Works on read only fields and form fields.
  *  The show condition is evaluated on all the fields of the page. i.e. read only and form fields.
  *  Evaluation of the show condition includes disabled fields, which can be on their initial value or empty. Executes on the
@@ -67,8 +67,8 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
         debounceTime(100)
       )
       .subscribe(_ => {
-      this.evalAllShowHideConditions();
-    });
+        this.evalAllShowHideConditions();
+      });
   }
 
   private evaluateControl(control: AbstractControl) {
@@ -97,12 +97,10 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
         }
         // Disable the control if it's hidden so that it doesn't count towards the
         // validation state of the form, but only if it's actually being validated.
-        if (control.validator) {
-          if (cf.hidden === true && !control.disabled) {
-            control.disable({ emitEvent: false });
-          } else if (cf.hidden !== true && control.disabled) {
-            control.enable({ emitEvent: false });
-          }
+        if (cf.hidden === true && !control.disabled) {
+          control.disable({emitEvent: false});
+        } else if (cf.hidden !== true && control.disabled) {
+          control.enable({emitEvent: false});
         }
       }
     }
@@ -117,7 +115,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     this.evaluateControl(a);
     a.controls.forEach(formControl => {
       this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
-   });
+    });
   }
 
   private handleFormGroup = (g: FormGroup): void => {

@@ -23,10 +23,6 @@ export class PageValidationService {
 
   public isHidden(caseField: CaseField, editForm: FormGroup): boolean {
     const formFields = editForm.getRawValue();
-    if (caseField.field_type.complex_fields && caseField.field_type.complex_fields.length) {
-      const hiddenFields = caseField.field_type.complex_fields.filter((cf: CaseField) => this.isHidden(cf, editForm));
-      return !hiddenFields.length
-    }
     const condition = ShowCondition.getInstance(caseField.show_condition);
     return !condition.match(formFields.data);
   }

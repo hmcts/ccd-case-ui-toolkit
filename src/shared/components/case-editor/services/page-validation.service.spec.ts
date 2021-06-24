@@ -106,8 +106,8 @@ describe('PageValidationService', () => {
         mandatoryHiddenField: new FormGroup({
           radioButton: new FormControl('No', [Validators.required]),
           nestedComplex: new FormGroup({
-            text: new FormControl(null, [Validators.required]),
-            textArea: new FormControl(null, [Validators.required])
+            text: new FormControl({value: null, disabled: true}, [Validators.required]),
+            textArea: new FormControl({value: null, disabled: true}, [Validators.required])
           })
         })
       })
