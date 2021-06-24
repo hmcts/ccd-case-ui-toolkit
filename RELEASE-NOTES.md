@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-event-log-local
+**EUI-4095** Event logs to display local time
+
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
 
