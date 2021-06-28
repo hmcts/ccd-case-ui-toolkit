@@ -43,10 +43,12 @@ export class CaseEditorConfig {
   api_url: string;
   case_data_url: string;
   document_management_url: string;
+  hrs_url: string;
   login_url: string;
   oauth2_client_id: string;
   postcode_lookup_url: string;
   remote_document_management_url: string;
+  remote_hrs_url: string;
   annotation_api_url: string;
   payments_url: string;
   pay_bulk_scan_url: string;

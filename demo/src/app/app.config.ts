@@ -60,11 +60,11 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getHrsUrl() {
-    return this.config.document_management_url;
+    return this.config.hrs_url;
   }
 
   public getRemoteHrsUrl() {
-    return this.config.remote_document_management_url;
+    return this.config.remote_hrs_url;
   }
 
   public getAnnotationApiUrl() {
