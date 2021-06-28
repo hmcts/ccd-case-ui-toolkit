@@ -98,7 +98,8 @@ describe('EventLogDetails', () => {
 
     expect(rows.length).toBe(6);
 
-    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'utc', null) +
+    // EUI-4095 - event logs changed to show local date as opposed to utc
+    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'local', null) +
       ' Local: ' + new DatePipe(null).transform(EVENT.timestamp, 'local', null);
     expectRow(rows[0]).toEqual('Date', resultDate);
     expectRow(rows[1]).toEqual('Author', 'Justin SMITH');
