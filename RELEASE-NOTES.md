@@ -4,9 +4,6 @@
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
 fixed an issue with the rendering of complex collections on the Case Details tabs.
 
-### Version 3.1.5-event-log-local
-**EUI-4095** Event logs to display local time
-
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
 
