@@ -1,5 +1,15 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-nested-multi-select-labels-theta
+**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
+fixed an issue with the rendering of complex collections on the Case Details tabs.
+
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
+### Version 3.1.5-profile-call-before-event-trigger
+**EUI-3335** profile call needs to happen first
+
 ### Version 3.1.5-complex-field-check-answers
 **EUI-4033** Ensured complex fields were interpolated on check you answers page
 
@@ -16,6 +26,7 @@
 
 ### Version 3.1.2-missing-ftpa-tab-beta
 **EUI-3825** Fix for missing FTPA tab contents.
+
 ### Version 3.1.2
 **EUI-4013**
 **EUI-4024**
@@ -23,7 +34,7 @@
 **EUI-4031**
 
 ### Version 3.1.2
-Activity Tracker Permformance changes
+Activity Tracker Performance changes
 
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
@@ -106,9 +117,6 @@ Activity Tracker Permformance changes
 
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
-
-### Version 2.73.2-collection-date-field
-**EUI-2667** Fix to date field rendering within collections
 
 ### Version 2.74.2
 **EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch

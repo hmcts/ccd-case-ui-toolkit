@@ -3,7 +3,6 @@ import { By } from '@angular/platform-browser';
 import { DebugElement, Component, Input } from '@angular/core';
 import { LabelSubstitutorDirective } from './label-substitutor.directive';
 import { CaseField } from '../../domain/definition/case-field.model';
-import { async } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
@@ -60,7 +59,7 @@ describe('LabelSubstitutorDirective', () => {
   let valueEl: HTMLElement;
   let placeholderService: any;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     placeholderService = createSpyObj<PlaceholderService>('placeholderService', ['resolvePlaceholders']);
 
     TestBed.configureTestingModule({
@@ -75,7 +74,7 @@ describe('LabelSubstitutorDirective', () => {
     labelEl = de.query(By.css('tr> td:nth-child(1)')).nativeElement;
     hintEl = de.query(By.css('tr> td:nth-child(2)')).nativeElement;
     valueEl = de.query(By.css('tr> td:nth-child(3)')).nativeElement;
-  }));
+  });
 
   describe('simple type fields', () => {
 
@@ -179,213 +178,111 @@ describe('LabelSubstitutorDirective', () => {
     });
   });
 
-  describe('fixed list type fields', () => {
-
-    it('should pass form field value when field is not read only and no case field value but form field value present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', '', {
+  describe('list type fields', () => {
+    const LABEL = 'someLabel'
+    const init = (type: string, value: any, items: string[], labelAValue?: any): void => {
+      comp.caseField = textField('LabelB', '', LABEL);
+      comp.caseFields = [comp.caseField, field('LabelA', value, {
         id: 'LabelA',
-        type: 'FixedList',
-        fixed_list_items: [
-          {
-            code: 'ValueA',
-            label: 'Option A'
-          },
-          {
-            code: 'ValueC',
-            label: 'Option C'
-          }
-        ]
+        type,
+        fixed_list_items: items.map(item => {
+          return { code: `Value${item}`, label: `Option ${item}` };
+        })
       }, '')];
-      comp.formGroup = new FormGroup({
-        LabelA: new FormControl('ValueA')
+      if (labelAValue) {
+        comp.formGroup = new FormGroup({
+          LabelA: new FormControl(labelAValue)
+        });
+      }
+      fixture.detectChanges();
+    };
+
+    ['FixedList', 'FixedRadioList'].forEach(listType => {
+      describe(`${listType} fields`, () => {
+        const ITEMS = ['A', 'C'];
+        it('should pass form field value when field is not read only and no case field value but form field value present', () => {
+          init(listType, '', ITEMS, 'ValueA');
+          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option A'}, LABEL);
+        });
+  
+        it('should pass case field value when field is read only and no form field but case field value present', () => {
+          init(listType, 'ValueC', ITEMS);
+          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option C'}, LABEL);
+        });
+  
+        it('should pass field form value when field is not read only and both form and case field values present', () => {
+          init(listType, 'ValueC', ITEMS, 'ValueA');
+          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option A'}, LABEL);
+        });
       });
-      fixture.detectChanges();
-
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        {LabelB: '', LabelA: 'Option A'}, label);
     });
 
-    it('should pass case field value when field is read only and no form field but case field value present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
-        id: 'LabelA',
-        type: 'FixedList',
-        fixed_list_items: [
-          {
-            code: 'ValueA',
-            label: 'Option A'
-          },
-          {
-            code: 'ValueC',
-            label: 'Option C'
-          }
-        ]
-      }, '')];
-      fixture.detectChanges();
+    describe('MultiSelectList fields', () => {
+      const FIELD_TYPE = 'MultiSelectList';
+      const ITEMS = ['A', 'C', 'D'];
+      const expectedValue = (items: string[]): object => {
+        return  {
+          LabelB: '',
+          LabelA: items.map(item => `Value${item}`),
+          'LabelA-LABEL': items.map(item => `Option ${item}`)
+        };
+      }
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        {LabelB: '', LabelA: 'Option C'}, label);
-    });
-
-    it('should pass field form value when field is not read only and both form and case field values present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
-        id: 'LabelA',
-        type: 'FixedList',
-        fixed_list_items: [
-          {
-            code: 'ValueA',
-            label: 'Option A'
-          },
-          {
-            code: 'ValueC',
-            label: 'Option C'
-          }
-        ]
-      }, '')];
-      comp.formGroup = new FormGroup({
-        LabelA: new FormControl('ValueA')
+      it('should pass form field value when field is not read only and no case field value but form field value present', () => {
+        init(FIELD_TYPE, '', ITEMS, ['ValueA', 'ValueD']);
+        expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+          expectedValue(['A', 'D']),
+          LABEL
+        );
       });
-      fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        {LabelB: '', LabelA: 'Option A'}, label);
-    });
-  });
-
-  describe('multi list type fields', () => {
-
-    it('should pass form field value when field is not read only and no case field value but form field value present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', '', {
-        id: 'LabelA',
-        type: 'MultiSelectList',
-        fixed_list_items: [
-          {
-            code: 'ValueA',
-            label: 'Option A'
-          },
-          {
-            code: 'ValueC',
-            label: 'Option C'
-          },
-          {
-            code: 'ValueD',
-            label: 'Option D'
-          }
-        ]
-      }, '')];
-      comp.formGroup = new FormGroup({
-        LabelA: new FormControl(['ValueA', 'ValueD'])
+      it('should pass case field value when field is read only and no form field but case field value present', () => {
+        init(FIELD_TYPE, ['ValueC', 'ValueD'], ITEMS);
+        expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+          expectedValue(['C', 'D']),
+          LABEL
+        );
       });
-      fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        {LabelB: '', LabelA: ['ValueA', 'ValueD'], 'LabelA-LABEL': ['Option A', 'Option D']}, label);
-    });
-
-    it('should pass case field value when field is read only and no form field but case field value present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', ['ValueC', 'ValueD'], {
-        id: 'LabelA',
-        type: 'MultiSelectList',
-        fixed_list_items: [
-          {
-            code: 'ValueA',
-            label: 'Option A'
-          },
-          {
-            code: 'ValueC',
-            label: 'Option C'
-          },
-          {
-            code: 'ValueD',
-            label: 'Option D'
-          }
-        ]
-      }, '')];
-      fixture.detectChanges();
-
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        {LabelB: '', LabelA: ['ValueC', 'ValueD'], 'LabelA-LABEL': ['Option C', 'Option D']}, label);
-    });
-
-    it('should pass field form value when field is not read only and both form and case field values present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', 'ValueC', {
-        id: 'LabelA',
-        type: 'MultiSelectList',
-        fixed_list_items: [
-          {
-            code: 'ValueA',
-            label: 'Option A'
-          },
-          {
-            code: 'ValueC',
-            label: 'Option C'
-          },
-          {
-            code: 'ValueD',
-            label: 'Option D'
-          }
-        ]
-      }, '')];
-      comp.formGroup = new FormGroup({
-        LabelA: new FormControl(['ValueA', 'ValueC'])
+      it('should pass field form value when field is not read only and both form and case field values present', () => {
+        init(FIELD_TYPE, 'ValueC', ITEMS, ['ValueA', 'ValueC']);
+        expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+          expectedValue(['A', 'C']),
+          LABEL
+        );
       });
-      fixture.detectChanges();
-
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        {LabelB: '', LabelA: ['ValueA', 'ValueC'], 'LabelA-LABEL': ['Option A', 'Option C']}, label);
     });
   });
 
   describe('MoneyGBP type fields', () => {
-
-    it('should pass null value for null MoneyGBP', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', null, {
+    const LABEL = 'someLabel';
+    const init = (value: string, labelAValue?: string): void => {
+      comp.caseField = textField('LabelB', '', LABEL);
+      comp.caseFields = [comp.caseField, field('LabelA', value, {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
+      if (labelAValue) {
+        comp.formGroup = new FormGroup({
+          LabelA: new FormControl(labelAValue)
+        });
+      }
       fixture.detectChanges();
+    };
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, label);
+    it('should pass empty value for null MoneyGBP', () => {
+      init(null);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: ''}, LABEL);
     });
 
     it('should pass case field value with MoneyGBP when case field value but no form field value present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', '20055', {
-        id: 'LabelA',
-        type: 'MoneyGBP'
-      }, '')];
-      fixture.detectChanges();
-
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
+      init('20055');
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, LABEL);
     });
 
     it('should pass form field value with MoneyGBP when form field value but no case field value present', () => {
-      let label = 'someLabel';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, field('LabelA', '', {
-        id: 'LabelA',
-        type: 'MoneyGBP'
-      }, '')];
-      comp.formGroup = new FormGroup({
-        LabelA: new FormControl('20055')
-      });
-      fixture.detectChanges();
-
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
+      init('', '20055');
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, LABEL);
     });
 
     it('should pass form field value with MoneyGBP when both form and case field values present', () => {
