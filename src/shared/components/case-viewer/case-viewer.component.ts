@@ -1,26 +1,36 @@
-import { AfterViewInit, Component, DoCheck, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { CaseTab } from '../../domain/case-view/case-tab.model';
-import { Subject } from 'rxjs/Subject';
-import { Activity, DisplayMode } from '../../domain/activity/activity.model';
-import { ActivityPollingService } from '../../services/activity/activity.polling.service';
-import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
-import { CaseField } from '../../domain/definition';
-import { ShowCondition } from '../../directives/conditional-show/domain';
-import { Draft, DRAFT_QUERY_PARAM } from '../../domain';
-import { OrderService } from '../../services/order';
-import { CaseView, CaseViewTrigger } from '../../domain/case-view';
-import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { AlertService } from '../../services/alert';
-import { CallbackErrorsContext } from '../../components/error/domain';
-import { DraftService } from '../../services/draft';
-import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
-import { CaseNotifier } from '../case-editor';
-import { NavigationNotifierService, NavigationOrigin } from '../../services/navigation';
-import { ErrorNotifierService } from '../../services/error';
 import { Location } from '@angular/common';
+import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
+import { ActivatedRoute, Params } from '@angular/router';
 import { plainToClass } from 'class-transformer';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
+
+import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
+import { ShowCondition } from '../../directives/conditional-show/domain';
+import {
+  Activity,
+  CaseField,
+  CaseTab,
+  CaseView,
+  CaseViewTrigger,
+  DisplayMode,
+  Draft,
+  DRAFT_QUERY_PARAM,
+} from '../../domain';
+import {
+  ActivityPollingService,
+  AlertService,
+  DraftService,
+  ErrorNotifierService,
+  NavigationNotifierService,
+  NavigationOrigin,
+  OrderService,
+} from '../../services';
+import { CaseNotifier } from '../case-editor';
+import { CallbackErrorsContext } from '../error/domain';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -34,41 +44,44 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   static readonly space = '%20';
 
   @Input()
-  hasPrint = true;
+  public hasPrint = true;
   @Input()
-  hasEventSelector = true;
+  public hasEventSelector = true;
 
-  BANNER = DisplayMode.BANNER;
+  public BANNER = DisplayMode.BANNER;
 
-  caseDetails: CaseView;
-  sortedTabs: CaseTab[];
-  caseFields: CaseField[];
-  error: any;
-  triggerTextStart = CaseViewerComponent.TRIGGER_TEXT_START;
-  triggerTextIgnoreWarnings = CaseViewerComponent.TRIGGER_TEXT_CONTINUE;
-  triggerText: string = CaseViewerComponent.TRIGGER_TEXT_START;
-  ignoreWarning = false;
-  activitySubscription: Subscription;
-  caseSubscription: Subscription;
-  errorSubscription: Subscription;
-  dialogConfig: MatDialogConfig;
+  public caseDetails: CaseView;
+  public sortedTabs: CaseTab[];
+  public caseFields: CaseField[];
+  public formGroup: FormGroup;
+  public error: any;
+  public triggerTextStart = CaseViewerComponent.TRIGGER_TEXT_START;
+  public triggerTextIgnoreWarnings = CaseViewerComponent.TRIGGER_TEXT_CONTINUE;
+  public triggerText: string = CaseViewerComponent.TRIGGER_TEXT_START;
+  public ignoreWarning = false;
+  public activitySubscription: Subscription;
+  public caseSubscription: Subscription;
+  public errorSubscription: Subscription;
+  public dialogConfig: MatDialogConfig;
 
-  callbackErrorsSubject: Subject<any> = new Subject();
+  public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
 
   constructor(
-    private ngZone: NgZone,
-    private route: ActivatedRoute,
-    private navigationNotifierService: NavigationNotifierService,
-    private orderService: OrderService,
-    private activityPollingService: ActivityPollingService,
-    private dialog: MatDialog,
-    private alertService: AlertService,
-    private draftService: DraftService,
-    private caseNotifier: CaseNotifier,
-    private errorNotifierService: ErrorNotifierService,
+    private readonly ngZone: NgZone,
+    private readonly route: ActivatedRoute,
+    private readonly navigationNotifierService: NavigationNotifierService,
+    private readonly orderService: OrderService,
+    private readonly activityPollingService: ActivityPollingService,
+    private readonly dialog: MatDialog,
+    private readonly alertService: AlertService,
+    private readonly draftService: DraftService,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly errorNotifierService: ErrorNotifierService,
     private readonly location: Location
-  ) {}
+  ) {
+  }
+
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
@@ -92,7 +105,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  isPrintEnabled(): boolean {
+  public isPrintEnabled(): boolean {
     return this.caseDetails.case_type.printEnabled;
   }
 
@@ -109,20 +122,20 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  postViewActivity(): Observable<Activity[]> {
+  public postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
   }
 
-  clearErrorsAndWarnings() {
+  public clearErrorsAndWarnings(): void {
     this.resetErrors();
     this.ignoreWarning = false;
     this.triggerText = CaseViewerComponent.TRIGGER_TEXT_START;
   }
 
-  applyTrigger(trigger: CaseViewTrigger) {
+  public applyTrigger(trigger: CaseViewTrigger): void {
     this.error = null;
 
-    let theQueryParams: Params = {};
+    const theQueryParams: Params = {};
 
     if (this.ignoreWarning) {
       theQueryParams['ignoreWarning'] = this.ignoreWarning;
@@ -145,38 +158,42 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifierService.announceNavigation(
-        {action: NavigationOrigin.DRAFT_RESUMED,
+        {
+          action: NavigationOrigin.DRAFT_RESUMED,
           jid: this.caseDetails.case_type.jurisdiction.id,
           ctid: this.caseDetails.case_type.id,
           etid: trigger.id,
-          queryParams : theQueryParams});
+          queryParams: theQueryParams
+        });
     } else {
       this.navigationNotifierService.announceNavigation(
-        {action: NavigationOrigin.EVENT_TRIGGERED,
+        {
+          action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,
           etid: trigger.id,
-          relativeTo: this.route});
+          relativeTo: this.route
+        });
     }
   }
 
-  isDataLoaded(): boolean {
-    return this.caseDetails ? true : false;
+  public isDataLoaded(): boolean {
+    return !!this.caseDetails;
   }
 
-  hasTabsPresent(): boolean {
+  public hasTabsPresent(): boolean {
     return this.sortedTabs.length > 0;
   }
 
-  callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext) {
+  public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
     this.ignoreWarning = callbackErrorsContext.ignore_warning;
     this.triggerText = callbackErrorsContext.trigger_text;
   }
 
-  isDraft(): boolean {
+  public isDraft(): boolean {
     return Draft.isDraft(this.caseDetails.case_id);
   }
 
-  isTriggerButtonDisabled(): boolean {
+  public isTriggerButtonDisabled(): boolean {
     return (this.error
       && this.error.callbackErrors
       && this.error.callbackErrors.length)
@@ -186,13 +203,27 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         && this.error.details.field_errors.length);
   }
 
-  private init() {
+  public ngAfterViewInit(): void {
+    const url = this.location.path(true);
+    let hashValue = url.substring(url.indexOf('#') + 1);
+    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(reguarExp, ' ');
+    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    if (matTab && matTab.position) {
+      this.tabGroup.selectedIndex = matTab.position;
+    }
+  }
+
+  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    window.location.hash = tabChangeEvent.tab.textLabel;
+  }
+
+  private init(): void {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
-
     this.caseFields = this.getTabFields();
-
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
+    this.formGroup = this.buildFormGroup(this.caseFields);
 
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular(() => {
@@ -204,17 +235,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
-    }
-  }
-
-  public ngAfterViewInit() {
-    const url = this.location.path(true);
-    let hashValue = url.substring(url.indexOf('#') + 1);
-    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
-    hashValue = hashValue.replace(reguarExp, ' ');
-    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
-    if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
     }
   }
 
@@ -232,7 +252,26 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     return caseDataFields.concat(this.caseDetails.metadataFields);
   }
 
-  private initDialog() {
+  /**
+   * For EUI-3825:
+   * Builds a FormGroup from all the CaseFields contained within the view.
+   * This FormGroup is necessary for evaluation the show/hide conditions of
+   * fields that are dependent on a field only available on a DIFFERENT tab.
+   */
+  private buildFormGroup(caseFields: CaseField[]): FormGroup {
+    let value: object = {};
+    if (caseFields) {
+      caseFields.forEach(caseField => {
+        value = {
+          ...value,
+          [caseField.id]: caseField.value
+        };
+      });
+    }
+    return new FormGroup({ data: new FormControl(value) });
+  }
+
+  private initDialog(): void {
     this.dialogConfig = new MatDialogConfig();
     this.dialogConfig.disableClose = true;
     this.dialogConfig.autoFocus = true;
@@ -251,10 +290,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
-  }
-
-  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    window.location.hash = tabChangeEvent.tab.textLabel;
   }
 
 }

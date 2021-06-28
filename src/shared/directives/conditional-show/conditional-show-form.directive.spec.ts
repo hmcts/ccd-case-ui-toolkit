@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, Component, Input } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -157,7 +157,7 @@ describe('ConditionalShowFormDirective', () => {
       done();
     });
   })
-  it ('should hide when field value changes to make condition false', (done) => {
+  it ('should hide when field value changes to make condition false', fakeAsync(() => {
     comp.caseFields = [ field('hasCar', 'Yes', ''),
       field('carMake', 'Ford', 'hasCar="Yes"'),
       field('carModel', 'Prefect', 'hasCar="Yes"')];
@@ -172,12 +172,12 @@ describe('ConditionalShowFormDirective', () => {
       expect(comp.caseFields[1].hidden).toBe(false);
       expect(comp.caseFields[2].hidden).toBe(false);
       comp.formGroup.patchValue({hasCar: 'No'});
+      tick(500)
       fixture.detectChanges();
       expect(comp.caseFields[1].hidden).toBe(true);
       expect(comp.caseFields[2].hidden).toBe(true);
-      done();
     });
-  })
+  }))
   /*
   it('should display not grey bar when toggled to show if grey bar disabled', () => {
       fixture = TestBed.createComponent(TestHostGreyBarDisabledComponent);
