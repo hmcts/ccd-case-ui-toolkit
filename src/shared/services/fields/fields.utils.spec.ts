@@ -160,16 +160,24 @@ describe('FieldsUtils', () => {
   });
 
   describe('mergeLabelCaseFieldsAndFormFields containing MultiSelectLists', () => {
+    const ITEMS = [
+      { code: 'arya', label: 'Arya Stark' },
+      { code: 'bob', label: 'Robert Baratheon' },
+      { code: 'cersei', label: 'Cersei Lannister' },
+      { code: 'dani', label: 'Daenerys Targaryen' }
+    ];
+    const addItems = (field: CaseField): CaseField => {
+      field.field_type.fixed_list_items = ITEMS;
+      field.value = [ ITEMS[1].code, ITEMS[2].code ];
+      return field;
+    };
+    const getComplex = (multiSelect: CaseField): CaseField => {
+      const complex: CaseField = aCaseField('complex', 'Complex', 'Complex', 'COMPLEX', null);
+      complex.field_type.complex_fields = [ multiSelect ];
+      return complex;
+    };
     it('should set up -LABEL properties for multi-select values', () => {
-      const MULTI_SELECT: CaseField = aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null);
-      const ITEMS = [
-        { code: 'arya', label: 'Arya Stark' },
-        { code: 'bob', label: 'Robert Baratheon' },
-        { code: 'cersei', label: 'Cersei Lannister' },
-        { code: 'dani', label: 'Daenerys Targaryen' }
-      ];
-      MULTI_SELECT.field_type.fixed_list_items = ITEMS;
-      MULTI_SELECT.value = [ ITEMS[1].code, ITEMS[2].code ];
+      const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
       const FORM_FIELDS = {};
 
       const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([ MULTI_SELECT ], FORM_FIELDS);
@@ -184,17 +192,8 @@ describe('FieldsUtils', () => {
     });
 
     it('should set up -LABEL properties for multi-select values within complex types', () => {
-      const MULTI_SELECT: CaseField = aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null);
-      const ITEMS = [
-        { code: 'arya', label: 'Arya Stark' },
-        { code: 'bob', label: 'Robert Baratheon' },
-        { code: 'cersei', label: 'Cersei Lannister' },
-        { code: 'dani', label: 'Daenerys Targaryen' }
-      ];
-      MULTI_SELECT.field_type.fixed_list_items = ITEMS;
-      MULTI_SELECT.value = [ ITEMS[1].code, ITEMS[2].code ];
-      const COMPLEX: CaseField = aCaseField('complex', 'Complex', 'Complex', 'COMPLEX', null);
-      COMPLEX.field_type.complex_fields = [ MULTI_SELECT ];
+      const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
+      const COMPLEX: CaseField = getComplex(MULTI_SELECT);
       const FORM_FIELDS = {};
 
       const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([ COMPLEX ], FORM_FIELDS);
@@ -210,17 +209,8 @@ describe('FieldsUtils', () => {
     });
 
     it('should set up -LABEL properties for multi-select values within collections', () => {
-      const MULTI_SELECT: CaseField = aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null);
-      const ITEMS = [
-        { code: 'arya', label: 'Arya Stark' },
-        { code: 'bob', label: 'Robert Baratheon' },
-        { code: 'cersei', label: 'Cersei Lannister' },
-        { code: 'dani', label: 'Daenerys Targaryen' }
-      ];
-      MULTI_SELECT.field_type.fixed_list_items = ITEMS;
-      MULTI_SELECT.value = [ ITEMS[1].code, ITEMS[2].code ];
-      const COMPLEX: CaseField = aCaseField('complex', 'Complex', 'Complex', 'COMPLEX', null);
-      COMPLEX.field_type.complex_fields = [ MULTI_SELECT ];
+      const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
+      const COMPLEX: CaseField = getComplex(MULTI_SELECT);
       const COLLECTION: CaseField = aCaseField('collection', 'Collection', 'Collection', 'OPTIONAL', null);
       COLLECTION.field_type.collection_field_type = COMPLEX.field_type;
       const FORM_FIELDS = {
