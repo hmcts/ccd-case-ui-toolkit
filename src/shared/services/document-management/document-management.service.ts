@@ -3,7 +3,6 @@ import { DocumentData } from '../../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
-import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -11,11 +10,18 @@ import { HttpHeaders } from '@angular/common/http';
 export class DocumentManagementService {
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
+  private static readonly WORD = 'word';
+  private static readonly EXCEL = 'excel';
+  private static readonly TXT = 'txt';
+  private static readonly RTF = 'rtf';
+
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 1000;
 
   imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG'];
+  wordList: string[] = ['DOC', 'DOCX'];
+  excelList: string[] = ['CSV','XLS', 'XLSX'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -31,6 +37,7 @@ export class DocumentManagementService {
       .pipe();
   }
 
+
   getMediaViewerInfo(documentFieldValue: any): string {
     let mediaViewerInfo = {
         document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
@@ -40,6 +47,7 @@ export class DocumentManagementService {
         case_id: documentFieldValue.id,
         case_jurisdiction: documentFieldValue.jurisdiction
       };
+      console.log(mediaViewerInfo.content_type);
     return JSON.stringify(mediaViewerInfo);
   }
 
@@ -50,14 +58,35 @@ export class DocumentManagementService {
       if (position === documentFieldValue.document_filename.length) {
         fileExtension = '';
       } else if (position >= 0) {
-        fileExtension = documentFieldValue.document_filename.slice(position + 1);
+        fileExtension = documentFieldValue.document_filename.slice(position + 1).toUpperCase();
       }
     }
     if (this.isImage(fileExtension)) {
+      console.log("Hit a image attachment")
       return DocumentManagementService.IMAGE;
-    } else if (fileExtension.toLowerCase() === 'pdf') {
+    }
+    else if(this.isWord(fileExtension)){
+      console.log("Hit a word attachment")
+      return DocumentManagementService.WORD;
+
+    }
+    else if(this.isExcel(fileExtension)){
+      console.log("Hit a excel attachment")
+      return DocumentManagementService.EXCEL;
+    }
+    else if (fileExtension.toLowerCase() === 'txt') {
+      console.log("Hit a txt attachment")
+      return DocumentManagementService.TXT;
+    }
+    else if (fileExtension.toLowerCase() === 'rtf') {
+      console.log("Hit a rtf attachment")
+      return DocumentManagementService.RTF;
+    }
+    else if (fileExtension.toLowerCase() === 'pdf') {
+      console.log("Hit a pdf attachment")
       return DocumentManagementService.PDF;
-    } else {
+    }
+    else {
       console.warn(`Unknown content type with the file extension: ${fileExtension}`);
       return fileExtension;
     }
@@ -65,6 +94,14 @@ export class DocumentManagementService {
 
   isImage(imageType: string) {
     return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
+  }
+
+  isWord(wordType: string) {
+    return this.wordList.find(e => e === wordType.toUpperCase()) !== undefined;
+  }
+
+  isExcel(excelType: string) {
+    return this.excelList.find(e => e === excelType.toUpperCase()) !== undefined;
   }
 
   transformDocumentUrl(documentBinaryUrl: string): string {

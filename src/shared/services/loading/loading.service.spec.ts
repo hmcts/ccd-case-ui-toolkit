@@ -54,7 +54,7 @@ describe('LoadingService', () => {
     loadingService.register();
     loadingService.unregister(token);
     subscription = loadingService.isLoading.subscribe(value => {
-      expect(value).toBeTruthy();
+      expect(value).toBeFalsy();
     });
 
   });
