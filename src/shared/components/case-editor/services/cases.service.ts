@@ -336,7 +336,7 @@ export class CasesService {
     // This is used a feature toggle to
     // control the work allocation
     if (this.appConfig.getWorkAllocationApiUrl()) {
-        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
+        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
           }, error => {

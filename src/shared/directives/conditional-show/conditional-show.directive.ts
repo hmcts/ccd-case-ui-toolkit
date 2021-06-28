@@ -6,8 +6,9 @@ import { ShowCondition } from './domain/conditional-show.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import { GreyBarService } from './services/grey-bar.service';
+import { debounceTime } from 'rxjs/operators';
 
-@Directive({ selector: '[ccdConditionalShow]' })
+@Directive({selector: '[ccdConditionalShow]'})
 /** Hides and shows the host element based on the show condition if the condition is not empty. Works on read only fields and form fields.
  *  The show condition is evaluated on all the fields of the page. i.e. read only and form fields. When a form field is hidden, if its
  *  initial value was changed then the field is cleared. Otherwise the original value is kept and will display next time the field is
@@ -27,9 +28,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   @Input() complexFormGroup: FormGroup;
 
   condition: ShowCondition;
-  private formChangesSubscription: Subscription;
   formField: any;
   formGroupRawValue: any;
+  private formChangesSubscription: Subscription;
 
   constructor(private el: ElementRef,
               private fieldsUtils: FieldsUtils,
@@ -70,17 +71,23 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private subscribeToFormChanges() {
     this.unsubscribeFromFormChanges();
     // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
-    this.formChangesSubscription = this.formGroup.valueChanges.subscribe(_ => {
-      let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
-      if (this.greyBarEnabled && shown !== undefined) {
-        this.updateGreyBar(shown);
-      }
-    });
+    this.formChangesSubscription = this.formGroup
+      .valueChanges
+      .pipe(
+        debounceTime(200)
+      )
+      .subscribe(_ => {
+        console.log('FIELD ' + this.caseField.id + ' reacting to form change');
+        let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
+        if (this.greyBarEnabled && shown !== undefined) {
+          this.updateGreyBar(shown);
+        }
+      });
   }
 
   /**
    * returns whether the field visibility has changed, or undefined if not
-  */
+   */
   private updateVisibility(fields, forced = false): boolean {
     // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {

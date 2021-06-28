@@ -13,18 +13,22 @@ export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent 
   ngOnInit() {
     /**
      *
-     * Reassigning list_items from formatted_list when list_items is empty
+     * Reassigning list_items from formatted_value when list_items is empty
      */
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
-    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
-      this.caseField.value = this.caseField.formatted_value.value.code;
+    /**
+     * Reassigning value from formatted_value when value is empty
+     */
+    if (!this.caseField.value) {
+      if (this.caseField.formatted_value && this.caseField.formatted_value.value && this.caseField.formatted_value.value.code) {
+        this.caseField.value = this.caseField.formatted_value.value.code;
+      }
     }
 
-    let isNull = this.caseField.value === undefined || this.caseField.value === '';
-
+    const isNull = this.caseField.value === undefined || this.caseField.value === '';
     if (isNull || typeof this.caseField.value === 'object') {
       this.caseField.value = null;
     }

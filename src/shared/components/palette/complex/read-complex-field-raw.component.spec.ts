@@ -1,15 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { PaletteContext } from '../base-field/palette-context.enum';
+
+import { FieldsFilterPipe, ReadFieldsFilterPipe } from '.';
+import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
+import { CaseField, FieldType } from '../../../domain';
 import { text } from '../../../test/helpers';
+import { PaletteContext } from '../base-field/palette-context.enum';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
 
 const initTests = (caseField, mocks) => {
   let fixture: ComponentFixture<ReadComplexFieldRawComponent>;
@@ -25,7 +25,7 @@ const initTests = (caseField, mocks) => {
       declarations: [
         ReadComplexFieldRawComponent,
         FieldsFilterPipe,
-
+        ReadFieldsFilterPipe,
         ...mocks
       ],
       providers: []
@@ -49,7 +49,11 @@ const initTests = (caseField, mocks) => {
 };
 
 const expectCaseField = (de, caseField) => {
-  expect(de.componentInstance.caseField).toEqual(caseField)
+  expect(de.componentInstance.caseField).toEqual(caseField);
+};
+
+const expectCaseFieldPartial = (de, caseField) => {
+  expect(de.componentInstance.caseField).toEqual(jasmine.objectContaining(caseField));
 };
 
 const expectLabel = (de: DebugElement, label) => {
@@ -76,7 +80,7 @@ describe('ReadComplexFieldRawComponent', () => {
   beforeEach(() => {
     FieldReadComponent = MockComponent({
       selector: 'ccd-field-read',
-      inputs: ['caseField', 'context']
+      inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
     });
   });
 
@@ -152,9 +156,9 @@ describe('ReadComplexFieldRawComponent', () => {
       let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields.length);
-      expectCaseField(complexListValues[0], FIELD_TYPE_WITH_VALUES.complex_fields[0]);
-      expectCaseField(complexListValues[1], FIELD_TYPE_WITH_VALUES.complex_fields[1]);
-      expectCaseField(complexListValues[2], FIELD_TYPE_WITH_VALUES.complex_fields[2]);
+      expectCaseFieldPartial(complexListValues[0], FIELD_TYPE_WITH_VALUES.complex_fields[0]);
+      expectCaseFieldPartial(complexListValues[1], FIELD_TYPE_WITH_VALUES.complex_fields[1]);
+      expectCaseFieldPartial(complexListValues[2], FIELD_TYPE_WITH_VALUES.complex_fields[2]);
     });
 
     it('should render one field read component per child field', () => {
@@ -236,8 +240,8 @@ describe('ReadComplexFieldRawComponent', () => {
       let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITH_MISSING_VALUE.complex_fields.length - 1);
-      expectCaseField(complexListValues[0], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[0]);
-      expectCaseField(complexListValues[1], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[2]);
+      expectCaseFieldPartial(complexListValues[0], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[0]);
+      expectCaseFieldPartial(complexListValues[1], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[2]);
     });
 
   });
@@ -304,21 +308,21 @@ describe('ReadComplexFieldRawComponent', () => {
       let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITHOUT_VALUES.complex_fields.length);
-      expectCaseField(complexListValues[0], Object.assign(
+      expectCaseFieldPartial(complexListValues[0], Object.assign(
         {},
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[0],
         {
           value: caseField.value['AddressLine1']
         }
       ));
-      expectCaseField(complexListValues[1], Object.assign(
+      expectCaseFieldPartial(complexListValues[1], Object.assign(
         {},
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[1],
         {
           value: caseField.value['AddressLine2']
         }
       ));
-      expectCaseField(complexListValues[2], Object.assign(
+      expectCaseFieldPartial(complexListValues[2], Object.assign(
         {},
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[2],
         {
@@ -390,14 +394,14 @@ describe('ReadComplexFieldRawComponent', () => {
       let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITHOUT_VALUES.complex_fields.length - 1);
-      expectCaseField(complexListValues[0], Object.assign(
+      expectCaseFieldPartial(complexListValues[0], Object.assign(
         {},
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[0],
         {
           value: caseField.value['AddressLine1']
         }
       ));
-      expectCaseField(complexListValues[1], Object.assign(
+      expectCaseFieldPartial(complexListValues[1], Object.assign(
         {},
         FIELD_TYPE_WITHOUT_VALUES.complex_fields[2],
         {

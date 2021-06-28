@@ -30,7 +30,6 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
         }
       });
     }
-
   }
 
 }

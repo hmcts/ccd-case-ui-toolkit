@@ -14,6 +14,7 @@ import { ReadOrganisationFieldComponent } from './read-organisation-field.compon
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
+import { WindowService } from '../../../services/window';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { OrganisationService } from '../../../services/organisation';
   ],
   providers: [
     OrganisationService,
-    OrganisationConverter
+    OrganisationConverter,
+    WindowService
   ]
 })
 export class OrganisationModule {}
