@@ -204,12 +204,12 @@ describe('LabelSubstitutorDirective', () => {
           init(listType, '', ITEMS, 'ValueA');
           expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option A'}, LABEL);
         });
-  
+
         it('should pass case field value when field is read only and no form field but case field value present', () => {
           init(listType, 'ValueC', ITEMS);
           expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option C'}, LABEL);
         });
-  
+
         it('should pass field form value when field is not read only and both form and case field values present', () => {
           init(listType, 'ValueC', ITEMS, 'ValueA');
           expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option A'}, LABEL);
