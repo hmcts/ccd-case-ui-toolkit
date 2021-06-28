@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
-import { PaletteUtilsModule } from '../../palette';
+import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
@@ -208,6 +208,7 @@ describe('CaseEditComponent', () => {
             // Mock
             EventTriggerHeaderComponent,
             RouterLinkComponent,
+            FieldsFilterPipe,
             FieldRead,
             FieldWrite
           ],
@@ -258,12 +259,6 @@ describe('CaseEditComponent', () => {
       component.first();
       expect(wizard.firstPage).toHaveBeenCalled();
       expect(routerStub.navigate).toHaveBeenCalled();
-    });
-
-    it('should announce profile when profile exists on a path from root set by Router', () => {
-      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
-      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
-      expect(profileService.get).not.toHaveBeenCalled();
     });
 
     describe('fieldShowCondition', () => {
@@ -885,12 +880,6 @@ describe('CaseEditComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
-
-    it('should announce profile when profile not in route and get profile successful', () => {
-      expect(profileNotifierSpy.calls.mostRecent().args[0].user).toEqual(USER);
-      expect(profileNotifierSpy.calls.mostRecent().args[0].isSolicitor.toString()).toEqual(FUNC.toString());
-      expect(profileService.get).toHaveBeenCalled();
-    });
   });
 
 });

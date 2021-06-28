@@ -1,4 +1,4 @@
-import { _ as _score } from 'underscore';
+import  * as _score from 'underscore';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -106,8 +106,6 @@ export class ShowCondition {
           }
           if (caseField) {
             allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1;
-          } else {
-            allUnchangeable = false;
           }
         }
         return allUnchangeable;
@@ -175,7 +173,10 @@ export class ShowCondition {
     if (expectedValue.search('[,]') > -1) { // for  multi-select list
       return this.checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor);
     } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== ShowCondition.CONDITION_NOT_EQUALS) {
-      return currentValue.startsWith(this.removeStarChar(expectedValue));
+      if (typeof currentValue === 'string') {
+        return currentValue.startsWith(this.removeStarChar(expectedValue));
+      }
+      return expectedValue === '*';
     } else {
       // changed from '===' to '==' to cover number field conditions
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
