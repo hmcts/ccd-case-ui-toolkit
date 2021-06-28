@@ -26,6 +26,7 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 
 ### Version 3.1.2-missing-ftpa-tab-beta
 **EUI-3825** Fix for missing FTPA tab contents.
+
 ### Version 3.1.2
 **EUI-4013**
 **EUI-4024**
@@ -33,7 +34,7 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 **EUI-4031**
 
 ### Version 3.1.2
-Activity Tracker Permformance changes
+Activity Tracker Performance changes
 
 ### Version 3.1.1
 **EUI-3348** pre-select default organisation depends on PrepopulateToUsersOrganisation
