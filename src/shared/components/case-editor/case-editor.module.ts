@@ -11,6 +11,7 @@ import {
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
+import { SessionStorageService } from '../../services';
 import { AddressesService } from '../../services/addresses';
 import { CaseFieldService } from '../../services/case-fields/case-field.service';
 import { DocumentManagementService } from '../../services/document-management';
@@ -24,7 +25,7 @@ import { ProfileNotifier } from '../../services/profile';
 import { ProfileService } from '../../services/profile/profile.service';
 import { RouterHelperService } from '../../services/router';
 import { ErrorsModule } from '../error/errors.module';
-import { PaletteModule } from '../palette';
+import { ComplexModule, PaletteModule } from '../palette';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
@@ -50,6 +51,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ConditionalShowModule,
         LabelSubstitutorModule,
         ErrorsModule,
+        ComplexModule,
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -89,7 +91,8 @@ import { WorkAllocationService } from './services/work-allocation.service';
         RouterHelperService,
         ProfileService,
         CaseEditWizardGuard,
-        WorkAllocationService
+        WorkAllocationService,
+        SessionStorageService
     ]
 })
 export class CaseEditorModule {}

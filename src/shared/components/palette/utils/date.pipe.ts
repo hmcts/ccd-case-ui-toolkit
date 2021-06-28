@@ -1,5 +1,7 @@
-import { Pipe, PipeTransform } from '@angular/core';
 import { formatDate } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
+import moment = require('moment');
+
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 @Pipe({
@@ -23,30 +25,55 @@ export class DatePipe implements PipeTransform {
 
   transform(value: string, zone: string, format: string): string {
     let resultDate = null;
-    let offsetDate = null;
-
+    const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     if (value) {
-      let match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
-      let date = this.getDate(match);
-      if (zone === 'local') {
-        offsetDate = this.getOffsetDate(date);
-      } else {
-        offsetDate = this.getDate(match);
+      // included to avoid editing the hour twice on second pass through
+      // this occurs on case details when datepipe is applied twice
+      if (!value.includes('T')) {
+        zone = 'utc';
       }
-      // 'short' format is meaningful to formatDate, but not the same meaning as in the unit tests
-      if (this.formatTrans && format && format !== 'short') {
-        // support for java style formatting strings for dates
-        format = this.translateDateFormat(format);
-        resultDate = formatDate(date, format, 'en-GB', zone)
+      const match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
+      // Make sure we actually have a match.
+      if (match) {
+        let offsetDate = null;
+        const date = this.getDate(match);
+        if (zone === 'local') {
+          offsetDate = this.getOffsetDate(date);
+        } else {
+          offsetDate = this.getDate(match);
+        }
+        // 'short' format is meaningful to formatDate, but not the same meaning as in the unit tests
+        if (this.formatTrans && format && format !== 'short') {
+          // support for java style formatting strings for dates
+          format = this.translateDateFormat(format);
+          resultDate = moment(date).format(format);
+        } else {
+          // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
+          resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
+          if (match[4] && match[5] && match[6] && format !== 'short') {
+            resultDate += ', ';
+            resultDate += this.getHour(offsetDate.getHours().toString()) + ':';
+            resultDate += this.pad(offsetDate.getMinutes()) + ':';
+            resultDate += this.pad(offsetDate.getSeconds()) + ' ';
+            resultDate += (this.toInt(offsetDate.getHours().toString()) >= 12) ? 'PM' : 'AM';
+          }
+        }
       } else {
-        // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
-        resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
-        if (match[4] && match[5] && match[6] && format !== 'short') {
-          resultDate += ', ';
-          resultDate += this.getHour(offsetDate.getHours().toString()) + ':';
-          resultDate += this.pad(offsetDate.getMinutes()) + ':';
-          resultDate += this.pad(offsetDate.getSeconds()) + ' ';
-          resultDate += (this.toInt(offsetDate.getHours().toString()) >= 12) ? 'PM' : 'AM';
+        // EUI-2667. See if what we've been given is actually a formatted date that
+        // we could attempt to do something with.
+        const parsedDate: number = Date.parse(value);
+        // We successfully parsed it so let's use it.
+        if (!isNaN(parsedDate)) {
+          const d: Date = new Date(parsedDate);
+          // If what we received didn't include time, don't include it here either.
+          if (value.indexOf(':') < 0) {
+            const shortDate: string = d.toLocaleDateString('en-GB');
+            const shortISO: string = shortDate.split('/').reverse().join('-');
+            return this.transform(shortISO, zone, format);
+          }
+          // If it did include time, we want a full ISO string.
+          const thisMoment = moment(d).format(ISO_FORMAT);
+          return this.transform(thisMoment, zone, format);
         }
       }
     }

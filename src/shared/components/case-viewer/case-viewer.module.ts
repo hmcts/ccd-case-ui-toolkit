@@ -18,7 +18,7 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { EventTriggerModule } from '../event-trigger/event-trigger.module';
 import { TabsModule } from '../../../components/tabs';
-import { PaletteModule, EventLogModule } from '../palette';
+import { PaletteModule, EventLogModule, ComplexModule } from '../palette';
 import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -28,23 +28,24 @@ import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    ErrorsModule,
-    ActivityModule,
-    CaseHeaderModule,
-    EventTriggerModule,
-    TabsModule,
-    PaletteModule,
-    LabelSubstitutorModule,
-    CaseEditorModule,
-    PipesModule,
-    ConditionalShowModule,
-    CaseHistoryModule,
-    EventLogModule,
-    MatTabsModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        ErrorsModule,
+        ActivityModule,
+        CaseHeaderModule,
+        EventTriggerModule,
+        TabsModule,
+        PaletteModule,
+        LabelSubstitutorModule,
+        CaseEditorModule,
+        PipesModule,
+        ConditionalShowModule,
+        CaseHistoryModule,
+        EventLogModule,
+        MatTabsModule,
+        ComplexModule
+    ],
   declarations: [
     CaseEventTriggerComponent,
     CasePrinterComponent,

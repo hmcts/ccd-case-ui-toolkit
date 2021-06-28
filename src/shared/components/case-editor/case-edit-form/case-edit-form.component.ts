@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValueService } from '../../../services/form/form-value.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-edit-form',
@@ -48,7 +49,11 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   }
 
   subscribeToFormChanges() {
-    this.formGroupChangeSubscription = this.formGroup.valueChanges.subscribe(_ => this.detectChangesAndEmit(_));
+    this.formGroupChangeSubscription = this.formGroup.valueChanges
+      .pipe(
+        debounceTime(200)
+      )
+      .subscribe(_ => this.detectChangesAndEmit(_));
   }
 
   retrieveInitialFormValues() {

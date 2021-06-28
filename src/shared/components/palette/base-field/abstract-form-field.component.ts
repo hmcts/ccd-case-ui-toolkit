@@ -1,7 +1,7 @@
 import { Input } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
-import { CaseField } from '../../../domain/definition';
+import { CaseField } from '../../../domain';
 import { FieldsUtils } from '../../../services';
 
 type FormContainer = FormGroup | FormArray;
@@ -15,6 +15,13 @@ export abstract class AbstractFormFieldComponent {
 
   @Input()
   parent?: FormContainer;
+
+  @Input()
+  idPrefix = '';
+
+  public id() {
+    return this.idPrefix + this.caseField.id;
+  }
 
   protected registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
     const container: FormContainer = this.parent || this.formGroup;
