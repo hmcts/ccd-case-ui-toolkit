@@ -1,7 +1,11 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-complex-hidden-collection-show
+**EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
+
 ### Version 3.1.5-event-log-local
 **EUI-4095** Event logs to display local time
+
 
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
