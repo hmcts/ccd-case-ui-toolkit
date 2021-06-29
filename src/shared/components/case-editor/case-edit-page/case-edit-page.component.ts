@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -134,32 +134,56 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[]): void {
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl): void {
+    const group: AbstractControl = container || this.editForm.controls['data'];
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
           .forEach(casefield => {
-            const fieldElement = this.editForm.controls['data'].get(casefield.id);
+            const fieldElement = group.get(casefield.id);
             if (fieldElement) {
+              const label = casefield.label || 'Field';
+              let id = casefield.id;
+              if (fieldElement['component'] && fieldElement['component'].parent) {
+                id = `${fieldElement['component'].idPrefix}${id}`;
+              }
               if (fieldElement.hasError('required')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
+                this.validationErrors.push({id, message: `${label} is required`});
                 fieldElement.markAsDirty();
               } else if (fieldElement.hasError('pattern')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
+                this.validationErrors.push({id, message: `${label} is not valid`});
                 fieldElement.markAsDirty();
               } else if (fieldElement.hasError('minlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is below the minimum length`});
+                this.validationErrors.push({id, message: `${label} is below the minimum length`});
                 fieldElement.markAsDirty();
               } else if (fieldElement.hasError('maxlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds the maximum length`});
+                this.validationErrors.push({id, message: `${label} exceeds the maximum length`});
                 fieldElement.markAsDirty();
+              } else if (fieldElement.invalid) {
+                if (casefield.isComplex()) {
+                  this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement);
+                } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
+                  const fieldArray = fieldElement as FormArray;
+                  fieldArray.controls.forEach((c: AbstractControl) => {
+                    this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'));
+                  });
+                } else {
+                  this.validationErrors.push({id, message: `Select or fill the required ${casefield.label} field`});
+                  fieldElement.markAsDirty();
+                }
               }
             }
-          })
+          });
     CaseEditPageComponent.scrollToTop();
   }
 
   public navigateToErrorElement(elementId: string): void {
-    document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'center'});
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+        htmlElement.focus();
+      }
+    }
   }
 
   public submit(): void {

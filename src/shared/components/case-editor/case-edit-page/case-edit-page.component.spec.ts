@@ -15,7 +15,7 @@ import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { Draft } from '../../../domain/draft.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
@@ -802,7 +802,32 @@ describe('CaseEditPageComponent', () => {
     const F_GROUP = new FormGroup({
       'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
                               , 'Invalidfield2': new FormControl(null, Validators.required)
+                              , 'OrganisationField': new FormControl(null, Validators.required)
                             })
+    });
+
+    const FIELD_TYPE_WITH_VALUES: FieldType = {
+      id: 'Organisation',
+      type: 'Complex',
+      complex_fields: [
+        {
+          id: 'OrganisationName',
+          label: 'Organisation Name',
+          display_context: 'MANDATORY',
+          field_type: {
+            id: 'Text',
+            type: 'Text'
+          }
+        } as CaseField
+      ]
+    };
+
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'OrganisationField',
+      label: 'OrganisationField',
+      display_context: 'MANDATORY',
+      field_type: FIELD_TYPE_WITH_VALUES,
+      value: ''
     });
 
     beforeEach(async(() => {
@@ -865,21 +890,21 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should validate Mandatory Fields and log error message ', () => {
-        wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
-        wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
-        wizardPage.isMultiColumn = () => false;
+      wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
+      wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
+      wizardPage.case_fields.push(CASE_FIELD);
+      wizardPage.isMultiColumn = () => false;
 
-        comp.editForm = F_GROUP;
-        comp.currentPage = wizardPage;
-        fixture.detectChanges();
-        expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-        comp.generateErrorMessage(wizardPage.case_fields);
-        comp.validationErrors.forEach(error => {
-          expect(error.message).toEqual(`${error.id} is required`)
-        });
-
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is required`)
       });
+    });
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
