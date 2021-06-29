@@ -135,8 +135,10 @@ export class CaseField implements Orderable {
   @Expose()
   isDynamic(): boolean {
     const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
-    
-    if (!this.field_type) return false;
+
+    if (!this.field_type) {
+      return false;
+    }
 
     return dynamicFieldTypes.some(t => t === this.field_type.type);
   }
