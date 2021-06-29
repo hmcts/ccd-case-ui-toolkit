@@ -14,6 +14,7 @@ import { WriteTextFieldComponent } from './text/write-text-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { WriteNumberFieldComponent } from './number/write-number-field.component';
 import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component';
@@ -25,7 +26,6 @@ import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-lis
 import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
 import { WriteMultiSelectListFieldComponent } from './multi-select-list/write-multi-select-list-field.component';
-import { WriteDateFieldComponent } from './date/write-date-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
@@ -62,7 +62,7 @@ export class PaletteService {
         return write ? WritePhoneUKFieldComponent : ReadPhoneUKFieldComponent;
       case 'Date':
       case 'DateTime':
-        return write ? WriteDateFieldComponent : ReadDateFieldComponent;
+        return write ? WriteDateContainerFieldComponent : ReadDateFieldComponent;
       case 'MoneyGBP':
         return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
       case 'DynamicList':

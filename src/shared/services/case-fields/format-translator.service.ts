@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition/case-field.model';
 
 /*
 Translate a date time format string from the Java format provided by CCD to the format supported by Angular formatDate()
-Very simple translator that maps unsupported chars to the neqrest equivalent.
+Very simple translator that maps unsupported chars to the nearest equivalent.
 If there is no equivalent puts ***x*** into the output where x is the unsupported character
 
 Java format
@@ -130,11 +129,14 @@ export class FormatTranslatorService {
             inQuote = !inQuote;
           }
           break;
-        case 'D':
-          maybePush(result, 'd', inQuote);
+        // Due to formatting constraints on the webapp, all 'd' characters should be replaced with 'D' (for Moment library)
+        // This is because we want the date, not the day (this format will need to be converted back)
+        case 'd':
+          maybePush(result, 'D', inQuote);
           break;
-        case 'Y':
-          maybePush(result, 'y', inQuote);
+        // moment library defines year as capital y
+        case 'y':
+          maybePush(result, 'Y', inQuote);
           break;
         case 'e':
         case 'c':
@@ -149,7 +151,11 @@ export class FormatTranslatorService {
         case 'k':
           maybePush(result, 'h', inQuote);
           break;
-        case 'A':
+        // commented out A change to '***' due to use in moment library for AM/PM
+        // added 'a' specification to stop discrepancy in am/AM pm/PM formatting
+        case 'a':
+          maybePush(result, 'A', inQuote);
+          break;
         case 'n':
         case 'N':
           maybePush(result, '***' + c + '***', inQuote); // No way to support A - millisec of day, n - nano of second, N - nano of Day
@@ -168,5 +174,74 @@ export class FormatTranslatorService {
       prev = c;
     }
     return result.join('');
+  }
+
+  showOnlyDates(dateFormat: string): string {
+    // replace 'd' character with 'D' for the moment library
+    // This ensures only dates allowed
+    while (dateFormat.includes('d')) {
+      dateFormat = dateFormat.replace('d', 'D');
+    }
+    while (dateFormat.includes('y')) {
+      dateFormat = dateFormat.replace('y', 'Y');
+    }
+    return dateFormat;
+  }
+
+  removeTime(dateFormat: string): string {
+    // remove hours irrelevant of whether 12 or 24 hour clock
+    while (dateFormat.includes('H') || dateFormat.includes('h')) {
+      dateFormat = dateFormat.replace('H', '');
+      dateFormat = dateFormat.replace('h', '');
+    }
+    // remove minutes
+    while (dateFormat.includes('m')) {
+      dateFormat = dateFormat.replace('m', '');
+    }
+    // remove seconds (s) and micro seconds (S)
+    while (dateFormat.includes('S') || dateFormat.includes('s')) {
+      dateFormat = dateFormat.replace('S', '');
+      dateFormat = dateFormat.replace('s', '');
+    }
+    // because there is time removal algorithm can make reasonable assumption to remove colons
+    while (dateFormat.includes(':')) {
+      dateFormat = dateFormat.replace(':', '');
+    }
+    return dateFormat.trim();
+  }
+
+  hasDate(value: string): boolean {
+    return this.translate(value).length &&
+      value.toLowerCase().indexOf('d') >= 0 &&
+      value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
+  }
+
+  is24Hour(value: string): boolean {
+    return this.translate(value).length &&
+      value.indexOf('H') >= 0;
+  }
+
+  hasNoDay(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('d') === -1 &&
+      value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
+  }
+
+  hasNoDayAndMonth(value: string): boolean {
+    return this.translate(value).length &&
+      value.toLowerCase().indexOf('d') === -1 &&
+      value.indexOf('M') === -1 &&
+      value.toLowerCase().indexOf('y') >= 0;
+  }
+
+  hasHours(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('h') >= 0 && value.indexOf('m') === -1;
+  }
+
+  hasMinutes(value: string): boolean {
+    return this.translate(value).length && value.indexOf('m') >= 0 && value.toLowerCase().indexOf('h') >= 0;
+  }
+
+  hasSeconds(value: string): boolean {
+    return this.translate(value).length && value.toLowerCase().indexOf('s') >= 0;
   }
 }
