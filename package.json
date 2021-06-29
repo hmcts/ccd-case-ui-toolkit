@@ -84,6 +84,7 @@
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^10.11.0",
+    "@types/underscore": "^1.11.2",
     "@types/webpack": "^4.4.12",
     "@types/webpack-env": "^1.13.2",
     "angular2-template-loader": "^0.6.2",

@@ -1,7 +1,6 @@
-import * as _score from 'underscore';
-
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import * as _ from 'underscore';
 
 export class ShowCondition {
 
@@ -176,8 +175,8 @@ export class ShowCondition {
   }
 
   private isDynamicList(dynamiclist) {
-    return !_score.isEmpty(dynamiclist) &&
-      (_score.has(dynamiclist, 'value') && _score.has(dynamiclist, 'list_items'));
+    return !_.isEmpty(dynamiclist) &&
+      (_.has(dynamiclist, 'value') && _.has(dynamiclist, 'list_items'));
   }
 
   private unquoted(str) {

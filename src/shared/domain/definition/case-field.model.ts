@@ -1,10 +1,9 @@
-import * as _ from 'underscore'
-
 import { Orderable } from '../order';
 import { FieldType } from './field-type.model';
 import { WizardPageField } from '../../components/case-editor/domain';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
+import * as _ from 'underscore';
 
 // @dynamic
 export class CaseField implements Orderable {
