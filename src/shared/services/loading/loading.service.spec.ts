@@ -59,6 +59,7 @@ describe('LoadingService', () => {
     subscription = loadingService.isLoading.subscribe(value => {
       expect(value).toBeFalsy();
     });
+  });
 
   it('should return observable of true when multiple tokens are registered, yet one is unregistered', async (done) => {
     let index = 0;
