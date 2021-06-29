@@ -128,7 +128,7 @@ export class FieldsUtils {
         break;
       }
       case 'MoneyGBP': {
-        let fieldValue = (result[field.id] || field.value);
+        const fieldValue = (result[field.id] || result[field.id] === 0) ? result[field.id] : field.value;
         result[field.id] = FieldsUtils.getMoneyGBP(fieldValue);
         break;
       }
@@ -159,7 +159,10 @@ export class FieldsUtils {
   };
 
   private static getMoneyGBP(fieldValue: any): string {
-    return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
+    if (!isNaN(parseInt(fieldValue, 10))) {
+      return FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol');
+    }
+    return '';
   }
 
   private static getLabel(fieldValue: CaseField): string {

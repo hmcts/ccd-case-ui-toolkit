@@ -11,6 +11,7 @@ import {
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
+import { SessionStorageService } from '../../services';
 import { AddressesService } from '../../services/addresses';
 import { CaseFieldService } from '../../services/case-fields/case-field.service';
 import { DocumentManagementService } from '../../services/document-management';
@@ -90,7 +91,8 @@ import { WorkAllocationService } from './services/work-allocation.service';
         RouterHelperService,
         ProfileService,
         CaseEditWizardGuard,
-        WorkAllocationService
+        WorkAllocationService,
+        SessionStorageService
     ]
 })
 export class CaseEditorModule {}

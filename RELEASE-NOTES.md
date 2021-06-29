@@ -1,5 +1,24 @@
 ## RELEASE NOTES
 
+### Version 3.1.5-complex-hidden-collection-show
+**EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
+
+### Version 3.1.5-event-log-local
+**EUI-4095** Event logs to display local time
+
+
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
+### Version 3.1.5-profile-call-before-event-trigger
+**EUI-3335** profile call needs to happen first
+
+### Version 3.1.5-complex-field-check-answers
+**EUI-4033** Ensured complex fields were interpolated on check you answers page
+
+### Version 3.1.5-pcm-role-non-completion
+**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
+
 ### Version 3.1.5 - ph-merge-rc-22-2-a
 **EUI-2027** Accessibility amends for button labels
 **EUI-3155** Accessibility amends for non-descriptive headings
