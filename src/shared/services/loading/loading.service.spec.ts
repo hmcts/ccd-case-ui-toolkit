@@ -49,18 +49,6 @@ describe('LoadingService', () => {
     }, 5);
   });
 
-  it('should return observable of true when multiple tokens are registered, yet one is unregistered', () => {
-
-    loadingService.register();
-    loadingService.register();
-    const token = loadingService.register();
-    loadingService.register();
-    loadingService.unregister(token);
-    subscription = loadingService.isLoading.subscribe(value => {
-      expect(value).toBeFalsy();
-    });
-  });
-
   it('should return observable of true when multiple tokens are registered, yet one is unregistered', async (done) => {
     let index = 0;
     let tokenToRemove: string;
