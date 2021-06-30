@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
