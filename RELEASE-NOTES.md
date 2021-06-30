@@ -69,6 +69,7 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 **EUI-4024**
 **EUI-4029**
 **EUI-4031**
+Activity Tracker Performance changes
 
 ### Version 3.1.2
 Activity Tracker Performance changes
