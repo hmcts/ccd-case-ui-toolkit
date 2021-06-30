@@ -108,27 +108,27 @@ describe('DocumentManagementService', () => {
       document_filename: 'sample.docx',
       content_type: 'word'
     };
-    const MEDIA_VIEWER_TXT= {
+    const MEDIA_VIEWER_TXT = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.txt',
       content_type: 'txt'
     };
-    const MEDIA_VIEWER_RTF= {
+    const MEDIA_VIEWER_RTF = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.rtf',
       content_type: 'rtf'
     };
-    const MEDIA_VIEWER_CSV= {
+    const MEDIA_VIEWER_CSV = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.csv',
       content_type: 'excel'
     };
-    const MEDIA_VIEWER_XLS= {
+    const MEDIA_VIEWER_XLS = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.xls',
       content_type: 'excel'
     };
-    const MEDIA_VIEWER_XLSX= {
+    const MEDIA_VIEWER_XLSX = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.xlsx',
       content_type: 'excel'

@@ -19,9 +19,9 @@ export class DocumentManagementService {
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 1000;
 
-  imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
-  wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
-  excelList: string[] = ['CSV','XLS', 'XLSX', 'csv', 'xls', 'xslx'];
+  private static readonly imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
+  private static readonly wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
+  private static readonly excelList: string[] = ['CSV', 'XLS', 'XLSX', 'csv', 'xls', 'xlsx'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -37,7 +37,6 @@ export class DocumentManagementService {
       .pipe();
   }
 
-
   getMediaViewerInfo(documentFieldValue: any): string {
     let mediaViewerInfo = {
         document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
@@ -47,7 +46,6 @@ export class DocumentManagementService {
         case_id: documentFieldValue.id,
         case_jurisdiction: documentFieldValue.jurisdiction
       };
-      console.log(mediaViewerInfo.content_type);
     return JSON.stringify(mediaViewerInfo);
   }
 
@@ -62,45 +60,32 @@ export class DocumentManagementService {
       }
     }
     if (this.isImage(fileExtension)) {
-      console.log("Hit a image attachment")
       return DocumentManagementService.IMAGE;
-    }
-    else if(this.isWord(fileExtension)){
-      console.log("Hit a word attachment")
+    } else if (this.isWord(fileExtension)) {
       return DocumentManagementService.WORD;
-    }
-    else if(this.isExcel(fileExtension)){
-      console.log("Hit a excel attachment")
+    } else if (this.isExcel(fileExtension)) {
       return DocumentManagementService.EXCEL;
-    }
-    else if (fileExtension.toLowerCase() === 'txt') {
-      console.log("Hit a txt attachment")
+    } else if (fileExtension.toLowerCase() === 'txt') {
       return DocumentManagementService.TXT;
-    }
-    else if (fileExtension.toLowerCase() === 'rtf') {
-      console.log("Hit a rtf attachment")
+    } else if (fileExtension.toLowerCase() === 'rtf') {
       return DocumentManagementService.RTF;
-    }
-    else if (fileExtension.toLowerCase() === 'pdf') {
-      console.log("Hit a pdf attachment")
+    } else if (fileExtension.toLowerCase() === 'pdf') {
       return DocumentManagementService.PDF;
-    }
-    else {
-      console.warn(`Unknown content type with the file extension: ${fileExtension}`);
+    } else {
       return fileExtension;
     }
   }
 
   isImage(imageType: string) {
-    return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
+    return DocumentManagementService.imagesList.find(e => e === imageType) !== undefined;
   }
 
   isWord(wordType: string) {
-    return this.wordList.find(e => e === wordType.toUpperCase()) !== undefined;
+    return DocumentManagementService.wordList.find(e => e === wordType) !== undefined;
   }
 
   isExcel(excelType: string) {
-    return this.excelList.find(e => e === excelType.toUpperCase()) !== undefined;
+    return DocumentManagementService.excelList.find(e => e === excelType) !== undefined;
   }
 
   transformDocumentUrl(documentBinaryUrl: string): string {
