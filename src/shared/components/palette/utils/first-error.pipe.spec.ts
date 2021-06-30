@@ -1,41 +1,37 @@
-import { FirstErrorPipe } from './first-error.pipe';
+import { Pipe, PipeTransform } from '@angular/core';
+import { ValidationErrors } from '@angular/forms';
 
-describe('FirstErrorPipe', () => {
+@Pipe({
+  name: 'ccdFirstError'
+})
+export class FirstErrorPipe implements PipeTransform {
 
-  const ERROR_MESSAGE = 'This is wrong';
+  transform(value: ValidationErrors, args?: string): string {
+    if (!value) {
+      return '';
+    }
 
-  let firstError: FirstErrorPipe;
+    if (!args) {
+      args = 'field';
+    }
 
-  beforeEach(() => {
-    firstError = new FirstErrorPipe();
-  });
+    let keys = Object.keys(value);
 
-  it('should return empty string when null errors', () => {
-    let message = firstError.transform(null);
+    if (!keys.length) {
+      return '';
+    }
+    if (keys[0] === 'required') {
+      return `${args} is required`;
+    } else if (keys[0] === 'pattern') {
+      return `The data entered is not valid for ${args}`;
+    } else if (keys[0] === 'minlength') {
+      return `${args} required minimum length`;
+    } else if (keys[0] === 'maxlength') {
+      return `${args} exceeds maximum length`;
+    } else if (value.hasOwnProperty('matDatetimePickerParse')) {
+      return 'The date entered is not valid. Please provide a valid date'
+    }
+    return value[keys[0]];
+  }
 
-    expect(message).toBe('');
-  });
-
-  it('should return empty string when empty errors', () => {
-    let message = firstError.transform({});
-
-    expect(message).toBe('');
-  });
-
-  it('should return only error when 1 error', () => {
-    let message = firstError.transform({
-      'errorkey': ERROR_MESSAGE
-    });
-
-    expect(message).toBe(ERROR_MESSAGE);
-  });
-
-  it('should return only first error when multiple errors', () => {
-    let message = firstError.transform({
-      'errorkey': ERROR_MESSAGE,
-      'error2': 'some other error'
-    });
-
-    expect(message).toBe(ERROR_MESSAGE);
-  });
-});
+}
