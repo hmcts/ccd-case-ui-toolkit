@@ -7,13 +7,28 @@
 </ng-container>
 
 <!-- Case ID -->
-<h2 *ngIf="getCaseId()" class="heading-h2">
+<span *ngIf="getCaseId()" class="heading-span" title="Case reference {{ getCaseId() | ccdCaseReference}}">
   #{{ getCaseId() | ccdCaseReference}}
-</h2>
+</span>
+
+<!-- Error message summary -->
+<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li>
+        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message}}</a>
+      </li>
+    </ul>
+  </div>
+</div>
 
 <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
 <div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
-     role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+     role="status" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+
   <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
     Something went wrong
   </h1>
@@ -23,7 +38,7 @@
   </div>
 </div>
 <!-- Event error heading and error message to be displayed if there are specific error details -->
-<div *ngIf="error && error.details" class="error-summary" role="group"
+<div *ngIf="error && error.details" class="error-summary" role="status"
      aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading-3">
     The event could not be created
@@ -64,7 +79,7 @@
       <button class="button button-secondary" type="button" [disabled]="!(hasPreviousPage$ | async)" (click)="toPreviousPage()">
         Previous
       </button>
-      <button class="button" type="submit" [disabled]="currentPageIsNotValid() || submitting()">{{triggerText}}</button>
+      <button class="button" type="submit" [disabled]="submitting()">{{triggerText}}</button>
     </div>
 
     <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>

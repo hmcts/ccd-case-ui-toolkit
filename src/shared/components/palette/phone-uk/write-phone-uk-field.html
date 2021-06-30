@@ -1,10 +1,11 @@
-<div class="form-group" [ngClass]="{'form-group-error': !phoneUkControl.valid && phoneUkControl.touched}">
+<div class="form-group" [ngClass]="{'form-group-error': !phoneUkControl.valid && phoneUkControl.dirty}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="phoneUkControl.errors && phoneUkControl.touched">{{phoneUkControl.errors | ccdFirstError}}</span>
   </label>
-  <input class="form-control bottom-30" [id]="id()" type="tel" [formControl]="phoneUkControl">
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+  <span class="error-message" *ngIf="phoneUkControl.errors && phoneUkControl.dirty">{{phoneUkControl.errors | ccdFirstError:caseField.label}}</span>
+  <input class="form-control bottom-30" [id]="id()"
+  [ngClass]="{'govuk-input--error': phoneUkControl.errors && phoneUkControl.dirty}" type="tel" [formControl]="phoneUkControl">
 
 </div>

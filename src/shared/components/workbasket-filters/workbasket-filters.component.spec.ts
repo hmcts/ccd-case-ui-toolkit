@@ -11,6 +11,7 @@ import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction,
   JurisdictionService, WindowService } from '../..';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { ConditionalShowModule } from '../../directives';
 
 @Component({
   selector: 'ccd-field-write',
@@ -202,7 +203,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -264,7 +266,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -640,7 +643,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -737,7 +741,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -808,7 +813,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -887,7 +893,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -969,7 +976,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -1046,7 +1054,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,

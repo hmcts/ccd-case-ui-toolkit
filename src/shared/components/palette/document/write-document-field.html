@@ -1,9 +1,9 @@
 <div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
   <label [for]="id()">
     <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{caseField | ccdFieldLabel}}</span>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="fileUploadMessages && !valid">{{fileUploadMessages}}</span>
   </label>
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+  <span class="error-message" *ngIf="fileUploadMessages && !valid">{{fileUploadMessages}}</span>
 
   <div>
     <!--<span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>-->
@@ -12,7 +12,7 @@
 
   <div style='position:relative'>
 
-    <div id='fileInputWrapper' (click)="fileSelectEvent()"  ></div>
+    <div [id]="createElementId('fileInputWrapper')" (click)="fileSelectEvent()"></div>
     <input class="form-control bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event)"
            accept="{{caseField.field_type.regular_expression}}" #fileInput/>
   </div>

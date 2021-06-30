@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -17,6 +17,7 @@ import { DRAFT_PREFIX } from '../../../domain/draft.model';
 import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -48,6 +49,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
+  validationErrors: {id: string, message: string}[] = [];
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -63,17 +65,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   constructor(
-    private caseEdit: CaseEditComponent,
-    private route: ActivatedRoute,
-    private formValueService: FormValueService,
-    private formErrorService: FormErrorService,
-    private cdRef: ChangeDetectorRef,
-    private pageValidationService: PageValidationService,
-    private dialog: MatDialog,
-  ) {
-  }
+    private readonly caseEdit: CaseEditComponent,
+    private readonly route: ActivatedRoute,
+    private readonly formValueService: FormValueService,
+    private readonly formErrorService: FormErrorService,
+    private readonly cdRef: ChangeDetectorRef,
+    private readonly pageValidationService: PageValidationService,
+    private readonly dialog: MatDialog,
+    private readonly caseFieldService: CaseFieldService
+  ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
@@ -122,7 +124,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * This builds the form with data from the previous pages
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
-  toPreviousPage() {
+  public toPreviousPage(): void {
+    this.validationErrors = [];
     let caseEventData: CaseEventData = this.buildCaseEventData();
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
@@ -130,8 +133,66 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     CaseEditPageComponent.setFocusToTop();
   }
 
-  submit() {
-    if (!this.isSubmitting) {
+  // Adding validation message to show it as Error Summary
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl): void {
+    const group: AbstractControl = container || this.editForm.controls['data'];
+    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+          .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
+          .forEach(casefield => {
+            const fieldElement = group.get(casefield.id);
+            if (fieldElement) {
+              const label = casefield.label || 'Field';
+              let id = casefield.id;
+              if (fieldElement['component'] && fieldElement['component'].parent) {
+                id = `${fieldElement['component'].idPrefix}${id}`;
+              }
+              if (fieldElement.hasError('required')) {
+                this.validationErrors.push({id, message: `${label} is required`});
+                fieldElement.markAsDirty();
+              } else if (fieldElement.hasError('pattern')) {
+                this.validationErrors.push({id, message: `${label} is not valid`});
+                fieldElement.markAsDirty();
+              } else if (fieldElement.hasError('minlength')) {
+                this.validationErrors.push({id, message: `${label} is below the minimum length`});
+                fieldElement.markAsDirty();
+              } else if (fieldElement.hasError('maxlength')) {
+                this.validationErrors.push({id, message: `${label} exceeds the maximum length`});
+                fieldElement.markAsDirty();
+              } else if (fieldElement.invalid) {
+                if (casefield.isComplex()) {
+                  this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement);
+                } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
+                  const fieldArray = fieldElement as FormArray;
+                  fieldArray.controls.forEach((c: AbstractControl) => {
+                    this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'));
+                  });
+                } else {
+                  this.validationErrors.push({id, message: `Select or fill the required ${casefield.label} field`});
+                  fieldElement.markAsDirty();
+                }
+              }
+            }
+          });
+    CaseEditPageComponent.scrollToTop();
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+        htmlElement.focus();
+      }
+    }
+  }
+
+  public submit(): void {
+    this.validationErrors = [];
+    if (this.currentPageIsNotValid()) {
+      this.generateErrorMessage(this.currentPage.case_fields);
+    }
+
+    if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
       this.error = null;
       let caseEventData: CaseEventData = this.buildCaseEventData();

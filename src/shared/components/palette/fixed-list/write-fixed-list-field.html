@@ -1,10 +1,10 @@
-<div class="form-group" [ngClass]="{'form-group-error': !fixedListFormControl.valid && fixedListFormControl.touched}">
+<div class="form-group" [ngClass]="{'form-group-error': !fixedListFormControl.valid && fixedListFormControl.dirty}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="fixedListFormControl.errors && fixedListFormControl.touched">{{fixedListFormControl.errors | ccdFirstError}}</span>
   </label>
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+  <span class="error-message" *ngIf="fixedListFormControl.errors && fixedListFormControl.dirty">{{fixedListFormControl.errors | ccdFirstError:caseField.label}}</span>
 
   <select class="form-control ccd-dropdown bottom-30" [id]="id()" [formControl]="fixedListFormControl">
     <option [ngValue]=null>--Select a value--</option>
