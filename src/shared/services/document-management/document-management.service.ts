@@ -19,9 +19,9 @@ export class DocumentManagementService {
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 1000;
 
-  imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG'];
-  wordList: string[] = ['DOC', 'DOCX'];
-  excelList: string[] = ['CSV','XLS', 'XLSX'];
+  imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
+  wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
+  excelList: string[] = ['CSV','XLS', 'XLSX', 'csv', 'xls', 'xslx'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -58,7 +58,7 @@ export class DocumentManagementService {
       if (position === documentFieldValue.document_filename.length) {
         fileExtension = '';
       } else if (position >= 0) {
-        fileExtension = documentFieldValue.document_filename.slice(position + 1).toUpperCase();
+        fileExtension = documentFieldValue.document_filename.slice(position + 1);
       }
     }
     if (this.isImage(fileExtension)) {
@@ -68,7 +68,6 @@ export class DocumentManagementService {
     else if(this.isWord(fileExtension)){
       console.log("Hit a word attachment")
       return DocumentManagementService.WORD;
-
     }
     else if(this.isExcel(fileExtension)){
       console.log("Hit a excel attachment")

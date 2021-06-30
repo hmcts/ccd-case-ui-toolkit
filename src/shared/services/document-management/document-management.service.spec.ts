@@ -256,11 +256,6 @@ describe('DocumentManagementService', () => {
     it('should return media viewer data for tif content types', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
 
-      CASE_FIELD.value.document_filename = 'sample.TIF';
-      MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.TIF';
-      MEDIA_VIEWER_UNKNOWN.content_type = 'TIF';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
-
       CASE_FIELD.value.document_filename = 'sample.tif';
       MEDIA_VIEWER_UNKNOWN.document_filename = 'sample.tif';
       MEDIA_VIEWER_UNKNOWN.content_type = 'tif';
