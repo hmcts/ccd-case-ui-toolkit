@@ -1,6 +1,7 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "4.0.0-cve-fix",
+  "version": "4.0.0-collection-element-removal",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

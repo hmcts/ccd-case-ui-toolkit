@@ -227,10 +227,26 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  removeItem(index: number): void {
-    this.caseField.value.splice(index, 1);
-    this.collItems.splice(index, 1);
-    this.formArray.removeAt(index);
+  private removeItem(index: number): void {
+    /**
+     * To resolve https://tools.hmcts.net/jira/browse/EUI-4072
+     * Cannot simply remove a case field, collItem and a DOM formArray item as they appear intrinsically bound together.
+     * Had to firstly move the form array item that needed removing to the bottom of the collection
+     * and then remove it along with the corresponding collItem.
+     * see https://stackoverflow.com/a/64208977/7453725 for more information on removing FormArray items
+    */
+    if (this.formArray.length > 1) {
+      const value = this.formArray.getRawValue();
+      this.formArray.setValue(
+        value.slice(0, index).concat(
+          value.slice(index + 1),
+        ).concat(value[index]),
+      );
+    }
+
+    this.formArray.removeAt(this.formArray.length - 1);
+    this.collItems.pop();
+    this.caseField.value.pop();
   }
 
   itemLabel(index: number) {
