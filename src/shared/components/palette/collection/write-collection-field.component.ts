@@ -6,7 +6,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
 import { Profile } from '../../../domain/profile';
 import { FieldsUtils, ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
@@ -156,11 +156,19 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private newCaseField(id: string, item, index, isNew = false) {
     const isNotAuthorisedToUpdate = !isNew && this.isNotAuthorisedToUpdate(index);
+
+    const fieldType = plainToClassFromExist(new FieldType(), this.caseField.field_type.collection_field_type);
+    if (fieldType.complex_fields) {
+      fieldType.complex_fields
+        .filter((cf: CaseField) => !!cf.show_condition)
+        .map((cf: CaseField) => cf.hidden = true);
+    }
+
     // Remove the bit setting the hidden flag here as it's an item in the array and
     // its hidden state isn't independently re-evaluated when the form is changed.
     return plainToClassFromExist(new CaseField(), {
       id,
-      field_type: this.caseField.field_type.collection_field_type,
+      field_type: fieldType,
       display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
       value: item.value,
       label: null,
@@ -219,10 +227,26 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  removeItem(index: number): void {
-    this.caseField.value.splice(index, 1);
-    this.collItems.splice(index, 1);
-    this.formArray.removeAt(index);
+  private removeItem(index: number): void {
+    /**
+     * To resolve https://tools.hmcts.net/jira/browse/EUI-4072
+     * Cannot simply remove a case field, collItem and a DOM formArray item as they appear intrinsically bound together.
+     * Had to firstly move the form array item that needed removing to the bottom of the collection
+     * and then remove it along with the corresponding collItem.
+     * see https://stackoverflow.com/a/64208977/7453725 for more information on removing FormArray items
+    */
+    if (this.formArray.length > 1) {
+      const value = this.formArray.getRawValue();
+      this.formArray.setValue(
+        value.slice(0, index).concat(
+          value.slice(index + 1),
+        ).concat(value[index]),
+      );
+    }
+
+    this.formArray.removeAt(this.formArray.length - 1);
+    this.collItems.pop();
+    this.caseField.value.pop();
   }
 
   itemLabel(index: number) {

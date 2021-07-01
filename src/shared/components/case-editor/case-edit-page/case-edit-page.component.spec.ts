@@ -15,7 +15,7 @@ import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { Draft } from '../../../domain/draft.model';
 import { CaseEventData } from '../../../domain/case-event-data.model';
