@@ -234,4 +234,128 @@ describe('FieldsUtils', () => {
       expect(item['value'][`ms${FieldsUtils.LABEL_SUFFIX}`][1]).toBe(ITEMS[2].label);
     });
   });
+
+  describe('containsNonEmptyValues() function tests', () => {
+    it('should return false for null', () => {
+      expect(FieldsUtils.containsNonEmptyValues(null)).toBe(false);
+    });
+
+    it('should return true for a non-empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: 'value' })).toBe(true);
+    });
+
+    it('should return false for an empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues({})).toBe(false);
+    });
+
+    it('should return false for an object containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: null, field2: '' })).toBe(false);
+    });
+
+    it('should return false for an object containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: undefined })).toBe(false);
+    });
+
+    it('should return true for an object containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: 0 })).toBe(true);
+    });
+
+    it('should return false for an object containing no non-empty descendant values', () => {
+      expect(FieldsUtils.containsNonEmptyValues({
+        field1: {
+          field1_1: null,
+          field1_2: '',
+          field1_3: undefined
+        }
+      })).toBe(false);
+    });
+
+    it('should return true for an object containing at least one non-empty descendant value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({
+        field1: {
+          field1_1: null,
+          field1_2: 'null'
+        }
+      })).toBe(true);
+    });
+
+    it('should return true for an object containing a non-empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: ['value'] })).toBe(true);
+    });
+
+    it('should return false for an object containing an empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [] })).toBe(false);
+    });
+
+    it('should return false for an object with an array containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [null, ''] })).toBe(false);
+    });
+
+    it('should return false for an object with an array containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [undefined] })).toBe(false);
+    });
+
+    it('should return true for an object with an array containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [0] })).toBe(true);
+    });
+
+    it('should return true for a non-empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues(['value'])).toBe(true);
+    });
+
+    it('should return false for an empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues([])).toBe(false);
+    });
+
+    it('should return false for an array containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues([null, ''])).toBe(false);
+    });
+
+    it('should return false for an array containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([undefined])).toBe(false);
+    });
+
+    it('should return true for an array containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([0])).toBe(true);
+    });
+
+    it('should return true for an array containing a non-empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: 'value' }])).toBe(true);
+    });
+
+    it('should return false for an array containing an empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{}])).toBe(false);
+    });
+
+    it('should return false for an array with an object containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: null, field2: '' }])).toBe(false);
+    });
+
+    it('should return false for an array with an object containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: undefined }])).toBe(false);
+    });
+
+    it('should return true for an array with an object containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: 0 }])).toBe(true);
+    });
+
+    it('should return false for an array with an object containing no non-empty descendant values', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{
+        field1: {
+          field1_1: null,
+          field1_2: '',
+          field1_3: undefined
+        }
+      }])).toBe(false);
+    });
+
+    it('should return true for an array with an object containing at least one non-empty descendant value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{
+        field1: {
+          field1_1: null,
+          field1_2: 'null'
+        }
+      }])).toBe(true);
+    });
+  });
 });
