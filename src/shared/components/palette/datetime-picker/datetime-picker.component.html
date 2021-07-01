@@ -14,7 +14,7 @@
     <div class="datepicker-container">
       <input class="govuk-input"
              #input
-             aria-label="Please enter a date and time in the format {{dateTimeEntryFormat}}"
+             attr.aria-label="Please enter a date and time in the format {{dateTimeEntryFormat}}"
              [min]="minDate(caseField)"
              [max]="maxDate(caseField)"
              [formControl]="dateControl"
