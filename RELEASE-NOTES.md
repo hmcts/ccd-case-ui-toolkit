@@ -1,5 +1,37 @@
 ## RELEASE NOTES
 
+### Version 4.0.0
+**EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
+**EUI-2022** ExUI - Error Messages (Complex Type)
+**EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
+**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
+**EUI-2027** Accessibility amends for button labels
+**EUI-3155** Accessibility amends for non-descriptive headings
+**EUI-3550** Replace heading tags with spans on case edit pages
+**EUI-2792** Datetime picker fixes after testing integration with webapp
+**EUI-3825** Fix for missing FTPA tab contents.
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+**EUI-2017** ExUI - Navigate in table using keyboard
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
+**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+**EUI-2029** WCAG AA Status Message Fixes
+**EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
+**EUI-3622** Re-evaluate retain hidden value matrix
+**EUI-3868** Retain hidden value matrix
+**EUI-2744** Event to complex type
+**EUI-4106** Show/hide functionality
+
 ### Version 3.1.5-nested-multi-select-labels-theta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
 fixed an issue with the rendering of complex collections on the Case Details tabs.
