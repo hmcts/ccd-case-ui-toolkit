@@ -109,25 +109,25 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   }
 
   // make sure for the 3 callbacks that we are bound to this via an arrow function
-  private handleFormControl = (c: FormControl): void => {
-    this.evaluateControl(c);
+  private handleFormControl = (formControl: FormControl): void => {
+    this.evaluateControl(formControl);
   }
 
-  private handleFormArray = (a: FormArray): void => {
-    this.evaluateControl(a);
-    a.controls.forEach(formControl => {
+  private handleFormArray = (formArray: FormArray): void => {
+    this.evaluateControl(formArray);
+    formArray.controls.forEach(formControl => {
       this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
     });
   }
 
-  private handleFormGroup = (g: FormGroup): void => {
-    this.evaluateControl(g);
-    let groupControl = g;
-    if (g.get('value') && g.get('value') instanceof FormGroup) { // Complex Field
-      groupControl = g.get('value') as FormGroup;
-    } else if (g.controls) {
+  private handleFormGroup = (formGroup: FormGroup): void => {
+    this.evaluateControl(formGroup);
+    let groupControl = formGroup;
+    if (formGroup.get('value') && formGroup.get('value') instanceof FormGroup) { // Complex Field
+      groupControl = formGroup.get('value') as FormGroup;
+    } else if (formGroup.controls) {
       // Special Fields like AddressUK, AddressGlobal
-      groupControl = g;
+      groupControl = formGroup;
     }
     if (groupControl.controls) {
       Object.keys(groupControl.controls).forEach(cKey => {
