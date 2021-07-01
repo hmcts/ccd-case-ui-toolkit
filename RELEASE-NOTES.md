@@ -1,5 +1,19 @@
 ## RELEASE NOTES
 
+### Version 4.1.0
+**EUI-2027** Button Labels (AA)
+**EUI-2030** Colour Contrast (AA)
+**EUI-3155** Non-Descriptive Headings (AA) - issues 02, 06, 05 (part of it)
+**EUI-4118** Mandatory datetime picker fields are not giving required field errors
+**EUI-1621** Date/time DISPLAY for Workbasket & Search Input & Results
+**EUI-1692** DateTime Entry & Display Formatting for Complex Types
+**EUI-2792** Date and Time entry (Testing Story)
+**EUI-4155** WA post-MVP Pagination- Angular - My tasks (in Tasks list) - CCD UI Toolkit
+**EUI-3049** Wrap and restyle date time picker component
+**EUI-3051** Handle #DATETIMEENTRY field context
+**EUI-3581** Field interpolation does not work for the field type MultiSelectList
+**EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
+
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
 **EUI-2022** ExUI - Error Messages (Complex Type)
