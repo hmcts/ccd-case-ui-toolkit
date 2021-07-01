@@ -1,20 +1,20 @@
 <div class="govuk-form-group  bottom-30" [id]="caseField.id"
-     [ngClass]="{'form-group-error': dateControl && !dateControl.valid && dateControl.touched}">
+     [ngClass]="{'form-group-error': dateControl && !dateControl.valid && dateControl.dirty}">
   <fieldset>
     <legend>
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel }}</span>
       <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
       <span class="error-message"
-            *ngIf="dateControl && dateControl.errors && dateControl.touched && !(this.minError || this.maxError)">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
+            *ngIf="dateControl && dateControl.errors && dateControl.dirty && !(this.minError || this.maxError)">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
             <span class="error-message"
-            *ngIf="dateControl && dateControl.touched && this.minError">This date is older than the minimum date allowed</span>
+            *ngIf="dateControl && dateControl.dirty && this.minError">This date is older than the minimum date allowed</span>
             <span class="error-message"
-            *ngIf="dateControl && dateControl.touched && this.maxError">This date is later than the maximum date allowed</span>
+            *ngIf="dateControl && dateControl.dirty && this.maxError">This date is later than the maximum date allowed</span>
     </legend>
     <div class="datepicker-container">
       <input class="govuk-input"
              #input
-             attr.aria-label="Please enter a date and time in the format {{dateTimeEntryFormat}}"
+             aria-label="Please enter a date and time in the format {{dateTimeEntryFormat}}"
              [min]="minDate(caseField)"
              [max]="maxDate(caseField)"
              [formControl]="dateControl"

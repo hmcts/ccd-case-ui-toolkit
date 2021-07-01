@@ -4,9 +4,9 @@
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-  <span class="error-message" *ngIf="textareaControl.errors && textareaControl.touched">{{textareaControl.errors | ccdFirstError:caseField.label}}</span>
+  <span class="error-message" *ngIf="textareaControl.errors && textareaControl.dirty">{{textareaControl.errors | ccdFirstError:caseField.label}}</span>
 
-  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [ngClass]="{'govuk-textarea--error': textareaControl.errors && textareaControl.touched}" 
+  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [ngClass]="{'govuk-textarea--error': textareaControl.errors && textareaControl.dirty}" 
    [id]="id()" rows="3" [formControl]="textareaControl"></textarea>
 
 </div>
