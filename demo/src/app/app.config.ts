@@ -149,4 +149,8 @@ export class AppConfig extends AbstractAppConfig {
   public getUserInfoApiUrl(): string {
     return this.config.user_info_api_url;
   }
+
+  public getRemotePrintServiceUrl(): string {
+    return this.config.print_service_url;
+  }
 }
