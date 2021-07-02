@@ -109,11 +109,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.caseDetails.case_type.printEnabled;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
-    this.callbackErrorsSubject.unsubscribe();
+    if (this.callbackErrorsSubject) {
+      this.callbackErrorsSubject.unsubscribe();
+    }
     if (!this.route.snapshot.data.case) {
       this.caseSubscription.unsubscribe();
     }

@@ -46,8 +46,10 @@ export class CasePrinterComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.caseSubscription.unsubscribe();
+  public ngOnDestroy(): void {
+    if (this.caseSubscription) {
+      this.caseSubscription.unsubscribe();
+    }
   }
 
   isDataLoaded() {

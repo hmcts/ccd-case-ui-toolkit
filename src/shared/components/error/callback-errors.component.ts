@@ -36,8 +36,10 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.callbackErrorsSubject.unsubscribe();
+  public ngOnDestroy(): void {
+    if (this.callbackErrorsSubject) {
+      this.callbackErrorsSubject.unsubscribe();
+    }
   }
 
   private buildCallbackErrorsContext(): CallbackErrorsContext {

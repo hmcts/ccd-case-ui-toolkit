@@ -67,7 +67,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.fileUploadSubscription) {
       this.fileUploadSubscription.unsubscribe();
     }

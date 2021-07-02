@@ -50,8 +50,10 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.navigationSubscription.unsubscribe();
+  public ngOnDestroy(): void {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
   }
 
   isDataLoaded(): boolean {
