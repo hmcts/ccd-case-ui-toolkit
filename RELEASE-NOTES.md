@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.0.0-case-load-fix
+**EUI-4210** Applied a fix for case load due to subscription teardown
+
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
 **EUI-2022** ExUI - Error Messages (Complex Type)
