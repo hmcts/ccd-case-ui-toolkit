@@ -21,4 +21,4 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
-      - run: yarn test:functional
+      - run: yarn build:test:functional
