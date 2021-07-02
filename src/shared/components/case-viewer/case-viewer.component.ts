@@ -110,7 +110,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy(): void {
-    if (this.activityPollingService && this.activityPollingService.isEnabled) {
+    if (this.activitySubscription) {
       this.activitySubscription.unsubscribe();
     }
     if (this.callbackErrorsSubject) {
