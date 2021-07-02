@@ -31,9 +31,10 @@ const wizardPageTemplate = {
 
 class CCDCaseConfig extends CCDCaseField{
 
-    caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
+    
     constructor(id, name, description){
         super();
+        this.caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
         this.caseConfigTemplate.id = id;
         this.caseConfigTemplate.name = name;
         this.caseConfigTemplate.description = description;
