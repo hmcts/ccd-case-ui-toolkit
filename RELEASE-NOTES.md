@@ -1,5 +1,49 @@
 ## RELEASE NOTES
 
+### Version 4.1.0
+**EUI-2027** Button Labels (AA)
+**EUI-2030** Colour Contrast (AA)
+**EUI-3155** Non-Descriptive Headings (AA) - issues 02, 06, 05 (part of it)
+**EUI-4118** Mandatory datetime picker fields are not giving required field errors
+**EUI-1621** Date/time DISPLAY for Workbasket & Search Input & Results
+**EUI-1692** DateTime Entry & Display Formatting for Complex Types
+**EUI-2792** Date and Time entry (Testing Story)
+**EUI-4155** WA post-MVP Pagination- Angular - My tasks (in Tasks list) - CCD UI Toolkit
+**EUI-3049** Wrap and restyle date time picker component
+**EUI-3051** Handle #DATETIMEENTRY field context
+**EUI-3581** Field interpolation does not work for the field type MultiSelectList
+**EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
+
+### Version 4.0.0
+**EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
+**EUI-2022** ExUI - Error Messages (Complex Type)
+**EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
+**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
+**EUI-2027** Accessibility amends for button labels
+**EUI-3155** Accessibility amends for non-descriptive headings
+**EUI-3550** Replace heading tags with spans on case edit pages
+**EUI-2792** Datetime picker fixes after testing integration with webapp
+**EUI-3825** Fix for missing FTPA tab contents.
+**EUI-2017** ExUI - Navigate in table using keyboard
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
+**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+**EUI-2029** WCAG AA Status Message Fixes
+**EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
+**EUI-3622** Re-evaluate "retain hidden value" matrix linked to acceptance criteria
+**EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
+**EUI-2744** EventToComplexTypes regression with hidden fields
+**EUI-4106** Show/hide functionality
+
 ### Version 3.1.5-nested-multi-select-labels-theta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
 fixed an issue with the rendering of complex collections on the Case Details tabs.
@@ -9,23 +53,6 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 
 ### Version 3.1.5-profile-call-before-event-trigger
 **EUI-3335** profile call needs to happen first
-
-### Version 3.1.5-complex-field-check-answers
-**EUI-4033** Ensured complex fields were interpolated on check you answers page
-
-### Version 3.1.5-pcm-role-non-completion
-**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
-
-### Version 3.1.5 - ph-merge-rc-22-2-a
-**EUI-2027** Accessibility amends for button labels
-**EUI-3155** Accessibility amends for non-descriptive headings
-**EUI-3550** Replace heading tags with spans on case edit pages
-
-### Version 3.1.2-datetime-picker-webapp-resolution
-**EUI-2792** Datetime picker fixes after testing integration with webapp
-
-### Version 3.1.2-missing-ftpa-tab-beta
-**EUI-3825** Fix for missing FTPA tab contents.
 
 ### Version 3.1.2
 **EUI-4013**
@@ -47,43 +74,6 @@ Activity Tracker Performance changes
 **EUI-2569** ExUI - Labels not displaying in Case Heading
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
 **EUI-3682** Callback Error still not showing proper error message in XUI screen
-**EUI-2039** Changed Date Input fields to conform to accessibility standards
-
-### Version 3.0.3-Navigate in table using keyboard
-**EUI-2017** ExUI - Navigate in table using keyboard
-
-### Version 3.0.3-validation-error-message-changes
-**EUI-2022** ExUI - Error Messages (A)
-**EUI-2023** ExUI - Labels (A)
-
-### Version 3.0.3-field-show-condition
-**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
-
-### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
-**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
-**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
-
-### Version 3.0.0
-
-### Version 2.80.0-alpha-datetime-picker
-**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
-
-### Version 2.79.8-breathing-space-data-not-being-persisted
-**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
-
-### Version 2.79.14-labels-not-displaying-case-heading
-**EUI-2569** ExUI - Labels not displaying in Case Heading
-
-### Version 2.79.13-Unresponsive-and-laggy-show-hide-conditions
-**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
-
-### Version 2.79.12
-**EUI-3682** Callback Error still not showing proper error message in XUI screen
-
-### Version 2.79.11-crud-issues
-**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
-
-### Version 2.79.10-input-type-accessibility
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
 
 ### Version 2.79.7
@@ -109,7 +99,7 @@ Activity Tracker Performance changes
 ### Version 2.79.1
 **EUI-3452** Fix to some issues on the Check your answers page.
 
-### 2.79.0
+### Version 2.79.0
 **EUI-3548** WA integration
 
 ### Version 2.75.1
@@ -216,9 +206,6 @@ Merge master to simplify final branch merge
 ### Version 2.68.9-prerelease-conditional-show-perf
 **EUI-3151** dynamic lists and nested complex in collection fixes
 
-### Version 2.68.8-wcag-status-message
-**EUI-2029** WCAG AA Status Message Fixes
-
 ### Version 2.68.8-prerelease-conditional-show-perf
 **EUI-3151** form validation and label fixes
 
@@ -244,8 +231,6 @@ Merge master to simplify final branch merge
 **EUI-3055** Better performance in edit forms through new show hide implementation
 
 ### Version 2.67.10-feature-toggle-work-allocation
-
-### 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
 ### Version 2.67.6-task-event-completion

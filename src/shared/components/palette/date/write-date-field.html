@@ -5,12 +5,12 @@
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel }}</span>
     </legend>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="dateControl && dateControl.errors && dateControl.touched">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
+    <span class="error-message" *ngIf="dateControl && dateControl.errors && dateControl.dirty">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
 
     <cut-date-input [id]="id()"
                     [isDateTime]="isDateTime()"
                     [mandatory]="caseField | ccdIsMandatory"
-                    [isInvalid]="dateControl.errors && dateControl.touched"
+                    [isInvalid]="dateControl.errors && dateControl.dirty"
                     [formControl]="dateControl"></cut-date-input>
 
   </fieldset>

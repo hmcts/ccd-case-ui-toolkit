@@ -41,7 +41,7 @@ export class FieldsUtils {
   }
 
   public static isNonEmptyObject(elem: any): boolean {
-      return this.isObject(elem) && Object.keys(elem).length !== 0;
+    return this.isObject(elem) && Object.keys(elem).length !== 0;
   }
 
   public static isArray(elem: any): boolean {

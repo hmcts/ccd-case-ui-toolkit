@@ -2,7 +2,7 @@
 
   <div class="panel collection-indicator">
 
-    <h2 *ngIf="caseField.hint_text || formArray.errors" class="heading-h2 error-spacing">
+    <h2 class="heading-h2 error-spacing">
       {{caseField | ccdFieldLabel}}
     </h2>
     <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate()">Add new</button>
