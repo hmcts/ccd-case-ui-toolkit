@@ -5,6 +5,7 @@ import { ActivityService, ActivityPollingService } from '../../services';
 import { ActivityComponent } from './activity.component';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
+import { SessionStorageService } from '../../services/session/session-storage.service';
 
 @NgModule({
     imports: [
@@ -24,6 +25,7 @@ import { ActivityIconComponent } from './activity-icon';
     providers: [
         ActivityService,
         ActivityPollingService,
+        SessionStorageService
     ]
 })
 export class ActivityModule {}

@@ -68,6 +68,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         this.preSelectEmptyOrg();
       }
     }
+
+    // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an
+    // Organisation field uses the Complex type, it is meant to be treated as one field
+    if (this.caseField && this.caseField.field_type.type === 'Complex') {
+      for (const organisationSubField of this.caseField.field_type.complex_fields) {
+        organisationSubField.retain_hidden_value = this.caseField.retain_hidden_value;
+      }
+    }
   }
 
   private preSelectDefaultOrg(): void {
@@ -160,7 +168,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     return false;
   }
 
-  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string) {
+  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
     const searchTextArray: string[] = lowerOrgSearchText.split(/\s+/g);
     for (const singleSearchText of searchTextArray) {
       if (singleSearchText && this.searchCriteria(organisation, singleSearchText)) {
@@ -173,7 +181,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     return oldText.replace(/\s+/g, '');
   }
 
-  public selectOrg(selectedOrg: SimpleOrganisationModel) {
+  public selectOrg(selectedOrg: SimpleOrganisationModel): void {
     this.organisationIDFormControl.setValue(selectedOrg.organisationIdentifier);
     this.organisationNameFormControl.setValue(selectedOrg.name);
     this.selectedOrg$ = of(selectedOrg);
@@ -187,7 +195,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
-  public deSelectOrg(selectedOrg) {
+  public deSelectOrg(): void {
     this.organisationIDFormControl.reset();
     this.organisationNameFormControl.reset();
     this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
