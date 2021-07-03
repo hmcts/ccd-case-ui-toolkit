@@ -22,3 +22,7 @@ jobs:
         with:
           node-version: 12
       - run: yarn build:test:functional
+      - uses: actions/upload-artifact@v2
+        with:	
+          name: 'Functional_test_HTML_Report'	
+          path: 'demo/reports/'
