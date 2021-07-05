@@ -8,12 +8,8 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 export class FormValueService {
   /**
    * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
-   * There are two exeptions:
-<<<<<<< HEAD
+   * There are two exceptions:
    * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
-=======
-   * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values og that key are returned
->>>>>>> EUI-4244
    *      form= { 'list': ['code1', 'code2'],
    *              'list---LABEL': ['label1', 'label2'] },
    *      fieldKey=list,
