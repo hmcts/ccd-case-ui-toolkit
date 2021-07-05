@@ -224,7 +224,7 @@ describe('LabelSubstitutorDirective', () => {
         return  {
           LabelB: '',
           LabelA: items.map(item => `Value${item}`),
-          'LabelA-LABEL': items.map(item => `Option ${item}`)
+          [`LabelA${FieldsUtils.LABEL_SUFFIX}`]: items.map(item => `Option ${item}`)
         };
       }
 

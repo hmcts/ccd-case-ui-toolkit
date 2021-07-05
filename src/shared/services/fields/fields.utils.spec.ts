@@ -176,7 +176,7 @@ describe('FieldsUtils', () => {
       complex.field_type.complex_fields = [ multiSelect ];
       return complex;
     };
-    it('should set up -LABEL properties for multi-select values', () => {
+    it(`should set up ${FieldsUtils.LABEL_SUFFIX} properties for multi-select values`, () => {
       const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
       const FORM_FIELDS = {};
 
@@ -191,7 +191,7 @@ describe('FieldsUtils', () => {
       expect(caseFields[`ms${FieldsUtils.LABEL_SUFFIX}`][1]).toBe(ITEMS[2].label);
     });
 
-    it('should set up -LABEL properties for multi-select values within complex types', () => {
+    it(`should set up ${FieldsUtils.LABEL_SUFFIX} properties for multi-select values within complex types`, () => {
       const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
       const COMPLEX: CaseField = getComplex(MULTI_SELECT);
       const FORM_FIELDS = {};
@@ -208,7 +208,7 @@ describe('FieldsUtils', () => {
       expect(caseFields['complex'][`ms${FieldsUtils.LABEL_SUFFIX}`][1]).toBe(ITEMS[2].label);
     });
 
-    it('should set up -LABEL properties for multi-select values within collections', () => {
+    it(`should set up ${FieldsUtils.LABEL_SUFFIX} properties for multi-select values within collections`, () => {
       const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
       const COMPLEX: CaseField = getComplex(MULTI_SELECT);
       const COLLECTION: CaseField = aCaseField('collection', 'Collection', 'Collection', 'OPTIONAL', null);

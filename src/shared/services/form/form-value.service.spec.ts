@@ -222,7 +222,7 @@ describe('FormValueService', () => {
       });
 
       it('should return label value if form is an object with a collection that is multivalue list', () => {
-        const pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one-LABEL': ['label1', 'label2'] };
+        const pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one---LABEL': ['label1', 'label2'] };
         const fieldIdToSubstitute = '_1_one';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toEqual('label1, label2');
