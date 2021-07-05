@@ -133,7 +133,6 @@ export class FormValueService {
     }
   }
 
-
   /**
    * A recursive method to remove anything with a `---LABEL` suffix.
    * @param data The data to recurse through and remove MultiSelect labels.
