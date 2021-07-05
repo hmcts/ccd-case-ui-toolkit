@@ -230,7 +230,7 @@ export class FormValueService {
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
       }
-    };
+    }
     return sanitisedObject;
   }
 
