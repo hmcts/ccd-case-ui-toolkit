@@ -15,7 +15,8 @@ export class FieldsUtils {
 
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
   private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
-  public static readonly LABEL_SUFFIX = '-LABEL';
+  // EUI-4244. 3 dashes instead of 1 to make this less likely to clash with a real field.
+  public static readonly LABEL_SUFFIX = '---LABEL';
 
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {

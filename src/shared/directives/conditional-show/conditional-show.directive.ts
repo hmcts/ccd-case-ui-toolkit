@@ -44,11 +44,9 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
     // this.caseField = FieldsUtils.convertToCaseField(this.caseField);
     if (this.caseField.show_condition) {
       this.condition = ShowCondition.getInstance(this.caseField.show_condition);
-      // console.log('FIELD: ' + this.caseField.id + ' init. Show condition: ' + this.caseField.show_condition);
       this.formGroup = this.formGroup || new FormGroup({});
       this.complexFormGroup = this.complexFormGroup || new FormGroup({});
       this.formField = this.complexFormGroup.get(this.caseField.id) || this.formGroup.get(this.caseField.id);
-      // console.log('FIELD: ' + this.caseField.id + '. Is form field:' + this.formField + '. Event fields:', this.eventFields);
       this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
       if (this.greyBarEnabled && this.greyBarService.wasToggledToShow(this.caseField.id)) {
         this.greyBarService.showGreyBar(this.caseField, this.el);
@@ -59,7 +57,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   refreshVisibility() {
-    // console.log('Refresh FIELD: ', this.caseField.id, '. field:', this.formField, '. eventFields:', this.eventFields);
     this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues(), true);
     this.subscribeToFormChanges();
   }
@@ -70,14 +67,12 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
 
   private subscribeToFormChanges() {
     this.unsubscribeFromFormChanges();
-    // console.log('FIELD ' + this.caseField.id + ' subscribing to form changes');
     this.formChangesSubscription = this.formGroup
       .valueChanges
       .pipe(
         debounceTime(200)
       )
       .subscribe(_ => {
-        console.log('FIELD ' + this.caseField.id + ' reacting to form change');
         let shown = this.updateVisibility(this.getCurrentPagesReadOnlyAndFormFieldValues());
         if (this.greyBarEnabled && shown !== undefined) {
           this.updateGreyBar(shown);
@@ -89,7 +84,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
    * returns whether the field visibility has changed, or undefined if not
    */
   private updateVisibility(fields, forced = false): boolean {
-    // console.log('FIELD ' + this.caseField.id + ' updatingVisibility based on fields: ', fields, ' forced:', forced);
     if (this.shouldToggleToHide(fields, forced)) {
       this.onHide();
       return false;
@@ -100,10 +94,8 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private onHide() {
-    // console.log('on hide is form field', this.formField);
     if (this.formField) {
       this.unsubscribeFromFormChanges();
-      // console.log('FIELD ' + this.caseField.id + ' disabling form field');
       this.formField.disable({emitEvent: false});
       this.subscribeToFormChanges();
     }
@@ -114,7 +106,6 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   private onShow() {
     if (this.formField) {
       this.unsubscribeFromFormChanges();
-      // console.log('FIELD ' + this.caseField.id + ' enabling form field', this.formField);
       this.formField.enable({emitEvent: false});
       this.subscribeToFormChanges();
     }
@@ -148,8 +139,7 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   }
 
   private getCurrentPagesReadOnlyAndFormFieldValues() {
-    let formFields = this.getFormFieldsValuesIncludingDisabled();
-    // console.log('FIELD ' + this.caseField.id + ' current form values including disabled: ', formFields);
+    const formFields = this.getFormFieldsValuesIncludingDisabled();
     return this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
   }
 
@@ -174,28 +164,22 @@ export class ConditionalShowDirective implements AfterViewInit, OnDestroy {
   // TODO This must be extracted to a generic service for traversing see RDM-2233
   private checkHideShowCondition(key: string, aControl: AbstractControl) {
     if (aControl instanceof FormArray) {  // We're in a collection
-      // console.log('traversing array', aControl);
       aControl.controls.forEach((formControl, i) => {
-        // console.log('in array', formControl);
         this.checkHideShowCondition('' + i, formControl)
       });
     } else if (aControl instanceof FormGroup) {
-      // console.log('met a FormGroup ', aControl, ' fromGroup.controls', aControl.controls);
       if (aControl.get('value')) { // Complex Field
         let complexControl = aControl.get('value') as FormGroup;
         Object.keys(complexControl.controls).forEach(controlKey => {
-          // console.log('traversing formGroup item', key, complexControl.get(key));
           this.checkHideShowCondition(controlKey, complexControl.get(controlKey));
         });
       } else if (aControl.controls) { // Special Field like AddressUK, AddressGlobal
         Object.keys(aControl.controls).forEach(controlKey => {
-          // console.log('traversing formGroup item', key, aControl.get(key));
           this.checkHideShowCondition(controlKey, aControl.get(controlKey));
         })
       }
     } else if (aControl instanceof FormControl) {  // FormControl
       if (aControl.invalid) {
-        console.log('met an invalid FormControl ', key, ' control:', aControl, ' is valid:', aControl.valid);
         this.registry.refresh();
       }
     }

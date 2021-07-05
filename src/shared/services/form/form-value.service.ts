@@ -6,14 +6,12 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
-  public static readonly LABEL_SUFFIX = '-LABEL';
-
   /**
    * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
    * There are two exeptions:
-   * 1) In case of a multiselect being identified as a leaf a '-LABEL' suffix is appended to the key and values og that key are returned
+   * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
    *      form= { 'list': ['code1', 'code2'],
-   *              'list-LABEL': ['label1', 'label2'] },
+   *              'list---LABEL': ['label1', 'label2'] },
    *      fieldKey=list,
    *      colIndex=0,
    *      value=label1, label2
@@ -123,7 +121,7 @@ export class FormValueService {
     let currentFieldId = fieldIds[0];
     let currentForm = form[currentFieldId];
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
-        return form[currentFieldId + FormValueService.LABEL_SUFFIX].join(', ');
+        return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
         return currentForm.map(fieldValue => fieldValue['value']).join(', ');
     } else if (FieldsUtils.isCollection(currentForm)) {
@@ -135,6 +133,32 @@ export class FormValueService {
     }
   }
 
+
+  /**
+   * A recursive method to remove anything with a `---LABEL` suffix.
+   * @param data The data to recurse through and remove MultiSelect labels.
+   */
+  public static removeMultiSelectLabels(data: any): void {
+    if (data && typeof data === 'object') {
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          FormValueService.removeMultiSelectLabels(item);
+        }
+      } else {
+        const keys: string[] = Object.keys(data);
+        for (const key of keys) {
+          // Have we found one a MultiSelect label?
+          if (key.indexOf(FieldsUtils.LABEL_SUFFIX) > 0) {
+            // If so, remove it.
+            delete data[key];
+          } else {
+            FormValueService.removeMultiSelectLabels(data[key]);
+          }
+        }
+      }
+    }
+  }
+
   private static isReadOnly(field: CaseField): boolean {
     return field.display_context ? field.display_context.toUpperCase() === 'READONLY' : false;
   }
@@ -143,7 +167,7 @@ export class FormValueService {
     return field.display_context ? field.display_context.toUpperCase() === 'OPTIONAL' : false;
   }
 
-  private static isLabel (field: CaseField): boolean {
+  private static isLabel(field: CaseField): boolean {
     if (field.field_type) {
       return field.field_type.type === 'Label';
     } else {
@@ -393,10 +417,10 @@ export class FormValueService {
               }
               break;
             case 'Complex':
-              // Recurse and remove anything unnecessary from within a complex field.
               this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
-              if (FormValueService.clearOptionalEmpty(clearEmpty, data[field.id], field)) {
+              // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
+              if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
                 delete data[field.id];
               }
               break;
@@ -422,6 +446,9 @@ export class FormValueService {
         }
       }
     }
+
+    // Clear out any MultiSelect labels.
+    FormValueService.removeMultiSelectLabels(data);
   }
 
   /**
