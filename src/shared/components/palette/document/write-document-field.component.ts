@@ -135,7 +135,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   fileChangeEvent(fileInput: any) {
     const secureModeOn = this.appConfig.getDocumentSecureMode();
-    
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -143,7 +142,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
 
-      const uploadFile = secureModeOn ? 
+      const uploadFile = secureModeOn ?
         this.documentManagement.secureUploadFile(documentUpload) :
         this.documentManagement.uploadFile(documentUpload);
 
