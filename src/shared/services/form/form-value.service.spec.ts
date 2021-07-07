@@ -3,25 +3,21 @@ import { CaseField, FieldType } from '../../domain/definition';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 describe('FormValueService', () => {
-
   let formValueService: FormValueService;
-
   beforeEach(() => {
     formValueService = new FormValueService(new FieldTypeSanitiser());
   });
 
   it('should return null when given null', () => {
-    let value = formValueService.sanitise(null);
-
+    const value = formValueService.sanitise(null);
     expect(value).toEqual(null);
   });
 
   it('should trim spaces from strings', () => {
-    let value = formValueService.sanitise({
+    const value = formValueService.sanitise({
       'string1': '     x     ',
       'string2': '     y      '
     });
-
     expect(value).toEqual({
       'string1': 'x',
       'string2': 'y'
@@ -29,7 +25,7 @@ describe('FormValueService', () => {
   });
 
   it('should trim spaces from strings recursively', () => {
-    let value = formValueService.sanitise({
+    const value = formValueService.sanitise({
       'object': {
         'string1': '    x     '
       },
@@ -45,7 +41,7 @@ describe('FormValueService', () => {
   });
 
   it('should trim spaces from strings in collection', () => {
-    let value = formValueService.sanitise({
+    const value = formValueService.sanitise({
       'collection': [
         {
           'value': '      x        '
@@ -63,7 +59,7 @@ describe('FormValueService', () => {
   });
 
   it('should convert numbers to strings', () => {
-    let value = formValueService.sanitise({
+    const value = formValueService.sanitise({
       'number': 42
     });
 
@@ -73,122 +69,161 @@ describe('FormValueService', () => {
   });
 
   it('should fiter current page fields and process DynamicList values back to Json', () => {
-    let formFields = {data: {dynamicList: 'L2', thatTimeOfTheDay: {}}};
-    let caseField = new CaseField();
-    let fieldType = new FieldType();
+    const formFields = { data: { dynamicList: 'L2', thatTimeOfTheDay: {} } };
+    const caseField = new CaseField();
+    const fieldType = new FieldType();
     fieldType.type = 'DynamicList';
     caseField.id = 'dynamicList';
     caseField.field_type = fieldType
     caseField.value = {
-      value: {code: 'L1', label: 'List 1'},
-      list_items: [{code: 'L1', label: 'List 1'}, {code: 'L2', label: 'List 2'}]
+      value: { code: 'L1', label: 'List 1' },
+      list_items: [{ code: 'L1', label: 'List 1' }, { code: 'L2', label: 'List 2' }]
     }
-    let caseFields = [caseField];
+    const caseFields = [caseField];
     formValueService.sanitiseDynamicLists(caseFields, formFields);
-    let actual = '{"value":{"code":"L2","label":"List 2"},"list_items":[{"code":"L1","label":"List 1"},{"code":"L2","label":"List 2"}]}';
+    const actual = '{"value":{"code":"L2","label":"List 2"},"list_items":[{"code":"L1","label":"List 1"},{"code":"L2","label":"List 2"}]}';
     expect(JSON.stringify(formFields.data.dynamicList))
       .toEqual(actual);
+  });
+
+  describe('sanitise for Document fields', () => {
+    it('should return null for the Document field if the data to be sanitised has document_url = null', () => {
+      const data = {
+        document1: {
+          document_url: null,
+          document_binary_url: 'http://document.binary',
+          document_filename: 'doc.file'
+        }
+      };
+      const actual = {
+        document1: null
+      }
+      expect(formValueService.sanitise(data)).toEqual(actual);
+    });
+
+    it('should return null for the Document field if the data to be sanitised has document_binary_url = null', () => {
+      const data = {
+        document1: {
+          document_url: 'http://document.url',
+          document_binary_url: null,
+          document_filename: 'doc.file'
+        }
+      };
+      const actual = {
+        document1: null
+      }
+      expect(formValueService.sanitise(data)).toEqual(actual);
+    });
+
+    it('should return null for the Document field if the data to be sanitised has document_filename = null', () => {
+      const data = {
+        document1: {
+          document_url: 'http://document.url',
+          document_binary_url: 'http://document.binary',
+          document_filename: null
+        }
+      };
+      const actual = {
+        document1: null
+      }
+      expect(formValueService.sanitise(data)).toEqual(actual);
+    });
+  });
+
+  describe('removeNullLabels', () => {
+    it('should remove unnecessary fields', () => {
+      const data = { fieldId: null, type: 'Label', label: 'Text Field 0' };
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'fieldId';
+      fieldType.type = 'Label';
+      caseField.id = 'fieldId';
+      caseField.field_type = fieldType;
+      caseField.value = { label: 'Text Field 0', default_value: 'test text' }
+      const caseFields = [caseField];
+      formValueService.removeNullLabels(data, caseFields);
+      const actual = '{"type":"Label","label":"Text Field 0"}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    })
+
   })
 
   describe('get field value', () => {
     describe('simple types', () => {
-
       it('should return value if form is a simple object', () => {
-        let pageFormFields = { 'PersonFirstName': 'John' };
-        let fieldIdToSubstitute = 'PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { 'PersonFirstName': 'John' };
+        const fieldIdToSubstitute = 'PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('John');
       });
 
       it('should return value if form is a simple object recursive', () => {
-        let pageFormFields = { 'PersonFirstName': 'John' };
-        let fieldIdToSubstitute = 'PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { 'PersonFirstName': 'John' };
+        const fieldIdToSubstitute = 'PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('John');
       });
 
       it('should return value if form is a collection with simple object referenced by exact key reference', () => {
-        let pageFormFields = [{'value': { 'PersonFirstName': 'John' }}];
-        let fieldIdToSubstitute = '0.value.PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = [{ 'value': { 'PersonFirstName': 'John' } }];
+        const fieldIdToSubstitute = '0.value.PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('John');
       });
 
       it('should return value if form is a complex item with nonempty object', () => {
-        let pageFormFields = { '_1': { 'field': 'value' }, '_2': 'two', '_3': 'three' };
-        let fieldIdToSubstitute = '_1.field';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { '_1': { 'field': 'value' }, '_2': 'two', '_3': 'three' };
+        const fieldIdToSubstitute = '_1.field';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('value');
       });
 
       it('should return value if form is a complex item with nonempty object recursive', () => {
-        let pageFormFields = { '_1': { 'field': 'value' }, '_2': 'two', '_3': 'three' };
-        let fieldIdToSubstitute = '_1.field';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { '_1': { 'field': 'value' }, '_2': 'two', '_3': 'three' };
+        const fieldIdToSubstitute = '_1.field';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('value');
       });
 
       it('should retrieve undefined if form is a collection with one empty item', () => {
-        let pageFormFields = [{}];
-        let fieldIdToSubstitute = 'PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = [{}];
+        const fieldIdToSubstitute = 'PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeUndefined();
       });
 
       it('should return undefined if form is a simple item with no value ', () => {
-        let pageFormFields = { 'PersonFirstName': null };
-        let fieldIdToSubstitute = 'PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { 'PersonFirstName': null };
+        const fieldIdToSubstitute = 'PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeNull();
       });
 
       it('should return empty value if form is a simple item with empty value', () => {
-        let pageFormFields = { 'PersonFirstName': '' };
-        let fieldIdToSubstitute = 'PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { 'PersonFirstName': '' };
+        const fieldIdToSubstitute = 'PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('');
       });
 
       it('should return empty object if form is a simple item with empty object value', () => {
-        let pageFormFields = { 'PersonFirstName': {} };
-        let fieldIdToSubstitute = 'PersonFirstName';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { 'PersonFirstName': {} };
+        const fieldIdToSubstitute = 'PersonFirstName';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toEqual({});
       });
 
       it('should return undefined referenced key is not in the form', () => {
-        let pageFormFields = { '_1': 'one' };
-        let fieldIdToSubstitute = '_2';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { '_1': 'one' };
+        const fieldIdToSubstitute = '_2';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeUndefined();
       });
 
       it('should return label value if form is an object with a collection that is multivalue list', () => {
-        let pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one-LABEL': ['label1', 'label2']};
-        let fieldIdToSubstitute = '_1_one';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one-LABEL': ['label1', 'label2'] };
+        const fieldIdToSubstitute = '_1_one';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toEqual('label1, label2');
       });
     });
@@ -196,62 +231,51 @@ describe('FormValueService', () => {
     describe('complex types', () => {
 
       it('should return leaf value', () => {
-        let pageFormFields = {
+        const pageFormFields = {
           'complex': {
             'nested': 'nested value', 'nested2': 'nested value2', 'nested3': { 'doubleNested': 'double nested' }
           }
         };
-        let fieldIdToSubstitute = 'complex.nested3.doubleNested';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const fieldIdToSubstitute = 'complex.nested3.doubleNested';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('double nested');
       });
 
       it('should return undefined if complex leaf value', () => {
-        let pageFormFields = {
+        const pageFormFields = {
           'complex': {
             'nested': 'nested value', 'nested2': 'nested value2', 'nested3': { 'doubleNested': 'double nested' }
           }
         };
-        let fieldIdToSubstitute = 'complex.nested3';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const fieldIdToSubstitute = 'complex.nested3';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeUndefined();
       });
 
       it('should return undefined if reference key has trailing delimiter', () => {
-        let pageFormFields = {
+        const pageFormFields = {
           'complex': {
             'nested': 'nested value', 'nested2': 'nested value2'
             , 'nested3': { 'doubleNested': 'double nested' }
           }
         };
-        let fieldIdToSubstitute = 'complex.nested3.';
-
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
+        const fieldIdToSubstitute = 'complex.nested3.';
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeUndefined();
       });
 
       it('should return undefined if reference key not matched', () => {
-        let pageFormFields = {
+        const pageFormFields = {
           'complex': {
             'nested': 'nested value', 'nested2': 'nested value2'
             , 'nested3': { 'doubleNested': 'double nested' }
           }
         };
         let fieldIdToSubstitute = 'complex.nested21';
-
         let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
         expect(actual).toBeUndefined();
-
         fieldIdToSubstitute = 'complex.neste';
-
         actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
-
         expect(actual).toBeUndefined();
       });
 
@@ -259,45 +283,72 @@ describe('FormValueService', () => {
 
     describe('complex of collection of complex types', () => {
       it('should return collection item by index', () => {
-        let pageFormFields = { 'topComplex': {
-          'field': 'value',
-          'collection': [
-          { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
-          { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-          { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' }}}}}
-        ]}};
-        let fieldIdToSubstitute = 'topComplex.collection.complex.nested2.doubleNested.trippleNested';
+        const pageFormFields = {
+          'topComplex': {
+            'field': 'value',
+            'collection': [
+              { 'value': {
+                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              }
+            ]
+          }
+        };
+        const fieldIdToSubstitute = 'topComplex.collection.complex.nested2.doubleNested.trippleNested';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
 
         expect(actual).toBe('tripple nested8');
       });
 
       it('should return undefined if collection item absent for given index', () => {
-        let pageFormFields = { 'topComplex': {
-          'field': 'value',
-          'collection': [
-          { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
-          { 'value': {'complex': {'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-          { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' }}}}}
-        ]}};
-        let fieldIdToSubstitute = 'topComplex.collection.complex.nested';
+        const pageFormFields = {
+          'topComplex': {
+            'field': 'value',
+            'collection': [
+              { 'value': {
+                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              }
+            ]
+          }
+        };
+        const fieldIdToSubstitute = 'topComplex.collection.complex.nested';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
 
         expect(actual).toBeUndefined();
       });
 
       it('should return undefined if collection item is complex leaf value', () => {
-        let pageFormFields = { 'topComplex': {
-          'collection': [
-          { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
-          { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-          { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' }}}}}
-        ]}};
-        let fieldIdToSubstitute = 'topComplex.collection.complex.nested2.doubleNested';
+        const pageFormFields = {
+          'topComplex': {
+            'collection': [
+              { 'value': {
+                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              },
+              { 'value': {
+                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              }
+            ]
+          }
+        };
+        const fieldIdToSubstitute = 'topComplex.collection.complex.nested2.doubleNested';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
 
         expect(actual).toBeUndefined();
       });
@@ -306,41 +357,43 @@ describe('FormValueService', () => {
     describe('collection types', () => {
 
       it('should return simple text collection item by index', () => {
-        let pageFormFields = { '_1_one': [{ 'value': 'value1' }, { 'value': 'value2' }], '_3_three': 'simpleValue' };
-        let fieldIdToSubstitute = '_1_one';
+        const pageFormFields = { '_1_one': [{ 'value': 'value1' }, { 'value': 'value2' }], '_3_three': 'simpleValue' };
+        const fieldIdToSubstitute = '_1_one';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
 
         expect(actual).toEqual('value1, value2');
       });
 
       it('should return simple number collection item by index', () => {
-        let pageFormFields = { '_1_one': [{ 'value': 35 }, { 'value': 45 }], '_3_three': 'simpleValue' };
-        let fieldIdToSubstitute = '_1_one';
+        const pageFormFields = { '_1_one': [{ 'value': 35 }, { 'value': 45 }], '_3_three': 'simpleValue' };
+        const fieldIdToSubstitute = '_1_one';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
 
         expect(actual).toEqual('35, 45');
       });
 
       it('should return undefined if collection item is complex leaf value', () => {
-        let pageFormFields = { '_1_one': [{ 'value': { 'id': 'complex1' } }, { 'value': { 'id': 'complex2' } }],
-          '_3_three': 'simpleValue' };
-        let fieldIdToSubstitute = '_1_one';
+        const pageFormFields = {
+          '_1_one': [{ 'value': { 'id': 'complex1' } }, { 'value': { 'id': 'complex2' } }],
+          '_3_three': 'simpleValue'
+        };
+        const fieldIdToSubstitute = '_1_one';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
 
         expect(actual).toBeUndefined();
       });
 
       it('should return undefined if collection item is another collection', () => {
-        let pageFormFields = {
+        const pageFormFields = {
           '_1_one': [{ 'value': [{ 'value': { 'id': 'complex1' } }] }, { 'value': [{ 'value': { 'id': 'complex2' } }] }],
           '_3_three': 'simpleValue'
         };
-        let fieldIdToSubstitute = '_1_one';
+        const fieldIdToSubstitute = '_1_one';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
 
         expect(actual).toBeUndefined();
       });
@@ -349,43 +402,138 @@ describe('FormValueService', () => {
     describe('collection of complex types', () => {
 
       it('should return simple text collection item by index', () => {
-        let pageFormFields = { 'collection': [
-          { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
-          { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-          { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
-        ]};
-        let fieldIdToSubstitute = 'collection.complex.nested2.doubleNested.trippleNested';
+        const pageFormFields = {
+          'collection': [
+            { 'value': {
+              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            }
+          ]
+        };
+        const fieldIdToSubstitute = 'collection.complex.nested2.doubleNested.trippleNested';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 2);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 2);
 
         expect(actual).toBe('tripple nested9');
       });
 
       it('should return undefined if collection item absent for given index', () => {
-        let pageFormFields = { 'collection': [
-          { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
-          { 'value': {'complex': {'nested': 'nested value1'}}},
-          { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
-        ]};
-        let fieldIdToSubstitute = 'collection.complex.nested2.doubleNested.trippleNested';
+        const pageFormFields = {
+          'collection': [
+            { 'value': {
+              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value1' } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            }
+          ]
+        };
+        const fieldIdToSubstitute = 'collection.complex.nested2.doubleNested.trippleNested';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 1);
 
         expect(actual).toBeUndefined();
       });
 
       it('should return undefined if collection item is a complex leaf value', () => {
-        let pageFormFields = { 'collection': [
-          { 'value': {'complex': {'nested': 'nested value1', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested7' }}}}},
-          { 'value': {'complex': {'nested': 'nested value2', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested8' }}}}},
-          { 'value': {'complex': {'nested': 'nested value3', 'nested2': { 'doubleNested': {'trippleNested': 'tripple nested9' } }}}}
-        ]};
-        let fieldIdToSubstitute = 'collection.complex.nested2.doubleNested';
+        const pageFormFields = {
+          'collection': [
+            { 'value': {
+              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+            },
+            { 'value': {
+              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            }
+          ]
+        };
+        const fieldIdToSubstitute = 'collection.complex.nested2.doubleNested';
 
-        let actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 2);
+        const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 2);
 
         expect(actual).toBeUndefined();
       });
+    });
+  });
+
+  describe('removeEmptyCollectionsWithMinValidation', () => {
+    it('should remove the collection field if empty, the FieldType is \"Collection\", with min attribute greater than zero', () => {
+      const data = {collection1: []};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if not empty, the FieldType is \"Collection\", min attribute greater than zero', () => {
+      const data = {collection1: ['Test']};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":[\"Test\"]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if empty, the FieldType is \"Collection\", with no min attribute value', () => {
+      const data = {collection1: []};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":[]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if empty, the FieldType is not \"Collection\", min attribute greater than zero', () => {
+      const data = {collection1: []};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'FixedList';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":[]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not remove the collection field if not an array, the FieldType is \"Collection\", min attribute greater than zero', () => {
+      const data = {collection1: {}};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
+      const actual = '{"collection1":{}}';
+      expect(JSON.stringify(data)).toEqual(actual);
     });
   });
 });

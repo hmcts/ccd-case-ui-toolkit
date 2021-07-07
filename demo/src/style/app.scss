@@ -191,6 +191,11 @@ select::-ms-expand {
   @extend %headers;
   font-size: 16px;
 }
+.heading-span {
+  @extend %headers;
+  font-size: 24px;
+  display: block;
+}
 .form-group, .bottom-0 {
   margin-bottom: 0;
 }
@@ -228,7 +233,10 @@ select::-ms-expand {
   width: 100%;
 }
 .width-50 {
-  width: 50%;
+  width: 100%; // Overridden purely for demo purposes.
+}
+.trash {
+  background-color: lightcyan;
 }
 .text-16, .error-message {
   font-size: 16px;

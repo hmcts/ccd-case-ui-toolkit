@@ -7,6 +7,8 @@ export abstract class AbstractAppConfig {
   abstract getDocumentManagementUrlV2(): string;
   abstract getDocumentSecureMode(): boolean;
   abstract getRemoteDocumentManagementUrl(): string;
+  abstract getHrsUrl(): string;
+  abstract getRemoteHrsUrl(): string;
   abstract getAnnotationApiUrl(): string;
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
@@ -21,7 +23,14 @@ export abstract class AbstractAppConfig {
   abstract getActivityMaxRequestPerBatch(): number;
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   abstract getPrintServiceUrl(): string;
-  abstract getRemotePrintServiceUrl(): string;
+  /**
+   * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
+   * @deprecated
+   * @returns `undefined`
+   */
+  getRemotePrintServiceUrl(): string {
+    return undefined;
+  }
   abstract getPaginationPageSize(): number;
   abstract getBannersUrl(): string;
   abstract getPrdUrl(): string;
@@ -38,10 +47,12 @@ export class CaseEditorConfig {
   document_management_url: string;
   document_management_url_v2: string;
   document_management_secure_enabled: boolean;
+  hrs_url: string;
   login_url: string;
   oauth2_client_id: string;
   postcode_lookup_url: string;
   remote_document_management_url: string;
+  remote_hrs_url: string;
   annotation_api_url: string;
   payments_url: string;
   pay_bulk_scan_url: string;
@@ -51,7 +62,11 @@ export class CaseEditorConfig {
   activity_url: string;
   activity_max_request_per_batch: number;
   print_service_url: string;
-  remote_print_service_url: string;
+  /**
+   * remote_print_service_url marked as optional since deprecation, ahead of removal in next major release
+   * @deprecated
+   */
+  remote_print_service_url?: string;
   pagination_page_size: number;
   prd_url: string;
   cache_time_out: number;

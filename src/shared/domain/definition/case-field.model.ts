@@ -2,7 +2,7 @@ import { Orderable } from '../order';
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
-import { _ } from 'underscore';
+import * as _  from 'underscore';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
 
@@ -10,6 +10,7 @@ import { FixedListItem } from './fixed-list-item.model';
 export class CaseField implements Orderable {
   id: string;
   hidden: boolean;
+  hiddenCannotChange: boolean;
   label: string;
   order?: number;
 
@@ -20,12 +21,14 @@ export class CaseField implements Orderable {
   security_label?: string;
   display_context: string;
   display_context_parameter?: string;
+  month_format?: string;
   show_condition?: string;
   show_summary_change_option?: boolean;
   show_summary_content_option?: number;
   acls?: AccessControlList[];
   metadata?: boolean;
   formatted_value?: any;
+  retain_hidden_value: boolean;
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
@@ -72,11 +75,20 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeEntryFormat(): string {
-    // TODO not yet implemented
+    if (this.isComplexDisplay()) {
+      return null;
+    }
+    if (this.display_context_parameter) {
+      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
+    }
     return null;
   }
+
   @Expose()
   get dateTimeDisplayFormat(): string {
+    if (this.isComplexEntry()) {
+      return null;
+    }
     if (this.display_context_parameter) {
       return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
     }
@@ -84,9 +96,31 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
+  public isComplexDisplay() {
+    return (this.isComplex() || this.isCollection()) && this.isReadonly();
+  }
+
+  @Expose()
+  public isComplexEntry() {
+    return (this.isComplex() || this.isCollection()) && (this.isOptional() || this.isMandatory());
+  }
+
+  @Expose()
   public isReadonly() {
     return !_.isEmpty(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
+  }
+
+  @Expose()
+  public isOptional() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'OPTIONAL';
+  }
+
+  @Expose()
+  public isMandatory() {
+    return !_.isEmpty(this.display_context)
+      && this.display_context.toUpperCase() === 'MANDATORY';
   }
 
   @Expose()
@@ -106,7 +140,7 @@ export class CaseField implements Orderable {
       && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
   }
   private extractBracketValue(fmt: string, paramName: string, leftBracket= '(', rightBracket= ')' ): string {
-      fmt.split(',')
+      fmt = fmt.split(',')
         .find(a => a.trim().startsWith(paramName));
       if (fmt) {
         let s = fmt.indexOf(leftBracket) + 1;
@@ -123,8 +157,8 @@ export class CaseField implements Orderable {
 export class FieldType {
   id: string;
   type: FieldTypeEnum;
-  min?: number;
-  max?: number;
+  min?: number | Date;
+  max?: number | Date;
   regular_expression?: string;
 
   @Type(() => FixedListItem)

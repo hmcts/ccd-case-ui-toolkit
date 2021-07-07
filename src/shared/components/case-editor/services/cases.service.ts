@@ -7,7 +7,8 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType } from '../../../domain';
-import { HttpErrorService, HttpService, LoadingService, OrderService } from '../../../services';
+import { UserInfo } from '../../../domain/user/user-info.model';
+import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -40,6 +41,8 @@ export class CasesService {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
 
+  public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
+
   /**
    *
    * @type {(caseId:string)=>"../../Observable".Observable<Case>}
@@ -54,7 +57,8 @@ export class CasesService {
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
     private readonly workAllocationService: WorkAllocationService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -333,8 +337,8 @@ export class CasesService {
   private processTasksOnSuccess(caseData: any, eventData: any): void {
     // This is used a feature toggle to
     // control the work allocation
-    if (this.appConfig.getWorkAllocationApiUrl()) {
-        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id)
+    if (this.appConfig.getWorkAllocationApiUrl() && !this.isPuiCaseManager()) {
+        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
           }, error => {
@@ -342,5 +346,17 @@ export class CasesService {
             console.warn('Could not process tasks for this case event', error);
           });
     }
+  }
+
+  /*
+  Checks if the user has role of pui-case-manager and returns true or false
+  */
+  private isPuiCaseManager(): boolean {
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo && userInfo.roles && (userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1);
+    }
+    return false;
   }
 }

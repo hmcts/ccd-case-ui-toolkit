@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
@@ -57,56 +58,56 @@ describe('CallbackErrorsComponent', () => {
   }));
 
   it('should have ignore warning label if notified about error with warnings but no errors set', () => {
-    let error = HttpError.from(VALID_WARNING);
+    const error = HttpError.from(new HttpErrorResponse({ error: VALID_WARNING }));
     callbackErrorsSubject.next(error);
 
-    let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = true;
     expectedCallbackErrorsContext.trigger_text = triggerTextIgnore;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
   it('should not have ignore warning label if notified about error with warnings and errors set', () => {
-    let error = HttpError.from(VALID_WARNING);
+    const error = HttpError.from(new HttpErrorResponse({ error: VALID_WARNING }));
     error.callbackErrors = ['error1', 'error2'];
     callbackErrorsSubject.next(error);
 
-    let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = false;
     expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
   it('should not have ignore warning label if notified about callback error and no warnings but errors set', () => {
-    let error = HttpError.from(VALID_ERROR);
+    const error = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR }));
     callbackErrorsSubject.next(error);
 
-    let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = false;
     expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
   it('should display callback warnings when warnings get set', () => {
-    component.error = HttpError.from(VALID_WARNING);
+    component.error = HttpError.from(new HttpErrorResponse({ error: VALID_WARNING }));
     fixture.detectChanges();
 
-    let error = de.query($ERROR_SUMMARY);
+    const error = de.query($ERROR_SUMMARY);
     expect(error).toBeTruthy();
 
-    let warningMessages = error.query($WARNING_MESSAGES);
+    const warningMessages = error.query($WARNING_MESSAGES);
     expect(text(warningMessages.children[0])).toBe(VALID_WARNING.callbackWarnings[0]);
     expect(text(warningMessages.children[1])).toBe(VALID_WARNING.callbackWarnings[1]);
   });
 
   it('should display callback errors when errors get set', () => {
-    component.error = HttpError.from(VALID_ERROR);
+    component.error = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR }));
     fixture.detectChanges();
 
-    let error = de.query($ERROR_SUMMARY);
+    const error = de.query($ERROR_SUMMARY);
     expect(error).toBeTruthy();
 
-    let errorMessages = error.query($ERROR_MESSAGES);
+    const errorMessages = error.query($ERROR_MESSAGES);
     expect(text(errorMessages.children[0])).toBe(VALID_ERROR.callbackErrors[0]);
     expect(text(errorMessages.children[1])).toBe(VALID_ERROR.callbackErrors[1]);
   });
@@ -122,13 +123,13 @@ describe('CallbackErrorsComponent', () => {
         field_errors: FIELD_ERRORS
       }
     };
-    let httpError = HttpError.from(VALID_ERROR_NO_CALLBACK_WARNINGS_OR_ERRORS);
+    const httpError = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR_NO_CALLBACK_WARNINGS_OR_ERRORS }));
     httpError.callbackWarnings = [];
     httpError.callbackErrors = [];
     callbackErrorsSubject.next(httpError);
 
     expect(component.error).toEqual(httpError);
-    let expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignore_warning = false;
     expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);

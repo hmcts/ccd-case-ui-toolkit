@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 
-import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, FieldTypeEnum, HttpError, Profile } from '../../../domain';
 import {
   CaseFieldService,
   FieldsUtils,
@@ -38,10 +38,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
   isSubmitting: boolean;
   profileSubscription: Subscription;
+  contextFields: CaseField[];
 
-  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField) => {
-    let aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
-    let bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
+  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
+    const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
+    const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
 
     if (!aCaseField) {
       return !bCaseField ? 0 : 1;
@@ -51,6 +52,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       return -1;
     }
     return a.show_summary_content_option - b.show_summary_content_option;
+  }
+
+  public get isDisabled(): boolean {
+    // EUI-3452.
+    // We don't need to check the validity of the editForm as it is readonly.
+    // This was causing issues with hidden fields that aren't wanted but have
+    // not been disabled.
+    return this.isSubmitting || this.hasErrors;
   }
 
   constructor(
@@ -66,33 +75,42 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
-    this.announceProfile(this.route);
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
+    this.contextFields = this.getCaseFields();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.profileSubscription.unsubscribe();
   }
 
-  submit(): void {
+  public submit(): void {
     this.isSubmitting = true;
-    let caseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
+    const caseEventData: CaseEventData = {
+      data: this.replaceEmptyComplexFieldValues(
+        this.formValueService.sanitise(
+          this.replaceHiddenFormValuesWithOriginalCaseData(
+            this.editForm.get('data') as FormGroup, this.eventTrigger.case_fields))),
+      event: this.editForm.value.event
+    } as CaseEventData;
     this.formValueService.clearNonCaseFields(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeNullLabels(caseEventData.data, this.eventTrigger.case_fields);
     this.formValueService.removeEmptyDocuments(caseEventData.data, this.eventTrigger.case_fields);
+    // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
+    // these will fail validation
+    this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
-          let confirmation: Confirmation = this.buildConfirmation(response);
+          const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);
           } else {
@@ -111,46 +129,144 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       );
   }
 
-  isDisabled(): boolean {
-    return this.isSubmitting || !this.editForm.valid || this.hasErrors();
+  /**
+   * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
+   * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
+   * the *original* value held in the `CaseField` object.
+   *
+   * This is as per design in EUI-3622, where any user-driven updates to hidden fields with `retain_hidden_value` =
+   * `true` are ignored (thus retaining the value displayed originally).
+   *
+   * * For Complex field types, the replacement above is performed recursively for all hidden sub-fields with
+   * `retain_hidden_value` = `true`.
+   *
+   * * For Collection field types, including collections of Complex and Document field types, the replacement is
+   * performed for all fields in the collection.
+   *
+   * @param formGroup The `FormGroup` instance whose raw values are to be traversed
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
+   * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
+   * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
+   * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
+   */
+  private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
+    // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
+    const rawFormValueData = formGroup.getRawValue();
+
+    // Place all case fields in a lookup object, so they can be retrieved by id
+    const caseFieldsLookup = {};
+    for (let i = 0, len = caseFields.length; i < len; i++) {
+      caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    }
+
+    /**
+     * Replace any form value with the original, where its CaseField is hidden AND has the retain_hidden_value flag set
+     * to true.
+     *
+     * If the CaseField's `hidden` attribute is null or undefined, then check this attribute in the parent CaseField (if
+     * one exists). This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type, or an
+     * item in a Collection type.
+     *
+     * If the field is a Complex type with retain_hidden_value = true, perform a recursive replacement for all (hidden)
+     * sub-fields with retain_hidden_value = true, using their original CaseField values (from the `formatted_value`
+     * attribute).
+     *
+     * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
+     * original from `formatted_value`. This applies to *all* types of Collections.
+     */
+    Object.keys(rawFormValueData).forEach((key) => {
+      const caseField: CaseField = caseFieldsLookup[key];
+      // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
+      // both null and undefined are equal to *neither false nor true*)
+      if (caseField &&
+        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+        const fieldType: FieldTypeEnum = caseField.field_type.type;
+        switch (fieldType) {
+          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
+          // handle both null and undefined values
+          case 'Complex':
+            if (caseField.retain_hidden_value && caseField.value != null) {
+              // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
+              // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
+              // parent)
+              // Update rawFormValueData for this field
+              rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
+            }
+            break;
+          default:
+            // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
+            // replaced with the original from formatted_value
+            if (caseField.retain_hidden_value) {
+              // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
+              // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
+              // from the CaseField itself.
+              if (parentField && parentField.formatted_value) {
+                rawFormValueData[key] = parentField.formatted_value[caseField.id];
+              } else {
+                rawFormValueData[key] = caseField.formatted_value;
+              }
+            }
+        }
+      }
+    });
+
+    return rawFormValueData;
   }
 
-  private getStatus(response) {
+  /**
+   * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
+   * all its sub-fields and descendants are `null` or `undefined`.
+   *
+   * @param data The object tree representing all the form field data
+   * @returns The form field data modified accordingly
+   */
+  private replaceEmptyComplexFieldValues(data: object): object {
+    Object.keys(data).forEach((key) => {
+      if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
+        data[key] = null;
+      }
+    });
+
+    return data;
+  }
+
+  private getStatus(response: object): any {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
 
-  private hasCallbackFailed(response) {
+  private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
 
-  private hasErrors(): boolean {
+  private get hasErrors(): boolean {
     return this.error
       && this.error.callbackErrors
       && this.error.callbackErrors.length;
   }
 
-  navigateToPage(pageId: string): void {
+  public navigateToPage(pageId: string): void {
     this.caseEdit.navigateToPage(pageId);
   }
 
-  callbackErrorsNotify(errorContext: CallbackErrorsContext) {
+  public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
     this.ignoreWarning = errorContext.ignore_warning;
     this.triggerText = errorContext.trigger_text;
   }
 
-  summaryCaseField(field: CaseField): CaseField {
+  public summaryCaseField(field: CaseField): CaseField {
     if (null == this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
     }
 
-    let cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
+    const cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
     cloneField.value = this.editForm.get('data').get(field.id).value;
 
     return cloneField;
   }
 
-  cancel(): void {
+  public cancel(): void {
     if (this.eventTrigger.can_save_draft) {
       if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
         this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
@@ -162,23 +278,22 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
-  isLabel(field: CaseField): boolean {
+  public isLabel(field: CaseField): boolean {
     return this.caseFieldService.isLabel(field);
   }
 
-  isChangeAllowed(field: CaseField): boolean {
+  public isChangeAllowed(field: CaseField): boolean {
     return !this.caseFieldService.isReadOnly(field);
   }
 
-  checkYourAnswerFieldsToDisplayExists(): boolean {
-
+  public checkYourAnswerFieldsToDisplayExists(): boolean {
     if (!this.eventTrigger.show_summary) {
       return false;
     }
 
-    for (let page of this.wizard.pages) {
+    for (const page of this.wizard.pages) {
       if (this.isShown(page)) {
-        for (let field of page.case_fields) {
+        for (const field of page.case_fields) {
           if (this.canShowFieldInCYA(field)) {
             // at least one field needs showing
             return true;
@@ -191,11 +306,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  readOnlySummaryFieldsToDisplayExists(): boolean {
+  public readOnlySummaryFieldsToDisplayExists(): boolean {
     return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0 );
   }
 
-  showEventNotes(): boolean {
+  public showEventNotes(): boolean {
     return this.eventTrigger.show_event_notes !== false;
   }
 
@@ -210,34 +325,28 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return lastPage;
   }
 
-  previous() {
+  public previous(): void {
     if (this.hasPrevious()) {
       this.navigateToPage(this.getLastPageShown().id);
     }
   }
 
-  hasPrevious(): boolean {
+  public hasPrevious(): boolean {
     return !!this.getLastPageShown();
   }
 
-  isShown(page: WizardPage): boolean {
-    let fields = this.fieldsUtils
+  public isShown(page: WizardPage): boolean {
+    const fields = this.fieldsUtils
       .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
     return page.parsedShowCondition.match(fields);
   }
 
-  canShowFieldInCYA(field: CaseField): boolean {
+  public canShowFieldInCYA(field: CaseField): boolean {
     return field.show_summary_change_option;
   }
 
-  isSolicitor(): boolean {
+  public isSolicitor(): boolean {
     return this.profile.isSolicitor();
-  }
-
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: any): Confirmation {
@@ -259,11 +368,19 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       .filter(cf => cf.show_summary_content_option);
   }
 
+  private getCaseFields(): CaseField[] {
+    if (this.caseEdit.caseDetails) {
+      return FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
+    }
+
+    return this.eventTrigger.case_fields;
+  }
+
   getCaseId(): String {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  getCancelText(): String {
+  public getCancelText(): string {
     if (this.eventTrigger.can_save_draft) {
       return 'Return to case list';
     } else {

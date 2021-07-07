@@ -1,4 +1,4 @@
 <div>
-  <input type="hidden" name="organisationID" [value]="(selectedOrg$ | async).organisationIdentifier">
-  <input type="hidden" name="organisationName" [value]="(selectedOrg$ | async).name">
+  <input type="hidden" name="organisationID" [value]="(selectedOrg$ | async)?.organisationIdentifier">
+  <input type="hidden" name="organisationName" [value]="(selectedOrg$ | async)?.name">
 </div>

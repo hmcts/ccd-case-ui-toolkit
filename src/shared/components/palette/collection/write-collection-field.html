@@ -1,14 +1,14 @@
 <div class="form-group" [id]="id()">
 
-  <div class="panel panel-border-wide">
+  <div class="panel collection-indicator">
 
-    <h2 class="heading-h2">
+    <h2 *ngIf="caseField.hint_text || formArray.errors" class="heading-h2 error-spacing">
       {{caseField | ccdFieldLabel}}
     </h2>
-    <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate()">Add new</button>
-    <h2 class="heading-h2 error-spacing">
+    <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">Add new</button>
+    <h2 class="heading-h2 error-spacing" *ngIf="caseField.hint_text || formArray.errors">
       <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
-      <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError}}</span>
+      <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError:caseField.label}}</span>
     </h2>
 
     <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
@@ -29,13 +29,15 @@
                          [formGroup]="formGroup"
                          [parent]="item.container"
                          [idPrefix]="item.prefix"
-                         [hidden]="item.caseField.hidden">
+                         [hidden]="item.caseField.hidden"
+                         [isExpanded]="isExpanded"
+                         [isInSearchBlock]="isInSearchBlock">
         </ccd-field-write>
       </div>
 
     </div>
 
-    <button class="button" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate()" *ngIf="caseField.value && caseField.value.length">Add new</button>
+    <button class="button" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value && caseField.value.length">Add new</button>
 
   </div>
 

@@ -1,10 +1,10 @@
-<div class="form-group bottom-30" [ngClass]="{'form-group-error': !moneyGbpControl.valid && moneyGbpControl.touched}">
+<div class="form-group bottom-30" [ngClass]="{'form-group-error': !moneyGbpControl.valid && moneyGbpControl.dirty}">
 
   <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <span class="error-message" *ngIf="moneyGbpControl.errors && moneyGbpControl.touched">{{moneyGbpControl.errors | ccdFirstError}}</span>
+    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>    
   </label>
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+  <span class="error-message" *ngIf="moneyGbpControl.errors && moneyGbpControl.touched">{{moneyGbpControl.errors | ccdFirstError:caseField.label}}</span>
 
   <div class="form-money">
     <span class="form-currency">&#163;</span>
