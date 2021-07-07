@@ -172,9 +172,6 @@ Activity Tracker Performance changes
 ### Version 2.73.0
 **EUI-3222** Loading spinner
 
-### Version 2.72.10-document-secure-mode
-**EUI-3425** Added ability to switch the document upload process
-
 ### Version 2.72.9-fix-case-submission
 **EUI-3494** Fixed the missing case ID on case creation.
 **EUI-3495** Fixed an issue where the user was return to Case list following case creation.
