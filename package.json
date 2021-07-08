@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.0.0",
+  "version": "4.0.0-cve-fix",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -68,7 +68,7 @@
     "npm-registry-fetch": "^4.0.5",
     "rx-polling": "1.1.0",
     "typescript": "3.1.1",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "yargs-parser": "18.1.2"
   },
   "peerDependencies": {
@@ -145,7 +145,6 @@
     "reflect-metadata": "^0.1.12",
     "rimraf": "2.6.2",
     "rollup": "^0.66.2",
-    "rollup-plugin-angular": "^0.5.3",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^1.0.0",
@@ -169,21 +168,35 @@
   "resolutions": {
     "braces": "^2.3.1",
     "dot-prop": "^5.1.1",
-    "elliptic": "^6.5.3",
-    "graceful-fs": "4.2.3",
-    "handlebars": "^4.5.3",
+    "elliptic": "6.5.4",
+    "graceful-fs": "^4.2.3",
+    "handlebars": "^4.7.7",
     "https-proxy-agent": "^2.2.3",
     "lodash": "^4.17.18",
     "marked": "^0.7.0",
-    "mem": "^6.0.0",
     "minimatch": "^3.0.2",
-    "minimist": "1.2.3",
+    "minimist": "^1.2.3",
     "node-fetch": "2.6.1",
     "node-forge": "^0.10.0",
     "npm-registry-fetch": "^4.0.5",
     "serialize-javascript": "^3.1.0",
-    "tree-kill": "1.2.2",
-    "yargs-parser": "18.1.2"
+    "tree-kill": "^1.2.2",
+    "yargs-parser": "^18.1.2",
+    "ssri": "^6.0.2",
+    "glob-parent": "^5.1.2",
+    "url-parse": "^1.5.0",
+    "xmlhttprequest-ssl": "1.6.3",
+    "css-what": "^5.0.1",
+    "y18n": "^4.0.1",
+    "prismjs": "1.24.1",
+    "websocket-extensions": "0.1.4",
+    "socket.io": "^2.4.1",
+    "trim-newlines": "^4.0.2",
+    "ini": "^2.0.0",
+    "browserslist": "^4.16.6",
+    "mem": "^8.1.1",
+    "dns-packet": "1.3.4"
+
   },
   "publishConfig": {
     "access": "public"
