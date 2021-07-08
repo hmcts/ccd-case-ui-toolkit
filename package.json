@@ -191,7 +191,7 @@
     "prismjs": "1.24.1",
     "websocket-extensions": "0.1.4",
     "socket.io": "^2.4.1",
-    "trim-newlines": "^4.0.2",
+    "trim-newlines": "^3.0.1",
     "ini": "^2.0.0",
     "browserslist": "^4.16.6",
     "mem": "^8.1.1",
