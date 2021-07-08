@@ -1,5 +1,4 @@
 <h1 *ngIf="!caseTitle.label" class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
-
 <div *ngIf="caseTitle.label" class="case-title">
   <ccd-label-field [caseField]="caseTitle" [caseFields]="caseFields"></ccd-label-field>
 </div>

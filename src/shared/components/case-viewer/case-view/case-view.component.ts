@@ -36,6 +36,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log('case', this.case)
     this.getCaseView(this.case)
       .pipe(
         map(caseView => {

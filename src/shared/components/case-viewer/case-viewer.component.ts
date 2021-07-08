@@ -10,16 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
 import { ShowCondition } from '../../directives/conditional-show/domain';
-import {
-  Activity,
-  CaseField,
-  CaseTab,
-  CaseView,
-  CaseViewTrigger,
-  DisplayMode,
-  Draft,
-  DRAFT_QUERY_PARAM,
-} from '../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -31,6 +22,7 @@ import {
 } from '../../services';
 import { CaseNotifier } from '../case-editor';
 import { CallbackErrorsContext } from '../error/domain';
+import { AbstractAppConfig } from '../../../app.config';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -51,6 +43,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public BANNER = DisplayMode.BANNER;
 
   public caseDetails: CaseView;
+  public prependedTabs: CaseTab[] = [];
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
   public formGroup: FormGroup;
@@ -74,6 +67,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly orderService: OrderService,
     private readonly activityPollingService: ActivityPollingService,
     private readonly dialog: MatDialog,
+    private readonly appConfig: AbstractAppConfig,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
     private readonly caseNotifier: CaseNotifier,
@@ -220,6 +214,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private init(): void {
     // Clone and sort tabs array
+    this.prependedTabs = this.appConfig.prependedCaseViewTabs();
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
@@ -268,7 +263,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         };
       });
     }
-    return new FormGroup({ data: new FormControl(value) });
+    return new FormGroup({data: new FormControl(value)});
   }
 
   private initDialog(): void {
