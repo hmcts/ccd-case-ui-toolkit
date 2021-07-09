@@ -1,5 +1,4 @@
-
-<div class="form-group" [ngClass]="{'form-group-error': !textareaControl.valid && textareaControl.touched}">
+<div class="form-group" [ngClass]="{'form-group-error': !textareaControl.valid && textareaControl.dirty}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
@@ -11,5 +10,3 @@
    [id]="id()" rows="3" [formControl]="textareaControl"></textarea>
 
 </div>
-
-

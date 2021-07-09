@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { Constants } from '../../../commons/constants';
-import { CaseField, FieldTypeEnum } from '../../../domain/definition';
+import { CaseField } from '../../../domain/definition';
 import { FieldsUtils, FormValidatorsService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -34,12 +34,12 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   public complexFields: CaseField[];
 
-  constructor (private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
+  constructor(private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
     super();
     this.complexGroup = new FormGroup({});
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Are we inside of a collection? If so, the parent is the complexGroup we want.
     if (this.isTopLevelWithinCollection()) {
       this.complexGroup = this.parent as FormGroup;
@@ -53,7 +53,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     this.complexGroup.updateValueAndValidity({ emitEvent: true });
   }
 
-  buildField(caseField: CaseField): CaseField {
+  public buildField(caseField: CaseField): CaseField {
     let control: AbstractControl = this.complexGroup.get(caseField.id);
     if (!control) {
       control = new FormControl(caseField.value);
@@ -69,11 +69,20 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
       // It's not an address so set it up according to its own display_context.
       this.formValidatorsService.addValidators(caseField, control);
     }
+
+    // For Address-type fields, ensure that all sub-fields inherit the same value for retain_hidden_value as this
+    // parent; although address fields use the Complex type, each of them is meant to be treated as one field
+    if (this.isAddressUK() && this.caseField) {
+      for (const addressSubField of this.caseField.field_type.complex_fields) {
+        addressSubField.retain_hidden_value = this.caseField.retain_hidden_value;
+      }
+    }
+
     FieldsUtils.addCaseFieldAndComponentReferences(control, caseField, this);
     return caseField;
   }
 
-  buildIdPrefix(field: CaseField): string {
+  public buildIdPrefix(field: CaseField): string {
     return this.isCompoundPipe.transform(field) ? `${this.idPrefix}${field.id}_` : `${this.idPrefix}`;
   }
 
@@ -113,7 +122,6 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     const fieldsFilterPipe: FieldsFilterPipe = new FieldsFilterPipe();
     this.complexFields = fieldsFilterPipe.transform(this.caseField, true).map(field => {
       if (field && field.id) {
-        const id = field.id;
         if (!(field instanceof CaseField)) {
           return this.buildField(plainToClassFromExist(new CaseField(), field));
         }
