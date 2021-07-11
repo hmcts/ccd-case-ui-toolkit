@@ -364,6 +364,11 @@ export class FormValueService {
                     this.removeEmptyDocuments(item.value, field.field_type.collection_field_type.complex_fields);
                   }
                 }
+
+                // delete if collection itself is empty
+                if (FormValueService.isEmptyData(data[field.id])) {
+                  delete data[field.id];
+                }
               }
               break;
             case 'Document':
