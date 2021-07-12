@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Router } from '@angular/router';
