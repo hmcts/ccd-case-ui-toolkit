@@ -467,7 +467,16 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [], 'state': {'id': 'incompleteApplication', 'name': 'Incomplete Application', 'title_display': '# 1234567812345678: test'}},
+        'caseDetails': {
+          'case_id': '1234567812345678',
+          'tabs': [],
+          'metadataFields': [],
+          'state': {
+            'id': 'incompleteApplication',
+            'name': 'Incomplete Application',
+            'title_display': '# 1234567812345678: test'
+          }
+        },
       };
 
       route = {
