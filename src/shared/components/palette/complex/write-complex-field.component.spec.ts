@@ -28,7 +28,7 @@ describe('WriteComplexFieldComponent', () => {
 
   const FieldWriteComponent = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
+    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
   });
 
   const FieldReadComponent = MockComponent({
