@@ -38,7 +38,7 @@ export class CaseEditConfirmComponent {
     this.caseEdit.submitted.emit({caseId: this.confirmation.getCaseId(), status: this.confirmation.getStatus()});
   }
 
-  getCaseId(): String {
+  getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
