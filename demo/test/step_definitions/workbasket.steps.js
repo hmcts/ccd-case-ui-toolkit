@@ -2,8 +2,6 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../nodeMock/app');
 
-// const browserUtil = require('../../util/browserUtil');
-// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../support/reportLogger');
 const dateTimePickerComponent = require('../pageObjects/dateTimePicker');
 const WorkbasketConfig = require('../nodeMock/ccd/ccdCaseConfig/workBasketInputGenerator');
@@ -28,7 +26,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-  
 
     Given('I set mock workbasket config {string}', async function (workbasketConfigref) {
         const workbasketConfig = global.scenarioData[workbasketConfigref];
@@ -60,15 +57,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (let i = 0; i < fields.length; i++) {
             await caseListFilters.openDateTimePickerForFieldWithId(fields[i].fieldId);
             await caseListFilters.setDatetimeField(fields[i].value);
-  
+
         }
     });
-  
+
     Then('I validate date time picker field values in workbasket', async function(datatable){
         const softAssert = new SoftAssert();
         const fields = datatable.hashes();
         for (let i = 0; i < fields.length; i++) {
-           
             softAssert.setScenario(`field with id ${fields[i].fieldId}`)
             await softAssert.assert(async () => expect(await caseListFilters.getDateTimeFieldValueWithId(fields[i].fieldId), `field value mismatch`).to.equal(fields[i].value))
         }

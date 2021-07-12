@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Moment } from 'moment/moment';
 import {
   NGX_MAT_DATE_FORMATS,
@@ -44,15 +44,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public yearSelection = false;
   public checkTime = true;
   public stringEdited = false;
-  private minimumDate = new Date('01/01/1800');
-  private maximumDate = null;
-  public minError = false;
-  public maxError = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  public dateTimeEntryFormat: string;
+  private dateTimeEntryFormat: string;
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
@@ -65,24 +61,15 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
     this.setDateTimeFormat();
-    // set date control based on mandatory field
-    this.dateControl = (this.caseField.isMandatory ?
-     this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
-      : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
+    this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
-      this.formatValueAndSetErrors();
+      this.formatValue();
     }, 1);
-    // when the status changes check that the maximum/minimum date has not been exceeded
-    this.dateControl.statusChanges.subscribe(() => {
-      this.minError = this.dateControl.hasError('matDatetimePickerMin');
-      this.maxError = this.dateControl.hasError('matDatetimePickerMax');
-    });
   }
 
-  // reset format whenever changes are made for specific instance
   public setDateTimeFormat(): void {
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
@@ -92,25 +79,16 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   When the value changes, update the form control
   */
   public valueChanged(): void {
-    this.formatValueAndSetErrors();
+    this.formatValue();
   }
 
-  private formatValueAndSetErrors(): void {
+  public formatValue(): void {
     if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
       formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
       if (formValue !== 'Invalid date') {
-        // if not invalid set the value as the formatted value
         this.dateControl.setValue(formValue);
-      } else {
-        // ensure that the datepicker picks up the invalid error
-        const keepErrorText = this.inputElement.nativeElement.value;
-        this.dateControl.setValue(keepErrorText);
-        this.inputElement.nativeElement.value = keepErrorText;
       }
-    } else {
-      // ensure required errors are picked up if relevant
-      this.dateControl.setValue('');
     }
   }
 
@@ -118,29 +96,16 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.setDateTimeFormat();
   }
 
-  public focusOut(): void {
-    // focus out needed to obtain errors (relevant to formatting)
-    this.formatValueAndSetErrors();
-  }
-
   public toggleClick(): void {
     this.setDateTimeFormat();
   }
 
   public minDate(caseField: CaseField): Date {
-    // set minimum date
-    if (caseField.field_type.min instanceof Date) {
-      this.minimumDate = caseField.field_type.min ? new Date(caseField.field_type.min) : this.minimumDate;
-    }
-    return this.minimumDate;
+    return caseField.field_type.min ? new Date(caseField.field_type.min) : null;
   }
 
   public maxDate(caseField: CaseField): Date {
-    // set maximum date
-    if (caseField.field_type.max instanceof Date) {
-      this.maximumDate = caseField.field_type.max ? new Date(caseField.field_type.max) : this.maximumDate;
-    }
-    return this.maximumDate;
+    return caseField.field_type.max ? new Date(caseField.field_type.max) : null;
   }
 
   public configureDatePicker(dateTimePickerFormat: string): void {
@@ -148,7 +113,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.hideTime = true;
       this.checkTime = false;
       this.dateTimeEntryFormat = this.formatTranslationService.removeTime(this.dateTimeEntryFormat);
-      this.momentFormat = 'YYYY-MM-DD';
+      this.momentFormat = 'YYYY-MM-DD'
     }
 
     if (this.checkTime) {

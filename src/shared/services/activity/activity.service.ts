@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Activity } from '../../domain/activity';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../../services/http';
+import { HttpService, OptionsType } from '../../services/http';
+import { HttpHeaders } from '@angular/common/http';
+import { SessionStorageService } from '../session/session-storage.service';
 
 // @dynamic
 @Injectable()
@@ -13,20 +15,35 @@ export class ActivityService {
 
   private userAuthorised;
 
-  constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
+  constructor(private readonly http: HttpService,
+              private readonly appConfig: AbstractAppConfig,
+              private readonly sessionStorageService: SessionStorageService) {}
+
+  public getOptions(): OptionsType {
+    const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
+    const options: OptionsType = {
+      headers: headers,
+      withCredentials: true,
+      observe: 'body',
+    };
+    return options;
+  }
 
   getActivities(...caseId: string[]): Observable<Activity[]> {
+    const options = this.getOptions();
     const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
     return this.http
-      .get(url, null, false)
+      .get(url, options, false)
       .map(response => response);
   }
 
   postActivity(caseId: string, activityType: String): Observable<Activity[]> {
+    const options = this.getOptions();
     const url = this.activityUrl() + `/cases/${caseId}/activity`;
     let body = { activity: activityType};
     return this.http
-      .post(url, body, null, false)
+      .post(url, body, options, false)
       .map(response => response);
   }
 
