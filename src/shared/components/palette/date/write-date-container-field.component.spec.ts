@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker/esm5/angular-material-components-datetime-picker.js';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CaseField, FieldType } from '../../../domain';
