@@ -1,10 +1,14 @@
 <!-- Current Page && Event trigger name -->
 <h1 class="heading-h1">{{ eventTrigger.name}}</h1>
 
-<!-- Case ID -->
-<span *ngIf="getCaseId()" class="heading-span" title="Case reference {{ getCaseId() | ccdCaseReference}}">
-  #{{ getCaseId() | ccdCaseReference}}
-</span>
+<!--Case ID or Title -->
+<div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
+<ng-template #titleBlock>
+  <h2 class="heading-h2">{{ getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data'] }}</h2>
+</ng-template>
+<ng-template #idBlock>
+  <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
+</ng-template>
 
 <form [formGroup]="formGroup" (submit)="submit()">
   <div id="confirmation-header" *ngIf="confirmation.getHeader()">
