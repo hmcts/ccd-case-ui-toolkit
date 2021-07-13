@@ -2,11 +2,9 @@ import { By } from '@angular/platform-browser';
 import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
-  from '@angular-material-components/datetime-picker';
+  from '@angular-material-components/datetime-picker/esm5/angular-material-components-datetime-picker.js';
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
-import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker/esm5/angular-material-components-datetime-picker.js';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CaseField, FieldType } from '../../../domain';
@@ -60,7 +58,6 @@ describe('DatetimePickerComponent', () => {
           ],
           providers: [FormatTranslatorService,
             { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-            { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
             { provide: CaseFieldService, useValue: caseFieldService }
             ]
         })
