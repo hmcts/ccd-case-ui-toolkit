@@ -259,7 +259,7 @@ describe('DatetimePickerComponent', () => {
     let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
-    
+
     // check in order to verify the date has changed by one hour and one minute
     const oneHourAndMinuteChangeString = fixture.nativeElement.querySelector('input').value;
     console.log(oneHourAndMinuteChangeString);
