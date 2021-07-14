@@ -180,4 +180,3 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
 })
 export class PaletteModule {
 }
-
