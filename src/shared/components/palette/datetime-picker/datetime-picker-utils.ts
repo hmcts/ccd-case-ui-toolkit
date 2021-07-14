@@ -1,4 +1,4 @@
-import { NgxMatDateFormats } from '@angular-material-components/datetime-picker/esm5/angular-material-components-datetime-picker.js';
+import { NgxMatDateFormats } from '@angular-material-components/datetime-picker';
 
 export const CUSTOM_MOMENT_FORMATS: NgxMatDateFormats = {
   parse: {

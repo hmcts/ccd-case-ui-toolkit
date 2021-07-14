@@ -2,9 +2,11 @@ import { By } from '@angular/platform-browser';
 import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
-  from '@angular-material-components/datetime-picker/esm5/angular-material-components-datetime-picker.js';
+  from '@angular-material-components/datetime-picker';
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker/esm5/angular-material-components-datetime-picker.js';
+import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CaseField, FieldType } from '../../../domain';
@@ -13,7 +15,6 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
-import { not } from 'rxjs/internal-compatibility';
 
 describe('DatetimePickerComponent', () => {
 
@@ -59,6 +60,7 @@ describe('DatetimePickerComponent', () => {
           ],
           providers: [FormatTranslatorService,
             { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+            { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
             { provide: CaseFieldService, useValue: caseFieldService }
             ]
         })
@@ -147,17 +149,21 @@ describe('DatetimePickerComponent', () => {
     component.caseField = FIRST_CASE_FIELD;
     component.ngOnInit();
     tick(1);
+    fixture.detectChanges();
 
     const firstFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(firstFormattedDate).not.toBe(null);
+    expectSeparatorCharacters(firstFormattedDate, '-', '+');
 
     // EUI-4118 - changed test to refer back to previous case field due to intermittent errors based on reactive form
     component.caseField = CASE_FIELD;
     component.ngOnInit();
     tick(1);
+    fixture.detectChanges();
 
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(newFormattedDate).not.toBe(null);
+    expectSeparatorCharacters(newFormattedDate, '/', ':');
     endTest();
   }));
 
@@ -206,6 +212,9 @@ describe('DatetimePickerComponent', () => {
   }));
 
   it('should be able to confirm datepicker concurs with formatting', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+
     const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss'
 
     const FIRST_CASE_FIELD: CaseField = <CaseField>({
@@ -218,11 +227,14 @@ describe('DatetimePickerComponent', () => {
     });
 
     component.caseField = FIRST_CASE_FIELD;
+    fixture.detectChanges();
     component.ngOnInit();
+    tick(1);
     fixture.detectChanges();
 
     const initialFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(initialFormattedDate).not.toBe(null);
+    expectSeparatorCharacters(initialFormattedDate, '-', '+');
 
     clickFirstElement(fixture);
 
@@ -231,6 +243,7 @@ describe('DatetimePickerComponent', () => {
     if (initialDateTime.getDate() !== 1) {
       expect(newFormattedDate).not.toBe(initialFormattedDate);
     }
+    expectSeparatorCharacters(newFormattedDate, '-', '+');
     endTest();
   }));
 
@@ -262,13 +275,12 @@ describe('DatetimePickerComponent', () => {
 
     // check in order to verify the date has changed by one hour and one minute
     const oneHourAndMinuteChangeString = fixture.nativeElement.querySelector('input').value;
-    console.log(oneHourAndMinuteChangeString);
     const oneHourChangeValue = +oneHourAndMinuteChangeString.substring(11, 13);
     const oneMinuteChangeValue = +oneHourAndMinuteChangeString.substring(14, 16);
-    expect(fixture.nativeElement.querySelector('input').value).toBe(initialValue);
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     // check verifies difference rather than change because tests were failing intermittently
-    expect(oneHourChangeValue).toBe(originalHourValue);
-    expect(oneMinuteChangeValue).toBe(originalMinuteValue);
+    expect(oneHourChangeValue).not.toBe(originalHourValue);
+    expect(oneMinuteChangeValue).not.toBe(originalMinuteValue);
 
     endTest();
   }));
@@ -300,7 +312,7 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
 
     // check that the the amount of seconds has been changed (avoids intermittent test failure issue)
-    expect(fixture.nativeElement.querySelector('input').value).toBe(initialValue);
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
 
     endTest();
   }));
@@ -337,9 +349,9 @@ describe('DatetimePickerComponent', () => {
 
     // ensure that the hours are converted to the initial date
     const exactHourConversion = (meridianChangeValue + 12) % 24;
-    expect(fixture.nativeElement.querySelector('input').value).toBe(initialValue);
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     if (originalHourValue !== 12) {
-      expect(originalHourValue).not.toBe(exactHourConversion);
+      expect(originalHourValue).toBe(exactHourConversion);
     } else {
       expect(originalHourValue).toBe(meridianChangeValue);
     }
