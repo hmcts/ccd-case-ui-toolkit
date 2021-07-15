@@ -111,11 +111,9 @@ import { CaseReferencePipe, PipesModule } from './shared/pipes';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
-
     ConditionalShowDirective,
     LabelSubstitutorDirective,
     FocusElementDirective,
-
     PaginatePipe
   ]
 })

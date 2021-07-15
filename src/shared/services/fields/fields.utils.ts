@@ -25,7 +25,7 @@ export class FieldsUtils {
   }
 
   public static toValuesMap(caseFields: CaseField[]): any {
-    let valueMap = {};
+    const valueMap = {};
     caseFields.forEach(field => {
       valueMap[field.id] = FieldsUtils.prepareValue(field);
     });
@@ -100,13 +100,13 @@ export class FieldsUtils {
     }
   }
 
-  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any) {
+  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
   };
 
-  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any) {
+  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
@@ -116,9 +116,9 @@ export class FieldsUtils {
         break;
       }
       case 'MultiSelectList': {
-        let fieldValue = result[field.id] || [];
+        const fieldValue = result[field.id] || [];
         result[field.id + FieldsUtils.LABEL_SUFFIX] = [];
-        fieldValue.forEach((code, idx) => {
+        fieldValue.forEach((code: any, idx: any) => {
           result[field.id + FieldsUtils.LABEL_SUFFIX][idx] = FieldsUtils.getFixedListLabelByCodeOrEmpty(field, code);
         });
         break;
@@ -133,14 +133,14 @@ export class FieldsUtils {
         break;
       }
       case 'Date': {
-        let fieldValue = (result[field.id] || field.value);
+        const fieldValue = (result[field.id] || field.value);
         result[field.id] = FieldsUtils.getDate(fieldValue);
         break;
       }
       case 'Collection': {
-        let elements = (result[field.id] || field.value);
+        const elements = (result[field.id] || field.value);
         if (elements) {
-          elements.forEach(elem => {
+          elements.forEach((elem: any) => {
             switch (field.field_type.collection_field_type.type) {
               case 'MoneyGBP': {
                 elem.value = FieldsUtils.getMoneyGBP(elem.value);
@@ -193,6 +193,28 @@ export class FieldsUtils {
   public static addCaseFieldAndComponentReferences (c: AbstractControl, cf: CaseField, comp: AbstractFormFieldComponent): void {
     c['caseField'] = cf;
     c['component'] = comp;
+  }
+
+  /**
+   * Recursive check of an array or object and its descendants for the presence of any non-empty values.
+   *
+   * @param object The array or object to check
+   * @returns `true` if the array or object (or a descendant) contains at least one non-empty value; `false` otherwise
+   */
+  public static containsNonEmptyValues(object: object): boolean {
+    if (!object) {
+      return false;
+    }
+    const values = Object.keys(object).map(key => object[key]);
+    const objectRefs = [];
+    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays.
+    // Note: Deliberate use of non-equality (!=) operator for null check, to handle both null and undefined values.
+    const hasNonNullPrimitive = values.some(x => (x != null &&
+      ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
+        ? !objectRefs.push(x)
+        : typeof x === 'number' || x.length > 0)
+    ));
+    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

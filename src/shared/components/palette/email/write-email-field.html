@@ -1,4 +1,4 @@
-<div class="form-group bottom-30" [ngClass]="{'form-group-error': !emailControl.valid && emailControl.touched}">
+<div class="form-group bottom-30" [ngClass]="{'form-group-error': !emailControl.valid && emailControl.dirty}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>    

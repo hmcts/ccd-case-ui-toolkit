@@ -12,7 +12,6 @@ import { FieldsUtils, ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 type CollectionItem = {
   caseField: CaseField;
@@ -43,10 +42,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private items: QueryList<ElementRef>;
   private collItems: CollectionItem[] = [];
 
-  constructor(private dialog: MatDialog,
-              private scrollToService: ScrollToService,
-              private profileNotifier: ProfileNotifier,
-              private createChecker: CollectionCreateCheckerService
+  constructor(private readonly dialog: MatDialog,
+              private readonly scrollToService: ScrollToService,
+              private readonly profileNotifier: ProfileNotifier
   ) {
     super();
   }
@@ -193,7 +191,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  addItem(doScroll: boolean): void {
+  public isSearchFilter(): boolean {
+    return this.isInSearchBlock && this.collItems.length > 0;
+  }
+
+  public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     const item = { value: null }
@@ -227,10 +229,26 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  removeItem(index: number): void {
-    this.caseField.value.splice(index, 1);
-    this.collItems.splice(index, 1);
-    this.formArray.removeAt(index);
+  private removeItem(index: number): void {
+    /**
+     * To resolve https://tools.hmcts.net/jira/browse/EUI-4072
+     * Cannot simply remove a case field, collItem and a DOM formArray item as they appear intrinsically bound together.
+     * Had to firstly move the form array item that needed removing to the bottom of the collection
+     * and then remove it along with the corresponding collItem.
+     * see https://stackoverflow.com/a/64208977/7453725 for more information on removing FormArray items
+    */
+    if (this.formArray.length > 1) {
+      const value = this.formArray.getRawValue();
+      this.formArray.setValue(
+        value.slice(0, index).concat(
+          value.slice(index + 1),
+        ).concat(value[index]),
+      );
+    }
+
+    this.formArray.removeAt(this.formArray.length - 1);
+    this.collItems.pop();
+    this.caseField.value.pop();
   }
 
   itemLabel(index: number) {

@@ -9,10 +9,12 @@ export class AppConfig extends AbstractAppConfig {
     'api_url': '/aggregated',
     'case_data_url': '/data',
     'document_management_url': '/documents',
+    'hrs_url': '/hearing-recordings',
     'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
     'postcode_lookup_url': '/addresses/?postcode=${postcode}',
     'remote_document_management_url': '/documents',
+    'remote_hrs_url': '/hearing-recordings',
     'annotation_api_url': '/em-anno',
     'payments_url': '/payments',
     'pay_bulk_scan_url': '/pay-bulkscan',
@@ -55,6 +57,14 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRemoteDocumentManagementUrl() {
     return this.config.remote_document_management_url;
+  }
+
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
   }
 
   public getAnnotationApiUrl() {
