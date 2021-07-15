@@ -1,6 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 4.0.0
+**EUI-4164** Add Appellant Name Next to Caseid
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
 **EUI-2022** ExUI - Error Messages (Complex Type)
 **EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
@@ -37,7 +38,6 @@
 
 ### Version 3.1.5-event-log-local
 **EUI-4095** Event logs to display local time
-
 
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
