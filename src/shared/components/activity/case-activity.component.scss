@@ -1,0 +1,8 @@
+.activityComponent {
+  .activityIcon {
+    margin-left: 14px;
+    &:not(.editorsOnly) {
+      float: left;
+    }
+  }
+}

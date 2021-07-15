@@ -1,25 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SearchResultComponent } from './search-result.component';
 import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
-import { FormGroup } from '@angular/forms';
-import {
-  CaseState,
-  CaseType,
-  CaseView,
-  DRAFT_PREFIX,
-  Jurisdiction,
-  PaginationMetadata,
-  SearchResultView,
-  SearchResultViewItem
-} from '../../domain';
-import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
+import { BehaviorSubject } from 'rxjs';
+
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
+import { CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata } from '../../domain';
+import { SearchResultView, SearchResultViewItem } from '../../domain/search';
+import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
+import {
+  ActivityService,
+  ActivitySocketService,
+  BrowserService,
+  FieldsUtils,
+  SearchResultViewItemComparatorFactory,
+  SessionStorageService,
+} from '../../services';
+import { Utils } from '../../services/activity/utils';
+import { SearchResultComponent } from './search-result.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
@@ -32,6 +35,33 @@ class FieldReadComponent {
 }
 
 describe('SearchResultComponent', () => {
+  const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
+  const switchMap = {
+    switchMap: () => ({
+      retryWhen: () => ({
+        subscribe: () => ({})
+      })
+    })
+  };
+  let sessionStorageService: any;
+  let activitySocketService: any;
+  let activityService: any;
+
+  beforeEach(() => {
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
+    activitySocketService = {
+      watching: [],
+      isEnabled: true,
+      watchCases: (caseIds: string[]): void => {
+        activitySocketService.watching.push(caseIds);
+      },
+      user: MOCK_USER
+    };
+    activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
+    activityService.postActivity.and.returnValue(switchMap);
+    activityService.modeSubject = new BehaviorSubject<string>(Utils.MODES.off);
+  });
 
   describe('with results', () => {
 
@@ -154,14 +184,6 @@ describe('SearchResultComponent', () => {
       hasDrafts: () => false
     };
 
-    const switchMap = {
-      switchMap: () => ({
-        retryWhen: () => ({
-          subscribe: () => ({})
-        })
-      })
-    };
-
     let fixture: ComponentFixture<SearchResultComponent>;
     let component: SearchResultComponent;
     let de: DebugElement;
@@ -169,14 +191,11 @@ describe('SearchResultComponent', () => {
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
-    let activityService: any;
     let searchHandler;
     let appConfig: any;
     let caseReferencePipe = new CaseReferencePipe();
 
     beforeEach(async(() => {
-      activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
-      activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
 
       searchHandler = createSpyObj('searchHandler', ['applyFilters', 'navigateToCase']);
@@ -203,7 +222,9 @@ describe('SearchResultComponent', () => {
             PlaceholderService,
             FieldsUtils,
             SearchResultViewItemComparatorFactory,
+            { provide: SessionStorageService, useValue: sessionStorageService },
             { provide: ActivityService, useValue: activityService },
+            { provide: ActivitySocketService, useValue: activitySocketService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
@@ -814,25 +835,14 @@ describe('SearchResultComponent', () => {
     let component: SearchResultComponent;
     let de: DebugElement;
 
-    const switchMap = {
-      switchMap: () => ({
-        retryWhen: () => ({
-          subscribe: () => ({})
-        })
-      })
-    };
-
     let CaseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
-    let activityService: any;
     let appConfig: any;
     let caseReferencePipe = new CaseReferencePipe();
 
     beforeEach(async(() => {
-      activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
-      activityService.postActivity.and.returnValue(switchMap);
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
       TestBed
@@ -854,6 +864,8 @@ describe('SearchResultComponent', () => {
             PlaceholderService,
             FieldsUtils,
             SearchResultViewItemComparatorFactory,
+            { provide: SessionStorageService, useValue: sessionStorageService },
+            { provide: ActivityService, useValue: activityService },
             { provide: ActivityService, useValue: activityService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },

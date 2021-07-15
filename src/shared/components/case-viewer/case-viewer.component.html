@@ -30,6 +30,7 @@
     (callbackErrorsContext)="callbackErrorsNotify($event)">
   </ccd-callback-errors>
   <ccd-activity [caseId]="caseDetails.case_id" [displayMode]="BANNER"></ccd-activity>
+  <ccd-case-activity [caseId]="caseDetails.case_id" [iconOnly]="false"></ccd-case-activity>
   <div class="grid-row">
     <div class="column-one-half">
       <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>

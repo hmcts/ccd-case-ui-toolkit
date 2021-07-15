@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@ang
 import { ActivatedRoute, Params } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,7 +21,6 @@ import {
   Draft,
   DRAFT_QUERY_PARAM,
 } from '../../domain';
-import { CaseActivity } from '../../domain/activity';
 import {
   AlertService,
   DraftService,
@@ -29,7 +29,8 @@ import {
   NavigationOrigin,
   OrderService,
 } from '../../services';
-import { ActivityPollingService, ActivitySocketService } from '../../services/activity';
+import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services/activity';
+import { Utils } from '../../services/activity/utils';
 import { CaseNotifier } from '../case-editor';
 import { CallbackErrorsContext } from '../error/domain';
 
@@ -75,6 +76,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly route: ActivatedRoute,
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
+    private readonly activityService: ActivityService,
     private readonly activityPollingService: ActivityPollingService,
     private readonly activitySocketService: ActivitySocketService,
     private readonly dialog: MatDialog,
@@ -86,7 +88,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
@@ -234,20 +236,23 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular(() => {
-        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
-          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
-        });
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+          this.activitySocketService.connected
+            .subscribe(connected => {
+              if (connected) {
+                this.activitySocketService.viewCase(this.caseDetails.case_id);
+              }
+            });
+        } else if (mode === Utils.MODES.polling) {
+          this.ngZone.runOutsideAngular(() => {
+            this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {});
+          });
+        }
       });
-    }
-    this.socketConnectSub = this.activitySocketService.connect.subscribe(() => {
-      this.activitySocketService.viewCase(this.caseDetails.case_id);
-    });
-    this.socketActivitySub = this.activitySocketService.activity.subscribe((activity: CaseActivity) => {
-      console.log('case activity', activity);
-    });
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();

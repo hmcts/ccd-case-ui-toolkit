@@ -1,23 +1,55 @@
-import { Injectable } from '@angular/core';
-import { Activity } from '../../domain/activity';
-import { Observable } from 'rxjs';
-import { AbstractAppConfig } from '../../../app.config';
-import { HttpService, OptionsType } from '../../services/http';
 import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+import { AbstractAppConfig } from '../../../app.config';
+import { Activity } from '../../domain/activity';
+import { HttpService, OptionsType } from '../../services/http';
+import { Utils } from '../activity/utils';
 import { SessionStorageService } from '../session/session-storage.service';
 
 // @dynamic
 @Injectable()
 export class ActivityService {
-  static readonly DUMMY_CASE_REFERENCE = '0';
-  static get ACTIVITY_VIEW() { return 'view'; }
-  static get ACTIVITY_EDIT() { return 'edit'; }
+  public static readonly MODES = Utils.MODES;
+  public static readonly DUMMY_CASE_REFERENCE = '0';
+  public static get ACTIVITY_VIEW() { return 'view'; }
+  public static get ACTIVITY_EDIT() { return 'edit'; }
 
-  private userAuthorised;
+  public readonly modeSubject: BehaviorSubject<string> = new BehaviorSubject<string>(Utils.MODES.off);
 
-  constructor(private readonly http: HttpService,
-              private readonly appConfig: AbstractAppConfig,
-              private readonly sessionStorageService: SessionStorageService) {}
+  private userAuthorised: boolean = undefined;
+  private pMode: string = Utils.MODES.off;
+  public get mode(): string {
+    return this.pMode;
+  }
+  public set mode(value: string) {
+    if (!!value && this.pMode !== value) {
+      this.pMode = value || Utils.MODES.off;
+      this.modeSubject.next(value);
+      if (this.pMode !== Utils.MODES.off) {
+        this.verifyUserIsAuthorized();
+      }
+    }
+  }
+  private pActivityUrl: string;
+  private pActivityUrlSet = false;
+  private get activityUrl(): string {
+    if (!this.pActivityUrlSet) {
+      this.setupActivityUrl();
+    }
+    return this.pActivityUrl;
+  }
+
+  public get isEnabled(): boolean {
+    return this.mode !== Utils.MODES.off && this.activityUrl && this.userAuthorised;
+  }
+
+  constructor(
+    private readonly http: HttpService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
@@ -30,44 +62,46 @@ export class ActivityService {
     return options;
   }
 
-  getActivities(...caseId: string[]): Observable<Activity[]> {
+  public getActivities(...caseId: string[]): Observable<Activity[]> {
     const options = this.getOptions();
-    const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
+    const url = `${this.activityUrl}/cases/${caseId.join(',')}/activity`;
     return this.http
       .get(url, options, false)
       .map(response => response);
   }
 
-  postActivity(caseId: string, activityType: String): Observable<Activity[]> {
+  public postActivity(caseId: string, activityType: String): Observable<Activity[]> {
     const options = this.getOptions();
-    const url = this.activityUrl() + `/cases/${caseId}/activity`;
+    const url = `${this.activityUrl}/cases/${caseId}/activity`;
     let body = { activity: activityType};
     return this.http
       .post(url, body, options, false)
       .map(response => response);
   }
 
-  verifyUserIsAuthorized(): void {
-    if (this.activityUrl() && this.userAuthorised === undefined) {
+  public verifyUserIsAuthorized(): void {
+    if (this.mode !== Utils.MODES.off && this.activityUrl && this.userAuthorised === undefined) {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
-        data => this.userAuthorised = true,
+        () => {
+          this.userAuthorised = true
+          console.log('setting this.userAuthorised true');
+        },
         error => {
-            if (error.status === 403) {
-              this.userAuthorised = false;
-            } else {
-              this.userAuthorised = true
-            }
+          if ([401, 403].indexOf(error.status) > -1) {
+            this.userAuthorised = false;
+            console.log('setting this.userAuthorised false due to error', error.status);
+          } else {
+            this.userAuthorised = true;
+            console.log('setting this.userAuthorised true');
+          }
         }
       );
     }
   }
 
-  private activityUrl(): string {
-    return this.appConfig.getActivityUrl();
-  }
-
-  get isEnabled(): boolean {
-    return this.activityUrl() && this.userAuthorised;
+  private setupActivityUrl(): void {
+    this.pActivityUrl = this.appConfig.getActivityUrl();
+    this.pActivityUrlSet = true;
   }
 
 }

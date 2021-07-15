@@ -1,4 +1,4 @@
-<div [ngClass]="{caseLocked: bannerType === 'editor', someoneViewing: bannerType === 'viewer'}">
-  <div class="bannerIcon"><img alt="{{description}}" class="img-responsive" src="{{imageLink}}" /></div>
-  <div class="bannerText">{{description}}</div>
+<div class="activity-banner" [ngClass]="{'case-locked': bannerType === 'editor'}">
+  <div class="banner-icon"><img alt="{{description}}" class="img-responsive" src="{{imageLink}}" /></div>
+  <div class="banner-text">{{description}}</div>
 </div>

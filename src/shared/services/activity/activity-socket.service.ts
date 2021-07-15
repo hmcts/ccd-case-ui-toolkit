@@ -1,49 +1,48 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 
-import { CaseActivity } from '../../domain/activity';
+import { CaseActivityInfo } from '../../domain/activity';
 import { SessionStorageService } from '../session/session-storage.service';
+import { ActivityService } from './activity.service';
 import { SetCaseActivity, WatchCases } from './models';
 import { Utils } from './utils';
 
-// import { Socket } from 'ngx-socket-io';
 @Injectable({
   providedIn: 'root'
 })
 export class ActivitySocketService {
-  public activity: Observable<CaseActivity>;
+  public static SOCKET_MODES: string[] = [ Utils.MODES.socket, Utils.MODES.socketLongPoll ];
+
+  public activity: Observable<CaseActivityInfo[]>;
   public connect: Observable<any>;
   public disconnect: Observable<any>;
-  public connectionError: Observable<any>;
+  public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   public socket: Socket;
   private pUser: object;
-  private get user(): object {
+  public get user(): object {
     return this.pUser || this.setupUser();
   }
-  private get allowWebSockets(): boolean {
-    return false; // Should come from config/LaunchDarkly eventually.
+
+  public get isEnabled(): boolean {
+    return this.activityService.isEnabled && !!this.socket;
   }
 
-  constructor(private readonly sessionStorageService: SessionStorageService) {
-    this.socket = Utils.getSocket(this.user, this.allowWebSockets);
-    this.connect = this.getObservableOnSocketEvent<any>('connect');
-    this.disconnect = this.getObservableOnSocketEvent<any>('disconnect');
-    this.connectionError = this.getObservableOnSocketEvent<any>('connect_error');
-    this.activity = this.getObservableOnSocketEvent<CaseActivity>('activity');
-
-    this.connect.subscribe((payload: any) => {
-      console.log('ActivitySocketService.connect', payload);
-    });
-    this.disconnect.subscribe((payload: any) => {
-      console.log('ActivitySocketService.disconnect', payload);
-    });
-    this.connectionError.subscribe((error: any) => {
-      console.log('ActivitySocketService.connect_error', error);
-    });
-
-    this.socket.connect();
+  constructor(
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly activityService: ActivityService
+  ) {
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        this.destroy();
+        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+          this.init();
+        }
+      });
   }
 
   public watchCases(caseIds: string[]): void {
@@ -61,6 +60,29 @@ export class ActivitySocketService {
     this.socket.emit('edit', payload);
   }
 
+  private init(): void {
+    this.socket = Utils.getSocket(this.user, this.activityService.mode === Utils.MODES.socket);
+    this.connect = this.getObservableOnSocketEvent<any>('connect');
+    this.disconnect = this.getObservableOnSocketEvent<any>('disconnect');
+    this.activity = this.getObservableOnSocketEvent<CaseActivityInfo[]>('activity');
+
+    this.disconnect.subscribe(() => {
+      this.connected.next(false);
+    });
+    this.connect.subscribe(() => {
+      this.connected.next(true);
+    });
+
+    this.socket.connect();
+  }
+
+  private destroy(): void {
+    if (this.socket) {
+      this.socket.destroy();
+      this.socket = undefined;
+    }
+  }
+
   private getObservableOnSocketEvent<T>(event: string): Observable<T> {
     return new Observable<T>(observer => {
       this.socket.on(event, (payload: T) => {
@@ -71,7 +93,11 @@ export class ActivitySocketService {
 
   private setupUser(): object {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    this.pUser = userInfoStr ? JSON.parse(userInfoStr) : null;
+    const user = userInfoStr ? JSON.parse(userInfoStr) : null;
+    if (user) {
+      delete user.token;
+    }
+    this.pUser = user;
     return this.pUser;
   }
 }
