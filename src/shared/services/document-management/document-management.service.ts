@@ -69,7 +69,7 @@ export class DocumentManagementService {
       return DocumentManagementService.EXCEL;
     } else if (this.isPowerpoint(fileExtension)) {
       return DocumentManagementService.POWERPOINT;
-    }else if (fileExtension.toLowerCase() === 'txt') {
+    } else if (fileExtension.toLowerCase() === 'txt') {
       return DocumentManagementService.TXT;
     } else if (fileExtension.toLowerCase() === 'rtf') {
       return DocumentManagementService.RTF;
