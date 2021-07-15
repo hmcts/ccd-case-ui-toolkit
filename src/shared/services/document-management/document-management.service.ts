@@ -12,6 +12,7 @@ export class DocumentManagementService {
   private static readonly IMAGE = 'image';
   private static readonly WORD = 'word';
   private static readonly EXCEL = 'excel';
+  private static readonly POWERPOINT = 'powerpoint';
   private static readonly TXT = 'txt';
   private static readonly RTF = 'rtf';
 
@@ -22,6 +23,7 @@ export class DocumentManagementService {
   private static readonly imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
   private static readonly wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
   private static readonly excelList: string[] = ['CSV', 'XLS', 'XLSX', 'csv', 'xls', 'xlsx'];
+  private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -65,7 +67,9 @@ export class DocumentManagementService {
       return DocumentManagementService.WORD;
     } else if (this.isExcel(fileExtension)) {
       return DocumentManagementService.EXCEL;
-    } else if (fileExtension.toLowerCase() === 'txt') {
+    } else if (this.isPowerpoint(fileExtension)) {
+      return DocumentManagementService.POWERPOINT;
+    }else if (fileExtension.toLowerCase() === 'txt') {
       return DocumentManagementService.TXT;
     } else if (fileExtension.toLowerCase() === 'rtf') {
       return DocumentManagementService.RTF;
@@ -86,6 +90,10 @@ export class DocumentManagementService {
 
   isExcel(excelType: string) {
     return DocumentManagementService.excelList.find(e => e === excelType) !== undefined;
+  }
+
+  isPowerpoint(powerpointType: string) {
+    return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
   }
 
   transformDocumentUrl(documentBinaryUrl: string): string {
