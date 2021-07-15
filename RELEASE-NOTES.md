@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.0.0--strategic-activity-tracker-beta
+**EUI-2976** Socket-based Activity Tracker.
+
 ### Version 4.0.0
 **EUI-4164** Add Appellant Name Next to Caseid
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
@@ -92,15 +95,9 @@ Activity Tracker Performance changes
 ### Version 3.0.3-field-show-condition
 **EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
 
-### Version v3.0.4-datetime-picker-integration-issues-fix
-**EUI-2792** Datetime picker fixes after testing integration with webapp
-
 ### Version 3.0.3-Spinner-issue-in-demo-MO-unassigned-cases-page
 **EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
 **EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
-
-### Version v3.0.3-datetime-picker-integration
-**EUI-2792** Tag datetime picker in order to test integration with webapp
 
 ### Version 3.0.0
 
