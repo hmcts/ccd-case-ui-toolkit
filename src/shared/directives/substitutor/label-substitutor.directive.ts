@@ -1,5 +1,6 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services';
@@ -15,18 +16,20 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup;
   @Input() elementsToSubstitute: string[] = ['label', 'hint_text'];
 
-  initialLabel: string;
-  initialHintText: string;
+  private initialLabel: string;
+  private initialHintText: string;
 
-  constructor(private fieldsUtils: FieldsUtils, private placeholderService: PlaceholderService) {
-  }
+  constructor(
+    private readonly fieldsUtils: FieldsUtils,
+    private readonly placeholderService: PlaceholderService
+  ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
     this.formGroup = this.formGroup || new FormGroup({});
 
-    let fields = this.getReadOnlyAndFormFields();
+    const fields: object = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {
       this.caseField.label = this.resolvePlaceholders(fields, this.caseField.label);
@@ -39,37 +42,38 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
-  private shouldSubstitute(element: string) {
-    return this.elementsToSubstitute.find(e => e === element) !== undefined;
-  }
-
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.caseField.label = this.initialLabel;
     this.caseField.hint_text = this.initialHintText;
   }
 
-  private getReadOnlyAndFormFields() {
-    let formFields = this.getFormFieldsValuesIncludingDisabled();
+  private shouldSubstitute(element: string): boolean {
+    return this.elementsToSubstitute.find(e => e === element) !== undefined;
+  }
+
+  private getReadOnlyAndFormFields(): object {
+    const formFields: object = this.getFormFieldsValuesIncludingDisabled();
     // TODO: Delete following line when @Input contextFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
-    let uniqueContextFields = this.removeDuplicates(this.contextFields);
+    const uniqueContextFields: CaseField[] = this.removeDuplicates(this.contextFields);
     return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueContextFields, formFields);
   }
 
-  private removeDuplicates(arr: CaseField[]) {
-    let unique_array = [];
-    arr.forEach(caseField => {
-      if (unique_array.filter(e => e['id'] === caseField.id).length === 0 ) {
-        unique_array.push(caseField);
+  private removeDuplicates(original: CaseField[]): CaseField[] {
+    const unique: CaseField[] = [];
+    original.forEach(caseField => {
+      const isUnique = unique.filter(e => e.id === caseField.id).length === 0;
+      if (isUnique) {
+        unique.push(caseField);
       }
     });
-    return unique_array
+    return unique;
   }
 
-  private getFormFieldsValuesIncludingDisabled() {
+  private getFormFieldsValuesIncludingDisabled(): object {
     return this.formGroup.getRawValue();
   }
 
-  private resolvePlaceholders(fields, stringToResolve) {
+  private resolvePlaceholders(fields: object, stringToResolve: string): string {
     return this.placeholderService.resolvePlaceholders(fields, stringToResolve);
   }
 }

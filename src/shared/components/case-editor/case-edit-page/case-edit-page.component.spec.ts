@@ -1,33 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseEditPageComponent } from './case-edit-page.component';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { PageValidationService } from '../services/page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { Draft } from '../../../domain/draft.model';
-import { CaseEventData } from '../../../domain/case-event-data.model';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
-import { text } from '../../../test/helpers';
-import createSpyObj = jasmine.createSpyObj;
-import { FieldsFilterPipe } from '../../palette/complex';
-import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
+import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError } from '../../../domain';
+import { aCaseField } from '../../../fixture/shared.test.fixture';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
+import { text } from '../../../test/helpers';
+import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
+import { CallbackErrorsContext } from '../../error/domain/error-context';
+import { CcdPageFieldsPipe, FieldsFilterPipe } from '../../palette/complex';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Wizard, WizardPage } from '../domain';
+import { PageValidationService } from '../services';
+import { CaseEditPageComponent } from './case-edit-page.component';
+
+import createSpyObj = jasmine.createSpyObj;
 describe('CaseEditPageComponent', () => {
 
   let de: DebugElement;

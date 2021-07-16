@@ -1,5 +1,19 @@
 ## RELEASE NOTES
 
+### Version 4.1.0
+**EUI-2027** Button Labels (AA)
+**EUI-2030** Colour Contrast (AA)
+**EUI-3155** Non-Descriptive Headings (AA) - issues 02, 06, 05 (part of it)
+**EUI-4118** Mandatory datetime picker fields are not giving required field errors
+**EUI-1621** Date/time DISPLAY for Workbasket & Search Input & Results
+**EUI-1692** DateTime Entry & Display Formatting for Complex Types
+**EUI-2792** Date and Time entry (Testing Story)
+**EUI-4155** WA post-MVP Pagination- Angular - My tasks (in Tasks list) - CCD UI Toolkit
+**EUI-3049** Wrap and restyle date time picker component
+**EUI-3051** Handle #DATETIMEENTRY field context
+**EUI-3581** Field interpolation does not work for the field type MultiSelectList
+**EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
+
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
 **EUI-2022** ExUI - Error Messages (Complex Type)
@@ -10,8 +24,6 @@
 **EUI-3550** Replace heading tags with spans on case edit pages
 **EUI-2792** Datetime picker fixes after testing integration with webapp
 **EUI-3825** Fix for missing FTPA tab contents.
-**EUI-2022** ExUI - Error Messages (A)
-**EUI-2023** ExUI - Labels (A)
 **EUI-2017** ExUI - Navigate in table using keyboard
 **EUI-2022** ExUI - Error Messages (A)
 **EUI-2023** ExUI - Labels (A)
@@ -27,16 +39,28 @@
 **EUI-2039** Changed Date Input fields to conform to accessibility standards
 **EUI-2029** WCAG AA Status Message Fixes
 **EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
-**EUI-3622** Re-evaluate retain hidden value matrix
-**EUI-3868** Retain hidden value matrix
-**EUI-2744** Event to complex type
+**EUI-3622** Re-evaluate "retain hidden value" matrix linked to acceptance criteria
+**EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
+**EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
+
+### Version 3.1.5-nested-multi-select-labels-theta
+**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
+fixed an issue with the rendering of complex collections on the Case Details tabs.
+
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
+### Version 3.1.5-profile-call-before-event-trigger
+**EUI-3335** profile call needs to happen first
 
 ### Version 3.1.2
 **EUI-4013**
 **EUI-4024**
 **EUI-4029**
 **EUI-4031**
+
+### Version 3.1.2
 Activity Tracker Performance changes
 
 ### Version 3.1.1
@@ -75,7 +99,7 @@ Activity Tracker Performance changes
 ### Version 2.79.1
 **EUI-3452** Fix to some issues on the Check your answers page.
 
-### 2.79.0
+### Version 2.79.0
 **EUI-3548** WA integration
 
 ### Version 2.75.1
@@ -83,9 +107,6 @@ Activity Tracker Performance changes
 
 ### Version 2.75.0
 **EUI-3267** Reintroducing the grey bars for fields shown by other fields
-
-### Version 2.73.2-collection-date-field
-**EUI-2667** Fix to date field rendering within collections
 
 ### Version 2.74.2
 **EUI-3594** Incorporating Version 2.73.0-hotfix-error-message-display from hotfix branch
@@ -210,8 +231,6 @@ Merge master to simplify final branch merge
 **EUI-3055** Better performance in edit forms through new show hide implementation
 
 ### Version 2.67.10-feature-toggle-work-allocation
-
-### 2.67.10-feature-toggle-work-allocation
 **Feature Toggle Work Allocation** Hot Fix
 
 ### Version 2.67.6-task-event-completion

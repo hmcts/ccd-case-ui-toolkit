@@ -15,7 +15,8 @@ export class FieldsUtils {
 
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
   private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
-  public static readonly LABEL_SUFFIX = '-LABEL';
+  // EUI-4244. 3 dashes instead of 1 to make this less likely to clash with a real field.
+  public static readonly LABEL_SUFFIX = '---LABEL';
 
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
@@ -100,18 +101,19 @@ export class FieldsUtils {
     }
   }
 
-  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
+  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
   };
 
-  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
+  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
     switch (field.field_type.type) {
-      case 'FixedList': {
+      case 'FixedList':
+      case 'FixedRadioList': {
         result[field.id] = FieldsUtils.getFixedListLabelByCodeOrEmpty(field, result[field.id] || field.value);
         break;
       }
@@ -128,13 +130,23 @@ export class FieldsUtils {
         break;
       }
       case 'MoneyGBP': {
-        const fieldValue = (result[field.id] || field.value);
+        const fieldValue = (result[field.id] || result[field.id] === 0) ? result[field.id] : field.value;
         result[field.id] = FieldsUtils.getMoneyGBP(fieldValue);
         break;
       }
       case 'Date': {
         const fieldValue = (result[field.id] || field.value);
         result[field.id] = FieldsUtils.getDate(fieldValue);
+        break;
+      }
+      case 'Complex': {
+        if (result[field.id] && field.field_type.complex_fields) {
+          field.field_type.complex_fields.forEach((f: CaseField) => {
+            if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+              FieldsUtils.LABEL_MERGE_FUNCTION(f, result[field.id]);
+            }
+          });
+        }
         break;
       }
       case 'Collection': {
@@ -150,6 +162,16 @@ export class FieldsUtils {
                 elem.value = FieldsUtils.getDate(elem.value);
                 break;
               }
+              case 'Complex': {
+                if (field.field_type.collection_field_type.complex_fields) {
+                  field.field_type.collection_field_type.complex_fields.forEach((f: CaseField) => {
+                    if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+                      FieldsUtils.LABEL_MERGE_FUNCTION(f, elem.value);
+                    }
+                  });
+                }
+                break;
+              }
             }
           });
         }
@@ -158,8 +180,17 @@ export class FieldsUtils {
     }
   };
 
+  /**
+   * Formats a `MoneyGBP` value to include currency units.
+   * @param fieldValue The CurrencyPipe expects an `any` parameter so this must also be `any`,
+   * but it should be "number-like" (e.g., '1234')
+   * @returns A formatted string (e.g., £12.34)
+   */
   private static getMoneyGBP(fieldValue: any): string {
-    return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
+    if (!isNaN(parseInt(fieldValue, 10))) {
+      return FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol');
+    }
+    return '';
   }
 
   private static getLabel(fieldValue: CaseField): string {
@@ -221,7 +252,7 @@ export class FieldsUtils {
     };
   }
 
-  public getCurrentEventState(eventTrigger: CaseEventTrigger, form: FormGroup): any {
+  public getCurrentEventState(eventTrigger: { case_fields: CaseField[] }, form: FormGroup): object {
     return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
   }
 
@@ -229,19 +260,20 @@ export class FieldsUtils {
     return Object.assign(new CaseField(), obj);
   }
 
-  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
+  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
     return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
   }
 
-  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: any): any {
+  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
     return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
   }
 
   public controlIterator(
     aControl: AbstractControl,
-    formArrayFn: (a: FormArray) => void,
-    formGroupFn: (g: FormGroup) => void,
-    controlFn: (c: FormControl) => void): void {
+    formArrayFn: (array: FormArray) => void,
+    formGroupFn: (group: FormGroup) => void,
+    controlFn: (control: FormControl) => void
+  ): void {
     if (aControl instanceof FormArray) { // We're in a collection
       formArrayFn(aControl);
     } else if (aControl instanceof FormGroup) { // We're in a complex type.
@@ -251,11 +283,8 @@ export class FieldsUtils {
     }
   }
 
-  private mergeFields(
-    caseFields: CaseField[],
-    formFields: any,
-    mergeFunction: (field: CaseField, result: any) => void): any {
-    const result = FieldsUtils.cloneObject(formFields);
+  private mergeFields(caseFields: CaseField[], formFields: object, mergeFunction: (field: CaseField, result: object) => void): object {
+    const result: object = FieldsUtils.cloneObject(formFields);
     caseFields.forEach(field => {
       mergeFunction(field, result);
       if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {

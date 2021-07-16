@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
+
 import { FormValueService } from '../../../services';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 // @dynamic
 @Injectable()
 export class PlaceholderService {
 
-    resolvePlaceholders(pageFormFields, stringToResolve): string {
-        let ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields: pageFormFields, stringToResolve: stringToResolve});
+    public resolvePlaceholders(pageFormFields: object, stringToResolve: string): string {
+        const ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields, stringToResolve});
         return ps.resolvePlaceholders();
     }
 
@@ -24,6 +25,10 @@ export namespace PlaceholderService {
 ___
 `;
 
+        private static readonly PLACEHOLDER_START =
+            PlaceholderSubstitutor.STARTING_PLACEHOLDER + PlaceholderSubstitutor.OPENING_PLACEHOLDER;
+        private static readonly PLACEHOLDER_END = PlaceholderSubstitutor.CLOSING_PLACEHOLDER;
+
         private stringToResolve: string;
         private scanIndex: number;
         private numberCollectionItemsAsPlaceholder: number;
@@ -35,12 +40,14 @@ ___
         private readonly pageFormFields: object;
         private readonly originalStringToResolve: string;
 
-        constructor(values: {
-            stringToResolve: string,
-            pageFormFields: any}) {
-              this.stringToResolve = values.stringToResolve;
-              this.originalStringToResolve = values.stringToResolve;
-              this.pageFormFields = values.pageFormFields;
+        private static wrapPlaceholder(str: string): string {
+            return `${this.PLACEHOLDER_START}${str}${this.PLACEHOLDER_END}`;
+        }
+
+        constructor(values: { stringToResolve: string, pageFormFields: object }) {
+            this.stringToResolve = values.stringToResolve;
+            this.originalStringToResolve = values.stringToResolve;
+            this.pageFormFields = values.pageFormFields;
         }
 
         public resolvePlaceholders(): string {
@@ -65,18 +72,18 @@ ___
             return this.stringToResolve;
         }
 
-        private isScanningStringToResolve() {
+        private isScanningStringToResolve(): boolean {
             return this.scanIndex < this.stringToResolve.length;
         }
 
-        private doesPlaceholderContainCollectionItems() {
+        private doesPlaceholderContainCollectionItems(): boolean {
             return this.numberCollectionItemsAsPlaceholder-- > 0;
         }
 
-        private hasUnresolvedPlaceholder() {
+        private hasUnresolvedPlaceholder(): boolean {
             return this.stringToResolve
                 && typeof this.stringToResolve === 'string'
-                && this.stringToResolve.match(PlaceholderSubstitutor.PLACEHOLDER_PATTERN);
+                && !!this.stringToResolve.match(PlaceholderSubstitutor.PLACEHOLDER_PATTERN);
         }
 
         private isStartPlaceholderAndNotCollecting(): boolean {
@@ -91,7 +98,7 @@ ___
             return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.CLOSING_PLACEHOLDER;
         }
 
-        private resetPlaceholderSubstitutor() {
+        private resetPlaceholderSubstitutor(): void {
             this.scanIndex = 0;
             this.numberCollectionItemsAsPlaceholder = 1;
             this.collectionItemIndex = 0;
@@ -101,7 +108,7 @@ ___
             this.resolvedFormValues[this.collectionItemIndex] = {};
         }
 
-        private substitute() {
+        private substitute(): void {
             if (this.isMatchingPlaceholderPattern() && this.isFieldIdInFormFields()) {
                 this.updateNumberOfCollectionItemsAsPlaceholder();
                 if (this.isFieldIdToSubstituteReferringItself()) {
@@ -116,7 +123,7 @@ ___
             this.fieldIdToSubstitute = '';
         }
 
-        private appendOriginalStringIfCollectionItemAsPlaceholder() {
+        private appendOriginalStringIfCollectionItemAsPlaceholder(): void {
             if (this.collectionItemIndex < this.numberCollectionItemsAsPlaceholder - 1) {
                 this.stringToResolve += PlaceholderSubstitutor.NEW_LINE + this.originalStringToResolve;
                 this.collectionItemIndex += 1;
@@ -124,49 +131,55 @@ ___
             }
         }
 
-        private setStartCollecting() {
+        private setStartCollecting(): void {
             this.isCollecting = true;
             this.startSubstitutionIndex = this.scanIndex;
         }
 
-        private appendCharacter() {
+        private appendCharacter(): void {
             this.fieldIdToSubstitute += this.stringToResolve.charAt(this.scanIndex);
         }
 
-        private isMatchingPlaceholderPattern() {
-            return this.fieldIdToSubstitute.match(PlaceholderSubstitutor.PLACEHOLDER_CONTENT_PATTERN);
+        private isMatchingPlaceholderPattern(): boolean {
+            return !!this.fieldIdToSubstitute.match(PlaceholderSubstitutor.PLACEHOLDER_CONTENT_PATTERN);
         }
 
-        private isFieldIdInFormFields() {
+        private isFieldIdInFormFields(): boolean {
             return this.getFieldValue() !== undefined;
         }
 
-        private isFieldIdToSubstituteReferringItself() {
-            let value = this.getSubstitutionValueOrEmpty();
-            return '${'.concat(this.fieldIdToSubstitute).concat('}') === value;
+        private isFieldIdToSubstituteReferringItself(): boolean {
+            const placeholder = PlaceholderSubstitutor.wrapPlaceholder(this.fieldIdToSubstitute);
+            const value = this.getSubstitutionValueOrEmpty();
+            return placeholder === value;
         }
 
-        private getSubstitutionValueLengthOrZero() {
+        private getSubstitutionValueLengthOrZero(): number {
             return this.pageFormFields[this.fieldIdToSubstitute] ? this.getSubstitutionValueOrEmpty().toString().length : 0;
         }
 
-        private getFieldValue() {
+        /**
+         * Gets the value from `this` field, which could be any of a number of different types:
+         *   string | number | object | string[] | object[] | maybe others...
+         * @returns The value associated with `this` field.
+         */
+        private getFieldValue(): any {
             if (this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute]) {
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
             } else {
-                let fieldValue = FormValueService.getFieldValue(this.pageFormFields, this.fieldIdToSubstitute, this.collectionItemIndex);
+                const fieldValue = FormValueService.getFieldValue(this.pageFormFields, this.fieldIdToSubstitute, this.collectionItemIndex);
                 this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute] = fieldValue;
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
             }
         }
 
-        private getSubstitutionValueOrEmpty() {
-            let fieldValue = this.getFieldValue();
+        private getSubstitutionValueOrEmpty(): string {
+            const fieldValue = this.getFieldValue();
             return fieldValue ? fieldValue : '';
         }
 
-        private getNumberOfCollectionItemsIfAny() {
-            let fieldIds = this.fieldIdToSubstitute.split('.');
+        private getNumberOfCollectionItemsIfAny(): number {
+            const fieldIds = this.fieldIdToSubstitute.split('.');
             let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
             let numberCollectionItemsAsPlaceholder = 1;
 
@@ -183,40 +196,34 @@ ___
             return numberCollectionItemsAsPlaceholder;
         }
 
-        private getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder, numberCollectionItemsAsPlaceholder) {
-            return newNumberOfCollectionItemsAsPlaceholder > numberCollectionItemsAsPlaceholder ?
-                                                        newNumberOfCollectionItemsAsPlaceholder :
-                                                        numberCollectionItemsAsPlaceholder;
-        }
-
         private isStartingPlaceholder(): boolean {
             return this.stringToResolve.charAt(this.scanIndex) === PlaceholderSubstitutor.STARTING_PLACEHOLDER;
         }
 
-        private updateNumberOfCollectionItemsAsPlaceholder() {
+        private updateNumberOfCollectionItemsAsPlaceholder(): void {
             if (this.fieldIdToSubstitute.split('.').length > 1) {
-                let newNumberOfCollectionItemsAsPlaceholder = this.getNumberOfCollectionItemsIfAny();
-                this.numberCollectionItemsAsPlaceholder =
-                    this.getNewNumberOfCollectionItemsIfHigher(newNumberOfCollectionItemsAsPlaceholder,
-                        this.numberCollectionItemsAsPlaceholder);
+                const newNumber = this.getNumberOfCollectionItemsIfAny();
+                this.numberCollectionItemsAsPlaceholder = Math.max(newNumber, this.numberCollectionItemsAsPlaceholder);
             }
         }
 
-        private substituteFromFormFields() {
-            let replacedString = this.stringToResolve.substring(this.startSubstitutionIndex)
-                .replace('${'.concat(this.fieldIdToSubstitute).concat('}'), this.getSubstitutionValueOrEmpty());
-            this.stringToResolve = this.stringToResolve.substring(0, this.startSubstitutionIndex).concat(replacedString);
+        private substituteFromFormFields(): void {
+            this.doSubstitution(this.getSubstitutionValueOrEmpty());
             this.resetScanIndexAfterSubstitution();
         }
 
-        private substituteWithEmptyString() {
-            let replacedString = this.stringToResolve.substring(this.startSubstitutionIndex)
-                .replace('${'.concat(this.fieldIdToSubstitute).concat('}'), '');
-            this.stringToResolve = this.stringToResolve.substring(0, this.startSubstitutionIndex).concat(replacedString);
+        private substituteWithEmptyString(): void {
+            this.doSubstitution('');
             this.scanIndex = this.startSubstitutionIndex;
         }
 
-        private resetScanIndexAfterSubstitution() {
+        private doSubstitution(value: string): void {
+            const placeholder = PlaceholderSubstitutor.wrapPlaceholder(this.fieldIdToSubstitute);
+            const replacedString = this.stringToResolve.substring(this.startSubstitutionIndex).replace(placeholder, value);
+            this.stringToResolve = this.stringToResolve.substring(0, this.startSubstitutionIndex).concat(replacedString);
+        }
+
+        private resetScanIndexAfterSubstitution(): void {
             this.scanIndex = this.startSubstitutionIndex + this.getSubstitutionValueLengthOrZero();
         }
     };

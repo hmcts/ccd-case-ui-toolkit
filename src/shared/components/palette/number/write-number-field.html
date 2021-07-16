@@ -6,6 +6,7 @@
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
   <span class="error-message" *ngIf="numberControl.errors && numberControl.dirty">{{numberControl.errors | ccdFirstError:caseField.label}}</span>
 
-  <input class="form-control bottom-30" [id]="id()" [ngClass]="{'govuk-input--error': numberControl.errors && numberControl.dirty}" type="number" [formControl]="numberControl">
+  <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': numberControl.errors && numberControl.dirty}"
+   [id]="id()" type="number" [formControl]="numberControl">
 
 </div>

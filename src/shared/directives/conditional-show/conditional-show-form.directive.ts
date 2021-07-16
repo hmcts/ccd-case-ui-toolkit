@@ -117,7 +117,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     this.evaluateControl(formArray);
     formArray.controls.forEach(formControl => {
       this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
-   });
+    });
   }
 
   private handleFormGroup = (formGroup: FormGroup): void => {

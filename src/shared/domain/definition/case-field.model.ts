@@ -157,8 +157,8 @@ export class CaseField implements Orderable {
 export class FieldType {
   id: string;
   type: FieldTypeEnum;
-  min?: number;
-  max?: number;
+  min?: number | Date;
+  max?: number | Date;
   regular_expression?: string;
 
   @Type(() => FixedListItem)
