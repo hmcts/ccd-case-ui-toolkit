@@ -3,10 +3,14 @@
 
 .collection-field-table {
   tr:first-child>td {
-    padding-top: 0;
+    padding: 7px;
+    margin: 7px;
   }
+
   tr:last-child>td {
     border-bottom: none;
+    padding: 7px;
+    margin: 7px;
   }
   td.collection-actions {
     width: 1px;
@@ -59,7 +63,7 @@
   .complex-panel-simple-field {
     th {
       padding-left: $padding;
-      width: 295px;
+      width: 130px;
     }
   }
 
