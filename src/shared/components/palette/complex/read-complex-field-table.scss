@@ -34,8 +34,9 @@
   .complex-panel-simple-field {
     th {
       padding-left: $padding;
-      width: 295px;
-    }
+      width: auto;
+      min-width: 80px;
+     }
   }
 
   .complex-panel-compound-field {
