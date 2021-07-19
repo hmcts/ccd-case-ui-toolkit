@@ -1,9 +1,7 @@
 ## RELEASE NOTES
 
-
 ### Version 4.0.0-prepended-tabs
 **EUI-3777** Create prepended tabs on case view
-
 
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
