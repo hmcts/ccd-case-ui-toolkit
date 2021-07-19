@@ -349,7 +349,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.profile.isSolicitor();
   }
 
-  private buildConfirmation(response: any): Confirmation {
+  private buildConfirmation(response: object): Confirmation {
     if (response['after_submit_callback_response']) {
       return new Confirmation(
         response['id'],
@@ -376,7 +376,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.eventTrigger.case_fields;
   }
 
-  getCaseId(): String {
+  public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
