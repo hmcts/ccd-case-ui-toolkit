@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.0.0--strategic-activity-tracker-beta
+### Version 4.0.0--strategic-activity-tracker-gamma
 **EUI-2976** Socket-based Activity Tracker.
 
 ### Version 4.0.0
