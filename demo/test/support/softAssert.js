@@ -30,7 +30,6 @@ class SoftAssert {
 
         } catch (assertError) {
             this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}`);
-            // addContext(this.testContext, { title: "Screenshot path" , value: "../../"});
             this.isPassed = false;
             this.assertions.push(`${this.scenarioCounter}.${this.scrAssertionsCounter} : ${assertError.message}`);
             reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}`);
