@@ -1,15 +1,17 @@
-import * as io from 'socket.io-client';
-import { ManagerOptions, SocketOptions } from 'socket.io-client';
+import { connect, ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
+
 import { Activity, ActivityInfo, CaseActivityInfo, User } from '../../../domain';
 
 const BASE_CONFIGURATION = {
+  autoConnect: false, // (default is false)
   reconnection: true,
-  reconnectionDelayMax: 1000 * 10, // 10 seconds
-  timeout: 1000 * 60 * 3, // 5 minutes
+  reconnectionDelay: 1000 * 2, // 2 seconds (default is 1s)
+  reconnectionDelayMax: 1000 * 30, // 30 seconds (default is 5s)
+  timeout: 1000 * 60 * 3 // 5 minutes (default is 20s)
 };
 
 const TRANSPORTS = {
-  allowWebSockets: ['websocket', 'polling'], // No fallback to long polling allowed.
+  allowWebSockets: ['websocket'], // No fallback to long polling allowed.
   disallowWebSockets: ['polling']
 };
 
@@ -40,9 +42,9 @@ const UTILS = {
       query: { user: JSON.stringify(user) }
     };
   },
-  getSocket: (user: object, allowWebSockets = false): io.Socket => {
+  getSocket: (user: object, allowWebSockets = false): Socket => {
     // Connects to current URL by not providing a uri parameter.
-    return io(UTILS.getOptions(user, allowWebSockets));
+    return connect(UTILS.getOptions(user, allowWebSockets));
   },
   activity: {
     hasEditors: (activity: Activity | CaseActivityInfo): boolean => {
@@ -105,9 +107,10 @@ const UTILS = {
       return '';
     },
     stripUserFromActivity: (activity: Activity | CaseActivityInfo, user: object): Activity | CaseActivityInfo => {
-      if (user && user['id'] && UTILS.activity.hasViewersOrEditors(activity)) {
-        activity.editors = activity.editors.filter(e => e.id !== user['id']);
-        activity.viewers = activity.viewers.filter(v => v.id !== user['id']);
+      const userId = user ? user['id'] : undefined;
+      if (userId && UTILS.activity.hasViewersOrEditors(activity)) {
+        activity.editors = activity.editors.filter(e => e.id !== userId);
+        activity.viewers = activity.viewers.filter(v => v.id !== userId);
       }
       return activity;
     }
