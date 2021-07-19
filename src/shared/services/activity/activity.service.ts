@@ -19,13 +19,13 @@ export class ActivityService {
   public readonly modeSubject: BehaviorSubject<string> = new BehaviorSubject<string>(Utils.MODES.off);
 
   private userAuthorised: boolean = undefined;
-  private pMode: string = Utils.MODES.off;
+  private pMode: string = Utils.MODES.polling; // Defaulted to old mechanism.
   public get mode(): string {
     return this.pMode;
   }
   public set mode(value: string) {
     if (!!value && this.pMode !== value) {
-      this.pMode = value || Utils.MODES.off;
+      this.pMode = value;
       this.modeSubject.next(value);
       if (this.pMode !== Utils.MODES.off) {
         this.verifyUserIsAuthorized();
@@ -80,22 +80,22 @@ export class ActivityService {
   }
 
   public verifyUserIsAuthorized(): void {
-    if (this.mode !== Utils.MODES.off && this.activityUrl && this.userAuthorised === undefined) {
-      this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
-        () => {
-          this.userAuthorised = true
-          console.log('setting this.userAuthorised true');
-        },
-        error => {
-          if ([401, 403].indexOf(error.status) > -1) {
-            this.userAuthorised = false;
-            console.log('setting this.userAuthorised false due to error', error.status);
-          } else {
-            this.userAuthorised = true;
-            console.log('setting this.userAuthorised true');
+    if (this.activityUrl && this.userAuthorised === undefined) {
+      if (this.mode === Utils.MODES.polling) {
+        this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
+          () => this.userAuthorised = true,
+          error => {
+            if ([401, 403].indexOf(error.status) > -1) {
+              this.userAuthorised = false;
+            } else {
+              this.userAuthorised = true;
+            }
           }
-        }
-      );
+        );
+      } else if (this.mode !== Utils.MODES.off) {
+        // TODO: Implement a proper authorisation mechanism for sockets.
+        this.userAuthorised = true;
+      }
     }
   }
 

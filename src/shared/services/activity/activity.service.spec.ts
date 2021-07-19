@@ -29,7 +29,15 @@ describe('ActivityService', () => {
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   });
 
+  it('should default to polling mode', () => {
+    expect(activityService.mode).toEqual(Utils.MODES.polling);
+  });
+
   describe('when activity tracking is turned off', () => {
+    beforeEach(() => {
+      activityService.mode = Utils.MODES.off;
+    });
+
     it('should indicate the service is disabled', () => {
       expect(activityService.isEnabled).toBeFalsy();
     });
@@ -42,6 +50,8 @@ describe('ActivityService', () => {
   describe('when activity tracking is set to "polling"', () => {
 
     beforeEach(() => {
+      // Have to toggle it as it defaults to 'polling'.
+      activityService.mode = Utils.MODES.off;
       activityService.mode = Utils.MODES.polling;
     });
 
@@ -69,6 +79,8 @@ describe('ActivityService', () => {
     beforeEach(() => {
       appConfig.getActivityUrl.and.returnValue('');
       activityService['userAuthorised'] = true;
+      // Have to toggle it as it defaults to 'polling'.
+      activityService.mode = Utils.MODES.off;
       activityService.mode = Utils.MODES.polling;
     });
 
@@ -81,6 +93,8 @@ describe('ActivityService', () => {
     const goError = (status: number): void => {
       const error = { status };
       httpService.get.and.returnValue(Observable.throw(error));
+      // Have to toggle it as it defaults to 'polling'.
+      activityService.mode = Utils.MODES.off;
       activityService.mode = Utils.MODES.polling;
     };
     it('should not be enabled when the error is 401', () => {
