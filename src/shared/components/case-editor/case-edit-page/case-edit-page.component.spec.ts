@@ -12,16 +12,6 @@ import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.
 import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
 import { text } from '../../../test/helpers';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { aCaseField } from '../../../fixture/shared.test.fixture';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { Draft } from '../../../domain/draft.model';
-import { CaseEventData } from '../../../domain/case-event-data.model';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { HttpError } from '../../../domain/http/http-error.model';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CcdPageFieldsPipe, FieldsFilterPipe } from '../../palette/complex';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
@@ -30,8 +20,6 @@ import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
 
 import createSpyObj = jasmine.createSpyObj;
-import { FieldsFilterPipe } from '../../palette/complex';
-import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
