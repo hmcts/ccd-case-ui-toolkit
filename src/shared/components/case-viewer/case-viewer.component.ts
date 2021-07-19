@@ -198,7 +198,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    // if we have pretend tabs route to one of the pretended tabs
+    // if we have prepended tabs route to one of the prepended tabs
     if (!url.includes('#') && this.prependedTabs && this.prependedTabs.length) {
       const paths = url.split('/');
       const tabName = paths[paths.length - 1];
