@@ -1,4 +1,3 @@
-
 <div *ngIf="isDataLoaded()">
   <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
   <div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
@@ -49,11 +48,7 @@
       <ng-container *ngIf="hasTabsPresent()">
         <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)"
                        [disableRipple]="true">
-
           <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
-            <ng-template matTabContent>
-              <ng-content></ng-content>
-            </ng-template>
           </mat-tab>
           <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
             <ng-template matTabContent>
@@ -91,6 +86,7 @@
             </ng-template>
           </mat-tab>
         </mat-tab-group>
+        <router-outlet></router-outlet>
       </ng-container>
     </div>
   </div>

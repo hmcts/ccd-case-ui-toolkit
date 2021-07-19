@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
@@ -35,14 +35,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
   static readonly space = '%20';
 
-  @Input()
-  public hasPrint = true;
-  @Input()
-  public hasEventSelector = true;
+  @Input() public hasPrint = true;
+  @Input() public hasEventSelector = true;
+  @Input() public caseDetails: CaseView;
 
   public BANNER = DisplayMode.BANNER;
-
-  public caseDetails: CaseView;
   public prependedTabs: CaseTab[] = [];
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
@@ -63,6 +60,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private readonly ngZone: NgZone,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
     private readonly activityPollingService: ActivityPollingService,
@@ -78,13 +76,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.initDialog();
-    if (!this.route.snapshot.data.case) {
+    if (!this.caseDetails) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.init();
       });
     } else {
-      this.caseDetails = this.route.snapshot.data.case;
       this.init();
     }
 
@@ -175,7 +172,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public hasTabsPresent(): boolean {
-    return this.sortedTabs.length > 0;
+    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0;
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
@@ -198,18 +195,38 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
+    let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
-    hashValue = hashValue.replace(reguarExp, ' ');
-    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    // if we have pretend tabs route to one of the pretended tabs
+    if (!url.includes('#') && this.prependedTabs && this.prependedTabs.length) {
+      const paths = url.split('/');
+      const tabName = paths[paths.length - 1];
+      const selectedTab: CaseTab = this.prependedTabs.find((caseTab: CaseTab) => caseTab.id === tabName);
+      const tab: string = selectedTab ? selectedTab.id : 'tasks'
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, tab]).then(() => {
+        matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
+        this.tabGroup.selectedIndex = matTab.position;
+      });
+      return;
+    }
+    const regExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(regExp, ' ');
+    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
     if (matTab && matTab.position) {
       this.tabGroup.selectedIndex = matTab.position;
     }
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    window.location.hash = tabChangeEvent.tab.textLabel;
+    if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
+      const tab = tabChangeEvent.tab.textLabel.toLowerCase();
+      this.router.navigate([tab], {relativeTo: this.route});
+    } else {
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
+        window.location.hash = tabChangeEvent.tab.textLabel;
+      })
+    }
   }
 
   private init(): void {
