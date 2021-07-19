@@ -38,12 +38,9 @@
       </div>
     </div>
     <div *ngIf="hasEventSelector" class="column-one-half">
-      <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()"
-                         [triggers]="caseDetails.triggers"
-                         [triggerText]="triggerText"
-                         (onTriggerChange)="clearErrorsAndWarnings()"
-                         (onTriggerSubmit)="applyTrigger($event)"
-      ></ccd-event-trigger>
+      <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
+                         [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()"
+                         (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
     </div>
   </div>
   <div class="grid-row">
@@ -67,8 +64,7 @@
                         <td>
                           <span class="text-16">
                             <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
-                                            [caseField]="field"
-                                            [caseReference]="caseDetails.case_id">
+                              [caseField]="field" [caseReference]="caseDetails.case_id">
                             </ccd-field-read>
                           </span>
                         </td>
@@ -77,8 +73,7 @@
                         <th>
                           <span class="text-16">
                             <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
-                                            [caseField]="field"
-                                            [caseReference]="caseDetails.case_id">
+                              [caseField]="field" [caseReference]="caseDetails.case_id">
                             </ccd-field-read>
                           </span>
                         </th>
