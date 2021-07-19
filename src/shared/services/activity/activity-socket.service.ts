@@ -17,6 +17,7 @@ export class ActivitySocketService {
 
   public activity: Observable<CaseActivityInfo[]>;
   public connect: Observable<any>;
+  public connect_error: Observable<any>;
   public disconnect: Observable<any>;
   public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -63,10 +64,14 @@ export class ActivitySocketService {
   private init(): void {
     this.socket = Utils.getSocket(this.user, this.activityService.mode === Utils.MODES.socket);
     this.connect = this.getObservableOnSocketEvent<any>('connect');
+    this.connect_error = this.getObservableOnSocketEvent<any>('connect_error');
     this.disconnect = this.getObservableOnSocketEvent<any>('disconnect');
     this.activity = this.getObservableOnSocketEvent<CaseActivityInfo[]>('activity');
 
     this.disconnect.subscribe(() => {
+      this.connected.next(false);
+    });
+    this.connect_error.subscribe(() => {
       this.connected.next(false);
     });
     this.connect.subscribe(() => {
@@ -78,7 +83,7 @@ export class ActivitySocketService {
 
   private destroy(): void {
     if (this.socket) {
-      this.socket.destroy();
+      this.socket.close();
       this.socket = undefined;
     }
   }
