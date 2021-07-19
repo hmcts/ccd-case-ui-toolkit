@@ -1,5 +1,4 @@
-import * as io from 'socket.io-client';
-import { ManagerOptions, SocketOptions } from 'socket.io-client';
+import { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
 
 import { Utils } from '.';
 import { Activity, ActivityInfo } from '../../../domain';
@@ -63,15 +62,15 @@ describe('services.activity.Utils', () => {
       userString = JSON.stringify(user);
     });
     it('should handle websockets being allowed', () => {
-      const socket: io.Socket = Utils.getSocket(user, true);
-      expect(socket instanceof io.Socket).toBeTruthy();
+      const socket: Socket = Utils.getSocket(user, true);
+      expect(socket instanceof Socket).toBeTruthy();
       assessOptions(socket.io.opts, Utils.TRANSPORTS.allowWebSockets, user);
       expect(socket.query).toBeDefined();
       expect(socket.query.user).toEqual(userString);
     });
     it('should handle websockets being disallowed', () => {
-      const socket: io.Socket = Utils.getSocket(user, false);
-      expect(socket instanceof io.Socket).toBeTruthy();
+      const socket: Socket = Utils.getSocket(user, false);
+      expect(socket instanceof Socket).toBeTruthy();
       assessOptions(socket.io.opts, Utils.TRANSPORTS.disallowWebSockets, user);
       expect(socket.query).toBeDefined();
       expect(socket.query.user).toEqual(userString);
