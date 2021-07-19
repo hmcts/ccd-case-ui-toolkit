@@ -385,7 +385,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
-  getCancelText(): String {
+  public getCancelText(): String {
     if (this.eventTrigger.can_save_draft) {
       return 'Return to case list';
     } else {
