@@ -1,5 +1,7 @@
 import { AbstractAppConfig } from './app.config';
 import { CaseTab } from './shared';
+import { of } from 'rxjs';
+import { Observable } from 'rxjs/Rx';
 
 export class AppMockConfig implements AbstractAppConfig {
   getActivityBatchCollectionDelayMs(): number {
@@ -118,8 +120,8 @@ export class AppMockConfig implements AbstractAppConfig {
     return Promise.resolve(undefined);
   }
 
-  prependedCaseViewTabs(): CaseTab[] {
-    return [
+  prependedCaseViewTabs(): Observable<CaseTab[]> {
+    return of([
       {
         label: 'Tasks',
         id: 'tasks',
@@ -132,7 +134,7 @@ export class AppMockConfig implements AbstractAppConfig {
         fields: [],
         show_condition: null
       }
-    ];
+    ]);
   }
 
 }

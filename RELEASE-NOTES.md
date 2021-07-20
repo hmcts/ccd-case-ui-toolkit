@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.0.0-prepended-tabs
+### Version 4.0.0-prepended-tabs-v1
 **EUI-3777** Create prepended tabs on case view
 
 ### Version 4.0.0

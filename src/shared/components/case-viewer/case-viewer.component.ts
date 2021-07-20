@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { ShowCondition } from '../../directives/conditional-show/domain';
+import { DeleteOrCancelDialogComponent } from '../dialogs';
+import { ShowCondition } from '../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../domain';
 import {
   ActivityPollingService,
@@ -21,7 +21,7 @@ import {
   OrderService,
 } from '../../services';
 import { CaseNotifier } from '../case-editor';
-import { CallbackErrorsContext } from '../error/domain';
+import { CallbackErrorsContext } from '../error';
 import { AbstractAppConfig } from '../../../app.config';
 
 @Component({
@@ -201,8 +201,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     // if we have prepended tabs route to one of the prepended tabs
     if (!url.includes('#') && this.prependedTabs && this.prependedTabs.length) {
       const paths = url.split('/');
-      const tabName = paths[paths.length - 1];
-      const selectedTab: CaseTab = this.prependedTabs.find((caseTab: CaseTab) => caseTab.id === tabName);
+      const tabName = decodeURIComponent(paths[paths.length - 1]);
+      const selectedTab: CaseTab = this.prependedTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === tabName.toLowerCase());
       const tab: string = selectedTab ? selectedTab.id : 'tasks'
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, tab]).then(() => {
         matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
@@ -231,7 +231,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private init(): void {
     // Clone and sort tabs array
-    this.prependedTabs = this.appConfig.prependedCaseViewTabs();
+    this.appConfig.prependedCaseViewTabs().subscribe((prependedTabs: CaseTab[]) => this.prependedTabs = prependedTabs);
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
