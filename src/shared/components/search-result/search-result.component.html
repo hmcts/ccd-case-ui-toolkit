@@ -67,7 +67,6 @@
         </td>
         <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
             <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>
@@ -105,7 +104,6 @@
         </td>
         <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
             <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>

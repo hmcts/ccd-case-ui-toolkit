@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { ActivityPollingService, ActivityService, ActivitySocketService, SessionStorageService } from '../../services';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
-import { ActivityComponent } from './activity.component';
 import { CaseActivityComponent } from './case-activity.component';
 
 @NgModule({
@@ -14,13 +13,11 @@ import { CaseActivityComponent } from './case-activity.component';
     RouterModule,
   ],
   declarations: [
-    ActivityComponent,
     ActivityBannerComponent,
     ActivityIconComponent,
     CaseActivityComponent
   ],
   exports: [
-    ActivityComponent,
     ActivityBannerComponent,
     ActivityIconComponent,
     CaseActivityComponent

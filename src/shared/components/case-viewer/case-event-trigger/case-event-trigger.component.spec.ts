@@ -83,11 +83,6 @@ describe('CaseEventTriggerComponent', () => {
     outputs: ['cancelled', 'submitted']
   });
 
-  let ActivityComponent: any = MockComponent({
-    selector: 'ccd-activity',
-    inputs: ['caseId', 'displayMode']
-  });
-
   let CaseActivityComponent: any = MockComponent({
     selector: 'ccd-case-activity',
     inputs: ['caseId', 'iconOnly']
@@ -183,7 +178,6 @@ describe('CaseEventTriggerComponent', () => {
           CaseEventTriggerComponent,
 
           // Mock
-          ActivityComponent,
           CaseActivityComponent,
           CaseHeaderComponent,
           EventTriggerHeaderComponent,
