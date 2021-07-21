@@ -13,7 +13,7 @@ import {
   AlertService,
   EventStatusService,
 } from '../../../services';
-import { Utils } from '../../../services/activity/utils';
+import { MODES } from '../../../services/activity/utils';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
@@ -63,7 +63,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
                 this.activitySocketService.editCase(this.caseDetails.case_id);
               }
             });
-        } else if (mode === Utils.MODES.polling) {
+        } else if (mode === MODES.polling) {
           this.ngZone.runOutsideAngular(() => {
             this.activitySubscription = this.postEditActivity().subscribe((_resolved) => {});
           });

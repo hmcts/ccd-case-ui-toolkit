@@ -30,7 +30,7 @@ import {
   OrderService,
 } from '../../services';
 import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services/activity';
-import { Utils } from '../../services/activity/utils';
+import { MODES } from '../../services/activity/utils';
 import { CaseNotifier } from '../case-editor';
 import { CallbackErrorsContext } from '../error/domain';
 
@@ -63,7 +63,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public ignoreWarning = false;
   public activitySubscription: Subscription;
   public socketConnectSub: Subscription;
-  public socketActivitySub: Subscription;
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
@@ -121,9 +120,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.socketConnectSub) {
       this.socketConnectSub.unsubscribe();
-    }
-    if (this.socketActivitySub) {
-      this.socketActivitySub.unsubscribe();
     }
     this.callbackErrorsSubject.unsubscribe();
     if (!this.route.snapshot.data.case) {
@@ -241,13 +237,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
         if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
-          this.activitySocketService.connected
+          this.socketConnectSub = this.activitySocketService.connected
             .subscribe(connected => {
               if (connected) {
                 this.activitySocketService.viewCase(this.caseDetails.case_id);
               }
             });
-        } else if (mode === Utils.MODES.polling) {
+        } else if (mode === MODES.polling) {
           this.ngZone.runOutsideAngular(() => {
             this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {});
           });

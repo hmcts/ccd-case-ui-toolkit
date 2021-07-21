@@ -1,9 +1,9 @@
-
-import { ActivityService } from './activity.service';
-import { ActivityPollingService } from './activity.polling.service';
 import { NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Utils } from './utils';
+
+import { ActivityPollingService } from './activity.polling.service';
+import { ActivityService } from './activity.service';
+import { MODES } from './utils';
 
 const CASE_ID = '22';
 const CASES = ['111', '222', '333'];
@@ -11,7 +11,7 @@ const CASES = ['111', '222', '333'];
 let ngZone: any;
 let activityService: any;
 let activityPollingService: ActivityPollingService;
-let appConfig;
+let appConfig: any;
 
 describe('ActivityPollingService', () => {
 
@@ -22,8 +22,8 @@ describe('ActivityPollingService', () => {
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['getActivities', 'postActivity']);
     activityService.getActivities.and.returnValue(Observable.of());
     activityService.isEnabled = true;
-    activityService.mode = Utils.MODES.polling;
-    activityService.modeSubject = new BehaviorSubject<string>(Utils.MODES.polling);
+    activityService.mode = MODES.polling;
+    activityService.modeSubject = new BehaviorSubject<MODES>(MODES.polling);
 
     appConfig = jasmine.createSpyObj('AppConfig', ['getActivityMaxRequestPerBatch', 'getActivityBatchCollectionDelayMs',
                                                     'getActivityNexPollRequestMs', 'getActivityRetry']);

@@ -15,7 +15,7 @@ import {
   AlertService,
   SessionStorageService,
 } from '../../../services';
-import { Utils } from '../../../services/activity/utils';
+import { MODES } from '../../../services/activity/utils';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 
@@ -154,7 +154,7 @@ describe('CaseEventTriggerComponent', () => {
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
     activityService = {
-      modeSubject: new BehaviorSubject<string>(Utils.MODES.off)
+      modeSubject: new BehaviorSubject<MODES>(MODES.off)
     };
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     activityPollingService.postEditActivity.and.returnValue(Observable.of());

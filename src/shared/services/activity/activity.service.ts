@@ -5,29 +5,29 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity';
 import { HttpService, OptionsType } from '../../services/http';
-import { Utils } from '../activity/utils';
+import { MODES } from '../activity/utils';
 import { SessionStorageService } from '../session/session-storage.service';
 
 // @dynamic
 @Injectable()
 export class ActivityService {
-  public static readonly MODES = Utils.MODES;
+  public static readonly MODES = MODES;
   public static readonly DUMMY_CASE_REFERENCE = '0';
   public static get ACTIVITY_VIEW() { return 'view'; }
   public static get ACTIVITY_EDIT() { return 'edit'; }
 
-  public readonly modeSubject: BehaviorSubject<string> = new BehaviorSubject<string>(Utils.MODES.off);
+  public readonly modeSubject: BehaviorSubject<MODES> = new BehaviorSubject<MODES>(MODES.off);
 
   private userAuthorised: boolean = undefined;
-  private pMode: string = Utils.MODES.polling; // Defaulted to old mechanism.
-  public get mode(): string {
+  private pMode: MODES = MODES.polling; // Defaulted to old mechanism.
+  public get mode(): MODES {
     return this.pMode;
   }
-  public set mode(value: string) {
+  public set mode(value: MODES) {
     if (!!value && this.pMode !== value) {
       this.pMode = value;
       this.modeSubject.next(value);
-      if (this.pMode !== Utils.MODES.off) {
+      if (this.pMode !== MODES.off) {
         this.verifyUserIsAuthorized();
       }
     }
@@ -42,7 +42,7 @@ export class ActivityService {
   }
 
   public get isEnabled(): boolean {
-    return this.mode !== Utils.MODES.off && this.activityUrl && this.userAuthorised;
+    return this.mode !== MODES.off && this.activityUrl && this.userAuthorised;
   }
 
   constructor(
@@ -81,7 +81,7 @@ export class ActivityService {
 
   public verifyUserIsAuthorized(): void {
     if (this.activityUrl && this.userAuthorised === undefined) {
-      if (this.mode === Utils.MODES.polling) {
+      if (this.mode === MODES.polling) {
         this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
           () => this.userAuthorised = true,
           error => {
@@ -92,7 +92,7 @@ export class ActivityService {
             }
           }
         );
-      } else if (this.mode !== Utils.MODES.off) {
+      } else if (this.mode !== MODES.off) {
         // TODO: Implement a proper authorisation mechanism for sockets.
         this.userAuthorised = true;
       }

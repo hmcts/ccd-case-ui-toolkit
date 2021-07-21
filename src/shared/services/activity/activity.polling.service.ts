@@ -6,7 +6,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
-import { Utils } from './utils';
+import { MODES } from './utils';
 
 // @dynamic
 @Injectable()
@@ -20,7 +20,7 @@ export class ActivityPollingService {
   private maxRequestsPerBatch: number;
 
   public get isEnabled(): boolean {
-    return this.activityService.isEnabled && this.activityService.mode === Utils.MODES.polling;
+    return this.activityService.isEnabled && this.activityService.mode === MODES.polling;
   }
 
   constructor(
@@ -32,8 +32,8 @@ export class ActivityPollingService {
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
-        this.destroy();
-        if (mode === ActivityService.MODES.polling) {
+        this.stopPolling();
+        if (mode === MODES.polling) {
           this.init();
         }
       });
@@ -135,10 +135,6 @@ export class ActivityPollingService {
     };
     this.batchCollectionDelayMs = this.config.getActivityBatchCollectionDelayMs();
     this.maxRequestsPerBatch = this.config.getActivityMaxRequestPerBatch();
-  }
-
-  private destroy(): void {
-
   }
 
   private postActivity(caseId: string, activityType: string): Observable<Activity[]> {

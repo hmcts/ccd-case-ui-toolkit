@@ -4,7 +4,7 @@ import { AbstractAppConfig } from '../../../';
 import { HttpService } from '../../services/http';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivityService } from './activity.service';
-import { Utils } from './utils';
+import { MODES } from './utils';
 
 let httpService: any;
 let appConfig: any;
@@ -30,12 +30,12 @@ describe('ActivityService', () => {
   });
 
   it('should default to polling mode', () => {
-    expect(activityService.mode).toEqual(Utils.MODES.polling);
+    expect(activityService.mode).toEqual(MODES.polling);
   });
 
   describe('when activity tracking is turned off', () => {
     beforeEach(() => {
-      activityService.mode = Utils.MODES.off;
+      activityService.mode = MODES.off;
     });
 
     it('should indicate the service is disabled', () => {
@@ -51,8 +51,8 @@ describe('ActivityService', () => {
 
     beforeEach(() => {
       // Have to toggle it as it defaults to 'polling'.
-      activityService.mode = Utils.MODES.off;
-      activityService.mode = Utils.MODES.polling;
+      activityService.mode = MODES.off;
+      activityService.mode = MODES.polling;
     });
 
     it('should access AppConfig and HttpService for getActivities', () => {
@@ -80,8 +80,8 @@ describe('ActivityService', () => {
       appConfig.getActivityUrl.and.returnValue('');
       activityService['userAuthorised'] = true;
       // Have to toggle it as it defaults to 'polling'.
-      activityService.mode = Utils.MODES.off;
-      activityService.mode = Utils.MODES.polling;
+      activityService.mode = MODES.off;
+      activityService.mode = MODES.polling;
     });
 
     it('should not be enabled', () => {
@@ -94,8 +94,8 @@ describe('ActivityService', () => {
       const error = { status };
       httpService.get.and.returnValue(Observable.throw(error));
       // Have to toggle it as it defaults to 'polling'.
-      activityService.mode = Utils.MODES.off;
-      activityService.mode = Utils.MODES.polling;
+      activityService.mode = MODES.off;
+      activityService.mode = MODES.polling;
     };
     it('should not be enabled when the error is 401', () => {
       goError(401);

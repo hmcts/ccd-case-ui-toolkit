@@ -15,11 +15,11 @@ const TRANSPORTS = {
   disallowWebSockets: ['polling']
 };
 
-const MODES = {
-  off: 'off',
-  polling: 'polling',
-  socket: 'socket',
-  socketLongPoll: 'socket-long-poll'
+export enum MODES {
+  off = 'off',
+  polling = 'polling',
+  socket = 'socket',
+  socketLongPoll = 'socket-long-poll'
 };
 
 const DESCRIPTIONS = {
@@ -120,7 +120,6 @@ const UTILS = {
 export const Utils = {
   BASE_CONFIGURATION,
   DESCRIPTIONS,
-  MODES,
   TRANSPORTS,
   ...UTILS,
 };

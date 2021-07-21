@@ -3,27 +3,27 @@ import { Socket } from 'socket.io-client';
 
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
-import { Utils } from './utils';
+import { Utils, MODES } from './utils';
 
 describe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
   const MOCK_USER_STRING = JSON.stringify(MOCK_USER);
   let service: ActivitySocketService;
-  let mockModeSubject: BehaviorSubject<string>;
+  let mockModeSubject: BehaviorSubject<MODES>;
   let sessionStorageService: any;
   let activityService: any;
 
   beforeEach(() => {
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
-    mockModeSubject = new BehaviorSubject<string>(undefined);
+    mockModeSubject = new BehaviorSubject<MODES>(undefined);
     activityService = {
       pMode: undefined,
       modeSubject: mockModeSubject.asObservable(),
-      get mode() {
+      get mode(): MODES {
         return activityService.pMode;
       },
-      set mode(value: string) {
+      set mode(value: MODES) {
         if (value !== activityService.pMode) {
           activityService.pMode = value;
           mockModeSubject.next(value);
@@ -43,11 +43,11 @@ describe('ActivitySocketService', () => {
       expect(service.socket).toBeUndefined();
     });
     it('should not have created a socket when mode is "off"', () => {
-      activityService.mode = Utils.MODES.off;
+      activityService.mode = MODES.off;
       expect(service.socket).toBeUndefined();
     });
     it('should not have created a socket when mode is "polling"', () => {
-      activityService.mode = Utils.MODES.polling;
+      activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
 
@@ -56,7 +56,7 @@ describe('ActivitySocketService', () => {
   describe('when "socket-long-polling" mode is enabled', () => {
 
     beforeEach(() => {
-      activityService.mode = Utils.MODES.socketLongPoll;
+      activityService.mode = MODES.socketLongPoll;
     });
 
     it('should have instantiated the socket', () => {
@@ -79,7 +79,7 @@ describe('ActivitySocketService', () => {
     });
     it('should reinstantiate the socket and change transports when the socket mode changes', () => {
       const originalSocket = service.socket;
-      activityService.mode = Utils.MODES.socket;
+      activityService.mode = MODES.socket;
       const newSocket = service.socket;
       expect(newSocket instanceof Socket).toBeTruthy();
       expect(newSocket.io.opts.transports).toEqual(Utils.TRANSPORTS.allowWebSockets);
@@ -87,7 +87,7 @@ describe('ActivitySocketService', () => {
     });
     it('should destroy connection when socket-like modes are disabled', () => {
       expect(service.socket instanceof Socket).toBeTruthy();
-      activityService.mode = Utils.MODES.polling;
+      activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
 
@@ -133,7 +133,7 @@ describe('ActivitySocketService', () => {
   describe('when "socket" mode is enabled', () => {
 
     beforeEach(() => {
-      activityService.mode = Utils.MODES.socket;
+      activityService.mode = MODES.socket;
     });
 
     it('should have instantiated the socket and set up the correct transports', () => {
@@ -143,7 +143,7 @@ describe('ActivitySocketService', () => {
 
     it('should reinstantiate the socket and change transports when the socket mode changes', () => {
       const originalSocket = service.socket;
-      activityService.mode = Utils.MODES.socketLongPoll;
+      activityService.mode = MODES.socketLongPoll;
       const newSocket = service.socket;
       expect(newSocket instanceof Socket).toBeTruthy();
       expect(newSocket.io.opts.transports).toEqual(Utils.TRANSPORTS.disallowWebSockets);
@@ -152,7 +152,7 @@ describe('ActivitySocketService', () => {
 
     it('should destroy connection when socket-like modes are disabled', () => {
       expect(service.socket instanceof Socket).toBeTruthy();
-      activityService.mode = Utils.MODES.polling;
+      activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
 

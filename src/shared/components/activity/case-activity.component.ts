@@ -4,7 +4,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { Activity, CaseActivityInfo } from '../../domain/activity';
 import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services';
-import { Utils } from '../../services/activity/utils';
+import { Utils, MODES } from '../../services/activity/utils';
 
 interface ActivityDetails {
   viewers: string;
@@ -41,7 +41,7 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
         this.destroy();
-        if (mode === Utils.MODES.polling) {
+        if (mode === MODES.polling) {
           this.initPolling();
         } else if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
           this.initSocket();
@@ -65,9 +65,11 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
 
   private initSocket(): void {
     this.socketSubscription = this.socket.activity.subscribe(activity => {
-      if (activity && Array.isArray(activity)) {
+      if (Array.isArray(activity)) {
         const thisCase: CaseActivityInfo = activity.find(item => item.caseId === this.caseId);
         this.handleActivity(Utils.activity.stripUserFromActivity(thisCase, this.socket.user));
+      } else {
+        this.handleActivity(undefined);
       }
     });
   }
@@ -94,7 +96,7 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
   }
 
   private handleActivity(activity: Activity | CaseActivityInfo): void {
-    if (activity && Utils.activity.hasViewersOrEditors(activity)) {
+    if (Utils.activity.hasViewersOrEditors(activity)) {
       this.pActivity = {
         viewers: Utils.activity.viewersDescription(activity),
         editors: Utils.activity.editorsDescription(activity)

@@ -20,7 +20,7 @@ import {
   SearchResultViewItemComparatorFactory,
   SessionStorageService,
 } from '../../services';
-import { Utils } from '../../services/activity/utils';
+import { MODES } from '../../services/activity/utils';
 import { SearchResultComponent } from './search-result.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -60,7 +60,7 @@ describe('SearchResultComponent', () => {
     };
     activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
     activityService.postActivity.and.returnValue(switchMap);
-    activityService.modeSubject = new BehaviorSubject<string>(Utils.MODES.off);
+    activityService.modeSubject = new BehaviorSubject<MODES>(MODES.off);
   });
 
   describe('with results', () => {
