@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -219,19 +219,21 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
+    const id = (<HTMLElement>tab.element.nativeElement).id
     if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
-      const tab = tabChangeEvent.tab.textLabel.toLowerCase();
-      this.router.navigate([tab], {relativeTo: this.route});
+      this.router.navigate([id], {relativeTo: this.route});
     } else {
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = tabChangeEvent.tab.textLabel;
+        window.location.hash = id;
       })
     }
   }
 
   private init(): void {
     // Clone and sort tabs array
-    this.appConfig.prependedCaseViewTabs().subscribe((prependedTabs: CaseTab[]) => this.prependedTabs = prependedTabs);
+    this.appConfig.prependedCaseViewTabs()
+      .subscribe((prependedTabs: CaseTab[]) => this.prependedTabs = prependedTabs);
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
