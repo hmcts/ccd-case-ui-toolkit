@@ -389,13 +389,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     // we need THAT to be the value of the entire form: `formEventData.data`.
     pageEventData.event_data = formEventData.data;
 
-    caseEventData.event_data = this.clone(caseEventData.data || this.editForm.value.data);
-    let evCf = this.getCaseFieldsFromCurrentAndPreviousPages();
-    this.formValueService.removeUnnecessaryFields(caseEventData.event_data, evCf,
-      false, true);
-    // we are not calling santise on event_data to be consistent with previous code. Seeems like we ought to though
-    caseEventData.event_token = this.eventTrigger.event_token;
-    caseEventData.ignore_warning = this.ignoreWarning;
+   // Finalise the CaseEventData object.
+   pageEventData.event_token = this.eventTrigger.event_token;
+   pageEventData.ignore_warning = this.ignoreWarning;
 
     // Finally, try to set up the case_reference.
     if (this.caseEdit.caseDetails) {

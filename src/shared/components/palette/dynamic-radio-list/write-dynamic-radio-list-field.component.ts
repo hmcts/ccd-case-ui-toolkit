@@ -10,7 +10,7 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
 
   dynamicRadioListControl: FormControl;
 
-  ngOnInit() {
+  public ngOnInit() {
     /**
      *
      * Reassigning list_items from formatted_list when list_items is empty
@@ -33,7 +33,7 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
     this.dynamicRadioListControl.setValue(this.caseField.value);
   }
 
-  buildElementId(name: string): string {
-    return `${this.id}-${name}`;
+  public buildElementId(name: string): string {
+    return `${this.id()}-${name}`;
   }
 }

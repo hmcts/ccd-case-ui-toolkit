@@ -8,7 +8,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType, FieldTypeEnum } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { HttpErrorService, HttpService, LoadingService, OrderService } from '../../../services';
+import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
