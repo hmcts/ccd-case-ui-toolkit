@@ -27,7 +27,7 @@ export class DocumentManagementService {
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
-  uploadFile(formData: FormData): Observable<DocumentData> {
+  public uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.appConfig.getDocumentManagementUrl();
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
@@ -39,7 +39,7 @@ export class DocumentManagementService {
       .pipe();
   }
 
-  getMediaViewerInfo(documentFieldValue: any): string {
+  public getMediaViewerInfo(documentFieldValue: any): string {
     let mediaViewerInfo = {
         document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
         document_filename: documentFieldValue.document_filename,
@@ -51,7 +51,7 @@ export class DocumentManagementService {
     return JSON.stringify(mediaViewerInfo);
   }
 
-  getContentType(documentFieldValue: any): string {
+  public getContentType(documentFieldValue: any): string {
     let fileExtension = '<unknown>';
     if (documentFieldValue.document_filename) {
       let position = documentFieldValue.document_filename.lastIndexOf('.');
@@ -80,23 +80,23 @@ export class DocumentManagementService {
     }
   }
 
-  isImage(imageType: string) {
+  public isImage(imageType: string): boolean {
     return DocumentManagementService.imagesList.find(e => e === imageType) !== undefined;
   }
 
-  isWord(wordType: string) {
+  public isWord(wordType: string): boolean {
     return DocumentManagementService.wordList.find(e => e === wordType) !== undefined;
   }
 
-  isExcel(excelType: string) {
+  public isExcel(excelType: string): boolean {
     return DocumentManagementService.excelList.find(e => e === excelType) !== undefined;
   }
 
-  isPowerpoint(powerpointType: string) {
+  public isPowerpoint(powerpointType: string): boolean {
     return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
   }
 
-  transformDocumentUrl(documentBinaryUrl: string): string {
+  private transformDocumentUrl(documentBinaryUrl: string): string {
     let remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
     let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
