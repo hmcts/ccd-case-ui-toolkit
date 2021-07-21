@@ -1,6 +1,7 @@
-import { FormValueService } from './form-value.service';
 import { CaseField, FieldType } from '../../domain/definition';
+import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
+import { FormValueService } from './form-value.service';
 
 describe('FormValueService', () => {
   let formValueService: FormValueService;
@@ -534,6 +535,126 @@ describe('FormValueService', () => {
       formValueService.removeEmptyCollectionsWithMinValidation(data, [caseField]);
       const actual = '{"collection1":{}}';
       expect(JSON.stringify(data)).toEqual(actual);
+    });
+  });
+
+  describe('removeMultiSelectLabels', () => {
+    it('should handle null data', () => {
+      FormValueService.removeMultiSelectLabels(null);
+      // Complete the test to confirm the line above didn't fall over.
+      expect(true).toBeTruthy();
+    });
+    it('should handle undefined data', () => {
+      FormValueService.removeMultiSelectLabels(undefined);
+      // Complete the test to confirm the line above didn't fall over.
+      expect(false).toBeFalsy();
+    });
+    it('should handle an empty object', () => {
+      const DATA = {};
+      FormValueService.removeMultiSelectLabels(DATA);
+      expect(Object.keys(DATA).length).toEqual(0); // Nothing got added.
+    });
+    it('should handle when there are no labels to remove', () => {
+      const DATA = {
+        bob: []
+      };
+      FormValueService.removeMultiSelectLabels(DATA);
+      expect(Object.keys(DATA).length).toEqual(1); // Nothing got added or removed.
+    });
+    it('should handle when there are labels to remove at the top level', () => {
+      const LABEL_FIELD = `bob${FieldsUtils.LABEL_SUFFIX}`;
+      const DATA = {
+        bob: [],
+        [LABEL_FIELD]: []
+      };
+      FormValueService.removeMultiSelectLabels(DATA);
+      // Should have removed 'bob---LABEL' and left 'bob' alone.
+      expect(Object.keys(DATA).length).toEqual(1);
+      expect(DATA.bob).toBeDefined();
+      expect(DATA[LABEL_FIELD]).toBeUndefined();
+    });
+    it('should handle when a label to remove has no corresponding MultiSelect', () => {
+      const LABEL_FIELD = `bob${FieldsUtils.LABEL_SUFFIX}`;
+      const DATA = {
+        [LABEL_FIELD]: []
+      };
+      FormValueService.removeMultiSelectLabels(DATA);
+      expect(Object.keys(DATA).length).toEqual(0); // Should have removed 'bob---LABEL'
+    });
+    it('should handle removal within a nested object', () => {
+      const DATA = {
+        a: {
+          aUnrelated: 'A Unrelated',
+          aa: [],
+          [`aa${FieldsUtils.LABEL_SUFFIX}`]: []
+        },
+        b: {
+          [`bb${FieldsUtils.LABEL_SUFFIX}`]: [],
+          c: {
+            cUnrelated: 'C Unrelated',
+            [`cc${FieldsUtils.LABEL_SUFFIX}`]: []
+          }
+        }
+      };
+      FormValueService.removeMultiSelectLabels(DATA);
+      expect(DATA.a).toBeDefined();
+      expect(DATA.a.aUnrelated).toEqual('A Unrelated');
+      expect(DATA.a.aa).toBeDefined();
+      expect(DATA.a[`aa${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+      expect(DATA.b).toBeDefined();
+      expect(DATA.b[`bb${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+      expect(DATA.b.c).toBeDefined();
+      expect(DATA.b.c.cUnrelated).toEqual('C Unrelated');
+      expect(DATA.b.c[`cc${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+    });
+    it('should handle removal within a collection', () => {
+      const DATA = {
+        array: [
+          {
+            id: '1',
+            data: {
+              aUnrelated: 'A Unrelated',
+              aa: [],
+              [`aa${FieldsUtils.LABEL_SUFFIX}`]: []
+            }
+          },
+          {
+            id: '2',
+            data: {
+              b: {
+                [`bb${FieldsUtils.LABEL_SUFFIX}`]: [],
+                c: [
+                  {
+                    id: '3',
+                    data: {
+                      cUnrelated: 'C Unrelated',
+                      [`cc${FieldsUtils.LABEL_SUFFIX}`]: []
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+      };
+      FormValueService.removeMultiSelectLabels(DATA);
+      expect(DATA.array).toBeDefined();
+      expect(DATA.array.length).toEqual(2);
+      expect(DATA.array[0].id).toEqual('1');
+      expect(DATA.array[0].data).toBeDefined();
+      expect(DATA.array[0].data.aUnrelated).toEqual('A Unrelated');
+      expect(DATA.array[0].data.aa).toBeDefined();
+      expect(DATA.array[0].data[`aa${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+
+      expect(DATA.array[1].id).toEqual('2');
+      expect(DATA.array[1].data).toBeDefined();
+      expect(DATA.array[1].data.b).toBeDefined();
+      expect(DATA.array[1].data.b[`bb${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+      expect(DATA.array[1].data.b.c).toBeDefined();
+      expect(DATA.array[1].data.b.c.length).toEqual(1);
+      expect(DATA.array[1].data.b.c[0].id).toEqual('3');
+      expect(DATA.array[1].data.b.c[0].data.cUnrelated).toEqual('C Unrelated');
+      expect(DATA.array[1].data.b.c[0].data[`cc${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
     });
   });
 });
