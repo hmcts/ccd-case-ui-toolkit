@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -140,17 +140,23 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           .forEach(casefield => {
             const fieldElement = this.editForm.controls['data'].get(casefield.id);
             if (fieldElement) {
-              if (fieldElement.hasError('required')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('pattern')) {
+              if (fieldElement.hasError('pattern') || fieldElement.hasError('matDatetimePickerParse')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('required')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
                 fieldElement.markAsTouched();
               } else if (fieldElement.hasError('minlength')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
                 fieldElement.markAsTouched();
               } else if (fieldElement.hasError('maxlength')) {
                 this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('matDatetimePickerMin')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is below the set minimum date threshold`});
+                fieldElement.markAsTouched();
+              } else if (fieldElement.hasError('matDatetimePickerMax')) {
+                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is above the set maximum date threshold`});
                 fieldElement.markAsTouched();
               }
             }
@@ -263,19 +269,24 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  submitting(): boolean {
+  public submitting(): boolean {
     return this.isSubmitting;
   }
 
-  getCaseId(): string {
+  public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  getCancelText(): string {
+  public getCaseTitle(): string {
+    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
+      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+  }
+
+  public getCancelText(): string {
     return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
 
-  getTriggerText(): string {
+  private getTriggerText(): string {
     return this.eventTrigger && this.eventTrigger.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START

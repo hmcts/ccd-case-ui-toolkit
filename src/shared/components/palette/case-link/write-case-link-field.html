@@ -1,4 +1,4 @@
-<div class="form-group" [ngClass]="{'form-group-error': !caseReferenceControl.valid && caseReferenceControl.touched}">
+<div class="form-group" [ngClass]="{'form-group-error': !caseReferenceControl.valid && caseReferenceControl.dirty}">
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </label>

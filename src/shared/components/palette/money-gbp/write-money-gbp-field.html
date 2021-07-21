@@ -1,4 +1,4 @@
-<div class="form-group bottom-30" [ngClass]="{'form-group-error': !moneyGbpControl.valid && moneyGbpControl.touched}">
+<div class="form-group bottom-30" [ngClass]="{'form-group-error': !moneyGbpControl.valid && moneyGbpControl.dirty}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>    
