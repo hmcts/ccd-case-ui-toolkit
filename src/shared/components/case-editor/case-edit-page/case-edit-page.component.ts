@@ -389,9 +389,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     // we need THAT to be the value of the entire form: `formEventData.data`.
     pageEventData.event_data = formEventData.data;
 
-   // Finalise the CaseEventData object.
-   pageEventData.event_token = this.eventTrigger.event_token;
-   pageEventData.ignore_warning = this.ignoreWarning;
+    // Finalise the CaseEventData object.
+    pageEventData.event_token = this.eventTrigger.event_token;
+    pageEventData.ignore_warning = this.ignoreWarning;
 
     // Finally, try to set up the case_reference.
     if (this.caseEdit.caseDetails) {
