@@ -125,11 +125,6 @@ describe('DocumentManagementService', () => {
       document_filename: 'sample.rtf',
       content_type: 'rtf'
     };
-    const MEDIA_VIEWER_CSV = {
-      document_binary_url: 'https://www.example.com/binary',
-      document_filename: 'sample.csv',
-      content_type: 'excel'
-    };
     const MEDIA_VIEWER_XLS = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.xls',
@@ -205,17 +200,6 @@ describe('DocumentManagementService', () => {
       CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
       CASE_FIELD.value.document_filename = 'sample.doc';
       expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_DOC));
-    });
-
-    it('should return contentType as excel for the non-PDF document', () => {
-      CASE_FIELD.value.document_filename = 'media.csv';
-      expect(documentManagementService.getContentType(CASE_FIELD.value)).toBe('excel');
-    });
-
-    it('should return contentType as cvs for the excel document', () => {
-      CASE_FIELD.value.document_binary_url = 'https://www.example.com/binary';
-      CASE_FIELD.value.document_filename = 'sample.csv';
-      expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_CSV));
     });
 
     it('should return contentType as xls for the excel document', () => {

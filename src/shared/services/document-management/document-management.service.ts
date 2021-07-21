@@ -22,7 +22,7 @@ export class DocumentManagementService {
 
   private static readonly imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
   private static readonly wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
-  private static readonly excelList: string[] = ['CSV', 'XLS', 'XLSX', 'csv', 'xls', 'xlsx'];
+  private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
