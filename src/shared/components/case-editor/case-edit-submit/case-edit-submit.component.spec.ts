@@ -1022,6 +1022,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -1158,6 +1159,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -1298,6 +1300,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -1436,6 +1439,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -1578,6 +1582,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -1724,6 +1729,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -1855,6 +1861,7 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          CcdCYAPageLabelFilterPipe,
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
@@ -1986,6 +1993,7 @@ describe('CaseEditSubmitComponent', () => {
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
+          CcdCYAPageLabelFilterPipe,
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
@@ -2125,6 +2133,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -2275,6 +2284,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -2431,6 +2441,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -2569,6 +2580,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -2710,6 +2722,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -2850,6 +2863,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -2990,6 +3004,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -3134,6 +3149,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -3280,6 +3296,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -3426,6 +3443,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -3583,6 +3601,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -3739,6 +3758,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
@@ -3889,6 +3909,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe
         ],
