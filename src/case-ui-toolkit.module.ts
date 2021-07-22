@@ -111,7 +111,6 @@ import { CaseHistoryModule } from './shared/components/case-history';
       ConditionalShowDirective,
       LabelSubstitutorDirective,
       FocusElementDirective,
-
       PaginatePipe
     ]
 })
