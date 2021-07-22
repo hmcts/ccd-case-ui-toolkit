@@ -19,7 +19,7 @@ export class ActivityService {
   public readonly modeSubject: BehaviorSubject<MODES> = new BehaviorSubject<MODES>(MODES.off);
 
   private userAuthorised: boolean = undefined;
-  private pMode: MODES = MODES.polling; // Defaulted to old mechanism.
+  private pMode: MODES = MODES.off;
   public get mode(): MODES {
     return this.pMode;
   }
