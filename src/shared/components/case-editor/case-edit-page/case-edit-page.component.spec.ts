@@ -27,7 +27,6 @@ import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
 import { FieldsFilterPipe } from '../../palette/complex';
 import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
-import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -592,9 +591,7 @@ describe('CaseEditPageComponent', () => {
           FieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe,
-          CcdCYAPageLabelFilterPipe,
-          CaseReferencePipe
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [

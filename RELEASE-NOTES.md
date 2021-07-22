@@ -33,9 +33,6 @@
 **EUI-2744** Event to complex type
 **EUI-4106** Show/hide functionality
 
-### Version 3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
-**EUI-2276** Case field showing on summary screen when complex type field is hidden
-
 ### Version 3.1.5-complex-hidden-collection-show
 **EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
 
