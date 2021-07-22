@@ -72,21 +72,21 @@
 
     <table class="summary-fields">
       <tbody>
-      <ng-container *ngFor="let field of this.showSummaryFields">
-        <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-          <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-            <th>{{field.label}}</th>
-            <td class="form-cell">
-              <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
-            </td>
-          </tr>
-          <tr *ngSwitchCase="false" class="compound-field" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-            <td colspan="2">
-              <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)" [caseFields]="contextFields"></ccd-field-read>
-            </td>
-          </tr>
-        </ng-container>
-      </ng-container>
+        <ng-container *ngFor="let field of this.showSummaryFields">
+            <ng-container [ngSwitch]="!(field | ccdIsCompound)">
+              <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
+                <th>{{field.label}}</th>
+                <td class="form-cell">
+                  <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
+                </td>
+              </tr>
+              <tr *ngSwitchCase="false" class="compound-field" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
+                <td colspan="2">
+                  <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)" [caseFields]="contextFields"></ccd-field-read>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
       </tbody>
     </table>
   </ng-container>
