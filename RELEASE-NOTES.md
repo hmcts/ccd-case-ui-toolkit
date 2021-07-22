@@ -44,6 +44,9 @@
 **EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
 
+### Version 3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
+**EUI-2276** Case field showing on summary screen when complex type field is hidden
+
 ### Version 3.1.5-nested-multi-select-labels-theta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
 fixed an issue with the rendering of complex collections on the Case Details tabs.
