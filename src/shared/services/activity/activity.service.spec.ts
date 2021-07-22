@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
-import { AbstractAppConfig } from '../../../';
-import { HttpService } from '../../services/http';
-import { SessionStorageService } from '../session/session-storage.service';
+import { AbstractAppConfig } from '../../../app.config';
+import { HttpService } from '../http';
+import { SessionStorageService } from '../session';
 import { ActivityService } from './activity.service';
 import { MODES } from './utils';
 
@@ -29,15 +29,12 @@ describe('ActivityService', () => {
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   });
 
-  it('should default to polling mode', () => {
-    expect(activityService.mode).toEqual(MODES.polling);
+  it('should default to off', () => {
+    expect(activityService.mode).toEqual(MODES.off);
   });
 
   describe('when activity tracking is turned off', () => {
-    beforeEach(() => {
-      activityService.mode = MODES.off;
-    });
-
+    // It should default to "off" so no need for a beforeEach() here...
     it('should indicate the service is disabled', () => {
       expect(activityService.isEnabled).toBeFalsy();
     });
@@ -50,8 +47,6 @@ describe('ActivityService', () => {
   describe('when activity tracking is set to "polling"', () => {
 
     beforeEach(() => {
-      // Have to toggle it as it defaults to 'polling'.
-      activityService.mode = MODES.off;
       activityService.mode = MODES.polling;
     });
 
@@ -79,8 +74,6 @@ describe('ActivityService', () => {
     beforeEach(() => {
       appConfig.getActivityUrl.and.returnValue('');
       activityService['userAuthorised'] = true;
-      // Have to toggle it as it defaults to 'polling'.
-      activityService.mode = MODES.off;
       activityService.mode = MODES.polling;
     });
 
@@ -92,9 +85,7 @@ describe('ActivityService', () => {
   describe('when an error is returned while verifying the user is authorised', () => {
     const goError = (status: number): void => {
       const error = { status };
-      httpService.get.and.returnValue(Observable.throw(error));
-      // Have to toggle it as it defaults to 'polling'.
-      activityService.mode = MODES.off;
+      httpService.get.and.returnValue(throwError(error));
       activityService.mode = MODES.polling;
     };
     it('should not be enabled when the error is 401', () => {
