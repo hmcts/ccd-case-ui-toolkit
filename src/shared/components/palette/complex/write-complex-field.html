@@ -17,7 +17,9 @@
                        [formGroup]="formGroup"
                        [parent]="complexGroup"
                        [idPrefix]="buildIdPrefix(field)"
-                       [hidden]="field.hidden">
+                       [hidden]="field.hidden"
+                       [isExpanded]="isExpanded"
+                       [isInSearchBlock]="isInSearchBlock">
       </ccd-field-write>
     </ng-container>
   </ng-container>
