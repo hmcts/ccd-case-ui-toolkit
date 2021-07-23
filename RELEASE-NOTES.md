@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.0.0-activity-tracker-unauthorised
+**EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
+
 ### Version 4.0.0
 **EUI-4164** Add Appellant Name Next to Caseid
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
