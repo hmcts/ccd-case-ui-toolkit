@@ -69,8 +69,7 @@
     "rx-polling": "1.1.0",
     "typescript": "3.1.1",
     "underscore": "^1.9.1",
-    "yargs-parser": "18.1.2",
-    "colors": "1.4.0"
+    "yargs-parser": "18.1.2"
   },
   "peerDependencies": {
     "@angular/common": "~7.0.3",
@@ -170,25 +169,20 @@
     "braces": "^2.3.1",
     "dot-prop": "^5.1.1",
     "elliptic": "^6.5.3",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "4.2.3",
     "handlebars": "^4.5.3",
     "https-proxy-agent": "^2.2.3",
     "lodash": "^4.17.18",
     "marked": "^0.7.0",
     "mem": "^6.0.0",
     "minimatch": "^3.0.2",
-    "minimist": "^1.2.3",
+    "minimist": "1.2.3",
     "node-fetch": "2.6.1",
     "node-forge": "^0.10.0",
     "npm-registry-fetch": "^4.0.5",
     "serialize-javascript": "^3.1.0",
-    "tree-kill": "^1.2.2",
-    "yargs-parser": "^18.1.2",
-    "glob-parent": "^5.1.2",
-    "trim-newlines": "^4.0.2",
-    "xmlhttprequest-ssl": "^1.6.2",
-    "ssri": "^8.0.1",
-    "ini": "^1.3.6"
+    "tree-kill": "1.2.2",
+    "yargs-parser": "18.1.2"
   },
   "publishConfig": {
     "access": "public"
