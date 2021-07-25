@@ -195,7 +195,8 @@
     "mem": "^8.1.1",
     "dns-packet": "1.3.4",
     "hosted-git-info": "^3.0.8",
-    "normalize-url": "^6.0.1"
+    "normalize-url": "^6.0.1",
+    "trim-newlines": "^4.0.1"
 
 
   },
