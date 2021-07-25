@@ -68,7 +68,6 @@
     "typescript": "3.1.1",
     "underscore": "^1.9.1",
     "yargs-parser": "18.1.2",
-    "url-loader": "1.1.2"
   },
   "peerDependencies": {
     "@angular/common": "~7.0.3",
