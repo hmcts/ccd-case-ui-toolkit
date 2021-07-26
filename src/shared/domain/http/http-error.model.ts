@@ -21,7 +21,7 @@ export class HttpError {
     // Check that the HttpErrorResponse contains an "error" object before mapping the error properties
     if (!!(response && response.error)) {
       Object.keys(error).forEach(key => {
-        error[key] = response.error[key] ? response.error[key] : (response[key] || error[key]);
+        error[key] = response.error.hasOwnProperty(key) && response.error[key] ? response.error[key] : error[key];
       });
     }
 

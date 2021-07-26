@@ -1,8 +1,10 @@
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpErrorService } from './http-error.service';
 import { catchError } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+
+import { HttpError } from '../../domain/http';
+import { HttpErrorService } from './http-error.service';
 
 @Injectable()
 export class HttpService {
@@ -23,12 +25,16 @@ export class HttpService {
    * @see UrlResolverService
    */
 
-  public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
+  public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true, errorHandler?: (error: HttpErrorResponse) => HttpError): Observable<any> {
     return this.httpclient
       .get(url, this.setDefaultValue(options))
       .pipe(
         catchError((res: HttpErrorResponse) => {
-          return this.httpErrorService.handle(res, redirectIfNotAuthorised);
+          let error: HttpErrorResponse | HttpError = res;
+          if (typeof errorHandler === 'function') {
+            error = errorHandler(res);
+          }
+          return this.httpErrorService.handle(error, redirectIfNotAuthorised);
         })
       );
   }

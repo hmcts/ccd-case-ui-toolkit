@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.0.0-activity-tracker-unauthorised
+### Version 4.0.0-activity-tracker-unauthorised-beta
 **EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
 
 ### Version 4.0.0

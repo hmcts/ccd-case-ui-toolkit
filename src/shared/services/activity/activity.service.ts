@@ -1,10 +1,11 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity';
-import { HttpService, OptionsType } from '../http';
+import { HttpError } from '../../domain/http';
+import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
 
 // @dynamic
@@ -18,6 +19,14 @@ export class ActivityService {
 
   public get isEnabled(): boolean {
     return this.activityUrl() && this.userAuthorised;
+  }
+
+  private static handleHttpError(response: HttpErrorResponse): HttpError {
+    const error: HttpError = HttpErrorService.convertToHttpError(response);
+    if (response.status && response.status !== error.status) {
+      error.status = response.status;
+    }
+    return error;
   }
 
   constructor(
@@ -41,7 +50,7 @@ export class ActivityService {
     const options = this.getOptions();
     const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
     return this.http
-      .get(url, options, false)
+      .get(url, options, false, ActivityService.handleHttpError)
       .map(response => response);
   }
 

@@ -1,10 +1,12 @@
-import { HttpService, OptionsType } from './http.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+
+import { HttpError } from '../../domain';
+import { HttpErrorService } from './http-error.service';
+import { HttpService, OptionsType } from './http.service';
+
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { HttpErrorService } from './http-error.service';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpError } from '../../domain';
 
 describe('HttpService', () => {
   const URL = 'http://ccd.reform/';
@@ -156,6 +158,22 @@ describe('HttpService', () => {
       httpService.get(URL).subscribe(() => {}, () => {});
       expect(realHttpErrorService.handle).toHaveBeenCalledWith(httpErrorResponse, true);
       expect(HttpError.from).toHaveBeenCalledWith(httpErrorResponse);
+    });
+
+    it('should call the supplied errorHandler method if provided', () => {
+      let errorHandlerCalls = [];
+      const errorHandler = (response: HttpErrorResponse): HttpError => {
+        errorHandlerCalls.push(response);
+        return null;
+      };
+      httpMock.get.and.returnValue(throwError(httpErrorResponse));
+      // Switch to real HttpErrorService to check handle() function calls HttpError.from(), which maps
+      // HttpErrorResponse "error" object properties to HttpError instance
+      httpService = new HttpService(httpMock, realHttpErrorService);
+      httpService.get(URL, null, false, errorHandler).subscribe(() => {}, () => {});
+      expect(errorHandlerCalls.length).toEqual(1);
+      expect(errorHandlerCalls[0]).toEqual(httpErrorResponse);
+      expect(realHttpErrorService.handle).toHaveBeenCalledWith(null, false);
     });
   });
 
