@@ -25,7 +25,11 @@ export class HttpService {
    * @see UrlResolverService
    */
 
-  public get(url: string, options?: OptionsType, redirectIfNotAuthorised = true, errorHandler?: (error: HttpErrorResponse) => HttpError): Observable<any> {
+  public get(
+    url: string,
+    options?: OptionsType,
+    redirectIfNotAuthorised = true,
+    errorHandler?: (error: HttpErrorResponse) => HttpError): Observable<any> {
     return this.httpclient
       .get(url, this.setDefaultValue(options))
       .pipe(
