@@ -1,10 +1,11 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../app.config';
+import { HttpError } from '../../domain';
 import { Activity } from '../../domain/activity';
-import { HttpService, OptionsType } from '../../services/http';
+import { HttpErrorService, HttpService, OptionsType } from '../../services/http';
 import { MODES } from '../activity/utils';
 import { SessionStorageService } from '../session/session-storage.service';
 
@@ -45,6 +46,14 @@ export class ActivityService {
     return this.mode !== MODES.off && this.activityUrl && this.userAuthorised;
   }
 
+  private static handleHttpError(response: HttpErrorResponse): HttpError {
+    const error: HttpError = HttpErrorService.convertToHttpError(response);
+    if (response.status && response.status !== error.status) {
+      error.status = response.status;
+    }
+    return error;
+  }
+
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
@@ -66,14 +75,14 @@ export class ActivityService {
     const options = this.getOptions();
     const url = `${this.activityUrl}/cases/${caseId.join(',')}/activity`;
     return this.http
-      .get(url, options, false)
+      .get(url, options, false, ActivityService.handleHttpError)
       .map(response => response);
   }
 
-  public postActivity(caseId: string, activityType: String): Observable<Activity[]> {
+  public postActivity(caseId: string, activity: String): Observable<Activity[]> {
     const options = this.getOptions();
     const url = `${this.activityUrl}/cases/${caseId}/activity`;
-    let body = { activity: activityType};
+    let body = { activity };
     return this.http
       .post(url, body, options, false)
       .map(response => response);
