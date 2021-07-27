@@ -22,6 +22,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly DOCUMENT_URL = 'document_url';
   static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   static readonly DOCUMENT_FILENAME = 'document_filename';
+  static readonly DOCUMENT_HASH = 'document_hash';
   static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
@@ -40,6 +41,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   fileUploadSubscription: Subscription;
   dialogSubscription: Subscription;
   caseEventSubscription: Subscription;
+
+
+  private secureModeOn: boolean = false;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -63,15 +67,17 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   ngOnInit() {
+    this.secureModeOn = this.appConfig.getDocumentSecureMode();
     this.initDialog();
     // EUI-3403. The field was not being registered when there was no value and the field
     // itself was not mandatory, which meant that show_conditions would not be evaluated.
     // I've cleaned up the logic and it's now always registered.
-    const document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
+    let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
+    document = this.secureModeOn && !document.document_hash ? { ...document, document_hash: null } : document;
     if (this.isAMandatoryComponent()) {
-      this.createDocumentFormWithValidator(document.document_url, document.document_binary_url, document.document_filename);
+      this.createDocumentFormWithValidator(document);
     } else {
-      this.createDocumentForm(document.document_url, document.document_binary_url, document.document_filename);
+      this.createDocumentForm(document);
     }
 
     if (this.appConfig.getDocumentSecureMode()) {
@@ -134,7 +140,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   fileChangeEvent(fileInput: any) {
-    const secureModeOn = this.appConfig.getDocumentSecureMode();
 
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -142,12 +147,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
 
-      const uploadFile = secureModeOn ?
+      const uploadFile = this.secureModeOn ?
         this.documentManagement.secureUploadFile(documentUpload) :
         this.documentManagement.uploadFile(documentUpload);
 
       this.fileUploadSubscription = uploadFile.subscribe({
-        next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument, secureModeOn),
+        next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument),
         error: (error: HttpError) => this.handleDocumentUploadError(error)
       });
     } else {
@@ -234,28 +239,62 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).valid &&
       !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).valid;
 
+    if (this.secureModeOn) {
+      validation = validation && !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).valid
+    }
+
     return validation;
   }
 
-  private updateDocumentForm(url: string, binaryUrl: string, filename: string): void {
+  private updateDocumentForm(url: string, binaryUrl: string, filename: string, documentHash?: string): void {
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_URL).setValue(url);
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).setValue(binaryUrl);
     this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).setValue(filename);
-  }
-  private createDocumentFormWithValidator(url: string, binaryUrl: string, filename: string) {
-    this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url, Validators.required),
-      document_binary_url: new FormControl(binaryUrl, Validators.required),
-      document_filename: new FormControl(filename, Validators.required)
-    }), true) as FormGroup;
+    if (documentHash) {
+      this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
+    }
   }
 
-  private createDocumentForm(url: string, binaryUrl: string, filename: string) {
-    this.uploadedDocument = this.registerControl(new FormGroup({
-      document_url: new FormControl(url),
-      document_binary_url: new FormControl(binaryUrl),
-      document_filename: new FormControl(filename)
-    }), true) as FormGroup;
+  private createDocumentFormWithValidator(document: {url: string, binaryUrl: string, filename: string, documentHash?: string}) {
+    let documentFormGroup;
+
+    if (document.documentHash) {
+      documentFormGroup = {
+        document_url: new FormControl(document.url, Validators.required),
+        document_binary_url: new FormControl(document.binaryUrl, Validators.required),
+        document_filename: new FormControl(document.filename, Validators.required),
+        document_hash: new FormControl(document.documentHash, Validators.required)
+      };
+    } else {
+      documentFormGroup = {
+        document_url: new FormControl(document.url, Validators.required),
+        document_binary_url: new FormControl(document.binaryUrl, Validators.required),
+        document_filename: new FormControl(document.filename, Validators.required)
+      };
+    }
+
+    this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
+  }
+
+  private createDocumentForm(document: {url: string, binaryUrl: string, filename: string, documentHash?: string}) {
+    let documentFormGroup;
+
+    if (document.documentHash) {
+      documentFormGroup = {
+        document_url: new FormControl(document.url),
+        document_binary_url: new FormControl(document.binaryUrl),
+        document_filename: new FormControl(document.filename),
+        document_hash: new FormControl(document.documentHash)
+      };
+    } else {
+      documentFormGroup = {
+        document_url: new FormControl(document.url),
+        document_binary_url: new FormControl(document.binaryUrl),
+        document_filename: new FormControl(document.filename)
+      };
+    }
+
+    this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
   }
 
   private getErrorMessage(error: HttpError): string {
@@ -279,17 +318,31 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     return documentUpload;
   }
 
-  private handleDocumentUploadResult(result: DocumentData, secureMode: boolean): void {
+  private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
-      this.createDocumentForm(null, null, null);
+      if (this.secureModeOn) {
+        this.createDocumentForm({url: null, binaryUrl: null, filename: null, documentHash: null});
+      } else {
+        this.createDocumentForm({url: null, binaryUrl: null, filename: null});
+      }
     }
 
-    let document = secureMode ? result.documents[0] : result._embedded.documents[0];
-    this.updateDocumentForm(
-      document._links.self.href,
-      document._links.binary.href,
-      document.originalDocumentName,
-    );
+    let document = this.secureModeOn ? result.documents[0] : result._embedded.documents[0];
+
+    if (this.secureModeOn) {
+      this.updateDocumentForm(
+        document._links.self.href,
+        document._links.binary.href,
+        document.originalDocumentName,
+        document.hashToken
+      );
+    } else {
+      this.updateDocumentForm(
+        document._links.self.href,
+        document._links.binary.href,
+        document.originalDocumentName,
+      );
+    }
 
     this.valid = true;
     this.fileUploadStateService.setUploadInProgress(false);
@@ -300,8 +353,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.caseField.value.document_filename = document.originalDocumentName;
       this.caseField.value.document_url = document._links.self.href;
 
-      if (secureMode) {
-        this.caseField.value.hashToken = document.hashToken;
+      if (this.secureModeOn) {
+        this.caseField.value.document_hash = document.hashToken;
       }
     }
   }
