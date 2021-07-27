@@ -67,7 +67,10 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
     this.socketSubscription = this.socket.activity.subscribe(activity => {
       if (Array.isArray(activity)) {
         const thisCase: CaseActivityInfo = activity.find(item => item.caseId === this.caseId);
-        this.handleActivity(Utils.activity.stripUserFromActivity(thisCase, this.socket.user));
+        // Only do something if this update is one we care about - i.e., it's the current case.
+        if (thisCase) {
+          this.handleActivity(Utils.activity.stripUserFromActivity(thisCase, this.socket.user));
+        }
       } else {
         this.handleActivity(undefined);
       }

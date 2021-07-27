@@ -24,6 +24,42 @@ describe('CaseActivityComponent', () => {
     return { caseId, editors, viewers, unknownViewers: 0, unknownEditors: 0 };
   };
 
+  const checkHidden = (): void => {
+    fixture.detectChanges();
+    const div = fixture.debugElement.query(By.css('.activity-component'));
+    expect(div).toBeNull();
+  };
+
+  const checkShown = (expectedTexts: string[]): void => {
+    fixture.detectChanges();
+    const div = fixture.debugElement.query(By.css('.activity-component'));
+    expect(div).not.toBeNull();
+    expectedTexts.forEach(text => {
+      expect(div.nativeElement.textContent).toContain(text);
+    });
+  };
+
+  const checkLock = (expected: boolean): void => {
+    const caseLockedDiv = fixture.debugElement.query(By.css('.case-locked'));
+    if (expected) {
+      expect(caseLockedDiv).not.toBeNull();
+    } else {
+      expect(caseLockedDiv).toBeNull();
+    }
+  };
+
+  const checkMode = (mode: string): void => {
+    const banner = fixture.debugElement.query(By.css('.activity-banner'));
+    const icon = fixture.debugElement.query(By.css('.activity-icon'));
+    if (mode === 'banner') {
+      expect(banner).not.toBeNull();
+      expect(icon).toBeNull();
+    } else {
+      expect(banner).toBeNull();
+      expect(icon).not.toBeNull();
+    }
+  }
+
   beforeEach(() => {
     activitySocketService = {
       watching: [],
@@ -89,97 +125,68 @@ describe('CaseActivityComponent', () => {
       expect(component['socketSubscription']).toBeDefined();
     });
     it('should not show anything with no activity set', () => {
-      const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-      expect(outerDiv).toBeNull();
+      checkHidden();
     });
 
     describe('when there is activity', () => {
       it('should not show anything when there are no viewers or editors', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
       it('should show a view banner when there is a viewer on the current case', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [JOE_BLOGGS])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).not.toBeNull();
-        expect(outerDiv.nativeElement.textContent).toContain(Utils.DESCRIPTIONS.VIEWERS_SUFFIX);
-        expect(outerDiv.nativeElement.textContent).toContain('Joe Bloggs');
-        const activityBanner = fixture.debugElement.query(By.css('.activity-banner'));
-        expect(activityBanner).not.toBeNull();
-        const caseLockedDiv = fixture.debugElement.query(By.css('.case-locked'));
-        expect(caseLockedDiv).toBeNull();
-        const activityIcon = fixture.debugElement.query(By.css('.activity-icon'));
-        expect(activityIcon).toBeNull();
+        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
+        checkMode('banner');
+        checkLock(false);
       });
       it('should not show anything when the viewer is the current user', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [BOB_SMITH])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
-      it('should show an edit banner when there is a editor on the current case', () => {
+      it('should show an edit banner when there is an editor on the current case', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [JOE_BLOGGS], [])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).not.toBeNull();
-        expect(outerDiv.nativeElement.textContent).toContain(Utils.DESCRIPTIONS.EDITORS_PREFIX);
-        expect(outerDiv.nativeElement.textContent).toContain('Joe Bloggs');
-        const caseLockedDiv = fixture.debugElement.query(By.css('.case-locked'));
-        expect(caseLockedDiv).not.toBeNull();
+        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
+        checkLock(true);
       });
       it('should not show anything when the editor is the current user', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [BOB_SMITH], [])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
       it('should not show anything when the activity is on a different case', () => {
         activitySocketService.activity.next([getActivity('different_case', [], [JOE_BLOGGS])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
+      });
+      it('should not change state when the activity is about a different case', () => {
+        activitySocketService.activity.next([getActivity(CASE_ID, [JOE_BLOGGS], [])]);
+        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
+        checkLock(true);
+
+        // Now fire in some activity it doesn't care about.
+        activitySocketService.activity.next([getActivity('different_case', [], [BOB_SMITH])]);
+        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
+        checkLock(true);
       });
       it('should show a view icon when there is a viewer on the current case in iconOnly mode', () => {
         component.iconOnly = true;
         activitySocketService.activity.next([getActivity(CASE_ID, [], [JOE_BLOGGS])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).not.toBeNull();
-        expect(outerDiv.nativeElement.textContent).toContain(Utils.DESCRIPTIONS.VIEWERS_SUFFIX);
-        expect(outerDiv.nativeElement.textContent).toContain('Joe Bloggs');
-        const activityBanner = fixture.debugElement.query(By.css('.activity-banner'));
-        expect(activityBanner).toBeNull();
-        const caseLockedDiv = fixture.debugElement.query(By.css('.case-locked'));
-        expect(caseLockedDiv).toBeNull();
-        const activityIcon = fixture.debugElement.query(By.css('.activity-icon'));
-        expect(activityIcon).not.toBeNull();
+        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
+        checkLock(false);
+        checkMode('icon');
       });
       it('should show an edit icon when there is an editor on the current case in iconOnly mode', () => {
         component.iconOnly = true;
         activitySocketService.activity.next([getActivity(CASE_ID, [], [JOE_BLOGGS])]);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).not.toBeNull();
-        expect(outerDiv.nativeElement.textContent).toContain(Utils.DESCRIPTIONS.VIEWERS_SUFFIX);
-        expect(outerDiv.nativeElement.textContent).toContain('Joe Bloggs');
-        const activityBanner = fixture.debugElement.query(By.css('.activity-banner'));
-        expect(activityBanner).toBeNull();
-        const caseLockedDiv = fixture.debugElement.query(By.css('.editors-only'));
-        expect(caseLockedDiv).toBeNull();
-        const activityIcon = fixture.debugElement.query(By.css('.activity-icon'));
-        expect(activityIcon).not.toBeNull();
+        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
+        checkMode('icon');
+        const editorsOnly = fixture.debugElement.query(By.css('.editors-only'));
+        expect(editorsOnly).toBeNull();
       });
     });
 
     describe('when there is no activity', () => {
       it('should not show anything when the activity is null', () => {
         activitySocketService.activity.next(null);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
     });
   });
@@ -195,51 +202,34 @@ describe('CaseActivityComponent', () => {
       expect(component['socketSubscription']).toBeUndefined();
     });
     it('should not show anything with no activity set', () => {
-      const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-      expect(outerDiv).toBeNull();
+      checkHidden();
     });
 
     describe('when there is activity', () => {
       it('should not show anything when there are no viewers or editors', () => {
         pollingActivitySubject.next(getActivity(CASE_ID, [], []));
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
       it('should show a view banner when there is a viewer on the current case', () => {
         pollingActivitySubject.next(getActivity(CASE_ID, [], [JOE_BLOGGS]));
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).not.toBeNull();
-        expect(outerDiv.nativeElement.textContent).toContain(Utils.DESCRIPTIONS.VIEWERS_SUFFIX);
-        expect(outerDiv.nativeElement.textContent).toContain('Joe Bloggs');
-        const caseLockedDiv = fixture.debugElement.query(By.css('.case-locked'));
-        expect(caseLockedDiv).toBeNull();
+        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
+        checkLock(false);
       });
       it('should show an edit banner when there is a editor on the current case', () => {
         pollingActivitySubject.next(getActivity(CASE_ID, [JOE_BLOGGS], []));
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).not.toBeNull();
-        expect(outerDiv.nativeElement.textContent).toContain(Utils.DESCRIPTIONS.EDITORS_PREFIX);
-        expect(outerDiv.nativeElement.textContent).toContain('Joe Bloggs');
-        const caseLockedDiv = fixture.debugElement.query(By.css('.case-locked'));
-        expect(caseLockedDiv).not.toBeNull();
+        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
+        checkLock(true);
       });
       it('should not show anything when the activity is on a different case', () => {
         pollingActivitySubject.next(getActivity('different_case', [], [JOE_BLOGGS]));
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
     });
 
     describe('when there is no activity', () => {
       it('should not show anything when the activity is null', () => {
         pollingActivitySubject.next(null);
-        fixture.detectChanges();
-        const outerDiv = fixture.debugElement.query(By.css('.activity-component'));
-        expect(outerDiv).toBeNull();
+        checkHidden();
       });
     });
   });
