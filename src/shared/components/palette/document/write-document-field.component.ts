@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 
 import { Constants } from '../../../commons/constants';
-import { DocumentData } from '../../../domain';
+import { DocumentData, FormDocument } from '../../../domain';
 import { CaseView } from '../../../domain/case-view/case-view.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
@@ -42,8 +42,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   dialogSubscription: Subscription;
   caseEventSubscription: Subscription;
 
-
-  private secureModeOn: boolean = false;
+  private secureModeOn: boolean;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -255,44 +254,32 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  private createDocumentFormWithValidator(document: {url: string, binaryUrl: string, filename: string, documentHash?: string}) {
-    let documentFormGroup;
+  private createDocumentFormWithValidator(document: FormDocument) {
+    let documentFormGroup = {
+      document_url: new FormControl(document.document_url, Validators.required),
+      document_binary_url: new FormControl(document.document_binary_url, Validators.required),
+      document_filename: new FormControl(document.document_filename, Validators.required)
+    };
 
-    if (document.documentHash) {
-      documentFormGroup = {
-        document_url: new FormControl(document.url, Validators.required),
-        document_binary_url: new FormControl(document.binaryUrl, Validators.required),
-        document_filename: new FormControl(document.filename, Validators.required),
-        document_hash: new FormControl(document.documentHash, Validators.required)
-      };
-    } else {
-      documentFormGroup = {
-        document_url: new FormControl(document.url, Validators.required),
-        document_binary_url: new FormControl(document.binaryUrl, Validators.required),
-        document_filename: new FormControl(document.filename, Validators.required)
-      };
-    }
+    documentFormGroup = this.secureModeOn ? {
+      ...documentFormGroup,
+      ...{ document_hash:  new FormControl(document.document_hash, Validators.required) }
+    } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
   }
 
-  private createDocumentForm(document: {url: string, binaryUrl: string, filename: string, documentHash?: string}) {
-    let documentFormGroup;
+  private createDocumentForm(document: FormDocument) {
+    let documentFormGroup = {
+      document_url: new FormControl(document.document_url),
+      document_binary_url: new FormControl(document.document_binary_url),
+      document_filename: new FormControl(document.document_filename)
+    };
 
-    if (document.documentHash) {
-      documentFormGroup = {
-        document_url: new FormControl(document.url),
-        document_binary_url: new FormControl(document.binaryUrl),
-        document_filename: new FormControl(document.filename),
-        document_hash: new FormControl(document.documentHash)
-      };
-    } else {
-      documentFormGroup = {
-        document_url: new FormControl(document.url),
-        document_binary_url: new FormControl(document.binaryUrl),
-        document_filename: new FormControl(document.filename)
-      };
-    }
+    documentFormGroup = this.secureModeOn ? {
+      ...documentFormGroup,
+      ...{ document_hash: new FormControl(document.document_hash) }
+    } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
   }
@@ -321,9 +308,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
       if (this.secureModeOn) {
-        this.createDocumentForm({url: null, binaryUrl: null, filename: null, documentHash: null});
+        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null, document_hash: null});
       } else {
-        this.createDocumentForm({url: null, binaryUrl: null, filename: null});
+        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null});
       }
     }
 
