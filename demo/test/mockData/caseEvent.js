@@ -1,4 +1,3 @@
-
 const CCDCaseConfig = require('../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 
 

@@ -15,19 +15,19 @@
           <th></th>
         </tr>
         <!-- </COMPLEX table field header>-->
-        <ng-container *ngFor="let item of rows; let i = index;trackBy:trackByIndex;" >
+        <ng-container *ngFor="let item of rows; let i = index; trackBy:trackByIndex;" >
           <!-- <COMPLEX table collapsed view>-->
-          <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]" [class.last-accordion]="lastAccordion && isHidden[i]">
+          <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]">
             <ng-container *ngFor="let heading of columns">
               <ng-container  *ngFor="let name of item | keyvalue">
                 <td *ngIf="heading.trim() == name.key" class="text-16">
                   <div *ngIf="name.value;else showEmptyTd">
-                  <ccd-field-read [caseField]="{
-                        id: name.key,
-                        label: name.value.label,
-                        field_type: columnsHorizontalLabel[heading.trim()].type,
-                        value: name.value
-                      }" [context]="context"></ccd-field-read>
+                    <ccd-field-read [caseField]="{
+                      id: name.key,
+                      label: name.value.label,
+                      field_type: this.columnsHorizontalLabel[name.key].type,
+                      value: name.value
+                    }" [context]="context"></ccd-field-read>
                   </div>
                   <ng-template #showEmptyTd><div>&nbsp;</div></ng-template>
                 </td>
@@ -52,16 +52,16 @@
                     <ng-container *ngIf="vLabel.key == name.key && isNotBlank(name.value)" >
                     <!-- <COMPLEX table expandable body simple field>-->
 
-                    <tr class="complex-panel-simple-field accordion-body" [class.last-accordion]="lastAccordion"
+                    <tr class="complex-panel-simple-field accordion-body"
                         ccdConditionalShow [caseField]="vLabel.value.caseField" [contextFields]="caseField | ccdFieldsFilter :true :i">
                       <th><span class="text-16">{{vLabel.value.label}}</span></th>
                       <td *ngIf="vLabel.value.type !== 'Complex'" class="text-16">
                         <ccd-field-read [caseField]="{
-                              id: name.key,
-                              label: vLabel.value.label,
-                               field_type:  vLabel.value.type,
-                              value: name.value
-                            }" [context]="context"></ccd-field-read>
+                          id: name.key,
+                          label: vLabel.label,
+                          field_type: vLabel.value.caseField.field_type,
+                          value: name.value
+                        }" [context]="context"></ccd-field-read>
                       </td>
                     </tr>
                       
