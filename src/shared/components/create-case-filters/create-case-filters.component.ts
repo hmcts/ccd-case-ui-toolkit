@@ -40,8 +40,8 @@ export class CreateCaseFiltersComponent implements OnInit {
   filterEventControl: FormControl;
 
   constructor(
-    private orderService: OrderService,
-    private definitionsService: DefinitionsService,
+    private readonly orderService: OrderService,
+    private readonly definitionsService: DefinitionsService,
     private readonly sessionStorageService: SessionStorageService
   ) { }
 
@@ -114,10 +114,10 @@ export class CreateCaseFiltersComponent implements OnInit {
 
   private retainEventsWithCreateRights(events: CaseEvent[]): CaseEvent[] {
     const userProfile = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    let caseEvents: CaseEvent[] = [];
-    events.forEach((item) => {
-      if (userProfile && userProfile.roles && !!userProfile.roles.find(role => this.hasCreateAccess(item, role))) {
-        caseEvents.push(item);
+    const caseEvents: CaseEvent[] = [];
+    events.forEach((event) => {
+      if (userProfile && userProfile.roles && !!userProfile.roles.find(role => this.hasCreateAccess(event, role))) {
+        caseEvents.push(event);
       }
     });
     return caseEvents;

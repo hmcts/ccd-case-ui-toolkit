@@ -22,9 +22,9 @@ const EVENT_NAME_3 = 'Event three';
 const ROLE1 = 'role1';
 const ROLE2 = 'role2';
 const ROLE3 = 'role3';
-let acl1: AccessControlList = createACL(ROLE1, true, true, true, false);
-let acl2: AccessControlList = createACL(ROLE2, true, true, false, false);
-let acl3: AccessControlList = createACL(ROLE3, false, true, false, false);
+const acl1: AccessControlList = createACL(ROLE1, true, true, true, false);
+const acl2: AccessControlList = createACL(ROLE2, true, true, false, false);
+const acl3: AccessControlList = createACL(ROLE3, false, true, false, false);
 let sessionStorageService: any;
 
 const CASE_TYPES_1: CaseTypeLite[] = [
@@ -297,7 +297,8 @@ describe('CreateCaseFiltersComponent', () => {
     mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
     mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname", "roles": ["role1", "role3"], "email": "test@mail.com","token": null}`)
+    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["role1", "role3"], "email": "test@mail.com","token": null}`);
 
     TestBed
       .configureTestingModule({
@@ -369,7 +370,8 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should return blank list of events when user doesnt have create access', () => {
-    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname", "roles": ["role3"], "email": "test@mail.com","token": null}`);
+    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["role3"], "email": "test@mail.com","token": null}`);
     mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
     fixture.detectChanges();
     component.ngOnInit();
