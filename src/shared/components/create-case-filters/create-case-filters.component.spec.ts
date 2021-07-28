@@ -19,12 +19,9 @@ const EVENT_NAME_2 = 'Event two';
 const EVENT_ID_3 = 'ID_3';
 const EVENT_NAME_3 = 'Event three';
 
-const ROLE1 = 'role1';
-const ROLE2 = 'role2';
-const ROLE3 = 'role3';
-const acl1: AccessControlList = createACL(ROLE1, true, true, true, false);
-const acl2: AccessControlList = createACL(ROLE2, true, true, false, false);
-const acl3: AccessControlList = createACL(ROLE3, false, true, false, false);
+const acl1: AccessControlList = createACL('role1', true, true, true, false);
+const acl2: AccessControlList = createACL('role2', true, true, false, false);
+const acl3: AccessControlList = createACL('role3', false, true, false, false);
 let sessionStorageService: any;
 
 const CASE_TYPES_1: CaseTypeLite[] = [
