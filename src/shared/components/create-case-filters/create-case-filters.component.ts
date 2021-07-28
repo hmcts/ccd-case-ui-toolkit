@@ -114,7 +114,8 @@ export class CreateCaseFiltersComponent implements OnInit {
 
   private retainEventsWithCreateRights(events: CaseEvent[]): CaseEvent[] {
     const userProfile = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    return events.filter(event => userProfile && userProfile.roles && !!userProfile.roles.find(role => this.hasCreateAccess(event, role)));
+    return events.filter(event => userProfile && userProfile.roles &&
+      !!userProfile.roles.find(role => this.hasCreateAccess(event, role)));
   }
 
   private hasCreateAccess(caseEvent: CaseEvent, role: any): boolean {
