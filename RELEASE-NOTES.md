@@ -26,7 +26,7 @@
 **EUI-3581** Field interpolation does not work for the field type MultiSelectList
 **EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
 
-### Version 4.0.0-prepended-tabs-v2
+### Version 4.0.0-prepended-tabs-v3
 **EUI-3777** Create prepended tabs on case view
 
 ### Version 4.0.0
