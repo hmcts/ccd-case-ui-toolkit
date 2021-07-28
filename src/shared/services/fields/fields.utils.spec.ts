@@ -1,10 +1,10 @@
 import { CaseTab, CaseView } from '../../domain/case-view';
-import { FieldsUtils } from './fields.utils';
 import { CaseField } from '../../domain/definition';
-import { aCaseField } from '../../index';
+import { aCaseField } from '../../fixture/shared.test.fixture';
+import { FieldsUtils } from './fields.utils';
 
 describe('FieldsUtils', () => {
-  const fieldUtils = new FieldsUtils();
+  const fieldUtils: FieldsUtils = new FieldsUtils();
 
   const textField: CaseField =
     aCaseField('textField', 'Some text', 'Text', 'OPTIONAL', null);
@@ -156,6 +156,206 @@ describe('FieldsUtils', () => {
 
       expect(caseFields['details']['claimDetails']['caseCreationDate']).toBe('22 Nov 2018');
       expect(caseFields['details']['claimDetails']['caseAmountToPay']).toBe('£67.89');
+    });
+  });
+
+  describe('mergeLabelCaseFieldsAndFormFields containing MultiSelectLists', () => {
+    const ITEMS = [
+      { code: 'arya', label: 'Arya Stark' },
+      { code: 'bob', label: 'Robert Baratheon' },
+      { code: 'cersei', label: 'Cersei Lannister' },
+      { code: 'dani', label: 'Daenerys Targaryen' }
+    ];
+    const addItems = (field: CaseField): CaseField => {
+      field.field_type.fixed_list_items = ITEMS;
+      field.value = [ ITEMS[1].code, ITEMS[2].code ];
+      return field;
+    };
+    const getComplex = (multiSelect: CaseField): CaseField => {
+      const complex: CaseField = aCaseField('complex', 'Complex', 'Complex', 'COMPLEX', null);
+      complex.field_type.complex_fields = [ multiSelect ];
+      return complex;
+    };
+    it(`should set up ${FieldsUtils.LABEL_SUFFIX} properties for multi-select values`, () => {
+      const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
+      const FORM_FIELDS = {};
+
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([ MULTI_SELECT ], FORM_FIELDS);
+      expect(caseFields['ms']).toBeDefined();
+      expect(caseFields['ms'].length).toBe(2);
+      expect(caseFields['ms'][0]).toBe(ITEMS[1].code);
+      expect(caseFields['ms'][1]).toBe(ITEMS[2].code);
+      expect(caseFields[`ms${FieldsUtils.LABEL_SUFFIX}`]).toBeDefined();
+      expect(caseFields[`ms${FieldsUtils.LABEL_SUFFIX}`].length).toBe(2);
+      expect(caseFields[`ms${FieldsUtils.LABEL_SUFFIX}`][0]).toBe(ITEMS[1].label);
+      expect(caseFields[`ms${FieldsUtils.LABEL_SUFFIX}`][1]).toBe(ITEMS[2].label);
+    });
+
+    it(`should set up ${FieldsUtils.LABEL_SUFFIX} properties for multi-select values within complex types`, () => {
+      const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
+      const COMPLEX: CaseField = getComplex(MULTI_SELECT);
+      const FORM_FIELDS = {};
+
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([ COMPLEX ], FORM_FIELDS);
+      expect(caseFields['complex']).toBeDefined();
+      expect(caseFields['complex']['ms']).toBeDefined();
+      expect(caseFields['complex']['ms'].length).toBe(2);
+      expect(caseFields['complex']['ms'][0]).toBe(ITEMS[1].code);
+      expect(caseFields['complex']['ms'][1]).toBe(ITEMS[2].code);
+      expect(caseFields['complex'][`ms${FieldsUtils.LABEL_SUFFIX}`]).toBeDefined();
+      expect(caseFields['complex'][`ms${FieldsUtils.LABEL_SUFFIX}`].length).toBe(2);
+      expect(caseFields['complex'][`ms${FieldsUtils.LABEL_SUFFIX}`][0]).toBe(ITEMS[1].label);
+      expect(caseFields['complex'][`ms${FieldsUtils.LABEL_SUFFIX}`][1]).toBe(ITEMS[2].label);
+    });
+
+    it(`should set up ${FieldsUtils.LABEL_SUFFIX} properties for multi-select values within collections`, () => {
+      const MULTI_SELECT: CaseField = addItems(aCaseField('ms', 'MS', 'MultiSelectList', 'OPTIONAL', null));
+      const COMPLEX: CaseField = getComplex(MULTI_SELECT);
+      const COLLECTION: CaseField = aCaseField('collection', 'Collection', 'Collection', 'OPTIONAL', null);
+      COLLECTION.field_type.collection_field_type = COMPLEX.field_type;
+      const FORM_FIELDS = {
+        collection: [
+          { id: '1', value: MULTI_SELECT.value }
+        ]
+      };
+
+      const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([ COLLECTION ], FORM_FIELDS);
+      expect(caseFields['collection']).toBeDefined();
+      expect(caseFields['collection'].length).toBe(1);
+      const item = caseFields['collection'][0];
+      expect(item['value']).toBeDefined();
+      expect(item['value']['ms']).toBeDefined();
+      expect(item['value']['ms'].length).toBe(2);
+      expect(item['value']['ms'][0]).toBe(ITEMS[1].code);
+      expect(item['value']['ms'][1]).toBe(ITEMS[2].code);
+      expect(item['value'][`ms${FieldsUtils.LABEL_SUFFIX}`]).toBeDefined();
+      expect(item['value'][`ms${FieldsUtils.LABEL_SUFFIX}`].length).toBe(2);
+      expect(item['value'][`ms${FieldsUtils.LABEL_SUFFIX}`][0]).toBe(ITEMS[1].label);
+      expect(item['value'][`ms${FieldsUtils.LABEL_SUFFIX}`][1]).toBe(ITEMS[2].label);
+    });
+  });
+
+  describe('containsNonEmptyValues() function tests', () => {
+    it('should return false for null', () => {
+      expect(FieldsUtils.containsNonEmptyValues(null)).toBe(false);
+    });
+
+    it('should return true for a non-empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: 'value' })).toBe(true);
+    });
+
+    it('should return false for an empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues({})).toBe(false);
+    });
+
+    it('should return false for an object containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: null, field2: '' })).toBe(false);
+    });
+
+    it('should return false for an object containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: undefined })).toBe(false);
+    });
+
+    it('should return true for an object containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: 0 })).toBe(true);
+    });
+
+    it('should return false for an object containing no non-empty descendant values', () => {
+      expect(FieldsUtils.containsNonEmptyValues({
+        field1: {
+          field1_1: null,
+          field1_2: '',
+          field1_3: undefined
+        }
+      })).toBe(false);
+    });
+
+    it('should return true for an object containing at least one non-empty descendant value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({
+        field1: {
+          field1_1: null,
+          field1_2: 'null'
+        }
+      })).toBe(true);
+    });
+
+    it('should return true for an object containing a non-empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: ['value'] })).toBe(true);
+    });
+
+    it('should return false for an object containing an empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [] })).toBe(false);
+    });
+
+    it('should return false for an object with an array containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [null, ''] })).toBe(false);
+    });
+
+    it('should return false for an object with an array containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [undefined] })).toBe(false);
+    });
+
+    it('should return true for an object with an array containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues({ field1: [0] })).toBe(true);
+    });
+
+    it('should return true for a non-empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues(['value'])).toBe(true);
+    });
+
+    it('should return false for an empty array', () => {
+      expect(FieldsUtils.containsNonEmptyValues([])).toBe(false);
+    });
+
+    it('should return false for an array containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues([null, ''])).toBe(false);
+    });
+
+    it('should return false for an array containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([undefined])).toBe(false);
+    });
+
+    it('should return true for an array containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([0])).toBe(true);
+    });
+
+    it('should return true for an array containing a non-empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: 'value' }])).toBe(true);
+    });
+
+    it('should return false for an array containing an empty object', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{}])).toBe(false);
+    });
+
+    it('should return false for an array with an object containing only null and empty string values', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: null, field2: '' }])).toBe(false);
+    });
+
+    it('should return false for an array with an object containing only an undefined value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: undefined }])).toBe(false);
+    });
+
+    it('should return true for an array with an object containing a zero number value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{ field1: 0 }])).toBe(true);
+    });
+
+    it('should return false for an array with an object containing no non-empty descendant values', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{
+        field1: {
+          field1_1: null,
+          field1_2: '',
+          field1_3: undefined
+        }
+      }])).toBe(false);
+    });
+
+    it('should return true for an array with an object containing at least one non-empty descendant value', () => {
+      expect(FieldsUtils.containsNonEmptyValues([{
+        field1: {
+          field1_1: null,
+          field1_2: 'null'
+        }
+      }])).toBe(true);
     });
   });
 
