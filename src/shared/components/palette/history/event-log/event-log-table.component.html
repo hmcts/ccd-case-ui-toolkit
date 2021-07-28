@@ -29,7 +29,7 @@
         <span class="tooltiptext doc-tooltip">{{getSignificantItemDesc(event)}}</span>
       </div>
     </td>
-    <td tabindex="0" attr.aria-label="{{getAriaLabelforColumn(event)}}" (keydown.enter)="select(event)"><div class="tooltip text-16">{{event.timestamp | ccdDate : 'local'}}
+    <td tabindex="0" attr.aria-label="{{getAriaLabelforColumn(event)}}" (keydown.enter)="select(event)"><div class="tooltip text-16">{{event.timestamp | ccdDate : 'utc'}}
       <span class="tooltiptext">Local: {{event.timestamp | ccdDate : 'local'}}</span>
     </div></td>
     <td tabindex="0"><span class="text-16">{{event.user_first_name | titlecase}} {{event.user_last_name | uppercase}}</span></td>
