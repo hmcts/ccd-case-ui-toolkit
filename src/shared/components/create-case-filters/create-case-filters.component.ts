@@ -5,7 +5,7 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
-import { DefinitionsService, OrderService } from '../../services';
+import { DefinitionsService, OrderService, SessionStorageService } from '../../services';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -42,6 +42,7 @@ export class CreateCaseFiltersComponent implements OnInit {
   constructor(
     private orderService: OrderService,
     private definitionsService: DefinitionsService,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   ngOnInit() {
@@ -103,12 +104,27 @@ export class CreateCaseFiltersComponent implements OnInit {
     });
   }
 
-  private sortEvents(events: CaseEvent[]) {
-    return this.orderService.sort(this.retainEventsWithNoPreStates(events));
+  private sortEvents(events: CaseEvent[]): CaseEvent[] {
+    return this.orderService.sort(this.retainEventsWithCreateRights(this.retainEventsWithNoPreStates(events)));
   }
 
-  private retainEventsWithNoPreStates(events: CaseEvent[]) {
+  private retainEventsWithNoPreStates(events: CaseEvent[]): CaseEvent[] {
     return events.filter(event => event.pre_states.length === 0);
+  }
+
+  private retainEventsWithCreateRights(events: CaseEvent[]): CaseEvent[] {
+    const userProfile = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    let caseEvents: CaseEvent[] = [];
+    events.forEach((item) => {
+      if (userProfile && userProfile.roles && !!userProfile.roles.find(role => this.hasCreateAccess(item, role))) {
+        caseEvents.push(item);
+      }
+    });
+    return caseEvents;
+  }
+
+  private hasCreateAccess(caseEvent: CaseEvent, role: any): boolean {
+    return !!caseEvent.acls.find(acl => acl.role === role && acl.create === true);
   }
 
   private selectJurisdiction(jurisdictions: Jurisdiction[], filterJurisdictionControl: FormControl) {
