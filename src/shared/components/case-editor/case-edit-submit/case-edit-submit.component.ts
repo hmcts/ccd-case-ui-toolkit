@@ -349,6 +349,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.profile.isSolicitor();
   }
 
+  private announceProfile(route: ActivatedRoute): void {
+    route.snapshot.pathFromRoot[1].data.profile ?
+      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
+    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
+  }
+
   private buildConfirmation(response: object): Confirmation {
     if (response['after_submit_callback_response']) {
       return new Confirmation(
