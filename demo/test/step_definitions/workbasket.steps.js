@@ -27,6 +27,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
+
     Given('I set mock workbasket config {string}', async function (workbasketConfigref) {
         const workbasketConfig = global.scenarioData[workbasketConfigref];
         MockApp.onGet('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
@@ -65,7 +66,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const softAssert = new SoftAssert();
         const fields = datatable.hashes();
         for (let i = 0; i < fields.length; i++) {
-           
+
             softAssert.setScenario(`field with id ${fields[i].fieldId}`)
             await softAssert.assert(async () => expect(await caseListFilters.getDateTimeFieldValueWithId(fields[i].fieldId), `field value mismatch`).to.equal(fields[i].value))
         }

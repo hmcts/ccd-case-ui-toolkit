@@ -12,10 +12,10 @@ export class FirstErrorPipe implements PipeTransform {
     }
 
     if (!args) {
-      args = 'field';
+      args = 'Field';
     }
 
-    let keys = Object.keys(value);
+    const keys = Object.keys(value);
 
     if (!keys.length) {
       return '';
@@ -25,9 +25,9 @@ export class FirstErrorPipe implements PipeTransform {
     } else if (keys[0] === 'pattern') {
       return `The data entered is not valid for ${args}`;
     } else if (keys[0] === 'minlength') {
-      return `${args} required minimum length`;
+      return `${args} is below the minimum length`;
     } else if (keys[0] === 'maxlength') {
-      return `${args} exceeds maximum length`;
+      return `${args} exceeds the maximum length`;
     } else if (value.hasOwnProperty('matDatetimePickerParse')) {
       return 'The date entered is not valid. Please provide a valid date'
     }
