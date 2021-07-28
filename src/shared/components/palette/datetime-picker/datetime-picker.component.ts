@@ -41,6 +41,10 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public yearSelection = false;
   public checkTime = true;
   public stringEdited = false;
+  private minimumDate = new Date('01/01/1800');
+  private maximumDate = null;
+  public minError = false;
+  public maxError = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
@@ -65,6 +69,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.setDateTimeFormat();
       this.formatValue();
     }, 1);
+    // when the status changes check that the maximum/minimum date has not been exceeded
+    this.dateControl.statusChanges.subscribe(() => {
+      this.minError = this.dateControl.hasError('matDatetimePickerMin');
+      this.maxError = this.dateControl.hasError('matDatetimePickerMax');
+    });
   }
 
   public setDateTimeFormat(): void {
@@ -98,11 +107,19 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public minDate(caseField: CaseField): Date {
-    return caseField.field_type.min ? new Date(caseField.field_type.min) : null;
+    // set minimum date
+    if (caseField.field_type.min instanceof Date) {
+      this.minimumDate = caseField.field_type.min ? new Date(caseField.field_type.min) : this.minimumDate;
+    }
+    return this.minimumDate;
   }
 
   public maxDate(caseField: CaseField): Date {
-    return caseField.field_type.max ? new Date(caseField.field_type.max) : null;
+    // set maximum date
+    if (caseField.field_type.max instanceof Date) {
+      this.maximumDate = caseField.field_type.max ? new Date(caseField.field_type.max) : this.maximumDate;
+    }
+    return this.maximumDate;
   }
 
   public configureDatePicker(dateTimePickerFormat: string): void {
