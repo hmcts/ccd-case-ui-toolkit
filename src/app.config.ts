@@ -1,6 +1,3 @@
-import { CaseTab } from './shared';
-import { Observable } from 'rxjs/Rx';
-
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
@@ -24,7 +21,6 @@ export abstract class AbstractAppConfig {
   abstract getActivityMaxRequestPerBatch(): number;
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   abstract getPrintServiceUrl(): string;
-  abstract prependedCaseViewTabs(): Observable<CaseTab[]>;
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
    * @deprecated

@@ -9,9 +9,10 @@ import { CaseView, CaseField, Draft } from '../../domain';
 
 export class CaseHeaderComponent implements OnInit {
 
-  @Input() caseDetails: CaseView;
-  public caseTitle: CaseField;
-  public caseFields: CaseField[];
+  @Input()
+  caseDetails: CaseView;
+  caseTitle: CaseField;
+  caseFields: CaseField[];
 
   ngOnInit(): void {
     this.caseTitle = new CaseField();

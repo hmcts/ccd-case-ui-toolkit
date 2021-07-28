@@ -22,7 +22,6 @@ import {
 } from '../../services';
 import { CaseNotifier } from '../case-editor';
 import { CallbackErrorsContext } from '../error';
-import { AbstractAppConfig } from '../../../app.config';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -38,9 +37,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
   @Input() public caseDetails: CaseView;
+  @Input() public prependedTabs: CaseTab[] = [];
 
   public BANNER = DisplayMode.BANNER;
-  public prependedTabs: CaseTab[] = [];
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
   public formGroup: FormGroup;
@@ -65,7 +64,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly orderService: OrderService,
     private readonly activityPollingService: ActivityPollingService,
     private readonly dialog: MatDialog,
-    private readonly appConfig: AbstractAppConfig,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
     private readonly caseNotifier: CaseNotifier,
@@ -232,8 +230,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private init(): void {
     // Clone and sort tabs array
-    this.appConfig.prependedCaseViewTabs()
-      .subscribe((prependedTabs: CaseTab[]) => this.prependedTabs = prependedTabs);
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);

@@ -1182,7 +1182,21 @@ describe('CaseViewerComponent - prependedTabs', () => {
 
     f = TestBed.createComponent(CaseViewerComponent);
     comp = f.componentInstance;
-    comp.caseDetails = CASE_VIEW
+    comp.caseDetails = CASE_VIEW;
+    comp.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
     d = f.debugElement;
     f.detectChanges();
   }));
