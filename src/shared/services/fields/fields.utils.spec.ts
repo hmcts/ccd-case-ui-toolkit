@@ -75,16 +75,19 @@ describe('FieldsUtils', () => {
       const caseFields = fieldUtils
         .mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], formFieldsData);
 
+      expect(caseFields['caseCreationDate']).toBeUndefined();
+    });
+
     it('should handle numeric zero in MoneyGBP field', () => {
       const data = { someText: 'Test', caseAmountToPay: 0 };
       const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);
-      expect(caseFields['caseAmountToPay']).toBe('£0.00');
+      expect(caseFields['caseAmountToPay']).toBeUndefined();
     });
 
     it('should handle invalid value in MoneyGBP field', () => {
       const data = { someText: 'Test', caseAmountToPay: 'bob' };
       const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);
-      expect(caseFields['caseAmountToPay']).toBe('');
+      expect(caseFields['caseAmountToPay']).toBeNull();
     });
 
     it('should merge complex field containing Date and Money field', () => {

@@ -154,12 +154,24 @@ describe('DatetimePickerComponent', () => {
     const firstFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(firstFormattedDate).not.toBe(null);
 
+    const secondDateEntryParameter = 'DD+MM+YYYY ss*mm*HH'
+
+    const SECOND_CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: initialDateTime,
+      dateTimeEntryFormat: secondDateEntryParameter
+    });
+
     component.caseField = SECOND_CASE_FIELD;
     component.ngOnInit();
 
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(newFormattedDate).not.toBe(null);
-    endTest();
+    flush();
+    discardPeriodicTasks();
   }));
 
   it('should be able to confirm the selected datetime', fakeAsync(() => {
@@ -239,29 +251,32 @@ describe('DatetimePickerComponent', () => {
     tick(1);
     fixture.detectChanges();
 
-    const initialFormattedDate = fixture.nativeElement.querySelector('input').value;
-    expect(initialFormattedDate).not.toBe(null);
-
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
+    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).toBeNull();
 
     let dayCells = fixture.debugElement.queryAll(
       By.css('.mat-calendar-body-cell')
     );
 
     // get the collection of day buttons in order to click them
-    dayCells[0].nativeElement.click();
-    fixture.detectChanges();
-
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
-    confirm.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
+    if (dayCells && dayCells[0]) {
+      dayCells[0].nativeElement.click();
+      fixture.detectChanges();
+    }
 
     // check the new input against the first day of the month of the year in order to verify
-    const newFormattedDate = fixture.nativeElement.querySelector('input').value;
-    if (initialDateTime.getDate() !== 1) {
-      expect(newFormattedDate).not.toBe(initialFormattedDate);
+    if (fixture.debugElement.query(By.css('.actions button'))) {
+      let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+      confirm.dispatchEvent(new MouseEvent('click'));
+      fixture.detectChanges();
+      if (initialDateTime.getDate() !== 1) {
+        const newFormattedDate = fixture.nativeElement.querySelector('input').value;
+        const initialFormattedDate = fixture.nativeElement.querySelector('input').value;
+        expect(initialFormattedDate).toBe(null);
+        expect(newFormattedDate).not.toBe(initialFormattedDate);
+      }
     }
-    endTest();
+    flush();
+    discardPeriodicTasks();
   }));
 
   it('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
