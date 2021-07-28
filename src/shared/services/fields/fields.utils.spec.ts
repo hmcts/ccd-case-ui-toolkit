@@ -74,6 +74,7 @@ describe('FieldsUtils', () => {
 
       const caseFields = fieldUtils
         .mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], formFieldsData);
+    });
 
     it('should handle numeric zero in MoneyGBP field', () => {
       const data = { someText: 'Test', caseAmountToPay: 0 };
