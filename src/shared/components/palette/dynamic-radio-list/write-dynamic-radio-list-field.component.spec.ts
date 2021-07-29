@@ -90,8 +90,8 @@ describe('WriteDynamicRadioListFieldComponent', () => {
 
     expect(options.length).toEqual(3);
     expect(attr(options[0], 'type')).toEqual('radio');
-    expect(attr(options[0], 'id')).toEqual('MarritalStatus-M');
-    expect(attr(options[1], 'id')).toEqual('MarritalStatus-F');
-    expect(attr(options[2], 'id')).toEqual('MarritalStatus-O');
+    expect(attr(options[0], 'id')).toEqual('MaritalStatus-M');
+    expect(attr(options[1], 'id')).toEqual('MaritalStatus-F');
+    expect(attr(options[2], 'id')).toEqual('MaritalStatus-O');
   });
 });
