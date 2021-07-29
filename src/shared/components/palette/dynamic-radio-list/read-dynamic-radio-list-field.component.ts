@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReadDynamicRadioListFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-  ngOnInit() {
+  public ngOnInit(): void {
     /**
      *
      * Reassigning list_items from formatted_list when list_items is empty

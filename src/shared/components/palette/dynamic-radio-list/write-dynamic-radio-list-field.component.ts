@@ -8,9 +8,9 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  dynamicRadioListControl: FormControl;
+  public dynamicRadioListControl: FormControl;
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     /**
      *
      * Reassigning list_items from formatted_list when list_items is empty
@@ -23,7 +23,7 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
       this.caseField.value = this.caseField.formatted_value.value.code;
     }
 
-    const isNull = this.caseField.value === undefined || this.caseField.value === '';
+    const isNull: boolean = this.caseField.value === undefined || this.caseField.value === '';
 
     if (isNull || typeof this.caseField.value === 'object') {
       this.caseField.value = [];

@@ -42,7 +42,7 @@
           <ng-container *ngFor="let field of page
           | ccdPageFields: editForm.controls['data']
           | ccdReadFieldsFilter: false :undefined :true : editForm.controls['data']
-          | ccdCYAPageLabelFilter ">
+          | ccdCYAPageLabelFilter">
             <ng-container *ngIf="canShowFieldInCYA(field)">
               <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                   [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
