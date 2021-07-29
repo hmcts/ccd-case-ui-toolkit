@@ -1,5 +1,13 @@
 ## RELEASE NOTES
 
+### Version 4.2.0
+**EUI-2276** Case field showing on summary screen when complext type field is hidden
+**EUI-2829** Support Dynamic RadioList
+**EUI-3621** Add support for searching cases wrt collections of fixed lists
+**EUI-4095** Time stamp on case events incorrect
+**EUI-4125** Update phme flag not seen in ExUI summary page
+**EUI-4320** MultiSelect field params missing in search request query string
+
 ### Version 4.1.0
 **EUI-2027** Button Labels (AA)
 **EUI-2030** Colour Contrast (AA)
@@ -43,6 +51,9 @@
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
 **EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
+
+### Version 3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
+**EUI-2276** Case field showing on summary screen when complex type field is hidden
 
 ### Version 3.1.5-nested-multi-select-labels-theta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,

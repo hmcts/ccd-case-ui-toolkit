@@ -18,8 +18,9 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
-
+import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import createSpyObj = jasmine.createSpyObj;
+
 describe('CaseEditPageComponent', () => {
 
   let de: DebugElement;
@@ -551,6 +552,7 @@ describe('CaseEditPageComponent', () => {
           CaseEditPageComponent,
           FieldsFilterPipe,
           CcdPageFieldsPipe,
+          CcdCYAPageLabelFilterPipe,
           CaseReferencePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
