@@ -10,7 +10,7 @@ import { attr, text } from '../../../test/helpers';
 
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
-const FIELD_ID = 'MarritalStatus';
+const FIELD_ID = 'MaritalStatus';
 const FIELD_LIST_ITEMS = [
   {
     code: 'M',
