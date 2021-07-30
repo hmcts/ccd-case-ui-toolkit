@@ -269,8 +269,6 @@ describe('WriteCollectionFieldComponent', () => {
     let writeFields = de.queryAll($WRITE_FIELDS);
     expect(writeFields.length).toBe(VALUES.length - 1);
 
-    let field2 = writeFields[0].componentInstance;
-    expect(field2.caseField.value).toEqual(VALUES[1].value);
     expect(component.formArray.controls.length).toBe(1);
     expect(component.formArray.controls[0].value).toEqual(VALUES[1]);
   });

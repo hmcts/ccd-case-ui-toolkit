@@ -22,7 +22,6 @@ function addCaseField(event, fieldConfig) {
 }
 
 function setCaseFieldProps(event, fieldId, fieldProps) {
-
     event.setFieldProps(fieldProps)
     return event;
 }

@@ -272,7 +272,7 @@ describe('LabelSubstitutorDirective', () => {
 
     it('should pass empty value for null MoneyGBP', () => {
       init(null);
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: ''}, LABEL);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, LABEL);
     });
 
     it('should pass case field value with MoneyGBP when case field value but no form field value present', () => {

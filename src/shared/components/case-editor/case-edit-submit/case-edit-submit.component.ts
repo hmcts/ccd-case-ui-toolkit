@@ -349,6 +349,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.profile.isSolicitor();
   }
 
+  private announceProfile(route: ActivatedRoute): void {
+    route.snapshot.pathFromRoot[1].data.profile ?
+      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
+    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
+  }
+
   private buildConfirmation(response: object): Confirmation {
     if (response['after_submit_callback_response']) {
       return new Confirmation(
@@ -378,6 +384,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  public getCaseTitle(): string {
+    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
+    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
   public getCancelText(): string {
