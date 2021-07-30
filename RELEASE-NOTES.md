@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.1.6-ccd-cve-fix
+**EUI-4112** CVE fix for ccd toolkit
+
 ### Version 4.2.0
 **EUI-2276** Case field showing on summary screen when complext type field is hidden
 **EUI-2829** Support Dynamic RadioList
@@ -51,6 +54,7 @@
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
 **EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
+
 ### Version 4.0.0-activity-tracker-unauthorised-beta
 **EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
 
