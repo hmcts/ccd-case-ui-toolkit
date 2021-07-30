@@ -16,7 +16,7 @@ import { ComplexModule } from './complex/complex.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { PaletteUtilsModule } from './utils/utils.module';
