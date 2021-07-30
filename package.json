@@ -196,8 +196,6 @@
     "hosted-git-info": "^3.0.8",
     "normalize-url": "^6.0.1",
     "trim-newlines": "^3.0.1"
-
-
   },
   "publishConfig": {
     "access": "public"
