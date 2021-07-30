@@ -1,7 +1,15 @@
 ## RELEASE NOTES
 
-### Version 4.1.6-strategic-activity-tracker-iota
+### Version 4.2.0-strategic-activity-tracker-kappa
 **EUI-2976** Socket-based Activity Tracker.
+
+### Version 4.2.0
+**EUI-2276** Case field showing on summary screen when complext type field is hidden
+**EUI-2829** Support Dynamic RadioList
+**EUI-3621** Add support for searching cases wrt collections of fixed lists
+**EUI-4095** Time stamp on case events incorrect
+**EUI-4125** Update phme flag not seen in ExUI summary page
+**EUI-4320** MultiSelect field params missing in search request query string
 
 ### Version 4.1.0
 **EUI-2027** Button Labels (AA)

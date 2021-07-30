@@ -9,8 +9,6 @@ import { CaseField } from '../../../domain/definition';
 })
 export class ReadComplexFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-  public static readonly FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
-
   @Input()
   caseFields: CaseField[] = [];
 
@@ -23,7 +21,7 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
     }
     if (this.caseField.field_type) {
       this.caseField.field_type.complex_fields.map(field => {
-        if (field.field_type.type === ReadComplexFieldComponent.FIELD_TYPE_DYNAMIC_LIST) {
+        if (field.isDynamic()) {
           field.list_items = this.caseField.value[field.id].list_items;
           field.value = {
             list_items: field.list_items,
