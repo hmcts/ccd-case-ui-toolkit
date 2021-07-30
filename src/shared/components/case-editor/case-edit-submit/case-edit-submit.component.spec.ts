@@ -4,11 +4,13 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { PlaceholderService } from '../../../directives/substitutor/services';
 
 import { CaseField, FieldType, FixedListItem, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { aCaseField, createCaseField, createFieldType, createMultiSelectListFieldType } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
 import {
   CaseFieldService,
   FieldsPurger,
@@ -363,7 +365,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -376,7 +379,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -636,6 +640,7 @@ describe('CaseEditSubmitComponent', () => {
         'navigateToPage': () => undefined,
         'cancel': () => undefined,
         'cancelled': cancelled,
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [], 'state': {'id': 'incompleteApplication', 'name': 'Incomplete Application', 'title_display': '# 12345678123456: west'}},
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -657,7 +662,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -670,7 +676,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -718,6 +725,11 @@ describe('CaseEditSubmitComponent', () => {
     it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
       const result = comp.getCancelText();
       expect(result).toBe('Return to case list');
+    });
+
+    it('should show valid title on the page', () => {
+      const title = comp.getCaseTitle();
+      expect(title).toEqual('# 12345678123456: west');
     });
   });
 
@@ -788,7 +800,8 @@ describe('CaseEditSubmitComponent', () => {
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -801,7 +814,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -1024,7 +1038,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1037,7 +1052,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1161,7 +1177,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1174,7 +1191,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1302,7 +1320,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1315,7 +1334,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1441,7 +1461,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1454,7 +1475,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1584,7 +1606,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1597,7 +1620,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1731,7 +1755,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1744,7 +1769,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1864,7 +1890,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -1877,7 +1904,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -1996,7 +2024,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2009,7 +2038,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -2135,7 +2165,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2148,7 +2179,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -2286,7 +2318,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2299,7 +2332,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -2443,7 +2477,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2456,7 +2491,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -2582,7 +2618,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2595,7 +2632,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -2724,7 +2762,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2737,7 +2776,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -2865,7 +2905,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -2878,7 +2919,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3006,7 +3048,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3019,7 +3062,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3151,7 +3195,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3164,7 +3209,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3298,7 +3344,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3311,7 +3358,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3445,7 +3493,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3458,7 +3507,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3603,7 +3653,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3616,7 +3667,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3760,7 +3812,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3773,7 +3826,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
@@ -3911,7 +3965,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -3924,7 +3979,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
-          {provide: ProfileNotifier, useValue: profileNotifier}
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          PlaceholderService
         ]
       }).compileComponents();
     }));
