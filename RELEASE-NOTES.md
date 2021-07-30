@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.1.6-ccd-cve-fix
+**EUI-4112** CVE fix for ccd toolkit
+
 ### Version 4.0.0-activity-tracker-unauthorised-beta
 **EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
 
