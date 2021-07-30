@@ -101,13 +101,13 @@ export class FieldsUtils {
     }
   }
 
-  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
+  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
   };
 
-  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
+  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
