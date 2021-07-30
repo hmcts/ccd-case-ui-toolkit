@@ -2,15 +2,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { FixedListItem } from '../../../domain/definition/fixed-list-item.model';
 
 @Pipe({
-  name: 'ccdDynamicList'
+  name: 'ccdDynamicRadioList'
 })
-export class DynamicListPipe implements PipeTransform {
+export class DynamicRadioListPipe implements PipeTransform {
 
   private static readonly EMPTY = '';
 
   transform(value: string, items: FixedListItem[]): any {
-    const item = items.find(i => i.code === value);
-    return item ? item.label : DynamicListPipe.EMPTY;
+    let item = items.find(i => i.code === value);
+    return item ? item.label : DynamicRadioListPipe.EMPTY;
   }
-
 }
