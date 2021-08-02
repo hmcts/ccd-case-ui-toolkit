@@ -4,8 +4,12 @@ export abstract class AbstractAppConfig {
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
-  abstract getDocumentManagementUrlV2(): string;
-  abstract getDocumentSecureMode(): boolean;
+  getDocumentManagementUrlV2(): string {
+    return undefined;
+  }
+  getDocumentSecureMode(): boolean {
+    return undefined;
+  }
   abstract getRemoteDocumentManagementUrl(): string;
   abstract getHrsUrl(): string;
   abstract getRemoteHrsUrl(): string;
