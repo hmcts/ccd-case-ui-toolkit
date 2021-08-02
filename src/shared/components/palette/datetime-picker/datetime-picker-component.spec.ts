@@ -167,11 +167,10 @@ describe('DatetimePickerComponent', () => {
 
     component.caseField = SECOND_CASE_FIELD;
     component.ngOnInit();
-    tick(1);
-    fixture.detectChanges();
 
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(newFormattedDate).not.toBe(null);
+
     flush();
     discardPeriodicTasks();
   }));
@@ -277,6 +276,7 @@ describe('DatetimePickerComponent', () => {
         expect(newFormattedDate).not.toBe(initialFormattedDate);
       }
     }
+
     flush();
     discardPeriodicTasks();
   }));

@@ -11,6 +11,7 @@ import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { WriteDateContainerFieldComponent } from './date';
 import { FixedListModule } from './fixed-list/fixed-list.module';
 import { DynamicListModule } from './dynamic-list/dynamic-list.module';
+import { DynamicRadioListModule } from './dynamic-radio-list/dynamic-radio-list.module';
 import { YesNoModule } from './yes-no/yes-no.module';
 import { ComplexModule } from './complex/complex.module';
 import { AddressModule } from './address/address.module';
@@ -61,6 +62,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     BaseFieldModule,
     FixedListModule,
     DynamicListModule,
+    DynamicRadioListModule,
     FixedRadioListModule,
     YesNoModule,
     ComplexModule,
