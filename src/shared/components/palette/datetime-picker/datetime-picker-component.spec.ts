@@ -229,8 +229,6 @@ describe('DatetimePickerComponent', () => {
     const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
-    expect(setDay.getMonth()).toBe(firstDay.getMonth());
-    expect(setDay.getDay()).toBe(firstDay.getDay());
     flush();
     discardPeriodicTasks();
   }));
