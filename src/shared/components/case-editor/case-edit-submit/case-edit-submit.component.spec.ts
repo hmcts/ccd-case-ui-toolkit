@@ -2159,7 +2159,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       TestBed.configureTestingModule({
-        declarations: [          
+        declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
           ReadFieldsFilterPipe,
