@@ -18,6 +18,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
+import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import createSpyObj = jasmine.createSpyObj;
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
@@ -582,6 +583,7 @@ describe('CaseEditPageComponent', () => {
           CaseEditPageComponent,
           FieldsFilterPipe,
           CcdPageFieldsPipe,
+          CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
@@ -924,7 +926,6 @@ describe('CaseEditPageComponent', () => {
       wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
       wizardPage.case_fields.push(CASE_FIELD);
       wizardPage.isMultiColumn = () => false;
-
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
