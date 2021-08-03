@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 4.2.1
+**EUI-3425** Update Document Management Service to call new document upload API in ccd-case-ui-toolkit
+**EUI-3426** Repoint node layer at the new document store API
+
 ### Version 4.2.0
 **EUI-2276** Case field showing on summary screen when complext type field is hidden
 **EUI-2829** Support Dynamic RadioList

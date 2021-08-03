@@ -200,8 +200,6 @@ describe('DatetimePickerComponent', () => {
       expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     }
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
-    expect(setDay.getMonth()).toBe(firstDay.getMonth());
-    expect(setDay.getDay()).toBe(firstDay.getDay());
     endTest();
   }));
 
