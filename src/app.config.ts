@@ -4,6 +4,8 @@ export abstract class AbstractAppConfig {
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
+  abstract getHrsUrl(): string;
+  abstract getRemoteHrsUrl(): string;
   getDocumentManagementUrlV2(): string {
     return undefined;
   }
@@ -48,11 +50,13 @@ export class CaseEditorConfig {
   case_data_url: string;
   document_management_url: string;
   document_management_url_v2: string;
+  hrs_url: string;
   document_management_secure_enabled: boolean;
   login_url: string;
   oauth2_client_id: string;
   postcode_lookup_url: string;
   remote_document_management_url: string;
+  remote_hrs_url: string;
   annotation_api_url: string;
   payments_url: string;
   pay_bulk_scan_url: string;
