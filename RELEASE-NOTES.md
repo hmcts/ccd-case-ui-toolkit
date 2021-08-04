@@ -3,6 +3,9 @@
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
 
+### Version 4.1.6-ccd-cve-fix
+**EUI-4112** CVE fix for ccd toolkit
+
 ### Version 4.2.0
 **EUI-2276** Case field showing on summary screen when complext type field is hidden
 **EUI-2829** Support Dynamic RadioList
@@ -59,6 +62,13 @@
 
 ### Version 3.1.5-complex-hidden-collection-show
 **EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
+
+### Version 4.0.0-activity-tracker-unauthorised-beta
+**EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
+
+### Version 3.1.5-complex-hidden-collection-show
+**EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
+
 
 ### Version 3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
 **EUI-2276** Case field showing on summary screen when complex type field is hidden
