@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.2.2
+**EUI-4161** Turn HRS documentLink URLs into relative URLs, as is done for dm-store URLs
+
 ### Version 4.2.1
 **EUI-3425** Update Document Management Service to call new document upload API in ccd-case-ui-toolkit
 **EUI-3426** Repoint node layer at the new document store API
