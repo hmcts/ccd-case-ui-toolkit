@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 4.1.6--set-scroll-position-top
-**EUI-4349** Set Scroll Position to Top
+**EUI-4349** Reset caseDetailsPage Position to Top
 
 ### Version 4.1.6-ccd-cve-fix
 **EUI-4112** CVE fix for ccd toolkit
