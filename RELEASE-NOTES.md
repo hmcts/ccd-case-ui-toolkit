@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 4.1.6-Title-Display-Error
+**EUI-4377** Title-Display-Error
+
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
