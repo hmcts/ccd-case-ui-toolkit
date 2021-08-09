@@ -83,6 +83,25 @@ describe('deleteFieldValue() tests', () => {
   const DOCUMENT_FIELD: CaseField = aCaseField('Document', 'Dummy document', 'Document', 'OPTIONAL', 1, null, null);
   const TEXT_FIELD: CaseField = aCaseField('Colour', 'Colour', 'Text', 'OPTIONAL', 1, null, null);
 
+  const COURTS_DYNAMIC_LIST_FIELD_TYPE: FieldType = {
+    id: 'CourtDynamicList',
+    type: 'DynamicList'
+  };
+
+  const COURT_LIST = [
+    {code: '305', label: 'Reading County Court'},
+    {code: '474', label: 'Guildford Crown Court'},
+    {code: '2732', label: 'Croydon Magistrates\' Court'}
+  ];
+
+  const COURT_SELECTION_FIELD: CaseField = <CaseField>({
+    id: 'CourtSelection',
+    label: 'Choose preferred court',
+    field_type: COURTS_DYNAMIC_LIST_FIELD_TYPE,
+    display_context: 'READONLY',
+    list_items: COURT_LIST
+  });
+
   it('should delete fields of a Complex type', () => {
     const formGroup = new FormGroup({
       Address: new FormGroup({
@@ -201,5 +220,19 @@ describe('deleteFieldValue() tests', () => {
 
     fieldsPurger.deleteFieldValue(formGroup, TEXT_FIELD);
     expect(formGroup.get('Colour').value).toBeNull();
+  });
+
+  it('should delete the field of a DynamicList type', () => {
+    const formGroup = new FormGroup({
+      CourtSelection: new FormControl({
+        value: {
+          list_items: COURT_LIST,
+          value: {code: '305', label: 'Reading County Court'}
+        }
+      })
+    });
+
+    fieldsPurger.deleteFieldValue(formGroup, COURT_SELECTION_FIELD);
+    expect(formGroup.get('CourtSelection').value).toBeNull();
   });
 });
