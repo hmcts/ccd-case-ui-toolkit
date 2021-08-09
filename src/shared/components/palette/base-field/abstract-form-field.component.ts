@@ -72,7 +72,7 @@ export abstract class AbstractFormFieldComponent {
       }
     } else {
       parent.addControl(this.caseField.id, control);
-    };
+    }
     return control;
   }
 }
