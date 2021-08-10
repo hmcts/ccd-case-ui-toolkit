@@ -52,7 +52,7 @@
             <ng-template matTabContent>
               <table [class]="tab.id">
                 <tbody>
-                <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true">
+                <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true :formGroup.controls['data']">
                   <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                     <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                       <tr *ngSwitchCase="true">
@@ -61,14 +61,18 @@
                         </th>
                         <td>
                           <span class="text-16">
-                            <ccd-field-read [caseField]="field" [caseReference]="caseDetails.case_id"></ccd-field-read>
+                            <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                              [caseField]="field" [caseReference]="caseDetails.case_id">
+                            </ccd-field-read>
                           </span>
                         </td>
                       </tr>
                       <tr *ngSwitchCase="false" class="compound-field">
                         <th>
                           <span class="text-16">
-                            <ccd-field-read [caseField]="field" [caseReference]="caseDetails.case_id"></ccd-field-read>
+                            <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                              [caseField]="field" [caseReference]="caseDetails.case_id">
+                            </ccd-field-read>
                           </span>
                         </th>
                       </tr>

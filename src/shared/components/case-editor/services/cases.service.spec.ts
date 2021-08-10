@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { HttpErrorService, HttpService, LoadingService } from '../../../services';
+import { HttpErrorService, HttpService, LoadingService, SessionStorageService } from '../../../services';
 import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -60,6 +60,7 @@ describe('CasesService', () => {
   let wizardPageFieldToCaseFieldMapper: any;
   let casesService: CasesService;
   let workAllocationService: WorkAllocationService;
+  let sessionStorageService: SessionStorageService
   let loadingService: any;
   let alertService: any;
 
@@ -69,6 +70,7 @@ describe('CasesService', () => {
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+    sessionStorageService = createSpyObj<SessionStorageService>('httpService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     wizardPageFieldToCaseFieldMapper = createSpyObj<WizardPageFieldToCaseFieldMapper>(
       'wizardPageFieldToCaseFieldMapper', ['mapAll']);
@@ -85,7 +87,8 @@ describe('CasesService', () => {
 
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
     casesService = new CasesService(
-      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService, loadingService
+      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService, loadingService,
+      sessionStorageService
     );
   });
 

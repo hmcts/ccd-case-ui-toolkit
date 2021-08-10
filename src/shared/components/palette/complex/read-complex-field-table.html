@@ -6,7 +6,10 @@
         <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
           <tr class="complex-panel-compound-field" [hidden]="field.hidden">
             <td colspan="2">
-              <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
+              <span class="text-16">
+                <ccd-field-read [topLevelFormGroup]="topLevelFormGroup"
+                  [caseField]="field" [context]="context"></ccd-field-read>
+              </span>
             </td>
           </tr>
         </ng-container>
@@ -14,7 +17,10 @@
           <tr class="complex-panel-simple-field" [hidden]="field.hidden">
             <th><span class="text-16">{{field.label}}</span></th>
             <td>
-                <span class="text-16"><ccd-field-read [caseField]="field" [context]="context"></ccd-field-read></span>
+                <span class="text-16">
+                  <ccd-field-read [topLevelFormGroup]="topLevelFormGroup"
+                    [caseField]="field" [context]="context"></ccd-field-read>
+                </span>
             </td>
           </tr>
         </ng-template>

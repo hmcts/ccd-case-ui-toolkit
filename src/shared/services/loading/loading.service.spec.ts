@@ -34,29 +34,41 @@ describe('LoadingService', () => {
 
   });
 
-  it('should return observable of false when a tokens are unregistered', () => {
-
-    const token1 = loadingService.register();
-    const token2 = loadingService.register();
-    loadingService.unregister(token1);
-    loadingService.unregister(token2);
-    subscription = loadingService.isLoading.subscribe(value => {
-      expect(value).toBeFalsy();
-    });
-
+  it('should return observable of false when all tokens are unregistered', async (done) => {
+    let token1: string;
+    let token2: string;
+    setTimeout(() => token1 = loadingService.register(), 1);
+    setTimeout(() => token2 = loadingService.register(), 1);
+    setTimeout(() => {
+      loadingService.unregister(token1);
+      loadingService.unregister(token2);
+      subscription = loadingService.isLoading.subscribe(value => {
+        expect(value).toBeFalsy();
+        done();
+      });
+    }, 5);
   });
 
-  it('should return observable of true when multiple tokens are registered, yet one is unregistered', () => {
-
-    loadingService.register();
-    loadingService.register();
-    const token = loadingService.register();
-    loadingService.register();
-    loadingService.unregister(token);
-    subscription = loadingService.isLoading.subscribe(value => {
-      expect(value).toBeTruthy();
-    });
-
+  it('should return observable of true when multiple tokens are registered, yet one is unregistered', async (done) => {
+    let index = 0;
+    let tokenToRemove: string;
+    let interval = setInterval(() => {
+      if (index === 2) {
+        tokenToRemove = loadingService.register();
+      } else {
+        loadingService.register();
+      }
+      if (index > 3) {
+        loadingService.unregister(tokenToRemove);
+        clearInterval(interval);
+        interval = undefined;
+        subscription = loadingService.isLoading.subscribe(value => {
+          expect(value).toBeTruthy();
+          done();
+        });
+      }
+      index++;
+    }, 1);
   });
 
   afterEach(() => {

@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 
-import { CaseEventData, CaseField } from '../../domain';
+import { CaseField } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
-  public static readonly LABEL_SUFFIX = '-LABEL';
-
   /**
    * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
    * There are two exeptions:
-   * 1) In case of a multiselect being identified as a leaf a '-LABEL' suffix is appended to the key and values og that key are returned
+   * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
    *      form= { 'list': ['code1', 'code2'],
-   *              'list-LABEL': ['label1', 'label2'] },
+   *              'list---LABEL': ['label1', 'label2'] },
    *      fieldKey=list,
    *      colIndex=0,
    *      value=label1, label2
@@ -123,7 +121,7 @@ export class FormValueService {
     let currentFieldId = fieldIds[0];
     let currentForm = form[currentFieldId];
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
-        return form[currentFieldId + FormValueService.LABEL_SUFFIX].join(', ');
+        return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
         return currentForm.map(fieldValue => fieldValue['value']).join(', ');
     } else if (FieldsUtils.isCollection(currentForm)) {
@@ -135,6 +133,31 @@ export class FormValueService {
     }
   }
 
+  /**
+   * A recursive method to remove anything with a `---LABEL` suffix.
+   * @param data The data to recurse through and remove MultiSelect labels.
+   */
+  public static removeMultiSelectLabels(data: any): void {
+    if (data && typeof data === 'object') {
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          FormValueService.removeMultiSelectLabels(item);
+        }
+      } else {
+        const keys: string[] = Object.keys(data);
+        for (const key of keys) {
+          // Have we found one a MultiSelect label?
+          if (key.indexOf(FieldsUtils.LABEL_SUFFIX) > 0) {
+            // If so, remove it.
+            delete data[key];
+          } else {
+            FormValueService.removeMultiSelectLabels(data[key]);
+          }
+        }
+      }
+    }
+  }
+
   private static isReadOnly(field: CaseField): boolean {
     return field.display_context ? field.display_context.toUpperCase() === 'READONLY' : false;
   }
@@ -143,7 +166,7 @@ export class FormValueService {
     return field.display_context ? field.display_context.toUpperCase() === 'OPTIONAL' : false;
   }
 
-  private static isLabel (field: CaseField): boolean {
+  private static isLabel(field: CaseField): boolean {
     if (field.field_type) {
       return field.field_type.type === 'Label';
     } else {
@@ -218,13 +241,19 @@ export class FormValueService {
     }
 
     let sanitisedObject = {};
-    Object.keys(rawObject).forEach(key => {
-      if ('CaseReference' === key) {
+    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
+    for (const key in rawObject) {
+      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+      // properties is null, the entire sanitised object to be returned should be null
+      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
+        sanitisedObject = null;
+        break;
+      } else if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
       }
-    });
+    };
     return sanitisedObject;
   }
 
@@ -234,12 +263,17 @@ export class FormValueService {
     }
 
     rawArray.forEach(item => {
-      if (item.hasOwnProperty('value')) {
+      if (item && item.hasOwnProperty('value')) {
         item.value = this.sanitiseValue(item.value);
       }
     });
 
-    return rawArray;
+    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
+    // association of a value. In addition, if the array contains items with a "value" object property, return only
+    // those whose value object contains non-empty values, including for any descendant objects
+    return rawArray
+      .filter(item => !!item)
+      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -333,7 +367,9 @@ export class FormValueService {
               }
               break;
             case 'Document':
-              if (FormValueService.isEmptyData(data[field.id])) {
+              // Ensure this is executed only if the Document field is NOT hidden and is empty of data; hidden Document
+              // fields are handled by the filterRawFormValues() function in CaseEditSubmit component
+              if (field.hidden !== true && FormValueService.isEmptyData(data[field.id])) {
                 delete data[field.id];
               }
               break;
@@ -380,10 +416,10 @@ export class FormValueService {
               }
               break;
             case 'Complex':
-              // Recurse and remove anything unnecessary from within a complex field.
               this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
-              if (FormValueService.clearOptionalEmpty(clearEmpty, data[field.id], field)) {
+              // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
+              if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
                 delete data[field.id];
               }
               break;
@@ -409,6 +445,26 @@ export class FormValueService {
         }
       }
     }
+
+    // Clear out any MultiSelect labels.
+    FormValueService.removeMultiSelectLabels(data);
   }
 
+  /**
+   * Remove any empty collection fields where a value of greater than zero is specified in the field's {@link FieldType}
+   * `min` attribute.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      for (const field of caseFields) {
+        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
+            Array.isArray(data[field.id]) && data[field.id].length === 0) {
+          delete data[field.id];
+        }
+      }
+    }
+  }
 }

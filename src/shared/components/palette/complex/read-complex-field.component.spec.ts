@@ -11,11 +11,30 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 
+const inputs: string[] = ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix'];
+
 describe('ReadComplexFieldComponent', () => {
 
   let ReadComplexFieldRawComponent;
   let ReadComplexFieldTableComponent;
   let ReadComplexFieldNewTableComponent;
+
+  function setupComponents() {
+    ReadComplexFieldRawComponent = MockComponent({
+      selector: 'ccd-read-complex-field-raw',
+      inputs
+    });
+
+    ReadComplexFieldTableComponent = MockComponent({
+      selector: 'ccd-read-complex-field-table',
+      inputs
+    });
+
+    ReadComplexFieldNewTableComponent = MockComponent({
+      selector: 'ccd-read-complex-field-collection-table',
+      inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+    });
+  }
 
   describe('Non-persistable readonly complex field', () => {
 
@@ -53,21 +72,7 @@ describe('ReadComplexFieldComponent', () => {
       };
 
       beforeEach(async(() => {
-
-        ReadComplexFieldRawComponent = MockComponent({
-          selector: 'ccd-read-complex-field-raw',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
-
-        ReadComplexFieldTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-table',
-          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
-
-        ReadComplexFieldNewTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-collection-table',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
+        setupComponents();
 
         TestBed
           .configureTestingModule({
@@ -153,21 +158,7 @@ describe('ReadComplexFieldComponent', () => {
       caseField_dsp.display_context_parameter = '#TABLE(AddressLine1, AddressLine2)';
 
       beforeEach(async(() => {
-
-        ReadComplexFieldRawComponent = MockComponent({
-          selector: 'ccd-read-complex-field-raw',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
-
-        ReadComplexFieldTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-table',
-          inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
-
-        ReadComplexFieldNewTableComponent = MockComponent({
-          selector: 'ccd-read-complex-field-collection-table',
-          inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-        });
+        setupComponents();
 
         TestBed
           .configureTestingModule({
@@ -219,7 +210,8 @@ describe('ReadComplexFieldComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-          value: 'Flat 9'
+          value: 'Flat 9',
+          isDynamic: () => false
         }),
         <CaseField>({
           id: 'AddressLine2',
@@ -229,7 +221,8 @@ describe('ReadComplexFieldComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-          value: '111 East India road'
+          value: '111 East India road',
+          isDynamic: () => false
         })
       ]
     };
@@ -252,21 +245,7 @@ describe('ReadComplexFieldComponent', () => {
     let de: DebugElement;
 
     beforeEach(async(() => {
-
-      ReadComplexFieldRawComponent = MockComponent({
-        selector: 'ccd-read-complex-field-raw',
-        inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-      });
-
-      ReadComplexFieldTableComponent = MockComponent({
-        selector: 'ccd-read-complex-field-table',
-        inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-      });
-
-      ReadComplexFieldNewTableComponent = MockComponent({
-        selector: 'ccd-read-complex-field-collection-table',
-        inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
-      });
+      setupComponents();
 
       TestBed
         .configureTestingModule({

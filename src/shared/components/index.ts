@@ -11,6 +11,7 @@ export * from './event-trigger';
 export * from './markdown';
 export * from './palette';
 export * from './search-filters';
+export * from './pagination';
 export * from './workbasket-filters';
 export * from './case-list-filters';
 export * from './search-result';

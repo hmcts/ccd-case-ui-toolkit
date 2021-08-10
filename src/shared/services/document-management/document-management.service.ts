@@ -19,7 +19,7 @@ export class DocumentManagementService {
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
-  uploadFile(formData: FormData): Observable<DocumentData> {
+  public uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.appConfig.getDocumentManagementUrl();
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
@@ -31,7 +31,17 @@ export class DocumentManagementService {
       .pipe();
   }
 
-  getMediaViewerInfo(documentFieldValue: any): string {
+  public secureUploadFile(formData: FormData): Observable<DocumentData> {
+    const url = this.appConfig.getDocumentManagementUrlV2();
+
+    const headers = new HttpHeaders();
+    return this.http
+      .post(url, formData, {headers, observe: 'body'})
+      .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
+      .pipe();
+  }
+
+  public getMediaViewerInfo(documentFieldValue: any): string {
     let mediaViewerInfo = {
         document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
         document_filename: documentFieldValue.document_filename,
@@ -43,7 +53,7 @@ export class DocumentManagementService {
     return JSON.stringify(mediaViewerInfo);
   }
 
-  getContentType(documentFieldValue: any): string {
+  public getContentType(documentFieldValue: any): string {
     let fileExtension = '<unknown>';
     if (documentFieldValue.document_filename) {
       let position = documentFieldValue.document_filename.lastIndexOf('.');
@@ -63,11 +73,13 @@ export class DocumentManagementService {
     }
   }
 
-  isImage(imageType: string) {
+  private isImage(imageType: string) {
     return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
   }
 
-  transformDocumentUrl(documentBinaryUrl: string): string {
+  private transformDocumentUrl(documentBinaryUrl: string): string {
+    let remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
+    documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
     let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
     return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
   }

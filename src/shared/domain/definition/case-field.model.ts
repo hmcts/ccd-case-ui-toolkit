@@ -2,7 +2,7 @@ import { Orderable } from '../order';
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
-import * as _  from 'underscore';
+import * as _ from 'underscore';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
 
@@ -28,6 +28,7 @@ export class CaseField implements Orderable {
   acls?: AccessControlList[];
   metadata?: boolean;
   formatted_value?: any;
+  retain_hidden_value: boolean;
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
@@ -37,7 +38,7 @@ export class CaseField implements Orderable {
 
   @Expose()
   get value(): any {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
+    if (this.isDynamic()) {
       return this._value && this._value.value ? this._value.value.code : this._value;
     } else {
       return this._value;
@@ -45,7 +46,7 @@ export class CaseField implements Orderable {
   }
 
   set value(value: any) {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
+    if (this.isDynamic()) {
       if (value && value instanceof Object && value.list_items) {
         this._list_items = value.list_items;
       } else if (!this._list_items || this._list_items.length === 0) {
@@ -61,7 +62,7 @@ export class CaseField implements Orderable {
 
   @Expose()
   get list_items(): any {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
+    if (this.isDynamic()) {
       return this._value && this._value.list_items ? this._value.list_items : this._list_items;
     } else {
       return this.field_type.fixed_list_items;
@@ -133,6 +134,17 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
+  isDynamic(): boolean {
+    const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+
+    if (!this.field_type) {
+      return false;
+    }
+
+    return dynamicFieldTypes.some(t => t === this.field_type.type);
+  }
+
+  @Expose()
   isCaseLink(): boolean {
     return this.isComplex()
       && this.field_type.id === 'CaseLink'
@@ -156,8 +168,8 @@ export class CaseField implements Orderable {
 export class FieldType {
   id: string;
   type: FieldTypeEnum;
-  min?: number;
-  max?: number;
+  min?: number | Date;
+  max?: number | Date;
   regular_expression?: string;
 
   @Type(() => FixedListItem)

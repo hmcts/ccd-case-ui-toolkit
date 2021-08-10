@@ -131,6 +131,8 @@ export { PaletteModule,
          SearchResultComponent,
          CaseListModule,
          CaseListComponent,
+         PaginationModule,
+         PaginationComponent,
          TableColumnConfig,
          TableConfig } from './shared/components';
 export { CaseReferencePipe,
