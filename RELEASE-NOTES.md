@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 4.1.6-link-case
+**EUI-4346** Link a case event throws error
+**EUI-4349** Reset caseDetailsPage Position to Top
+
 ### Version 4.2.0
 **EUI-2276** Case field showing on summary screen when complext type field is hidden
 **EUI-2829** Support Dynamic RadioList

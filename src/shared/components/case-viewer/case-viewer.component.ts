@@ -103,6 +103,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.callbackErrorsSubject.next(this.error);
       }
     });
+    window.scrollTo(0, 0);
   }
 
   public isPrintEnabled(): boolean {
