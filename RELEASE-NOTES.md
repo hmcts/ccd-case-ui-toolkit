@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
+**EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
