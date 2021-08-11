@@ -298,8 +298,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     documentUpload.append('classification', 'PUBLIC');
 
     if (this.appConfig.getDocumentSecureMode()) {
-      documentUpload.append('caseTypeId', this.caseDetails.case_type.id);
-      documentUpload.append('jurisdictionId', this.caseDetails.case_type.jurisdiction.id);
+      const caseTypeId = this.caseDetails &&
+                          this.caseDetails.case_type &&
+                          this.caseDetails.case_type.id ? this.caseDetails.case_type.id : null;
+      const caseTypeJurisdictionId = this.caseDetails &&
+                                      this.caseDetails.case_type &&
+                                      this.caseDetails.case_type.jurisdiction &&
+                                      this.caseDetails.case_type.jurisdiction.id ? this.caseDetails.case_type.jurisdiction.id : null;
+      documentUpload.append('caseTypeId', caseTypeId);
+      documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }
 
     return documentUpload;
