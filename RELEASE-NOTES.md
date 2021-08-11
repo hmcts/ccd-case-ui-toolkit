@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.2.3
+**EUI-3425** Hotfix for work already done. Secure uploading for new cases
+
 ### Version 4.2.2
 **EUI-4161** Turn HRS documentLink URLs into relative URLs, as is done for dm-store URLs
 
