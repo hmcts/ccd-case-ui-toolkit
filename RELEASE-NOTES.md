@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.0-rc.16
+### Version 4.3.0
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
 ### Version 4.2.3
