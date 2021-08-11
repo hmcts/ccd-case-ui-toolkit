@@ -4,8 +4,6 @@ export abstract class AbstractAppConfig {
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
-  abstract getHrsUrl(): string;
-  abstract getRemoteHrsUrl(): string;
   getDocumentManagementUrlV2(): string {
     return undefined;
   }
