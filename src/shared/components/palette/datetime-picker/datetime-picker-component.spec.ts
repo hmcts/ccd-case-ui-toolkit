@@ -231,6 +231,7 @@ describe('DatetimePickerComponent', () => {
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
     flush();
     discardPeriodicTasks();
+    endTest();
   }));
 
   it('should be able to confirm datepicker concurs with formatting', fakeAsync(() => {

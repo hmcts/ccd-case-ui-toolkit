@@ -25,6 +25,13 @@ describe('DocumentUrlPipe', () => {
     documentUrlPipe = new DocumentUrlPipe(appConfig);
   });
 
+  describe('given a document URL matching the remote HRS api', () => {
+    it('should be replaced with a relative HRS URL', () => {
+      let url = documentUrlPipe.transform(MATCHING_REMOTE_HRS_URL);
+      expect(url).toEqual(HRS_URL);
+    });
+  });
+
   describe('given the Document Management URL is the one in the app config', () => {
     it('should be replaced with the Document Management endpoint URL of the API Gateway', () => {
       let url = documentUrlPipe.transform(MATCHING_REMOTE_DOCUMENT_MANAGEMENT_URL);
