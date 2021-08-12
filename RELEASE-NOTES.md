@@ -6,6 +6,16 @@
 ### Version 4.1.6-ccd-cve-fix
 **EUI-4112** CVE fix for ccd toolkit
 
+### Version 4.2.3
+**EUI-3425** Hotfix for work already done. Secure uploading for new cases
+
+### Version 4.2.2
+**EUI-4161** Turn HRS documentLink URLs into relative URLs, as is done for dm-store URLs
+
+### Version 4.2.1
+**EUI-3425** Update Document Management Service to call new document upload API in ccd-case-ui-toolkit
+**EUI-3426** Repoint node layer at the new document store API
+
 ### Version 4.2.0
 **EUI-2276** Case field showing on summary screen when complex type field is hidden
 **EUI-2829** Support Dynamic RadioList

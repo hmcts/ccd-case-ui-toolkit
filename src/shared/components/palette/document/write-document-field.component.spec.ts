@@ -14,6 +14,8 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { FileUploadStateService } from './file-upload-state.service';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseNotifier } from '../../case-editor';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -46,7 +48,18 @@ const RESPONSE_FIRST_DOCUMENT: DocumentData = {
         }
       }
     }]
-  }
+  },
+  documents: [{
+    originalDocumentName: 'howto.pdf',
+    _links: {
+      self: {
+        href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+      },
+      binary: {
+        href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+      }
+    }
+  }]
 };
 const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   _embedded: {
@@ -61,7 +74,18 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
         }
       }
     }]
-  }
+  },
+  documents: [{
+    originalDocumentName: 'plop.pdf',
+    _links: {
+      self: {
+        href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+      },
+      binary: {
+        href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+      }
+    }
+  }]
 };
 
 describe('WriteDocumentFieldComponent', () => {
@@ -88,6 +112,7 @@ describe('WriteDocumentFieldComponent', () => {
   let deDialog: DebugElement;
   let mockDialog: any;
   let mockMatDialogRef: any;
+  let appConfig: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -102,6 +127,8 @@ describe('WriteDocumentFieldComponent', () => {
       'setUploadInProgress',
       'isUploadInProgress'
     ]);
+
+    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
 
     TestBed
       .configureTestingModule({
@@ -119,7 +146,9 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: MatDialogRef, useValue: mockMatDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          DocumentDialogComponent
+          {provide: AbstractAppConfig, useValue: appConfig },
+          DocumentDialogComponent,
+          CaseNotifier
         ]
       })
       .compileComponents();
@@ -210,7 +239,18 @@ describe('WriteDocumentFieldComponent', () => {
             }
           }
         }]
-      }
+      },
+      documents: [{
+        originalDocumentName: 'test.pdf',
+        _links: {
+          self: {
+            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+          },
+          binary: {
+            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+          }
+        }
+      }]
     };
     mockDocumentManagementService.uploadFile.and.returnValue(of(REPLACE_DOCUMENT));
     let blobParts: BlobPart[] = ['some contents for blob'];
@@ -368,7 +408,18 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           }
         }
       }]
-    }
+    },
+    documents: [{
+      originalDocumentName: 'howto.pdf',
+      _links: {
+        self: {
+          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123'
+        },
+        binary: {
+          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123/binary'
+        }
+      }
+    }]
   };
   const RESPONSE_SECOND_DOCUMENT_MANDATORY: DocumentData = {
     _embedded: {
@@ -383,7 +434,18 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           }
         }
       }]
-    }
+    },
+    documents: [{
+      originalDocumentName: 'plop.pdf',
+      _links: {
+        self: {
+          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567'
+        },
+        binary: {
+          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567/binary'
+        }
+      }
+    }]
   };
   const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});
@@ -401,6 +463,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
+  let appConfig;
 
   let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
   let componentDialog: DocumentDialogComponent;
@@ -422,6 +485,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'isUploadInProgress'
     ]);
 
+    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
+
     TestBed
       .configureTestingModule({
         imports: [],
@@ -438,7 +503,9 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          DocumentDialogComponent
+          {provide: AbstractAppConfig, useValue: appConfig},
+          DocumentDialogComponent,
+          CaseNotifier
         ]
       })
       .compileComponents();
