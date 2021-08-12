@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 5.0.0-unsaved-changes-beta-r2
+### Version 5.0.0-unsaved-changes-beta-r3
 **EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
+
+### Version 4.2.3
+**EUI-3425** Hotfix for work already done. Secure uploading for new cases
 
 ### Version 4.2.2
 **EUI-4161** Turn HRS documentLink URLs into relative URLs, as is done for dm-store URLs
