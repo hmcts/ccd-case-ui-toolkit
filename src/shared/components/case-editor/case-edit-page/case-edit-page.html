@@ -9,7 +9,7 @@
 <!--Case ID or Title -->
 <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
 <ng-template #titleBlock>
-  <h2 class="heading-h2">{{ getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data'] }}</h2>
+  <h2 class="heading-h2" [innerHTML]="getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data']"></h2>
 </ng-template>
 <ng-template #idBlock>
   <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
