@@ -120,7 +120,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  private fileValidations():void {
+  private fileValidations(): void {
 
     if (this.isAMandatoryComponent()) {
       if (this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
