@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.0-search-filter-retention
+### Version 4.3.0-search-filter
 **EUI-4348** Retain search cases filtered list
 
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
