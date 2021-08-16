@@ -50,7 +50,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
   validationErrors: {id: string, message: string}[] = [];
-  removeKey = (key, {[key]: _, ...payload}) => payload;
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -64,6 +63,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       topContainer.focus();
     }
   }
+
+  removeKey = (key, {[key]: _, ...payload}) => payload;
 
   constructor(
     private readonly caseEdit: CaseEditComponent,
