@@ -50,6 +50,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
   validationErrors: {id: string, message: string}[] = [];
+  removeKey = (key, {[key]: _, ...payload}) => payload;
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -383,12 +384,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const formValue: object = this.editForm.value;
 
     // Remove fields as per ticket EUI-4402
-    if (formValue['event'] && formValue['data']) {
-      if (formValue['event']['id'] === 'directionIssued') {
-        delete formValue['data']['createdInGapsFrom'];
-        delete formValue['data']['documentSentToDwp'];
-        delete formValue['data']['extensionNextEventDl'];
-      }
+    if (formValue['data']) {
+      // delete formValue['data']['createdInGapsFrom'];
+      // delete formValue['data']['documentSentToDwp'];
+      // delete formValue['data']['extensionNextEventDl'];
+      this.removeKey('createdInGapsFrom', formValue['data']);
+      this.removeKey('documentSentToDwp', formValue['data']);
+      this.removeKey('extensionNextEventDl', formValue['data']);
     }
 
     // Get the CaseEventData for the current page.
