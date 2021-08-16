@@ -116,4 +116,12 @@ export class AppMockConfig implements AbstractAppConfig {
   load(): Promise<void> {
     return Promise.resolve(undefined);
   }
+
+  getDocumentManagementUrlV2(): string {
+    return '';
+  }
+
+  getDocumentSecureMode(): boolean {
+    return false;
+  }
 }
