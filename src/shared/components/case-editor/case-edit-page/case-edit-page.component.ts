@@ -64,8 +64,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  removeKey = (key, {[key]: _, ...payload}) => payload;
-
   constructor(
     private readonly caseEdit: CaseEditComponent,
     private readonly route: ActivatedRoute,
@@ -385,13 +383,23 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const formValue: object = this.editForm.value;
 
     // Remove fields as per ticket EUI-4402
-    if (formValue['data']) {
-      // delete formValue['data']['createdInGapsFrom'];
-      // delete formValue['data']['documentSentToDwp'];
-      // delete formValue['data']['extensionNextEventDl'];
-      this.removeKey('createdInGapsFrom', formValue['data']);
-      this.removeKey('documentSentToDwp', formValue['data']);
-      this.removeKey('extensionNextEventDl', formValue['data']);
+    if (formValue['data'] && formValue['data']['createdInGapsFrom']) {
+      delete formValue['data']['createdInGapsFrom'];
+    }
+    if (formValue['data'] && formValue['data']['documentSentToDwp']) {
+      delete formValue['data']['documentSentToDwp'];
+    }
+    if (formValue['data'] && formValue['data']['extensionNextEventDl']) {
+      delete formValue['data']['extensionNextEventDl'];
+    }
+    if (formValue['event_data'] && formValue['event_data']['createdInGapsFrom']) {
+      delete formValue['event_data']['createdInGapsFrom'];
+    }
+    if (formValue['event_data'] && formValue['event_data']['documentSentToDwp']) {
+      delete formValue['event_data']['documentSentToDwp'];
+    }
+    if (formValue['event_data'] && formValue['event_data']['extensionNextEventDl']) {
+      delete formValue['event_data']['extensionNextEventDl'];
     }
 
     // Get the CaseEventData for the current page.
