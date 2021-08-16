@@ -271,7 +271,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           if (result === 'Discard') {
             this.discard();
           } else if (result === 'Save') {
-            const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
+            const formValue: object = this.removeUnwantedProperties(this.editForm.value)
+            const draftCaseEventData: CaseEventData = this.formValueService.sanitise(formValue) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
               this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
             } else {
@@ -352,7 +353,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private saveDraft() {
     if (this.eventTrigger.can_save_draft) {
-      let draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
+      const formValue: object = this.removeUnwantedProperties(this.editForm.value);
+      let draftCaseEventData: CaseEventData = this.formValueService.sanitise(formValue) as CaseEventData;
       draftCaseEventData.event_token = this.eventTrigger.event_token;
       draftCaseEventData.ignore_warning = this.ignoreWarning;
       this.caseEdit.saveDraft(draftCaseEventData).subscribe(
@@ -380,27 +382,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private buildCaseEventData(): CaseEventData {
-    const formValue: object = this.editForm.value;
-
-    // Remove fields as per ticket EUI-4402
-    if (formValue['data'] && formValue['data']['createdInGapsFrom']) {
-      delete formValue['data']['createdInGapsFrom'];
-    }
-    if (formValue['data'] && formValue['data']['documentSentToDwp']) {
-      delete formValue['data']['documentSentToDwp'];
-    }
-    if (formValue['data'] && formValue['data']['extensionNextEventDl']) {
-      delete formValue['data']['extensionNextEventDl'];
-    }
-    if (formValue['event_data'] && formValue['event_data']['createdInGapsFrom']) {
-      delete formValue['event_data']['createdInGapsFrom'];
-    }
-    if (formValue['event_data'] && formValue['event_data']['documentSentToDwp']) {
-      delete formValue['event_data']['documentSentToDwp'];
-    }
-    if (formValue['event_data'] && formValue['event_data']['extensionNextEventDl']) {
-      delete formValue['event_data']['extensionNextEventDl'];
-    }
+    const formValue: object = this.removeUnwantedProperties(this.editForm.value);
 
     // Get the CaseEventData for the current page.
     const pageFields: CaseField[] = this.currentPage.case_fields;
@@ -449,5 +431,25 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase);
 
     return caseEventData;
+  }
+
+  /**
+   * Remove properties from object as per ticket EUI-4402
+   * @param value The original value of the form.
+   * @returns object
+   */
+  public removeUnwantedProperties(value: any): object {
+    const formValue: object = value;
+    const propsToRemove = ['createdInGapsFrom', 'documentSentToDwp', 'extensionNextEventDl'];
+
+    propsToRemove.forEach((item) => {
+      if (formValue['data'] && formValue['data'][`${item}`]) {
+        delete formValue['data'][`${item}`];
+      }
+      if (formValue['event_data'] && formValue['event_data'][`${item}`]) {
+        delete formValue['event_data'][`${item}`];
+      }
+    });
+    return formValue;
   }
 }

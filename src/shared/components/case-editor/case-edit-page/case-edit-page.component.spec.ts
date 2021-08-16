@@ -615,6 +615,23 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
     });
 
+    it('should remove unwanted properties', async () => {
+      const testData: CaseEventData = {
+        'data': {
+          'createdInGapsFrom': 'value',
+          'documentSentToDwp': 'value',
+          'extensionNextEventDl': 'value',
+          'name': 'value'
+        },
+        'event': {'id': '', 'summary': '', 'description': ''},
+        'event_token': '',
+        'ignore_warning': true
+      };
+      expect(Object.keys(testData.data).length).toEqual(4);
+      const sanitisedValues = comp.removeUnwantedProperties(testData);
+      expect(Object.keys(sanitisedValues['data']).length).toEqual(1);
+    });
+
     it('should call validate', async () => {
       fixture.detectChanges();
 
