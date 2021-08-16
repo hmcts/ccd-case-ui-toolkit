@@ -383,10 +383,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const formValue: object = this.editForm.value;
 
     // Remove fields as per ticket EUI-4402
-    if (formValue['event']['id'] === 'directionIssued') {
-      delete formValue['data']['createdInGapsFrom'];
-      delete formValue['data']['documentSentToDwp'];
-      delete formValue['data']['extensionNextEventDl'];
+    if(formValue['event'] && formValue['data']) {
+      if (formValue['event']['id'] === 'directionIssued') {
+        delete formValue['data']['createdInGapsFrom'];
+        delete formValue['data']['documentSentToDwp'];
+        delete formValue['data']['extensionNextEventDl'];
+      }
     }
 
     // Get the CaseEventData for the current page.
