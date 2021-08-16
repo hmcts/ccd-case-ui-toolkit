@@ -1,51 +1,52 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CaseViewerComponent } from './case-viewer.component';
 import { MatTabsModule } from '@angular/material';
 import {
-  ActivityService,
   ActivityPollingService,
-  OrderService,
+  ActivityService,
   DraftService,
+  ErrorNotifierService,
   HttpService,
   NavigationNotifierService,
-  ErrorNotifierService
+  OrderService
 } from '../../services';
 import { ErrorsModule } from '../error/errors.module';
-import { ActivityModule } from '../activity/activity.module';
+import { ActivityModule } from '../activity';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
-import { EventTriggerModule } from '../event-trigger/event-trigger.module';
+import { EventTriggerModule } from '../event-trigger';
 import { TabsModule } from '../../../components/tabs';
-import { PaletteModule, EventLogModule, ComplexModule } from '../palette';
-import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
+import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
+import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
-import { EventTriggerResolver, CaseResolver } from './services';
+import { CaseResolver, EventTriggerResolver } from './services';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
-import { CaseViewComponent } from './case-view/case-view.component';
-import { PipesModule, CaseReferencePipe } from '../../pipes';
+import { CaseViewComponent } from './case-view';
+import { CaseReferencePipe, PipesModule } from '../../pipes';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        ErrorsModule,
-        ActivityModule,
-        CaseHeaderModule,
-        EventTriggerModule,
-        TabsModule,
-        PaletteModule,
-        LabelSubstitutorModule,
-        CaseEditorModule,
-        PipesModule,
-        ConditionalShowModule,
-        CaseHistoryModule,
-        EventLogModule,
-        MatTabsModule,
-        ComplexModule
-    ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ErrorsModule,
+    ActivityModule,
+    CaseHeaderModule,
+    EventTriggerModule,
+    TabsModule,
+    PaletteModule,
+    LabelSubstitutorModule,
+    CaseEditorModule,
+    PipesModule,
+    ConditionalShowModule,
+    CaseHistoryModule,
+    EventLogModule,
+    MatTabsModule,
+    ComplexModule
+  ],
+  schemas: [NO_ERRORS_SCHEMA],
   declarations: [
     CaseEventTriggerComponent,
     CasePrinterComponent,
