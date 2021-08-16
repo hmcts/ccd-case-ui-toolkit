@@ -101,13 +101,13 @@ export class FieldsUtils {
     }
   }
 
-  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
+  private static readonly DEFAULT_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
   };
 
-  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: any): void {
+  private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
@@ -130,7 +130,7 @@ export class FieldsUtils {
         break;
       }
       case 'MoneyGBP': {
-        const fieldValue = (result[field.id] || result[field.id] === 0) ? result[field.id] : field.value;
+        const fieldValue = (result[field.id] || field.value);
         result[field.id] = FieldsUtils.getMoneyGBP(fieldValue);
         break;
       }
@@ -187,10 +187,7 @@ export class FieldsUtils {
    * @returns A formatted string (e.g., £12.34)
    */
   private static getMoneyGBP(fieldValue: any): string {
-    if (!isNaN(parseInt(fieldValue, 10))) {
-      return FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol');
-    }
-    return '';
+    return fieldValue ? FieldsUtils.currencyPipe.transform(fieldValue / 100, 'GBP', 'symbol') : fieldValue;
   }
 
   private static getLabel(fieldValue: CaseField): string {

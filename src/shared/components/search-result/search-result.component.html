@@ -3,8 +3,12 @@
     <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
-      <span class="text-16" id="search-result-summary__text">Displaying {{ getFirstResult() }} - {{ getLastResult() }} 
-        out of {{ getTotalResults() }} results</span>
+      <span class="text-16" id="search-result-summary__text">Showing 
+        <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
+        to
+        <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
+        of
+        <span class="govuk-!-font-weight-bold">{{ getTotalResults() }}</span> results</span>
     </div>
     <div *ngIf="(hasResults() || hasDrafts()) && selectionEnabled" class="reset-selection"
       attr.aria-label="Reset selection">

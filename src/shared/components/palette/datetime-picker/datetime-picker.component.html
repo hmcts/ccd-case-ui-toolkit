@@ -5,22 +5,21 @@
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel }}</span>
       <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
       <span class="error-message"
-            *ngIf="dateControl && dateControl.errors && dateControl.dirty && !(this.minError || this.maxError)">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
+            *ngIf="dateControl && dateControl.errors && dateControl.dirty && !(minError || maxError)">{{dateControl.errors | ccdFirstError:caseField.label}}</span>
             <span class="error-message"
-            *ngIf="dateControl && dateControl.dirty && this.minError">This date is older than the minimum date allowed</span>
+            *ngIf="dateControl && dateControl.dirty && minError">This date is older than the minimum date allowed</span>
             <span class="error-message"
-            *ngIf="dateControl && dateControl.dirty && this.maxError">This date is later than the maximum date allowed</span>
+            *ngIf="dateControl && dateControl.dirty && maxError">This date is later than the maximum date allowed</span>
     </legend>
     <div class="datepicker-container">
       <input class="govuk-input"
              #input
-             attr.aria-label="Please enter a date and time in the format {{dateTimeEntryFormat}}"
+             aria-label="Please enter a date and time in the format DD/MM/YYYY HH:MM"
              [min]="minDate(caseField)"
              [max]="maxDate(caseField)"
              [formControl]="dateControl"
              [ngxMatDatetimePicker]="picker"
              (focusin)="focusIn()"
-             (focusout)="focusOut()"
              (dateChange)="valueChanged()"
              ng-model-options="{timezone:'utc'}"
       >
