@@ -39,6 +39,16 @@ export class DocumentManagementService {
       .pipe();
   }
 
+  public secureUploadFile(formData: FormData): Observable<DocumentData> {
+    const url = this.appConfig.getDocumentManagementUrlV2();
+
+    const headers = new HttpHeaders();
+    return this.http
+      .post(url, formData, {headers, observe: 'body'})
+      .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
+      .pipe();
+  }
+
   public getMediaViewerInfo(documentFieldValue: any): string {
     let mediaViewerInfo = {
         document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
