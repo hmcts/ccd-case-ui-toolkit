@@ -59,7 +59,7 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.caseViewSubscription) {
       this.caseViewSubscription.unsubscribe();
     }
