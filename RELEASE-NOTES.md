@@ -110,6 +110,9 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 **EUI-3581** Field interpolation does not work for the field type MultiSelectList
 **EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
 
+### Version 4.0.0-prepended-tabs-v3
+**EUI-3777** Create prepended tabs on case view
+
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
 **EUI-2022** ExUI - Error Messages (Complex Type)
