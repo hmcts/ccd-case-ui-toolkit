@@ -23,6 +23,11 @@ class CaseEdit {
 
     errorSummaryContainer = $('.error-summary');
 
+
+    validationAlertSummaryContainer = $('.govuk-error-summary[role="alert"]');
+    callbackErrorSummaryContainer = $('.error-summary[role="status"]');
+
+
     async waitForPage() {
         await BrowserWaits.waitForElement($('ccd-case-edit-page'));
     }
@@ -629,6 +634,36 @@ class CaseEdit {
         }
         softAssert.finally();
     }
+
+
+    async isFieldLevelValidationErrorDisplayed(fieldId) {
+        const fieldElementVaidationError = element(by.xpath(`//*[contains(@id,'${fieldId}')]/ancestor::*[contains(@class,"form-group-error")] | //*[contains(@id,'${fieldId}')]//span[contains(@class,'error-message')] `));
+        return await fieldElementVaidationError.isPresent();
+    }
+
+
+    async isValidationAlertSummaryDisplayed() {
+        try {
+            await BrowserWaits.waitForElement(this.validationAlertSummaryContainer);
+            return true;
+        } catch (error) {
+            reportLogger.AddMessage("Validation error not displayed" + error);
+            return false;
+        }
+    }
+
+    async isValidationAlertMessageDisplayed(errorMessage) {
+        expect(await this.isValidationAlertSummaryDisplayed(), "Error summary not displayed").to.be.true;
+        const errorSummaryText = await this.validationAlertSummaryContainer.getText();
+        return errorSummaryText.includes(errorMessage);
+    }
+
+    async getValidationAlertMessageDisplayed() {
+        expect(await this.isValidationAlertSummaryDisplayed(), "Error summary not displayed").to.be.true;
+        const errorSummaryText = await this.validationAlertSummaryContainer.getText();
+        return errorSummaryText;
+    }
+
 
 
 
