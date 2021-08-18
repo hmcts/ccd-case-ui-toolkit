@@ -164,6 +164,29 @@ class CCDCaseConfig extends CCDCaseField{
         return this;
     }
 
+
+    setFixedListItems(fieldId, fieldListItems) {
+        const fieldStructure = fieldId.split(".");
+        let fieldConfig = this.getCaseFieldConfig(fieldStructure[0]);
+        for (let i = 1; i < fieldStructure.length; i++) {
+            if (fieldConfig.field_type.type === "Complex") {
+                for (let complexFieldCtr = 0; complexFieldCtr < fieldConfig.field_type.complex_fields.length; complexFieldCtr++) {
+                    let complexFieldElement = fieldConfig.field_type.complex_fields[complexFieldCtr];
+                    if (complexFieldElement.id === fieldStructure[i]) {
+                        fieldConfig = complexFieldElement;
+                        break;
+                    }
+                }
+            } else if (fieldConfig.field_type.type === "Collection") {
+                fieldConfig = fieldConfig.field_type.collection_field_type;
+            }
+        };
+        fieldConfig.field_type.fixed_list_items = fieldListItems;
+
+        return this;
+    }
+
+
     checkPageAndFiedlSet(){
         if (!this.currentWizardPage) {
             throw new Error("No wizard page added.");
