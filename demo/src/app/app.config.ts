@@ -28,7 +28,10 @@ export class AppConfig extends AbstractAppConfig {
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
     'work_allocation_api_url': '/workallocation',
-    'user_info_api_url': '/user-info'
+    'user_info_api_url': '/user-info',
+    'document_management_url_v2': 'http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/v2/health',
+    'document_management_secure_enabled':true
+
   };
 
   constructor(private http: HttpClient) {
