@@ -65,7 +65,11 @@ export abstract class AbstractFormFieldComponent {
 
   private addControlToFormGroup(control: AbstractControl, parent: FormGroup, replace: boolean): AbstractControl {
     if (replace) {
-      parent.setControl(this.caseField.id, control);
+      if (control['controls'] && control['controls']['Id'] && control['controls']['Id'].value === 'LinkedCase') {
+        parent.setControl('CaseReference', control['controls']['CaseReference']);
+      } else {
+        parent.setControl(this.caseField.id, control);
+      }
     } else {
       parent.addControl(this.caseField.id, control);
     }
