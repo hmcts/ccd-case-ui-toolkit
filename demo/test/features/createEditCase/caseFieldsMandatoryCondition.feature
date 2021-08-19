@@ -1,4 +1,4 @@
-@all @test
+@all
 Feature: Case fields
 
     Background: Mock event setup
@@ -69,17 +69,17 @@ Feature: Case fields
 
         Examples:
             | fieldId             | fieldLabel            | validationMessage                 |
-            # | text                | Text                  | Text is required                  |
-            # | postcode            | Postcode              | Postcode is required              |
-            # | testArea            | TextArea              | TextArea is required              |
-            # | number              | Number                | Number is required                |
-            # | radioYesNo          | YesOrNo               | YesOrNo is required               |
-            # | email               | Email                 | Email is required                 |
-            # | phoneUK             | PhoneUK               | PhoneUK is required               |
-            # | date                | Date                  | Date is required                  |
-            # | dateTime            | DateTime              | DateTime is required              |
-            # | moneyGBP            | MoneyGBP              | MoneyGBP is not valid             |
-            # | document            | Document           | Select or fill the required Document field |
+            | text                | Text                  | Text is required                  |
+            | postcode            | Postcode              | Postcode is required              |
+            | testArea            | TextArea              | TextArea is required              |
+            | number              | Number                | Number is required                |
+            | radioYesNo          | YesOrNo               | YesOrNo is required               |
+            | email               | Email                 | Email is required                 |
+            | phoneUK             | PhoneUK               | PhoneUK is required               |
+            | date                | Date                  | Date is required                  |
+            | dateTime            | DateTime              | DateTime is required              |
+            | moneyGBP            | MoneyGBP              | MoneyGBP is not valid             |
+            | document            | Document           | Select or fill the required Document field |
             | caseLink            | CaseLink              | CaseLink is required              |
             # | dynamicList     |  DynamicList     | is required|
             | fixedList           | FixedList             | FixedList is required             |

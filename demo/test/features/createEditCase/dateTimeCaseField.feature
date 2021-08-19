@@ -1,4 +1,4 @@
-@all
+@all @test
 Feature: Case field Date and Datetime picker
 
     Background: Mock event setup
@@ -70,7 +70,7 @@ Feature: Case field Date and Datetime picker
             | #dt1        | 2020 02 20 |
             | #dt2        | 2020-01    |
             | #dt3        | 2022       |
-    @test
+    
     Scenario: Multiple datetime fields in page
         Given I create mock Case event "muliDateFields"
         Given I add page to event "muliDateFields"
