@@ -12,7 +12,7 @@ export class AppConfig extends AbstractAppConfig {
     'hrs_url': '/hearing-recordings',
     'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': '/addresses/?postcode=${postcode}',
+    'postcode_lookup_url': '/api/addresses?postcode=${postcode}',
     'remote_document_management_url': '/documents',
     'remote_hrs_url': '/hearing-recordings',
     'annotation_api_url': '/em-anno',

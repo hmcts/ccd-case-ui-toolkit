@@ -10,10 +10,18 @@ const minimist = require('minimist');
 
 
 defineSupportCode(({ Before,After }) => {
-    Before( function (scenario) {
+    Before( async function (scenario) {
         global.scenarioData = {};
         const world = this;
+
+        const scenarioServerPort = MockApp.serverPort;
+        MockApp.init();
+        await MockApp.startServer();
         CucumberReportLog.setScenarioWorld(this);
+
+        await browser.driver.get('http://localhost:4200');
+        await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:4200' });
+
     });
 
     After(async function(scenario) {
@@ -41,10 +49,12 @@ defineSupportCode(({ Before,After }) => {
                 await browser.manage().logs().get('browser');
                 await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
                 await CucumberReportLog.AddScreenshot(global.screenShotUtils);
+
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }
+        // browser.restartSync();
         
     });
 });
