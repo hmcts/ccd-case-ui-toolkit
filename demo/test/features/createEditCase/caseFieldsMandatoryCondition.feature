@@ -79,7 +79,7 @@ Feature: Case fields
             | date                | Date                  | Date is required                  |
             | dateTime            | DateTime              | DateTime is required              |
             | moneyGBP            | MoneyGBP              | MoneyGBP is not valid             |
-            | document            | Document           | Select or fill the required Document field |
+            # | document            | Document           | Select or fill the required Document field |
             | caseLink            | CaseLink              | CaseLink is required              |
             # | dynamicList     |  DynamicList     | is required|
             | fixedList           | FixedList             | FixedList is required             |
