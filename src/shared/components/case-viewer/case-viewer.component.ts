@@ -180,6 +180,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     return !!this.caseDetails;
   }
 
+  public hasAccess(): boolean {
+    return !!false;
+  }
+
   public hasTabsPresent(): boolean {
     return this.sortedTabs.length > 0;
   }
