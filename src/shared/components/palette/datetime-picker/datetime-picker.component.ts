@@ -127,7 +127,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.hideTime = true;
       this.checkTime = false;
       this.dateTimeEntryFormat = this.formatTranslationService.removeTime(this.dateTimeEntryFormat);
-      this.momentFormat = 'YYYY-MM-DD'
+      this.momentFormat = 'YYYY-MM-DD';
     }
 
     if (this.checkTime) {

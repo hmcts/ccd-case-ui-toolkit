@@ -1,11 +1,28 @@
 ## RELEASE NOTES
+### Version 4.1.6-EUI-3528-4205-RHF-enhancements
+**EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
+**EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
+
+### Version 4.3.0
+**EUI-4344** Document uploaded shows incorrect name
+**EUI-4377** removing unwanted html tags from title
+
+### Version 4.2.3
+**EUI-3425** Hotfix for work already done. Secure uploading for new cases
+
+### Version 4.2.2
+**EUI-4161** Turn HRS documentLink URLs into relative URLs, as is done for dm-store URLs
+
+### Version 4.2.1
+**EUI-3425** Update Document Management Service to call new document upload API in ccd-case-ui-toolkit
+**EUI-3426** Repoint node layer at the new document store API
 
 ### Version 4.1.6-link-case
 **EUI-4346** Link a case event throws error
 **EUI-4349** Reset caseDetailsPage Position to Top
 
 ### Version 4.2.0
-**EUI-2276** Case field showing on summary screen when complext type field is hidden
+**EUI-2276** Case field showing on summary screen when complex type field is hidden
 **EUI-2829** Support Dynamic RadioList
 **EUI-3621** Add support for searching cases wrt collections of fixed lists
 **EUI-4095** Time stamp on case events incorrect
@@ -73,6 +90,15 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 
 ### Version 3.1.5-datetime-picker-validation
 **EUI-4118** Add and improve validation to datetime picker
+
+### Version 4.1.6-ccd-cve-fix
+**EUI-4112** CVE fix for ccd toolkit
+
+### Version 4.0.0-activity-tracker-unauthorised-beta
+**EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
+
+### Version 3.1.5-complex-hidden-collection-show
+**EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
 
 ### Version 4.1.0
 **EUI-2027** Button Labels (AA)
