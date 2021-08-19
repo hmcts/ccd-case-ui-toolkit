@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+
+### Version 4.3.0-hotfix-for-link-case-error
+**EUI-4346** Link a case event throws error
+**EUI-4349** Reset caseDetailsPage Position to Top
+
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
@@ -16,10 +21,6 @@
 ### Version 4.2.1
 **EUI-3425** Update Document Management Service to call new document upload API in ccd-case-ui-toolkit
 **EUI-3426** Repoint node layer at the new document store API
-
-### Version 4.1.6-link-case
-**EUI-4346** Link a case event throws error
-**EUI-4349** Reset caseDetailsPage Position to Top
 
 ### Version 4.2.0
 **EUI-2276** Case field showing on summary screen when complex type field is hidden
