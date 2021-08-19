@@ -3,11 +3,13 @@ const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
-
+const MockApp = require('../nodeMock/app');
+const customReporter = require('../support/reportLogger'); 
 // const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : false;
 
 const jenkinsConfig = [
 
@@ -34,6 +36,11 @@ const localConfig = [
     }
 ];
 
+
+if (isParallelExecution) {
+    jenkinsConfig[0].shardTestFiles = true;
+    jenkinsConfig[0].maxInstances = 4;
+}
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
@@ -59,6 +66,20 @@ const config = {
         global.expect = chai.expect;
         global.assert = chai.assert;
         global.should = chai.should;
+
+        if (isParallelExecution) {
+            MockApp.getNextAvailableClientPort().then(res => {
+                MockApp.setServerPort(res.data.port);
+                MockApp.init();
+                //MockApp.startServer();
+
+            });
+        } else {
+            MockApp.setServerPort(3001);
+            //await MockApp.startServer();
+            MockApp.setLogMessageCallback(customReporter.AddMessage);
+        }
+        MockApp.setLogMessageCallback(customReporter.AddJson);
 
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser

@@ -80,6 +80,8 @@
     "zone.js": "^0.8.26",
     "eligrey-classlist.js": "^1.2.20180112",
     "isomorphic-fetch": "^3.0.0",
-    "web-animations-js": "^2.3.2"
+    "web-animations-js": "^2.3.2",
+    "cookie-parser": "^1.4.4",
+    "axios": "^0.21.1"
   }
 }
