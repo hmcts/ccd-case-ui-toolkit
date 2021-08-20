@@ -15,6 +15,9 @@ const { browser } = require('protractor');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
+const mockServerProtocol = 'http://'
+const mockServerHost = 'localhost:'
+
 const port = 8080;
 
 
@@ -74,19 +77,20 @@ class MockApp {
         const headers = req.headers;
         const urlPath = `${onPort}${req.originalUrl}`;
 
+        const requesUrl = `${mockServerProtocol}${mockServerHost}${urlPath}`
         let reqCallback = null;
         switch (req.method.toLowerCase()) {
             case 'get':
-                reqCallback = () => http.get(`http://localhost:${urlPath}`, { headers });
+                reqCallback = () => http.get(requesUrl, { headers });
                 break;
             case 'post':
-                reqCallback = () => http.post(`http://localhost:${urlPath}`, req.body, { headers });
+                reqCallback = () => http.post(requesUrl, req.body, { headers });
                 break;
             case 'put':
-                reqCallback = () => http.put(`http://localhost:${urlPath}`, req.body, { headers });
+                reqCallback = () => http.put(requesUrl, req.body, { headers });
                 break;
             case 'delete':
-                reqCallback = () => http.delete(`http://localhost:${urlPath}`, { headers });
+                reqCallback = () => http.delete(requesUrl, { headers });
                 break;
             default:
                 res.status(500).send({ error: 'mock proxy error' });
