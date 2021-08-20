@@ -70,23 +70,23 @@ class MockApp {
         }
     }
 
-    async proxyRequest(req, res, port) {
+    async proxyRequest(req, res, onPort) {
         const headers = req.headers;
-        const urlPath = req.originalUrl;
+        const urlPath = `${onPort}${req.originalUrl}`;
 
         let reqCallback = null;
         switch (req.method.toLowerCase()) {
             case 'get':
-                reqCallback = () => http.get(`http://localhost:${port}${urlPath}`, { headers });
+                reqCallback = () => http.get(`http://localhost:${urlPath}`, { headers });
                 break;
             case 'post':
-                reqCallback = () => http.post(`http://localhost:${port}${urlPath}`, req.body, { headers });
+                reqCallback = () => http.post(`http://localhost:${urlPath}`, req.body, { headers });
                 break;
             case 'put':
-                reqCallback = () => http.put(`http://localhost:${port}${urlPath}`, req.body, { headers });
+                reqCallback = () => http.put(`http://localhost:${urlPath}`, req.body, { headers });
                 break;
             case 'delete':
-                reqCallback = () => http.delete(`http://localhost:${port}${urlPath}`, { headers });
+                reqCallback = () => http.delete(`http://localhost:${urlPath}`, { headers });
                 break;
             default:
                 res.status(500).send({ error: 'mock proxy error' });

@@ -170,13 +170,12 @@ class CCDCaseConfig extends CCDCaseField{
         let fieldConfig = this.getCaseFieldConfig(fieldStructure[0]);
         for (let i = 1; i < fieldStructure.length; i++) {
             if (fieldConfig.field_type.type === "Complex") {
-                for (let complexFieldCtr = 0; complexFieldCtr < fieldConfig.field_type.complex_fields.length; complexFieldCtr++) {
-                    let complexFieldElement = fieldConfig.field_type.complex_fields[complexFieldCtr];
+                for (let complexFieldElement of fieldConfig.field_type.complex_fields) {
                     if (complexFieldElement.id === fieldStructure[i]) {
                         fieldConfig = complexFieldElement;
                         break;
                     }
-                } //NOSONAR
+                } 
             } else if (fieldConfig.field_type.type === "Collection") {
                 fieldConfig = fieldConfig.field_type.collection_field_type;
             }

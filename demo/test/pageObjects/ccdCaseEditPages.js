@@ -56,7 +56,7 @@ class CaseEdit {
 
     async getValidationAlertMessageDisplayed() {
         expect(await this.isValidationAlertSummaryDisplayed(), "Error summary not displayed").to.be.true;
-        return await this.validationAlertSummaryContainer.getText();
+        return this.validationAlertSummaryContainer.getText();
     }
 
     async isCallbackErrorSummaryDisplayed() {
