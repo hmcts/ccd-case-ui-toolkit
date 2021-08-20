@@ -22,13 +22,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I enter case event field values for event {string}', async function (eventRef, fielValuesDT) {
         const mockCaseEvent = global.scenarioData[eventRef];
         const fieldValues = fielValuesDT.hashes();
-        for (let i = 0; i < fieldValues.length; i++) {
-            const pathArr = fieldValues[i].path.split(".");
+        for (let fieldValue of  fieldValues) {
+            const pathArr = fieldValue.path.split(".");
 
             const fieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
             const inputFieldConfig = mockCaseEvent.getInputFieldConfig(fieldConfig, pathArr);
-            await caseEditPage.inputCaseField(inputFieldConfig, fieldValues[i].value, fieldValues[i].cssSelector)
-        } // NOSONAR
+            await caseEditPage.inputCaseField(inputFieldConfig, fieldValue.value, fieldValue.cssSelector)
+        } 
     });
 
   
@@ -48,13 +48,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const dataTableHashes = datatable.hashes();
         CucumberReportLogger.AddMessage("Request body in validation");
         CucumberReportLogger.AddJson(reqBody);
-        for (let i = 0; i < dataTableHashes.length; i++) {
-            const matchValues = jsonpath.query(reqBody, dataTableHashes[i].pathExpression);
-            softAsseert.setScenario(`Validate case field present in req body ${dataTableHashes[i].pathExpression}`);
-            await softAsseert.assert(() => expect(matchValues.length > 0, `path ${dataTableHashes[i].pathExpression} not found in req body`).to.be.true);
+        for (let dataTableHash of  dataTableHashes) {
+            const matchValues = jsonpath.query(reqBody, dataTableHash.pathExpression);
+            softAsseert.setScenario(`Validate case field present in req body ${dataTableHash.pathExpression}`);
+            await softAsseert.assert(() => expect(matchValues.length > 0, `path ${dataTableHash.pathExpression} not found in req body`).to.be.true);
             if (matchValues.length > 0) {
-                softAsseert.setScenario(`Validate feidl valUe in req body ${dataTableHashes[i].pathExpression}`)
-                await softAsseert.assert(() => expect(matchValues[0], `path ${dataTableHashes[i].pathExpression} not matching expected`).to.equal(dataTableHashes[i].value));
+                softAsseert.setScenario(`Validate feidl valUe in req body ${dataTableHash.pathExpression}`)
+                await softAsseert.assert(() => expect(matchValues[0], `path ${dataTableHash.pathExpression} not matching expected`).to.equal(dataTableHash.value));
             }
         }
         softAsseert.finally();
@@ -72,8 +72,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see case event validation alert error summary messages', async function (datatable) {
         const messageHashes = datatable.hashes();
-        for (let i = 0; i < messageHashes.length; i++) {
-            expect(await caseEditPage.getValidationAlertMessageDisplayed(), 'Expected field error validation message not displayed in error summary').to.include(messageHashes[i].message);
+        for (let messageHash of messageHashes) {
+            expect(await caseEditPage.getValidationAlertMessageDisplayed(), 'Expected field error validation message not displayed in error summary').to.include(messageHash.message);
         }
     });
 
@@ -88,7 +88,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         let validateReq = null;
         MockApp.addIntercept('/data/case-types/:caseType/validate', (req, res, next) => {
             validateReq = req.body;
-            //  console.log("/data/case-types/:caseType/validate req received : " + JSON.stringify(validateReq,2)); 
             next();
         });
 
@@ -111,10 +110,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             for (const pageField of wizardPage.wizard_page_fields) {
 
                 const fieldConfig = caseConfig.case_fields.filter(field => field.id === pageField.case_field_id)[0];
-                // if (!fieldConfig.show_condition){
-                //     expect(await CaseEditPage.isFieldDisplayed(fieldConfig)).to.be.true;
-                //     thisPageEventData[fieldConfig.id] = await CaseEditPage.inputCaseField(fieldConfig); 
-                // }  
+              
                 expect(await caseEditPage.isFieldDisplayed(fieldConfig)).to.be.true;
                 thisPageEventData[fieldConfig.id] = await caseEditPage.inputCaseField(fieldConfig);
 
@@ -140,7 +136,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I input fields in case edit page from event {string} with values', async function (eventConfigRef, datatable) {
         const caseConfigInstance = global.scenarioData[eventConfigRef];
-        const caseConfig = caseConfigInstance.getCase();
         const fieldValues = datatable.hashes();
 
         for (const fieldValue of fieldValues) {
@@ -168,7 +163,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate fields display in case edit page from event {string}', async function (eventConfigRef, datatable) {
         await BrowserWaits.waitForSeconds(1);
         const caseConfigInstance = global.scenarioData[eventConfigRef];
-        const caseConfig = caseConfigInstance.getCase();
         const fieldValues = datatable.hashes();
         for (const fieldValue of fieldValues) {
             const fieldConfig = caseConfigInstance.getCaseFieldConfig(fieldValue.fieldId)
@@ -180,9 +174,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     Then('I validate event page continue on validate request error status code {int}', async function (statusCode) {
-        let validateReq = null;
         MockApp.onPost('/data/case-types/:caseType/validate', (req, res, next) => {
-            validateReq = req;
             res.status(statusCode).send("Data validation error!");
         });
         await MockApp.stopServer();

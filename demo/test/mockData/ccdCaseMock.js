@@ -3,14 +3,7 @@ const CCDWorkbasketConfig = require('../nodeMock/ccd/ccdCaseConfig/workBasketInp
 const CCDSearchInputConfig = require('../nodeMock/ccd/ccdCaseConfig/searchInputGenerator');
 
 function getTestJurisdiction(scenario) {
-    const job = {
-        id: "job", type: "Complex", label: "Job details",
-        complex_fields: [
-            { id: "Title", type: "Text", label: "Title" },
-            { id: "Description", type: "Text", label: "Description" },
-        ]
-    };
-
+   
     const complexType_1 = [
         { id: "YesOrNoField", type: "YesOrNo", label: "YesOrNo" },
         {

@@ -54,7 +54,6 @@ defineSupportCode(({ Before,After }) => {
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }
-        // browser.restartSync();
         
     });
 });
