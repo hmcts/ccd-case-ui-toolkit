@@ -176,11 +176,11 @@ class CCDCaseConfig extends CCDCaseField{
                         fieldConfig = complexFieldElement;
                         break;
                     }
-                }
+                } //NOSONAR
             } else if (fieldConfig.field_type.type === "Collection") {
                 fieldConfig = fieldConfig.field_type.collection_field_type;
             }
-        };
+        }
         fieldConfig.field_type.fixed_list_items = fieldListItems;
 
         return this;

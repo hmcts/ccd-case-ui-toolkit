@@ -56,8 +56,7 @@ class CaseEdit {
 
     async getValidationAlertMessageDisplayed() {
         expect(await this.isValidationAlertSummaryDisplayed(), "Error summary not displayed").to.be.true;
-        const errorSummaryText = await this.validationAlertSummaryContainer.getText();
-        return errorSummaryText;
+        return await this.validationAlertSummaryContainer.getText();
     }
 
     async isCallbackErrorSummaryDisplayed() {
@@ -78,7 +77,7 @@ class CaseEdit {
 
     async isFieldLevelValidationErrorDisplayed(fieldId) {
         const fieldElementVaidationError = element(by.xpath(`//*[contains(@id,'${fieldId}')]/ancestor::*[contains(@class,"form-group-error")] | //*[contains(@id,'${fieldId}')]//span[contains(@class,'error-message')] `));
-        return await fieldElementVaidationError.isPresent();
+        return await fieldElementVaidationError.isPresent();  //NOSONAR
     }
 
 
@@ -312,7 +311,7 @@ class CaseEdit {
 
         for (const complexFiedlConfig of fieldConfig.field_type.complex_fields) {
             let prefix = parentid ? parentid + '_' + fieldConfig.id + '__detail' : fieldConfig.id + '__detail';
-            let value = await $(`#${prefix}${complexFiedlConfig.id}`).getAttribute("value");
+            let value = await $(`#${prefix}${complexFiedlConfig.id}`).getAttribute("value"); //NOSONAR
             fieldValue[complexFiedlConfig.id] = value;
         }
 
@@ -490,8 +489,6 @@ class CaseEdit {
     }
 
     async inputCaseField(fieldConfig, value, parentId) {
-        // await BrowserWaits.waitForSeconds(1);
-        // console.log(`******** input : parentId ${parentId} , value ${value}, fieldId ${fieldConfig.id}`);
         let fieldValue = null;
         switch (fieldConfig.field_type.type) {
             case "Text":

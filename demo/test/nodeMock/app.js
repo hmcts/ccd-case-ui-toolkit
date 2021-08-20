@@ -42,8 +42,8 @@ class MockApp {
         return "done";
     }
 
-    setServerPort(port) {
-        this.serverPort = port;
+    setServerPort(portToSet) {
+        this.serverPort = portToSet;
     }
 
     setLogMessageCallback(callback) {
@@ -61,13 +61,11 @@ class MockApp {
     }
 
     onRequest(endPoint, method, req, res, callback) {
-        const scenarioId = this.getCookieFromRequest(req, "scenarioId");
         const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
         if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
 
             this.proxyRequest(req, res, parseInt(scenarioMockPort));
         } else {
-            // this.logMessage(`on mock ${this.serverPort} : req ${req.method} ${req.originalUrl}`);
             callback(req, res);
         }
     }
@@ -77,7 +75,6 @@ class MockApp {
         const urlPath = req.originalUrl;
 
         let reqCallback = null;
-        //this.logMessage(`${this.serverPort} proxying request to ${port} ${req.method.toUpperCase()}  ${urlPath} `);
         switch (req.method.toLowerCase()) {
             case 'get':
                 reqCallback = () => http.get(`http://localhost:${port}${urlPath}`, { headers });
@@ -222,11 +219,8 @@ class MockApp {
     }
 
     async setConfig(configKey, value) {
-        //this.configurations[configKey] = value; 
+        console.log('set config not implemented');
     }
-
-
-
 }
 
 
@@ -238,10 +232,5 @@ const args = minimist(process.argv)
 if (args.standalone) {
     mockInstance.setServerPort(3001);
     mockInstance.init();
-
-    // setUpcaseConfig();
-    // getDLCaseConfig();
-    // collectionDynamicListeventConfig()
-    // createCustomCaseDetails();
     mockInstance.startServer()
 }

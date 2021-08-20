@@ -28,7 +28,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const fieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
             const inputFieldConfig = mockCaseEvent.getInputFieldConfig(fieldConfig, pathArr);
             await caseEditPage.inputCaseField(inputFieldConfig, fieldValues[i].value, fieldValues[i].cssSelector)
-        }
+        } //NOSONAR
     });
 
   
