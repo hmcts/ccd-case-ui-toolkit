@@ -75,7 +75,7 @@ const config = {
 
             });
         } else {
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(8080);
             //await MockApp.startServer();
             MockApp.setLogMessageCallback(customReporter.AddMessage);
         }

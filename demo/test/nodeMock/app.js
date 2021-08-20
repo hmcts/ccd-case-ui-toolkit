@@ -15,7 +15,7 @@ const { browser } = require('protractor');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
-const port = 3001;
+const port = 8080;
 
 
 class MockApp {
