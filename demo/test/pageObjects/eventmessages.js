@@ -11,11 +11,11 @@ class EventMessages{
 
     async getLastMessage(){
         await BrowserWaits.waitForElement(this.lastMessageElement);
-        return await this.lastMessageElement.getText();
+        return await this.lastMessageElement.getText(); //NOSSONAR
     }
 
     async getTotalEventsCount(){
-        return await this.allMessagesElements.count();
+        return await this.allMessagesElements.count(); //NOSONAR
     }
 
     async isEventWithMessageTriggered(message){

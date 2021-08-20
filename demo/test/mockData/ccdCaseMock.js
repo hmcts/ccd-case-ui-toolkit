@@ -11,18 +11,6 @@ function getTestJurisdiction(scenario) {
         ]
     };
 
-    const personFields = [
-        { id: "Title", type: "Text", label: "Title" },
-        { id: "FirstName", type: "Text", label: "First Name" },
-        { id: "LastName", type: "Text", label: "Last name" },
-        { id: "MaidenName", type: "Text", label: "Maiden Name" },
-        {
-            id: "Gender", type: "FixedRadioList", label: "Select your gender",
-            list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
-        },
-        job
-    ];
-
     const complexType_1 = [
         { id: "YesOrNoField", type: "YesOrNo", label: "YesOrNo" },
         {

@@ -14,6 +14,8 @@ function getEventConfig(event) {
                     value: [{ id: 1, value: "test val" }]
                 });
             break;
+        case 'type2':
+        case 'type3':
         default:
             throw new Error(`Mock event config for provided event ${event} is not defined. Please check test data config`);
 

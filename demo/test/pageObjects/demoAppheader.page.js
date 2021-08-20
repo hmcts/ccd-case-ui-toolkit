@@ -41,10 +41,6 @@ class AppHeader{
         return componentTag;
     }
 
-    getEventMessages(){
-
-    }
-
 }
 
 module.exports = new AppHeader();

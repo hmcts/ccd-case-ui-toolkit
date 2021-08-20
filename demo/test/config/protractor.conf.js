@@ -78,12 +78,10 @@ const config = {
             MockApp.getNextAvailableClientPort().then(res => {
                 MockApp.setServerPort(res.data.port);
                 MockApp.init();
-                //MockApp.startServer();
 
             });
         } else {
             MockApp.setServerPort(8080);
-            //await MockApp.startServer();
             MockApp.setLogMessageCallback(customReporter.AddMessage);
         }
         MockApp.setLogMessageCallback(customReporter.AddJson);
