@@ -1,25 +1,16 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
-import { ShowCondition } from '../../directives/conditional-show/domain';
-import {
-  Activity,
-  CaseField,
-  CaseTab,
-  CaseView,
-  CaseViewTrigger,
-  DisplayMode,
-  Draft,
-  DRAFT_QUERY_PARAM,
-} from '../../domain';
+import { DeleteOrCancelDialogComponent } from '../dialogs';
+import { ShowCondition } from '../../directives';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -30,7 +21,7 @@ import {
   OrderService,
 } from '../../services';
 import { CaseNotifier } from '../case-editor';
-import { CallbackErrorsContext } from '../error/domain';
+import { CallbackErrorsContext } from '../error';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -43,14 +34,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
   static readonly space = '%20';
 
-  @Input()
-  public hasPrint = true;
-  @Input()
-  public hasEventSelector = true;
+  @Input() public hasPrint = true;
+  @Input() public hasEventSelector = true;
+  @Input() public caseDetails: CaseView;
+  @Input() public prependedTabs: CaseTab[] = [];
 
   public BANNER = DisplayMode.BANNER;
-
-  public caseDetails: CaseView;
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
   public formGroup: FormGroup;
@@ -70,6 +59,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private readonly ngZone: NgZone,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
     private readonly activityPollingService: ActivityPollingService,
@@ -84,13 +74,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.initDialog();
-    if (!this.route.snapshot.data.case) {
+    if (!this.caseDetails) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.init();
       });
     } else {
-      this.caseDetails = this.route.snapshot.data.case;
       this.init();
     }
 
@@ -181,7 +170,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public hasTabsPresent(): boolean {
-    return this.sortedTabs.length > 0;
+    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0;
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
@@ -204,18 +193,39 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
+    let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    const reguarExp = new RegExp(CaseViewerComponent.space, 'g');
-    hashValue = hashValue.replace(reguarExp, ' ');
-    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    // if we have prepended tabs route to one of the prepended tabs
+    if (!url.includes('#') && this.prependedTabs && this.prependedTabs.length) {
+      const paths = url.split('/');
+      const tabName = decodeURIComponent(paths[paths.length - 1]);
+      const selectedTab: CaseTab = this.prependedTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === tabName.toLowerCase());
+      const tab: string = selectedTab ? selectedTab.id : 'tasks'
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, tab]).then(() => {
+        matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
+        this.tabGroup.selectedIndex = matTab.position;
+      });
+      return;
+    }
+    const regExp = new RegExp(CaseViewerComponent.space, 'g');
+    hashValue = hashValue.replace(regExp, ' ');
+    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
     if (matTab && matTab.position) {
       this.tabGroup.selectedIndex = matTab.position;
     }
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    window.location.hash = tabChangeEvent.tab.textLabel;
+    const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
+    const id = (<HTMLElement>tab.element.nativeElement).id
+    if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
+      this.router.navigate([id], {relativeTo: this.route});
+    } else {
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
+        window.location.hash = id;
+      })
+    }
   }
 
   private init(): void {
@@ -268,7 +278,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         };
       });
     }
-    return new FormGroup({ data: new FormControl(value) });
+    return new FormGroup({data: new FormControl(value)});
   }
 
   private initDialog(): void {

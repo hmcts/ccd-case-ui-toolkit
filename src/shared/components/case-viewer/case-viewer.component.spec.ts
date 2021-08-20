@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { Location } from '@angular/common';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseViewerComponent } from './case-viewer.component';
@@ -12,7 +13,17 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
 import { PaletteUtilsModule } from '../../components/palette/utils';
 import { CaseField } from '../../domain/definition';
 import { PlaceholderService } from '../../directives/substitutor/services';
-import { FieldsUtils, NavigationNotifierService, NavigationOrigin, ErrorNotifierService } from '../../services/';
+import {
+  ActivityService,
+  AuthService,
+  ErrorNotifierService,
+  FieldsUtils,
+  HttpErrorService,
+  HttpService,
+  NavigationNotifierService,
+  NavigationOrigin,
+  SessionStorageService
+} from '../../services/';
 import { LabelSubstitutorDirective } from '../../directives/substitutor';
 import { HttpError } from '../../domain/http';
 import { OrderService } from '../../services/order';
@@ -22,10 +33,14 @@ import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { CaseNotifier } from '../case-editor';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ComplexModule, PaletteModule } from '../palette';
+import { AbstractAppConfig } from '../../../app.config';
+import { AppMockConfig } from '../../../app-config.mock';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
 
 @Component({
   // tslint:disable-next-line
@@ -44,6 +59,14 @@ class TabComponent {
 
   @Input()
   selected: boolean;
+}
+
+@Component({
+  // tslint:disable-next-line
+  selector: 'exui-tasks-container',
+  template: '<p>Tasks Container</p>'
+})
+class TasksContainerComponent {
 }
 
 @Component({
@@ -694,7 +717,7 @@ xdescribe('CaseViewerComponent', () => {
       jid: 'TESTJURISDICTION',
       ctid: 'TEST',
       etid: TRIGGERS[1].id,
-      queryParams : { ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft' }
+      queryParams: {ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft'}
     });
   });
 
@@ -879,7 +902,7 @@ xdescribe('CaseViewerComponent', () => {
         field_errors: FIELD_ERRORS
       }
     };
-    const httpError = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR }));
+    const httpError = HttpError.from(new HttpErrorResponse({error: VALID_ERROR}));
     component.error = httpError;
 
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
@@ -958,17 +981,17 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: NavigationNotifierService, useValue: navigationNotifierService },
-          { provide: ErrorNotifierService, useValue: errorNotifierService },
-          { provide: CaseNotifier, useValue: caseNotifier },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
-          { provide: DraftService, useValue: draftService },
-          { provide: AlertService, useValue: alertService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
-          { provide: ActivityPollingService, useValue: activityService },
+          {provide: NavigationNotifierService, useValue: navigationNotifierService},
+          {provide: ErrorNotifierService, useValue: errorNotifierService},
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          {provide: OrderService, useValue: orderService},
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ActivityPollingService, useValue: activityService},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -983,14 +1006,14 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
   }));
 
   it('should not display any tabs if unavailable', () => {
-      let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-      expect(tabHeaders.length).toBe(0);
+    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+    expect(tabHeaders.length).toBe(0);
   });
 });
 
-  xdescribe('CaseViewerComponent - print and event selector disabled', () => {
+xdescribe('CaseViewerComponent - print and event selector disabled', () => {
 
-   beforeEach(async(() => {
+  beforeEach(async(() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
@@ -1004,10 +1027,10 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
     alertService.success.and.returnValue(Observable.of({}));
     alertService.warning.and.returnValue(Observable.of({}));
 
-     navigationNotifierService = new NavigationNotifierService();
-     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-     errorNotifierService = new ErrorNotifierService();
-     spyOn(errorNotifierService, 'announceError').and.callThrough();
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+    errorNotifierService = new ErrorNotifierService();
+    spyOn(errorNotifierService, 'announceError').and.callThrough();
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
@@ -1043,17 +1066,17 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          { provide: NavigationNotifierService, useValue: navigationNotifierService },
-          { provide: ErrorNotifierService, useValue: errorNotifierService },
-          { provide: CaseNotifier, useValue: caseNotifier },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
-          { provide: ActivityPollingService, useValue: activityService },
-          { provide: DraftService, useValue: draftService },
-          { provide: AlertService, useValue: alertService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          {provide: NavigationNotifierService, useValue: navigationNotifierService},
+          {provide: ErrorNotifierService, useValue: errorNotifierService},
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          {provide: OrderService, useValue: orderService},
+          {provide: ActivityPollingService, useValue: activityService},
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1077,3 +1100,117 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
     expect(printLink).toBeFalsy();
   });
 });
+
+describe('CaseViewerComponent - prependedTabs', () => {
+
+  let comp: CaseViewerComponent;
+  let f: ComponentFixture<CaseViewerComponent>;
+  let d: DebugElement;
+  beforeEach((() => {
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseViewerComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    f = TestBed.createComponent(CaseViewerComponent);
+    comp = f.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    comp.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    d = f.debugElement;
+    f.detectChanges();
+  }));
+
+  it('should render two pretended tabs', () => {
+    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(5);
+  });
+
+  it('should display "Tasks" tab as the first tab ', () => {
+    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
+    expect((<HTMLElement>tasksTab.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
+  });
+})
