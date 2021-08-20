@@ -9,7 +9,7 @@ const customReporter = require('../support/reportLogger');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
-const isParallelExecution = argv.parallel ? argv.parallel === "true" : false;
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;
 
 const jenkinsConfig = [
 
@@ -61,6 +61,13 @@ const config = {
     allScriptsTimeout: 500000,
     multiCapabilities: cap,
 
+    beforeLaunch() {
+        if (isParallelExecution) {
+            MockApp.setServerPort(8080);
+            MockApp.init();
+            MockApp.startServer();
+        }
+    },
     onPrepare() {
         browser.waitForAngularEnabled(false);
         global.expect = chai.expect;

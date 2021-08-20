@@ -137,7 +137,7 @@ class MockApp {
     }
 
     getNextAvailableClientPort() {
-        return http.get('http://localhost:3001/proxy/port', {});
+        return http.get('http://localhost:8080/proxy/port', {});
     }
 
     async startServer() {
