@@ -263,7 +263,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
-      ...{ document_hash:  new FormControl(document.document_hash, Validators.required) }
+      ...{ document_hash:  new FormControl(document.document_hash) }
     } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;

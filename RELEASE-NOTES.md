@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.3.0-hotfix-for-link-case-error-2
+**EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled 
+
 ### Version 4.3.0-hotfix-for-link-case-error
 **EUI-4346** Link a case event throws error
 **EUI-4349** Reset caseDetailsPage Position to Top
