@@ -74,7 +74,7 @@ class MockApp {
     }
 
     getProxyRequestURL(request, onPort){
-        const urlPath = `${onPort}${request.originalUrl}`;
+        const urlPath = request.originalUrl.replace('8080', onPort);
         return `${mockServerProtocol}${mockServerHost}${urlPath}`
     }
 
