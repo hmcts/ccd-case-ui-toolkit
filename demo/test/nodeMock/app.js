@@ -74,8 +74,11 @@ class MockApp {
     }
 
     getProxyRequestURL(request, onPort){
-        const urlPath = request.originalUrl.replace('8080', onPort);
-        return urlPath
+        const portToProxy = parseInt(onPort);
+        if (portToProxy < 3002){
+            throw new Error('client Port of mock is suspicious.');
+        }
+       return request.originalUrl.replace('8080', portToProxy);
     }
 
     async proxyRequest(req,requesUrl, res) {
