@@ -8,7 +8,9 @@ const browserUtil = require('../support/browserUtil');
 const CucumberReporter = require('../support/reportLogger');
 
 
-const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../mockData/ccdCaseMock');
+const { getTestJurisdiction, getMockJurisdictionSearchInputConfig } = require('../mockData/ccdCaseMock');
+const { getMockJurisdictionWorkbaseketConfig } = require('../mockData/workbasketSearchInput');
+
 const getEventConfig = require('../mockData/ccdMockEventConfigs');
 
 

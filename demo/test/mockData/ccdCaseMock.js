@@ -134,20 +134,6 @@ function getDLCaseConfig(scenario) {
     return customCase;
 }
 
-
-function getMockJurisdictionWorkbaseketConfig() {
-    const workBasketConfig = new CCDWorkbasketConfig();
-    workBasketConfig
-        .addField({ id: "simpletext", type: "Text", label: "Simple text input" })
-        .addField({ id: "radioInput", type: "FixedRadioList", label: "Simple Radio input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
-        .addField({ id: "radioYesorNo", type: "YesOrNo", label: "Simple Yes or No input" })
-        .addField({ id: "fixedListItem", type: "FixedList", label: "fixed listinput", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
-        .addField({ id: "multiSelectItem", type: "MultiSelectList", label: "Multi select input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
-
-        .getConfig();
-    return workBasketConfig;
-}
-
 function getMockJurisdictionSearchInputConfig() {
     const searchInputConfig = new CCDSearchInputConfig();
     searchInputConfig
