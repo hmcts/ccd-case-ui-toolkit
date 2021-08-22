@@ -85,22 +85,27 @@ class MockApp {
         const headers = req.headers;
 
         let reqCallback = null;
-        switch (req.method.toLowerCase()) {
-            case 'get':
-                reqCallback = () => http.get(requesUrl, { headers });
-                break;
-            case 'post':
-                reqCallback = () => http.post(requesUrl, req.body, { headers });
-                break;
-            case 'put':
-                reqCallback = () => http.put(requesUrl, req.body, { headers });
-                break;
-            case 'delete':
-                reqCallback = () => http.delete(requesUrl, { headers });
-                break;
-            default:
-                res.status(500).send({ error: 'mock proxy error' });
 
+        if (requesUrl.startsWith('http://localhost')){
+            switch (req.method.toLowerCase()) {
+                case 'get':
+                    reqCallback = () => http.get(requesUrl, { headers });
+                    break;
+                case 'post':
+                    reqCallback = () => http.post(requesUrl, req.body, { headers });
+                    break;
+                case 'put':
+                    reqCallback = () => http.put(requesUrl, req.body, { headers });
+                    break;
+                case 'delete':
+                    reqCallback = () => http.delete(requesUrl, { headers });
+                    break;
+                default:
+                    res.status(500).send({ error: 'mock proxy error' });
+
+            }
+        }else{
+            throw new Error('Proxy is not on localhost.');
         }
 
         try {
