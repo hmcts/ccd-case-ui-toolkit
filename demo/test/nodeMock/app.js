@@ -67,7 +67,8 @@ class MockApp {
         const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
         if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
             const requesUrl = this.getProxyRequestURL(req, parseInt(scenarioMockPort));
-            this.proxyRequest(req,requesUrl, res);
+            const endPointprefix = endPoint.split(':')[0];
+            this.proxyRequest(req, requesUrl, res, endPointprefix);
         } else {
             callback(req, res);
         }
@@ -81,12 +82,12 @@ class MockApp {
        return request.originalUrl.replace('8080', portToProxy);
     }
 
-    async proxyRequest(req,requesUrl, res) {
+    async proxyRequest(req, requesUrl, res, endPointprefix) {
         const headers = req.headers;
 
         let reqCallback = null;
 
-        if (requesUrl.startsWith('http://localhost')){
+        if (requesUrl.startsWith('http://localhost' && requesUrl.includes(endPointprefix)) ){
             switch (req.method.toLowerCase()) {
                 case 'get':
                     reqCallback = () => http.get(requesUrl, { headers });
