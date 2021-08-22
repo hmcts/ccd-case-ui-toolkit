@@ -87,26 +87,40 @@ class MockApp {
 
         let reqCallback = null;
 
-        if (requesUrl.startsWith('http://localhost') && requesUrl.includes(endPointprefix) ){
-            switch (req.method.toLowerCase()) {
-                case 'get':
-                    reqCallback = () => http.get(requesUrl, { headers });
-                    break;
-                case 'post':
-                    reqCallback = () => http.post(requesUrl, req.body, { headers });
-                    break;
-                case 'put':
-                    reqCallback = () => http.put(requesUrl, req.body, { headers });
-                    break;
-                case 'delete':
-                    reqCallback = () => http.delete(requesUrl, { headers });
-                    break;
-                default:
-                    res.status(500).send({ error: 'mock proxy error' });
+       
 
-            }
-        }else{
-            throw new Error('Proxy is not on localhost.' + requesUrl);
+        switch (req.method.toLowerCase()) {
+            case 'get':
+                if (requesUrl.startsWith('http://localhost') && requesUrl.includes(endPointprefix)) {
+                    reqCallback = () => http.get(requesUrl, { headers });
+                } else {
+                    throw new Error('Proxy is not on localhost.' + requesUrl);
+                }
+                break;
+            case 'post':
+                if (requesUrl.startsWith('http://localhost') && requesUrl.includes(endPointprefix)) {
+                    reqCallback = () => http.post(requesUrl, req.body, { headers });
+                } else {
+                    throw new Error('Proxy is not on localhost.' + requesUrl);
+                }
+                break;
+            case 'put':
+                if (requesUrl.startsWith('http://localhost') && requesUrl.includes(endPointprefix)) {
+                    reqCallback = () => http.put(requesUrl, req.body, { headers });
+                } else {
+                    throw new Error('Proxy is not on localhost.' + requesUrl);
+                }
+                break;
+            case 'delete':
+                if (requesUrl.startsWith('http://localhost') && requesUrl.includes(endPointprefix)) {
+                    reqCallback = () => http.delete(requesUrl, { headers });
+                } else {
+                    throw new Error('Proxy is not on localhost.' + requesUrl);
+                }
+                break;
+            default:
+                res.status(500).send({ error: 'mock proxy error' });
+
         }
 
         try {
