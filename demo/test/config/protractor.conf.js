@@ -96,7 +96,7 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: argv.tags ? argv.tags.split(',') : ['@all'],
+        tags: argv.tags ? argv.tags.split(',') : ['@all','~@ignore'],
         require: [
             '../support/timeout.js',
             '../support/hooks.js',

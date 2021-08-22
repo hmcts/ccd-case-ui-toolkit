@@ -147,4 +147,4 @@ function getMockJurisdictionSearchInputConfig() {
     return searchInputConfig;
 }
 
-module.exports = { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getDLCaseConfig, getMockJurisdictionSearchInputConfig }
+module.exports = { getTestJurisdiction, getDLCaseConfig, getMockJurisdictionSearchInputConfig }
