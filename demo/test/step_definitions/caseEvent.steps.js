@@ -7,8 +7,6 @@ const jsonpath = require('jsonpath');
 
 const BrowserWaits = require('../support/customWaits');
 const MockApp = require('../nodeMock/app');
-const CCDCaseConfig = require('../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
-const { getDateTimeTestEvent, getBlankEvent, addPageToEvent, addCaseField, setCaseFieldProps } = require('../mockData/caseEvent');
 const caseEditPage = require('../pageObjects/ccdCaseEditPages')
 const SoftAssert = require('../support/softAssert');
 
