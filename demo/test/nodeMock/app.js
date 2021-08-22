@@ -66,8 +66,8 @@ class MockApp {
     onRequest(endPoint, method, req, res, callback) {
         const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
         if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
-
-            this.proxyRequest(req, res, parseInt(scenarioMockPort));
+            const requesUrl = this.getProxyRequestURL(req, parseInt(scenarioMockPort));
+            this.proxyRequest(requesUrl, res);
         } else {
             callback(req, res);
         }
@@ -78,10 +78,9 @@ class MockApp {
         return `${mockServerProtocol}${mockServerHost}${urlPath}`
     }
 
-    async proxyRequest(req, res, onPort) {
+    async proxyRequest(requesUrl, res) {
         const headers = req.headers;
 
-        const requesUrl = this.getProxyRequestURL(req, onPort);
         let reqCallback = null;
         switch (req.method.toLowerCase()) {
             case 'get':
