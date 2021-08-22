@@ -79,7 +79,7 @@ class MockApp {
         if (portToProxy < 3002){
             throw new Error('client Port of mock is suspicious.');
         }
-       return request.originalUrl.replace('8080', portToProxy);
+        return `http://localhost:${portToProxy}${request.originalUrl}`;
     }
 
     async proxyRequest(req, requesUrl, res, endPointprefix) {
@@ -87,7 +87,7 @@ class MockApp {
 
         let reqCallback = null;
 
-        if (requesUrl.startsWith('http://localhost' && requesUrl.includes(endPointprefix)) ){
+        if (requesUrl.startsWith('http://localhost') && requesUrl.includes(endPointprefix) ){
             switch (req.method.toLowerCase()) {
                 case 'get':
                     reqCallback = () => http.get(requesUrl, { headers });
@@ -106,7 +106,7 @@ class MockApp {
 
             }
         }else{
-            throw new Error('Proxy is not on localhost.');
+            throw new Error('Proxy is not on localhost.' + requesUrl);
         }
 
         try {
