@@ -73,11 +73,15 @@ class MockApp {
         }
     }
 
+    getProxyRequestURL(request, onPort){
+        const urlPath = `${onPort}${req.originalUrl}`;
+        return `${mockServerProtocol}${mockServerHost}${urlPath}`
+    }
+
     async proxyRequest(req, res, onPort) {
         const headers = req.headers;
-        const urlPath = `${onPort}${req.originalUrl}`;
 
-        const requesUrl = `${mockServerProtocol}${mockServerHost}${urlPath}`
+        const requesUrl = this.getProxyRequestURL(req, onPort);
         let reqCallback = null;
         switch (req.method.toLowerCase()) {
             case 'get':
