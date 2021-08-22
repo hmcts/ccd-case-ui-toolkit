@@ -92,28 +92,28 @@ class MockApp {
         switch (req.method.toLowerCase()) {
             case 'get':
                 if (requesUrl.startsWith(`http://localhost:${portToProxy}${endPointprefix}`) ) {
-                    reqCallback = () => http.get(requesUrl, { headers });
+                    reqCallback = () => http.get(requesUrl, { headers });// NOSONAR
                 } else {
                     throw new Error('Proxy is not on localhost.' + requesUrl);
                 }
                 break;
             case 'post':
                 if (requesUrl.startsWith(`http://localhost:${portToProxy}${endPointprefix}`)) {
-                    reqCallback = () => http.post(requesUrl, req.body, { headers });
+                    reqCallback = () => http.post(requesUrl, req.body, { headers })// NOSONAR;
                 } else {
                     throw new Error('Proxy is not on localhost.' + requesUrl);
                 }
                 break;
             case 'put':
                 if (requesUrl.startsWith(`http://localhost:${portToProxy}${endPointprefix}`)) {
-                    reqCallback = () => http.put(requesUrl, req.body, { headers });
+                    reqCallback = () => http.put(requesUrl, req.body, { headers }); // NOSONAR
                 } else {
                     throw new Error('Proxy is not on localhost.' + requesUrl);
                 }
                 break;
             case 'delete':
                 if (requesUrl.startsWith(`http://localhost:${portToProxy}${endPointprefix}`)) {
-                    reqCallback = () => http.delete(requesUrl, { headers });
+                    reqCallback = () => http.delete(requesUrl, { headers });// NOSONAR
                 } else {
                     throw new Error('Proxy is not on localhost.' + requesUrl);
                 }
