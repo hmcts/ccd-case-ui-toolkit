@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { CaseChallengedViewerComponent } from './case-challenged-viewer.component';
+import { CaseChallengedAccessViewComponent } from './case-challenged-access-view.component';
 import { CaseView, HttpError } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
 import { AlertService, DraftService, NavigationNotifierService } from '../../../services';
