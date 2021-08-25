@@ -6,6 +6,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CaseField, FieldType } from '../../../domain';
@@ -59,6 +60,7 @@ describe('DatetimePickerComponent', () => {
           ],
           providers: [FormatTranslatorService,
             { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+            { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
             { provide: CaseFieldService, useValue: caseFieldService }
             ]
         })
@@ -153,8 +155,9 @@ describe('DatetimePickerComponent', () => {
 
     const firstFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(firstFormattedDate).not.toBe(null);
+    expectSeparatorCharacters(firstFormattedDate, '-', '+');
 
-    const secondDateEntryParameter = 'DD+MM+YYYY ss*mm*HH'
+    const secondDateEntryParameter = 'DD+MM+YYYY ss:mm:HH'
 
     const SECOND_CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
@@ -167,9 +170,12 @@ describe('DatetimePickerComponent', () => {
 
     component.caseField = SECOND_CASE_FIELD;
     component.ngOnInit();
+    tick(1);
+    fixture.detectChanges();
 
     const newFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(newFormattedDate).not.toBe(null);
+    expectSeparatorCharacters(newFormattedDate, '+', ':');
 
     flush();
     discardPeriodicTasks();
@@ -229,11 +235,16 @@ describe('DatetimePickerComponent', () => {
     const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
+    expect(setDay.getMonth()).toBe(firstDay.getMonth());
+    expect(setDay.getDay()).toBe(firstDay.getDay());
     flush();
     discardPeriodicTasks();
   }));
 
   it('should be able to confirm datepicker concurs with formatting', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+
     const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss'
 
     const FIRST_CASE_FIELD: CaseField = <CaseField>({
@@ -246,11 +257,12 @@ describe('DatetimePickerComponent', () => {
     });
 
     component.caseField = FIRST_CASE_FIELD;
+    fixture.detectChanges();
     component.ngOnInit();
     tick(1);
     fixture.detectChanges();
 
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).toBeNull();
+    clickFirstElement(fixture);
 
     let dayCells = fixture.debugElement.queryAll(
       By.css('.mat-calendar-body-cell')
@@ -268,10 +280,10 @@ describe('DatetimePickerComponent', () => {
       confirm.dispatchEvent(new MouseEvent('click'));
       fixture.detectChanges();
       if (initialDateTime.getDate() !== 1) {
-        const newFormattedDate = fixture.nativeElement.querySelector('input').value;
         const initialFormattedDate = fixture.nativeElement.querySelector('input').value;
-        expect(initialFormattedDate).toBe(null);
-        expect(newFormattedDate).not.toBe(initialFormattedDate);
+        expect(initialFormattedDate).not.toBe(null);
+        expectSeparatorCharacters(initialFormattedDate, '-', '+');
+        expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBe(null);
       }
     }
 
@@ -309,7 +321,10 @@ describe('DatetimePickerComponent', () => {
     const oneHourAndMinuteChangeString = fixture.nativeElement.querySelector('input').value;
     const oneHourChangeValue = +oneHourAndMinuteChangeString.substring(11, 13);
     const oneMinuteChangeValue = +oneHourAndMinuteChangeString.substring(14, 16);
-    expect(fixture.nativeElement.querySelector('input').value).toBe(initialValue);
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    // check verifies difference rather than change because tests were failing intermittently
+    expect(oneHourChangeValue).not.toBe(originalHourValue);
+    expect(oneMinuteChangeValue).not.toBe(originalMinuteValue);
 
     flush();
     discardPeriodicTasks();
@@ -342,7 +357,7 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
 
     // check that the the amount of seconds has been changed (avoids intermittent test failure issue)
-    expect(fixture.nativeElement.querySelector('input').value).toBe(initialValue);
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
 
     flush();
     discardPeriodicTasks();
@@ -380,6 +395,12 @@ describe('DatetimePickerComponent', () => {
 
     // ensure that the hours are converted to the initial date
     const exactHourConversion = (meridianChangeValue + 12) % 24;
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    if (originalHourValue !== 12) {
+      expect(originalHourValue).toBe(exactHourConversion);
+    } else {
+      expect(originalHourValue).toBe(meridianChangeValue);
+    }
 
     flush();
     discardPeriodicTasks();
@@ -477,4 +498,48 @@ describe('DatetimePickerComponent', () => {
     flush();
     discardPeriodicTasks();
   }));
+
+  it('should set the correct maximum and minimum', fakeAsync(() => {
+    const miniDate = new Date('01-01-1500')
+    const maxiDate = new Date('01-01-4000')
+    const MIN_MAX_FIELD_TYPE: FieldType = {
+      id: 'Date',
+      type: 'DateTime',
+      min: miniDate,
+      max: maxiDate
+    };
+    const MIN_MAX_CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: MIN_MAX_FIELD_TYPE,
+      value: initialDateTime,
+      dateTimeEntryFormat: initialDateEntryParameter
+    });
+    expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
+    expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
+  }));
 });
+
+function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
+  let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+  toggle.dispatchEvent(new MouseEvent('click'));
+  fixture.detectChanges();
+  expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
+  let dayCells = fixture.debugElement.queryAll(
+    By.css('.mat-calendar-body-cell')
+  );
+  // get the collection of day buttons in order to click them
+  dayCells[0].nativeElement.click();
+  fixture.detectChanges();
+  let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+  confirm.dispatchEvent(new MouseEvent('click'));
+  fixture.detectChanges();
+}
+
+function expectSeparatorCharacters(checkedDate: string, firstChar: string, secondChar: string) {
+  expect(checkedDate.substring(2, 3)).toBe(firstChar);
+  expect(checkedDate.substring(5, 6)).toBe(firstChar);
+  expect(checkedDate.substring(13, 14)).toBe(secondChar);
+  expect(checkedDate.substring(16, 17)).toBe(secondChar);
+}

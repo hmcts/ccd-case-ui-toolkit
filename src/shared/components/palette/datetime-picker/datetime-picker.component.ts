@@ -7,6 +7,7 @@ import {
   NgxMatDateFormats,
   NgxMatDatetimePicker
 } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { ThemePalette } from '@angular/material';
 
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -21,7 +22,10 @@ import moment = require('moment/moment');
   styleUrls: ['./datetime-picker.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS}]
+    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+    { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ]
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
