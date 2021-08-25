@@ -1,6 +1,7 @@
 import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { AbstractAppConfig } from '../../../app.config';
 import { CaseView } from '../../domain';
 import { CaseNotifier } from '../case-editor';
 
@@ -20,7 +21,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly caseNotifier: CaseNotifier
+    private readonly caseNotifier: CaseNotifier,
+    private readonly appConfig: AbstractAppConfig,
   ) {
   }
 
@@ -45,7 +47,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public hasAccess(): boolean {
-    return false;
+    const featureToggleOn = this.appConfig.getAccessManagementMode();
+    const userPermissionType = false; // should come from metadatafields
+    return featureToggleOn ? userPermissionType : true;
   }
-
+  
 }
