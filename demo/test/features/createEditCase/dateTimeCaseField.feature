@@ -1,4 +1,4 @@
-@all
+@all 
 Feature: Case field Date and Datetime picker
 
     Background: Mock event setup
@@ -30,7 +30,8 @@ Feature: Case field Date and Datetime picker
         Then I see field with cssLocator displayed "ccd-write-date-container-field ccd-datetime-picker  #dateField"
         Then I see field with cssLocator displayed "ccd-write-date-container-field ccd-datetime-picker  #dateTimeField"
 
-
+# for EUI-4424
+@ignore
     Scenario: Multiple date fields in page
         Given I create mock Case event "muliDateFields"
         Given I add page to event "muliDateFields"
@@ -70,7 +71,9 @@ Feature: Case field Date and Datetime picker
             | #dt1        | 2020 02 20 |
             | #dt2        | 2020-01    |
             | #dt3        | 2022       |
-    @test
+
+# for EUI-4424
+@ignore
     Scenario: Multiple datetime fields in page
         Given I create mock Case event "muliDateFields"
         Given I add page to event "muliDateFields"
@@ -127,7 +130,8 @@ Feature: Case field Date and Datetime picker
             | $.data.dt4     | 2022-01-01 |
 
 
-
+# for EUI-4424
+@ignore
     Scenario: Date and Datetime in complex
         Given I create mock Case event "muliDateFields"
         Given I add page to event "muliDateFields"
@@ -227,8 +231,8 @@ Feature: Case field Date and Datetime picker
             | 12345679       | case 3    | 2021-Jul-23 03:19:10 PM | 2021-07 23 15:19:10 | 2021-07-23 03 PM | 2021-07-23 | 2021-07 | 2021   |
 
 
-
-
+# for EUI-4424
+@ignore  
     Scenario: Date and Datetime fields in workbasket
         Given I setup workbasket mock "workBasketConfig"
         Given I add case field to workbasket config "workBasketConfig"
