@@ -3,11 +3,13 @@ const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
-
+const MockApp = require('../nodeMock/app');
+const customReporter = require('../support/reportLogger'); 
 // const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;
 
 const jenkinsConfig = [
 
@@ -15,7 +17,7 @@ const jenkinsConfig = [
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: [argv.head && argv.head === 'true' ? '--head' : '--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
     }
 ];
 
@@ -24,7 +26,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: [argv.head && argv.head === 'true' ? '--head' : '--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -34,6 +36,11 @@ const localConfig = [
     }
 ];
 
+
+if (isParallelExecution) {
+    jenkinsConfig[0].shardTestFiles = true;
+    jenkinsConfig[0].maxInstances = 4;
+}
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
@@ -54,11 +61,30 @@ const config = {
     allScriptsTimeout: 500000,
     multiCapabilities: cap,
 
+    beforeLaunch() {
+        if (isParallelExecution) {
+            MockApp.setServerPort(8080);
+            MockApp.init();
+            MockApp.startServer();
+        }
+    },
     onPrepare() {
         browser.waitForAngularEnabled(false);
         global.expect = chai.expect;
         global.assert = chai.assert;
         global.should = chai.should;
+
+        if (isParallelExecution) {
+            MockApp.getNextAvailableClientPort().then(res => {
+                MockApp.setServerPort(res.data.port);
+                MockApp.init();
+
+            });
+        } else {
+            MockApp.setServerPort(8080);
+            MockApp.setLogMessageCallback(customReporter.AddMessage);
+        }
+        MockApp.setLogMessageCallback(customReporter.AddJson);
 
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
@@ -70,7 +96,7 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: ['@all'],
+        tags: argv.tags ? argv.tags.split(',') : ['@all','~@ignore'],
         require: [
             '../support/timeout.js',
             '../support/hooks.js',
@@ -89,7 +115,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional'
+                reportPath: 'reports/tests/functional',
+                displayDuration: true,
+                durationInMS: false
             }
         }
     ]
