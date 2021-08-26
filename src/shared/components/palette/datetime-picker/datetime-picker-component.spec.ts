@@ -494,17 +494,17 @@ describe('DatetimePickerComponent', () => {
 });
 
 function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
-  let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+  const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
   toggle.dispatchEvent(new MouseEvent('click'));
   fixture.detectChanges();
   expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-  let dayCells = fixture.debugElement.queryAll(
+  const dayCells = fixture.debugElement.queryAll(
     By.css('.mat-calendar-body-cell')
   );
   // get the collection of day buttons in order to click them
   dayCells[0].nativeElement.click();
   fixture.detectChanges();
-  let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+  const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
   confirm.dispatchEvent(new MouseEvent('click'));
   fixture.detectChanges();
 }
