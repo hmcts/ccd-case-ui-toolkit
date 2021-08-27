@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.3.2-rc1
+**EUI-4348** Filter options not retained for search
+
 ### Version 4.3.2
 **EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled 
 **EUI-4346** Link a case event throws error
