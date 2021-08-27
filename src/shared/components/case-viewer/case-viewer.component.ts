@@ -14,7 +14,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
 
-  public caseDetails: CaseView;
+  @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
 
   constructor(
@@ -25,6 +25,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log(this.caseDetails);
     if (!this.route.snapshot.data.case) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
@@ -49,5 +50,5 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     const userPermissionType = false; // should come from metadatafields
     return featureToggleOn ? userPermissionType : true;
   }
-  
+
 }
