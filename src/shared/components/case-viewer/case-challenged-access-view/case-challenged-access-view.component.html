@@ -1,0 +1,39 @@
+<form>
+  <div>
+    <cut-alert type="information">This case requires challenged access.<br />This is because the case is
+      outside your work area. If you request access to the case, it will be
+      logged for auditing purposes.</cut-alert>
+    <h1 class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
+    <h2 class="govuk-heading-m">Case details</h2>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key summary-key">Case name</dt>
+        <dd class="govuk-summary-list__value">Robert Saddlebrook</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key summary-key">Service</dt>
+        <dd class="govuk-summary-list__value">{{caseDetails.case_type.jurisdiction.name}}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key summary-key">State</dt>
+        <dd class="govuk-summary-list__value">{{caseDetails.state.description}}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key summary-key">
+          Court or hearing centre
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Manchester Civil Justice Centre
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key summary-key">Access</dt>
+        <dd class="govuk-summary-list__value">Challenged</dd>
+      </div>
+    </dl>
+  </div>
+
+  <button class="govuk-button govuk-!-margin-right-3">Request access</button>
+</form>
+<a class="govuk-body" href="">Cancel</a>
