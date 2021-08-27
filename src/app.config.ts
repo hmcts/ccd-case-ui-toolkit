@@ -43,6 +43,9 @@ export abstract class AbstractAppConfig {
   getUserInfoApiUrl(): string {
     return undefined;
   }
+  getAccessManagementMode(): boolean {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
@@ -76,4 +79,5 @@ export class CaseEditorConfig {
   cache_time_out: number;
   work_allocation_api_url: string;
   user_info_api_url: string;
+  access_management_mode: boolean;
 }

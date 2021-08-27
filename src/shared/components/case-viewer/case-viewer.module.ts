@@ -26,6 +26,9 @@ import { EventTriggerResolver, CaseResolver } from './services';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseViewComponent } from './case-view/case-view.component';
 import { PipesModule, CaseReferencePipe } from '../../pipes';
+import { CaseChallengedAccessViewComponent } from './case-challenged-access-view';
+import { CaseFullAccessViewComponent } from './case-full-access-view';
+import { AlertModule } from '../../../components';
 
 @NgModule({
     imports: [
@@ -44,12 +47,15 @@ import { PipesModule, CaseReferencePipe } from '../../pipes';
         CaseHistoryModule,
         EventLogModule,
         MatTabsModule,
-        ComplexModule
+        ComplexModule,
+        AlertModule
     ],
   declarations: [
     CaseEventTriggerComponent,
     CasePrinterComponent,
     CaseViewerComponent,
+    CaseFullAccessViewComponent,
+    CaseChallengedAccessViewComponent,
     CaseViewComponent,
     PrintUrlPipe,
   ],
