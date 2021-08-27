@@ -2,7 +2,7 @@ import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AbstractAppConfig } from '../../../app.config';
-import { CaseView } from '../../domain';
+import { CaseTab, CaseView } from '../../domain';
 import { CaseNotifier } from '../case-editor';
 
 @Component({
@@ -14,6 +14,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
 
+  @Input() public prependedTabs: CaseTab[] = [];
   @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
 

@@ -1,4 +1,4 @@
 <div *ngIf="isDataLoaded()">
   <ccd-case-challenged-access-view *ngIf="!hasAccess()" [caseDetails]="caseDetails"></ccd-case-challenged-access-view>
-  <ccd-case-full-access-view *ngIf="hasAccess()" [caseDetails]="caseDetails" [hasPrint]="hasPrint" [hasEventSelector]="hasEventSelector"></ccd-case-full-access-view>
+  <ccd-case-full-access-view *ngIf="hasAccess()" [caseDetails]="caseDetails" [hasPrint]="hasPrint" [hasEventSelector]="hasEventSelector" [prependedTabs]="prependedTabs"></ccd-case-full-access-view>
 </div>
