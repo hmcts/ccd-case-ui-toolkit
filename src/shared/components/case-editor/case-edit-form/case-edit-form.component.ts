@@ -42,7 +42,9 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.retrieveInitialFormValues();
     this.pageChangeSubscription = this.pageChangeSubject.subscribe(() => {
-      this.formGroupChangeSubscription.unsubscribe();
+      if (this.formGroupChangeSubscription) {
+        this.formGroupChangeSubscription.unsubscribe();
+      }
       // Timeout is required for the form to be rendered before subscription to form changes and initial form values retrieval.
       setTimeout(() => {
         this.subscribeToFormChanges();
