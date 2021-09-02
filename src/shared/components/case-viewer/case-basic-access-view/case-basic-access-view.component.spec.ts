@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { CaseChallengedAccessViewComponent } from './case-challenged-access-view.component';
+import { CaseBasicAccessViewComponent } from './case-basic-access-view.component';
 import { CaseView, HttpError } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
 import { AlertService, DraftService, NavigationNotifierService } from '../../../services';
@@ -10,7 +10,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { plainToClassFromExist } from 'class-transformer';
 import createSpyObj = jasmine.createSpyObj;
 
-// describe('CaseViewComponent', () => {
+// describe('CaseBasicAccessViewComponent', () => {
 
 //   const CASE_REFERENCE = '1234123412341234';
 //   const DRAFT_REFERENCE = 'DRAFT1234';

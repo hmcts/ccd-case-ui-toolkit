@@ -17,6 +17,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
+  public userAccessType: string | number;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -34,6 +35,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     } else {
       this.caseDetails = this.route.snapshot.data.case;
     }
+    this.userAccessType = 'CHALLENGED';
   }
 
   ngOnDestroy() {
@@ -46,10 +48,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     return !!this.caseDetails;
   }
 
-  public hasAccess(): boolean {
+  public hasStandardAccess(): boolean {
     const featureToggleOn = this.appConfig.getAccessManagementMode();
-    const userPermissionType = false; // should come from metadatafields
-    return featureToggleOn ? userPermissionType : true;
+    return featureToggleOn ? this.userAccessType === 'STANDARD' : true;
   }
 
 }

@@ -1,6 +1,6 @@
 <form>
   <div>
-    <cut-alert type="information">This case requires challenged access.<br />This is because the case is
+    <cut-alert type="information">This case requires {{accessType | lowercase}} access.<br />This is because the case is
       outside your work area. If you request access to the case, it will be
       logged for auditing purposes.</cut-alert>
     <h1 class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
@@ -29,7 +29,7 @@
 
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key summary-key">Access</dt>
-        <dd class="govuk-summary-list__value">Challenged</dd>
+        <dd class="govuk-summary-list__value">{{accessType | titlecase}}</dd>
       </div>
     </dl>
   </div>

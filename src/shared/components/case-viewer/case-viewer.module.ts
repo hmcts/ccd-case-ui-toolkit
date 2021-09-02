@@ -26,7 +26,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseViewComponent } from './case-view';
 import { CaseReferencePipe, PipesModule } from '../../pipes';
-import { CaseChallengedAccessViewComponent } from './case-challenged-access-view';
+import { CaseBasicAccessViewComponent } from './case-basic-access-view';
 import { CaseFullAccessViewComponent } from './case-full-access-view';
 import { AlertModule } from '../../../components';
 
@@ -55,7 +55,7 @@ import { AlertModule } from '../../../components';
     CaseEventTriggerComponent,
     CasePrinterComponent,
     CaseViewerComponent,
-    CaseChallengedAccessViewComponent,
+    CaseBasicAccessViewComponent,
     CaseFullAccessViewComponent,
     CaseViewComponent,
     PrintUrlPipe,
