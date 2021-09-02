@@ -46,13 +46,14 @@
   <div class="grid-row">
     <div class="column-full">
       <ng-container *ngIf="hasTabsPresent()">
-        <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)"
-                       [disableRipple]="true">
+        <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true">
+          <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
+          </mat-tab>
           <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
             <ng-template matTabContent>
               <table [class]="tab.id">
                 <tbody>
-                <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true :formGroup.controls['data']">
+                <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup.controls['data']">
                   <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                     <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                       <tr *ngSwitchCase="true">
@@ -84,6 +85,7 @@
             </ng-template>
           </mat-tab>
         </mat-tab-group>
+        <router-outlet *ngIf="prependedTabs && prependedTabs.length"></router-outlet>
       </ng-container>
     </div>
   </div>

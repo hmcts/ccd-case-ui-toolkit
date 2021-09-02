@@ -3,6 +3,9 @@
 ### Version 4.3.1-check-for-object-before-teardown-1
 **EUI-4210** Page doesn't load on event trigger in automated test
 
+### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
+**EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
@@ -113,6 +116,9 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 **EUI-3051** Handle #DATETIMEENTRY field context
 **EUI-3581** Field interpolation does not work for the field type MultiSelectList
 **EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
+
+### Version 4.0.0-prepended-tabs-v3
+**EUI-3777** Create prepended tabs on case view
 
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
