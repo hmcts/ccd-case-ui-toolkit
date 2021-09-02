@@ -1,0 +1,29 @@
+name: Functional UI tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - Release
+  push:
+    branches:
+      - master
+      - Release
+      - refs/tags/*
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: yarn build:test:functional
+      - uses: actions/upload-artifact@v2
+        if: failure() || success()
+        with:	
+          name: 'Functional_test_HTML_Report'	
+          path: 'demo/reports/'
