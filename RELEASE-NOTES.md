@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.1-check-for-object-before-teardown-1
+### Version 4.3.1-automated test failure-1
 **EUI-4210** Page doesn't load on event trigger in automated test
 
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
