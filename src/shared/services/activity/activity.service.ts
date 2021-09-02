@@ -47,23 +47,35 @@ export class ActivityService {
   }
 
   public getActivities(...caseId: string[]): Observable<Activity[]> {
-    const options = this.getOptions();
-    const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
-    return this.http
-      .get(url, options, false, ActivityService.handleHttpError)
-      .map(response => response);
+    try {
+      const options = this.getOptions();
+      const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
+      return this.http
+        .get(url, options, false, ActivityService.handleHttpError)
+        .map(response => response);
+    } catch (error) {
+      console.log('user may not be authenticated ' + error);
+    }
   }
 
   public postActivity(caseId: string, activity: string): Observable<Activity[]> {
-    const options = this.getOptions();
-    const url = this.activityUrl() + `/cases/${caseId}/activity`;
-    let body = { activity };
-    return this.http
-      .post(url, body, options, false)
-      .map(response => response);
+    try {
+      const options = this.getOptions();
+      const url = this.activityUrl() + `/cases/${caseId}/activity`;
+      let body = { activity };
+      return this.http
+        .post(url, body, options, false)
+        .map(response => response);
+    } catch (error) {
+      console.log('user may not be authenticated ' + error);
+    }
   }
 
   public verifyUserIsAuthorized(): void {
+    if (!this.sessionStorageService.getItem('userDetails')) {
+      return;
+    }
+
     if (this.activityUrl() && this.userAuthorised === undefined) {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
         () => this.userAuthorised = true,
