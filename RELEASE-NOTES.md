@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.2-rc2
+### Version 4.3.2-rc3
 **EUI-4430** Case reference field regression bugs
 
 ### Version 4.3.2-rc1
