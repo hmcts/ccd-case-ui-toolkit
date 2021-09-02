@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.3.2-rc2
+**EUI-4430** Case reference field regression bugs
+
 ### Version 4.3.2-rc1
 **EUI-4348** Filter options not retained for search
 
