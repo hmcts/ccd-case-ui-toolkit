@@ -22,8 +22,8 @@ export class Wizard {
     return canShow(foundPage) ? foundPage : undefined;
   }
 
-  public findWizardPage(caseFieldId: string): WizardPage {
-    return this.pages.find(wizardPage => wizardPage.case_fields &&
+  public findWizardPage(caseFieldId: string, pageId: string): WizardPage {
+    return this.pages.find(wizardPage => wizardPage.id === pageId && wizardPage.case_fields &&
         wizardPage.case_fields.filter(caseField => caseField.id === caseFieldId).length > 0);
   }
 
