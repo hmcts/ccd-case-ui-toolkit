@@ -124,4 +124,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getDocumentSecureMode(): boolean {
     return false;
   }
+
+  getAccessManagementMode(): boolean {
+    return false;
+  }
 }
