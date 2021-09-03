@@ -35,7 +35,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     } else {
       this.caseDetails = this.route.snapshot.data.case;
     }
-    this.userAccessType = 'CHALLENGED';
+    this.userAccessType = 'CHALLENGED'; // this.caseDetails.metadataFields.find(metadataField => metadataField.id === '[ACCESS_PROCESS]').value
   }
 
   ngOnDestroy() {
@@ -50,7 +50,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public hasStandardAccess(): boolean {
     const featureToggleOn = this.appConfig.getAccessManagementMode();
-    return featureToggleOn ? this.userAccessType === 'STANDARD' : true;
+    return featureToggleOn ? this.userAccessType !== 'CHALLENGED' && this.userAccessType !== 'SPECIFIC' : true;
   }
 
 }

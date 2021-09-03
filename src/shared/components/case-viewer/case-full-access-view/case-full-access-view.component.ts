@@ -21,6 +21,7 @@ import {
   OrderService,
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
+import { initDialog } from '../../helpers';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -70,7 +71,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngOnInit() {
-    this.initDialog();
+    initDialog(this.dialogConfig);
 
     this.init();
 
@@ -258,21 +259,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       });
     }
     return new FormGroup({data: new FormControl(value)});
-  }
-
-  private initDialog(): void {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
   }
 
   private resetErrors(): void {
