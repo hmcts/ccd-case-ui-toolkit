@@ -35,7 +35,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     } else {
       this.caseDetails = this.route.snapshot.data.case;
     }
-    this.userAccessType = 'CHALLENGED'; // this.caseDetails.metadataFields.find(metadataField => metadataField.id === '[ACCESS_PROCESS]').value
+    // Replace later with:
+    // this.caseDetails.metadataFields.find(metadataField => metadataField.id === '[ACCESS_PROCESS]').value
+    this.userAccessType = 'CHALLENGED';
   }
 
   ngOnDestroy() {

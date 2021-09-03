@@ -1,4 +1,4 @@
-import { MatDialogConfig } from "@angular/material";
+import { MatDialogConfig } from '@angular/material';
 
 export function initDialog(dialogConfig: MatDialogConfig): void {
     this.dialogConfig = new MatDialogConfig();
