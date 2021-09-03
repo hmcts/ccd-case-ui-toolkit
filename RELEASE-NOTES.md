@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.5.0-rc.2
+**EUI-4430** Case reference field regression bugs
+
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
 **EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
 
