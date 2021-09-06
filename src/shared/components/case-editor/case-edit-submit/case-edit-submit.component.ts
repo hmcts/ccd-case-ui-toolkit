@@ -87,7 +87,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.profileSubscription.unsubscribe();
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   public submit(): void {

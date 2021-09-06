@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 4.5.0-rc.3
+**EUI-4210** Automated Test Failure
+
 ### Version 4.5.0-rc.2
 **EUI-4430** Case reference field regression bugs
 
