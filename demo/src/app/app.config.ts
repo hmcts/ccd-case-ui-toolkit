@@ -12,7 +12,7 @@ export class AppConfig extends AbstractAppConfig {
     'hrs_url': '/hearing-recordings',
     'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': '/addresses/?postcode=${postcode}',
+    'postcode_lookup_url': '/api/addresses?postcode=${postcode}',
     'remote_document_management_url': '/documents',
     'remote_hrs_url': '/hearing-recordings',
     'annotation_api_url': '/em-anno',
@@ -28,7 +28,10 @@ export class AppConfig extends AbstractAppConfig {
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
     'work_allocation_api_url': '/workallocation',
-    'user_info_api_url': '/user-info'
+    'user_info_api_url': '/user-info',
+    'document_management_url_v2': '/v2/health',
+    'document_management_secure_enabled':true
+
   };
 
   constructor(private http: HttpClient) {
@@ -148,5 +151,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getUserInfoApiUrl(): string {
     return this.config.user_info_api_url;
+  }
+
+  public getRemotePrintServiceUrl(): string {
+    return this.config.print_service_url;
   }
 }
