@@ -26,23 +26,32 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
-    console.log(this.caseDetails);
+  public ngOnInit(): void {
+    this.loadCaseDetails();
+  }
+
+  public ngOnDestroy(): void {
+    if (!!this.caseSubscription) {
+      this.caseSubscription.unsubscribe();
+    }
+  }
+
+  public loadCaseDetails(): void {
     if (!this.route.snapshot.data.case) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
+        this.setUserAccessType(this.caseDetails);
       });
     } else {
       this.caseDetails = this.route.snapshot.data.case;
+      this.setUserAccessType(this.caseDetails);
     }
-    // Replace later with:
-    // this.caseDetails.metadataFields.find(metadataField => metadataField.id === '[ACCESS_PROCESS]').value
-    this.userAccessType = 'CHALLENGED';
   }
 
-  ngOnDestroy() {
-    if (!!this.caseSubscription) {
-      this.caseSubscription.unsubscribe();
+  public setUserAccessType(caseDetails: CaseView): void {
+    if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
+      const access_process = caseDetails.metadataFields.find(metadataField => metadataField.id === '[ACCESS_PROCESS]');
+      this.userAccessType = access_process ? access_process.value : null;
     }
   }
 
