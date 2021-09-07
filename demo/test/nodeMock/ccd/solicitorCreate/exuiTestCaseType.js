@@ -5,8 +5,8 @@ module.exports = {
     "case_id": null,
     "case_fields": [
         {
-            "id": "testTextField",
-            "label": "Organisation ID",
+            "id": "test field",
+            "label": "test Org ID",
             "hidden": null,
             "order": null,
             "metadata": false,
