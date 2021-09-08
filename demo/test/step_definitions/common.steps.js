@@ -1,7 +1,7 @@
 
 const CucumberReportLogger = require('../support/reportLogger');
 const demoAppPage = require('../pageObjects/demoAppheader.page');
-
+const eventmessages = require('../pageObjects/eventmessages');
 var { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -20,6 +20,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I reset reference variable {string} value to null', async function(reference){
         global.scenarioData[reference] = null;
+    });
+
+    Then('I see event triggered with message {string}', async function(message){
+        const lastMessage = await eventmessages.getLastMessage();
+        expect(lastMessage).to.contain(message)
     });
 
 
