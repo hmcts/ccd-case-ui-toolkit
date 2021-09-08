@@ -37,6 +37,7 @@ export class ActivityService {
 
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    console.log('userDetails', userDetails);
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
     const options: OptionsType = {
       headers: headers,
@@ -54,7 +55,7 @@ export class ActivityService {
         .get(url, options, false, ActivityService.handleHttpError)
         .map(response => response);
     } catch (error) {
-      console.log('user may not be authenticated ' + error);
+      console.log('user may not be authenticated.' + error);
     }
   }
 
@@ -67,12 +68,13 @@ export class ActivityService {
         .post(url, body, options, false)
         .map(response => response);
     } catch (error) {
-      console.log('user may not be authenticated ' + error);
+      console.log('user may not be authenticated.' + error);
     }
   }
 
   public verifyUserIsAuthorized(): void {
-    if (!this.sessionStorageService.getItem('userDetails')) {
+    console.log('session user details', this.sessionStorageService.getItem('userDetails'));
+    if (this.sessionStorageService.getItem('userDetails') === undefined) {
       return;
     }
 
