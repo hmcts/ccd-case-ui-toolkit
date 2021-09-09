@@ -313,6 +313,16 @@ describe('SearchService', () => {
       expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
     });
 
+    fit('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
+      let metaCriteria = { 'page': 1 };
+      let caseCriteria = { 'preferredDQPilotCourt': 'Sunderland County, Family, Magistrates’ and Tribunal Hearings' };
+      searchService
+        .searchCases(CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
+        .subscribe();
+
+      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
+    });
+
     it('should register loading token when called', () => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
