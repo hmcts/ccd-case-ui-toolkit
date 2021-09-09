@@ -515,7 +515,7 @@ describe('CaseEditPageComponent', () => {
         'event_token': '',
         'ignore_warning': true
       };
-
+      comp.currentPage = wizardPage;
       comp.updateFormData(jsonData);
 
       expect(eventTrigger.case_fields.filter(element => element.id === id).pop().value).toBe(updatedValue);
