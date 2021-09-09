@@ -11,13 +11,16 @@ import { CaseNotifier } from '../case-editor';
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
 
+  static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
 
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
-  public userAccessType: string | number;
+  public userAccessType: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -50,7 +53,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public setUserAccessType(caseDetails: CaseView): void {
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
-      const access_process = caseDetails.metadataFields.find(metadataField => metadataField.id === '[ACCESS_PROCESS]');
+      const access_process = caseDetails.metadataFields.find(metadataField => metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
       this.userAccessType = access_process ? access_process.value : null;
     }
   }
@@ -61,7 +64,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public hasStandardAccess(): boolean {
     const featureToggleOn = this.appConfig.getAccessManagementMode();
-    return featureToggleOn ? this.userAccessType !== 'CHALLENGED' && this.userAccessType !== 'SPECIFIC' : true;
+    return featureToggleOn ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
   }
 
 }
