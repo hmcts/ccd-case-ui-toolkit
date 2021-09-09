@@ -1,7 +1,7 @@
 import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
 import { FixedListItem } from '../../../domain/definition/fixed-list-item.model';
 
-describe('FixedRadioListPipe', () => {
+describe('DynamicRadioListPipe', () => {
 
   const FIXED_LIST: FixedListItem[] = [
     {

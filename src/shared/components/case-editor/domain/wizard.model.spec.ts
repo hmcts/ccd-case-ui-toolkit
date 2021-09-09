@@ -94,12 +94,12 @@ describe('wizard.model', () => {
 
   describe('find page containing caseFieldId', () => {
     it('should get next page', () => {
-      let page = wizard.findWizardPage('caseField1');
+      let page = wizard.findWizardPage('caseField1', PAGE_2.id);
       expect(page).toBe(PAGE_2);
     });
 
     it('should return undefined if wizardPage does not exists', () => {
-      let page = wizard.findWizardPage('nonExistentCaseFieldId');
+      let page = wizard.findWizardPage('nonExistentCaseFieldId', null);
       expect(page).toBeUndefined();
     });
   });
