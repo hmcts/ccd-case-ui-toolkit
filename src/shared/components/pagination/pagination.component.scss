@@ -10,7 +10,7 @@ $blue_pagination: #005da6;
     margin-bottom: 1rem;
     padding-top: 25px;
     text-decoration: none;
-    text-align: center;
+    text-align: left;
     font-size: 16px;
 }
 .ngx-pagination::before,
@@ -48,6 +48,7 @@ $blue_pagination: #005da6;
     background: $white;
     color:  #4c2c92;
     cursor: default;
+    font-weight: 900;
 }
 .ngx-pagination .disabled {
     display: none;
@@ -61,15 +62,33 @@ $blue_pagination: #005da6;
 }
 .ngx-pagination .pagination-previous a::before,
 .ngx-pagination .pagination-previous.disabled::before {
-    content: "«";
-    display: inline-block;
     margin-right: 0.5rem;
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border-style: solid;
+    color: #0a0a0a;
+    background: transparent;
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    content: "";
+    border-width: 3px 0 0 3px;
 }
 .ngx-pagination .pagination-next a::after,
 .ngx-pagination .pagination-next.disabled::after {
-    content: "»";
-    display: inline-block;
     margin-left: 0.5rem;
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border-style: solid;
+    color: #0a0a0a;
+    background: transparent;
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    content: "";
+    border-width: 0 3px 3px 0;
 }
 .ngx-pagination .show-for-sr {
     position: absolute !important;

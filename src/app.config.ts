@@ -4,8 +4,6 @@ export abstract class AbstractAppConfig {
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
-  abstract getHrsUrl(): string;
-  abstract getRemoteHrsUrl(): string;
   getDocumentManagementUrlV2(): string {
     return undefined;
   }
@@ -13,6 +11,8 @@ export abstract class AbstractAppConfig {
     return undefined;
   }
   abstract getRemoteDocumentManagementUrl(): string;
+  abstract getHrsUrl(): string;
+  abstract getRemoteHrsUrl(): string;
   abstract getAnnotationApiUrl(): string;
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;

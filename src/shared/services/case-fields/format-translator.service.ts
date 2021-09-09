@@ -134,10 +134,6 @@ export class FormatTranslatorService {
         case 'd':
           maybePush(result, 'D', inQuote);
           break;
-        // moment library defines year as capital y
-        case 'y':
-          maybePush(result, 'Y', inQuote);
-          break;
         case 'e':
         case 'c':
           maybePush(result, 'E', inQuote); // no lower case E
@@ -181,9 +177,6 @@ export class FormatTranslatorService {
     // This ensures only dates allowed
     while (dateFormat.includes('d')) {
       dateFormat = dateFormat.replace('d', 'D');
-    }
-    while (dateFormat.includes('y')) {
-      dateFormat = dateFormat.replace('y', 'Y');
     }
     return dateFormat;
   }

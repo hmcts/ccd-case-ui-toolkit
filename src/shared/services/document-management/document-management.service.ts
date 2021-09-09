@@ -3,7 +3,6 @@ import { DocumentData } from '../../domain/document/document-data.model';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
-import { map } from 'rxjs/operators';
 import { delay } from 'rxjs/internal/operators';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -11,11 +10,20 @@ import { HttpHeaders } from '@angular/common/http';
 export class DocumentManagementService {
   private static readonly PDF = 'pdf';
   private static readonly IMAGE = 'image';
+  private static readonly WORD = 'word';
+  private static readonly EXCEL = 'excel';
+  private static readonly POWERPOINT = 'powerpoint';
+  private static readonly TXT = 'txt';
+  private static readonly RTF = 'rtf';
+
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 1000;
 
-  imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG'];
+  private static readonly imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
+  private static readonly wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
+  private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
+  private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
@@ -65,16 +73,37 @@ export class DocumentManagementService {
     }
     if (this.isImage(fileExtension)) {
       return DocumentManagementService.IMAGE;
+    } else if (this.isWord(fileExtension)) {
+      return DocumentManagementService.WORD;
+    } else if (this.isExcel(fileExtension)) {
+      return DocumentManagementService.EXCEL;
+    } else if (this.isPowerpoint(fileExtension)) {
+      return DocumentManagementService.POWERPOINT;
+    } else if (fileExtension.toLowerCase() === 'txt') {
+      return DocumentManagementService.TXT;
+    } else if (fileExtension.toLowerCase() === 'rtf') {
+      return DocumentManagementService.RTF;
     } else if (fileExtension.toLowerCase() === 'pdf') {
       return DocumentManagementService.PDF;
     } else {
-      console.warn(`Unknown content type with the file extension: ${fileExtension}`);
       return fileExtension;
     }
   }
 
-  private isImage(imageType: string) {
-    return this.imagesList.find(e => e === imageType.toUpperCase()) !== undefined;
+  public isImage(imageType: string): boolean {
+    return DocumentManagementService.imagesList.find(e => e === imageType) !== undefined;
+  }
+
+  public isWord(wordType: string): boolean {
+    return DocumentManagementService.wordList.find(e => e === wordType) !== undefined;
+  }
+
+  public isExcel(excelType: string): boolean {
+    return DocumentManagementService.excelList.find(e => e === excelType) !== undefined;
+  }
+
+  public isPowerpoint(powerpointType: string): boolean {
+    return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
   }
 
   private transformDocumentUrl(documentBinaryUrl: string): string {

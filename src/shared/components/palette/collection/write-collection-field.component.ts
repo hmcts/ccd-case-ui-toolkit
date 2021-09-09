@@ -229,9 +229,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  removeItem(index: number): void {
-    this.caseField.value.splice(index, 1);
+  private removeItem(index: number): void {
     this.collItems.splice(index, 1);
+    this.caseField.value.splice(index, 1);
     this.formArray.removeAt(index);
   }
 
