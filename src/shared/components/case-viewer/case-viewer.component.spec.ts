@@ -9,8 +9,8 @@ import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 import { attr, text } from '../../test/helpers';
 import { Subject } from 'rxjs/Subject';
-import { ActivityPollingService } from '../../services/activity/activity.polling.service';
-import { PaletteUtilsModule } from '../../components/palette/utils';
+import { ActivityPollingService } from '../../services/activity';
+import { PaletteUtilsModule } from '../palette/utils';
 import { CaseField } from '../../domain/definition';
 import { PlaceholderService } from '../../directives/substitutor/services';
 import {
@@ -30,7 +30,7 @@ import { OrderService } from '../../services/order';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
 import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../domain/case-view';
 import { AlertService } from '../../services/alert';
-import { CallbackErrorsContext } from '../../components/error/domain';
+import { CallbackErrorsContext } from '../error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
@@ -466,14 +466,14 @@ const CCD_CASE_VIEW: CaseView = {
     {
       id: 'overview',
       label: 'Overview',
-      order: 3,
+      order: 1,
       fields: [],
       show_condition: ''
     },
     {
       id: 'caseNotes',
       label: 'Case notes',
-      order: 5,
+      order: 2,
       fields: [],
       show_condition: ''
     },
