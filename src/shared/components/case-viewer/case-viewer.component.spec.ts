@@ -445,7 +445,7 @@ const CASE_VIEW: CaseView = {
   events: EVENTS,
   metadataFields: METADATA,
 };
-
+// noinspection DuplicatedCode
 const CCD_CASE_VIEW: CaseView = {
   case_id: CID,
   case_type: {
@@ -482,7 +482,6 @@ const CCD_CASE_VIEW: CaseView = {
   events: EVENTS,
   metadataFields: METADATA,
 };
-
 let mockRoute: any = {
   snapshot: {
     data: {
@@ -1252,6 +1251,7 @@ describe('CaseViewerComponent - prependedTabs', () => {
   });
 })
 
+// noinspection DuplicatedCode
 describe('CaseViewerComponent - Overview with prepended Tabs', () => {
   let mockLocation: any;
 
