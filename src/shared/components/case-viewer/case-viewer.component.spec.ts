@@ -1353,7 +1353,7 @@ describe('CaseViewerComponent - Overview with prepended Tabs', () => {
     f.detectChanges();
   }));
 
-  fit('should display overview tab by default', () => {
+  it('should display overview tab by default', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
