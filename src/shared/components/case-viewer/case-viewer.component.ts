@@ -207,7 +207,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
         this.tabGroup.selectedIndex = matTab.position;
       });
-      return;
     } else {
       const regExp = new RegExp(CaseViewerComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseViewerComponent.EMPTY_SPACE);
