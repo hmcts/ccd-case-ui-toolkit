@@ -9,8 +9,8 @@ import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 import { attr, text } from '../../test/helpers';
 import { Subject } from 'rxjs/Subject';
-import { ActivityPollingService } from '../../services/activity';
-import { PaletteUtilsModule } from '../palette/utils';
+import { ActivityPollingService } from '../../services/activity/activity.polling.service';
+import { PaletteUtilsModule } from '../../components/palette/utils';
 import { CaseField } from '../../domain/definition';
 import { PlaceholderService } from '../../directives/substitutor/services';
 import {
@@ -30,7 +30,7 @@ import { OrderService } from '../../services/order';
 import { DeleteOrCancelDialogComponent } from '../../components/dialogs';
 import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../domain/case-view';
 import { AlertService } from '../../services/alert';
-import { CallbackErrorsContext } from '../error/domain';
+import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
@@ -155,7 +155,7 @@ const EVENTS: CaseViewEvent[] = [
     }
   }
 ];
-// noinspection DuplicatedCode
+
 const METADATA: CaseField[] = [
   Object.assign(new CaseField(), {
     id: '[CASE_REFERENCE]',
@@ -446,7 +446,6 @@ const CASE_VIEW: CaseView = {
   metadataFields: METADATA,
 };
 
-// noinspection DuplicatedCode
 let mockRoute: any = {
   snapshot: {
     data: {
@@ -1213,156 +1212,5 @@ describe('CaseViewerComponent - prependedTabs', () => {
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>tasksTab.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
-  });
-})
-
-// noinspection DuplicatedCode
-describe('CaseViewerComponent - Overview with prepended Tabs', () => {
-  let mockLocation: any;
-
-  let comp: CaseViewerComponent;
-  let f: ComponentFixture<CaseViewerComponent>;
-  let d: DebugElement;
-  beforeEach((() => {
-    mockLocation = createSpyObj('location', ['path']);
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
-    TestBed
-      .configureTestingModule({
-        imports: [
-          PaletteUtilsModule,
-          MatTabsModule,
-          ComplexModule,
-          BrowserAnimationsModule,
-          PaletteModule,
-          RouterTestingModule.withRoutes([
-            {
-              path: 'cases',
-              children: [
-                {
-                  path: 'case-details',
-                  children: [
-                    {
-                      path: ':id#overview',
-                      children: [
-                        {
-                          path: 'tasks',
-                          component: TasksContainerComponent
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]),
-        ],
-        declarations: [
-          TasksContainerComponent,
-          CaseViewerComponent,
-          DeleteOrCancelDialogComponent,
-          // Mock
-          CaseActivityComponent,
-          EventTriggerComponent,
-          CaseHeaderComponent,
-          LinkComponent,
-          CallbackErrorsComponent,
-        ],
-        providers: [
-          FieldsUtils,
-          PlaceholderService,
-          CaseReferencePipe,
-          OrderService,
-          {
-            provide: Location,
-            useValue: mockLocation
-          },
-          ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
-          NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          ActivityPollingService,
-          ActivityService,
-          HttpService,
-          HttpErrorService,
-          AuthService,
-          SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
-        ]
-      })
-      .compileComponents();
-
-    f = TestBed.createComponent(CaseViewerComponent);
-    comp = f.componentInstance;
-    comp.caseDetails = {
-      case_id: CID,
-      case_type: {
-        id: CTID,
-        name: 'Test Address Book Case',
-        jurisdiction: {
-          id: JID,
-          name: 'Test',
-        },
-        printEnabled: true
-      },
-      channels: [],
-      state: {
-        id: 'CaseCreated',
-        name: 'Case created'
-      },
-      tabs: [
-        {
-          id: 'overview',
-          label: 'Overview',
-          order: 1,
-          fields: [],
-          show_condition: ''
-        },
-        {
-          id: 'caseNotes',
-          label: 'Case notes',
-          order: 2,
-          fields: [],
-          show_condition: ''
-        },
-      ],
-      triggers: TRIGGERS,
-      events: EVENTS,
-      metadataFields: METADATA,
-    };
-    comp.prependedTabs = [
-      {
-        id: 'tasks',
-        label: 'Tasks',
-        fields: [],
-        show_condition: null
-      },
-      {
-        id: 'roles-and-access',
-        label: 'Roles and access',
-        fields: [],
-        show_condition: null
-      }
-    ];
-    d = f.debugElement;
-    f.detectChanges();
-  }));
-
-  it('should display overview tab by default', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((<HTMLElement>tasksTab0.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
-    const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((<HTMLElement>tasksTab1.querySelector('.mat-tab-label-content')).innerText).toBe('Roles and access');
-    const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
-    expect((<HTMLElement>tasksTab2.querySelector('.mat-tab-label-content')).innerText).toBe('Overview');
-    const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-    expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
   });
 })
