@@ -82,6 +82,6 @@
     "isomorphic-fetch": "^3.0.0",
     "web-animations-js": "^2.3.2",
     "cookie-parser": "^1.4.4",
-    "axios": "^0.21.1"
+    "axios": "^0.21.2"
   }
 }
