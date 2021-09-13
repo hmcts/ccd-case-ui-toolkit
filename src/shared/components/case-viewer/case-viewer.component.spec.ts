@@ -445,43 +445,7 @@ const CASE_VIEW: CaseView = {
   events: EVENTS,
   metadataFields: METADATA,
 };
-// noinspection DuplicatedCode
-const CCD_CASE_VIEW: CaseView = {
-  case_id: CID,
-  case_type: {
-    id: CTID,
-    name: 'Test Address Book Case',
-    jurisdiction: {
-      id: JID,
-      name: 'Test',
-    },
-    printEnabled: true
-  },
-  channels: [],
-  state: {
-    id: 'CaseCreated',
-    name: 'Case created'
-  },
-  tabs: [
-    {
-      id: 'overview',
-      label: 'Overview',
-      order: 1,
-      fields: [],
-      show_condition: ''
-    },
-    {
-      id: 'caseNotes',
-      label: 'Case notes',
-      order: 2,
-      fields: [],
-      show_condition: ''
-    },
-  ],
-  triggers: TRIGGERS,
-  events: EVENTS,
-  metadataFields: METADATA,
-};
+
 // noinspection DuplicatedCode
 let mockRoute: any = {
   snapshot: {
@@ -1335,7 +1299,42 @@ describe('CaseViewerComponent - Overview with prepended Tabs', () => {
 
     f = TestBed.createComponent(CaseViewerComponent);
     comp = f.componentInstance;
-    comp.caseDetails = CCD_CASE_VIEW;
+    comp.caseDetails = {
+      case_id: CID,
+      case_type: {
+        id: CTID,
+        name: 'Test Address Book Case',
+        jurisdiction: {
+          id: JID,
+          name: 'Test',
+        },
+        printEnabled: true
+      },
+      channels: [],
+      state: {
+        id: 'CaseCreated',
+        name: 'Case created'
+      },
+      tabs: [
+        {
+          id: 'overview',
+          label: 'Overview',
+          order: 1,
+          fields: [],
+          show_condition: ''
+        },
+        {
+          id: 'caseNotes',
+          label: 'Case notes',
+          order: 2,
+          fields: [],
+          show_condition: ''
+        },
+      ],
+      triggers: TRIGGERS,
+      events: EVENTS,
+      metadataFields: METADATA,
+    };
     comp.prependedTabs = [
       {
         id: 'tasks',
