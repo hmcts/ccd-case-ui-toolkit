@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -454,6 +455,42 @@ let mockRoute: any = {
   }
 };
 
+const WORK_ALLOCATION_CASE_VIEW = {//NOSONAR
+  case_id: CID,//NOSONAR
+  case_type: {//NOSONAR
+    id: CTID,//NOSONAR
+    name: 'Test Address Book Case',//NOSONAR
+    jurisdiction: {//NOSONAR
+      id: JID,//NOSONAR
+      name: 'Test',//NOSONAR
+    },//NOSONAR
+    printEnabled: true//NOSONAR
+  },//NOSONAR
+  channels: [],//NOSONAR
+  state: {//NOSONAR
+    id: 'CaseCreated',//NOSONAR
+    name: 'Case created'//NOSONAR
+  },//NOSONAR
+  tabs: [//NOSONAR
+    {//NOSONAR
+      id: 'overview',//NOSONAR
+      label: 'Overview',//NOSONAR
+      order: 1,//NOSONAR
+      fields: [],//NOSONAR
+      show_condition: ''//NOSONAR
+    },//NOSONAR
+    {//NOSONAR
+      id: 'caseNotes',//NOSONAR
+      label: 'Case notes',//NOSONAR
+      order: 2,//NOSONAR
+      fields: [],//NOSONAR
+      show_condition: ''//NOSONAR
+    },//NOSONAR
+  ],//NOSONAR
+  triggers: TRIGGERS,//NOSONAR
+  events: EVENTS,//NOSONAR
+  metadataFields: METADATA,//NOSONAR
+};//NOSONAR
 const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
 const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 const DIALOG_CONFIG = new MatDialogConfig();
@@ -1298,42 +1335,7 @@ describe('CaseViewerComponent - Overview with prepended Tabs', () => {
 
     f = TestBed.createComponent(CaseViewerComponent);
     comp = f.componentInstance;
-    comp.caseDetails = {
-      case_id: CID,
-      case_type: {
-        id: CTID,
-        name: 'Test Address Book Case',
-        jurisdiction: {
-          id: JID,
-          name: 'Test',
-        },
-        printEnabled: true
-      },
-      channels: [],
-      state: {
-        id: 'CaseCreated',
-        name: 'Case created'
-      },
-      tabs: [
-        {
-          id: 'overview',
-          label: 'Overview',
-          order: 1,
-          fields: [],
-          show_condition: ''
-        },
-        {
-          id: 'caseNotes',
-          label: 'Case notes',
-          order: 2,
-          fields: [],
-          show_condition: ''
-        },
-      ],
-      triggers: TRIGGERS,
-      events: EVENTS,
-      metadataFields: METADATA,
-    };
+    comp.caseDetails = WORK_ALLOCATION_CASE_VIEW;
     comp.prependedTabs = [
       {
         id: 'tasks',
