@@ -155,7 +155,7 @@ const EVENTS: CaseViewEvent[] = [
     }
   }
 ];
-
+// noinspection DuplicatedCode
 const METADATA: CaseField[] = [
   Object.assign(new CaseField(), {
     id: '[CASE_REFERENCE]',
@@ -482,6 +482,7 @@ const CCD_CASE_VIEW: CaseView = {
   events: EVENTS,
   metadataFields: METADATA,
 };
+// noinspection DuplicatedCode
 let mockRoute: any = {
   snapshot: {
     data: {
