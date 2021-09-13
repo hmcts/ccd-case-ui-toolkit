@@ -1255,9 +1255,9 @@ describe('CaseViewerComponent - prependedTabs', () => {
 describe('CaseViewerComponent - Overview with prepended Tabs', () => {
   let mockLocation: any;
 
-  let comp: CaseViewerComponent;
-  let f: ComponentFixture<CaseViewerComponent>;
-  let d: DebugElement;
+  let caseViewerComponent: CaseViewerComponent;
+  let componentFixture: ComponentFixture<CaseViewerComponent>;
+  let debugElement: DebugElement;
   beforeEach((() => {
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
@@ -1332,10 +1332,10 @@ describe('CaseViewerComponent - Overview with prepended Tabs', () => {
       })
       .compileComponents();
 
-    f = TestBed.createComponent(CaseViewerComponent);
-    comp = f.componentInstance;
-    comp.caseDetails = WORK_ALLOCATION_CASE_VIEW;
-    comp.prependedTabs = [
+    componentFixture = TestBed.createComponent(CaseViewerComponent);
+    caseViewerComponent = componentFixture.componentInstance;
+    caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
+    caseViewerComponent.prependedTabs = [
       {
         id: 'tasks',
         label: 'Tasks',
@@ -1349,12 +1349,12 @@ describe('CaseViewerComponent - Overview with prepended Tabs', () => {
         show_condition: null
       }
     ];
-    d = f.debugElement;
-    f.detectChanges();
+    debugElement = componentFixture.debugElement;
+    componentFixture.detectChanges();
   }));
 
   it('should display overview tab by default', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>tasksTab0.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
