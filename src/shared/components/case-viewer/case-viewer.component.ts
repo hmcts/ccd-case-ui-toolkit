@@ -212,7 +212,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const regExp = new RegExp(CaseViewerComponent.space, 'g');
     hashValue = hashValue.replace(regExp, ' ');
-    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
+    let tabId;
+    if (hashValue && this.sortedTabs) {
+      tabId = this.sortedTabs.find(x => x.id === hashValue);
+    }
+    const hashValueLabel = tabId ? tabId.label : hashValue;
+    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValueLabel);
     if (matTab && matTab.position) {
       this.tabGroup.selectedIndex = matTab.position;
     }
