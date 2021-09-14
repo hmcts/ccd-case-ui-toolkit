@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.5.0-rc.4
+**EUI-4415** Label not rendering
+
 ### Version 4.5.0-rc.2
 **EUI-4430** Case reference field regression bugs
 
