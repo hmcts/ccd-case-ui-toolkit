@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.5.0-rc.3
+### Version 4.5.0-rc.3-automated-test-check-2
 **EUI-4210** Automated Test Failure
 
 ### Version 4.5.0-rc.2
