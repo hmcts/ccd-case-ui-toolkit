@@ -63,8 +63,10 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.caseSubscription.unsubscribe();
+  ngOnDestroy(): void {
+    if (this.caseSubscription) {
+      this.caseSubscription.unsubscribe();
+    }
   }
 
   isDataLoaded() {
