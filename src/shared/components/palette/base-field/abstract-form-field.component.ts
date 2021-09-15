@@ -31,11 +31,19 @@ export abstract class AbstractFormFieldComponent {
     const existing = container.controls[this.caseField.id];
     if (existing) {
       if (replace) {
+        if (this.caseField.id === 'SpokenOrWritten') {
+          debugger;
+          console.log('setting validator');
+        }
         // Set the validators on the replacement with what already exists.
         control.setValidators(existing.validator);
       } else {
         return existing;
       }
+    }
+    if (this.caseField.id === 'SpokenOrWritten') {
+      debugger
+      console.log('setting validator again');
     }
     this.addValidators(this.caseField, control);
     FieldsUtils.addCaseFieldAndComponentReferences(control, this.caseField, this);

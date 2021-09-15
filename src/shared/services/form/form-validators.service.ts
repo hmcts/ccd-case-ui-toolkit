@@ -13,6 +13,10 @@ export class FormValidatorsService {
   ];
 
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
+    if (caseField.id === 'SpokenOrWritten') {
+      debugger
+      console.log('caseField', caseField.id, caseField);
+    }
     if (
       caseField.display_context === Constants.MANDATORY &&
       FormValidatorsService.CUSTOM_VALIDATED_TYPES.indexOf(caseField.field_type.type) === -1
