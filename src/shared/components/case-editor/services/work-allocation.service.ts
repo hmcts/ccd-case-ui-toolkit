@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { TaskSearchParameter, TaskSearchParameters } from '../../../domain';
+import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
+import { Task } from '../../../domain/work-allocation/task.model';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
@@ -126,5 +127,9 @@ export class WorkAllocationService {
           return throwError(error);
         })
       );
+  }
+  public getTasksForEventIdAndCaseId(eventId: string, caseId: string): Observable<Task[]> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}2/case/${caseId}/event/${eventId}`;
+    return this.http.get(url);
   }
 }

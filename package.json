@@ -46,12 +46,13 @@
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
     "demo": "yarn && yarn build:esm && yarn build:demo && yarn start",
     "build:test:functional": "yarn && yarn build:esm && yarn --cwd demo  test:functional",
-    "test:functional":"yarn --cwd demo  test:functional"
+    "test:functional": "yarn --cwd demo  test:functional"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
+    "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "3.0.3",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
