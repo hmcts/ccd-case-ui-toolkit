@@ -210,12 +210,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const regExp = new RegExp(CaseViewerComponent.space, 'g');
     hashValue = hashValue.replace(regExp, ' ');
-    let tabId;
-    if (hashValue && this.sortedTabs && this.sortedTabs.length > 0) {
-      tabId = this.sortedTabs.find(x => x.id === hashValue);
-    }
-    const hashValueLabel = tabId ? tabId.label : hashValue;
-    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValueLabel);
+    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
     if (matTab && matTab.position) {
       this.tabGroup.selectedIndex = matTab.position;
     }
@@ -227,8 +222,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
+      const label = tabChangeEvent.tab.textLabel;
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = id;
+        window.location.hash = label;
       })
     }
   }
