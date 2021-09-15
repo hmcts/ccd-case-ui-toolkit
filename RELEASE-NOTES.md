@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.2
+### Version 4.3.4
 **EUI-4210** Automated Test Failures
 
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
