@@ -147,6 +147,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
   ],
   exports: [
     BaseFieldModule,
+    LabelSubstitutorModule,
     PaletteUtilsModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
