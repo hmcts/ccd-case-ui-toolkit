@@ -14,9 +14,10 @@ describe('EventStartGuard', () => {
         route.params.eid = 'start';
         service.anyTasksRequired.and.returnValue(of(false));
         const canActivate$ = guard.canActivate(route);
-        canActivate$.subscribe(canActiviate => {
+        canActivate$.subscribe(canActivate => {
             expect(router.navigate).not.toHaveBeenCalled();
-            expect(canActiviate).toBeTruthy();
+            expect(canActivate).toBeTruthy();
+            expect(router.navigate).not.toHaveBeenCalled();
         });
     });
 
@@ -28,9 +29,10 @@ describe('EventStartGuard', () => {
         service.anyTasksRequired.and.returnValue(of(true));
 
         const canActivate$ = guard.canActivate(route);
-        canActivate$.subscribe(canActiviate => {
+        canActivate$.subscribe(canActivate => {
             expect(router.navigate).toHaveBeenCalled();
-            expect(canActiviate).toBeFalsy();
+            expect(canActivate).toBeFalsy();
+            expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234567891234567/eventStart']);
         });
     });
 });
