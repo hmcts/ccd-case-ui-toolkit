@@ -128,4 +128,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getAccessManagementMode(): boolean {
     return false;
   }
+
+  getAccessManagementBasicViewMockMode(): boolean {
+    return false;
+  }
 }

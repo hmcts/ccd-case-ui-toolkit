@@ -6,15 +6,15 @@
     <h1 class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
     <h2 class="govuk-heading-m">Case details</h2>
     <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row">
+      <div class="govuk-summary-list__row" *ngIf="caseDetails.basicFields?.caseNameHmctsInternal">
         <dt class="govuk-summary-list__key summary-key">Case name</dt>
-        <dd class="govuk-summary-list__value">Robert Saddlebrook</dd>
+        <dd class="govuk-summary-list__value">{{caseDetails.basicFields.caseNameHmctsInternal}}</dd>
       </div>
-      <div class="govuk-summary-list__row">
+      <div class="govuk-summary-list__row" *ngIf="caseDetails.case_type?.jurisdiction?.name">
         <dt class="govuk-summary-list__key summary-key">Service</dt>
         <dd class="govuk-summary-list__value">{{caseDetails.case_type.jurisdiction.name}}</dd>
       </div>
-      <div class="govuk-summary-list__row">
+      <div class="govuk-summary-list__row" *ngIf="caseDetails.state?.description">
         <dt class="govuk-summary-list__key summary-key">State</dt>
         <dd class="govuk-summary-list__value">{{caseDetails.state.description}}</dd>
       </div>
@@ -27,7 +27,7 @@
         </dd>
       </div>
 
-      <div class="govuk-summary-list__row">
+      <div class="govuk-summary-list__row" *ngIf="accessType">
         <dt class="govuk-summary-list__key summary-key">Access</dt>
         <dd class="govuk-summary-list__value">{{accessType | titlecase}}</dd>
       </div>

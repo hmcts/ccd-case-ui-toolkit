@@ -31,4 +31,5 @@ export class CaseView {
   events: CaseViewEvent[];
   @Type(() => CaseField)
   metadataFields?: CaseField[];
+  basicFields?: {}
 }

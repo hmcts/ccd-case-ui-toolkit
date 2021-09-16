@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView } from '../../../domain';
 
 @Component({
@@ -14,10 +15,31 @@ export class CaseBasicAccessViewComponent implements OnInit {
   public accessType: string = null;
 
   constructor(
+    private readonly appConfig: AbstractAppConfig
   ) {}
 
   ngOnInit(): void {
-    console.log(this.caseDetails);
+    // remove once Access management goes live
+    this.setMockData();
+  }
+
+
+  // remove once Access management goes live
+  private setMockData(): void {
+    if (this.appConfig.getAccessManagementBasicViewMockMode() && !this.caseDetails.basicFields) {
+      const basicFields = {
+        caseNameHmctsInternal: 'Robert Saddlebrook',
+        caseManagementLocation: {
+          baseLocation: 101
+        }
+      }
+
+      this.caseDetails = {
+       ...this.caseDetails,
+       basicFields 
+      }
+
+    }
   }
 
 }
