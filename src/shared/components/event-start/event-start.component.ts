@@ -1,7 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { StateMachine } from '@edium/fsm';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'ccd-event-start',
