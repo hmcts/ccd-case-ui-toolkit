@@ -4,17 +4,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { EventTriggerComponent } from './event-trigger.component';
 import { ActivityModule } from '../activity';
 import { EventStartGuard } from '../event-guard/event-start.guard';
-import { EventStartComponent } from '../event-start/event-start.component';
+import { EventStartComponentModule } from '../event-start/event-start-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
     ActivityModule,
+    EventStartComponentModule
   ],
   declarations: [
-    EventTriggerComponent,
-    EventStartComponent
+    EventTriggerComponent
   ],
   providers: [
     EventStartGuard

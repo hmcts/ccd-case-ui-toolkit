@@ -1,3 +1,8 @@
-<h1>
-    Event Start Component
-</h1>
+<h2>Event Start Component</h2>
+<div class="portal-outlet-container">
+  <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
+</div>
+<ng-template #templatePortalContent>Hello, this is a template portal</ng-template>
+
+<button (click)="selectedPortal = componentPortal1">Render component portal 1</button>
+<button (click)="selectedPortal = componentPortal2">Render component portal 2</button>
