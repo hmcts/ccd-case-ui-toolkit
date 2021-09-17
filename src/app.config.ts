@@ -46,7 +46,16 @@ export abstract class AbstractAppConfig {
   getAccessManagementMode(): boolean {
     return undefined;
   }
-  getAccessManagementBasicViewMockMode(): boolean {
+  getAccessManagementBasicViewMock(): {
+    active?: boolean,
+    basicFields?: {
+      caseNameHmctsInternal?: string,
+        caseManagementLocation?: {
+          baseLocation?: number
+        }
+    },
+    accessProcess?: string
+  } {
     return undefined;
   }
 }
@@ -83,5 +92,14 @@ export class CaseEditorConfig {
   work_allocation_api_url: string;
   user_info_api_url: string;
   access_management_mode: boolean;
-  access_management_basic_view_mock_mode: boolean;
+  access_management_basic_view_mock: {
+    active?: boolean,
+    basicFields?: {
+      caseNameHmctsInternal?: string,
+      caseManagementLocation?: {
+        baseLocation?: number
+      }
+    },
+    accessProcess?: string
+  };
 }

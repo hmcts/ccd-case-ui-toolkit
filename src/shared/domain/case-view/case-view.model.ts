@@ -31,5 +31,10 @@ export class CaseView {
   events: CaseViewEvent[];
   @Type(() => CaseField)
   metadataFields?: CaseField[];
-  basicFields?: {}
+  basicFields?: {
+    caseNameHmctsInternal?: string,
+    caseManagementLocation?: {
+      baseLocation?: number
+    }
+  }
 }

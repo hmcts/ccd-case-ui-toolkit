@@ -129,7 +129,16 @@ export class AppMockConfig implements AbstractAppConfig {
     return false;
   }
 
-  getAccessManagementBasicViewMockMode(): boolean {
-    return false;
+  getAccessManagementBasicViewMock(): {
+    active?: boolean,
+    basicFields?: {
+      caseNameHmctsInternal?: string,
+        caseManagementLocation?: {
+          baseLocation?: number
+        }
+    },
+    accessProcess?: string
+  } {
+    return {};
   }
 }

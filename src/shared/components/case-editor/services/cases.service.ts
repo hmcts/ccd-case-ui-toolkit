@@ -361,4 +361,8 @@ export class CasesService {
     }
     return false;
   }
+
+  public getCourtOrHearingCentreName(locationId: number): Observable<any> {
+    return this.http.get(`${this.appConfig.getPrdUrl()}/location/court-venue/services?service_code=${locationId}`)
+  }
 }

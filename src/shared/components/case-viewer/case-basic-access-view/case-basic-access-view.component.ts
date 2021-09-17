@@ -1,12 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AbstractAppConfig } from '../../../../app.config';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CasesService } from '../..';
 import { CaseView } from '../../../domain';
 
 @Component({
   selector: 'ccd-case-basic-access-view',
   templateUrl: 'case-basic-access-view.component.html'
 })
-export class CaseBasicAccessViewComponent implements OnInit {
+export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
 
   @Input()
   public caseDetails: CaseView = null;
@@ -14,32 +15,23 @@ export class CaseBasicAccessViewComponent implements OnInit {
   @Input()
   public accessType: string = null;
 
+  public courtOrHearingCentre: string = '';
+  private courtOrHearingCentreSubscription: Subscription;
+
   constructor(
-    private readonly appConfig: AbstractAppConfig
+    private readonly casesService: CasesService
   ) {}
 
-  ngOnInit(): void {
-    // remove once Access management goes live
-    this.setMockData();
+  public ngOnInit(): void {
+    const locationId = this.caseDetails.basicFields.caseManagementLocation.baseLocation;
+    this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre => 
+      this.courtOrHearingCentre = courtOrHearingCentre.location
+    );
   }
 
-
-  // remove once Access management goes live
-  private setMockData(): void {
-    if (this.appConfig.getAccessManagementBasicViewMockMode() && !this.caseDetails.basicFields) {
-      const basicFields = {
-        caseNameHmctsInternal: 'Robert Saddlebrook',
-        caseManagementLocation: {
-          baseLocation: 101
-        }
-      }
-
-      this.caseDetails = {
-       ...this.caseDetails,
-       basicFields 
-      }
-
+  public ngOnDestroy(): void {
+    if (this.courtOrHearingCentreSubscription) {
+      this.courtOrHearingCentreSubscription.unsubscribe();
     }
   }
-
 }
