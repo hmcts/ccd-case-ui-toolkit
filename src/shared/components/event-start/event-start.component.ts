@@ -22,7 +22,7 @@ export class EventStartComponent implements OnInit, AfterViewInit {
   public s3: State;
   public firstAction = (state: State, context ) => {
     context.task$.subscribe(task => {
-      if(task && task.length > 0) {
+      if (task && task.length > 0) {
         this.componentPortal1 = new ComponentPortal(ComponentPortalExample1Component);
         this.selectedPortal = this.componentPortal1;
       }
@@ -30,7 +30,7 @@ export class EventStartComponent implements OnInit, AfterViewInit {
   };
   public secondAction = (state: State, context ) => {
     context.cases$.subscribe(cases => {
-      if(!cases || cases.length === 0) {
+      if (!cases || cases.length === 0) {
         this.componentPortal2 = new ComponentPortal(ComponentPortalExample2Component);
         this.selectedPortal = this.componentPortal2;
       }
@@ -50,11 +50,11 @@ export class EventStartComponent implements OnInit, AfterViewInit {
       cases$: of([]),
     };
     this.stateMachine = new StateMachine('My first state machine', context);
-    this.s1 = this.stateMachine.createState( "My first", false, this.firstAction);
-    this.s2 = this.stateMachine.createState( "My second", false, this.secondAction);
-    this.s3 = this.stateMachine.createState("Final State", true, this.lastAction);
-    this.s1.addTransition("next", this.s2);
-    this.s2.addTransition("next", this.s3);
+    this.s1 = this.stateMachine.createState('My first', false, this.firstAction);
+    this.s2 = this.stateMachine.createState('My second', false, this.secondAction);
+    this.s3 = this.stateMachine.createState('Final State', true, this.lastAction);
+    this.s1.addTransition('next', this.s2);
+    this.s2.addTransition('next', this.s3);
 
   }
 
@@ -63,7 +63,7 @@ export class EventStartComponent implements OnInit, AfterViewInit {
   }
 
   public onNextClick() {
-    if(!this.stateMachine.started) {
+    if (!this.stateMachine.started) {
       this.stateMachine.start(this.s1);
     } else {
       this.stateMachine.currentState.trigger('next');
