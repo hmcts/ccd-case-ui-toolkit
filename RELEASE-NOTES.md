@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.3.2-state-machine
+**EUI-4185** New Feature with State machine
+
 ### Version 4.3.1-switch-tabs
 **EUI-3881** Fix bug that it can't switch case detail tabs after inserting prepended tabs
 
