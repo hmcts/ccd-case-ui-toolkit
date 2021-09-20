@@ -32,7 +32,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
-  static readonly space = '%20';
+  static readonly UNICODE_SPACE = '%20';
+  static readonly EMPTY_SPACE = ' ';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -206,13 +207,14 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
         this.tabGroup.selectedIndex = matTab.position;
       });
-      return;
-    }
-    const regExp = new RegExp(CaseViewerComponent.space, 'g');
-    hashValue = hashValue.replace(regExp, ' ');
-    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
-    if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
+    } else {
+      const regExp = new RegExp(CaseViewerComponent.UNICODE_SPACE, 'g');
+      hashValue = hashValue.replace(regExp, CaseViewerComponent.EMPTY_SPACE);
+      matTab = this.tabGroup._tabs.find((x) =>
+        x.textLabel.replace(CaseViewerComponent.EMPTY_SPACE, '').toLowerCase() === hashValue.toLowerCase());
+      if (matTab && matTab.position) {
+        this.tabGroup.selectedIndex = matTab.position;
+      }
     }
   }
 
