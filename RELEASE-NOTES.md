@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.3.1-EUI-3473-challenged-access-request-screen
+**EUI-3473** Challenged Access Request screen for Case Access Management
+
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
 **EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
 
