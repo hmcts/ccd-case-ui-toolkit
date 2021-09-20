@@ -1,7 +1,7 @@
 <h2>State machine Demo</h2>
 <div class="portal-outlet-container">
-  <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
+  <ng-template [cdkPortalOutlet]="selectedPortal" #portal="cdkPortalOutlet"></ng-template>
 </div>
 <ng-template #templatePortalContent>Template portal</ng-template>
 
-<button (click)="onNextClick()">Next</button>
+<button (click)="onNextClick()">Start the Statemachine</button>
