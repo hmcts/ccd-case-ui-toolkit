@@ -13,6 +13,9 @@
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
 
+### Version 5.0.0-unsaved-changes-beta-r3
+**EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
+
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
 
