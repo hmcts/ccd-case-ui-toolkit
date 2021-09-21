@@ -17,11 +17,6 @@ import { PortalModule } from '@angular/cdk/portal';
     EventStartComponent,
     ComponentPortalExample1Component,
     ComponentPortalExample2Component
-  ],
-  exports: [
-    EventStartComponent,
-    ComponentPortalExample1Component,
-    ComponentPortalExample2Component
   ]
 })
 export class EventStartComponentModule {}
