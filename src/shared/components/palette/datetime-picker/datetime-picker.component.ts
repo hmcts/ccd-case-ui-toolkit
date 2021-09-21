@@ -65,7 +65,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public ngOnInit(): void {
     this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
-    this.setDateTimeFormat();
     // set date control based on mandatory field
     this.dateControl = (this.caseField.isMandatory ?
       this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
@@ -75,7 +74,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     setTimeout(() => {
       this.setDateTimeFormat();
       this.formatValueAndSetErrors();
-    }, 1);
+    }, 1000);
     // when the status changes check that the maximum/minimum date has not been exceeded
     this.dateControl.statusChanges.subscribe(() => {
       this.minError = this.dateControl.hasError('matDatetimePickerMin');
@@ -84,6 +83,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public setDateTimeFormat(): void {
+    debugger
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
@@ -96,6 +96,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   private formatValueAndSetErrors(): void {
+    debugger
     if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
       formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
@@ -144,6 +145,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public configureDatePicker(dateTimePickerFormat: string): void {
+    debugger
     if (this.caseField.field_type.type === 'Date') {
       this.hideTime = true;
       this.checkTime = false;
@@ -196,6 +198,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public yearSelected(event: Moment): void {
+    debugger
     if (this.startView === 'multi-year' && this.yearSelection) {
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
@@ -204,6 +207,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public monthSelected(event: Moment): void {
+    debugger
     if (this.startView === 'multi-year') {
       this.dateControl.patchValue(event.toISOString());
       this.dateControl.patchValue(event.toISOString());
