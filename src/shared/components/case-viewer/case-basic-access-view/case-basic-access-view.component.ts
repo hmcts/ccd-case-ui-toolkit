@@ -15,7 +15,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   @Input()
   public accessType: string = null;
 
-  public courtOrHearingCentre: string = '';
+  public courtOrHearingCentre: string = null;
   private courtOrHearingCentreSubscription: Subscription;
 
   constructor(
@@ -24,7 +24,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const locationId = this.caseDetails.basicFields.caseManagementLocation.baseLocation;
-    this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre => 
+    this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre =>
       this.courtOrHearingCentre = courtOrHearingCentre.location
     );
   }
@@ -33,5 +33,10 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
     if (this.courtOrHearingCentreSubscription) {
       this.courtOrHearingCentreSubscription.unsubscribe();
     }
+  }
+
+  public onCancel(): void {
+    // Navigate to the previous page
+    window.history.go(-1);
   }
 }

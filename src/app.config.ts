@@ -58,6 +58,9 @@ export abstract class AbstractAppConfig {
   } {
     return undefined;
   }
+  getRefDataApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
@@ -102,4 +105,5 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
+  ref_data_api_url: string;
 }

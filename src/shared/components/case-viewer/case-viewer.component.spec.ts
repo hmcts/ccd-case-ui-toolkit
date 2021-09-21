@@ -132,6 +132,7 @@ describe('CaseViewerComponent', () => {
   let mockActivatedRoute = new MockActivatedRoute();
   let mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementMode',
+    'getAccessManagementBasicViewMock'
   ]);
 
   mockCaseNotifier = new CaseNotifier();
@@ -141,6 +142,7 @@ describe('CaseViewerComponent', () => {
   mockActivatedRoute.snapshot.data = <Data>{};
 
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
+  mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

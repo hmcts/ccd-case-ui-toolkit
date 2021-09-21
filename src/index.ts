@@ -134,8 +134,7 @@ export { PaletteModule,
          PaginationModule,
          PaginationComponent,
          TableColumnConfig,
-         TableConfig,
-         CaseRefdataService } from './shared/components';
+         TableConfig } from './shared/components';
 export { CaseReferencePipe,
          PipesModule,
          SortSearchResultPipe } from './shared/pipes';

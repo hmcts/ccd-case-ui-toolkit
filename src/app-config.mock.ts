@@ -141,4 +141,8 @@ export class AppMockConfig implements AbstractAppConfig {
   } {
     return {};
   }
+
+  getRefDataApiUrl(): string {
+    return '';
+  }
 }

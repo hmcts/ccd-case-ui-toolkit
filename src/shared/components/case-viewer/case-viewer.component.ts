@@ -55,7 +55,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     // remove once CCD starts sending CAM data or Access management goes live
     this.setMockData(caseDetails);
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
-      const access_process = caseDetails.metadataFields.find(metadataField => metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
+      const access_process = caseDetails.metadataFields.find(metadataField =>
+        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
       this.userAccessType = access_process ? access_process.value : null;
     }
   }
@@ -69,12 +70,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     return featureToggleOn ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
   }
 
-
   // remove once Access management goes live
   private setMockData(caseDetails: CaseView): void {
     const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock()
     if (accessManagementBasicViewMock.active && !caseDetails.basicFields) {
-      const access_process_index = caseDetails.metadataFields.findIndex(metadataField => metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
+      const access_process_index = caseDetails.metadataFields.findIndex(metadataField =>
+        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
 
       if (access_process_index > -1) {
         caseDetails.metadataFields[access_process_index].value = accessManagementBasicViewMock.accessProcess;
