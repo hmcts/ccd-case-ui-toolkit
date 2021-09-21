@@ -9,7 +9,8 @@ describe('EventStartGuard', () => {
 
     it('canActivate should return false', () => {
         const route = {} as ActivatedRouteSnapshot;
-        route.params = {}
+        route.params = {};
+        route.queryParams = {};
         route.params.cid = '1234567891234567';
         route.params.eid = 'start';
         service.anyTasksRequired.and.returnValue(of(false));
@@ -26,6 +27,7 @@ describe('EventStartGuard', () => {
         route.params = {}
         route.params.cid = '1234567891234567';
         route.params.eid = 'start';
+        route.queryParams = {};
         service.anyTasksRequired.and.returnValue(of(true));
 
         const canActivate$ = guard.canActivate(route);
