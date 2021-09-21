@@ -14,6 +14,10 @@ export class EventStartGuard implements CanActivate {
     public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
         const caseId = route.params['cid'];
         const eventId = route.params['eid'];
+        const isComplete = route.queryParams['isComplete'];
+        if (isComplete) {
+            return of(true);
+        }
         return this.workAllocationService.anyTasksRequired(eventId, caseId).pipe(
             switchMap(anyTasksRequired => this.checkForTasks(anyTasksRequired, caseId))
         );

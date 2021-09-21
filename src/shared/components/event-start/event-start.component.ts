@@ -40,7 +40,8 @@ export class EventStartComponent implements OnInit, AfterViewInit {
     });
   };
   private lastAction = (state: State, context ) => {
-    this.router.navigate(['/cases/case-details/1546883526751282']);
+    const navigationExtras = {queryParams: {isComplete: true}};
+    this.router.navigate(['/cases/case-details/1546883526751282/trigger/sendDirection/sendDirectionsendDirection'], navigationExtras);
     return true;
   }
   constructor(private _viewContainerRef: ViewContainerRef,
