@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 5.0.0-unsaved-changes-beta-r4
+**EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
+
+### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
+**EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
@@ -6,9 +12,6 @@
 ### Version 4.3.0
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
-
-### Version 5.0.0-unsaved-changes-beta-r3
-**EUI-2504** Warn of unsaved changes when attempting to navigate away/reload.
 
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
@@ -112,6 +115,9 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 **EUI-3051** Handle #DATETIMEENTRY field context
 **EUI-3581** Field interpolation does not work for the field type MultiSelectList
 **EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
+
+### Version 4.0.0-prepended-tabs-v3
+**EUI-3777** Create prepended tabs on case view
 
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
