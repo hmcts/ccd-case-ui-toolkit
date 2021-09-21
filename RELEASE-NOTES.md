@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.3-state-machine
+### Version 4.3.7-state-machine
 **EUI-4185** New Feature with State machine
 
 ### Version 4.3.1-switch-tabs
