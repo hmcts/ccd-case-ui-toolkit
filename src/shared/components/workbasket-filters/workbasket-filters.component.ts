@@ -310,7 +310,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    *
    * Has been implemented for 'Region and FRC filters' and can be extended
    * in future to incorporate other dynamic filters.
-   * 
+   *
    * @private
    * @memberof WorkbasketFiltersComponent
    */
@@ -324,11 +324,13 @@ export class WorkbasketFiltersComponent implements OnInit {
       // then the filter value has been changed and we need to clear the old filter values
       if (formGroupLS[REGION_LIST_AND_FRC_FILTER] !== this.formGroup.get(REGION_LIST_AND_FRC_FILTER).value) {
         for (const key in formGroupLS) {
-          const value = formGroupLS[key];
-          // Clear the filter form group control values if it has a value in local storage
-          // The regionList form group control value should be ignored as it always contain the latest value
-          if (key !== REGION_LIST_AND_FRC_FILTER && value != null) {
-            this.formGroup.get(key).setValue(null);
+          if (formGroupLS.hasOwnProperty(key)) {
+            const value = formGroupLS[key];
+            // Clear the filter form group control values if it has a value in local storage
+            // The regionList form group control value should be ignored as it always contain the latest value
+            if (key !== REGION_LIST_AND_FRC_FILTER && value != null) {
+              this.formGroup.get(key).setValue(null);
+            }
           }
         }
       }
