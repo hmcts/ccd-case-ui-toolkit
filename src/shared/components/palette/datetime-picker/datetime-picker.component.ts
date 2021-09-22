@@ -83,7 +83,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public setDateTimeFormat(): void {
-    debugger
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
@@ -96,7 +95,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   private formatValueAndSetErrors(): void {
-    debugger
     if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
       formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
@@ -145,7 +143,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public configureDatePicker(dateTimePickerFormat: string): void {
-    debugger
     if (this.caseField.field_type.type === 'Date') {
       this.hideTime = true;
       this.checkTime = false;
@@ -198,7 +195,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public yearSelected(event: Moment): void {
-    debugger
     if (this.startView === 'multi-year' && this.yearSelection) {
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
@@ -207,7 +203,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public monthSelected(event: Moment): void {
-    debugger
     if (this.startView === 'multi-year') {
       this.dateControl.patchValue(event.toISOString());
       this.dateControl.patchValue(event.toISOString());
