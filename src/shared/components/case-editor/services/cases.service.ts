@@ -363,6 +363,6 @@ export class CasesService {
   }
 
   public getCourtOrHearingCentreName(locationId: number): Observable<any> {
-    return this.http.get(`${this.appConfig.getRefDataApiUrl()}/location/court-venue/services?service_code=${locationId}`)
+    return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`)
   }
 }

@@ -58,7 +58,7 @@ export abstract class AbstractAppConfig {
   } {
     return undefined;
   }
-  getRefDataApiUrl(): string {
+  getLocationRefApiUrl(): string {
     return undefined;
   }
 }
@@ -105,5 +105,5 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
-  ref_data_api_url: string;
+  location_ref_api_url: string;
 }
