@@ -314,9 +314,9 @@ export class WorkbasketFiltersComponent implements OnInit {
    * @private
    * @memberof WorkbasketFiltersComponent
    */
-  private updateFormGroupFilters(): void {
+  updateFormGroupFilters(): void {
     // Read the form group local storage
-    const formGroupLS = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
+    const formGroupLS = JSON.parse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE));
 
     // Form group local storage is available and contains regionList property
     if (isDefined(formGroupLS) && formGroupLS.hasOwnProperty(REGION_LIST_AND_FRC_FILTER)) {
