@@ -1,5 +1,5 @@
 export enum AccessReason {
-  LINKED_TO_CURRENT_CASE = 'The cases or parties are linked to my current case',
+  LINKED_TO_CURRENT_CASE = 'The cases or parties are linked to the case I am working on',
   CONSOLIDATE_CASE = 'To determine if the case needs to be consolidated',
   ORDER_FOR_TRANSFER = 'To consider an order for transfer',
   OTHER = 'Other reason'
