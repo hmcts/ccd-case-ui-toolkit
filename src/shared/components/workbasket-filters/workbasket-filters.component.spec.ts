@@ -639,11 +639,6 @@ describe('WorkbasketFiltersComponent', () => {
       component.formGroup = new FormGroup(formControls);
 
       component.updateFormGroupFilters();
-      console.log(component.formGroup.get('regionList').value);
-      console.log(component.formGroup.get('southEastFRCList').value);
-      console.log(component.formGroup.get('thamesvalleyCourtList').value);
-      console.log(component.formGroup.get('londonFRCList').value);
-      console.log(component.formGroup.get('londonCourtList').value);
       expect(component.formGroup.get('londonFRCList').value).toBe(null);
       expect(component.formGroup.get('londonCourtList').value).toBe(null);
     });
