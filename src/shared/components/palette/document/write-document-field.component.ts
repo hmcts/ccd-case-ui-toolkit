@@ -194,6 +194,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  public isReadOnlyComponent(): boolean {
+    return this.caseField.display_context && this.caseField.display_context === Constants.READONLY;
+  }
+
   private initDialog(): void {
     this.dialogConfig = new MatDialogConfig();
     this.dialogConfig.disableClose = true;
