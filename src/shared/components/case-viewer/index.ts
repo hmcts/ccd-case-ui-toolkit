@@ -5,3 +5,4 @@ export * from './printer';
 export * from './case-viewer.component';
 export * from './case-viewer.module';
 export * from './viewer.routing';
+export * from './case-challenged-access-request';
