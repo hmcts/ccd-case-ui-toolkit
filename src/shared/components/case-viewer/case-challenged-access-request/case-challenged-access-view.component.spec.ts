@@ -7,7 +7,7 @@ import { ErrorMessageComponent } from '../../error-message';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request.component';
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 
-fdescribe('CaseChallengedAccessRequestComponent', () => {
+describe('CaseChallengedAccessRequestComponent', () => {
   let component: CaseChallengedAccessRequestComponent;
   let fixture: ComponentFixture<CaseChallengedAccessRequestComponent>;
 
