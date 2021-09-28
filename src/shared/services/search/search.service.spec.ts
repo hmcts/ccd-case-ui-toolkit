@@ -313,7 +313,7 @@ describe('SearchService', () => {
       expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
     });
 
-    fit('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
+    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
       let metaCriteria = { 'page': 1 };
       let caseCriteria = { 'preferredDQPilotCourt': 'Sunderland County, Family, Magistrates’ and Tribunal Hearings' };
       searchService
