@@ -4,7 +4,7 @@
 <!--Case ID or Title -->
 <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
 <ng-template #titleBlock>
-  <h2 class="heading-h2" [innerHTML]="getCaseTitle() | ccdCaseTitle: contextFields : editForm.controls['data']"></h2>
+  <ccd-markdown [content]="getCaseTitle() | ccdCaseTitle: contextFields : editForm.controls['data']"></ccd-markdown>
 </ng-template>
 <ng-template #idBlock>
   <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
