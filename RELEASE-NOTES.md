@@ -11,6 +11,9 @@
 **EUI-4346** Link a case event throws error
 **EUI-4349** Reset caseDetailsPage Position to Top
 
+### Version 4.3.4
+**EUI-4210** Automated Test Failures
+
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
 **EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
