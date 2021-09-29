@@ -70,7 +70,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     return (this.activity.editors.length > 0 || this.activity.unknownEditors > 0)
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.complete();
       this.subscription.unsubscribe();
