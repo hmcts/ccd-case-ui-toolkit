@@ -67,8 +67,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     });
   }
 
-  ngOnDestroy() {
-    if (typeof this.profileSubscription !== 'undefined') {
+  public ngOnDestroy(): void {
+    if (this.profileSubscription) {
       this.profileSubscription.unsubscribe();
     }
   }

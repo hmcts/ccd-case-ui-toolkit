@@ -28,7 +28,7 @@ export class DocumentManagementService {
   constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
-    const url = this.appConfig.getDocumentManagementUrl();
+    const url = this.getDocStoreUrl();
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
@@ -36,16 +36,6 @@ export class DocumentManagementService {
     return this.http
       .post(url, formData, {headers, observe: 'body'})
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
-      .pipe();
-  }
-
-  public secureUploadFile(formData: FormData): Observable<DocumentData> {
-    const url = this.appConfig.getDocumentManagementUrlV2();
-
-    const headers = new HttpHeaders();
-    return this.http
-      .post(url, formData, {headers, observe: 'body'})
-      .pipe(delay( DocumentManagementService.RESPONSE_DELAY ))
       .pipe();
   }
 
@@ -107,9 +97,13 @@ export class DocumentManagementService {
   }
 
   private transformDocumentUrl(documentBinaryUrl: string): string {
-    let remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
+    const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
-    let remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
-    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.appConfig.getDocumentManagementUrl());
+    const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
+    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
+  }
+
+  private getDocStoreUrl(): string {
+    return this.appConfig.getDocumentSecureMode() ? this.appConfig.getDocumentManagementUrlV2() : this.appConfig.getDocumentManagementUrl();
   }
 }
