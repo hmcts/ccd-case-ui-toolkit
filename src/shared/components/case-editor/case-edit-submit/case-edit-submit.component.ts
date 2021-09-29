@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 
@@ -190,8 +190,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
             // Update rawFormValueData for this field
+            // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
+            let form: FormGroup = new FormGroup({});
+            if (formGroup.controls[key].value) {
+              Object.keys(formGroup.controls[key].value).forEach((item) => {
+                form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
+              })
+            }
             rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
-              formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
+              form, caseField.field_type.complex_fields, caseField);
           }
         } else {
           // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
