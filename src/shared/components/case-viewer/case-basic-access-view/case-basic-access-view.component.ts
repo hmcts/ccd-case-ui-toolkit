@@ -23,10 +23,17 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    const locationId = this.caseDetails.basicFields.caseManagementLocation.baseLocation;
-    this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre =>
-      this.courtOrHearingCentre = courtOrHearingCentre.location
-    );
+    const locationId = this.caseDetails &&
+                        this.caseDetails.basicFields &&
+                        this.caseDetails.basicFields.caseManagementLocation &&
+                        this.caseDetails.basicFields.caseManagementLocation.baseLocation ?
+      this.caseDetails.basicFields.caseManagementLocation.baseLocation : null;
+
+    if(locationId) {
+      this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre =>
+        this.courtOrHearingCentre = courtOrHearingCentre.location
+      );
+    }
   }
 
   public ngOnDestroy(): void {
