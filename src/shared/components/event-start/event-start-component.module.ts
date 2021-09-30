@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ComponentPortalExample1Component, ComponentPortalExample2Component, EventStartComponent } from './event-start.component';
+import { EventStartComponent } from './event-start.component';
 import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
@@ -9,14 +9,10 @@ import { PortalModule } from '@angular/cdk/portal';
     PortalModule
   ],
   declarations: [
-    EventStartComponent,
-    ComponentPortalExample1Component,
-    ComponentPortalExample2Component
+    EventStartComponent
   ],
   entryComponents: [
-    EventStartComponent,
-    ComponentPortalExample1Component,
-    ComponentPortalExample2Component
+    EventStartComponent
   ]
 })
 export class EventStartComponentModule {}
