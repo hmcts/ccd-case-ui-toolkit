@@ -33,7 +33,7 @@ const CASE_VIEW_WITH_CHALLENGED_ACCESS: CaseView = {
     caseNameHmctsInternal: 'Dummy vs Dummy',
     caseManagementLocation: {
       baseLocation: 22
-    } 
+    }
   }
 };
 

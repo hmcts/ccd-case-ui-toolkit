@@ -74,7 +74,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
   ngOnInit() {
     initDialog(this.dialogConfig);
-    
+
     this.init();
 
     this.callbackErrorsSubject.subscribe(errorEvent => {

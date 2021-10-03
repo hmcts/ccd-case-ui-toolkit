@@ -29,7 +29,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
                         this.caseDetails.basicFields.caseManagementLocation.baseLocation ?
       this.caseDetails.basicFields.caseManagementLocation.baseLocation : null;
 
-    if(locationId) {
+    if (locationId) {
       this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre =>
         this.courtOrHearingCentre = courtOrHearingCentre.location
       );
