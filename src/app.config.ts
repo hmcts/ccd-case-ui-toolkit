@@ -94,8 +94,8 @@ export class CaseEditorConfig {
   cache_time_out: number;
   work_allocation_api_url: string;
   user_info_api_url: string;
-  access_management_mode: boolean;
-  access_management_basic_view_mock: {
+  access_management_mode?: boolean;
+  access_management_basic_view_mock?: {
     active?: boolean,
     basicFields?: {
       caseNameHmctsInternal?: string,
@@ -105,5 +105,5 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
-  location_ref_api_url: string;
+  location_ref_api_url?: string;
 }
