@@ -1,4 +1,4 @@
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CaseViewerComponent } from './case-viewer.component';
@@ -29,6 +29,10 @@ import { CaseReferencePipe, PipesModule } from '../../pipes';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view';
 import { CaseFullAccessViewComponent } from './case-full-access-view';
 import { AlertModule } from '../../../components';
+import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AlertModule } from '../../../components/banners/alert';
 
 @NgModule({
   imports: [
@@ -48,9 +52,9 @@ import { AlertModule } from '../../../components';
     EventLogModule,
     MatTabsModule,
     ComplexModule,
+    ReactiveFormsModule,
     AlertModule
   ],
-  schemas: [NO_ERRORS_SCHEMA],
   declarations: [
     CaseEventTriggerComponent,
     CasePrinterComponent,
@@ -59,6 +63,8 @@ import { AlertModule } from '../../../components';
     CaseFullAccessViewComponent,
     CaseViewComponent,
     PrintUrlPipe,
+    CaseChallengedAccessRequestComponent,
+    ErrorMessageComponent
   ],
   exports: [
     CaseViewerComponent,
