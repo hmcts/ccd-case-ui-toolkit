@@ -31,7 +31,7 @@ import { CaseFullAccessViewComponent } from './case-full-access-view';
 import { AlertModule } from '../../../components';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -51,6 +51,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     EventLogModule,
     MatTabsModule,
     ComplexModule,
+    FormsModule,
     ReactiveFormsModule,
     AlertModule
   ],
