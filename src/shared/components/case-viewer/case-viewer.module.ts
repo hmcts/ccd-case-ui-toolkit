@@ -32,7 +32,6 @@ import { AlertModule } from '../../../components';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AlertModule } from '../../../components/banners/alert';
 
 @NgModule({
   imports: [

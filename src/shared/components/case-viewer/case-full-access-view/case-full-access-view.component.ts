@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -21,7 +21,7 @@ import {
   OrderService,
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
-import { initDialog } from '../../helpers';
+import { CaseNotifier } from '../../case-editor';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -32,7 +32,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
-  static readonly space = '%20';
+  static readonly UNICODE_SPACE = '%20';
+  static readonly EMPTY_SPACE = ' ';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -57,6 +58,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
 
   constructor(
+    private readonly ngZone: NgZone,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly navigationNotifierService: NavigationNotifierService,
@@ -65,15 +67,22 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly dialog: MatDialog,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
+    private readonly caseNotifier: CaseNotifier,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly location: Location
   ) {
   }
 
   ngOnInit() {
-    initDialog(this.dialogConfig);
-
-    this.init();
+    this.initDialog();
+    if (!this.caseDetails) {
+      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+        this.caseDetails = caseDetails;
+        this.init();
+      });
+    } else {
+      this.init();
+    }
 
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
@@ -157,6 +166,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     }
   }
 
+  public isDataLoaded(): boolean {
+    return !!this.caseDetails;
+  }
+
   public hasTabsPresent(): boolean {
     return this.sortedTabs.length > 0 || this.prependedTabs.length > 0;
   }
@@ -194,13 +207,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
         this.tabGroup.selectedIndex = matTab.position;
       });
-      return;
-    }
-    const regExp = new RegExp(CaseFullAccessViewComponent.space, 'g');
-    hashValue = hashValue.replace(regExp, ' ');
-    matTab = this.tabGroup._tabs.find((x) => x.textLabel === hashValue);
-    if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
+    } else {
+      const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
+      hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
+      matTab = this.tabGroup._tabs.find((x) =>
+        x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() === hashValue.toLowerCase());
+      if (matTab && matTab.position) {
+        this.tabGroup.selectedIndex = matTab.position;
+      }
     }
   }
 
@@ -222,6 +236,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
+
+    if (this.activityPollingService.isEnabled) {
+      this.ngZone.runOutsideAngular(() => {
+        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
+          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
+        });
+      });
+    }
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
@@ -259,6 +281,21 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       });
     }
     return new FormGroup({data: new FormControl(value)});
+  }
+
+  private initDialog(): void {
+    this.dialogConfig = new MatDialogConfig();
+    this.dialogConfig.disableClose = true;
+    this.dialogConfig.autoFocus = true;
+    this.dialogConfig.ariaLabel = 'Label';
+    this.dialogConfig.height = '245px';
+    this.dialogConfig.width = '550px';
+    this.dialogConfig.panelClass = 'dialog';
+
+    this.dialogConfig.closeOnNavigation = false;
+    this.dialogConfig.position = {
+      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
+    }
   }
 
   private resetErrors(): void {
