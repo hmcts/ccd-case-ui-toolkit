@@ -83,6 +83,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         const access_process: CaseField = new CaseField();
         access_process.id = CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID;
         access_process.value = accessManagementBasicViewMock.accessProcess;
+        access_process.field_type = {
+          id: '',
+          type: 'Text'
+        };
         caseDetails.metadataFields.push(access_process);
       }
 
