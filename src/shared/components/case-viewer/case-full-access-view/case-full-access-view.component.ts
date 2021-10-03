@@ -21,7 +21,7 @@ import {
   OrderService,
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
-import { CaseNotifier } from '../../case-editor';
+import { initDialog } from '../../helpers';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -67,22 +67,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly dialog: MatDialog,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
-    private readonly caseNotifier: CaseNotifier,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly location: Location
   ) {
   }
 
   ngOnInit() {
-    this.initDialog();
-    if (!this.caseDetails) {
-      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
-        this.caseDetails = caseDetails;
-        this.init();
-      });
-    } else {
-      this.init();
-    }
+    initDialog(this.dialogConfig);
+    
+    this.init();
 
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
@@ -164,10 +157,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
           relativeTo: this.route
         });
     }
-  }
-
-  public isDataLoaded(): boolean {
-    return !!this.caseDetails;
   }
 
   public hasTabsPresent(): boolean {
@@ -281,21 +270,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       });
     }
     return new FormGroup({data: new FormControl(value)});
-  }
-
-  private initDialog(): void {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
   }
 
   private resetErrors(): void {
