@@ -399,14 +399,6 @@
     is-absolute "^1.0.0"
     is-negated-glob "^1.0.0"
 
-"@edium/fsm@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@edium/fsm/-/fsm-2.1.2.tgz#3349644cb6ce9edf4f78574c377ccd303897bffd"
-  integrity sha512-5mnpxxutpXINa4DMfWMUQhQyZ7v0ZzG/+r2QJyDih0W5fzMleBLDi/Yr5WL658E8Mu6zgCzsLz++MZreRjAv9w==
-  dependencies:
-    lodash "^4.17.21"
-    tslib "^2.2.0"
-
 "@hmcts/ccpay-web-component@3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.3.tgz#d8f2c335e439515e0b87784414229301d9a8c05f"

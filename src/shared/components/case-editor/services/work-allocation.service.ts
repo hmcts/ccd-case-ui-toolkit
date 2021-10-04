@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
+import { Task } from '../../../domain/work-allocation/Task';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
@@ -30,7 +31,7 @@ export class WorkAllocationService {
   public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
-      .post(url, { searchRequest }, null, false)
+      .post(url, {searchRequest}, null, false)
       .pipe(
         map(response => response),
         catchError(error => {
@@ -87,7 +88,7 @@ export class WorkAllocationService {
     const lowerCaseRoles = roles.map(role => role.toLowerCase());
     // When/if lib & target permanently change to es2016, replace indexOf with includes
     return (lowerCaseRoles.indexOf(WorkAllocationService.IACCaseOfficer) !== -1)
-     || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
+      || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
   }
 
   /**
@@ -127,8 +128,9 @@ export class WorkAllocationService {
         })
       );
   }
-  public anyTasksRequired(eventId: string, caseId: string): Observable<boolean> {
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}2/case/${caseId}/event/${eventId}`;
+
+  public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<Task[]> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/case/task/${caseId}/event/${eventId}`;
     return this.http.get(url);
   }
 }

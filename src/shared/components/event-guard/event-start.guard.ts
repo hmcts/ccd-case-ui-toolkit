@@ -3,12 +3,12 @@ import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WorkAllocationService } from '../../components/case-editor/services/work-allocation.service';
+import { Task } from '../../domain/work-allocation/Task';
 
 @Injectable({
     providedIn: 'root'
 })
 export class EventStartGuard implements CanActivate {
-    public partUrl = '/case-details/';
     constructor(public readonly router: Router, public readonly workAllocationService: WorkAllocationService) {}
 
     public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -18,13 +18,13 @@ export class EventStartGuard implements CanActivate {
         if (isComplete) {
             return of(true);
         }
-        return this.workAllocationService.anyTasksRequired(eventId, caseId).pipe(
-            switchMap(anyTasksRequired => this.checkForTasks(anyTasksRequired, caseId))
+        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId).pipe(
+            switchMap((tasks: Task[]) => this.checkForTasks(tasks, caseId))
         );
     }
 
-    private checkForTasks(anyTasksRequired: boolean, caseId: string): Observable<boolean> {
-        if (anyTasksRequired) {
+    private checkForTasks(tasks: Task[], caseId: string): Observable<boolean> {
+        if (tasks.length) {
             this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
             return of(false);
         } else {
