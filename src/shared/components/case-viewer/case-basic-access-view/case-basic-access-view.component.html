@@ -20,7 +20,7 @@
       </div>
       <div class="govuk-summary-list__row" *ngIf="courtOrHearingCentre">
         <dt class="govuk-summary-list__key summary-key">Court or hearing centre</dt>
-        <dd class="govuk-summary-list__value">{{courtOrHearingCentre}}</dd>
+        <dd class="govuk-summary-list__value">{{courtOrHearingCentre | titlecase}}</dd>
       </div>
 
       <div class="govuk-summary-list__row" *ngIf="accessType">

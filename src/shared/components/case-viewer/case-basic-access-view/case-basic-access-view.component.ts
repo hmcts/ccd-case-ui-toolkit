@@ -31,7 +31,9 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
 
     if (locationId) {
       this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre =>
-        this.courtOrHearingCentre = courtOrHearingCentre.location
+        this.courtOrHearingCentre = courtOrHearingCentre[0] && courtOrHearingCentre[0].building_location_name ?
+                                    courtOrHearingCentre[0].building_location_name :
+                                    null
       );
     }
   }
