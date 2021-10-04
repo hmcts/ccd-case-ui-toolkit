@@ -45,7 +45,7 @@ describe('CaseBasicAccessViewComponent', () => {
 
     beforeEach(async(() => {
         mockCasesService = createSpyObj('casesService', ['getCourtOrHearingCentreName']);
-        mockCasesService.getCourtOrHearingCentreName.and.returnValue(of({location: 'dummy-location'}));
+        mockCasesService.getCourtOrHearingCentreName.and.returnValue(of([{building_location_name: 'dummy-location'}]));
 
         TestBed
         .configureTestingModule({
