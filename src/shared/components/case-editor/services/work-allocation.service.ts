@@ -10,7 +10,9 @@ import { Task } from '../../../domain/work-allocation/Task';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkAllocationService {
 
   public static IACCaseOfficer = 'caseworker-ia-caseofficer';
@@ -131,6 +133,7 @@ export class WorkAllocationService {
 
   public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<Task[]> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/case/task/${caseId}/event/${eventId}`;
+    console.log('url', url);
     return this.http.get(url);
   }
 }
