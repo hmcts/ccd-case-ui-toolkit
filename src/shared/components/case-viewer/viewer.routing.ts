@@ -20,7 +20,6 @@ export const viewerRouting: Routes = [
       },
       component: CaseEventTriggerComponent,
       children: editorRouting,
-      canActivate: [EventStartGuard],
       canDeactivate: [FileUploadProgressGuard]
     },
     {
