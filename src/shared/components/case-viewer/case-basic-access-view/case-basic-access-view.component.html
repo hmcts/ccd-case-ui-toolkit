@@ -1,8 +1,9 @@
 <form>
   <div>
-    <cut-alert type="information">This case requires {{accessType | lowercase}} access.<br />This is because the case is
-      outside your work area. If you request access to the case, it will be
-      logged for auditing purposes.</cut-alert>
+    <cut-alert type="information">This case requires {{accessType | lowercase}} access.<br />
+      <ng-container *ngIf="accessType === 'CHALLENGED'">This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.</ng-container>
+      <ng-container *ngIf="accessType === 'SPECIFIC'">This is means it's outside your jurisdiction and requires authorisation. If you request access to the case, it will be logged for auditing purposes.</ng-container>
+    </cut-alert>
     <h1 class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
     <h2 class="govuk-heading-m">Case details</h2>
     <dl class="govuk-summary-list">
