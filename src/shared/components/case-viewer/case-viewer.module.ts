@@ -1,8 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { CaseViewerComponent } from './case-viewer.component';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material';
+import { RouterModule } from '@angular/router';
+import { AlertModule } from '../../../components/banners/alert';
+import { TabsModule } from '../../../components/tabs';
+import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
+import { CaseReferencePipe, PipesModule } from '../../pipes';
 import {
   ActivityPollingService,
   ActivityService,
@@ -12,24 +16,21 @@ import {
   NavigationNotifierService,
   OrderService
 } from '../../services';
-import { ErrorsModule } from '../error/errors.module';
 import { ActivityModule } from '../activity';
+import { CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
-import { EventTriggerModule } from '../event-trigger';
-import { TabsModule } from '../../../components/tabs';
-import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
-import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
-import { CasePrinterComponent, PrintUrlPipe } from './printer';
-import { CaseEventTriggerComponent } from './case-event-trigger';
-import { CaseResolver, EventTriggerResolver } from './services';
-import { CaseEditorModule, CaseNotifier } from '../case-editor';
-import { CaseViewComponent } from './case-view';
-import { CaseReferencePipe, PipesModule } from '../../pipes';
-import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { AlertModule } from '../../../components/banners/alert';
+import { ErrorsModule } from '../error/errors.module';
+import { EventTriggerModule } from '../event-trigger';
+import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
+import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
+import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
+import { CaseEventTriggerComponent } from './case-event-trigger';
+import { CaseViewComponent } from './case-view';
+import { CaseViewerComponent } from './case-viewer.component';
+import { CasePrinterComponent, PrintUrlPipe } from './printer';
+import { CaseResolver, EventTriggerResolver } from './services';
 
 @NgModule({
   imports: [
@@ -59,7 +60,8 @@ import { AlertModule } from '../../../components/banners/alert';
     CaseViewComponent,
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    CaseChallengedAccessSuccessComponent
   ],
   exports: [
     CaseViewerComponent,

@@ -1,32 +1,49 @@
 import { Routes } from '@angular/router';
-import { CasePrinterComponent } from './printer';
-import { EventTriggerResolver } from './services';
-import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
+import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
+import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
+import { CasePrinterComponent } from './printer';
+import { EventTriggerResolver } from './services';
 
 export const viewerRouting: Routes = [
-    {
-      path: 'print',
-      component: CasePrinterComponent,
+  {
+    path: 'print',
+    component: CasePrinterComponent,
+  },
+  {
+    path: 'trigger/:eid',
+    resolve: {
+      eventTrigger: EventTriggerResolver
     },
-    {
-      path: 'trigger/:eid',
-      resolve: {
-        eventTrigger: EventTriggerResolver
+    component: CaseEventTriggerComponent,
+    children: editorRouting,
+    canDeactivate: [FileUploadProgressGuard]
+  },
+  {
+    path: 'event/:eid/history',
+    component: CaseHistoryComponent,
+  },
+  {
+    path: 'access-request',
+    children: [
+      {
+        path: '',
+        component: CaseChallengedAccessRequestComponent,
+        data: {
+          title: 'Request Challenged Access'
+        },
+        pathMatch: 'full'
       },
-      component: CaseEventTriggerComponent,
-      children: editorRouting,
-      canDeactivate: [FileUploadProgressGuard]
-    },
-    {
-      path: 'event/:eid/history',
-      component: CaseHistoryComponent,
-    },
-    {
-      path: 'access-request',
-      component: CaseChallengedAccessRequestComponent
-    }
-  ];
+      {
+        path: 'success',
+        component: CaseChallengedAccessSuccessComponent,
+        data: {
+          title: 'Challenged Access Success'
+        }
+      }
+    ]
+  }
+];

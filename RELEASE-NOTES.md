@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.3.1-EUI-4202-challenged-access-request-screen-functionality
+**EUI-4202** Challenged Access Request screen functionality - happy path
+
 ### Version 4.3.1-EUI-3473-challenged-access-request-screen
 **EUI-3473** Challenged Access Request screen for Case Access Management
 
