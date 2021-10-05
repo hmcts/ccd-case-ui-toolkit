@@ -142,7 +142,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public ngOnDestroy(): void {
-    if(this.$roleAssignmentResponseSubscription) {
+    if (this.$roleAssignmentResponseSubscription) {
       this.$roleAssignmentResponseSubscription.unsubscribe();
     }
   }
