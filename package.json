@@ -52,7 +52,7 @@
     "@angular-material-components/datetime-picker": "^2.0.4",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
-    "@hmcts/ccpay-web-component": "3.0.3",
+    "@hmcts/ccpay-web-component": "3.0.27",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
