@@ -195,7 +195,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
                 form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
               })
             }
-            // rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
             rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(form, caseField.field_type.complex_fields, caseField);
           }
         } else {

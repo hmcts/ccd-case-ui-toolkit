@@ -252,6 +252,13 @@ export class FormValueService {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+        if (Array.isArray(sanitisedObject[key])) {
+          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
+          // delete the property from the sanatised object
+          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+            delete sanitisedObject[key];
+          }
+        }
       }
     }
     return sanitisedObject;
