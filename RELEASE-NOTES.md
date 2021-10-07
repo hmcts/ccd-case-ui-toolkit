@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 4.5.0-rc.4
+**EUI-4415** Label not rendering
+
+### Version 4.3.1-EUI-3473-challenged-access-request-screen
+**EUI-3473** Challenged Access Request screen for Case Access Management
+
 ### Version 4.3.1-switch-tabs
 **EUI-3881** Fix bug that it can't switch case detail tabs after inserting prepended tabs
 

@@ -5,6 +5,7 @@ import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigg
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
+import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 
 export const viewerRouting: Routes = [
     {
@@ -23,5 +24,9 @@ export const viewerRouting: Routes = [
     {
       path: 'event/:eid/history',
       component: CaseHistoryComponent,
+    },
+    {
+      path: 'access-request',
+      component: CaseChallengedAccessRequestComponent
     }
   ];
