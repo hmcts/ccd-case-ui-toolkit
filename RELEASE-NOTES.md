@@ -1,5 +1,19 @@
 ## RELEASE NOTES
 
+### Version 4.3.2-rc3
+**EUI-4430** Case reference field regression bugs
+
+### Version 4.3.2-rc1
+**EUI-4348** Filter options not retained for search
+
+### Version 4.3.2
+**EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled 
+**EUI-4346** Link a case event throws error
+**EUI-4349** Reset caseDetailsPage Position to Top
+
+### Version 4.3.0-rc.16-case-submission-error
+**EUI-4462** "edit case event submission throws error"
+
 ### Version 4.3.4
 **EUI-4210** Automated Test Failures
 
