@@ -1,3 +1,14 @@
+export interface AccessManagementBasicViewMockModel {
+  active?: boolean;
+  basicFields?: {
+    caseNameHmctsInternal?: string,
+      caseManagementLocation?: {
+        baseLocation?: number
+      }
+  };
+  accessProcess?: string;
+}
+
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
@@ -46,16 +57,7 @@ export abstract class AbstractAppConfig {
   getAccessManagementMode(): boolean {
     return undefined;
   }
-  getAccessManagementBasicViewMock(): {
-    active?: boolean,
-    basicFields?: {
-      caseNameHmctsInternal?: string,
-        caseManagementLocation?: {
-          baseLocation?: number
-        }
-    },
-    accessProcess?: string
-  } {
+  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
   getLocationRefApiUrl(): string {
