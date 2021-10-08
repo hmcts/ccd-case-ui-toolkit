@@ -119,16 +119,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    When('I enter case event field values for event {string}', async function (eventRef, fielValuesDT){
-        const mockCaseEvent = global.scenarioData[eventRef] ;
-        const fieldValues = fielValuesDT.hashes();
-        for (let i = 0; i < fieldValues.length; i++) {
-            const pathArr = fieldValues[i].path.split(".");
-            
-            const fieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
-            const inputFieldConfig = mockCaseEvent.getInputFieldConfig(fieldConfig, pathArr);
-            await caseEditPage.inputCaseField(inputFieldConfig, fieldValues[i].value, fieldValues[i].cssSelector)
-        }
+    Given('I set fixed list ietms to field {string} in event {string}', async function (fieldId, eventRef, fixedListDatatable) {
+        const mockCaseEvent = global.scenarioData[eventRef];
+        mockCaseEvent.setFixedListItems(fieldId, fixedListDatatable.hashes());
     });
 
     Given('I set complex field overrides for case field {string} in event {string}', async function (fieldId, eventRef, overrides){
@@ -157,37 +150,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             caseFields[i].value = eventData[caseFields[i].id];
         } 
         console.log(JSON.stringify(eventData))
-    });
-
-    When('I click collection add new btn for field {string} in event {string}', async function (fieldPath,eventRef){
-        const mockCaseEvent = global.scenarioData[eventRef];
-        const pathArr = fieldPath.split(".");
-        const caseFieldConfig = mockCaseEvent.getCaseFieldConfig(pathArr[0]);
-        await caseEditPage.clickAddNewCollectionItemBtn(caseFieldConfig, fieldPath);
-    });
-
-    Then('I validate request body {string} of event validate api', async function(requestBodyReference,datatable){
-    // step definition code here
-        await BrowserWaits.waitForCondition(() =>  global.scenarioData[requestBodyReference] !== null );
-        const reqBody = global.scenarioData[requestBodyReference];
-        const softAsseert = new SoftAssert();
-        const dataTableHashes = datatable.hashes();
-        CucumberReportLogger.AddMessage("Request body in validation");
-        CucumberReportLogger.AddJson(reqBody);
-        for(let i = 0; i < dataTableHashes.length; i++){
-            const matchValues = jsonpath.query(reqBody, dataTableHashes[i].pathExpression);
-            softAsseert.setScenario(`Validate case field present in req body ${dataTableHashes[i].pathExpression}`);
-            await softAsseert.assert(() => expect(matchValues.length  > 0, `path ${dataTableHashes[i].pathExpression} not found in req body`).to.be.true);
-            if (matchValues.length > 0){
-                softAsseert.setScenario(`Validate feidl valUe in req body ${dataTableHashes[i].pathExpression}`)
-                await softAsseert.assert(() => expect(matchValues[0], `path ${dataTableHashes[i].pathExpression} not matching expected`).to.equal(dataTableHashes[i].value));
-            }
-        }
-        softAsseert.finally();
-    });
-
-    When('I click continue in event edit page', async function(){
-       await caseEditPage.clickContinue();
     });
 
 

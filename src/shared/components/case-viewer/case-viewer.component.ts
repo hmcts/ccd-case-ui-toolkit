@@ -105,18 +105,21 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.callbackErrorsSubject.next(this.error);
       }
     });
+    window.scrollTo(0, 0);
   }
 
   public isPrintEnabled(): boolean {
     return this.caseDetails.case_type.printEnabled;
   }
 
-  ngOnDestroy() {
-    if (this.activityPollingService.isEnabled) {
+  public ngOnDestroy(): void {
+    if (this.activitySubscription && this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
-    this.callbackErrorsSubject.unsubscribe();
-    if (!this.route.snapshot.data.case) {
+    if (this.callbackErrorsSubject) {
+      this.callbackErrorsSubject.unsubscribe();
+    }
+    if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
     if (!!this.errorSubscription) {

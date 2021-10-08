@@ -7,8 +7,8 @@
     "prebuild": "yarn && gulp copy-lib",
     "start": "node server.js",
     "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
-    "test:functional": "yarn && yarn build && webdriver-manager update  &&  ng e2e --webdriver-update=false  --protractorConfig=./test/config/protractor.conf.js",
-    "testDev:functional": "webdriver-manager update  &&  protractor ./test/config/protractor.conf.js",
+    "test:functional": "yarn && yarn build && webdriver-manager --ignore_ssl --gecko=false update --versions.chrome 2.40   &&  ng e2e --webdriver-update=false  --protractorConfig=./test/config/protractor.conf.js",
+    "testDev:functional": "webdriver-manager --ignore_ssl --gecko=false update --versions.chrome 2.40  &&  protractor ./test/config/protractor.conf.js",
     "test:mock": "nodemon test/nodeMock/app.js --standalone"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "@angular/router": "~7.0.3",
     "@angular/upgrade": "~7.0.3",
     "@hmcts/ccd-case-ui-toolkit": "2.73.0",
+    "@hmcts/frontend": "0.0.39-alpha",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "angular2-router-loader": "^0.3.4",
     "angular2-template-loader": "^0.6.0",
@@ -76,6 +77,11 @@
     "url-loader": "1.1.2",
     "webpack": "^4.20.2",
     "webpack-dev-server": "^3.1.10",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "eligrey-classlist.js": "^1.2.20180112",
+    "isomorphic-fetch": "^3.0.0",
+    "web-animations-js": "^2.3.2",
+    "cookie-parser": "^1.4.4",
+    "axios": "^0.21.1"
   }
 }
