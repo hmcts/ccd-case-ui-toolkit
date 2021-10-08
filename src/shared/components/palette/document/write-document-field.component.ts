@@ -146,11 +146,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
 
-      const uploadFile = this.secureModeOn ?
-        this.documentManagement.secureUploadFile(documentUpload) :
-        this.documentManagement.uploadFile(documentUpload);
-
-      this.fileUploadSubscription = uploadFile.subscribe({
+      this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe({
         next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument),
         error: (error: HttpError) => this.handleDocumentUploadError(error)
       });
@@ -263,7 +259,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
-      ...{ document_hash:  new FormControl(document.document_hash, Validators.required) }
+      ...{ document_hash:  new FormControl(document.document_hash) }
     } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
