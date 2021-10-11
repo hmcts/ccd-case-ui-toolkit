@@ -1,12 +1,26 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
-import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType, FieldTypeEnum } from '../../../domain';
+import {
+  CaseEventData,
+  CaseEventTrigger,
+  CaseField,
+  CasePrintDocument,
+  CaseView,
+  ChallengedAccessRequest,
+  Draft,
+  FieldType,
+  FieldTypeEnum,
+  RequestedRole,
+  RequestedRoleNote,
+  RoleAssignmentResponse,
+  RoleRequest
+} from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { WizardPage } from '../domain';
@@ -364,5 +378,59 @@ export class CasesService {
 
   public getCourtOrHearingCentreName(locationId: number): Observable<any> {
     return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`)
+  }
+
+  public createChallengedAccessRequest(caseId: string, car: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
+    // Dummy implementation for now; the real one will make a call to the Node layer, which will call the appropriate Role
+    // Assignment API endpoint
+    const roleAssignmentResponse = {
+      roleRequest: {
+        id: '0c6f56f5-4457-485e-a0de-828e6dfa1e33',
+        authenticatedUserId: '37d4eab7-e14c-404e-8cd1-55cd06b2fc06',
+        correlationId: '003352d0-e699-48bc-b6f5-5810411e60af',
+        assignerId: '37d4eab7-e14c-404e-8cd1-55cd06b2fc06',
+        requestType: 'CREATE',
+        process: 'businessProcess1',
+        reference: 'cf07ea33-31c0-4442-b2df-e2032d21b496',
+        replaceExisting: true,
+        status: 'APPROVED',
+        created: new Date('2021-01-28T18:16:49.100121Z'),
+        log: 'Request has been approved'
+      } as RoleRequest,
+      requestedRoles: [{
+        id: '3ccabbf2-71fa-4c5d-af39-5675d25e9fcc',
+        actorIdType: 'IDAM',
+        actorId: 'cf07ea33-31c0-4442-b2df-e2032d21b496',
+        roleType: 'ORGANISATION',
+        roleName: 'judge',
+        classification: 'PUBLIC',
+        grantType: 'CHALLENGED',
+        roleCategory: 'JUDICIAL',
+        readOnly: false,
+        beginTime: new Date('2021-01-01T00:00:00Z'),
+        endTime: new Date('2023-01-01T00:00:00Z'),
+        process: 'businessProcess1',
+        reference: 'cf07ea33-31c0-4442-b2df-e2032d21b496',
+        status: 'LIVE',
+        created: new Date('2021-01-28T18:16:49.100155Z'),
+        log: 'Create requested with replace: true\nCreate approved : judicial_organisational_role_mapping_service_create',
+        attributes: {
+          jurisdiction: 'divorce',
+          region: 'south-east',
+          contractType: 'SALARIED'
+        },
+        notes: [{
+          userId: '003352d0-e699-48bc-b6f5-5810411e60ag',
+          time: new Date('2020-01-01T00:00Z'),
+          comment: 'Need Access to case number 1234567890123456 for a month'
+        } as RequestedRoleNote, {
+          userId: '52aa3810-af1f-11ea-b3de-0242ac130004',
+          time: new Date('2020-01-02T00:00Z'),
+          comment: 'Access granted till end of day'
+        } as RequestedRoleNote]
+      } as RequestedRole]
+    };
+
+    return of(roleAssignmentResponse);
   }
 }
