@@ -34,7 +34,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (!!this.caseSubscription) {
+    if (this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
   }
