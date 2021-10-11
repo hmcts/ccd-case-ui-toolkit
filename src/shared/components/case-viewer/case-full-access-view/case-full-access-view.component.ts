@@ -100,7 +100,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (!this.route.snapshot.data.case) {
       this.caseSubscription.unsubscribe();
     }
-    if (!!this.errorSubscription) {
+    if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }
   }
