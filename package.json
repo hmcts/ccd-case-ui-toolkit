@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.3.1-EUI-4202-challenged-access-request-screen-functionality",
+  "version": "4.3.1-basic-access-view-4",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
