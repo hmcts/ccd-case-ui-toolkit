@@ -376,6 +376,10 @@ export class CasesService {
     return false;
   }
 
+  public getCourtOrHearingCentreName(locationId: number): Observable<any> {
+    return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`)
+  }
+
   public createChallengedAccessRequest(caseId: string, car: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Dummy implementation for now; the real one will make a call to the Node layer, which will call the appropriate Role
     // Assignment API endpoint
