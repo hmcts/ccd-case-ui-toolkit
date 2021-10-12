@@ -48,4 +48,8 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
     // Navigate to the previous page
     window.history.go(-1);
   }
+
+  public getRequestUrl(accessType: string): string {
+    return `${accessType.toLowerCase()}-access-request`;
+  }
 }

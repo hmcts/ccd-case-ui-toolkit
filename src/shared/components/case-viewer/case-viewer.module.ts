@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { AlertModule } from '../../../components/banners/alert';
@@ -52,7 +52,6 @@ import { CaseResolver, EventTriggerResolver } from './services';
     EventLogModule,
     MatTabsModule,
     ComplexModule,
-    FormsModule,
     ReactiveFormsModule,
     AlertModule
   ],
