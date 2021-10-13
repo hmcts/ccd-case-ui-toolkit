@@ -29,6 +29,11 @@
     </div>
   </dl>
 </div>
-
-<button class="govuk-button govuk-!-margin-right-3" [routerLink]="getRequestUrl(accessType)">Request access</button>
-<a class="govuk-body" (click)="onCancel()" href="javascript:void(0)">Cancel</a>
+<div class="govuk-button-group">
+  <button class="govuk-button govuk-!-margin-right-3" [routerLink]="getRequestUrl(accessType)"> Request access </button>
+  <div class="govuk-grid-column-full govuk-!-padding-left-0">
+    <p>
+      <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)"> Cancel </a>
+    </p>
+  </div>
+</div>
