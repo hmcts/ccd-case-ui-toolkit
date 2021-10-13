@@ -87,7 +87,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.profileSubscription.unsubscribe();
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   public submit(): void {
@@ -195,7 +197,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
                 form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
               })
             }
-            rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(form, caseField.field_type.complex_fields, caseField);
+            rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+              form, caseField.field_type.complex_fields, caseField);
           }
         } else {
           // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
