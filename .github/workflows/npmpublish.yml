@@ -27,6 +27,7 @@ jobs:
       - run: yarn test
 
   sonarcloud:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
