@@ -394,6 +394,12 @@ export class CasesService {
         assignerId: userInfo.id
       } as RoleRequest,
       requestedRoles: [{
+        actorIdType: 'IDAM',
+        actorId: userInfo.id,
+        roleType: 'CASE',
+        roleName: 'challenged-access-judiciary',
+        classification: 'PUBLIC',
+        roleCategory: 'JUDICIAL',
         grantType: 'CHALLENGED',
         beginTime: new Date(),
         endTime: new Date(new Date().setUTCHours(23,59,59,999)),
@@ -409,6 +415,6 @@ export class CasesService {
       } as RequestedRole]
     };
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/am/role-assignments`, payload);
+    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
   }
 }
