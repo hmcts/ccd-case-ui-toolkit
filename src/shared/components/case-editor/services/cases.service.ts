@@ -55,6 +55,18 @@ export class CasesService {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
+  // User role mapping
+  public static readonly JUDGE_ROLE = 'judge';
+  public static readonly JUDGE_ROLE_ASSIGNMENT = 'JUDICIAL';
+  public static readonly ADMIN_ROLE = 'courtadmin';
+  public static readonly ADMIN_ROLE_ASSIGNMENT = 'ADMIN';
+  public static readonly PROFESSIONAL_ROLE = 'solicitor';
+  public static readonly PROFESSIONAL_ROLE_ASSIGNMENT = 'PROFESSIONAL';
+  public static readonly LEGAL_OPERATIONS_ROLE = 'caseworker';
+  public static readonly LEGAL_OPERATIONS_ROLE_ASSIGNMENT = 'LEGAL_OPERATIONS';
+  public static readonly CITIZEN_OPERATIONS_ROLE = 'citizen';
+  public static readonly CITIZEN_OPERATIONS_ROLE_ASSIGNMENT = 'CITIZEN';
+
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
   /**
@@ -387,7 +399,7 @@ export class CasesService {
     if (userInfoStr) {
       userInfo = JSON.parse(userInfoStr);
     }
-    console.log(userInfo.id);
+    console.log(userInfo);
 
     const payload = {
       roleRequest: {
@@ -399,7 +411,7 @@ export class CasesService {
         roleType: 'CASE',
         roleName: 'challenged-access-judiciary',
         classification: 'PUBLIC',
-        roleCategory: 'JUDICIAL',
+        roleCategory: this.getMappedUserRole(userInfo.roles),
         grantType: 'CHALLENGED',
         beginTime: new Date(),
         endTime: new Date(new Date().setUTCHours(23,59,59,999)),
@@ -416,5 +428,30 @@ export class CasesService {
     };
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
+  }
+
+  public getMappedUserRole(roles: string[]): string {
+    
+    // JUDICIAL,
+    // ADMIN,
+    // PROFESSIONAL,
+    // LEGAL_OPERATIONS,
+    // CITIZEN
+
+    const roleKeywords: string[] = roles.join().split('-').join().split(',');
+
+    if (roleKeywords.indexOf(CasesService.JUDGE_ROLE) > -1) {
+      return CasesService.JUDGE_ROLE_ASSIGNMENT;
+    } else if (roleKeywords.indexOf(CasesService.ADMIN_ROLE) > -1) {
+      return CasesService.ADMIN_ROLE_ASSIGNMENT;
+    } else if (roleKeywords.indexOf(CasesService.PROFESSIONAL_ROLE) > -1) {
+      return CasesService.PROFESSIONAL_ROLE_ASSIGNMENT;
+    } else if (roleKeywords.indexOf(CasesService.LEGAL_OPERATIONS_ROLE) > -1) {
+      return CasesService.LEGAL_OPERATIONS_ROLE_ASSIGNMENT;
+    } else if (roleKeywords.indexOf(CasesService.CITIZEN_OPERATIONS_ROLE) > -1) {
+      return CasesService.CITIZEN_OPERATIONS_ROLE_ASSIGNMENT;
+    }
+
+    return null;
   }
 }
