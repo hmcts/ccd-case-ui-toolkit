@@ -53,7 +53,6 @@
     "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
-    "@hmcts/ccpay-web-component": "3.0.3",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
@@ -76,7 +75,8 @@
     "@angular/common": "~7.0.3",
     "@angular/core": "~7.0.3",
     "@angular/forms": "~7.0.3",
-    "@angular/router": "~7.0.3"
+    "@angular/router": "~7.0.3",
+    "@hmcts/ccpay-web-component": "4.x"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.9",
