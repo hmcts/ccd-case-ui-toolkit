@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { Moment } from 'moment/moment';
 import {
   NGX_MAT_DATE_FORMATS,
@@ -7,6 +7,7 @@ import {
   NgxMatDateFormats,
   NgxMatDatetimePicker
 } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { ThemePalette } from '@angular/material';
 
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -21,7 +22,10 @@ import moment = require('moment/moment');
   styleUrls: ['./datetime-picker.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS}]
+    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+    { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ]
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
@@ -49,7 +53,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
-  private dateTimeEntryFormat: string;
+  public dateTimeEntryFormat: string;
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
@@ -61,14 +65,16 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public ngOnInit(): void {
     this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
-    this.setDateTimeFormat();
-    this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
+    // set date control based on mandatory field
+    this.dateControl = (this.caseField.isMandatory ?
+      this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
+       : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
-      this.formatValue();
-    }, 1);
+      this.formatValueAndSetErrors();
+    }, 1000);
     // when the status changes check that the maximum/minimum date has not been exceeded
     this.dateControl.statusChanges.subscribe(() => {
       this.minError = this.dateControl.hasError('matDatetimePickerMin');
@@ -85,21 +91,35 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   When the value changes, update the form control
   */
   public valueChanged(): void {
-    this.formatValue();
+    this.formatValueAndSetErrors();
   }
 
-  public formatValue(): void {
+  private formatValueAndSetErrors(): void {
     if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
       formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
       if (formValue !== 'Invalid date') {
+        // if not invalid set the value as the formatted value
         this.dateControl.setValue(formValue);
+      } else {
+        // ensure that the datepicker picks up the invalid error
+        const keepErrorText = this.inputElement.nativeElement.value;
+        this.dateControl.setValue(keepErrorText);
+        this.inputElement.nativeElement.value = keepErrorText;
       }
+    } else {
+      // ensure required errors are picked up if relevant
+      this.dateControl.setValue('');
     }
   }
 
   public focusIn(): void {
     this.setDateTimeFormat();
+  }
+
+  public focusOut(): void {
+    // focus out needed to obtain errors (relevant to formatting)
+    this.formatValueAndSetErrors();
   }
 
   public toggleClick(): void {
