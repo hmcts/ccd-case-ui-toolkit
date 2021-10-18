@@ -16,10 +16,9 @@ import {
   Draft,
   FieldType,
   FieldTypeEnum,
-  RequestedRole,
-  RequestedRoleNote,
   RoleAssignmentResponse,
-  RoleRequest
+  RoleCategory,
+  RoleRequestPayload
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
@@ -58,14 +57,19 @@ export class CasesService {
   // User role mapping
   public static readonly JUDGE_ROLE = 'judge';
   public static readonly JUDGE_ROLE_ASSIGNMENT = 'JUDICIAL';
-  public static readonly ADMIN_ROLE = 'courtadmin';
+  public static readonly JUDGE_ROLE_NAME = 'judicial';
+  public static readonly ADMIN_ROLE = 'admin';
   public static readonly ADMIN_ROLE_ASSIGNMENT = 'ADMIN';
+  public static readonly ADMIN_ROLE_NAME = 'admin';
   public static readonly PROFESSIONAL_ROLE = 'solicitor';
   public static readonly PROFESSIONAL_ROLE_ASSIGNMENT = 'PROFESSIONAL';
+  public static readonly PROFESSIONAL_ROLE_NAME = 'professional';
   public static readonly LEGAL_OPERATIONS_ROLE = 'caseworker';
   public static readonly LEGAL_OPERATIONS_ROLE_ASSIGNMENT = 'LEGAL_OPERATIONS';
-  public static readonly CITIZEN_OPERATIONS_ROLE = 'citizen';
-  public static readonly CITIZEN_OPERATIONS_ROLE_ASSIGNMENT = 'CITIZEN';
+  public static readonly LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
+  public static readonly CITIZEN_ROLE = 'citizen';
+  public static readonly CITIZEN_ROLE_ASSIGNMENT = 'CITIZEN';
+  public static readonly CITIZEN_ROLE_NAME = 'citizen';
 
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
@@ -401,17 +405,20 @@ export class CasesService {
     }
     console.log(userInfo);
 
-    const payload = {
+    const roleCategory: RoleCategory = this.getAMMappedUserRole(userInfo.roles);
+    const roleName = this.getAMRoleName('challenged', roleCategory);
+
+    const payload: RoleRequestPayload = {
       roleRequest: {
         assignerId: userInfo.id
-      } as RoleRequest,
+      },
       requestedRoles: [{
         actorIdType: 'IDAM',
         actorId: userInfo.id,
         roleType: 'CASE',
-        roleName: 'challenged-access-judiciary',
+        roleName: roleName,
         classification: 'PUBLIC',
-        roleCategory: this.getMappedUserRole(userInfo.roles),
+        roleCategory: roleCategory,
         grantType: 'CHALLENGED',
         beginTime: new Date(),
         endTime: new Date(new Date().setUTCHours(23,59,59,999)),
@@ -422,36 +429,55 @@ export class CasesService {
           userId: userInfo.id,
           time: new Date(),
           comment: JSON.stringify(car)
-        } as RequestedRoleNote
+        } 
       ]
-      } as RequestedRole]
+      }]
     };
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
   }
 
-  public getMappedUserRole(roles: string[]): string {
-    
-    // JUDICIAL,
-    // ADMIN,
-    // PROFESSIONAL,
-    // LEGAL_OPERATIONS,
-    // CITIZEN
+  public getAMMappedUserRole(roles: string[]): RoleCategory {
 
     const roleKeywords: string[] = roles.join().split('-').join().split(',');
 
     if (roleKeywords.indexOf(CasesService.JUDGE_ROLE) > -1) {
       return CasesService.JUDGE_ROLE_ASSIGNMENT;
-    } else if (roleKeywords.indexOf(CasesService.ADMIN_ROLE) > -1) {
-      return CasesService.ADMIN_ROLE_ASSIGNMENT;
     } else if (roleKeywords.indexOf(CasesService.PROFESSIONAL_ROLE) > -1) {
       return CasesService.PROFESSIONAL_ROLE_ASSIGNMENT;
-    } else if (roleKeywords.indexOf(CasesService.LEGAL_OPERATIONS_ROLE) > -1) {
+    } else if (roleKeywords.indexOf(CasesService.CITIZEN_ROLE) > -1) {
+      return CasesService.CITIZEN_ROLE_ASSIGNMENT;
+    } else if (roleKeywords.indexOf(CasesService.ADMIN_ROLE) > -1) {
+      return CasesService.ADMIN_ROLE_ASSIGNMENT;
+    } else {
       return CasesService.LEGAL_OPERATIONS_ROLE_ASSIGNMENT;
-    } else if (roleKeywords.indexOf(CasesService.CITIZEN_OPERATIONS_ROLE) > -1) {
-      return CasesService.CITIZEN_OPERATIONS_ROLE_ASSIGNMENT;
     }
 
-    return null;
+  }
+
+  public getAMRoleName(accessType: string, aMRole: RoleCategory): string {
+
+    let roleName: string = '';
+
+    switch (aMRole) {
+      case CasesService.JUDGE_ROLE_ASSIGNMENT:
+        roleName = `${accessType}-access-${CasesService.JUDGE_ROLE_NAME}`;
+        break;
+      case CasesService.PROFESSIONAL_ROLE_ASSIGNMENT:
+        roleName = `${accessType}-access-${CasesService.PROFESSIONAL_ROLE_NAME}`;
+        break;
+      case CasesService.CITIZEN_ROLE_ASSIGNMENT:
+        roleName = `${accessType}-access-${CasesService.CITIZEN_ROLE_NAME}`;
+        break;
+      case CasesService.ADMIN_ROLE_ASSIGNMENT:
+        roleName = `${accessType}-access-${CasesService.ADMIN_ROLE_NAME}`;
+        break;
+      default:
+        roleName = `${accessType}-access-${CasesService.LEGAL_OPERATIONS_ROLE_NAME}`;
+        break;
+    }
+
+    return roleName;
+
   }
 }
