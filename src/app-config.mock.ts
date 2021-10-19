@@ -136,4 +136,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getLocationRefApiUrl(): string {
     return '';
   }
+
+  getRefundsUrl(): string {
+    return '';
+  }
 }
