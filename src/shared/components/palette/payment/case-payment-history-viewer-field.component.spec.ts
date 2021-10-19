@@ -32,7 +32,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let de: DebugElement;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
 
@@ -41,7 +41,11 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'CCD_CASE_NUMBER',
         'BULKSCAN_API_ROOT',
         'ISBSENABLE',
-        'SELECTED_OPTION'
+        'SELECTED_OPTION',
+        'VIEW',
+        'LOGGEDINUSERROLES',
+        'LOGGEDINUSEREMAIL',
+        'REFUNDS_API_ROOT'
       ]});
 
     TestBed

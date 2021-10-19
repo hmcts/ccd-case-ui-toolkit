@@ -16,12 +16,16 @@ export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadCom
     super();
   }
 
-  getBaseURL() {
+  public getBaseURL() {
     return this.appConfig.getPaymentsUrl();
   }
 
-  getPayBulkScanBaseURL() {
+  public getPayBulkScanBaseURL() {
     return this.appConfig.getPayBulkScanBaseUrl();
+  }
+
+  public getRefundsUrl() {
+    return this.appConfig.getRefundsUrl();
   }
 
   public getUserRoles() {
@@ -30,6 +34,14 @@ export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadCom
       return [];
     }
     return userDetails.roles;
+  }
+
+  public getUserEmail() {
+    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
+    if (!userDetails || !userDetails.hasOwnProperty('sub')) {
+      return '';
+    }
+    return userDetails.sub;
   }
 
 }

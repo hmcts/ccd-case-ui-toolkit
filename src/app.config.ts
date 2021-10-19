@@ -63,6 +63,7 @@ export abstract class AbstractAppConfig {
   getLocationRefApiUrl(): string {
     return undefined;
   }
+  abstract getRefundsUrl(): string;
 }
 
 export class CaseEditorConfig {
