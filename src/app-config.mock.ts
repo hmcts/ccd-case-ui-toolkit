@@ -1,4 +1,4 @@
-import { AbstractAppConfig } from './app.config';
+import { AbstractAppConfig, AccessManagementBasicViewMockModel } from './app.config';
 
 export class AppMockConfig implements AbstractAppConfig {
   getActivityBatchCollectionDelayMs(): number {
@@ -123,5 +123,17 @@ export class AppMockConfig implements AbstractAppConfig {
 
   getDocumentSecureMode(): boolean {
     return false;
+  }
+
+  getAccessManagementMode(): boolean {
+    return false;
+  }
+
+  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
+    return {};
+  }
+
+  getLocationRefApiUrl(): string {
+    return '';
   }
 }

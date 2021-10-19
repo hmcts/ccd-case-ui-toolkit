@@ -1,9 +1,37 @@
 ## RELEASE NOTES
-### Version 4.5.0-rc.2
-**EUI-4430** Case reference field regression bugs
+### Version 4.3.1-EUI-4202-challenged-access-request-screen-functionality
+**EUI-4202** Challenged Access Request screen functionality - happy path
+
+### Version 4.5.0-rc.4
+**EUI-4415** Label not rendering
+
+### Version 4.3.1-EUI-3473-challenged-access-request-screen
+**EUI-3473** Challenged Access Request screen for Case Access Management
+
+### Version 4.3.1-switch-tabs
+**EUI-3881** Fix bug that it can't switch case detail tabs after inserting prepended tabs
+
+### Version 4.0.0-value-disappearing
+**EUI-4364** Values disappearing after mid event callback when modifying case data
 
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
 **EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+### Version 4.3.2-rc3
+**EUI-4430** Case reference field regression bugs
+
+### Version 4.3.2-rc1
+**EUI-4348** Filter options not retained for search
+
+### Version 4.3.2
+**EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled 
+**EUI-4346** Link a case event throws error
+**EUI-4349** Reset caseDetailsPage Position to Top
+
+### Version 4.3.0-rc.16-case-submission-error
+**EUI-4462** "edit case event submission throws error"
+
+### Version 4.3.4
+**EUI-4210** Automated Test Failures
 
 ### Version 4.1.6-EUI-3528-4205-RHF-enhancements
 **EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
