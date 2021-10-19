@@ -235,7 +235,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
     let theControl = formGroup.controls['data'].get(caseFieldId);
     if (theControl) {
-      theControl.patchValue(value);
+      if (Array.isArray(theControl.value) && Array.isArray(value)
+              && theControl.value.length > value.length && theControl['caseField']
+                  && theControl['caseField']['display_context'] && theControl['caseField']['display_context'] === 'OPTIONAL') {
+        // do nothing
+      } else {
+        theControl.patchValue(value);
+      }
     }
   }
 
