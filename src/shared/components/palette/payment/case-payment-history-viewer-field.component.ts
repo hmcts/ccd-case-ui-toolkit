@@ -29,7 +29,7 @@ export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadCom
   }
 
   public getUserRoles() {
-    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
+    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails') || null);
     if (!userDetails || !userDetails.hasOwnProperty('roles')) {
       return [];
     }
@@ -37,7 +37,7 @@ export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadCom
   }
 
   public getUserEmail() {
-    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
+    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails') || null);
     if (!userDetails || !userDetails.hasOwnProperty('sub')) {
       return '';
     }
