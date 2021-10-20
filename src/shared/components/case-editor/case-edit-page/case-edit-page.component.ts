@@ -238,8 +238,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       if (Array.isArray(theControl.value) && Array.isArray(value)
               && theControl.value.length > value.length && theControl['caseField']
               && theControl['caseField']['display_context'] && theControl['caseField']['display_context'] === 'OPTIONAL'
-              && theControl['caseField']['field_type'] && theControl['caseField']['field_type']['type'] === 'Collection'
-              && theControl['caseField']['field_type']['collection_field_type']['type'] === 'Document') {
+              && theControl['caseField']['field_type'] && theControl['caseField']['field_type']['type'] === 'Collection') {
         // do nothing
       } else {
         theControl.patchValue(value);
