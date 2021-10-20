@@ -25,6 +25,15 @@ jobs:
       - run: yarn lint
       - run: yarn build
       - run: yarn test
+      - name: Create code coverage report
+        run: yarn test:coverage
+      - name: Change Report Path
+        run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/lcov.info
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: coverage 
 
   sonarcloud:
     needs: build
@@ -54,7 +63,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
 
   publish-npm:
     needs: build
