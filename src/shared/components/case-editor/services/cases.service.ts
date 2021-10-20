@@ -22,6 +22,7 @@ import {
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -53,23 +54,6 @@ export class CasesService {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
-
-  // User role mapping
-  public static readonly JUDGE_ROLE = 'judge';
-  public static readonly JUDGE_ROLE_ASSIGNMENT = 'JUDICIAL';
-  public static readonly JUDGE_ROLE_NAME = 'judicial';
-  public static readonly ADMIN_ROLE = 'admin';
-  public static readonly ADMIN_ROLE_ASSIGNMENT = 'ADMIN';
-  public static readonly ADMIN_ROLE_NAME = 'admin';
-  public static readonly PROFESSIONAL_ROLE = 'solicitor';
-  public static readonly PROFESSIONAL_ROLE_ASSIGNMENT = 'PROFESSIONAL';
-  public static readonly PROFESSIONAL_ROLE_NAME = 'professional';
-  public static readonly LEGAL_OPERATIONS_ROLE = 'caseworker';
-  public static readonly LEGAL_OPERATIONS_ROLE_ASSIGNMENT = 'LEGAL_OPERATIONS';
-  public static readonly LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
-  public static readonly CITIZEN_ROLE = 'citizen';
-  public static readonly CITIZEN_ROLE_ASSIGNMENT = 'CITIZEN';
-  public static readonly CITIZEN_ROLE_NAME = 'citizen';
 
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
@@ -399,14 +383,15 @@ export class CasesService {
   public createChallengedAccessRequest(caseId: string, car: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
+    const camUtils = new CaseAccessUtils();
     let userInfo: UserInfo;
     if (userInfoStr) {
       userInfo = JSON.parse(userInfoStr);
     }
-    console.log(userInfo);
 
-    const roleCategory: RoleCategory = this.getAMMappedUserRole(userInfo.roles);
-    const roleName = this.getAMRoleName('challenged', roleCategory);
+    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = camUtils.getAMRoleName('challenged', roleCategory);
 
     const payload: RoleRequestPayload = {
       roleRequest: {
@@ -437,47 +422,4 @@ export class CasesService {
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
   }
 
-  public getAMMappedUserRole(roles: string[]): RoleCategory {
-
-    const roleKeywords: string[] = roles.join().split('-').join().split(',');
-
-    if (roleKeywords.indexOf(CasesService.JUDGE_ROLE) > -1) {
-      return CasesService.JUDGE_ROLE_ASSIGNMENT;
-    } else if (roleKeywords.indexOf(CasesService.PROFESSIONAL_ROLE) > -1) {
-      return CasesService.PROFESSIONAL_ROLE_ASSIGNMENT;
-    } else if (roleKeywords.indexOf(CasesService.CITIZEN_ROLE) > -1) {
-      return CasesService.CITIZEN_ROLE_ASSIGNMENT;
-    } else if (roleKeywords.indexOf(CasesService.ADMIN_ROLE) > -1) {
-      return CasesService.ADMIN_ROLE_ASSIGNMENT;
-    } else {
-      return CasesService.LEGAL_OPERATIONS_ROLE_ASSIGNMENT;
-    }
-
-  }
-
-  public getAMRoleName(accessType: string, aMRole: RoleCategory): string {
-
-    let roleName: string = '';
-
-    switch (aMRole) {
-      case CasesService.JUDGE_ROLE_ASSIGNMENT:
-        roleName = `${accessType}-access-${CasesService.JUDGE_ROLE_NAME}`;
-        break;
-      case CasesService.PROFESSIONAL_ROLE_ASSIGNMENT:
-        roleName = `${accessType}-access-${CasesService.PROFESSIONAL_ROLE_NAME}`;
-        break;
-      case CasesService.CITIZEN_ROLE_ASSIGNMENT:
-        roleName = `${accessType}-access-${CasesService.CITIZEN_ROLE_NAME}`;
-        break;
-      case CasesService.ADMIN_ROLE_ASSIGNMENT:
-        roleName = `${accessType}-access-${CasesService.ADMIN_ROLE_NAME}`;
-        break;
-      default:
-        roleName = `${accessType}-access-${CasesService.LEGAL_OPERATIONS_ROLE_NAME}`;
-        break;
-    }
-
-    return roleName;
-
-  }
 }

@@ -50,6 +50,6 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   }
 
   public getRequestUrl(accessType: string): string {
-    return `${accessType.toLowerCase()}-access-request`;
+    return accessType === 'CHALLENGED' ? 'challenged-access-request' : 'specific-access-request';
   }
 }
