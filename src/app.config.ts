@@ -109,4 +109,5 @@ export class CaseEditorConfig {
     accessProcess?: string
   };
   location_ref_api_url?: string;
+  refunds_url: string;
 }
