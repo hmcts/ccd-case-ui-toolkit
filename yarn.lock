@@ -399,10 +399,10 @@
     is-absolute "^1.0.0"
     is-negated-glob "^1.0.0"
 
-"@hmcts/ccpay-web-component@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.3.tgz#d8f2c335e439515e0b87784414229301d9a8c05f"
-  integrity sha512-EIANuq103rLEA7LglNreLpPeo0aQtxfReXNd7A76V66tUwyQhwERMlpwKmOhO0eoA8HpcK0yV0mXNLh1aUifXA==
+"@hmcts/ccpay-web-component@~4.0.0-beta517":
+  version "4.0.0-beta524"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.0-beta524.tgz#08902642c4744f9a70252b63245d15dc6d77d21b"
+  integrity sha512-rfKX1lvUMwz8Hk/AGVzoB0zh0Lgs2DLxLw2Y5suqKZeT5o79bDNlM6nHGXUtDC6p5USnTfmHkswqK9vhsf4NXQ==
   dependencies:
     tslib "^1.9.0"
 
@@ -6865,6 +6865,11 @@ loader-utils@^1.0.0, loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^1.0.1"
+
+local-storage@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/local-storage/-/local-storage-2.0.0.tgz#748b7d041b197f46f3ec7393640851c175b64db8"
+  integrity sha512-/0sRoeijw7yr/igbVVygDuq6dlYCmtsuTmmpnweVlVtl/s10pf5BCq8LWBxW/AMyFJ3MhMUuggMZiYlx6qr9tw==
 
 locate-path@^2.0.0:
   version "2.0.0"

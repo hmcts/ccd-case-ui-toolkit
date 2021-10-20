@@ -7,6 +7,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
 
@@ -26,6 +27,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   let appConfig;
   let PaymentWebComponent;
+  let sessionStorage;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
@@ -48,6 +50,8 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'REFUNDS_API_ROOT'
       ]});
 
+      sessionStorage = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+
     TestBed
       .configureTestingModule({
         imports: [],
@@ -59,6 +63,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
+          { provide: SessionStorageService, useValue: sessionStorage }
         ]
       })
       .compileComponents();
