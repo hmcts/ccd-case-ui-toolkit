@@ -10,7 +10,7 @@
 # Quick Start (for local development and testing)
 
 ```bash
-# Install all dependencies
+# Install all dependencies 
 yarn install
 
 # Create symbolic link
