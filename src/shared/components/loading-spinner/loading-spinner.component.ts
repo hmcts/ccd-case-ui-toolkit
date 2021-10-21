@@ -8,5 +8,5 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 })
 
 export class LoadingSpinnerComponent {
-  @Input() public loadingText: string = 'Searching';
+  @Input() public loadingText = 'Searching';
 }
