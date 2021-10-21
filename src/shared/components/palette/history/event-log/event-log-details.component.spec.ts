@@ -1,11 +1,10 @@
+import { CaseViewEvent } from '../../../../domain/case-view';
 import { EventLogDetailsComponent } from './event-log-details.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { CaseViewEvent } from '../../../../domain/case-view';
-import { DatePipe, DashPipe } from '../../utils';
+import { DashPipe, DatePipe } from '../../utils';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
-import { not } from 'rxjs/internal-compatibility';
 
 describe('EventLogDetails', () => {
 
