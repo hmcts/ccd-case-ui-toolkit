@@ -52,7 +52,7 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 let FieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
 let FieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
@@ -269,8 +269,6 @@ describe('WriteCollectionFieldComponent', () => {
     let writeFields = de.queryAll($WRITE_FIELDS);
     expect(writeFields.length).toBe(VALUES.length - 1);
 
-    let field2 = writeFields[0].componentInstance;
-    expect(field2.caseField.value).toEqual(VALUES[1].value);
     expect(component.formArray.controls.length).toBe(1);
     expect(component.formArray.controls[0].value).toEqual(VALUES[1]);
   });

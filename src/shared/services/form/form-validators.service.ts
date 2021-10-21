@@ -24,10 +24,10 @@ export class FormValidatorsService {
         } else {
           validators.push(Validators.pattern(Constants.REGEX_WHITESPACES));
         }
-        if (caseField.field_type.min) {
+        if (caseField.field_type.min && (typeof caseField.field_type.min === 'number')) {
           validators.push(Validators.minLength(caseField.field_type.min));
         }
-        if (caseField.field_type.max) {
+        if (caseField.field_type.max && (typeof caseField.field_type.max === 'number')) {
           validators.push(Validators.maxLength(caseField.field_type.max));
         }
       }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { SortOrder } from './sort-order'
 import { CaseField } from '../../../domain/definition';

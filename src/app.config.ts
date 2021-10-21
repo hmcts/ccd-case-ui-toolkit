@@ -1,10 +1,29 @@
+export interface AccessManagementBasicViewMockModel {
+  active?: boolean;
+  basicFields?: {
+    caseNameHmctsInternal?: string,
+      caseManagementLocation?: {
+        baseLocation?: number
+      }
+  };
+  accessProcess?: string;
+}
+
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
+  getDocumentManagementUrlV2(): string {
+    return undefined;
+  }
+  getDocumentSecureMode(): boolean {
+    return undefined;
+  }
   abstract getRemoteDocumentManagementUrl(): string;
+  abstract getHrsUrl(): string;
+  abstract getRemoteHrsUrl(): string;
   abstract getAnnotationApiUrl(): string;
   abstract getPostcodeLookupUrl(): string;
   abstract getOAuth2ClientId(): string;
@@ -35,16 +54,29 @@ export abstract class AbstractAppConfig {
   getUserInfoApiUrl(): string {
     return undefined;
   }
+  getAccessManagementMode(): boolean {
+    return undefined;
+  }
+  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
+    return undefined;
+  }
+  getLocationRefApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
   api_url: string;
   case_data_url: string;
   document_management_url: string;
+  document_management_url_v2: string;
+  hrs_url: string;
+  document_management_secure_enabled: boolean;
   login_url: string;
   oauth2_client_id: string;
   postcode_lookup_url: string;
   remote_document_management_url: string;
+  remote_hrs_url: string;
   annotation_api_url: string;
   payments_url: string;
   pay_bulk_scan_url: string;
@@ -64,4 +96,16 @@ export class CaseEditorConfig {
   cache_time_out: number;
   work_allocation_api_url: string;
   user_info_api_url: string;
+  access_management_mode?: boolean;
+  access_management_basic_view_mock?: {
+    active?: boolean,
+    basicFields?: {
+      caseNameHmctsInternal?: string,
+      caseManagementLocation?: {
+        baseLocation?: number
+      }
+    },
+    accessProcess?: string
+  };
+  location_ref_api_url?: string;
 }

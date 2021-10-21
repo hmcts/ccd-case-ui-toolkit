@@ -23,11 +23,19 @@ export class CaseCreateConsumerComponent {
   summary: "Apply for a divorce"
 }`;
 
+  eventMessages = [];
+  eventMessageCounter= 0;
   submit(event: any): void {
+    this.eventMessageCounter++;
     console.log('CaseCreateConsumerComponent submit event=', event);
+    this.eventMessages.push(`${this.eventMessageCounter} CaseCreateConsumerComponent submit event=`);
   }
 
   cancel(event: any): void {
+    this.eventMessageCounter++;
+
     console.log('CaseCreateConsumerComponent cancel event=', event);
+    this.eventMessages.push(`${this.eventMessageCounter} CaseCreateConsumerComponent cancel event=`);
+
   }
 }

@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -18,6 +18,7 @@ import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { initDialog } from '../../helpers';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -76,7 +77,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   ) {}
 
   public ngOnInit(): void {
-    this.initDialog();
+    initDialog(this.dialogConfig);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
@@ -134,32 +135,56 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[]): void {
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl): void {
+    const group: AbstractControl = container || this.editForm.controls['data'];
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
           .forEach(casefield => {
-            const fieldElement = this.editForm.controls['data'].get(casefield.id);
+            const fieldElement = group.get(casefield.id);
             if (fieldElement) {
+              const label = casefield.label || 'Field';
+              let id = casefield.id;
+              if (fieldElement['component'] && fieldElement['component'].parent) {
+                id = `${fieldElement['component'].idPrefix}${id}`;
+              }
               if (fieldElement.hasError('required')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
-                fieldElement.markAsTouched();
+                this.validationErrors.push({id, message: `${label} is required`});
+                fieldElement.markAsDirty();
               } else if (fieldElement.hasError('pattern')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
-                fieldElement.markAsTouched();
+                this.validationErrors.push({id, message: `${label} is not valid`});
+                fieldElement.markAsDirty();
               } else if (fieldElement.hasError('minlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
-                fieldElement.markAsTouched();
+                this.validationErrors.push({id, message: `${label} is below the minimum length`});
+                fieldElement.markAsDirty();
               } else if (fieldElement.hasError('maxlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
-                fieldElement.markAsTouched();
+                this.validationErrors.push({id, message: `${label} exceeds the maximum length`});
+                fieldElement.markAsDirty();
+              } else if (fieldElement.invalid) {
+                if (casefield.isComplex()) {
+                  this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement);
+                } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
+                  const fieldArray = fieldElement as FormArray;
+                  fieldArray.controls.forEach((c: AbstractControl) => {
+                    this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'));
+                  });
+                } else {
+                  this.validationErrors.push({id, message: `Select or fill the required ${casefield.label} field`});
+                  fieldElement.markAsDirty();
+                }
               }
             }
-          })
+          });
     CaseEditPageComponent.scrollToTop();
   }
 
   public navigateToErrorElement(elementId: string): void {
-    document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'center'});
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+        htmlElement.focus();
+      }
+    }
   }
 
   public submit(): void {
@@ -187,7 +212,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   updateFormData(jsonData: CaseEventData): void {
     for (const caseFieldId of Object.keys(jsonData.data)) {
-      if (this.pageWithFieldExists(caseFieldId)) {
+      if (this.pageWithFieldExists(caseFieldId, this.currentPage.id)) {
         this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
         this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
       }
@@ -195,8 +220,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // we do the check, becasue the data comes from the external source
-  pageWithFieldExists(caseFieldId) {
-    return this.wizard.findWizardPage(caseFieldId);
+  pageWithFieldExists(caseFieldId: string, pageId: string) {
+    return this.wizard.findWizardPage(caseFieldId, pageId);
   }
 
   updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
@@ -263,37 +288,27 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  submitting(): boolean {
+  public submitting(): boolean {
     return this.isSubmitting;
   }
 
-  getCaseId(): string {
+  public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  getCancelText(): string {
+  public getCaseTitle(): string {
+    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
+      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+  }
+
+  public getCancelText(): string {
     return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
 
-  getTriggerText(): string {
+  private getTriggerText(): string {
     return this.eventTrigger && this.eventTrigger.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START
-  }
-
-  private initDialog() {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
   }
 
   private discard(): void {

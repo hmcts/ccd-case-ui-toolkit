@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DATE_LOCALE, MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule, } from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
 import { PaletteService } from './palette.service';
 import { ReadNumberFieldComponent } from './number/read-number-field.component';
@@ -11,12 +11,13 @@ import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { WriteDateContainerFieldComponent } from './date';
 import { FixedListModule } from './fixed-list/fixed-list.module';
 import { DynamicListModule } from './dynamic-list/dynamic-list.module';
+import { DynamicRadioListModule } from './dynamic-radio-list/dynamic-radio-list.module';
 import { YesNoModule } from './yes-no/yes-no.module';
 import { ComplexModule } from './complex/complex.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { PaletteUtilsModule } from './utils/utils.module';
@@ -61,6 +62,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     BaseFieldModule,
     FixedListModule,
     DynamicListModule,
+    DynamicRadioListModule,
     FixedRadioListModule,
     YesNoModule,
     ComplexModule,
@@ -145,6 +147,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
   ],
   exports: [
     BaseFieldModule,
+    LabelSubstitutorModule,
     PaletteUtilsModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,

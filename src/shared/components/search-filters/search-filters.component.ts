@@ -68,15 +68,14 @@ export class SearchFiltersComponent implements OnInit {
       this.onJurisdictionIdChange();
     }
 
-    if (this.autoApply === true) {
-      this.selected.formGroup = this.formGroup;
-      this.selected.page = 1;
-      this.selected.metadataFields = this.getMetadataFields();
-      this.onApply.emit({
-        selected: this.selected,
-        queryParams: this.getQueryParams()
-      });
-    }
+    this.selected.formGroup = this.formGroup;
+    this.selected.page = 1;
+    this.selected.metadataFields = this.getMetadataFields();
+    this.onApply.emit({
+      selected: this.selected,
+      queryParams: this.getQueryParams()
+    });
+
   }
 
   private getQueryParams() {

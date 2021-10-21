@@ -110,7 +110,6 @@ import { CaseHistoryModule } from './shared/components/case-history';
 
       LabelSubstitutorDirective,
       FocusElementDirective,
-
       PaginatePipe
     ]
 })

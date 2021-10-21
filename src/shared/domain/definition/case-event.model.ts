@@ -1,5 +1,6 @@
 import { EventCaseField } from './event-case-field.model';
 import { Orderable } from '../order';
+import { AccessControlList } from './access-control-list.model';
 
 export class CaseEvent implements Orderable {
   id: string;
@@ -9,4 +10,5 @@ export class CaseEvent implements Orderable {
   case_fields: EventCaseField[];
   description: string;
   order?: number;
+  acls?: AccessControlList[];
 }

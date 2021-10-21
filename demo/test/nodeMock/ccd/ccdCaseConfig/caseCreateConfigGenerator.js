@@ -31,9 +31,10 @@ const wizardPageTemplate = {
 
 class CCDCaseConfig extends CCDCaseField{
 
-    caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
+    
     constructor(id, name, description){
         super();
+        this.caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
         this.caseConfigTemplate.id = id;
         this.caseConfigTemplate.name = name;
         this.caseConfigTemplate.description = description;
@@ -162,6 +163,28 @@ class CCDCaseConfig extends CCDCaseField{
         this.setObjectProps(fieldConfig.field_type, fieldTypeprops);
         return this;
     }
+
+
+    setFixedListItems(fieldId, fieldListItems) {
+        const fieldStructure = fieldId.split(".");
+        let fieldConfig = this.getCaseFieldConfig(fieldStructure[0]);
+        for (let i = 1; i < fieldStructure.length; i++) {
+            if (fieldConfig.field_type.type === "Complex") {
+                for (let complexFieldElement of fieldConfig.field_type.complex_fields) {
+                    if (complexFieldElement.id === fieldStructure[i]) {
+                        fieldConfig = complexFieldElement;
+                        break;
+                    }
+                } 
+            } else if (fieldConfig.field_type.type === "Collection") {
+                fieldConfig = fieldConfig.field_type.collection_field_type;
+            }
+        }
+        fieldConfig.field_type.fixed_list_items = fieldListItems;
+
+        return this;
+    }
+
 
     checkPageAndFiedlSet(){
         if (!this.currentWizardPage) {

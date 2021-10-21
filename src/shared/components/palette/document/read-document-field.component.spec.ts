@@ -41,6 +41,7 @@ describe('ReadDocumentFieldComponent', () => {
       value: VALUE
     });
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
+    const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
     const DOCUMENT_CLICKABLE_HREF = 'javascript:void(0)';
 
     let fixture: ComponentFixture<ReadDocumentFieldComponent>;
@@ -51,9 +52,11 @@ describe('ReadDocumentFieldComponent', () => {
 
     beforeEach(() => {
       mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig',
-        ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+        ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl', 'getHrsUrl', 'getRemoteHrsUrl']);
       mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
       mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(VALUE.document_binary_url);
+      mockAppConfig.getHrsUrl.and.returnValue(GATEWAY_HRS_URL);
+      mockAppConfig.getRemoteHrsUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService',
         ['uploadFile', 'getMediaViewerInfo']);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
@@ -134,6 +137,7 @@ describe('ReadDocumentFieldComponent', () => {
       value: VALUE
     });
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
+    const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
 
     let fixture: ComponentFixture<ReadDocumentFieldComponent>;
     let component: ReadDocumentFieldComponent;
@@ -142,9 +146,13 @@ describe('ReadDocumentFieldComponent', () => {
     let mockCasesService: any;
 
     beforeEach(() => {
-      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', [
+        'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl', 'getHrsUrl', 'getRemoteHrsUrl'
+      ]);
       mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
       mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(VALUE.document_binary_url);
+      mockAppConfig.getHrsUrl.and.returnValue(GATEWAY_HRS_URL);
+      mockAppConfig.getRemoteHrsUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate']);
