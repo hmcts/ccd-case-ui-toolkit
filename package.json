@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.5.0-EUI-4458-staff-uploaded-documents",
+  "version": "4.5.1-EUI-4451-added-spinner",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
