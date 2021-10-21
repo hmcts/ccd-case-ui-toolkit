@@ -82,8 +82,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly caseNotifier: CaseNotifier,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly location: Location
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.initDialog();
@@ -225,8 +224,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       const regExp = new RegExp(CaseViewerComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseViewerComponent.EMPTY_SPACE);
-      matTab = this.tabGroup._tabs.find((x) =>
-        x.textLabel.replace(CaseViewerComponent.EMPTY_SPACE, '').toLowerCase() === hashValue.toLowerCase());
+      const pathDelimitted = hashValue.split('/');
+      const hearingDepected = pathDelimitted.length ? pathDelimitted[pathDelimitted.length - 1] : undefined;
+      const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLocaleLowerCase() === hearingDepected.toLocaleLowerCase());
+
       if (matTab && matTab.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
@@ -236,6 +237,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
+
     if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
       this.router.navigate([id], {relativeTo: this.route});
     } else if (id === 'hearings') {
