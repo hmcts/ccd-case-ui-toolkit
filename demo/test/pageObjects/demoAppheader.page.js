@@ -11,10 +11,13 @@ class AppHeader{
     }
 
     async clickHeader(header){
-        await browserWaits.waitForElement(this.headerContainer);
-        await element(by.xpath(`//li //a[text()='${header}']`)).click();
-        await browserWaits.waitForElement($(this.getCCDComponentForheader(header)));
-        await this.scrollToExampleComponent();
+        await browserWaits.retryWithActionCallback(async () => {
+            await browserWaits.waitForElement(this.headerContainer);
+            await element(by.xpath(`//li //a[text()='${header}']`)).click();
+            await browserWaits.waitForElement($(this.getCCDComponentForheader(header)));
+            await this.scrollToExampleComponent();
+        });
+        
     }
 
     async scrollToExampleComponent(){
