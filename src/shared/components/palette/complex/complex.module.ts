@@ -52,7 +52,7 @@ import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-v
     FieldsFilterPipe,
     CcdTabFieldsPipe,
     ReadFieldsFilterPipe,
-    CcdCYAPageLabelFilterPipe
+    CcdCYAPageLabelFilterPipe,
     CcdCollectionTableCaseFieldsFilterPipe,
     WriteComplexFieldComponent
   ]
