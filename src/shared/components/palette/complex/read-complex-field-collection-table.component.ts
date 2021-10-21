@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { SortOrder } from './sort-order'
+import { CaseField } from '../../../domain/definition';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'ccd-read-complex-field-collection-table',
@@ -17,6 +19,10 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public rows: any[] = [];
   public isHidden: boolean[] = [];
 
+  private static isSortAscending(column: any): boolean {
+    return !(column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
     if (this.caseField.display_context_parameter
@@ -24,7 +30,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
       let displayContextParameter = this.caseField.display_context_parameter.trim();
       let result: string = displayContextParameter.replace('#TABLE(', '');
-      this.columns = result.replace(')', '').split(',');
+      this.columns = result.replace(')', '').split(',').map((c: string) => c.trim());
 
       let labelsVertical: { [k: string]: any } = {};
       let labelsHorizontal: { [k: string]: any } = {};
@@ -36,45 +42,10 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
       this.columnsAllLabels = allLabels;
-
     }
   }
 
-  private populateHorizontalLabels(labelsHorizontal: { [p: string]: any },
-                                   allLabels: { [p: string]: any },
-                                   labelsVertical: { [p: string]: any }) {
-    for (let id of this.columns) {
-      labelsHorizontal[id.trim()] = allLabels[id.trim()];
-      labelsHorizontal[id.trim()].sortOrder = SortOrder.UNSORTED;
-      delete labelsVertical[id.trim()];
-    }
-  }
-
-  private populateLabels(labelsVertical: { [p: string]: any }, allLabels: { [p: string]: any }) {
-    for (let obj of this.caseField.field_type.complex_fields) {
-      if (obj.field_type.type === 'FixedList' ||
-        obj.field_type.type === 'MultiSelectList' ||
-        obj.field_type.type === 'FixedRadioList') {
-        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type, caseField: obj};
-        allLabels[obj.id] = {label: obj.label, type: obj.field_type};
-      } else if (obj.isComplex()) {
-        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
-        allLabels[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
-      } else {
-        labelsVertical[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
-        allLabels[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
-      }
-    }
-  }
-
-  private populateCaseFieldValuesIntoRows() {
-    for (let obj of this.caseField.value) {
-      this.rows.push(obj.value);
-      this.isHidden.push(true);
-    }
-  }
-
-  getImage(row) {
+  public getImage(row): string {
     if (this.isHidden[row]) {
       return 'img/accordion-plus.png';
     } else {
@@ -90,33 +61,29 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   /**
    * Needs to be called before 'ccdFieldsFilter' pipe is used, as it needs a caseField value.
    */
-  addCaseFieldValue(field, value) {
+  public addCaseFieldValue(field, value): boolean {
     field.value = value;
-    return true;
+    return true
   }
 
-  isNotBlank(value: string) {
-    return value !== null && value !== '';
-  }
-
-  addCaseReferenceValue(field, value: any) {
-    field.value = { CaseReference: value};
+  public addCaseReferenceValue(field, value: any): any {
+    field.value = {CaseReference: value};
     return field;
   }
 
-  private isVerticleDataNotEmpty(row) {
-    let result = false
-    for (let key in this.columnsVerticalLabel) {
-      if (this.rows[row][key]) {
-        result = true;
-      }
-    }
-    return result;
+  toCaseField(id: string, label: string, field_type: any, value: any): CaseField {
+    return plainToClassFromExist(new CaseField(), {
+      id,
+      label,
+      display_context: 'READONLY',
+      value,
+      field_type
+    });
   }
 
   keepOriginalOrder = (a, b) => a.key;
 
-  sortRowsByColumns(column) {
+  public sortRowsByColumns(column): void {
     let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
       || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
 
@@ -154,15 +121,52 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     }
   }
 
-  private isSortAscending(column: any): boolean {
-    return !(column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
+  public sortWidget(column: any): string {
+    return ReadComplexFieldCollectionTableComponent.isSortAscending(column) ? '&#9660;' : '&#9650;';
   }
 
-  sortWidget(column: any) {
-    return this.isSortAscending(column) ? '&#9660;' : '&#9650;';
+  private populateHorizontalLabels(labelsHorizontal: { [p: string]: any },
+                                   allLabels: { [p: string]: any },
+                                   labelsVertical: { [p: string]: any }): void {
+    for (let id of this.columns) {
+      const trimmedId = id.trim();
+      labelsHorizontal[trimmedId] = allLabels[trimmedId];
+      labelsHorizontal[trimmedId].sortOrder = SortOrder.UNSORTED;
+      delete labelsVertical[trimmedId];
+    }
   }
 
-  trackByIndex(index: number, obj: any): any {
-    return index;
+  private populateLabels(labelsVertical: { [p: string]: any }, allLabels: { [p: string]: any }): void {
+    for (let obj of this.caseField.field_type.complex_fields) {
+      if (obj.field_type.type === 'FixedList' ||
+        obj.field_type.type === 'MultiSelectList' ||
+        obj.field_type.type === 'FixedRadioList') {
+        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type, caseField: obj};
+        allLabels[obj.id] = {label: obj.label, type: obj.field_type};
+      } else if (obj.isComplex()) {
+        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
+        allLabels[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
+      } else {
+        labelsVertical[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
+        allLabels[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
+      }
+    }
+  }
+
+  private populateCaseFieldValuesIntoRows(): void {
+    for (let obj of this.caseField.value) {
+      this.rows.push(obj.value);
+      this.isHidden.push(true);
+    }
+  }
+
+  private isVerticleDataNotEmpty(row): boolean {
+    let result = false
+    for (let key in this.columnsVerticalLabel) {
+      if (this.rows[row][key]) {
+        result = true;
+      }
+    }
+    return result;
   }
 }
