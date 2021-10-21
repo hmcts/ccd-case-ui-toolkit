@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
-import { DebugElement } from '@angular/core';
+import { DebugElement, Directive, Input } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { By } from '@angular/platform-browser';
 import { FieldsFilterPipe } from './fields-filter.pipe';
@@ -13,6 +13,14 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
+
+@Directive({
+  selector: '[ccdConditionalShow]'
+})
+export class StubConditionalShowDirective {
+  @Input() caseField: CaseField;
+  @Input() contextFields: CaseField[] = [];
+}
 
 describe('ReadComplexFieldTableComponent', () => {
 
@@ -149,6 +157,7 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
+            StubConditionalShowDirective,
 
             // Mock
             FieldReadComponent,
@@ -340,6 +349,7 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
+            StubConditionalShowDirective,
 
             // Mock
             FieldReadComponent,
