@@ -1,4 +1,4 @@
-import { RoleCategory } from "../../../domain";
+import { RoleCategory } from '../../../domain';
 
 export class CaseAccessUtils {
     // User role mapping
@@ -21,31 +21,34 @@ export class CaseAccessUtils {
     public getMappedRoleCategory(roles: string[], roleCategories: string[]): RoleCategory {
 
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
-    
+
         if (this.roleOrCategoryExists(CaseAccessUtils.JUDGE_ROLE, CaseAccessUtils.JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.JUDGE_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.PROFESSIONAL_ROLE, CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+        } else if (this.roleOrCategoryExists(CaseAccessUtils.PROFESSIONAL_ROLE,
+                    CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.CITIZEN_ROLE, CaseAccessUtils.CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+        } else if (this.roleOrCategoryExists(CaseAccessUtils.CITIZEN_ROLE,
+                    CaseAccessUtils.CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.CITIZEN_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.ADMIN_ROLE, CaseAccessUtils.ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+        } else if (this.roleOrCategoryExists(CaseAccessUtils.ADMIN_ROLE,
+                    CaseAccessUtils.ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.ADMIN_ROLE_CATEGORY;
         } else {
             return CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY;
         }
-    
+
     }
-        
+
     public roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
         const categoryExists = roleCategories.indexOf(roleCategory) > -1;
         const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
         return categoryExists ? categoryExists : keywordExists;
     }
-    
+
     public getAMRoleName(accessType: string, aMRole: RoleCategory): string {
-    
-        let roleName: string = '';
-    
+
+        let roleName = '';
+
         switch (aMRole) {
             case CaseAccessUtils.JUDGE_ROLE_CATEGORY:
             roleName = `${accessType}-access-${CaseAccessUtils.JUDGE_ROLE_NAME}`;
@@ -63,8 +66,8 @@ export class CaseAccessUtils {
             roleName = `${accessType}-access-${CaseAccessUtils.LEGAL_OPERATIONS_ROLE_NAME}`;
             break;
         }
-    
+
         return roleName;
-    
+
     }
 }

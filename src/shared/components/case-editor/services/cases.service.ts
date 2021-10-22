@@ -406,7 +406,7 @@ export class CasesService {
         roleCategory: roleCategory,
         grantType: 'CHALLENGED',
         beginTime: new Date(),
-        endTime: new Date(new Date().setUTCHours(23,59,59,999)),
+        endTime: new Date(new Date().setUTCHours(23, 59, 59, 999)),
         attributes: {
           caseId: caseId
         },
@@ -414,7 +414,7 @@ export class CasesService {
           userId: userInfo.id,
           time: new Date(),
           comment: JSON.stringify(car)
-        } 
+        }
       ]
       }]
     };

@@ -1,4 +1,4 @@
-import { CaseAccessUtils } from ".";
+import { CaseAccessUtils } from '.';
 
 describe('CaseAccessUtils', () => {
     const camUtils = new CaseAccessUtils();
