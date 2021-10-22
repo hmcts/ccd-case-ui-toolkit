@@ -226,10 +226,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
       hashValue = hashValue.replace(regExp, CaseViewerComponent.EMPTY_SPACE);
       const pathDelimitted = hashValue.split('/');
       const hearingDepected = pathDelimitted.length ? pathDelimitted[pathDelimitted.length - 1] : undefined;
-      const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLocaleLowerCase() === hearingDepected.toLocaleLowerCase());
 
-      if (matTab && matTab.position) {
-        this.tabGroup.selectedIndex = matTab.position;
+      if (hearingDepected) {
+        const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLocaleLowerCase() === hearingDepected.toLocaleLowerCase());
+
+        if (matTab && matTab.position) {
+          this.tabGroup.selectedIndex = matTab.position;
+        }
       }
     }
   }
