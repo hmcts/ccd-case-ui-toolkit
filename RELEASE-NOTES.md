@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 4.3.6-hotfix-EUI-4404
+**EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 
 ### Version 4.3.2-rc3
 **EUI-4430** Case reference field regression bugs
