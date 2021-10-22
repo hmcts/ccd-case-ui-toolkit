@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
-import { ConditionalShowFormDirective } from '../conditional-show-form.directive';
+import { ConditionalShowDirective } from '../conditional-show.directive';
 
 @Injectable()
 export class ConditionalShowRegistrarService {
-  registeredDirectives: ConditionalShowFormDirective[] = [];
+  registeredDirectives = [];
 
-  register(newDirective: ConditionalShowFormDirective): void {
-      // console.log('[', this.registeredDirectives.length, ']adding new directive', newDirective.caseField.id);
+  register(newDirective: ConditionalShowDirective) {
       this.registeredDirectives.push(newDirective);
   }
 
-  reset(): void {
+  refresh() {
+    this.registeredDirectives.forEach(dir => {
+      dir.refreshVisibility();
+    });
+  }
+
+  reset() {
     this.registeredDirectives = [];
   }
 }
