@@ -29,14 +29,11 @@ describe('CaseSpecificAccessRequestComponent', () => {
   let router: Router;
 
   beforeEach(async(() => {
-    casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
-    casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
       imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
       declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent ],
       providers: [
         FormBuilder,
-        { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
