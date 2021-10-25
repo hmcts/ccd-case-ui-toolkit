@@ -27,6 +27,7 @@ import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
+import { CaseSpecificAccessRequestComponent } from './case-specific-access-request/case-specific-access-request.component';
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseFullAccessViewComponent } from './case-full-access-view/case-full-access-view.component';
 import { CaseViewComponent } from './case-view';
@@ -65,6 +66,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseViewComponent,
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
+    CaseSpecificAccessRequestComponent,
     ErrorMessageComponent,
     CaseChallengedAccessSuccessComponent
   ],

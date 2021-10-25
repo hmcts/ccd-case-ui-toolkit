@@ -8,3 +8,4 @@ export * from './requested-role.model';
 export * from './role-request.model';
 export * from './role-assignment-response.model';
 export * from './challenged-access-request.model';
+export * from './specific-access-request.model';

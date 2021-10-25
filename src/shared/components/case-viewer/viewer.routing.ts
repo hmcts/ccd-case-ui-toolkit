@@ -4,6 +4,8 @@ import { CaseHistoryComponent } from '../case-history';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
+import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
+import { CaseSpecificAccessSuccessComponent } from './case-specific-access-success';
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
@@ -43,6 +45,19 @@ export const viewerRouting: Routes = [
         data: {
           title: 'Challenged Access Success'
         }
+      }
+    ]
+  },
+  {
+    path: 'specific-access-request',
+    children: [
+      {
+        path: '',
+        component: CaseSpecificAccessRequestComponent,
+        data: {
+          title: 'Request Specific Access'
+        },
+        pathMatch: 'full'
       }
     ]
   }
