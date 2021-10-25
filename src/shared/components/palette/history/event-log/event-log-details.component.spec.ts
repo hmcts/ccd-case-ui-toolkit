@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { DatePipe, DashPipe } from '../../utils';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { not } from 'rxjs/internal-compatibility';
 
 describe('EventLogDetails', () => {
 
@@ -63,6 +64,20 @@ describe('EventLogDetails', () => {
           .trim();
         expect(actualLabel).toBe(label);
         expect(actualValue).toBe(value);
+      },
+      toNotEqual: (label: string, value: string) => {
+        let actualLabel = row
+          .query(By.css('th'))
+          .nativeElement
+          .textContent
+          .trim();
+        let actualValue = row
+          .query(By.css('td'))
+          .nativeElement
+          .textContent
+          .trim();
+        expect(actualLabel).toBe(label);
+        expect(actualValue).not.toBe(value);
       }
     };
   };

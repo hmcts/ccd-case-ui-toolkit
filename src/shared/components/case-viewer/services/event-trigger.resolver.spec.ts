@@ -2,8 +2,11 @@ import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { CaseResolver } from './case.resolver';
-import { CaseEventTrigger, HttpError, CaseView } from '../../../domain';
+import { CaseEventTrigger, HttpError, CaseView, Profile } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
+import { HttpService, ProfileNotifier, ProfileService } from '../../../services';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('EventTriggerResolver', () => {
 
@@ -33,15 +36,54 @@ describe('EventTriggerResolver', () => {
   let route: any;
 
   let router: any;
+  let profileService: any;
+  let profileNotifier: any;
+  let appConfig: any;
+  let httpService: any;
+  const MOCK_PROFILE: Profile = createAProfile();
+  const API_URL = 'https://data.ccd.reform';
+  let FUNC = () => false;
+  let PROFILE: Profile = {
+    user: {
+      idam: {
+        id: 'user1',
+      email: 'test@mail.com',
+      forename: 'first',
+      surname: 'last',
+      roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+      }
+    },
+    channels: [],
+    jurisdictions: [],
+    default: {
+      workbasket: {
+        case_type_id: '',
+        jurisdiction_id: '',
+        state_id: ''
+      }
+    },
+    'isSolicitor': FUNC,
+    'isCourtAdmin': FUNC
+  };
+
+  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
     alertService = createSpyObj('alertService', ['error']);
     orderService = createSpyObj('orderService', ['sort']);
+    profileService = createSpyObj<ProfileService>('profileService', ['get']);
+    profileNotifier = new ProfileNotifier();
 
     router = createSpyObj('router', ['navigate']);
 
-    eventTriggerResolver = new EventTriggerResolver(casesService, alertService);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
+    appConfig.getApiUrl.and.returnValue(API_URL);
+    appConfig.getCaseDataUrl.and.returnValue(API_URL);
+    httpService = createSpyObj<HttpService>('httpService', ['get']);
+    httpService.get.and.returnValue(Observable.of(MOCK_PROFILE));
+
+    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier);
 
     route = {
       firstChild: {
@@ -80,12 +122,14 @@ describe('EventTriggerResolver', () => {
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     expect(eventTriggerResolver['cachedEventTrigger']).toBeUndefined();
 
+    profileService.get.and.returnValue(PROFILE_OBS);
     eventTriggerResolver
       .resolve(route)
       .then(triggerData => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
+    expect(profileService.get).toHaveBeenCalledWith();
     expect(casesService.getEventTrigger).toHaveBeenCalledWith(undefined, EVENT_TRIGGER_ID, CASE_ID, IGNORE_WARNING_VALUE);
     expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_EVENT_ID);
     expect(route.paramMap.get).toHaveBeenCalledTimes(1);
@@ -105,13 +149,14 @@ describe('EventTriggerResolver', () => {
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     expect(eventTriggerResolver['cachedEventTrigger']).toBeUndefined();
-
+    profileService.get.and.returnValue(PROFILE_OBS);
     eventTriggerResolver
       .resolve(route)
       .then(triggerData => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
+    expect(profileService.get).toHaveBeenCalledWith();
     expect(casesService.getEventTrigger).toHaveBeenCalled();
     expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_EVENT_ID);
     expect(route.paramMap.get).toHaveBeenCalledTimes(1);
@@ -131,19 +176,21 @@ describe('EventTriggerResolver', () => {
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     eventTriggerResolver['cachedEventTrigger'] = EVENT_TRIGGER;
-
+    profileService.get.and.returnValue(PROFILE_OBS);
     eventTriggerResolver
       .resolve(route)
       .then(triggerData => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
+    expect(profileService.get).not.toHaveBeenCalledWith();
     expect(casesService.getEventTrigger).not.toHaveBeenCalled();
     expect(eventTriggerResolver['cachedEventTrigger']).toBe(EVENT_TRIGGER);
   });
 
   it('should create error alert when event trigger cannot be retrieved', done => {
     casesService.getEventTrigger.and.returnValue(Observable.throw(ERROR));
+    profileService.get.and.returnValue(PROFILE_OBS);
 
     eventTriggerResolver
       .resolve(route)
@@ -154,5 +201,6 @@ describe('EventTriggerResolver', () => {
         expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
         done();
       });
+    expect(profileService.get).toHaveBeenCalledWith();
   });
 });

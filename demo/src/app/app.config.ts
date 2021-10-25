@@ -9,10 +9,12 @@ export class AppConfig extends AbstractAppConfig {
     'api_url': '/aggregated',
     'case_data_url': '/data',
     'document_management_url': '/documents',
+    'hrs_url': '/hearing-recordings',
     'login_url': '/login',
     'oauth2_client_id': 'ccd_gateway',
-    'postcode_lookup_url': '/addresses/?postcode=${postcode}',
+    'postcode_lookup_url': '/api/addresses?postcode=${postcode}',
     'remote_document_management_url': '/documents',
+    'remote_hrs_url': '/hearing-recordings',
     'annotation_api_url': '/em-anno',
     'payments_url': '/payments',
     'pay_bulk_scan_url': '/pay-bulkscan',
@@ -26,7 +28,11 @@ export class AppConfig extends AbstractAppConfig {
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
     'work_allocation_api_url': '/workallocation',
-    'user_info_api_url': '/user-info'
+    'user_info_api_url': '/user-info',
+    'document_management_url_v2': '/v2/health',
+    'document_management_secure_enabled':true,
+    'access_management_mode':true
+
   };
 
   constructor(private http: HttpClient) {
@@ -55,6 +61,14 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRemoteDocumentManagementUrl() {
     return this.config.remote_document_management_url;
+  }
+
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
   }
 
   public getAnnotationApiUrl() {
@@ -138,5 +152,13 @@ export class AppConfig extends AbstractAppConfig {
 
   public getUserInfoApiUrl(): string {
     return this.config.user_info_api_url;
+  }
+
+  public getRemotePrintServiceUrl(): string {
+    return this.config.print_service_url;
+  }
+
+  public getAccessManagementMode(): boolean {
+    return this.config.access_management_mode;
   }
 }
