@@ -5,14 +5,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
-import { ChallengedAccessRequest } from '../../../domain';
+import { SpecificAccessRequest } from '../../../domain';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request.component';
 import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './models';
 
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CaseChallengedAccessRequestComponent', () => {
+describe('CaseSpecificAccessRequestComponent', () => {
   let component: CaseSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseSpecificAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
@@ -29,8 +29,8 @@ describe('CaseChallengedAccessRequestComponent', () => {
   let router: Router;
 
   beforeEach(async(() => {
-    casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
-    casesService.createChallengedAccessRequest.and.returnValue(of(true));
+    casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
+    casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
       imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
       declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent ],
@@ -51,8 +51,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     spyOn(router, 'navigate');
   });
 
-  it('should create component and show the \"challenged access\" info message banner', () => {
-    expect(component).toBeDefined();
+  it('should create component and show the \"specific access\" info message banner', () => {
     const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.hmcts-banner');
     expect(infoBannerElement.textContent).toContain('This case requires specific access.');
     const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
@@ -90,77 +89,5 @@ describe('CaseChallengedAccessRequestComponent', () => {
     spyOn(window.history, 'go');
     cancelLink.click();
     expect(window.history.go).toHaveBeenCalledWith(-2);
-  });
-
-  it('should make a Challenged Access request with correct parameters for the first reason, and navigate to the success page', () => {
-    fixture.detectChanges();
-    const caseReference = fixture.debugElement.nativeElement.querySelector('#case-reference');
-    caseReference.value = '1111222233334444';
-    caseReference.dispatchEvent(new Event('input'));
-    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-    submitButton.click();
-    expect(component.formGroup.valid).toBe(true);
-    expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
-      {
-        reason: 0,
-        caseReference: '1111222233334444',
-        otherReason: null
-      } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
-  });
-
-  it('should make a Challenged Access request with correct parameters for the second reason, and navigate to the success page', () => {
-    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-1');
-    radioButton.click();
-    fixture.detectChanges();
-    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-    submitButton.click();
-    expect(component.formGroup.valid).toBe(true);
-    expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
-      {
-        reason: 1,
-        caseReference: null,
-        otherReason: null
-      } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
-  });
-
-  it('should make a Challenged Access request with correct parameters for the third reason, and navigate to the success page', () => {
-    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-2');
-    radioButton.click();
-    fixture.detectChanges();
-    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-    submitButton.click();
-    expect(component.formGroup.valid).toBe(true);
-    expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
-      {
-        reason: 2,
-        caseReference: null,
-        otherReason: null
-      } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
-  });
-
-  it('should make a Challenged Access request with correct parameters for the fourth reason, and navigate to the success page', () => {
-    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-3');
-    radioButton.click();
-    fixture.detectChanges();
-    const otherReason = fixture.debugElement.nativeElement.querySelector('#specific-reason');
-    otherReason.value = 'Test';
-    otherReason.dispatchEvent(new Event('input'));
-    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-    submitButton.click();
-    expect(component.formGroup.valid).toBe(true);
-    expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
-      {
-        reason: 3,
-        caseReference: null,
-        otherReason: 'Test'
-      } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
   });
 });

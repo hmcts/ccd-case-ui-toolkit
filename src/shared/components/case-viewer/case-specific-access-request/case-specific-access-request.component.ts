@@ -1,24 +1,22 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
-  Validators,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { ErrorMessage, SpecificAccessRequest } from "../../../domain";
-
-import { CasesService } from "../../case-editor";
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ErrorMessage, SpecificAccessRequest } from '../../../domain';
+import { CasesService } from '../../case-editor';
 import {
   SpecificAccessRequestErrors,
   SpecificAccessRequestPageText,
-} from "./models";
+} from './models';
 
 @Component({
-  selector: "ccd-case-specific-access-request",
-  templateUrl: "./case-specific-access-request.component.html",
+  selector: 'ccd-case-specific-access-request',
+  templateUrl: './case-specific-access-request.component.html',
 })
 export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public collapsed = false;
@@ -28,8 +26,8 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
-  private readonly genericError = "There is a problem";
-  private readonly specificReasonControlName = "specificReason";
+  private readonly genericError = 'There is a problem';
+  private readonly specificReasonControlName = 'specificReason';
   public $roleAssignmentResponseSubscription: Subscription;
 
   constructor(
@@ -49,7 +47,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
     this.formGroup.addControl(
       this.specificReasonControlName,
-      new FormControl("", {
+      new FormControl('', {
         validators: [
           (control: AbstractControl): { [key: string]: boolean } | null => {
             if (this.inputEmpty(control)) {
@@ -58,7 +56,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
             return null;
           },
         ],
-        updateOn: "submit",
+        updateOn: 'submit',
       })
     );
   }
@@ -72,7 +70,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     // Clear the "specific reason" fields manually. This prevents any previous value being retained by
     // the field's FormControl when the field itself is removed from the DOM by *ngIf. (If it is subsequently added back
     // to the DOM by *ngIf, it will appear empty but the associated FormControl still has the previous value.)
-    this.formGroup.get(this.specificReasonControlName).setValue("");
+    this.formGroup.get(this.specificReasonControlName).setValue('');
   }
 
   public onSubmit(): void {
@@ -81,7 +79,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
       this.errorMessage = {
         title: this.genericError,
         description: SpecificAccessRequestErrors.NO_REASON,
-        fieldId: "specific-reason",
+        fieldId: 'specific-reason',
       };
     }
 
@@ -100,7 +98,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
           (_response) => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2!
-            this.router.navigate(["success"], { relativeTo: this.route });
+            this.router.navigate(['success'], { relativeTo: this.route });
           },
           (_error) => {
             // Navigate to error page
@@ -120,4 +118,3 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     }
   }
 }
-

@@ -431,11 +431,8 @@ export class CasesService {
         } as RequestedRoleNote]
       } as RequestedRole]
     };
-
     return of(roleAssignmentResponse);
   }
-
-  
   public createSpecificAccessRequest(caseId: string, car: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
     // Dummy implementation for now; the real one will make a call to the Node layer, which will call the appropriate Role
     // Assignment API endpoint
