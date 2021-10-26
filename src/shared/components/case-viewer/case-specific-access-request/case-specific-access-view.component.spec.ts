@@ -2,20 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
-import { SpecificAccessRequest } from '../../../domain';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request.component';
 import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './models';
 
-import createSpyObj = jasmine.createSpyObj;
-
 describe('CaseSpecificAccessRequestComponent', () => {
   let component: CaseSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseSpecificAccessRequestComponent>;
-  let casesService: jasmine.SpyObj<CasesService>;
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {

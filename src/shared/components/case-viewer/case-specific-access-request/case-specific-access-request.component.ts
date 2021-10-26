@@ -7,8 +7,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ErrorMessage, SpecificAccessRequest } from '../../../domain';
-import { CasesService } from '../../case-editor';
+import { ErrorMessage } from '../../../domain';
 import {
   SpecificAccessRequestErrors,
   SpecificAccessRequestPageText,
