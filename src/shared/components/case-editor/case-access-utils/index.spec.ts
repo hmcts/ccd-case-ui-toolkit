@@ -1,6 +1,6 @@
 import { CaseAccessUtils } from '.';
 
-fdescribe('CaseAccessUtils', () => {
+describe('CaseAccessUtils', () => {
     const camUtils = new CaseAccessUtils();
 
     describe('getMappedRoleCategory', () => {
