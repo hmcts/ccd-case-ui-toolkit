@@ -1,6 +1,6 @@
 import { CaseAccessUtils } from '.';
 
-describe('CaseAccessUtils', () => {
+fdescribe('CaseAccessUtils', () => {
     const camUtils = new CaseAccessUtils();
 
     describe('getMappedRoleCategory', () => {
@@ -35,9 +35,9 @@ describe('CaseAccessUtils', () => {
             expect(response).toEqual('LEGAL_OPERATIONS');
         });
 
-        it('should return ADMIN as default', () => {
+        it('should return ADMIN as response', () => {
             const roles = [
-                'admin',
+                'caseworker-admin',
                 'role22'
             ];
             const roleCategories = [];
@@ -50,17 +50,17 @@ describe('CaseAccessUtils', () => {
 
         it('should return true when category exists', () => {
             const response = camUtils.roleOrCategoryExists('dummy', 'JUDICIAL', [], ['JUDICIAL']);
-            expect(response).toEqual(true);
+            expect(response).toBeTruthy();
         });
 
         it('should return true when role exists', () => {
             const response = camUtils.roleOrCategoryExists('solicitor', 'dummy', ['solicitor'], ['JUDICIAL']);
-            expect(response).toEqual(true);
+            expect(response).toBeTruthy();
         });
 
         it('should return false', () => {
             const response = camUtils.roleOrCategoryExists('dummy', 'JUDICIAL', [], []);
-            expect(response).toEqual(false);
+            expect(response).toBeFalsy();
         });
     });
 
