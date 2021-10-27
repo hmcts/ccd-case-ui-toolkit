@@ -40,8 +40,8 @@ export class CaseAccessUtils {
     }
 
     public roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
-        const categoryExists = !!(roleCategories.indexOf(roleCategory) > -1);
-        const keywordExists = !!(roleKeywords.indexOf(roleKeyword) > -1);
+        const categoryExists = roleCategories.indexOf(roleCategory) > -1;
+        const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
         return categoryExists ? categoryExists : keywordExists;
     }
 
