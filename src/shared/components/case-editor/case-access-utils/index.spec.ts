@@ -1,7 +1,7 @@
 import { CaseAccessUtils } from '.';
 
 describe('CaseAccessUtils', () => {
-    const camUtils = new CaseAccessUtils();
+    const camUtils: CaseAccessUtils = new CaseAccessUtils();
 
     describe('getMappedRoleCategory', () => {
 
