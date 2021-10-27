@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.5.0-EUI-4458-staff-uploaded-documents",
+  "version": "3.1.5-complex-type-showing-in-tab-r2",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
