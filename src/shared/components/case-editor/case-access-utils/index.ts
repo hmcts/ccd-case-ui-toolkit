@@ -51,20 +51,20 @@ export class CaseAccessUtils {
 
         switch (aMRole) {
             case CaseAccessUtils.JUDGE_ROLE_CATEGORY:
-            roleName = `${accessType}-access-${CaseAccessUtils.JUDGE_ROLE_NAME}`;
-            break;
+                roleName = `${accessType}-access-${CaseAccessUtils.JUDGE_ROLE_NAME}`;
+                break;
             case CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY:
-            roleName = `${accessType}-access-${CaseAccessUtils.PROFESSIONAL_ROLE_NAME}`;
-            break;
+                roleName = `${accessType}-access-${CaseAccessUtils.PROFESSIONAL_ROLE_NAME}`;
+                break;
             case CaseAccessUtils.CITIZEN_ROLE_CATEGORY:
-            roleName = `${accessType}-access-${CaseAccessUtils.CITIZEN_ROLE_NAME}`;
-            break;
+                roleName = `${accessType}-access-${CaseAccessUtils.CITIZEN_ROLE_NAME}`;
+                break;
             case CaseAccessUtils.ADMIN_ROLE_CATEGORY:
-            roleName = `${accessType}-access-${CaseAccessUtils.ADMIN_ROLE_NAME}`;
-            break;
+                roleName = `${accessType}-access-${CaseAccessUtils.ADMIN_ROLE_NAME}`;
+                break;
             default:
-            roleName = `${accessType}-access-${CaseAccessUtils.LEGAL_OPERATIONS_ROLE_NAME}`;
-            break;
+                roleName = `${accessType}-access-${CaseAccessUtils.LEGAL_OPERATIONS_ROLE_NAME}`;
+                break;
         }
 
         return roleName;

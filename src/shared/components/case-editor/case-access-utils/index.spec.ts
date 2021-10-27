@@ -34,6 +34,16 @@ describe('CaseAccessUtils', () => {
             const response = camUtils.getMappedRoleCategory(roles, roleCategories);
             expect(response).toEqual('LEGAL_OPERATIONS');
         });
+
+        it('should return ADMIN as default', () => {
+            const roles = [
+                'admin',
+                'role22'
+            ];
+            const roleCategories = [];
+            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
+            expect(response).toEqual('ADMIN');
+        });
     });
 
     describe('roleOrCategoryExists', () => {
