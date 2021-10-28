@@ -212,7 +212,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   updateFormData(jsonData: CaseEventData): void {
     for (const caseFieldId of Object.keys(jsonData.data)) {
-      if (this.pageWithFieldExists(caseFieldId, this.currentPage.id)) {
+      if (this.pageWithFieldExists(caseFieldId)) {
         this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
         this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
       }
@@ -220,8 +220,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // we do the check, becasue the data comes from the external source
-  pageWithFieldExists(caseFieldId: string, pageId: string) {
-    return this.wizard.findWizardPage(caseFieldId, pageId);
+  pageWithFieldExists(caseFieldId: string) {
+    return this.wizard.findWizardPage(caseFieldId);
   }
 
   updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
