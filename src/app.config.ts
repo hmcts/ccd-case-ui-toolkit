@@ -63,6 +63,9 @@ export abstract class AbstractAppConfig {
   getLocationRefApiUrl(): string {
     return undefined;
   }
+  getCamRoleAssignmentsApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
@@ -108,4 +111,5 @@ export class CaseEditorConfig {
     accessProcess?: string
   };
   location_ref_api_url?: string;
+  cam_role_assignments_api_url?: string;
 }
