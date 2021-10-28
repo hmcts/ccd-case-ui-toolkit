@@ -18,7 +18,8 @@ import {
   FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
-  RoleRequestPayload
+  RoleRequestPayload,
+  SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
@@ -420,6 +421,48 @@ export class CasesService {
     };
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
+  }
+
+  public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
+    // Assignment API endpoint
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
+    const camUtils = new CaseAccessUtils();
+    let userInfo: UserInfo;
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+
+    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = camUtils.getAMRoleName('specific', roleCategory);
+
+    const payload: RoleRequestPayload = {
+      roleRequest: {
+        assignerId: null
+      },
+      requestedRoles: [{
+        actorIdType: 'IDAM',
+        actorId: userInfo.id,
+        roleType: 'CASE',
+        roleName: roleName,
+        classification: 'PUBLIC',
+        roleCategory: roleCategory,
+        grantType: 'SPECIFIC',
+        beginTime: null,
+        endTime: null,
+        attributes: {
+          caseId: caseId
+        },
+        notes: [{
+          userId: userInfo.id,
+          time: new Date(),
+          comment: JSON.stringify(sar)
+        }
+      ]
+      }]
+    };
+
+    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
   }
 
 }
