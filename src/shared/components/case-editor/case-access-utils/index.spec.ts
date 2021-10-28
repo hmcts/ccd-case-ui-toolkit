@@ -44,6 +44,16 @@ describe('CaseAccessUtils', () => {
             const response = camUtils.getMappedRoleCategory(roles, roleCategories);
             expect(response).toEqual('ADMIN');
         });
+
+        it('should return CITIZEN as response', () => {
+            const roles = [
+                'caseworker-citizen',
+                'role22'
+            ];
+            const roleCategories = [];
+            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
+            expect(response).toEqual('CITIZEN');
+        });
     });
 
     describe('roleOrCategoryExists', () => {
@@ -66,9 +76,29 @@ describe('CaseAccessUtils', () => {
 
     describe('getAMRoleName', () => {
 
-        it('should return a role name', () => {
+        it('should return judicial role name', () => {
             const response = camUtils.getAMRoleName('dummy', 'JUDICIAL');
             expect(response).toEqual('dummy-access-judicial');
+        });
+
+        it('should return citizen role name', () => {
+            const response = camUtils.getAMRoleName('dummy', 'CITIZEN');
+            expect(response).toEqual('dummy-access-citizen');
+        });
+
+        it('should return professional role name', () => {
+            const response = camUtils.getAMRoleName('dummy', 'PROFESSIONAL');
+            expect(response).toEqual('dummy-access-professional');
+        });
+
+        it('should return legal-operations role name', () => {
+            const response = camUtils.getAMRoleName('dummy', 'LEGAL_OPERATIONS');
+            expect(response).toEqual('dummy-access-legal-operations');
+        });
+
+        it('should return admin role name', () => {
+            const response = camUtils.getAMRoleName('dummy', 'ADMIN');
+            expect(response).toEqual('dummy-access-admin');
         });
     });
 
