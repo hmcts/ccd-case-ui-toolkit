@@ -8,7 +8,7 @@ export class LoadingService implements HasLoadingState {
   private loading = new BehaviorSubject<boolean>(false);
 
   public get isLoading(): Observable<boolean> {
-    return this.loading.asObservable().pipe(distinctUntilChanged());
+    return this.loading.pipe(distinctUntilChanged());
   }
 
   public register(): string {

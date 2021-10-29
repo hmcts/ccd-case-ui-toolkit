@@ -1,9 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { ShowCondition } from '../../../directives';
 import { CaseField } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
+import { plainToClassFromExist } from 'class-transformer';
 
 @Pipe({
   name: 'ccdReadFieldsFilter'
@@ -18,7 +19,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   ];
 
   private static readonly NESTED_TYPES = {
-    'Complex': ReadFieldsFilterPipe.isValidComplex
+    'Complex': ReadFieldsFilterPipe.isValidComplex,
+    'Collection': ReadFieldsFilterPipe.isValidCollection
   };
 
   /**
@@ -34,10 +36,27 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     let value = ReadFieldsFilterPipe.getValue(field, values);
 
     let hasChildrenWithValue = type.complex_fields.find(f => {
-      return ReadFieldsFilterPipe.keepField(f, value);
+      const willKeep = ReadFieldsFilterPipe.keepField(f, value, true);
+      return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, value).hidden !== true;
     });
 
     return !!hasChildrenWithValue;
+  }
+
+  private static isValidCollection(field: CaseField, values?: object): boolean {
+    const isNotEmpty = Array.isArray(field.value) && field.value.length > 0;
+    if (isNotEmpty && field.field_type.collection_field_type.type === 'Complex') {
+      return !!field.value.find(item => {
+        const complexField = plainToClassFromExist(new CaseField(), {
+          id: field.field_type.collection_field_type.id,
+          field_type: field.field_type.collection_field_type,
+          value: item.value,
+          label: null,
+        });
+        return ReadFieldsFilterPipe.isValidComplex(complexField);
+      });
+    }
+    return isNotEmpty;
   }
 
   private static isEmpty(value: any): boolean {
@@ -54,9 +73,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
             && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
   }
 
-  private static keepField(field: CaseField, value?: object): boolean {
+  private static keepField(field: CaseField, value?: object, ignoreLabels = false): boolean {
     // We shouldn't ditch labels.
-    if (field.field_type.type === 'Label' && (field.label || '').length > 0) {
+    if (!ignoreLabels && field.field_type.type === 'Label' && (field.label || '').length > 0) {
       return true;
     }
     // We also shouldn't ditch CasePaymentHistoryViewer fields.
@@ -109,7 +128,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    */
   transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,
-    setupHidden = false, formGroup?: FormGroup, path?: string): CaseField[] {
+    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }

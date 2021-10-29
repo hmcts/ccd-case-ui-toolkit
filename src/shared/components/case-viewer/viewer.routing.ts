@@ -27,7 +27,7 @@ export const viewerRouting: Routes = [
     component: CaseHistoryComponent,
   },
   {
-    path: 'access-request',
+    path: 'challenged-access-request',
     children: [
       {
         path: '',

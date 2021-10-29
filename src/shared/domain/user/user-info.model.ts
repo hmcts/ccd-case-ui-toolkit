@@ -4,5 +4,6 @@ export interface UserInfo {
   surname: string,
   email: string,
   active: boolean,
-  roles: string[]
+  roles: string[],
+  roleCategories: string[]
 }
