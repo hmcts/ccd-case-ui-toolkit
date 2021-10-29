@@ -1,15 +1,15 @@
 .spinner-container {
     position: fixed;
-    top: 32%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    background: rgba(255, 255, 255, 0.5);
     z-index: 99;
-
     .spinner-inner-container {
-        padding: 72px;
-        width: 560px;
-        background-color: #fff;
-
         p {
             text-align: center;
         }
@@ -33,4 +33,4 @@
             100% { transform: rotate(360deg); }
         }
     }
-}
+}    
