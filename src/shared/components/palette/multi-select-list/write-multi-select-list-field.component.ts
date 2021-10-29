@@ -22,6 +22,14 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
       });
     }
     this.registerControl(this.checkboxes, true);
+    if (this.caseField.display_context && this.caseField.display_context === 'MANDATORY' && this.caseField.field_type
+          && this.caseField.field_type.type === 'MultiSelectList' && this.caseField.field_type.fixed_list_items.length > 0
+            && this.checkboxes.controls.length === 0) {
+              if (this.caseField.field_type.fixed_list_items[0].code) {
+                this.checkboxes.push(new FormControl(this.caseField.field_type.fixed_list_items[0].code));
+                this.checkboxes.removeAt(0);
+              }
+    }
   }
 
   onCheckChange(event) {
