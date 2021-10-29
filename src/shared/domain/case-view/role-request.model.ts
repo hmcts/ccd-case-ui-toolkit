@@ -1,13 +1,38 @@
-export interface RoleRequest {
-  id: string,
-  authenticatedUserId?: string,
-  correlationId?: string,
-  assignerId: string,
-  requestType?: 'CREATE',
-  process: string,
-  reference: string,
-  replaceExisting: boolean,
-  status?: 'APPROVED',
-  created?: Date,
-  log?: string
+export interface RoleRequestPayload {
+  roleRequest: RoleRequest,
+  requestedRoles: RequestedRole[]
 }
+
+export interface RequestedRole {
+  actorIdType: 'IDAM',
+  actorId: string,
+  roleType: RoleType,
+  roleName: string,
+  classification: RoleClassification,
+  grantType: RoleGrantTypeCategory,
+  roleCategory: RoleCategory,
+  readOnly?: boolean,
+  beginTime: Date,
+  endTime: Date,
+  authorisations?: string[],
+  attributes: object,
+  notes: RequestedRoleNote[]
+}
+
+export interface RoleRequest {
+  assignerId: string
+}
+
+export interface RequestedRoleNote {
+  userId: string,
+  time: Date,
+  comment: string
+}
+
+export type RoleCategory = 'JUDICIAL' | 'LEGAL_OPERATIONS' | 'ADMIN' | 'PROFESSIONAL' | 'CITIZEN';
+
+export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
+
+export type RoleClassification = 'PUBLIC' | 'PRIVATE' | 'RESTRICTED';
+
+export type RoleType = 'ORGANISATION' | 'CASE';
