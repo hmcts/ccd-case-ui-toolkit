@@ -50,6 +50,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
   validationErrors: {id: string, message: string}[] = [];
+  showSpinner: boolean;
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -196,14 +197,19 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.isSubmitting = true;
       this.error = null;
       let caseEventData: CaseEventData = this.buildCaseEventData();
+      this.showSpinner = true;
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
           if (jsonData) {
             this.updateFormData(jsonData as CaseEventData);
           }
           this.saveDraft();
+          this.showSpinner = false;
           this.next();
-        }, error => this.handleError(error));
+        }, error => {
+          this.showSpinner = false;
+          this.handleError(error);
+        });
       CaseEditPageComponent.scrollToTop();
     }
     CaseEditPageComponent.setFocusToTop();
@@ -352,11 +358,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private saveDraft() {
     if (this.eventTrigger.can_save_draft) {
+      this.showSpinner = true;
       let draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
       draftCaseEventData.event_token = this.eventTrigger.event_token;
       draftCaseEventData.ignore_warning = this.ignoreWarning;
       this.caseEdit.saveDraft(draftCaseEventData).subscribe(
-        (draft) => this.eventTrigger.case_id = DRAFT_PREFIX + draft.id, error => this.handleError(error)
+        (draft) => {
+          this.eventTrigger.case_id = DRAFT_PREFIX + draft.id;
+          this.showSpinner = false;
+        }, error => {
+          this.showSpinner = false;
+          this.handleError(error);
+        }
       );
     }
   }
