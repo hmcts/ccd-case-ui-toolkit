@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { AlertService } from '../../../services';
+import { AlertService } from '../../../services/alert';
 import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NavigationNotifierService } from '../../../services';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
@@ -29,7 +29,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private navigationNotifierService: NavigationNotifierService,
-    private caseNotifier: CaseNotifier,
+    private caseNofitier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,
     private alertService: AlertService,
@@ -40,7 +40,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       .pipe(
         map(caseView => {
           this.caseDetails = plainToClassFromExist(new CaseView(), caseView);
-          this.caseNotifier.announceCase(this.caseDetails);
+          this.caseNofitier.announceCase(this.caseDetails);
         })
       )
       .toPromise()
@@ -57,7 +57,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   }
 
   isDataLoaded(): boolean {
-    return !!this.caseDetails;
+    return this.caseDetails ? true : false;
   }
 
   private getCaseView(cid): Observable<CaseView> {

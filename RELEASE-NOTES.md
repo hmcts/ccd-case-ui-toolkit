@@ -1,29 +1,5 @@
 ## RELEASE NOTES
 
-### Version 3.1.5-complex-type-showing-in-tab
-**EUI-3798** 'Empty' complex type showing in tab (due to Label)
-
-### Version 3.1.5-complex-field-check-answers
-**EUI-4033** Ensured complex fields were interpolated on check you answers page
-
-### Version 3.1.5-pcm-role-non-completion
-### Version 4.3.1-EUI-4202-challenged-access-request-screen-functionality
-**EUI-4202** Challenged Access Request screen functionality - happy path
-
-### Version 4.5.0-rc.4
-**EUI-4415** Label not rendering
-
-### Version 4.3.1-EUI-3473-challenged-access-request-screen
-**EUI-3473** Challenged Access Request screen for Case Access Management
-
-### Version 4.3.1-switch-tabs
-**EUI-3881** Fix bug that it can't switch case detail tabs after inserting prepended tabs
-
-### Version 4.0.0-value-disappearing
-**EUI-4364** Values disappearing after mid event callback when modifying case data
-
-### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
-**EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
 ### Version 4.3.2-rc3
 **EUI-4430** Case reference field regression bugs
 
@@ -151,9 +127,6 @@ fixed an issue with the rendering of complex collections on the Case Details tab
 **EUI-3051** Handle #DATETIMEENTRY field context
 **EUI-3581** Field interpolation does not work for the field type MultiSelectList
 **EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
-
-### Version 4.0.0-prepended-tabs-v3
-**EUI-3777** Create prepended tabs on case view
 
 ### Version 4.0.0
 **EUI-4227** Fixed an error with show/hide not working quite right in some configurations.

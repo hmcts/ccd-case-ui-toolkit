@@ -9,4 +9,3 @@ export * from './domain';
 export * from './services';
 export * from './case-editor.module';
 export * from './editor.routing';
-export * from './case-access-utils';

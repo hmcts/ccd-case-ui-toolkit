@@ -43,28 +43,6 @@ describe('ReadDynamicRadioListFieldComponent', () => {
     });
     const EMPTY = '';
 
-    const CASE_FIELD_2: CaseField = <CaseField>({
-      id: 'x',
-      label: 'X',
-      display_context: 'OPTIONAL',
-      field_type: FIELD_TYPE,
-      formatted_value: {
-        code: FIELD_LIST_ITEMS[1],
-        list_items: FIELD_LIST_ITEMS
-      }
-    });
-
-    const CASE_FIELD_3: CaseField = <CaseField>({
-      id: 'x',
-      label: 'X',
-      display_context: 'OPTIONAL',
-      field_type: FIELD_TYPE,
-      value: {
-        code: FIELD_LIST_ITEMS[1],
-        list_items: FIELD_LIST_ITEMS
-      }
-    });
-
     let fixture: ComponentFixture<ReadDynamicRadioListFieldComponent>;
     let component: ReadDynamicRadioListFieldComponent;
     let de: DebugElement;
@@ -91,24 +69,6 @@ describe('ReadDynamicRadioListFieldComponent', () => {
     }));
 
     it('should render label associated to the value provided', () => {
-      component.caseField.value = VALUE;
-      fixture.detectChanges();
-
-      expect(de.nativeElement.textContent).toEqual(EXPECTED_LABEL);
-    });
-
-    it('should render label associated to the formatted value provided', () => {
-      component.caseField = CASE_FIELD_2;
-      component.ngOnInit();
-      component.caseField.value = VALUE;
-      fixture.detectChanges();
-
-      expect(de.nativeElement.textContent).toEqual(EXPECTED_LABEL);
-    });
-
-    it('should populate list_items when formatted value is empty', () => {
-      component.caseField = CASE_FIELD_3;
-      component.ngOnInit();
       component.caseField.value = VALUE;
       fixture.detectChanges();
 

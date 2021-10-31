@@ -30,8 +30,7 @@ export class AppConfig extends AbstractAppConfig {
     'work_allocation_api_url': '/workallocation',
     'user_info_api_url': '/user-info',
     'document_management_url_v2': '/v2/health',
-    'document_management_secure_enabled':true,
-    'access_management_mode':true
+    'document_management_secure_enabled':true
 
   };
 
@@ -156,9 +155,5 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRemotePrintServiceUrl(): string {
     return this.config.print_service_url;
-  }
-
-  public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode;
   }
 }

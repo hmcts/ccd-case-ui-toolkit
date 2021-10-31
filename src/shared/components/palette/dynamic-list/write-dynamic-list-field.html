@@ -1,5 +1,5 @@
 <div class="form-group"
-  [ngClass]="{'form-group-error': !dynamicListFormControl.valid && (dynamicListFormControl.dirty || dynamicListFormControl.touched)}">
+  [ngClass]="{'form-group-error': !dynamicListFormControl.valid && dynamicListFormControl.dirty}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>

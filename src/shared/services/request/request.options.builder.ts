@@ -48,7 +48,7 @@ export class RequestOptionsBuilder {
           if (RequestOptionsBuilder.includeParam(caseCriteria[criterion])) {
             const key = RequestOptionsBuilder.FIELD_PREFIX + criterion;
             const value = caseCriteria[criterion].trim ? caseCriteria[criterion].trim() : caseCriteria[criterion];
-            params = params.set(key, value.replace(/’/i, `'`));
+            params = params.set(key, value);
           }
         }
       }

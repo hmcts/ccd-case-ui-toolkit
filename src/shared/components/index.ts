@@ -7,7 +7,6 @@ export * from './case-timeline';
 export * from './create-case-filters';
 export * from './dialogs';
 export * from './error';
-export * from './error-message';
 export * from './event-trigger';
 export * from './markdown';
 export * from './palette';

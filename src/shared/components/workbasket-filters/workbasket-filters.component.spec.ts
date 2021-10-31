@@ -618,30 +618,6 @@ describe('WorkbasketFiltersComponent', () => {
       expect(arg['formGroup'].value).toEqual(formGroup.value);
       expect(workbasketHandler.applyFilters).toHaveBeenCalledTimes(1);
     }));
-
-    it ('should update form group filters', () => {
-      const formGroupLocalStorage = {
-        regionList: 'london',
-        londonFRCList: 'london',
-        londonCourtList: 'FR_londonList_10',
-        southEastFRCList: null,
-        thamesvalleyCourtList: null
-      };
-      windowService.getLocalStorage.and.returnValue(JSON.stringify(formGroupLocalStorage));
-
-      const formControls = {
-        regionList: new FormControl('southeast'),
-        londonFRCList: new FormControl('london'),
-        londonCourtList: new FormControl('FR_londonList_10'),
-        southEastFRCList: new FormControl('thamesvalley'),
-        thamesvalleyCourtList: new FormControl('FR_thamesvalleyList_2')
-      };
-      component.formGroup = new FormGroup(formControls);
-
-      component.updateFormGroupFilters();
-      expect(component.formGroup.get('londonFRCList').value).toBe(null);
-      expect(component.formGroup.get('londonCourtList').value).toBe(null);
-    });
   });
 
   describe('with defaults and CRUD', () => {

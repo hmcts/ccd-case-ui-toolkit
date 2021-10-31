@@ -1,4 +1,90 @@
 <div *ngIf="isDataLoaded()">
-  <ccd-case-basic-access-view *ngIf="!hasStandardAccess()" [accessType]="userAccessType" [caseDetails]="caseDetails"></ccd-case-basic-access-view>
-  <ccd-case-full-access-view *ngIf="hasStandardAccess()" [caseDetails]="caseDetails" [hasPrint]="hasPrint" [hasEventSelector]="hasEventSelector" [prependedTabs]="prependedTabs"></ccd-case-full-access-view>
+  <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
+  <div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
+       role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+    <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
+      Something went wrong
+    </h1>
+    <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
+      <p>We're working to fix the problem. Try again shortly.</p>
+      <p><a href="get-help" target="_blank">Contact us</a> if you're still having problems.</p>
+    </div>
+  </div>
+  <!-- Callback error heading and error message to be displayed if there are specific error details -->
+  <div *ngIf="error && error.details" class="error-summary" role="group"
+       aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+    <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
+      The callback data failed validation
+    </h2>
+    <p>{{error.message}}</p>
+    <ul *ngIf="error.details?.field_errors" class="error-summary-list">
+      <li *ngFor="let fieldError of error.details.field_errors">
+        {{fieldError.message}}
+      </li>
+    </ul>
+  </div>
+  <ccd-callback-errors
+    [triggerTextContinue]="triggerTextStart"
+    [triggerTextIgnore]="triggerTextIgnoreWarnings"
+    [callbackErrorsSubject]="callbackErrorsSubject"
+    (callbackErrorsContext)="callbackErrorsNotify($event)">
+  </ccd-callback-errors>
+  <ccd-activity [caseId]="caseDetails.case_id" [displayMode]="BANNER"></ccd-activity>
+  <div class="grid-row">
+    <div class="column-one-half">
+      <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
+      <div class="case-viewer-controls" *ngIf="hasPrint && !isDraft() && isPrintEnabled()">
+        <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">Print</a>
+      </div>
+    </div>
+    <div *ngIf="hasEventSelector" class="column-one-half">
+      <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
+                         [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()"
+                         (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
+    </div>
+  </div>
+  <div class="grid-row">
+    <div class="column-full">
+      <ng-container *ngIf="hasTabsPresent()">
+        <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)"
+                       [disableRipple]="true">
+          <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
+            <ng-template matTabContent>
+              <table [class]="tab.id">
+                <tbody>
+                <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true :formGroup.controls['data']">
+                  <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
+                    <ng-container [ngSwitch]="!(field | ccdIsCompound)">
+                      <tr *ngSwitchCase="true">
+                        <th>
+                          <div class="case-viewer-label text-16">{{field.label}}</div>
+                        </th>
+                        <td>
+                          <span class="text-16">
+                            <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                              [caseField]="field" [caseReference]="caseDetails.case_id">
+                            </ccd-field-read>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr *ngSwitchCase="false" class="compound-field">
+                        <th>
+                          <span class="text-16">
+                            <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                              [caseField]="field" [caseReference]="caseDetails.case_id">
+                            </ccd-field-read>
+                          </span>
+                        </th>
+                      </tr>
+                    </ng-container>
+                  </div>
+                </ng-container>
+                </tbody>
+              </table>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-container>
+    </div>
+  </div>
 </div>

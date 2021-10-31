@@ -3,8 +3,7 @@ import { Component, Input } from '@angular/core';
 enum AlertMessageType {
   WARNING = 'warning',
   SUCCESS = 'success',
-  ERROR = 'error',
-  INFORMATION = 'information'
+  ERROR = 'error'
 }
 
 @Component({
@@ -20,7 +19,6 @@ export class AlertComponent {
   public static readonly TYPE_WARNING = 'warning';
   public static readonly TYPE_SUCCESS = 'success';
   public static readonly TYPE_ERROR = 'error';
-  public static readonly TYPE_INFORMATION = 'information';
 
   @Input()
   public type: AlertMessageType;

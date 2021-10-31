@@ -11,7 +11,6 @@ import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
-import { initDialog } from '../../helpers';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
 
@@ -68,7 +67,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    initDialog(this.dialogConfig);
+    this.initDialog();
     // EUI-3403. The field was not being registered when there was no value and the field
     // itself was not mandatory, which meant that show_conditions would not be evaluated.
     // I've cleaned up the logic and it's now always registered.
@@ -188,6 +187,21 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).value;
     } else {
       return undefined;
+    }
+  }
+
+  private initDialog(): void {
+    this.dialogConfig = new MatDialogConfig();
+    this.dialogConfig.disableClose = true;
+    this.dialogConfig.autoFocus = true;
+    this.dialogConfig.ariaLabel = 'Label';
+    this.dialogConfig.height = '245px';
+    this.dialogConfig.width = '550px';
+    this.dialogConfig.panelClass = 'dialog';
+
+    this.dialogConfig.closeOnNavigation = false;
+    this.dialogConfig.position = {
+      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
     }
   }
 

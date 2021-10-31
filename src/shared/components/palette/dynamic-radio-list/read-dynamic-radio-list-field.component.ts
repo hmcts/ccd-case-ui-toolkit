@@ -15,13 +15,5 @@ export class ReadDynamicRadioListFieldComponent extends AbstractFieldReadCompone
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
-
-    /**
-     *
-     * Seems formatted_value can also be empty for DynamicRadioList's. Reassigning list_items from value.list_items in that case
-     */
-    if (!this.caseField.list_items && this.caseField.value && this.caseField.value.list_items) {
-      this.caseField.list_items = this.caseField.value.list_items;
-    }
   }
 }

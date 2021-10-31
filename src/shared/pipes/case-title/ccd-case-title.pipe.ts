@@ -12,7 +12,7 @@ export class CcdCaseTitlePipe implements PipeTransform {
   transform(caseTitle: string, caseFields: CaseField[], values: any): any {
     const caseFieldValues = this.getReadOnlyAndFormFields(values, caseFields);
     const result = this.placeholderService.resolvePlaceholders(caseFieldValues, caseTitle);
-    return result;
+    return result.replace(/\n/g, '<br>').replace(/#/g, '');
   }
 
   private getReadOnlyAndFormFields(formGroup, caseFields: CaseField[]): any {

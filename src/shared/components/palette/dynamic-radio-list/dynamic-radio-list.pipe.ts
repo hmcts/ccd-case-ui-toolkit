@@ -8,15 +8,8 @@ export class DynamicRadioListPipe implements PipeTransform {
 
   private static readonly EMPTY = '';
 
-  transform(value: any, items: FixedListItem[]): any {
-    /**
-     *
-     * If value is object with element `value.code`, use code instead.
-     */
-    if (value && value.value && value.value.code) {
-      value = value.value.code;
-    }
-    const item = items.find(i => i.code === value);
+  transform(value: string, items: FixedListItem[]): any {
+    let item = items.find(i => i.code === value);
     return item ? item.label : DynamicRadioListPipe.EMPTY;
   }
 }
