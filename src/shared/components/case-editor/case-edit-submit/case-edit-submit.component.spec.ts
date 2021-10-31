@@ -1212,7 +1212,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          countrySelection: [],
           documentField: null,
           field3: 'Hide all'
         },
@@ -1496,7 +1495,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          countrySelection: [],
           documentField: null,
           field3: 'Hide all'
         },
@@ -1790,7 +1788,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -1925,7 +1922,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -2512,7 +2508,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -2653,7 +2648,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
@@ -2940,7 +2934,6 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
-          collectionField1: [],
           field3: 'Hide all'
         },
         event: undefined,
