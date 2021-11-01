@@ -622,7 +622,6 @@ describe('CaseEditPageComponent', () => {
       expect(comp.showSpinner).toBeFalsy();
 
       comp.submit();
-      expect(comp.showSpinner).toBeTruthy();
 
       fixture.whenStable().then(() => {
         expect(eventData.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
