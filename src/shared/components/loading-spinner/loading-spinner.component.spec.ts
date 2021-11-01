@@ -25,7 +25,7 @@ describe('LoadingSpinnerComponent', () => {
   });
 
   it('should display loading text', () => {
-    expect(fixture.debugElement.nativeElement.querySelector('div.spinner-inner-container p').textContent).toContain('Searching');
+    expect(fixture.debugElement.nativeElement.querySelector('div.spinner-inner-container p').textContent).toContain('Loading');
   });
 
   it('should display overriden loading text', () => {
