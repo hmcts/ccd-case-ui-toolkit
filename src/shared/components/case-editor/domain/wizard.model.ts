@@ -23,7 +23,7 @@ export class Wizard {
   }
 
   public findWizardPage(caseFieldId: string, pageId: string): WizardPage {
-    return this.pages.find(wizardPage => wizardPage.id === pageId && wizardPage.case_fields &&
+    return this.pages.find(wizardPage => wizardPage.id === pageId || wizardPage.case_fields &&
         wizardPage.case_fields.filter(caseField => caseField.id === caseFieldId).length > 0);
   }
 
