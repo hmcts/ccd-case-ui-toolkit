@@ -619,8 +619,10 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
+      expect(comp.showSpinner).toBeFalsy();
 
       comp.submit();
+      expect(comp.showSpinner).toBeTruthy();
 
       fixture.whenStable().then(() => {
         expect(eventData.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
@@ -633,6 +635,7 @@ describe('CaseEditPageComponent', () => {
         expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
+        expect(comp.showSpinner).toBeFalsy();
       });
     });
 
@@ -655,6 +658,7 @@ describe('CaseEditPageComponent', () => {
 
         const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
         expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+        expect(comp.showSpinner).toBeFalsy();
       });
     });
 
@@ -694,6 +698,7 @@ describe('CaseEditPageComponent', () => {
         expect(text(firstFieldError)).toBe('First field error');
         const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
         expect(text(secondFieldError)).toBe('Second field error');
+        expect(comp.showSpinner).toBeFalsy();
       });
     });
 

@@ -343,18 +343,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private saveDraft() {
     if (this.eventTrigger.can_save_draft) {
-      this.showSpinner = true;
       let draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
       draftCaseEventData.event_token = this.eventTrigger.event_token;
       draftCaseEventData.ignore_warning = this.ignoreWarning;
       this.caseEdit.saveDraft(draftCaseEventData).subscribe(
-        (draft) => {
-          this.eventTrigger.case_id = DRAFT_PREFIX + draft.id;
-          this.showSpinner = false;
-        }, error => {
-          this.showSpinner = false;
-          this.handleError(error);
-        }
+        (draft) => this.eventTrigger.case_id = DRAFT_PREFIX + draft.id, error => this.handleError(error)
       );
     }
   }
