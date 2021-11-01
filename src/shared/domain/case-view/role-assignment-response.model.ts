@@ -1,4 +1,4 @@
-import { RequestedRole } from './requested-role.model';
+import { RequestedRole } from './role-request.model';
 import { RoleRequest } from './role-request.model';
 
 export interface RoleAssignmentResponse {

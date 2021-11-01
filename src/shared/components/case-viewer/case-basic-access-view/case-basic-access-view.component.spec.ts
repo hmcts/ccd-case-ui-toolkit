@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseField, CaseView } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
@@ -49,7 +50,7 @@ describe('CaseBasicAccessViewComponent', () => {
 
         TestBed
         .configureTestingModule({
-            imports: [],
+            imports: [RouterTestingModule],
             declarations: [
                 CaseBasicAccessViewComponent,
                 CaseReferencePipe
