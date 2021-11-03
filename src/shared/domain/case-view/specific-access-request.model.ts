@@ -1,3 +1,5 @@
 export interface SpecificAccessRequest {
-  reeason: string | null
+  reason: number,
+  caseReference?: string,
+  specificReason?: string
 }
