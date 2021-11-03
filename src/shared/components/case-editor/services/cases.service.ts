@@ -393,32 +393,11 @@ export class CasesService {
 
     const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+    const beginTime = new Date();
+    const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
 
-    const payload: RoleRequestPayload = {
-      roleRequest: {
-        assignerId: userInfo.id
-      },
-      requestedRoles: [{
-        actorIdType: 'IDAM',
-        actorId: userInfo.id,
-        roleType: 'CASE',
-        roleName: roleName,
-        classification: 'PUBLIC',
-        roleCategory: roleCategory,
-        grantType: 'CHALLENGED',
-        beginTime: new Date(),
-        endTime: new Date(new Date().setUTCHours(23, 59, 59, 999)),
-        attributes: {
-          caseId: caseId
-        },
-        notes: [{
-          userId: userInfo.id,
-          time: new Date(),
-          comment: JSON.stringify(car)
-        }
-      ]
-      }]
-    };
+    const payload: RoleRequestPayload = camUtils.getAMPayload(userInfo.id, userInfo.id, roleName, roleCategory,
+                                                                    'CHALLENGED', caseId, car, beginTime, endTime);
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
   }
@@ -436,31 +415,8 @@ export class CasesService {
     const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
 
-    const payload: RoleRequestPayload = {
-      roleRequest: {
-        assignerId: null
-      },
-      requestedRoles: [{
-        actorIdType: 'IDAM',
-        actorId: userInfo.id,
-        roleType: 'CASE',
-        roleName: roleName,
-        classification: 'PUBLIC',
-        roleCategory: roleCategory,
-        grantType: 'SPECIFIC',
-        beginTime: null,
-        endTime: null,
-        attributes: {
-          caseId: caseId
-        },
-        notes: [{
-          userId: userInfo.id,
-          time: new Date(),
-          comment: JSON.stringify(sar)
-        }
-      ]
-      }]
-    };
+    const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
+                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
   }
