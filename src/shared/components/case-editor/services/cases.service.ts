@@ -19,8 +19,7 @@ import {
   FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
-  RoleRequestPayload,
-  SpecificAccessRequest
+  RoleRequestPayload
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
@@ -421,7 +420,7 @@ export class CasesService {
       }]
     };
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
+    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
   }
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
