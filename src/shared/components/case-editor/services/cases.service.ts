@@ -13,6 +13,7 @@ import {
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest,
+  SpecificAccessRequest,
   Draft,
   FieldType,
   FieldTypeEnum,
