@@ -131,7 +131,6 @@ export class ShowCondition {
     }
     return this.matchAndConditions(fields, this.updatePathName(path));
   }
-  
   /**
    * Path Name gets updated for complex sub fields
    * @param path Path name.
@@ -147,7 +146,7 @@ export class ShowCondition {
       });
 
       return pathTailString !== pathTail.toString()
-        ? `${pathName}_${pathTail.join("_")}_${pathFinalIndex}`
+        ? `${pathName}_${pathTail.join('_')}_${pathFinalIndex}`
         : path;
     } else {
       return path;
