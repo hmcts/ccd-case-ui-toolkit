@@ -42,25 +42,31 @@ describe('CaseSpecificAccessRequestComponent', () => {
     spyOn(router, 'navigate');
   });
 
-  it('should create component and show the \"specific access\" info message banner', () => {
-    const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.hmcts-banner');
-    expect(infoBannerElement.textContent).toContain('This case requires specific access.');
-    const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
-    expect(headingElement.textContent).toContain(ReviewSpecificAccessRequestPageText.TITLE);
-    const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
-    expect(hintElement.textContent).toContain(ReviewSpecificAccessRequestPageText.HINT);
+  it('should create component and show the \"review access\" info message banner', () => {
+    const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
+    expect(infoBannerElement.textContent).toContain(ReviewSpecificAccessRequestPageText.TITLE);
+    const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset').firstElementChild.children[1].children[0];
+    expect(headingElement.textContent).toContain(ReviewSpecificAccessRequestPageText.HINT);
+
   });
 
-  it('should clear the \"Specific reason\" validation error when the associated text field is populated and the form submitted', () => {
+  it('should clear the \"review access reason\" validation error when the associated text field is populated and the form submitted', () => {
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(true);
-    expect(component.formGroup.get('specificReason').invalid).toBe(true);
+    debugger;
+
+    fixture.debugElement.nativeElement.querySelector('.govuk-error-summary').querySelector('h2')
+
+
     let errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
-    expect(errorBannerElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_REASON);
+    expect(errorBannerElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_SELECTION);
+
+
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
-    expect(errorMessageElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_REASON);
+    expect(errorMessageElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_SELECTION);
+    
     const otherReason = fixture.debugElement.nativeElement.querySelector('#specific-reason');
     otherReason.value = 'Test';
     otherReason.dispatchEvent(new Event('input'));

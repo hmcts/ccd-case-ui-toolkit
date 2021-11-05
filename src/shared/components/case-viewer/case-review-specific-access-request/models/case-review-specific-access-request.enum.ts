@@ -1,3 +1,9 @@
+export enum AccessReason {
+  APPROVE_REQUEST = 'Approve request',
+  REJECT_REQUEST = 'Reject request',
+  REQUEST_MORE_INFORMATION = 'Request more information',
+}
+
 export enum ReviewSpecificAccessRequestPageText {
   TITLE = 'Review specific access request',
   HINT = 'What do you want to do with this request?',
@@ -5,5 +11,5 @@ export enum ReviewSpecificAccessRequestPageText {
 }
 
 export enum ReviewSpecificAccessRequestErrors {
-  NO_REASON = 'Enter a reason'
+  NO_SELECTION = 'Select an option',
 }
