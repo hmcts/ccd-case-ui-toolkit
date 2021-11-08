@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ErrorMessage } from '../../../domain';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ChallengedAccessRequest, ErrorMessage } from '../../../domain';
+import { CasesService } from '../../case-editor';
 import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 
 @Component({
   selector: 'ccd-case-challenged-access-request',
   templateUrl: './case-challenged-access-request.component.html'
 })
-export class CaseChallengedAccessRequestComponent implements OnInit {
+export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
 
   public title: string;
   public hint: string;
@@ -20,15 +23,21 @@ export class CaseChallengedAccessRequestComponent implements OnInit {
   private readonly radioSelectedControlName = 'radioSelected';
   private readonly caseReferenceControlName = 'caseReference';
   private readonly otherReasonControlName = 'otherReason';
+  public $roleAssignmentResponseSubscription: Subscription;
 
-  constructor(private readonly fb: FormBuilder) {
-    this.accessReasons = [
-      {reason: AccessReason.LINKED_TO_CURRENT_CASE, checked: false},
-      {reason: AccessReason.CONSOLIDATE_CASE, checked: false},
-      {reason: AccessReason.ORDER_FOR_TRANSFER, checked: false},
-      {reason: AccessReason.OTHER, checked: false}
-    ];
-  }
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
+    private readonly casesService: CasesService,
+    private readonly route: ActivatedRoute
+  ) {
+      this.accessReasons = [
+        {reason: AccessReason.LINKED_TO_CURRENT_CASE, checked: false},
+        {reason: AccessReason.CONSOLIDATE_CASE, checked: false},
+        {reason: AccessReason.ORDER_FOR_TRANSFER, checked: false},
+        {reason: AccessReason.OTHER, checked: false}
+      ];
+    }
 
   public ngOnInit(): void {
     this.title = ChallengedAccessRequestPageText.TITLE;
@@ -98,11 +107,44 @@ export class CaseChallengedAccessRequestComponent implements OnInit {
         };
       }
     }
+
+    // Initiate Challenged Access Request
+    if (this.formGroup.valid) {
+      // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
+      const caseId = this.route.snapshot.data.case.case_id;
+      const radioSelectedValue = this.formGroup.get(this.radioSelectedControlName).value;
+      // Get the index of the selected AccessReason enum value. Can't use Object.values because it's not available in
+      // < ES2017!
+      const reasonNumber = Object.keys(AccessReason).map(e => AccessReason[e]).indexOf(radioSelectedValue);
+      const challengedAccessRequest = {
+        reason: reasonNumber,
+        caseReference: reasonNumber === 0 ? this.formGroup.get(this.caseReferenceControlName).value : null,
+        otherReason: reasonNumber === 3 ? this.formGroup.get(this.otherReasonControlName).value : null
+      } as ChallengedAccessRequest;
+
+      this.$roleAssignmentResponseSubscription = this.casesService.createChallengedAccessRequest(caseId, challengedAccessRequest)
+        .subscribe(
+          _response => {
+            // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
+            // Angular 7.2!
+            this.router.navigate(['success'], {relativeTo: this.route});
+          },
+          _error => {
+            // Navigate to error page
+          }
+        );
+    }
   }
 
   public onCancel(): void {
-    // Navigate to the previous page
-    window.history.go(-1);
+    // Navigate to the page before previous one (should be Search Results or Case List page, for example)
+    window.history.go(-2);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.$roleAssignmentResponseSubscription) {
+      this.$roleAssignmentResponseSubscription.unsubscribe();
+    }
   }
 }
 
