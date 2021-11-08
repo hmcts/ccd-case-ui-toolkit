@@ -7,18 +7,26 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
-import { ErrorMessage, ReviewSpecificAccessRequest } from "../../../domain";
+import {
+  CaseView,
+  ErrorMessage,
+  ReviewSpecificAccessRequest,
+} from "../../../domain";
 import {
   AccessReason,
   ReviewSpecificAccessRequestErrors,
   ReviewSpecificAccessRequestPageText,
 } from "./models";
+import { AbstractAppConfig } from "../../../../app.config";
+
 
 @Component({
   selector: "ccd-case-review-specific-access-request",
   templateUrl: "./case-review-specific-access-request.component.html",
 })
-export class CaseReviewSpecificAccessRequestComponent implements OnInit {
+export class CaseReviewSpecificAccessRequestComponent
+  implements OnInit, OnDestroy
+{
   public collapsed = false;
   public title: string;
   public hint: string;
@@ -29,13 +37,15 @@ export class CaseReviewSpecificAccessRequestComponent implements OnInit {
   private readonly genericError = "There is a problem";
   private readonly radioSelectedControlName = "radioSelected";
   public readonly accessReasons: DisplayedAccessReason[];
-  public $roleAssignmentResponseSubscription: Subscription;
-  public  requestAccessDetails :RequestAccessDetails;
+  public requestAccessDetails: RequestAccessDetails;
+  public caseSubscription: Subscription;
+  public userAccessType: string;
+  public caseDetails: CaseView;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly appConfig: AbstractAppConfig,
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -47,21 +57,22 @@ export class CaseReviewSpecificAccessRequestComponent implements OnInit {
   public ngOnInit(): void {
     //|TODO: this ticket is blocked so mocked with those data to go through, they will be removed and implimented with actual data
     //when dependency resolved
-    this.requestAccessDetails = { 
-      caseName: 'Amelia Chu',
-      caseReference: 'PA/00467/2017',
-      dateSubmitted: '2 November 2021',
-      requestFrom: 'Judge Randel-Combeswardly',
-      reasonForCaseAccess: 'To view details of the other case linked to the parties/family on my current case.'
-    }
+
+    this.setMockData();
     this.title = ReviewSpecificAccessRequestPageText.TITLE;
     this.hint = ReviewSpecificAccessRequestPageText.HINT;
     this.caseRefLabel = ReviewSpecificAccessRequestPageText.CASE_REF;
-
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required),
     });
   }
+
+  public ngOnDestroy(): void {
+    if (this.caseSubscription) {
+      this.caseSubscription.unsubscribe();
+    }
+  }
+
   public onChange(): void {
     this.submitted = false;
   }
@@ -75,9 +86,9 @@ export class CaseReviewSpecificAccessRequestComponent implements OnInit {
         description: ReviewSpecificAccessRequestErrors.NO_SELECTION,
       };
     }
-
     // Initiate Challenged Access Request
     if (this.formGroup.valid) {
+      debugger;
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
       const caseId = this.route.snapshot.data.case.case_id;
       const radioSelectedValue = this.formGroup.get(
@@ -100,6 +111,17 @@ export class CaseReviewSpecificAccessRequestComponent implements OnInit {
     // Navigate to the page before previous one (should be Search Results or Case List page, for example)
     window.history.go(-1);
   }
+
+  // remove once Access management goes live
+  public setMockData(): void {
+
+    var requestAccessDetailsMock =
+      this.appConfig.getAccessManagementRequestReviewMockModel();
+
+    if (requestAccessDetailsMock.active) {
+      this.requestAccessDetails = requestAccessDetailsMock.details;
+    }
+  }
 }
 
 export interface DisplayedAccessReason {
@@ -108,9 +130,9 @@ export interface DisplayedAccessReason {
 }
 
 export interface RequestAccessDetails {
-   caseName: string;
-   caseReference: string;
-   dateSubmitted: string;
-   requestFrom: string;
-   reasonForCaseAccess: string;
+  caseName: string;
+  caseReference: string;
+  dateSubmitted: string;
+  requestFrom: string;
+  reasonForCaseAccess: string;
 }

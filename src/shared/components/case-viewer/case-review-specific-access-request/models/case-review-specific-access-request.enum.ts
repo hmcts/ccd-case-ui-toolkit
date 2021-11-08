@@ -12,4 +12,5 @@ export enum ReviewSpecificAccessRequestPageText {
 
 export enum ReviewSpecificAccessRequestErrors {
   NO_SELECTION = 'Select an option',
+  GENERIC_ERROR = 'There is a problem',
 }

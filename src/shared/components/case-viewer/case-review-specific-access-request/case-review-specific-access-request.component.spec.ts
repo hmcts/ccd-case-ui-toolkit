@@ -1,13 +1,87 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AlertModule } from '../../../../components/banners/alert';
-import { ErrorMessageComponent } from '../../error-message';
-import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request.component';
-import { ReviewSpecificAccessRequestPageText, ReviewSpecificAccessRequestErrors } from './models';
+
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { DebugElement, Type } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  Data,
+  ParamMap,
+  Params,
+  Route,
+  UrlSegment,
+  Router
+} from '@angular/router';
+import { RouterTestingModule } from "@angular/router/testing";
+import { AccessManagementRequestReviewMockModel } from "../../../../app.config";
+import { AlertModule } from "../../../../components/banners/alert";
+import { ErrorMessageComponent } from "../../error-message";
+import { CaseReviewSpecificAccessRequestComponent } from "./case-review-specific-access-request.component";
+import {
+  ReviewSpecificAccessRequestPageText,
+  ReviewSpecificAccessRequestErrors,
+} from "./models";
+import { Observable} from 'rxjs';
+import { AbstractAppConfig } from '../../../..';
+import createSpyObj = jasmine.createSpyObj;
+
+const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel = {
+  active: true,
+  details: {
+    caseName: "Amelia Chu",
+    caseReference: "PA/00467/2017",
+    dateSubmitted: "2021-11-02T14:43:56.576Z",
+    reasonForCaseAccess:
+      "To view details of the other case linked to the parties/family on my current case.",
+    requestFrom: "Judge Randel-Combeswardly",
+  },
+};
+
+class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
+  url: UrlSegment[];
+  params: Params;
+  queryParams: Params;
+  fragment: string;
+  data: Data;
+  outlet: string;
+  component: Type<any> | string | null;
+  readonly routeConfig: Route | null;
+  readonly root: ActivatedRouteSnapshot;
+  readonly parent: ActivatedRouteSnapshot | null;
+  readonly firstChild: ActivatedRouteSnapshot | null;
+  readonly children: ActivatedRouteSnapshot[];
+  readonly pathFromRoot: ActivatedRouteSnapshot[];
+  readonly paramMap: ParamMap;
+  readonly queryParamMap: ParamMap;
+  toString(): string {
+    return '';
+  }
+}
+
+class MockActivatedRoute implements ActivatedRoute {
+  snapshot: ActivatedRouteSnapshot;
+  url: Observable<UrlSegment[]>;
+  params: Observable<Params>;
+  queryParams: Observable<Params>;
+  fragment: Observable<string>;
+  data: Observable<Data>;
+  outlet: string;
+  component: Type<any> | string;
+  routeConfig: Route;
+  root: ActivatedRoute;
+  parent: ActivatedRoute;
+  firstChild: ActivatedRoute;
+  children: ActivatedRoute[];
+  pathFromRoot: ActivatedRoute[];
+  paramMap: Observable<ParamMap>;
+  queryParamMap: Observable<ParamMap>;
+  toString(): string {
+    return '';
+  }
+}
 
 describe('CaseSpecificAccessRequestComponent', () => {
+  let de: DebugElement;
   let component: CaseReviewSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseReviewSpecificAccessRequestComponent>;
   const case_id = '1234123412341234';
@@ -20,7 +94,16 @@ describe('CaseSpecificAccessRequestComponent', () => {
       }
     }
   };
-  let router: Router;
+  let mockActivatedRoute = new MockActivatedRoute();
+  let mockAppConfig = createSpyObj('AbstractAppConfig', [
+    'getAccessManagementMode',
+    'getAccessManagementRequestReviewMockModel'
+  ]);
+
+  mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
+  mockActivatedRoute.snapshot.data = <Data>{};
+  mockAppConfig.getAccessManagementMode.and.returnValue(true);
+  mockAppConfig.getAccessManagementRequestReviewMockModel.and.returnValue(ACCESS_MANAGEMENT_REQUEST_REVIEW);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,55 +111,52 @@ describe('CaseSpecificAccessRequestComponent', () => {
       declarations: [ CaseReviewSpecificAccessRequestComponent, ErrorMessageComponent ],
       providers: [
         FormBuilder,
-        { provide: ActivatedRoute, useValue: mockRoute }
-      ]
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: AbstractAppConfig, useValue: mockAppConfig },
+      ],
     })
     .compileComponents();
+ 
+    fixture = TestBed.createComponent(CaseReviewSpecificAccessRequestComponent);
+    fixture.detectChanges();
+    component = fixture.componentInstance;
+    component.title = ReviewSpecificAccessRequestPageText.TITLE;
+    component.hint = ReviewSpecificAccessRequestPageText.HINT;
+    component.caseRefLabel = ReviewSpecificAccessRequestPageText.CASE_REF;
+    component.setMockData();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CaseReviewSpecificAccessRequestComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    router = TestBed.get(Router);
-    spyOn(router, 'navigate');
+  it('should create component and show the \"specific access\" info message banner', () => {
+    const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
+    expect(headingElement.textContent).toContain(ReviewSpecificAccessRequestPageText.TITLE);
+    const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__legend--m');
+    expect(hintElement.textContent).toContain(ReviewSpecificAccessRequestPageText.HINT);
   });
 
-  it('should create component and show the \"review access\" info message banner', () => {
-    const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
-    expect(infoBannerElement.textContent).toContain(ReviewSpecificAccessRequestPageText.TITLE);
-    const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset').firstElementChild.children[1].children[0];
-    expect(headingElement.textContent).toContain(ReviewSpecificAccessRequestPageText.HINT);
-
-  });
-
-  it('should clear the \"review access reason\" validation error when the associated text field is populated and the form submitted', () => {
+  it('should show validation error when any radio button selected and the form submitted', () => {
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(true);
-    debugger;
-
-    fixture.debugElement.nativeElement.querySelector('.govuk-error-summary').querySelector('h2')
-
-
-    let errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
+    let errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list');
     expect(errorBannerElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_SELECTION);
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__title');
+    expect(errorMessageElement.textContent).toContain(ReviewSpecificAccessRequestErrors.GENERIC_ERROR);
+  });
 
-
-    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
-    expect(errorMessageElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_SELECTION);
-    
-    const otherReason = fixture.debugElement.nativeElement.querySelector('#specific-reason');
-    otherReason.value = 'Test';
-    otherReason.dispatchEvent(new Event('input'));
+  it('should clear validation error when a radio button selected and the form submitted', () => {
+    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-0');
+    radioButton.click();
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(false);
-    expect(component.formGroup.get('specificReason').invalid).toBe(false);
-    errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
+    let errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list');
     expect(errorBannerElement).toBeNull();
-    errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__title');
     expect(errorMessageElement).toBeNull();
   });
 
@@ -85,6 +165,6 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(cancelLink.text).toContain('Cancel');
     spyOn(window.history, 'go');
     cancelLink.click();
-    expect(window.history.go).toHaveBeenCalledWith(-2);
+    expect(window.history.go).toHaveBeenCalledWith(-1);
   });
 });
