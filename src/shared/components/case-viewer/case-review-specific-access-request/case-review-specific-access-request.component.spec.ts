@@ -1,39 +1,26 @@
-
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Type } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule} from "@angular/forms";
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  Data,
-  ParamMap,
-  Params,
-  Route,
-  UrlSegment,
-  Router
-} from '@angular/router';
-import { RouterTestingModule } from "@angular/router/testing";
-import { AccessManagementRequestReviewMockModel } from "../../../../app.config";
-import { AlertModule } from "../../../../components/banners/alert";
-import { ErrorMessageComponent } from "../../error-message";
-import { CaseReviewSpecificAccessRequestComponent } from "./case-review-specific-access-request.component";
-import {
-  ReviewSpecificAccessRequestPageText,
-  ReviewSpecificAccessRequestErrors,
-} from "./models";
-import { Observable} from 'rxjs';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AccessManagementRequestReviewMockModel } from '../../../../app.config';
+import { AlertModule } from '../../../../components/banners/alert';
+import { ErrorMessageComponent } from '../../error-message';
+import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request.component';
+import { ReviewSpecificAccessRequestPageText, ReviewSpecificAccessRequestErrors } from './models';
+import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../..';
 import createSpyObj = jasmine.createSpyObj;
 
 const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel = {
   active: true,
   details: {
-    caseName: "Amelia Chu",
-    caseReference: "PA/00467/2017",
-    dateSubmitted: "2021-11-02T14:43:56.576Z",
+    caseName: 'Amelia Chu',
+    caseReference: 'PA/00467/2017',
+    dateSubmitted: '2021-11-02T14:43:56.576Z',
     reasonForCaseAccess:
-      "To view details of the other case linked to the parties/family on my current case.",
-    requestFrom: "Judge Randel-Combeswardly",
+      'To view details of the other case linked to the parties/family on my current case.',
+    requestFrom: 'Judge Randel-Combeswardly',
   },
 };
 
@@ -89,34 +76,38 @@ describe('CaseSpecificAccessRequestComponent', () => {
     snapshot: {
       data: {
         case: {
-          case_id
-        }
-      }
-    }
+          case_id,
+        },
+      },
+    },
   };
   let mockActivatedRoute = new MockActivatedRoute();
   let mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementMode',
-    'getAccessManagementRequestReviewMockModel'
+    'getAccessManagementRequestReviewMockModel',
   ]);
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = <Data>{};
   mockAppConfig.getAccessManagementMode.and.returnValue(true);
-  mockAppConfig.getAccessManagementRequestReviewMockModel.and.returnValue(ACCESS_MANAGEMENT_REQUEST_REVIEW);
+  mockAppConfig.getAccessManagementRequestReviewMockModel.and.returnValue(
+    ACCESS_MANAGEMENT_REQUEST_REVIEW
+  );
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
-      declarations: [ CaseReviewSpecificAccessRequestComponent, ErrorMessageComponent ],
+      imports: [AlertModule, ReactiveFormsModule, RouterTestingModule],
+      declarations: [
+        CaseReviewSpecificAccessRequestComponent,
+        ErrorMessageComponent,
+      ],
       providers: [
         FormBuilder,
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: AbstractAppConfig, useValue: mockAppConfig },
       ],
-    })
-    .compileComponents();
- 
+    }).compileComponents();
+
     fixture = TestBed.createComponent(CaseReviewSpecificAccessRequestComponent);
     fixture.detectChanges();
     component = fixture.componentInstance;
@@ -126,42 +117,64 @@ describe('CaseSpecificAccessRequestComponent', () => {
     component.setMockData();
     de = fixture.debugElement;
     fixture.detectChanges();
-
   }));
 
-  it('should create component and show the \"specific access\" info message banner', () => {
-    const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
-    expect(headingElement.textContent).toContain(ReviewSpecificAccessRequestPageText.TITLE);
-    const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__legend--m');
-    expect(hintElement.textContent).toContain(ReviewSpecificAccessRequestPageText.HINT);
+  it('should create component and show the "review access" info message banner', () => {
+    const headingElement = fixture.debugElement.nativeElement.querySelector(
+      '.govuk-fieldset__heading'
+    );
+    expect(headingElement.textContent).toContain(
+      ReviewSpecificAccessRequestPageText.TITLE
+    );
+    const hintElement = fixture.debugElement.nativeElement.querySelector(
+      '.govuk-fieldset__legend--m'
+    );
+    expect(hintElement.textContent).toContain(
+      ReviewSpecificAccessRequestPageText.HINT
+    );
   });
 
   it('should show validation error when any radio button selected and the form submitted', () => {
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(true);
-    let errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list');
-    expect(errorBannerElement.textContent).toContain(ReviewSpecificAccessRequestErrors.NO_SELECTION);
-    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__title');
-    expect(errorMessageElement.textContent).toContain(ReviewSpecificAccessRequestErrors.GENERIC_ERROR);
+    let errorBannerElement = fixture.debugElement.nativeElement.querySelector(
+      '.govuk-error-summary__list'
+    );
+    expect(errorBannerElement.textContent).toContain(
+      ReviewSpecificAccessRequestErrors.NO_SELECTION
+    );
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector(
+      '.govuk-error-summary__title'
+    );
+    expect(errorMessageElement.textContent).toContain(
+      ReviewSpecificAccessRequestErrors.GENERIC_ERROR
+    );
   });
 
   it('should clear validation error when a radio button selected and the form submitted', () => {
-    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-0');
+    const radioButton =
+      fixture.debugElement.nativeElement.querySelector('#reason-0');
     radioButton.click();
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(false);
-    let errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list');
+    let errorBannerElement = fixture.debugElement.nativeElement.querySelector(
+      '.govuk-error-summary__list'
+    );
     expect(errorBannerElement).toBeNull();
-    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__title');
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector(
+      '.govuk-error-summary__title'
+    );
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should go back to the page before previous one when the \"Cancel\" link is clicked', () => {
-    const cancelLink = fixture.debugElement.nativeElement.querySelector('a.govuk-body');
+  it('should go back to the page before previous one when the Cancel link is clicked', () => {
+    const cancelLink =
+      fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');
     spyOn(window.history, 'go');
     cancelLink.click();

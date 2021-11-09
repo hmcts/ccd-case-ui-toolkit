@@ -5,7 +5,7 @@ import { FileUploadProgressGuard } from '../palette/document/file-upload-progres
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
-import { CaseReviewSpecificAccessRequestComponent} from './case-review-specific-access-request'
+import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
@@ -18,11 +18,11 @@ export const viewerRouting: Routes = [
   {
     path: 'trigger/:eid',
     resolve: {
-      eventTrigger: EventTriggerResolver
+      eventTrigger: EventTriggerResolver,
     },
     component: CaseEventTriggerComponent,
     children: editorRouting,
-    canDeactivate: [FileUploadProgressGuard]
+    canDeactivate: [FileUploadProgressGuard],
   },
   {
     path: 'event/:eid/history',
@@ -35,18 +35,18 @@ export const viewerRouting: Routes = [
         path: '',
         component: CaseChallengedAccessRequestComponent,
         data: {
-          title: 'Request Challenged Access'
+          title: 'Request Challenged Access',
         },
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'success',
         component: CaseChallengedAccessSuccessComponent,
         data: {
-          title: 'Challenged Access Success'
-        }
-      }
-    ]
+          title: 'Challenged Access Success',
+        },
+      },
+    ],
   },
   {
     path: 'specific-access-request',
@@ -55,11 +55,11 @@ export const viewerRouting: Routes = [
         path: '',
         component: CaseSpecificAccessRequestComponent,
         data: {
-          title: 'Request Specific Access'
+          title: 'Request Specific Access',
         },
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: 'review-specific-access-request',
@@ -68,10 +68,10 @@ export const viewerRouting: Routes = [
         path: '',
         component: CaseReviewSpecificAccessRequestComponent,
         data: {
-          title: 'Request Specific Access'
+          title: 'Request Specific Access',
         },
-        pathMatch: 'full'
-      }
-    ]
-  }
+        pathMatch: 'full',
+      },
+    ],
+  },
 ];

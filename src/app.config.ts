@@ -125,7 +125,7 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
-  access_management_request_review_mock?:{
+  access_management_request_review_mock?: {
   active?: boolean;
   details?: {
     caseName: string;

@@ -1,32 +1,18 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import {
-  CaseView,
-  ErrorMessage,
-  ReviewSpecificAccessRequest,
-} from "../../../domain";
-import {
-  AccessReason,
-  ReviewSpecificAccessRequestErrors,
-  ReviewSpecificAccessRequestPageText,
-} from "./models";
-import { AbstractAppConfig } from "../../../../app.config";
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { CaseView, ErrorMessage, ReviewSpecificAccessRequest } from '../../../domain';
+import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
+import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
-  selector: "ccd-case-review-specific-access-request",
-  templateUrl: "./case-review-specific-access-request.component.html",
+  selector: 'ccd-case-review-specific-access-request',
+  templateUrl: './case-review-specific-access-request.component.html',
+  styleUrls: ['./case-review-specific-access-request.component.scss']
 })
 export class CaseReviewSpecificAccessRequestComponent
-  implements OnInit, OnDestroy
-{
+  implements OnInit, OnDestroy {
   public collapsed = false;
   public title: string;
   public hint: string;
@@ -34,8 +20,8 @@ export class CaseReviewSpecificAccessRequestComponent
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
-  private readonly genericError = "There is a problem";
-  private readonly radioSelectedControlName = "radioSelected";
+  private readonly genericError = 'There is a problem';
+  private readonly radioSelectedControlName = 'radioSelected';
   public readonly accessReasons: DisplayedAccessReason[];
   public requestAccessDetails: RequestAccessDetails;
   public caseSubscription: Subscription;
@@ -55,9 +41,8 @@ export class CaseReviewSpecificAccessRequestComponent
   }
 
   public ngOnInit(): void {
-    //|TODO: this ticket is blocked so mocked with those data to go through, they will be removed and implimented with actual data
-    //when dependency resolved
-
+    // TODO: this ticket is blocked so mocked with those data to go through, they will be removed and implimented with actual data
+    // when dependency resolved
     this.setMockData();
     this.title = ReviewSpecificAccessRequestPageText.TITLE;
     this.hint = ReviewSpecificAccessRequestPageText.HINT;
@@ -86,9 +71,8 @@ export class CaseReviewSpecificAccessRequestComponent
         description: ReviewSpecificAccessRequestErrors.NO_SELECTION,
       };
     }
-    // Initiate Challenged Access Request
+    // Initiate Review Access Request
     if (this.formGroup.valid) {
-      debugger;
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
       const caseId = this.route.snapshot.data.case.case_id;
       const radioSelectedValue = this.formGroup.get(
@@ -114,8 +98,7 @@ export class CaseReviewSpecificAccessRequestComponent
 
   // remove once Access management goes live
   public setMockData(): void {
-
-    var requestAccessDetailsMock =
+    const requestAccessDetailsMock =
       this.appConfig.getAccessManagementRequestReviewMockModel();
 
     if (requestAccessDetailsMock.active) {

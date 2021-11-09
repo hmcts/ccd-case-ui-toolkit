@@ -6,9 +6,8 @@
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
-      <div class="govuk-grid-column-two-thirds" style="padding: 0px 10px">
+      <div class="govuk-grid-column-two-thirds" >
         <p></p>
-        <!-- <h2 class="govuk-heading-l  govuk-!-margin-bottom-2">Review specific access request</h2> -->
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 class="govuk-fieldset__heading">
             {{ title }}
@@ -18,31 +17,31 @@
         <table class="govuk-table">
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header" style="width: 220px">
+              <th scope="row" class="govuk-table__header leftLabel" >
                 Case name
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.caseName }}</td>
             </tr>
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header" style="width: 220px">
+              <th scope="row" class="govuk-table__header leftLabel" >
                 Case reference
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.caseReference }}</td>
             </tr>
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header" style="width: 220px">
+              <th scope="row" class="govuk-table__header leftLabel" >
                 Date submitted
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.dateSubmitted }}</td>
             </tr>
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header" style="width: 220px">
+              <th scope="row" class="govuk-table__header leftLabel" >
                 Request from
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.requestFrom }}<br /></td>
             </tr>
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header" style="width: 220px">
+              <th scope="row" class="govuk-table__header leftLabel" >
                 Reason for case access
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.reasonForCaseAccess }}</td>
