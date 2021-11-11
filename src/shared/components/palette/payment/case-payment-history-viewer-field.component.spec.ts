@@ -7,6 +7,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
 
@@ -26,13 +27,14 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   let appConfig;
   let PaymentWebComponent;
+  let sessionStorage;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
   let de: DebugElement;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
 
@@ -41,8 +43,14 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'CCD_CASE_NUMBER',
         'BULKSCAN_API_ROOT',
         'ISBSENABLE',
-        'SELECTED_OPTION'
+        'SELECTED_OPTION',
+        'VIEW',
+        'LOGGEDINUSERROLES',
+        'LOGGEDINUSEREMAIL',
+        'REFUNDS_API_ROOT'
       ]});
+
+      sessionStorage = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
 
     TestBed
       .configureTestingModule({
@@ -55,6 +63,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
+          { provide: SessionStorageService, useValue: sessionStorage }
         ]
       })
       .compileComponents();

@@ -140,4 +140,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getCamRoleAssignmentsApiUrl(): string {
     return '';
   }
+  
+  getRefundsUrl(): string {
+    return '';
+  }
 }
