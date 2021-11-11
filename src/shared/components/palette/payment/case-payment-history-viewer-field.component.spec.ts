@@ -92,7 +92,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   });
 
   it('should return empty array for roles when not set', () => {
-    let paymentComponent = de.query(By.directive(PaymentWebComponent)).componentInstance;
+    let paymentComponent = fixture.componentInstance;
     sessionStorage.getItem.and.returnValue(null);
     expect(paymentComponent.getUserRoles()).toEqual([]);
     sessionStorage.getItem.and.returnValue({});
@@ -102,7 +102,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   });
 
   it('should return empty string for email when not set', () => {
-    let paymentComponent = de.query(By.directive(PaymentWebComponent)).componentInstance;
+    let paymentComponent = fixture.componentInstance;
     sessionStorage.getItem.and.returnValue(null);
     expect(paymentComponent.getUserEmail()).toEqual('');
     sessionStorage.getItem.and.returnValue({});
