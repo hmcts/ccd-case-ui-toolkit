@@ -18,7 +18,7 @@ export class CaseAccessUtils {
     public static readonly CITIZEN_ROLE_CATEGORY = 'CITIZEN';
     public static readonly CITIZEN_ROLE_NAME = 'citizen';
 
-    public getMappedRoleCategory(roles: string[], roleCategories: string[]): RoleCategory {
+    public getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
 
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
 
