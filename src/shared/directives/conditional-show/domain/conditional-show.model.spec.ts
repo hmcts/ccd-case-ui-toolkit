@@ -201,6 +201,24 @@ describe('conditional-show', () => {
       expect(matched).toBe(true);
     });
 
+    it('should check empty path name condition', () => {
+      let sc = new ShowCondition('');
+
+      expect(sc['updatePathName']('')).toEqual('');
+    });
+
+    it('should check path name for complex with collection field', () => {
+      let sc = new ShowCondition('');
+
+      expect(sc['updatePathName']('ComplexWithCollectionFieldShowCondition1_CollectionItems')).toEqual('ComplexWithCollectionFieldShowCondition1_CollectionItems');
+    });
+
+    it('should check complex collection items path name', () => {
+      let sc = new ShowCondition('');
+
+      expect(sc['updatePathName']('CollectionItems_0_0')).toEqual('CollectionItems_CollectionItems_0');
+    });
+
   });
 
   describe('matchByContextFields when', () => {

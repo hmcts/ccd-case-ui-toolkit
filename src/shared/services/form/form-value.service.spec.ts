@@ -538,6 +538,50 @@ describe('FormValueService', () => {
     });
   });
 
+  describe('removeInvalidCollectionData', () => {
+    it('should empty the collection field if it contains only id', () => {
+      const data = {collection1: [{id: '123'}]};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeInvalidCollectionData(data, caseField);
+      const actual = '{"collection1":[]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should not alter the collection field if it contains valid data', () => {
+      const data = {collection1: [{id: '123', value: 'test'}]};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeInvalidCollectionData(data, caseField);
+      const actual = '{"collection1":[{"id":"123","value":"test"}]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+
+    it('should empty the collection field if it contains id as null', () => {
+      const data = {collection1: [{id: null}], collection2: [{id: '123'}]};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Collection';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+      formValueService.removeInvalidCollectionData(data, caseField);
+      const actual = '{"collection1":[],"collection2":[{"id":"123"}]}';
+      expect(JSON.stringify(data)).toEqual(actual);
+    });
+  });
+
   describe('removeMultiSelectLabels', () => {
     it('should handle null data', () => {
       FormValueService.removeMultiSelectLabels(null);
