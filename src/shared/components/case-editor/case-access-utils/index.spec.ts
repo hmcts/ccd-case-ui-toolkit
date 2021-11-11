@@ -105,6 +105,7 @@ describe('CaseAccessUtils', () => {
     describe('getAMPayload', () => {
 
         it('should render payload', () => {
+            const dateValue = new Date();
             const response = camUtils.getAMPayload(
                 'dummy',
                 'dummy',
@@ -113,10 +114,10 @@ describe('CaseAccessUtils', () => {
                 'BASIC',
                 'dummy',
                 null,
-                null,
+                dateValue,
                 null
             );
-            expect(response.roleRequest.assignerId).toEqual('dummy');
+            expect(response.requestedRoles[0].beginTime).toEqual(dateValue);
         });
     });
 
