@@ -622,7 +622,7 @@ describe('CasesService', () => {
         otherReason: 'dummy'
       };
       casesService.createChallengedAccessRequest(CASE_ID, car);
-      expect(httpService.post).toHaveBeenCalled();;
+      expect(httpService.post).toHaveBeenCalled();
     });
   });
 
@@ -635,7 +635,7 @@ describe('CasesService', () => {
         specificReason: 'dummy'
       };
       casesService.createSpecificAccessRequest(CASE_ID, sar);
-      expect(httpService.post).toHaveBeenCalled();;
+      expect(httpService.post).toHaveBeenCalled();
     });
   });
 
