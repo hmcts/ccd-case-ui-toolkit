@@ -93,9 +93,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   it('should return empty array for roles when not set', () => {
     let paymentComponent = fixture.componentInstance;
-    sessionStorage.getItem.and.returnValue(null);
+    sessionStorage.getItem.and.returnValue('null');
     expect(paymentComponent.getUserRoles()).toEqual([]);
-    sessionStorage.getItem.and.returnValue({});
+    sessionStorage.getItem.and.returnValue('{}');
     expect(paymentComponent.getUserRoles()).toEqual([]);
     sessionStorage.getItem.and.returnValue('{"roles":["a","b"]}');
     expect(paymentComponent.getUserRoles()).toEqual(['a', 'b']);
@@ -103,9 +103,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   it('should return empty string for email when not set', () => {
     let paymentComponent = fixture.componentInstance;
-    sessionStorage.getItem.and.returnValue(null);
+    sessionStorage.getItem.and.returnValue('null');
     expect(paymentComponent.getUserEmail()).toEqual('');
-    sessionStorage.getItem.and.returnValue({});
+    sessionStorage.getItem.and.returnValue('{}');
     expect(paymentComponent.getUserEmail()).toEqual('');
     sessionStorage.getItem.and.returnValue('{"sub":"test@test.com"}');
     expect(paymentComponent.getUserEmail()).toEqual('test@test.com');
