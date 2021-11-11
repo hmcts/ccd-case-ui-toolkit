@@ -102,4 +102,22 @@ describe('CaseAccessUtils', () => {
         });
     });
 
+    describe('getAMPayload', () => {
+
+        it('should render payload', () => {
+            const response = camUtils.getAMPayload(
+                'dummy',
+                'dummy',
+                'dummy',
+                'ADMIN',
+                'BASIC',
+                'dummy',
+                null,
+                null,
+                null
+            );
+            expect(response.roleRequest.assignerId).toEqual('dummy');
+        });
+    });
+
 });
