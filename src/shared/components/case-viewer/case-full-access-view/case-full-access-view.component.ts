@@ -93,11 +93,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngOnDestroy() {
-    if (this.activityPollingService.isEnabled) {
+    if (this.activitySubscription && this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
-    this.callbackErrorsSubject.unsubscribe();
-    if (!this.route.snapshot.data.case) {
+    if (this.callbackErrorsSubject) {
+      this.callbackErrorsSubject.unsubscribe();
+    }
+    if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
     if (this.errorSubscription) {
@@ -200,7 +202,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
       matTab = this.tabGroup._tabs.find((x) =>
-        x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() === hashValue.toLowerCase());
+        x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
+                                hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
       if (matTab && matTab.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
@@ -213,9 +216,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
+      const label = tabChangeEvent.tab.textLabel;
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = id;
-      })
+        window.location.hash = label;
+      });
     }
   }
 
