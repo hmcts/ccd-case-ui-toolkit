@@ -27,7 +27,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   let appConfig;
   let PaymentWebComponent;
-  let sessionStorage;
+  let sessionStorage: jasmine.SpyObj<SessionStorageService>;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
@@ -89,5 +89,25 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException')
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
     expect(paymentComponent.ISBSENABLE).toEqual('true');
+  });
+
+  it('should return empty array for roles when not set', () => {
+    let paymentComponent = de.query(By.directive(PaymentWebComponent)).componentInstance;
+    sessionStorage.getItem.and.returnValue(null);
+    expect(paymentComponent.getUserRoles()).toEqual([]);
+    sessionStorage.getItem.and.returnValue({});
+    expect(paymentComponent.getUserRoles()).toEqual([]);
+    sessionStorage.getItem.and.returnValue({ roles: ['a', 'b']});
+    expect(paymentComponent.getUserRoles()).toEqual(['a', 'b']);
+  });
+
+  it('should return empty string for email when not set', () => {
+    let paymentComponent = de.query(By.directive(PaymentWebComponent)).componentInstance;
+    sessionStorage.getItem.and.returnValue(null);
+    expect(paymentComponent.getUserEmail()).toEqual('');
+    sessionStorage.getItem.and.returnValue({});
+    expect(paymentComponent.getUserEmail()).toEqual('');
+    sessionStorage.getItem.and.returnValue({ sub: 'test@test.com'});
+    expect(paymentComponent.getUserEmail()).toEqual('test@test.com');
   });
 });
