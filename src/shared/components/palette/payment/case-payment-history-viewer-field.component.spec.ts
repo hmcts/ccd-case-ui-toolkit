@@ -97,7 +97,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.getUserRoles()).toEqual([]);
     sessionStorage.getItem.and.returnValue({});
     expect(paymentComponent.getUserRoles()).toEqual([]);
-    sessionStorage.getItem.and.returnValue({ roles: ['a', 'b']});
+    sessionStorage.getItem.and.returnValue('{"roles":["a","b"]}');
     expect(paymentComponent.getUserRoles()).toEqual(['a', 'b']);
   });
 
@@ -107,7 +107,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.getUserEmail()).toEqual('');
     sessionStorage.getItem.and.returnValue({});
     expect(paymentComponent.getUserEmail()).toEqual('');
-    sessionStorage.getItem.and.returnValue({ sub: 'test@test.com'});
+    sessionStorage.getItem.and.returnValue('{"sub":"test@test.com"}');
     expect(paymentComponent.getUserEmail()).toEqual('test@test.com');
   });
 });
