@@ -61,12 +61,12 @@ describe('CcdCaseTitlePipe', () => {
 
   it('should replace field interpolation and return actual value', () => {
     const title = '# ${Case_ReferenceId}: ${LastNameId}';
-    expect(ccdCaseTitle.transform(title, caseFields, FORM_GROUP)).toBe(' 123456: West');
+    expect(ccdCaseTitle.transform(title, caseFields, FORM_GROUP)).toBe('# 123456: West');
   });
 
   it('should replace field interpolation and return actual value', () => {
     const title = '# ${Case_ReferenceId}: ${FirstNameId}';
-    expect(ccdCaseTitle.transform(title, caseFields, FORM_GROUP)).toBe(' 123456: John');
+    expect(ccdCaseTitle.transform(title, caseFields, FORM_GROUP)).toBe('# 123456: John');
   });
 
 });

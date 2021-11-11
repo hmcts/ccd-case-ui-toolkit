@@ -1,3 +1,14 @@
+export interface AccessManagementBasicViewMockModel {
+  active?: boolean;
+  basicFields?: {
+    caseNameHmctsInternal?: string,
+      caseManagementLocation?: {
+        baseLocation?: number
+      }
+  };
+  accessProcess?: string;
+}
+
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
@@ -43,6 +54,15 @@ export abstract class AbstractAppConfig {
   getUserInfoApiUrl(): string {
     return undefined;
   }
+  getAccessManagementMode(): boolean {
+    return undefined;
+  }
+  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
+    return undefined;
+  }
+  getLocationRefApiUrl(): string {
+    return undefined;
+  }
 }
 
 export class CaseEditorConfig {
@@ -76,4 +96,16 @@ export class CaseEditorConfig {
   cache_time_out: number;
   work_allocation_api_url: string;
   user_info_api_url: string;
+  access_management_mode?: boolean;
+  access_management_basic_view_mock?: {
+    active?: boolean,
+    basicFields?: {
+      caseNameHmctsInternal?: string,
+      caseManagementLocation?: {
+        baseLocation?: number
+      }
+    },
+    accessProcess?: string
+  };
+  location_ref_api_url?: string;
 }
