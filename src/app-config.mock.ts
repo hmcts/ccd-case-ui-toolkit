@@ -1,7 +1,7 @@
 import {
   AbstractAppConfig,
   AccessManagementBasicViewMockModel,
-  AccessManagementRequestReviewMockModel,
+  AccessManagementRequestReviewMockModel
 } from './app.config';
 
 export class AppMockConfig implements AbstractAppConfig {
