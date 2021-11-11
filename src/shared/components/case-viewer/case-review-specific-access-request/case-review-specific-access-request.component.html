@@ -1,0 +1,128 @@
+<exui-error-message
+  *ngIf="formGroup.invalid && submitted"
+  [error]="errorMessage">
+</exui-error-message>
+
+<form [formGroup]="formGroup" (submit)="onSubmit()">
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
+      <div class="govuk-grid-column-two-thirds" >
+        <p></p>
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading">
+            {{ title }}
+          </h1>
+        </legend>
+        <p></p>
+        <table class="govuk-table">
+          <caption></caption>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Case name
+              </th>
+              <td class="govuk-table__cell">{{ requestAccessDetails.caseName }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Case reference
+              </th>
+              <td class="govuk-table__cell">{{ requestAccessDetails.caseReference }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Date submitted
+              </th>
+              <td class="govuk-table__cell">{{ requestAccessDetails.dateSubmitted }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Request from
+              </th>
+              <td class="govuk-table__cell">{{ requestAccessDetails.requestFrom }}<br /></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Reason for case access
+              </th>
+              <td class="govuk-table__cell">{{ requestAccessDetails.reasonForCaseAccess }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div
+          class="govuk-form-group"
+          [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <h1 class="govuk-fieldset__heading">
+                {{ hint }}
+              </h1>
+            </legend>
+            <div
+              id="error-message"
+              class="govuk-error-message"
+              *ngIf="formGroup.get('radioSelected').invalid && submitted">
+              {{ errorMessage.description }}
+            </div>
+            <div class="govuk-radios__item">
+              <input
+                class="govuk-radios__input"
+                id="reason-0"
+                name="radioSelected"
+                type="radio"
+                [value]="accessReasons[0].reason"
+                formControlName="radioSelected"
+                [checked]="accessReasons[0].checked"
+                (change)="onChange()"/>
+              <label class="govuk-label govuk-radios__label" for="reason-0">
+                {{ accessReasons[0].reason }}
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input
+                class="govuk-radios__input"
+                id="reason-1"
+                name="radioSelected"
+                type="radio"
+                [value]="accessReasons[1].reason"
+                formControlName="radioSelected"
+                [checked]="accessReasons[1].checked"
+                (change)="onChange()"/>
+              <label class="govuk-label govuk-radios__label" for="reason-1">
+                {{ accessReasons[1].reason }}
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input
+                class="govuk-radios__input"
+                id="reason-2"
+                name="radioSelected"
+                type="radio"
+                [value]="accessReasons[2].reason"
+                formControlName="radioSelected"
+                [checked]="accessReasons[2].checked"
+                (change)="onChange()"/>
+              <label class="govuk-label govuk-radios__label" for="reason-2">
+                {{ accessReasons[2].reason }}
+              </label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="govuk-button-group">
+    <button class="govuk-button govuk-!-margin-right-3" type="submit">
+      Continue
+    </button>
+    <div class="govuk-grid-column-full govuk-!-padding-left-0">
+      <p>
+        <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)">
+          Cancel
+        </a>
+      </p>
+    </div>
+  </div>
+</form>

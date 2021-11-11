@@ -28,6 +28,7 @@ import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basi
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request/case-specific-access-request.component';
+import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request/case-review-specific-access-request.component'
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseFullAccessViewComponent } from './case-full-access-view/case-full-access-view.component';
 import { CaseViewComponent } from './case-view';
@@ -66,6 +67,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
     CaseSpecificAccessRequestComponent,
+    CaseReviewSpecificAccessRequestComponent,
     ErrorMessageComponent,
     CaseChallengedAccessSuccessComponent
   ],
