@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CaseView, ErrorMessage, ReviewSpecificAccessRequest } from '../../../domain';
 import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
@@ -31,6 +31,7 @@ export class CaseReviewSpecificAccessRequestComponent
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly appConfig: AbstractAppConfig,
   ) {
     this.accessReasons = [
@@ -88,6 +89,9 @@ export class CaseReviewSpecificAccessRequestComponent
         reason: reasonNumber,
         caseId: caseId,
       } as ReviewSpecificAccessRequest;
+      if ( AccessReason.REJECT_REQUEST === radioSelectedValue ) {
+        this.router.navigate(['rejected'], {relativeTo: this.route});
+      }
     }
   }
 

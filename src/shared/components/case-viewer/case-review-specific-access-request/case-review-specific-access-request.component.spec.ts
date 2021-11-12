@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Type } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, UrlSegment } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AccessManagementRequestReviewMockModel } from '../../../../app.config';
 import { AlertModule } from '../../../../components/banners/alert';
@@ -86,6 +86,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     'getAccessManagementMode',
     'getAccessManagementRequestReviewMockModel',
   ]);
+  let router: Router;
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = <Data>{};
@@ -117,6 +118,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
     component.setMockData();
     de = fixture.debugElement;
     fixture.detectChanges();
+    router = TestBed.get(Router);
+    spyOn(router, 'navigate');
   }));
 
   it('should create component and show the "review access" info message banner', () => {
@@ -179,5 +182,16 @@ describe('CaseSpecificAccessRequestComponent', () => {
     spyOn(window.history, 'go');
     cancelLink.click();
     expect(window.history.go).toHaveBeenCalledWith(-1);
+  });
+
+  it('should make a Reviewed Access request with correct parameters and navigate to the rejected page', () => {
+    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-1');
+    radioButton.click();
+    fixture.detectChanges();
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    submitButton.click();
+    fixture.detectChanges();
+    expect(component.formGroup.valid).toBe(true);
+    expect(router.navigate).toHaveBeenCalledWith(['rejected'], {relativeTo: mockRoute});
   });
 });
