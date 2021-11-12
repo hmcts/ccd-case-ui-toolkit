@@ -69,3 +69,4 @@ import 'zone.js/dist/zone-patch-rxjs';
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+(window as any).global = window;
