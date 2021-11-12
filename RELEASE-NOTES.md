@@ -3,6 +3,9 @@
 ### Version 4.3.6-hotfix-EUI-4404
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 
+### Version 4.7.0-EUI-4412-order-fields-CYA-page
+**EUI-4414** Field order on the CYA page changes
+
 ### Version 3.1.5-complex-type-showing-in-tab
 **EUI-3798** 'Empty' complex type showing in tab (due to Label)
 
