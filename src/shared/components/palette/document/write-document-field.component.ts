@@ -122,7 +122,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private fileValidations(): void {
-
     if (this.isAMandatoryComponent()) {
       if (this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
@@ -131,7 +130,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public fileValidationsOnTab(): void {
-
     if (this.isAMandatoryComponent()) {
       if (this.validateFormUploadedDocument()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
@@ -147,6 +145,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
 
+      const uploadFile = this.secureModeOn ?
+        this.documentManagement.secureUploadFile(documentUpload) :
+        this.documentManagement.uploadFile(documentUpload);
       this.fileUploadSubscription = this.documentManagement.uploadFile(documentUpload).subscribe({
         next: (resultDocument: DocumentData) => this.handleDocumentUploadResult(resultDocument),
         error: (error: HttpError) => this.handleDocumentUploadError(error)
