@@ -1,14 +1,29 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
-import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType, FieldTypeEnum } from '../../../domain';
+import {
+  CaseEventData,
+  CaseEventTrigger,
+  CaseField,
+  CasePrintDocument,
+  CaseView,
+  ChallengedAccessRequest,
+  SpecificAccessRequest,
+  Draft,
+  FieldType,
+  FieldTypeEnum,
+  RoleAssignmentResponse,
+  RoleCategory,
+  RoleRequestPayload
+} from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -361,4 +376,51 @@ export class CasesService {
     }
     return false;
   }
+
+  public getCourtOrHearingCentreName(locationId: number): Observable<any> {
+    return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`);
+  }
+
+  public createChallengedAccessRequest(caseId: string, car: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
+    // Assignment API endpoint
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
+    const camUtils = new CaseAccessUtils();
+    let userInfo: UserInfo;
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+
+    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+
+    const payload: RoleRequestPayload = {
+      roleRequest: {
+        assignerId: userInfo.id
+      },
+      requestedRoles: [{
+        actorIdType: 'IDAM',
+        actorId: userInfo.id,
+        roleType: 'CASE',
+        roleName: roleName,
+        classification: 'PUBLIC',
+        roleCategory: roleCategory,
+        grantType: 'CHALLENGED',
+        beginTime: new Date(),
+        endTime: new Date(new Date().setUTCHours(23, 59, 59, 999)),
+        attributes: {
+          caseId: caseId
+        },
+        notes: [{
+          userId: userInfo.id,
+          time: new Date(),
+          comment: JSON.stringify(car)
+        }
+      ]
+      }]
+    };
+
+    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
+  }
+
 }

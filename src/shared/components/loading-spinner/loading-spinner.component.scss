@@ -1,0 +1,36 @@
+.spinner-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 99;
+    .spinner-inner-container {
+        p {
+            text-align: center;
+        }
+
+        .spinner {
+            border: 10px solid #dddddd;
+            border-top: 10px solid #000000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    }
+}    

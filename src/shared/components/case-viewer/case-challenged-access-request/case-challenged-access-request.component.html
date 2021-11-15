@@ -1,0 +1,89 @@
+<exui-error-message *ngIf="formGroup.invalid && submitted" [error]="errorMessage"></exui-error-message>
+<cut-alert type="information">This case requires challenged access.<br/>This is because the case is
+  outside your work area. If you request access to the case, it will be
+  logged for auditing purposes.</cut-alert>
+<form [formGroup]="formGroup" (submit)="onSubmit()">
+  <div class="govuk-form-group" [ngClass]="{'form-group-error': formGroup.invalid && submitted}">
+    <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">
+          {{title}}
+        </h1>
+      </legend>
+      <div id="reason-hint" class="govuk-hint">
+        {{hint}}
+      </div>
+      <div id="error-message" class="govuk-error-message" *ngIf="formGroup.get('radioSelected').invalid && submitted">
+        {{errorMessage.description}}
+      </div>
+      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio" [value]="accessReasons[0].reason"
+          data-aria-controls="conditional-reason-0" formControlName="radioSelected" [checked]="accessReasons[0].checked"
+          (change)="onChange()"/>
+          <label class="govuk-label govuk-radios__label" for="reason-0">
+            {{accessReasons[0].reason}}
+          </label>
+        </div>
+        <div id="conditional-reason-0" *ngIf="formGroup.get('radioSelected').value === accessReasons[0].reason"
+        class="govuk-radios__conditional">
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="case-reference">
+              {{caseRefLabel}}
+            </label>
+            <div id="case-reference-error-message" class="govuk-error-message" *ngIf="formGroup.get('caseReference').invalid && submitted">
+              {{errorMessage.description}}
+            </div>
+            <input class="govuk-input govuk-!-width-one-third"
+            [ngClass]="{'govuk-input--error': formGroup.get('caseReference').invalid && submitted}" id="case-reference"
+            name="case-reference" type="text" formControlName="caseReference">
+          </div>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="reason-1" name="radioSelected" type="radio" [value]="accessReasons[1].reason"
+          formControlName="radioSelected" [checked]="accessReasons[1].checked" (change)="onChange()"/>
+          <label class="govuk-label govuk-radios__label" for="reason-1">
+            {{accessReasons[1].reason}}
+          </label>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="reason-2" name="radioSelected" type="radio" [value]="accessReasons[2].reason"
+          formControlName="radioSelected" [checked]="accessReasons[2].checked" (change)="onChange()"/>
+          <label class="govuk-label govuk-radios__label" for="reason-2">
+            {{accessReasons[2].reason}}
+          </label>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="reason-3" name="radioSelected" type="radio" [value]="accessReasons[3].reason"
+          data-aria-controls="conditional-reason-3" formControlName="radioSelected" [checked]="accessReasons[3].checked"
+          (change)="onChange()"/>
+          <label class="govuk-label govuk-radios__label" for="reason-3" id="reason-3-label">
+            {{accessReasons[3].reason}}
+          </label>
+        </div>
+        <div id="conditional-reason-3" *ngIf="formGroup.get('radioSelected').value === accessReasons[3].reason"
+        class="govuk-radios__conditional">
+          <div class="govuk-form-group">
+            <div id="other-reason-error-message" class="govuk-error-message" *ngIf="formGroup.get('otherReason').invalid && submitted">
+              {{errorMessage.description}}
+            </div>
+            <textarea class="govuk-textarea" [ngClass]="{'govuk-textarea--error': formGroup.get('otherReason').invalid && submitted}"
+            id="other-reason" name="other-reason" rows="5" aria-describedby="reason-3-label" formControlName="otherReason"></textarea>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="govuk-button-group">
+    <button class="govuk-button govuk-!-margin-right-3" type="submit">
+      Submit
+    </button>
+    <div class="govuk-grid-column-full govuk-!-padding-left-0">
+      <p>
+        <a class='govuk-body' (click)="onCancel()" href="javascript:void(0)">
+          Cancel
+        </a>
+      </p>
+    </div>
+  </div>
+</form>
