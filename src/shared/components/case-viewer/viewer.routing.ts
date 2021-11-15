@@ -9,6 +9,7 @@ import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific
 import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
+import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
 
 export const viewerRouting: Routes = [
   {
@@ -72,6 +73,13 @@ export const viewerRouting: Routes = [
         },
         pathMatch: 'full',
       },
+      {
+        path: 'rejected',
+        component: CaseReviewSpecificAccessRejectComponent,
+        data: {
+          title: 'Review Access Rejected'
+        }
+      }
     ],
   },
 ];
