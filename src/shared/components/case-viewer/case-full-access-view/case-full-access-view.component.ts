@@ -39,6 +39,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   @Input() public hasEventSelector = true;
   @Input() public caseDetails: CaseView;
   @Input() public prependedTabs: CaseTab[] = [];
+  @Input() public appendedTabs: CaseTab[] = [];
 
   public BANNER = DisplayMode.BANNER;
   public sortedTabs: CaseTab[];
