@@ -393,34 +393,32 @@ export class CasesService {
 
     const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+    const beginTime = new Date();
+    const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
 
-    const payload: RoleRequestPayload = {
-      roleRequest: {
-        assignerId: userInfo.id
-      },
-      requestedRoles: [{
-        actorIdType: 'IDAM',
-        actorId: userInfo.id,
-        roleType: 'CASE',
-        roleName: roleName,
-        classification: 'PUBLIC',
-        roleCategory: roleCategory,
-        grantType: 'CHALLENGED',
-        beginTime: new Date(),
-        endTime: new Date(new Date().setUTCHours(23, 59, 59, 999)),
-        attributes: {
-          caseId: caseId
-        },
-        notes: [{
-          userId: userInfo.id,
-          time: new Date(),
-          comment: JSON.stringify(car)
-        }
-      ]
-      }]
-    };
+    const payload: RoleRequestPayload = camUtils.getAMPayload(userInfo.id, userInfo.id, roleName, roleCategory,
+                                                                    'CHALLENGED', caseId, car, beginTime, endTime);
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}`, payload);
+    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
+  }
+
+  public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
+    // Assignment API endpoint
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
+    const camUtils = new CaseAccessUtils();
+    let userInfo: UserInfo;
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+
+    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = camUtils.getAMRoleName('specific', roleCategory);
+
+    const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
+                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+
+    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
   }
 
 }
