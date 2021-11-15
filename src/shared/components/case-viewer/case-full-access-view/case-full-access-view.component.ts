@@ -163,7 +163,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public hasTabsPresent(): boolean {
-    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0;
+    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0 || this.appendedTabs.length > 0;
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
@@ -213,10 +213,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
-    const id = (<HTMLElement>tab.element.nativeElement).id
-    if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
-      this.router.navigate([id], {relativeTo: this.route});
-    } else if (id === 'hearings') {
+    const id = (<HTMLElement>tab.element.nativeElement).id;
+    const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
+    if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
+      (tabChangeEvent.index >= tabsLengthBeforeAppended && this.appendedTabs.length)) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;

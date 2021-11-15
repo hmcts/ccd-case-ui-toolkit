@@ -86,7 +86,7 @@
         <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label">
         </mat-tab>
       </mat-tab-group>
-      <router-outlet *ngIf="prependedTabs && prependedTabs.length || (appendedTabs && appendedTabs.length)"></router-outlet>
+      <router-outlet *ngIf="(prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)"></router-outlet>
     </ng-container>
   </div>
 </div>
