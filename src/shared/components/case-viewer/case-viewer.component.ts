@@ -74,7 +74,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   // remove once Access management goes live
   private setMockData(caseDetails: CaseView): void {
     const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock()
-    if (accessManagementBasicViewMock.active && !caseDetails.basicFields) {
+    if (accessManagementBasicViewMock && accessManagementBasicViewMock.active && !caseDetails.basicFields) {
       const access_process_index = caseDetails.metadataFields.findIndex(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
 
