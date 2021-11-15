@@ -216,6 +216,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     const id = (<HTMLElement>tab.element.nativeElement).id
     if (tabChangeEvent.index <= 1 && this.prependedTabs.length) {
       this.router.navigate([id], {relativeTo: this.route});
+    } else if (id === 'hearings') {
+      this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
