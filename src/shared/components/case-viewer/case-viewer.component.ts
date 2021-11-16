@@ -18,6 +18,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   @Input() public hasEventSelector = true;
 
   @Input() public prependedTabs: CaseTab[] = [];
+  @Input() public appendedTabs: CaseTab[] = [];
   @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
   public userAccessType: string;
