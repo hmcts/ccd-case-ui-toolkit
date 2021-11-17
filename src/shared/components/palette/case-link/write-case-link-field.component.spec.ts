@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 import { DebugElement } from '@angular/core';
 import { CaseField, FieldType } from '../../../domain/definition';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { PaletteUtilsModule } from '../utils';
 
 const VALUE = {
@@ -31,11 +31,6 @@ const CASE_FIELD: CaseField = <CaseField>({
   retain_hidden_value: true
 });
 
-const FORM_GROUP: FormGroup = new FormGroup({
-  'Id': new FormControl('LinkedCase'),
-  'CaseReference': new FormControl(VALUE),
-});
-
 describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
   let fixture: ComponentFixture<WriteCaseLinkFieldComponent>;
@@ -57,7 +52,6 @@ describe('WriteCaseLinkFieldComponent', () => {
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
-    component.caseLinkGroup = FORM_GROUP;
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
@@ -79,10 +73,4 @@ describe('WriteCaseLinkFieldComponent', () => {
     expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
   });
 
-  it('verify formgroup controls', () => {
-    expect(component.caseLinkGroup.controls['Id']).toBeTruthy();
-    expect(component.caseLinkGroup.controls['Id'].value).toBe('LinkedCase');
-    expect(component.caseLinkGroup.controls['CaseReference']).toBeTruthy();
-    expect(component.caseLinkGroup.controls['CaseReference'].value).toBe(component.caseLinkGroup['controls']['CaseReference'].value);
-  });
 });
