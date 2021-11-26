@@ -9,6 +9,18 @@ export interface AccessManagementBasicViewMockModel {
   accessProcess?: string;
 }
 
+export interface AccessManagementRequestReviewMockModel {
+  active?: boolean;
+  details?: {
+    caseName: string;
+    caseReference: string;
+    dateSubmitted: string;
+    requestFrom: string;
+    reasonForCaseAccess: string;
+  };
+  accessProcess?: string;
+}
+
 export abstract class AbstractAppConfig {
   abstract load(): Promise<void>;
   abstract getLoginUrl(): string;
@@ -60,7 +72,13 @@ export abstract class AbstractAppConfig {
   getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
+  getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
+    return undefined;
+  }
   getLocationRefApiUrl(): string {
+    return undefined;
+  }
+  getCamRoleAssignmentsApiUrl(): string {
     return undefined;
   }
 }
@@ -107,5 +125,17 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
+  access_management_request_review_mock?: {
+  active?: boolean;
+  details?: {
+    caseName: string;
+    caseReference: string;
+    dateSubmitted: string;
+    requestFrom: string;
+    reasonForCaseAccess: string;
+  };
+  accessProcess?: string;
+  }
   location_ref_api_url?: string;
+  cam_role_assignments_api_url?: string;
 }

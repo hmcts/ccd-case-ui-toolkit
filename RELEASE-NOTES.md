@@ -1,4 +1,18 @@
 ## RELEASE NOTES
+
+### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details
+
+### Version 4.7.0-EUI-4412-order-fields-CYA-page
+**EUI-4414** Field order on the CYA page changes
+
+### Version 3.1.5-complex-type-showing-in-tab
+**EUI-3798** 'Empty' complex type showing in tab (due to Label)
+
+### Version 3.1.5-complex-field-check-answers
+**EUI-4033** Ensured complex fields were interpolated on check you answers page
+
+### Version 3.1.5-pcm-role-non-completion
 ### Version 4.3.1-EUI-4202-challenged-access-request-screen-functionality
 **EUI-4202** Challenged Access Request screen functionality - happy path
 

@@ -91,4 +91,71 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(0);
   });
 
+  it('hides the parent if children are not defined', () => {
+
+    const caseField: CaseField = buildCaseField('ViewApplicationTab', {
+      field_type: {
+        id: 'ViewApplicationTab',
+        type: 'Complex',
+        complex_fields: [
+          {
+            id: 'factorsParenting',
+            label: 'Factors affecting parenting',
+            field_type: {
+              id: 'FactorsParenting',
+              type: 'Complex',
+              complex_fields: [
+                {
+                  id: 'pageHeader',
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'Label',
+                    max: null,
+                    min: null,
+                    type: 'Label'
+                  },
+                  label: 'Is there any evidence of any of the following affecting ability to parent?',
+                  show_condition: null,
+                  retain_hidden_value: null,
+                  security_classification: 'PUBLIC'
+                },
+                {
+                  id: 'alcoholDrugAbuse',
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'YesOrNo',
+                    max: null,
+                    min: null,
+                    type: 'YesOrNo'
+                  },
+                  label: 'Alcohol or drug abuse',
+                  show_condition: null,
+                  retain_hidden_value: null,
+                  security_classification: 'PUBLIC'
+                }
+              ]
+            }
+          }
+        ],
+      },
+      label: 'View application',
+      value: {
+        factorsParenting: {
+          alcoholDrugAbuse: null,
+          alcoholDrugAbuseReason: null,
+          anythingElse: null,
+          anythingElseReason: null,
+          domesticViolence: null,
+          domesticViolenceReason: null,
+        }
+      }
+    }, null);
+    const RESULT: CaseField[] = pipe.transform(caseField, false, undefined, true);
+    expect(RESULT.length).toEqual(0);
+  });
+
 });
