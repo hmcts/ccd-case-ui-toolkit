@@ -1372,10 +1372,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 describe('CaseFullAccessViewComponent - ends with caseID', () => {
 
   let comp: CaseFullAccessViewComponent;
-  let f: ComponentFixture<CaseFullAccessViewComponent>;
-  let d: DebugElement;
+  let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let debugElement: DebugElement;
   beforeEach((() => {
-    TestBedá
+    TestBed
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
@@ -1448,15 +1448,15 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
       })
       .compileComponents();
 
-    f = TestBed.createComponent(CaseFullAccessViewComponent);
-    comp = f.componentInstance;
+    compFixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = compFixture.componentInstance;
     comp.caseDetails = CASE_VIEW;
-    d = f.debugElement;
-    f.detectChanges();
+    debugElement = compFixture.debugElement;
+    compFixture.detectChanges();
   }));
 
   it('should render 1st order of tabs', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(3);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
