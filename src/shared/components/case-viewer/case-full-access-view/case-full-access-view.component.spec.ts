@@ -1369,13 +1369,13 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
 })
 
-fdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
+describe('CaseFullAccessViewComponent - ends with caseID', () => {
 
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
   beforeEach((() => {
-    TestBed
+    TestBedá
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
