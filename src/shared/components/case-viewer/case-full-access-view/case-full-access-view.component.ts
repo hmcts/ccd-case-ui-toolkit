@@ -177,8 +177,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
   public isTriggerButtonDisabled(): boolean {
     return (this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length)
+        && this.error.callbackErrors
+        && this.error.callbackErrors.length)
       || (this.error
         && this.error.details
         && this.error.details.field_errors
@@ -196,15 +196,17 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       const selectedTab: CaseTab = this.prependedTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === tabName.toLowerCase());
       const tab: string = selectedTab ? selectedTab.id : 'tasks'
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, tab]).then(() => {
-        matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
-        this.tabGroup.selectedIndex = matTab.position;
+        matTab = this.tabGroup._tabs.find((x) => selectedTab && x.textLabel === selectedTab.label);
+        if (matTab) {
+          this.tabGroup.selectedIndex = matTab.position;
+        }
       });
     } else {
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
-                                hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
+        hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
       if (matTab && matTab.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.7.6-tab-not-defined"
+**EUI-4562** Case details Active tasks tab on success not returning to active tasks page
+
 ### Version 4.7.6-hearings-tab
 **EUI-4441** Add hearings tab in case details
 
