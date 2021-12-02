@@ -414,6 +414,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * @returns CaseEventData for the specified parameters.
    */
   private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false, clearNonCase = false): CaseEventData {
+
+  /**
+   *
+   * EUI-4873 SSCS - Dynamic lists in a collection within a complex type
+   *
+   * Catering for mid event callbacks, hence the call to re-evaluate
+   * for DynamicList's
+   * 
+   */
+    FieldsUtils.handleNestedDynamicLists({case_fields: caseFields});
+
     // Get the data for the fields specified.
     const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
 
