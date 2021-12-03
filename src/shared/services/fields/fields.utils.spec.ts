@@ -480,4 +480,76 @@ describe('FieldsUtils', () => {
       }])).toBe(true);
     });
   });
+
+  describe('setDynamicListDefinition()', () => {
+
+    it('should set data for dynamic lists', () => {
+
+      const callbackResponse = {
+            field_type: {
+              complex_fields: [
+                {
+                  field_type: {
+                    type: 'DynamicList'
+                  },
+                  id: 'complex_dl',
+                  value: {},
+                  formatted_value: {}
+                }
+              ],
+              type: 'Complex'
+            },
+            value: {
+              complex_dl: {
+                list_items: [
+                  {code: '1', value: '1'},
+                  {code: '2', value: '2'}
+                ],
+                value: {code: '2', value: '2'}
+              }
+            }
+      };
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      const expected = {
+            field_type: {
+              complex_fields: [
+                {
+                  field_type: {
+                    type: 'DynamicList'
+                  },
+                  id: 'complex_dl',
+                  value: {
+                    list_items: [
+                      {code: '1', value: '1'},
+                      {code: '2', value: '2'}
+                    ],
+                    value: {code: '2', value: '2'}
+                  },
+                  formatted_value: {
+                    list_items: [
+                      {code: '1', value: '1'},
+                      {code: '2', value: '2'}
+                    ],
+                    value: {code: '2', value: '2'}
+                  }
+                }
+              ],
+              type: 'Complex'
+            },
+            value: {
+              complex_dl: {
+                list_items: [
+                  {code: '1', value: '1'},
+                  {code: '2', value: '2'}
+                ],
+                value: {code: '2', value: '2'}
+              }
+            }
+      };
+
+      expect(callbackResponse).toEqual(expected);
+    });
+  });
 });
