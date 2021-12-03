@@ -84,7 +84,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
      *
      * Catering for mid event callbacks, hence the call to re-evaluate
      * for DynamicList's
-     * 
+     *
      */
     FieldsUtils.handleNestedDynamicLists({case_fields: caseFields});
 

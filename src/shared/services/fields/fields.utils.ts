@@ -247,56 +247,6 @@ export class FieldsUtils {
     return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
   }
 
-  public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
-    const currentState = this.getCurrentEventState(eventTrigger, form);
-    return (page: WizardPage): boolean => {
-      return page.parsedShowCondition.match(currentState);
-    };
-  }
-
-  public getCurrentEventState(eventTrigger: { case_fields: CaseField[] }, form: FormGroup): object {
-    return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
-  }
-
-  public cloneCaseField(obj: any): CaseField {
-    return Object.assign(new CaseField(), obj);
-  }
-
-  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
-    return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
-  }
-
-  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
-    return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
-  }
-
-  public controlIterator(
-    aControl: AbstractControl,
-    formArrayFn: (array: FormArray) => void,
-    formGroupFn: (group: FormGroup) => void,
-    controlFn: (control: FormControl) => void
-  ): void {
-    if (aControl instanceof FormArray) { // We're in a collection
-      formArrayFn(aControl);
-    } else if (aControl instanceof FormGroup) { // We're in a complex type.
-      formGroupFn(aControl)
-    } else if (aControl instanceof FormControl) { // FormControl
-      controlFn(aControl);
-    }
-  }
-
-  private mergeFields(caseFields: CaseField[], formFields: object, mergeFunction: (field: CaseField, result: object) => void): object {
-    const result: object = FieldsUtils.cloneObject(formFields);
-    caseFields.forEach(field => {
-      mergeFunction(field, result);
-      if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
-        result[field.id] = this.mergeFields(field.field_type.complex_fields, result[field.id], mergeFunction);
-      }
-    });
-    return result;
-  }
-
-
   /**
    * handleNestedDynamicLists()
    * Reassigns list_item and value data to DynamicList children
@@ -371,5 +321,54 @@ export class FieldsUtils {
     }
 
     return null;
+  }
+
+  public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
+    const currentState = this.getCurrentEventState(eventTrigger, form);
+    return (page: WizardPage): boolean => {
+      return page.parsedShowCondition.match(currentState);
+    };
+  }
+
+  public getCurrentEventState(eventTrigger: { case_fields: CaseField[] }, form: FormGroup): object {
+    return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
+  }
+
+  public cloneCaseField(obj: any): CaseField {
+    return Object.assign(new CaseField(), obj);
+  }
+
+  public mergeCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
+    return this.mergeFields(caseFields, formFields, FieldsUtils.DEFAULT_MERGE_FUNCTION);
+  }
+
+  public mergeLabelCaseFieldsAndFormFields(caseFields: CaseField[], formFields: object): object {
+    return this.mergeFields(caseFields, formFields, FieldsUtils.LABEL_MERGE_FUNCTION);
+  }
+
+  public controlIterator(
+    aControl: AbstractControl,
+    formArrayFn: (array: FormArray) => void,
+    formGroupFn: (group: FormGroup) => void,
+    controlFn: (control: FormControl) => void
+  ): void {
+    if (aControl instanceof FormArray) { // We're in a collection
+      formArrayFn(aControl);
+    } else if (aControl instanceof FormGroup) { // We're in a complex type.
+      formGroupFn(aControl)
+    } else if (aControl instanceof FormControl) { // FormControl
+      controlFn(aControl);
+    }
+  }
+
+  private mergeFields(caseFields: CaseField[], formFields: object, mergeFunction: (field: CaseField, result: object) => void): object {
+    const result: object = FieldsUtils.cloneObject(formFields);
+    caseFields.forEach(field => {
+      mergeFunction(field, result);
+      if (field.field_type && field.field_type.complex_fields && field.field_type.complex_fields.length > 0) {
+        result[field.id] = this.mergeFields(field.field_type.complex_fields, result[field.id], mergeFunction);
+      }
+    });
+    return result;
   }
 }
