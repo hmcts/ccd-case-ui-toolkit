@@ -331,14 +331,17 @@ export class FieldsUtils {
             const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
             if (dynamicListValue) {
               const list_items = dynamicListValue.list_items;
-              const value = dynamicListValue.value;
-              field.value = {
+              const complexValue = dynamicListValue.value;
+              const value = {
                 list_items: list_items,
-                value: value ? value : undefined
+                value: complexValue ? complexValue : undefined
+              };
+              field.value = {
+                ...value
               };
               field.formatted_value = {
                 ...field.formatted_value,
-                ...field.value
+                ...value
               };
             }
           } else {

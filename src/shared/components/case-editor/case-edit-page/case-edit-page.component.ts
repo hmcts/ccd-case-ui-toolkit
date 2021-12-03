@@ -383,16 +383,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     // Get the CaseEventData for the current page.
     const pageFields: CaseField[] = this.currentPage.case_fields;
 
-    /**
-     *
-     * EUI-4873 SSCS - Dynamic lists in a collection within a complex type
-     *
-     * Catering for mid event callbacks, hence the call to re-evaluate
-     * for DynamicList's
-     * 
-     */
-    FieldsUtils.handleNestedDynamicLists({case_fields: pageFields});
-
     const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formValue, true);
 
     // Get the CaseEventData for the entire form (all pages).
