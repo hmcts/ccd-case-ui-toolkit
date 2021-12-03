@@ -382,7 +382,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     // Get the CaseEventData for the current page.
     const pageFields: CaseField[] = this.currentPage.case_fields;
-
     const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formValue, true);
 
     // Get the CaseEventData for the entire form (all pages).
@@ -415,7 +414,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * @returns CaseEventData for the specified parameters.
    */
   private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false, clearNonCase = false): CaseEventData {
-
     // Get the data for the fields specified.
     const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
 
