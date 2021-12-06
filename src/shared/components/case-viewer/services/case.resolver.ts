@@ -111,7 +111,7 @@ export class CaseResolver implements Resolve<CaseView> {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
     if (error.status === 400 && this.requestOriginatedFrom === CaseResolver.REQUEST_ORIGINATED_FROM) {
-      this.router. navigate([CaseResolver.NO_RESULTS_PAGE_URL], {
+      this.router.navigate([CaseResolver.NO_RESULTS_PAGE_URL], {
         state: {
           messageId: CaseResolver.NO_RESULTS_PAGE_MESSAGE_ID
         },

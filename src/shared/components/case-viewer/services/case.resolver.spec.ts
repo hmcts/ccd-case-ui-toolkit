@@ -1,6 +1,6 @@
 import { CaseResolver } from './case.resolver';
 import { NavigationEnd } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
 import createSpyObj = jasmine.createSpyObj;
@@ -16,7 +16,7 @@ describe('CaseResolver', () => {
 
     const CASE_CACHED: CaseView = new CaseView();
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
-    const CASE_OBS: Observable<CaseView> = Observable.of(CASE);
+    const CASE_OBS: Observable<CaseView> = of(CASE);
 
     let caseResolver: CaseResolver;
     let draftService: DraftService;
@@ -31,7 +31,7 @@ describe('CaseResolver', () => {
       router = {
         navigate: jasmine.createSpy('navigate'),
         getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
-        events: Observable.of( new NavigationEnd(0, '/case', '/home'))
+        events: of(new NavigationEnd(0, '/case', '/home'))
     };
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
@@ -174,7 +174,7 @@ describe('CaseResolver', () => {
       router = {
         navigate: jasmine.createSpy('navigate'),
         getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
-        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
+        events: of(new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
       caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
@@ -199,7 +199,7 @@ describe('CaseResolver', () => {
       router = {
         navigate: jasmine.createSpy('navigate'),
         getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
-        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+        events: of(new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
       caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
@@ -230,12 +230,12 @@ describe('CaseResolver', () => {
       const error = {
         status: 400
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      casesService.getCaseViewV2.and.returnValue(throwError(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),
         getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
-        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+        events: of(new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
       caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
@@ -256,7 +256,7 @@ describe('CaseResolver', () => {
 
     const DRAFT_CACHED: CaseView = new CaseView();
     DRAFT_CACHED.case_id = 'DRAFT_CASE_CACHED_ID_1';
-    const DRAFT_OBS: Observable<CaseView> = Observable.of(DRAFT);
+    const DRAFT_OBS: Observable<CaseView> = of(DRAFT);
 
     let caseResolver: CaseResolver;
     let draftService: any;
@@ -273,7 +273,7 @@ describe('CaseResolver', () => {
       router = {
         navigate: jasmine.createSpy('navigate'),
         getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
-        events: Observable.of( new NavigationEnd(0, '/case', '/home'))
+        events: of(new NavigationEnd(0, '/case', '/home'))
       };
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
