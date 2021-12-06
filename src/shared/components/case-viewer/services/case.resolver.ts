@@ -8,14 +8,15 @@ import { DraftService, NavigationOrigin } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
-const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
-
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
 
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
+  public static readonly REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
+  public static readonly NO_RESULTS_PAGE_URL = '/search/noresults';
+  public static readonly NO_RESULTS_PAGE_MESSAGE_ID = 3;
 
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
@@ -109,12 +110,17 @@ export class CaseResolver implements Resolve<CaseView> {
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
-    if (error.status === 400 && this.requestOriginatedFrom === REQUEST_ORIGINATED_FROM) {
-      this.router. navigate(['/search/noresults'], { state: { messageId: 3 }, relativeTo: this.route });
+    if (error.status === 400 && this.requestOriginatedFrom === CaseResolver.REQUEST_ORIGINATED_FROM) {
+      this.router. navigate([CaseResolver.NO_RESULTS_PAGE_URL], {
+        state: {
+          messageId: CaseResolver.NO_RESULTS_PAGE_MESSAGE_ID
+        },
+        relativeTo: this.route
+      });
       return Observable.of(null);
     }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
-      this.router.navigate(['/list/case'])
+      this.router.navigate(['/list/case']);
       return Observable.of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
