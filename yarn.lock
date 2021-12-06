@@ -399,10 +399,10 @@
     is-absolute "^1.0.0"
     is-negated-glob "^1.0.0"
 
-"@hmcts/ccpay-web-component@~4.0.0-beta517":
-  version "4.0.0-beta524"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.0-beta524.tgz#08902642c4744f9a70252b63245d15dc6d77d21b"
-  integrity sha512-rfKX1lvUMwz8Hk/AGVzoB0zh0Lgs2DLxLw2Y5suqKZeT5o79bDNlM6nHGXUtDC6p5USnTfmHkswqK9vhsf4NXQ==
+"@hmcts/ccpay-web-component@~4.0.1-beta24":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.2.tgz#e09a3401c577f157dfb5d437a2a8e0e3a3a990c5"
+  integrity sha512-WOAfryrSZS/mbIIgRJwqbweJIhQaFzImwb7JMJOTZs5FDVzfqRs/yehyn4/6iysoIuaKkM76HnaruDW+AaWuCg==
   dependencies:
     tslib "^1.9.0"
 
