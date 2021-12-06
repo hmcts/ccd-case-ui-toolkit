@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.7.6-tab-not-defined",
+  "version": "4.8.4-EUI-4329-data-validation",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
