@@ -30,6 +30,7 @@ describe('CaseResolver', () => {
     beforeEach(() => {
       router = {
         navigate: jasmine.createSpy('navigate'),
+        getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
         events: Observable.of( new NavigationEnd(0, '/case', '/home'))
     };
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
@@ -37,7 +38,7 @@ describe('CaseResolver', () => {
       draftService = createSpyObj('draftService', ['getDraft']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
 
       route = {
         firstChild: {
@@ -172,10 +173,11 @@ describe('CaseResolver', () => {
 
       router = {
         navigate: jasmine.createSpy('navigate'),
+        getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
 
       caseResolver
         .resolve(route)
@@ -196,10 +198,11 @@ describe('CaseResolver', () => {
 
       router = {
         navigate: jasmine.createSpy('navigate'),
+        getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
 
       caseResolver
         .resolve(route)
@@ -221,6 +224,25 @@ describe('CaseResolver', () => {
 
       expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
 
+    });
+
+    it('should redirect to no results found page when case reference search from header is not found', () => {
+      const error = {
+        status: 400
+      };
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+      };
+
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
+      caseResolver.requestOriginatedFrom = '16digitCaseReferenceSearchFromHeader';
+      caseResolver.resolve(route);
+
+      expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: 3 }, relativeTo: route });
     });
   });
 
@@ -250,6 +272,7 @@ describe('CaseResolver', () => {
     beforeEach(() => {
       router = {
         navigate: jasmine.createSpy('navigate'),
+        getCurrentNavigation: jasmine.createSpy('getCurrentNavigation'),
         events: Observable.of( new NavigationEnd(0, '/case', '/home'))
       };
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
@@ -258,7 +281,7 @@ describe('CaseResolver', () => {
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, route);
 
       route = {
         firstChild: {

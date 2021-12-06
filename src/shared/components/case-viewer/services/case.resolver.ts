@@ -1,12 +1,14 @@
-import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
+import { plainToClassFromExist } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
-import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { CaseNotifier, CasesService } from '../../case-editor';
+
+const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -19,12 +21,25 @@ export class CaseResolver implements Resolve<CaseView> {
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
   public cachedCaseView: CaseView;
-  previousUrl: string;
+  public previousUrl: string;
+  public requestOriginatedFrom: string;
   constructor(private caseNotifier: CaseNotifier,
               private casesService: CasesService,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
-              private router: Router) {
+              private router: Router,
+              private route: ActivatedRoute) {
+    // EUI-4549
+    // Track request originated from
+    // If it is from 16-digit case reference search in header, then there is a possibility
+    // that the user might have entered 16-digit case reference in correct format, but it
+    // is not in our system. For eg., 1234-1234-1234-1234.
+    // In this case we have to navigate the user to the no results page instead of case list page.
+    const navigation = this.router.getCurrentNavigation();
+    this.requestOriginatedFrom = navigation && navigation.extras && navigation.extras.state && navigation.extras.state.origin
+      ? navigation.extras.state.origin
+      : null;
+
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -94,6 +109,10 @@ export class CaseResolver implements Resolve<CaseView> {
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
+    if (error.status === 400 && this.requestOriginatedFrom === REQUEST_ORIGINATED_FROM) {
+      this.router. navigate(['/search/noresults'], { state: { messageId: 3 }, relativeTo: this.route });
+      return Observable.of(null);
+    }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case'])
       return Observable.of(null);
