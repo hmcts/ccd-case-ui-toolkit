@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin } from '../../../services';
@@ -117,11 +117,11 @@ export class CaseResolver implements Resolve<CaseView> {
         },
         relativeTo: this.route
       });
-      return Observable.of(null);
+      return of(null);
     }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
-      return Observable.of(null);
+      return of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
       this.router.navigate(['/error']);
