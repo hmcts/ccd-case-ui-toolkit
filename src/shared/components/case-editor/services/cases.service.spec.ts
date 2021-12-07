@@ -2,7 +2,7 @@ import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, ChallengedAccessRequest, HttpError, SpecificAccessRequest } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { HttpErrorService, HttpService, LoadingService, SessionStorageService } from '../../../services';
 import { CasesService } from './cases.service';
@@ -60,17 +60,17 @@ describe('CasesService', () => {
   let wizardPageFieldToCaseFieldMapper: any;
   let casesService: CasesService;
   let workAllocationService: WorkAllocationService;
-  let sessionStorageService: SessionStorageService
+  let sessionStorageService: any;
   let loadingService: any;
   let alertService: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
-    sessionStorageService = createSpyObj<SessionStorageService>('httpService', ['getItem']);
+    sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     wizardPageFieldToCaseFieldMapper = createSpyObj<WizardPageFieldToCaseFieldMapper>(
       'wizardPageFieldToCaseFieldMapper', ['mapAll']);
@@ -84,7 +84,8 @@ describe('CasesService', () => {
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
 
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
-
+    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
     casesService = new CasesService(
       httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService, loadingService,
@@ -538,75 +539,32 @@ describe('CasesService', () => {
     });
   });
 
-  describe('setDynamicListDefinition()', () => {
-
-    it('should set data for dynamic lists', () => {
-
-      const callbackResponse = {
-            field_type: {
-              complex_fields: [
-                {
-                  field_type: {
-                    type: 'DynamicList'
-                  },
-                  id: 'complex_dl',
-                  value: {},
-                  formatted_value: {}
-                }
-              ],
-              type: 'Complex'
-            },
-            value: {
-              complex_dl: {
-                list_items: [
-                  {code: '1', value: '1'},
-                  {code: '2', value: '2'}
-                ],
-                value: {code: '2', value: '2'}
-              }
-            }
+  describe('createChallengedAccessRequest()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should make an api call', () => {
+      const car: ChallengedAccessRequest = {
+        reason: 0,
+        caseReference: '1234',
+        otherReason: 'dummy'
       };
-
-      (casesService as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
-
-      const expected = {
-            field_type: {
-              complex_fields: [
-                {
-                  field_type: {
-                    type: 'DynamicList'
-                  },
-                  id: 'complex_dl',
-                  value: {
-                    list_items: [
-                      {code: '1', value: '1'},
-                      {code: '2', value: '2'}
-                    ],
-                    value: {code: '2', value: '2'}
-                  },
-                  formatted_value: {
-                    list_items: [
-                      {code: '1', value: '1'},
-                      {code: '2', value: '2'}
-                    ],
-                    value: {code: '2', value: '2'}
-                  }
-                }
-              ],
-              type: 'Complex'
-            },
-            value: {
-              complex_dl: {
-                list_items: [
-                  {code: '1', value: '1'},
-                  {code: '2', value: '2'}
-                ],
-                value: {code: '2', value: '2'}
-              }
-            }
-      };
-
-      expect(callbackResponse).toEqual(expected);
+      casesService.createChallengedAccessRequest(CASE_ID, car);
+      expect(httpService.post).toHaveBeenCalled();
     });
   });
+
+  describe('createSpecificAccessRequest()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should make an api call', () => {
+      const sar: SpecificAccessRequest = {
+        specificReason: 'dummy'
+      };
+      casesService.createSpecificAccessRequest(CASE_ID, sar);
+      expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
 });

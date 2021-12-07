@@ -122,7 +122,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private fileValidations(): void {
-
     if (this.isAMandatoryComponent()) {
       if (this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
@@ -131,7 +130,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public fileValidationsOnTab(): void {
-
     if (this.isAMandatoryComponent()) {
       if (this.validateFormUploadedDocument()) {
         this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);

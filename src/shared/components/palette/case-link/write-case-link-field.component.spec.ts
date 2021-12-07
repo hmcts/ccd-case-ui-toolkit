@@ -72,4 +72,5 @@ describe('WriteCaseLinkFieldComponent', () => {
     expect(component.caseField.field_type.complex_fields.length).toEqual(1);
     expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
   });
+
 });
