@@ -1,7 +1,6 @@
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Component } from '@angular/core';
 import { AbstractAppConfig } from '../../../../app.config';
-import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
   selector: 'ccd-case-payment-history-viewer-field',
@@ -10,8 +9,7 @@ import { SessionStorageService } from '../../../services/session/session-storage
 export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadComponent {
 
   constructor(
-    private appConfig: AbstractAppConfig,
-    private readonly sessionStorage: SessionStorageService
+    private appConfig: AbstractAppConfig
   ) {
     super();
   }
@@ -22,26 +20,6 @@ export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadCom
 
   public getPayBulkScanBaseURL() {
     return this.appConfig.getPayBulkScanBaseUrl();
-  }
-
-  public getRefundsUrl() {
-    return this.appConfig.getRefundsUrl();
-  }
-
-  public getUserRoles() {
-    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails') || null);
-    if (!userDetails || !userDetails.hasOwnProperty('roles')) {
-      return [];
-    }
-    return userDetails.roles;
-  }
-
-  public getUserEmail() {
-    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails') || null);
-    if (!userDetails || !userDetails.hasOwnProperty('sub')) {
-      return '';
-    }
-    return userDetails.sub;
   }
 
 }
