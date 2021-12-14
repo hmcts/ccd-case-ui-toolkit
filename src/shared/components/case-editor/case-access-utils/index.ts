@@ -1,4 +1,4 @@
-import { RoleCategory } from '../../../domain';
+import { ChallengedAccessRequest, RoleCategory, RoleGrantTypeCategory, RoleRequestPayload, SpecificAccessRequest } from '../../../domain';
 
 export class CaseAccessUtils {
     // User role mapping
@@ -18,7 +18,7 @@ export class CaseAccessUtils {
     public static readonly CITIZEN_ROLE_CATEGORY = 'CITIZEN';
     public static readonly CITIZEN_ROLE_NAME = 'citizen';
 
-    public getMappedRoleCategory(roles: string[], roleCategories: string[]): RoleCategory {
+    public getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
 
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
 
@@ -69,5 +69,44 @@ export class CaseAccessUtils {
 
         return roleName;
 
+    }
+
+    public getAMPayload(
+        assignerId: string,
+        actorId: string,
+        roleName: string,
+        roleCategory: RoleCategory,
+        grantType: RoleGrantTypeCategory,
+        caseId: string,
+        details: ChallengedAccessRequest | SpecificAccessRequest,
+        beginTime: Date = null,
+        endTime: Date = null
+    ): RoleRequestPayload {
+        const payload: RoleRequestPayload = {
+            roleRequest: {
+                assignerId: assignerId
+            },
+            requestedRoles: [{
+                actorIdType: 'IDAM',
+                actorId: actorId,
+                roleType: 'CASE',
+                roleName: roleName,
+                classification: 'PUBLIC',
+                roleCategory: roleCategory,
+                grantType: grantType,
+                beginTime: beginTime,
+                endTime: endTime,
+                attributes: {
+                    caseId: caseId
+                },
+                notes: [{
+                    userId: assignerId,
+                    time: new Date(),
+                    comment: JSON.stringify(details)
+                }]
+            }]
+        };
+
+        return payload;
     }
 }

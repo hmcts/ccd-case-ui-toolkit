@@ -1251,6 +1251,220 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   });
 })
 
+describe('CaseFullAccessViewComponent - appendedTabs', () => {
+
+  let comp: CaseFullAccessViewComponent;
+  let f: ComponentFixture<CaseFullAccessViewComponent>;
+  let d: DebugElement;
+  beforeEach((() => {
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    f = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = f.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    comp.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    comp.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    d = f.debugElement;
+    f.detectChanges();
+  }));
+
+  it('should render appended tabs hearings', () => {
+    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(6);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
+    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
+  });
+
+})
+
+describe('CaseFullAccessViewComponent - ends with caseID', () => {
+
+  let comp: CaseFullAccessViewComponent;
+  let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let debugElement: DebugElement;
+  beforeEach((() => {
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    compFixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = compFixture.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    debugElement = compFixture.debugElement;
+    compFixture.detectChanges();
+  }));
+
+  it('should render 1st order of tabs', () => {
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(3);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
+    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
+  });
+
+})
+
 // noinspection DuplicatedCode
 describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let mockLocation: any;
