@@ -3,12 +3,16 @@ import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WorkAllocationService } from '../case-editor';
-import { Task } from '../../domain/work-allocation/Task';
+import { TaskPayload } from '../../domain/work-allocation/TaskPayload';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
 
-  private static UserId = 'd90ae606-98e8-47f8-b53c-a7ab77fde22b'
+  private static checkForTasks(payload: TaskPayload, caseId: string): Observable<boolean> {
+    console.log('payload', payload);
+    console.log('caseId', caseId);
+    return of(true);
+  }
 
   constructor(private readonly router: Router, private readonly workAllocationService: WorkAllocationService) {
   }
@@ -21,12 +25,7 @@ export class EventStartGuard implements CanActivate {
       return of(true);
     }
     return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId).pipe(
-      switchMap((tasks: Task[]) => this.checkForTasks(tasks, caseId))
+      switchMap((payload: TaskPayload) => EventStartGuard.checkForTasks(payload, caseId))
     );
-  }
-
-  private checkForTasks(tasks: Task[], caseId: string): Observable<boolean> {
-    // since this only mock use only the hard corded case id
-    return of(true);
   }
 }

@@ -1,9 +1,10 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { EventStartGuard } from './event-start.guard';
 import { of } from 'rxjs';
+import { TaskPayload } from '../../domain/work-allocation/TaskPayload';
 
 describe('EventStartGuard', () => {
-  const tasks = [
+  const tasks: any[] = [
     {
       assignee: null,
       assigneeName: null,
@@ -29,12 +30,15 @@ describe('EventStartGuard', () => {
     route.params.cid = '1620409659381330';
     route.params.eid = 'start';
     route.queryParams = {};
-    service.getTasksByCaseIdAndEventId.and.returnValue(of(tasks));
+    const payload: TaskPayload = {
+      tasks,
+      task_required_for_event: true,
+    }
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
       expect(router.navigate).toHaveBeenCalled();
       expect(canActivate).toBeTruthy();
-      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1620409659381330/task-assignment']);
     });
   });
 });
