@@ -1,34 +1,35 @@
 export interface Task {
-  id: string;
-  type: string;
-  task_state: string;
-  task_system: string;
-  security_classification: string;
-  task_title: string;
-  created_date: string;
-  due_date: string;
-  location_name: string;
-  location: string;
-  jurisdiction: string;
-  region: string;
-  event_id?: string;
-  case_id: string;
-  case_type_id: string;
-  case_category: string;
-  case_name: string;
-  auto_assigned: boolean;
-  actions: TaskAction[];
-  execution_type: string;
-  assignee: string;
-  dueDate: string;
-  taskName: string;
-  caseName: string;
-  caseCategory: string;
-  assigneeName: string;
-  name: string;
+  assignee: string,
+  auto_assigned: boolean,
+  case_category: string,
+  case_id: string,
+  case_management_category: string,
+  case_name: string,
+  case_type_id: string,
+  created_date: string
+  due_date: string,
+  execution_type: string,
+  id: string,
+  jurisdiction: string,
+  location: string,
+  location_name: string,
+  name: string,
+  permissions: { values: Permissions[]},
+  region: string,
+  security_classification: string,
+  task_state: string,
+  task_system: string,
+  task_title: string,
+  type: string,
+  warning_list: { values: string[]},
+  warnings: true,
+  work_type_id: string
 }
 
-export interface TaskAction {
-  id: string;
-  title: string;
+export enum Permissions {
+  Own= 'OWN',
+  Execute= 'EXECUTE',
+  Read= 'READ',
+  Manage= 'MANAGE',
+  Cancel= 'CANCEL',
 }
