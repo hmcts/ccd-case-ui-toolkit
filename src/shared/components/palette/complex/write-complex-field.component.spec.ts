@@ -36,8 +36,8 @@ describe('WriteComplexFieldComponent', () => {
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
-  @Pipe({name: 'ccdIsReadOnlyAndNotCollection'})
-  class MockIsReadOnlyAndNotCollectionPipe implements PipeTransform {
+  @Pipe({name: 'ccdIsReadOnly'})
+  class MockIsReadOnlyPipe implements PipeTransform {
     transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
         return false;
@@ -65,7 +65,7 @@ describe('WriteComplexFieldComponent', () => {
           // Mock
           FieldWriteComponent,
           FieldReadComponent,
-          MockIsReadOnlyAndNotCollectionPipe
+          MockIsReadOnlyPipe
         ],
         providers: [
           IsCompoundPipe,
@@ -631,7 +631,6 @@ describe('WriteComplexFieldComponent', () => {
 
       component.caseField = CASE_FIELD;
       component.formGroup = FORM_GROUP;
-      component.ignoreMandatory = true;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -687,7 +686,6 @@ describe('WriteComplexFieldComponent', () => {
 
       component.caseField = CASE_FIELD;
       component.formGroup = FORM_GROUP;
-      component.ignoreMandatory = true;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -700,6 +698,118 @@ describe('WriteComplexFieldComponent', () => {
       expect(component.caseField.field_type.complex_fields.length).toEqual(2);
       expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toBeUndefined();
       expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toBeUndefined();
+    });
+  });
+
+  describe('Editable Complex type containing a read-only Collection field', () => {
+    const COLLECTION_TYPE: FieldType = {
+      id: 'CollectionFieldType',
+      type: 'Collection',
+      collection_field_type: {
+        id: 'Text',
+        type: 'Text'
+      }
+    };
+    const COLLECTION_FIELD: CaseField = <CaseField>({
+      id: 'ACollection',
+      label: 'Collection of text fields',
+      field_type: COLLECTION_TYPE,
+      display_context: 'READONLY'
+    });
+    const COMPLEX_TYPE: FieldType = {
+      id: 'ComplexFieldWithCollection',
+      type: 'Complex'
+    };
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'AComplexField',
+      label: 'Complex field containing a Collection field',
+      field_type: {
+        ...COMPLEX_TYPE,
+        complex_fields: [COLLECTION_FIELD]
+      },
+      display_context: 'COMPLEX'
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should render the Collection field as read-only', () => {
+      const readOnlyCollectionField = de.query(By.css('ccd-field-read'));
+      expect(readOnlyCollectionField).toBeTruthy();
+      // Confirm that the field is the expected Collection type and is read-only
+      const field = readOnlyCollectionField.componentInstance;
+      expect(field.caseField.field_type instanceof FieldType).toBeTruthy();
+      expect(field.caseField.field_type.id).toEqual(COLLECTION_TYPE.id);
+      expect(field.caseField.field_type.type).toEqual(COLLECTION_TYPE.type);
+      expect(field.caseField.display_context).toEqual('READONLY');
+    });
+  });
+
+  describe('Editable Complex type containing a writable Collection field', () => {
+    const COLLECTION_TYPE: FieldType = {
+      id: 'CollectionFieldType',
+      type: 'Collection',
+      collection_field_type: {
+        id: 'Text',
+        type: 'Text'
+      }
+    };
+    const COLLECTION_FIELD: CaseField = <CaseField>({
+      id: 'ACollection',
+      label: 'Collection of text fields',
+      field_type: COLLECTION_TYPE
+    });
+    const COMPLEX_TYPE: FieldType = {
+      id: 'ComplexFieldWithCollection',
+      type: 'Complex'
+    };
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'AComplexField',
+      label: 'Complex field containing a Collection field',
+      field_type: {
+        ...COMPLEX_TYPE,
+        complex_fields: [COLLECTION_FIELD]
+      },
+      display_context: 'COMPLEX'
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should render the Collection field as writable', () => {
+      const writableCollectionField = de.query(By.css('ccd-field-write'));
+      expect(writableCollectionField).toBeTruthy();
+      // Confirm that the field is the expected Collection type
+      const field = writableCollectionField.componentInstance;
+      expect(field.caseField.field_type instanceof FieldType).toBeTruthy();
+      expect(field.caseField.field_type.id).toEqual(COLLECTION_TYPE.id);
+      expect(field.caseField.field_type.type).toEqual(COLLECTION_TYPE.type);
     });
   });
 });

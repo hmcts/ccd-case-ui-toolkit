@@ -202,7 +202,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       if (foundTab) {
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          if (matTab && matTab.position) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
       // last path is caseId
       } else {

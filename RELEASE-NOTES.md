@@ -1,8 +1,10 @@
 ## RELEASE NOTES
 
-### Version 4.7.7-hearings-tab
+### Version 4.3.6-hotfix-EUI-4404
+**EUI-4404** Fix rendering of read-only Collection field within editable Complex field
+
+### Version 4.7.6-hearings-tab
 **EUI-4441** Add hearings tab in case details
-**EUI-4627** Can't access /hearings tab from URL
 
 ### Version 4.7.0-EUI-4412-order-fields-CYA-page
 **EUI-4414** Field order on the CYA page changes
@@ -55,6 +57,7 @@
 ### Version 4.3.0
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
+
 
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
