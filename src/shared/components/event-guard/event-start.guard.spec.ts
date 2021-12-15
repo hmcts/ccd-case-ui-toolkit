@@ -37,7 +37,6 @@ describe('EventStartGuard', () => {
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
-      expect(router.navigate).toHaveBeenCalled();
       expect(canActivate).toBeTruthy();
     });
   });
