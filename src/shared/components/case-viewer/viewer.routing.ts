@@ -10,6 +10,8 @@ import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigg
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
+import { EventStartComponent } from '../event-management/event-start/event-start.component';
+import { EventStartGuard } from '../../guards/event-start.guard';
 
 export const viewerRouting: Routes = [
   {
@@ -23,7 +25,12 @@ export const viewerRouting: Routes = [
     },
     component: CaseEventTriggerComponent,
     children: editorRouting,
+    canActivate: [EventStartGuard],
     canDeactivate: [FileUploadProgressGuard],
+  },
+  {
+    path: 'eventStart',
+    component: EventStartComponent
   },
   {
     path: 'event/:eid/history',

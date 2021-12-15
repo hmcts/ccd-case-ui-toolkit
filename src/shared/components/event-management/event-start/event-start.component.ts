@@ -8,8 +8,7 @@ import { ComponentPortalExample2Component } from '../component-portal-example2/c
 
 @Component({
   selector: 'ccd-event-start',
-  templateUrl: './event-start.component.html',
-  styleUrls: ['./event-start.component.scss']
+  templateUrl: './event-start.component.html'
 })
 export class EventStartComponent implements OnInit, AfterViewInit {
 

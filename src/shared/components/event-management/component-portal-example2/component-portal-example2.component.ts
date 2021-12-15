@@ -3,8 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'component-portal-example2',
-  templateUrl: './component-portal-example2.component.html',
-  styleUrls: ['./component-portal-example2.component.scss']
+  templateUrl: './component-portal-example2.component.html'
 })
 export class ComponentPortalExample2Component {
   public isNextClick1$ = new BehaviorSubject<boolean>(false);
