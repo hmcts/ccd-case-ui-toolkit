@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { EventStartGuard } from './event-start.guard';
 import { of } from 'rxjs';
-import { TaskPayload } from '../../domain/work-allocation/TaskPayload';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 
 describe('EventStartGuard', () => {
   const tasks: any[] = [

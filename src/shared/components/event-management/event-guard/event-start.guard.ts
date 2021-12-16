@@ -8,18 +8,6 @@ import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 @Injectable()
 export class EventStartGuard implements CanActivate {
 
-  private static checkForTasks(payload: TaskPayload, caseId: string): Observable<boolean> {
-    console.log('payload', payload);
-    console.log('caseId', caseId);
-    return of(true);
-    // if (anyTasksRequired) {
-    // 	this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
-    // 	return of(false);
-    // } else {
-    // 		return of(true);
-    // }
-  }
-
   constructor(private readonly router: Router, private readonly workAllocationService: WorkAllocationService) {
   }
 
@@ -31,7 +19,18 @@ export class EventStartGuard implements CanActivate {
       return of(true);
     }
     return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId).pipe(
-      switchMap((payload: TaskPayload) => EventStartGuard.checkForTasks(payload, caseId))
+      switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId))
     );
+  }
+
+  private checkForTasks(payload: TaskPayload, caseId: string): Observable<boolean> {
+    console.log('payload', payload);
+    console.log('caseId', caseId);
+    if (payload.tasks.length > 0) {
+      this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
+      return of(false);
+    }
+    
+    return of(true);
   }
 }

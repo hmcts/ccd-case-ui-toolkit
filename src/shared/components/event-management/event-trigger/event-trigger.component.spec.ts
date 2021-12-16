@@ -1,13 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { EventTriggerComponent } from './event-trigger.component';
 import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { attr, text } from '../../test/helpers';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { CaseViewTrigger } from '../../../domain';
+import { OrderService } from '../../../services';
+import { attr, text } from '../../../test/helpers';
+import { EventTriggerComponent } from './event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
-import { Subject } from 'rxjs/Subject';
-import { CaseViewTrigger, HttpError } from '../../domain';
-import { OrderService, AlertService } from '../../services';
 
 describe('EventTriggerComponent', () => {
 

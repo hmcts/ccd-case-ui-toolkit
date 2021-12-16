@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
-import { EventStartGuard } from '../event-guard/event-start.guard';
+import { EventStartGuard } from '../event-management/event-guard/event-start.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
@@ -11,11 +11,11 @@ import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigg
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
-import { TaskAssignedComponent } from '../event-trigger/components/task-assigned/task-assigned.component';
-import { MultipleTasksExistComponent } from '../event-trigger/components/multiple-tasks-exist/multiple-tasks-exist.component';
-import { NoTasksAvailableComponent } from '../event-trigger/components/no-tasks-available/no-tasks-available.component';
-import { TaskCancelledComponent } from '../event-trigger/components/task-cancelled/task-cancelled.component';
-import { TaskConflictComponent } from '../event-trigger/components/task-conflict/task-conflict.component';
+import { TaskAssignedComponent } from '../event-management/components/task-assigned/task-assigned.component';
+import { MultipleTasksExistComponent } from '../event-management/components/multiple-tasks-exist/multiple-tasks-exist.component';
+import { NoTasksAvailableComponent } from '../event-management/components/no-tasks-available/no-tasks-available.component';
+import { TaskCancelledComponent } from '../event-management/components/task-cancelled/task-cancelled.component';
+import { TaskConflictComponent } from '../event-management/components/task-conflict/task-conflict.component';
 export const viewerRouting: Routes = [
   {
     path: 'print',
