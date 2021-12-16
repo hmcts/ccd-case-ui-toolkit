@@ -7,16 +7,19 @@ import { CaseChallengedAccessRequestComponent } from './case-challenged-access-r
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
-import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
+import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
-import { TaskAssignedComponent } from '../event-management/components/task-assigned/task-assigned.component';
-import { MultipleTasksExistComponent } from '../event-management/components/multiple-tasks-exist/multiple-tasks-exist.component';
-import { NoTasksAvailableComponent } from '../event-management/components/no-tasks-available/no-tasks-available.component';
-import { TaskCancelledComponent } from '../event-management/components/task-cancelled/task-cancelled.component';
-import { TaskConflictComponent } from '../event-management/components/task-conflict/task-conflict.component';
-import { EventStartComponent } from '..';
+import {
+  EventStartComponent,
+  MultipleTasksExistComponent,
+  NoTasksAvailableComponent,
+  TaskAssignedComponent,
+  TaskCancelledComponent,
+  TaskConflictComponent
+} from '../event-management';
+
 export const viewerRouting: Routes = [
   {
     path: 'print',
@@ -33,7 +36,7 @@ export const viewerRouting: Routes = [
     canDeactivate: [FileUploadProgressGuard],
   },
   {
-    path: 'eventStart',
+    path: 'event-start',
     component: EventStartComponent
   },
   {
