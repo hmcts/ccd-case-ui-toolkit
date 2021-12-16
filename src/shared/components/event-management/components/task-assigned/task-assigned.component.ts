@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Task } from '../../../../domain/work-allocation/Task';
-import { CaseView } from '../../../../domain';
 
 @Component({
   selector: 'app-task-assigned',

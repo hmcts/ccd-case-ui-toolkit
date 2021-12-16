@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CaseViewTrigger } from '../../domain';
-import { OrderService } from '../../services';
+import { CaseViewTrigger } from '../../../domain';
+import { OrderService } from '../../../services';
 
 @Component({
   selector: 'ccd-event-trigger',

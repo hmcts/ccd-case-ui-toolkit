@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { WorkAllocationService } from '../case-editor';
-import { TaskPayload } from '../../domain/work-allocation/TaskPayload';
+import { WorkAllocationService } from '../../case-editor';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
@@ -12,12 +12,12 @@ export class EventStartGuard implements CanActivate {
     console.log('payload', payload);
     console.log('caseId', caseId);
     return of(true);
-		// if (anyTasksRequired) {
-		// 	this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
-		// 	return of(false);
-		// } else {
-		// 		return of(true);
-		// }
+    // if (anyTasksRequired) {
+    // 	this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
+    // 	return of(false);
+    // } else {
+    // 		return of(true);
+    // }
   }
 
   constructor(private readonly router: Router, private readonly workAllocationService: WorkAllocationService) {
