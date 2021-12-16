@@ -400,9 +400,9 @@
     is-negated-glob "^1.0.0"
 
 "@hmcts/ccpay-web-component@~5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.0.tgz#2b0b6e491fceeaabb51c0b57924b9fc6a91952d3"
-  integrity sha512-qVcLIxVMMhjLZfpHwRif2BvQNvTKgv4MKtNnshBIDV3xaJI46xAk2WJvRnkTNpW5fBWNp2q3pPHgvPNm6ksByA==
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.1.tgz#ea41904af1aee9a9eab3b3cd5597d6ccd2794a56"
+  integrity sha512-YKmVKSlK2rjllnoGTWK3RODz9KcgXzPAsQoaoiWRsoEebmVp/Nx+EXJk7LJChCKhodibm6P3JuqYffi3uhCsqg==
   dependencies:
     tslib "^1.9.0"
 
