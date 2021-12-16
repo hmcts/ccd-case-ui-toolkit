@@ -16,6 +16,7 @@ import { MultipleTasksExistComponent } from '../event-management/components/mult
 import { NoTasksAvailableComponent } from '../event-management/components/no-tasks-available/no-tasks-available.component';
 import { TaskCancelledComponent } from '../event-management/components/task-cancelled/task-cancelled.component';
 import { TaskConflictComponent } from '../event-management/components/task-conflict/task-conflict.component';
+import { EventStartComponent } from '..';
 export const viewerRouting: Routes = [
   {
     path: 'print',
@@ -30,6 +31,10 @@ export const viewerRouting: Routes = [
     children: editorRouting,
     canActivate: [EventStartGuard],
     canDeactivate: [FileUploadProgressGuard],
+  },
+  {
+    path: 'eventStart',
+    component: EventStartComponent
   },
   {
     path: 'task-assignment',
