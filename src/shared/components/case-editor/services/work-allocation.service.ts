@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { Task } from '../../../domain/work-allocation/Task';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
@@ -16,7 +15,6 @@ export class WorkAllocationService {
 
   public static IACCaseOfficer = 'caseworker-ia-caseofficer';
   public static IACAdmOfficer = 'caseworker-ia-admofficer';
-  public tasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
   constructor(
     private readonly http: HttpService,
@@ -132,13 +130,7 @@ export class WorkAllocationService {
   }
 
   public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<TaskPayload> {
-    return this.http.get(`/workallocation2/case/tasks/${caseId}/event/${eventId}`)
-      .pipe(
-        tap((response: any) => this.setTasks(response.tasks)),
-      );
+    return this.http.get(`/workallocation2/case/tasks/${caseId}/event/${eventId}`);
   }
 
-  public setTasks(tasks: Task[]) {
-    this.tasks$.next(tasks);
-  }
 }
