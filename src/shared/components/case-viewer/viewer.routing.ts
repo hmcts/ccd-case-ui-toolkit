@@ -19,6 +19,7 @@ import {
   TaskCancelledComponent,
   TaskConflictComponent
 } from '../event-management';
+import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
 
 export const viewerRouting: Routes = [
   {
@@ -36,8 +37,11 @@ export const viewerRouting: Routes = [
     canDeactivate: [FileUploadProgressGuard],
   },
   {
-    path: 'event-start',
-    component: EventStartComponent
+    path: 'eventStart',
+    component: EventStartComponent,
+    resolve: {
+      tasks: EventTasksResolverService
+    }
   },
   {
     path: 'task-assignment',

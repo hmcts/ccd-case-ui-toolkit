@@ -6,7 +6,6 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
-import { Task } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
@@ -133,4 +132,5 @@ export class WorkAllocationService {
   public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<TaskPayload> {
     return this.http.get(`/workallocation2/case/tasks/${caseId}/event/${eventId}`);
   }
+
 }
