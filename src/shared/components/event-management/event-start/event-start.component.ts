@@ -1,79 +1,116 @@
-import { CdkPortalOutlet, ComponentPortal, Portal, TemplatePortal } from '@angular/cdk/portal';
-import { AfterViewInit, Component, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
-import { of } from 'rxjs';
-import { ComponentPortalExample1Component } from '../component-portal-example1/component-portal-example1.component';
-import { ComponentPortalExample2Component } from '../component-portal-example2/component-portal-example2.component';
+import { of, throwError } from 'rxjs';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { EventStates, StateMachineStates } from '../models';
+
+const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 
 @Component({
   selector: 'ccd-event-start',
   templateUrl: './event-start.component.html'
 })
-export class EventStartComponent implements OnInit, AfterViewInit {
+export class EventStartComponent implements OnInit {
 
-  @Input() public event: string;
-  @ViewChild('templatePortalContent') templatePortalContent: TemplateRef<any>;
-  @ViewChild('portal') portal: CdkPortalOutlet;
-  public selectedPortal: Portal<any>;
-  public componentPortal1: ComponentPortal<ComponentPortalExample1Component>;
-  public componentPortal2: ComponentPortal<ComponentPortalExample2Component>;
-  public templatePortal: TemplatePortal<any>;
+  @Input() taskPayload: TaskPayload;
   private stateMachine: StateMachine;
-  private s1: State;
-  private s2: State;
-  private s3: State;
+  private stateNoTask: State;
+  private stateOneTask: State;
+  private stateMultipleTask: State;
+  private stateFinal: State;
+  private context: any;
 
-  private firstAction = (state: State, context ) => {
-    const componentRef = this.portal.attach<ComponentPortalExample1Component>(new ComponentPortal(ComponentPortalExample1Component));
-    componentRef.instance.isNextClick$.subscribe(event => {
-      if (event) {
-        this.stateMachine.currentState.trigger('next');
-      }
-    });
-  };
-  private secondAction = (state: State, context ) => {
-    this.portal.detach();
-    const componentRef = this.portal.attach<ComponentPortalExample2Component>(new ComponentPortal(ComponentPortalExample2Component));
-    componentRef.instance.isNextClick1$.subscribe(event => {
-      if (event) {
-        this.stateMachine.currentState.trigger('next');
-      }
-    });
-  };
-  private lastAction = (state: State, context ) => {
-    const navigationExtras = {queryParams: {isComplete: true}};
-    this.router.navigate(['/cases/case-details/1546883526751282/trigger/sendDirection/sendDirectionsendDirection'], navigationExtras);
-    return true;
-  }
 
-  constructor(
-    private _viewContainerRef: ViewContainerRef,
-    private router: Router
-  ) {
+  constructor(private router: Router) {
   }
 
   public ngOnInit(): void {
-    const context = {
-      task$: of([{}]),
-      cases$: of([]),
+    // Setup the context
+    this.context = {
+      tasks$: of([{}])
     };
-    this.stateMachine = new StateMachine('My first state machine', context);
-    this.s1 = this.stateMachine.createState('My first', false, this.firstAction);
-    this.s2 = this.stateMachine.createState('My second', false, this.secondAction);
-    this.s3 = this.stateMachine.createState('Final State', true, this.lastAction);
-    this.s1.addTransition('next', this.s2);
-    this.s2.addTransition('next', this.s3);
+    // Initiate state machine
+    this.initialiseStateMachine();
   }
 
-  public ngAfterViewInit(): void {
-    this.templatePortal = new TemplatePortal(this.templatePortalContent, this._viewContainerRef);
+  /**
+   * Initialise state machine
+   *
+   */
+  public initialiseStateMachine(): void {
+    // Initiate state machine
+    this.stateMachine = new StateMachine(EVENT_STATE_MACHINE, this.context);
+
+    // Create states
+    this.stateNoTask = this.stateMachine.createState(EventStates.NO_TASK, false, this.entryAction, this.exitAction);
+    this.stateOneTask = this.stateMachine.createState(EventStates.ONE_TASK, false, this.entryAction, this.exitAction);
+    this.stateMultipleTask = this.stateMachine.createState(EventStates.MULTIPLE_TASK, false, this.entryAction, this.exitAction);
+    // Create final state, the second param isComplete is set to true
+    this.stateFinal = this.stateMachine.createState(StateMachineStates.FINAL, true, this.finalAction);
+
+    // Define state transitions
+    this.addTransitions(this.stateNoTask);
+    this.addTransitions(this.stateOneTask);
+    this.addTransitions(this.stateMultipleTask);
+    // Define final state transition
+    this.addTransitions(this.stateFinal);
   }
 
-  public onNextClick() {
-    if (!this.stateMachine.started) {
-      console.log('state machine started');
-      this.stateMachine.start(this.s1);
+  /**
+   * Add transitions
+   */
+  private addTransitions(state: State): void {
+    // TODO: Implement the state transitions based on the requirement
+    switch(state.id) {
+      case EventStates.NO_TASK:
+        // Example below
+        this.stateNoTask.addTransition('next', this.stateOneTask);
+        break;
+      case EventStates.ONE_TASK:
+        break;
+      case EventStates.MULTIPLE_TASK:
+        break;
+      default:
+        throwError('Invalid state');
+      break;
     }
+  }
+
+  /**
+   * State entry action
+   */
+  private entryAction(state: State): void {
+    state.trigger('next');
+  }
+
+  /**
+   * State exit action
+   */
+  private exitAction(state: State): boolean {
+    // TODO: Return true or false based on the scenario
+    return true;
+  }
+
+  /**
+   * State decide action
+   */
+  private decideAction(state: State): void {
+    // Find out the relevant event
+    switch(this.taskPayload.tasks.length) {
+      case 0:
+
+        break;
+      case 1:
+
+        break;
+      default:
+
+        break;
+    }
+  }
+
+  private finalAction(state: State): void {
+    // TODO: Perform final actions, the state machine finished running
   }
 }

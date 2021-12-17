@@ -8,7 +8,7 @@ import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 @Injectable()
 export class EventStartGuard implements CanActivate {
 
-  constructor(private readonly router: Router, private readonly workAllocationService: WorkAllocationService) {
+  constructor(private readonly workAllocationService: WorkAllocationService, private readonly router: Router) {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -26,13 +26,13 @@ export class EventStartGuard implements CanActivate {
   private checkForTasks(payload: TaskPayload, caseId: string): Observable<boolean> {
     console.log('payload', payload);
     console.log('caseId', caseId);
-    if (payload.task_required_for_event && payload.tasks.length > 0) {
-      this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
+
+    if (payload.task_required_for_event) {
+      this.router.navigate([`/cases/case-details/${caseId}/event-start`]);
       return of(false);
     }
 
-    this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
-
-    return of(true);
+    this.router.navigate([`/cases/case-details/${caseId}/event-start`]);
+    return of(false);
   }
 }
