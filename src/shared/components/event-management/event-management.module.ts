@@ -14,6 +14,7 @@ import { TaskConflictComponent } from './components/task-conflict/task-conflict.
 import { EventStartGuard } from './event-guard/event-start.guard';
 import { EventStartComponent } from './event-start/event-start.component';
 import { EventTriggerComponent } from './event-trigger/event-trigger.component';
+import { EventTasksResolverService } from './resolvers/event-tasks-resolver.service';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { EventTriggerComponent } from './event-trigger/event-trigger.component';
     ComponentPortalExample2Component
   ],
   providers: [
-    EventStartGuard
+    EventStartGuard,
+    EventTasksResolverService
   ],
   exports: [
     EventStartComponent,

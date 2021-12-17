@@ -19,11 +19,11 @@ export class EventStartGuard implements CanActivate {
       return of(true);
     }
     return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId).pipe(
-      switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId))
+      switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId))
     );
   }
 
-  private checkForTasks(payload: TaskPayload, caseId: string): Observable<boolean> {
+  private checkForTasks(payload: TaskPayload, caseId: string, eventId: string): Observable<boolean> {
     console.log('payload', payload);
     console.log('caseId', caseId);
     if (payload.task_required_for_event && payload.tasks.length > 0) {
@@ -31,8 +31,7 @@ export class EventStartGuard implements CanActivate {
       return of(false);
     }
 
-    this.router.navigate([`/cases/case-details/${caseId}/eventStart`]);
-
+    this.router.navigate([`/cases/case-details/${caseId}/eventStart`], { queryParams: { caseId, eventId } });
     return of(true);
   }
 }
