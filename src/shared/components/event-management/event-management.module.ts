@@ -4,8 +4,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ActivityModule } from '..';
-import { ComponentPortalExample1Component } from './component-portal-example1/component-portal-example1.component';
-import { ComponentPortalExample2Component } from './component-portal-example2/component-portal-example2.component';
 import { MultipleTasksExistComponent } from './components/multiple-tasks-exist/multiple-tasks-exist.component';
 import { NoTasksAvailableComponent } from './components/no-tasks-available/no-tasks-available.component';
 import { TaskAssignedComponent } from './components/task-assigned/task-assigned.component';
@@ -31,9 +29,7 @@ import { EventTasksResolverService } from './resolvers/event-tasks-resolver.serv
     NoTasksAvailableComponent,
     TaskAssignedComponent,
     TaskCancelledComponent,
-    TaskConflictComponent,
-    ComponentPortalExample1Component,
-    ComponentPortalExample2Component
+    TaskConflictComponent
   ],
   providers: [
     EventStartGuard,
