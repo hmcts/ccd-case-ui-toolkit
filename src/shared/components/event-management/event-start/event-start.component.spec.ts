@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EventStartComponent } from './event-start.component';
 import { EventStateMachineService } from '../services/event-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
+import { EventStates } from '../models';
 
 describe('EventStartComponent', () => {
   let fixture: ComponentFixture<EventStartComponent>;
@@ -69,9 +70,6 @@ describe('EventStartComponent', () => {
     component.ngOnInit();
     expect(component.context.tasks).toEqual(tasks);
     expect(component.stateMachine).toBeDefined();
-    expect(service.initialiseStateMachine).toHaveBeenCalled();
-    expect(service.createStates).toHaveBeenCalled();
-    expect(service.addTransitions).toHaveBeenCalled();
-    expect(service.startStateMachine).toHaveBeenCalled();
+    expect(component.stateMachine.currentState.id).toEqual(EventStates.NO_TASK);
   });
 });

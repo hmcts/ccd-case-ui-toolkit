@@ -20,10 +20,8 @@ export class EventStateMachineService {
   public stateShowErrorMessage: State;
   public stateCancel: State;
   public stateFinal: State;
-  public context: any;
 
-  constructor(context: any) {
-    this.context = context;
+  constructor(private context: any) {
   }
 
   public initialiseStateMachine(): StateMachine {

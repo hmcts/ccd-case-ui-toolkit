@@ -21,7 +21,6 @@ export class EventStartComponent implements OnInit {
   public ngOnInit(): void {
     // Get task payload from route data
     this.tasks = this.route.snapshot.data.tasks;
-    console.log(this.tasks);
 
     // Setup the context
     this.context = {
