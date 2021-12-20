@@ -1,14 +1,14 @@
 export enum EventStates {
-  CHECK_FOR_MATCHING_TASKS = 'CHECK FOR MATCHING TASKS',
-  NO_TASK = 'NO TASK',
-  ONE_TASK = 'ONE TASK',
-  MULTIPLE_TASK = 'MULTIPLE TASK',
-  TASK_ASSIGNED_TO_USER = 'TASK ASSIGNED TO USER',
-  TASK_UNASSIGNED = 'TASK UNASSIGNED',
-  TASK_ASSIGNMENT_REQUIRED = 'TASK ASSIGNMENT REQUIRED',
-  ASSIGN_TASK_TO_SELF = 'ASSIGN TASK TO SELF',
-  ASK_MANAGER_TO_ASSIGN_TASK = 'ASK MANAGER TO ASSIGN TASK',
-  SHOW_WARNING = 'SHOW WARNING',
-  SHOW_ERROR_MESSAGE = 'SHOW ERROR MESSAGE',
-  CANCEL = 'CANCEL'
+  CHECK_FOR_MATCHING_TASKS = 'check-for-matching-tasks',
+  NO_TASK = 'no-task',
+  ONE_TASK = 'one-task',
+  MULTIPLE_TASKS = 'multiple-tasks',
+  TASK_ASSIGNED_TO_USER = 'task-assigned-to-user',
+  TASK_UNASSIGNED = 'task-unassigned',
+  TASK_ASSIGNMENT_REQUIRED = 'task-assignment-required',
+  ASSIGN_TASK_TO_SELF = 'assign-task-to-self',
+  ASK_MANAGER_TO_ASSIGN_TASK = 'ask-manager-to-assign-task',
+  SHOW_WARNING = 'show-warning',
+  SHOW_ERROR_MESSAGE = 'show-error-message',
+  CANCEL = 'cancel'
 }

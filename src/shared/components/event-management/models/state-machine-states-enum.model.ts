@@ -1,3 +1,3 @@
 export enum StateMachineStates {
-  FINAL = 'FINAL'
+  FINAL = 'final'
 }

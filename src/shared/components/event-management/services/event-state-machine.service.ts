@@ -35,7 +35,7 @@ export class EventStateMachineService {
     this.stateCheckForMatchingTasks = stateMachine.createState(
       EventStates.CHECK_FOR_MATCHING_TASKS,
       false,
-      this.initiateEntryState
+      this.initialEntryState
     );
     this.stateNoTask = stateMachine.createState(
       EventStates.NO_TASK,
@@ -48,7 +48,7 @@ export class EventStateMachineService {
       this.entryAction
     );
     this.stateMultipleTask = stateMachine.createState(
-      EventStates.MULTIPLE_TASK,
+      EventStates.MULTIPLE_TASKS,
       false,
       this.decideAction
     );
@@ -104,7 +104,7 @@ export class EventStateMachineService {
     this.addTransitionsForStateCheckForMatchingTasks();
     this.addTransitionsForStateNoTask();
     this.addTransitionsForStateOneTask();
-    this.addTransitionsForStateMultipleTask();
+    this.addTransitionsForStateMultipleTasks();
     this.addTransitionsForStateTaskUnassigned();
     this.addTransitionsForStateTaskAssignmentRequired();
     this.addTransitionsForStateAssignTaskToSelf();
@@ -124,7 +124,7 @@ export class EventStateMachineService {
   /**
    * Initial entry state, decided based on the number of tasks
    */
-  public initiateEntryState(state: State): void {
+  public initialEntryState(state: State): void {
     const taskCount =
       this.context && this.context.tasks ? this.context.tasks.length : 0;
     switch (taskCount) {
@@ -135,7 +135,7 @@ export class EventStateMachineService {
         state.trigger(EventStates.ONE_TASK);
         break;
       default:
-        state.trigger(EventStates.MULTIPLE_TASK);
+        state.trigger(EventStates.MULTIPLE_TASKS);
         break;
     }
   }
@@ -152,7 +152,7 @@ export class EventStateMachineService {
         break;
       case EventStates.ONE_TASK:
         break;
-      case EventStates.MULTIPLE_TASK:
+      case EventStates.MULTIPLE_TASKS:
         break;
       case EventStates.TASK_ASSIGNED_TO_USER:
         break;
@@ -213,7 +213,7 @@ export class EventStateMachineService {
     // TODO: Add required transitions
   }
 
-  public addTransitionsForStateMultipleTask(): void {
+  public addTransitionsForStateMultipleTasks(): void {
     // TODO: Add required transitions
   }
 
