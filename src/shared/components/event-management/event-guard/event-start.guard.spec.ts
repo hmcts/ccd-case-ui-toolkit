@@ -20,19 +20,31 @@ describe('EventStartGuard', () => {
       permissions: [],
     }
   ];
+  const route = {} as ActivatedRouteSnapshot;
+  route.params = {}
+  route.params.cid = '1620409659381330';
+  route.params.eid = 'start';
+  route.queryParams = {};
   const router = jasmine.createSpyObj('router', ['navigate']);
   const service = jasmine.createSpyObj('service', ['getTasksByCaseIdAndEventId']);
-  const guard = new EventStartGuard(router, service);
+  const guard = new EventStartGuard(service, router);
 
-  it('canActivate should return true', () => {
-    const route = {} as ActivatedRouteSnapshot;
-    route.params = {}
-    route.params.cid = '1620409659381330';
-    route.params.eid = 'start';
-    route.queryParams = {};
+  it('canActivate should return false', () => {
     const payload: TaskPayload = {
       tasks,
       task_required_for_event: true,
+    }
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const canActivate$ = guard.canActivate(route);
+    canActivate$.subscribe(canActivate => {
+      expect(canActivate).toEqual(false);
+    });
+  });
+
+  it('canActivate should return true', () => {
+    const payload: TaskPayload = {
+      tasks: [],
+      task_required_for_event: false,
     }
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
