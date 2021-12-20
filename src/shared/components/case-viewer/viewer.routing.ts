@@ -37,7 +37,7 @@ export const viewerRouting: Routes = [
     canDeactivate: [FileUploadProgressGuard],
   },
   {
-    path: 'eventStart',
+    path: 'event-start',
     component: EventStartComponent,
     resolve: {
       tasks: EventTasksResolverService

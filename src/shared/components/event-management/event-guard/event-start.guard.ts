@@ -28,11 +28,11 @@ export class EventStartGuard implements CanActivate {
     console.log('caseId', caseId);
 
     if (payload.task_required_for_event) {
-      this.router.navigate([`/cases/case-details/${caseId}/event-start`]);
+      this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId } });
       return of(false);
     }
 
-    this.router.navigate([`/cases/case-details/${caseId}/eventStart`], { queryParams: { caseId, eventId } });
-    return of(true);
+    this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId } });
+    return of(false);
   }
 }
