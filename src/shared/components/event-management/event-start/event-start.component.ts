@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { EventStateMachineService } from '../services/event-state-machine.service';
@@ -15,6 +15,7 @@ export class EventStartComponent implements OnInit {
   public context: any;
 
   constructor(private service: EventStateMachineService,
+    private router: Router,
     private route: ActivatedRoute) {
   }
 
@@ -28,7 +29,7 @@ export class EventStartComponent implements OnInit {
     };
 
     // Initialise state machine
-    this.service = new EventStateMachineService(this.context);
+    this.service = new EventStateMachineService(this.router, this.route, this.context);
     this.stateMachine = this.service.initialiseStateMachine();
     // Create states
     this.service.createStates(this.stateMachine);

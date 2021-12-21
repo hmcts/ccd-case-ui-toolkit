@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
 import { EventStates, StateMachineStates } from '../models';
@@ -21,7 +22,7 @@ export class EventStateMachineService {
   public stateCancel: State;
   public stateFinal: State;
 
-  constructor(private context: any) {
+  constructor(private router: Router, private route: ActivatedRoute, private context: any) {
   }
 
   public initialiseStateMachine(): StateMachine {
@@ -38,7 +39,7 @@ export class EventStateMachineService {
     this.stateNoTask = stateMachine.createState(
       EventStates.NO_TASK,
       false,
-      this.decideAction
+      this.actionNoTaskAvailable
     );
     this.stateOneTask = stateMachine.createState(
       EventStates.ONE_TASK,
@@ -123,6 +124,7 @@ export class EventStateMachineService {
    * Initial entry state, decided based on the number of tasks
    */
   public initialEntryState(state: State): void {
+		debugger;
     const taskCount =
       this.context && this.context.tasks ? this.context.tasks.length : 0;
     switch (taskCount) {
@@ -193,11 +195,16 @@ export class EventStateMachineService {
     }
   }
 
+	public actionNoTaskAvailable(state: State): void {
+		this.router.navigate(['/no'], { relativeTo: this.route });
+	}
+
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
+		debugger;
     // TODO: Add required transitions
     this.stateCheckForMatchingTasks.addTransition(
       EventStates.NO_TASK,
@@ -207,10 +214,10 @@ export class EventStateMachineService {
 
   public addTransitionsForStateNoTask(): void {
     // TODO: Add required transitions
-    // this.stateNoTask.addTransition(
-    //   EventStates.SHOW_WARNING,
-    //   this.stateShowWarning
-    // );
+    this.stateNoTask.addTransition(
+      EventStates.SHOW_WARNING,
+      this.stateShowWarning
+    );
   }
 
   public addTransitionsForStateOneTask(): void {
