@@ -151,7 +151,7 @@ export class EventStateMachineService {
     switch (state.id) {
       case EventStates.NO_TASK:
         // Example below
-        state.trigger(EventStates.SHOW_WARNING);
+        // state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
         break;
@@ -170,7 +170,7 @@ export class EventStateMachineService {
   /**
    * State exit action
    */
-  private exitAction(state: State): boolean {
+  public exitAction(state: State): boolean {
     // TODO: Return true or false based on the scenario
     return true;
   }
@@ -182,17 +182,7 @@ export class EventStateMachineService {
     // Find out the relevant event
     const taskCount =
       this.context && this.context.tasks ? this.context.tasks.length : 0;
-    switch (taskCount) {
-      case 0:
-        // No tasks
-        break;
-      case 1:
-        // One task
-        break;
-      default:
-        // Multiple tasks
-        break;
-    }
+    // TODO: To be implemented based on the number of tasks
   }
 
 	public actionNoTaskAvailable(state: State): void {

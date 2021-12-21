@@ -88,62 +88,91 @@ describe('EventStateMachineService', () => {
   });
 
   it('should entry action', () => {
-    // TODO: To be implemented
+    service.addTransitions();
+    service.startStateMachine(stateMachine);
+    service.entryAction(stateMachine.currentState);
+    expect(service.entryAction).toBeTruthy();
   });
 
   it('should exit action', () => {
-    // TODO: To be implemented
+    service.exitAction(stateMachine.currentState);
+    expect(service.exitAction).toBeTruthy();
   });
 
   it('should decide action', () => {
-    // TODO: To be implemented
+    service.decideAction(stateMachine.currentState);
+    expect(service.decideAction).toBeTruthy();
   });
 
   it('should add transition for state check for matching tasks', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateCheckForMatchingTasks();
+    expect(service.addTransitionsForStateCheckForMatchingTasks).toBeTruthy();
   });
 
   it ('should add transition for state no task', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateNoTask();
+    expect(service.addTransitionsForStateNoTask).toBeTruthy();
   });
 
   it ('should add transition for state one task', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateMultipleTasks();
+    expect(service.addTransitionsForStateMultipleTasks).toBeTruthy();
   });
 
   it ('should add transition for state multiple tasks', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateTaskAssignedToUser();
+    expect(service.addTransitionsForStateTaskAssignedToUser).toBeTruthy();
   });
 
   it ('should add transition for state task unassigned', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateTaskUnassigned();
+    expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
   });
 
   it ('should add transition for state task assignment required', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateTaskAssignmentRequired();
+    expect(service.addTransitionsForStateTaskAssignmentRequired).toBeTruthy();
   });
 
   it ('should add transition for state assign task to self', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateAssignTaskToSelf();
+    expect(service.addTransitionsForStateAssignTaskToSelf).toBeTruthy();
   });
 
   it ('should add transition for state ask manager to assign task', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateAskManagerToAssignTask();
+    expect(service.addTransitionsForStateAskManagerToAssignTask).toBeTruthy();
   });
 
   it ('should add transition for state show warning', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateShowWarning();
+    expect(service.addTransitionsForStateShowWarning).toBeTruthy();
   });
 
   it ('should add transition for state show error message', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateShowErrorMessage();
+    expect(service.addTransitionsForStateShowErrorMessage).toBeTruthy();
   });
 
   it ('should add transition for state cancel', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateCancel();
+    expect(service.addTransitionsForStateCancel).toBeTruthy();
   });
 
   it ('should add transition for state final', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateFinal();
+    expect(service.addTransitionsForStateFinal).toBeTruthy();
   });
 });
