@@ -127,12 +127,15 @@ export class EventStateMachineService {
       this.context && this.context.tasks ? this.context.tasks.length : 0;
     switch (taskCount) {
       case 0:
+        // No tasks
         state.trigger(EventStates.NO_TASK);
         break;
       case 1:
+        // One task
         state.trigger(EventStates.ONE_TASK);
         break;
       default:
+        // Multiple tasks
         state.trigger(EventStates.MULTIPLE_TASKS);
         break;
     }
@@ -179,10 +182,13 @@ export class EventStateMachineService {
       this.context && this.context.tasks ? this.context.tasks.length : 0;
     switch (taskCount) {
       case 0:
+        // No tasks
         break;
       case 1:
+        // One task
         break;
       default:
+        // Multiple tasks
         break;
     }
   }

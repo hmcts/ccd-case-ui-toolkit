@@ -6,6 +6,6 @@ import { Task } from '../../../../domain/work-allocation/Task';
   templateUrl: './task-conflict.component.html'
 })
 export class TaskConflictComponent {
-  @Input() public task: Task = null;
-  @Input() public caseId: string = null;
+  @Input() public task: Task;
+  @Input() public caseId: string;
 }

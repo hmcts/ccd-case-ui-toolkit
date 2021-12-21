@@ -5,5 +5,5 @@ import { Component, Input } from '@angular/core';
   templateUrl: './multiple-tasks-exist.component.html'
 })
 export class MultipleTasksExistComponent {
-  @Input() public caseId: string = null;
+  @Input() public caseId: string;
 }

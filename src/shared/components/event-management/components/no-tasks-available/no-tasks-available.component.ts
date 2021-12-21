@@ -5,5 +5,5 @@ import { Component, Input } from '@angular/core';
   templateUrl: './no-tasks-available.component.html'
 })
 export class NoTasksAvailableComponent {
-  @Input() public caseId: string = null;
+  @Input() public caseId: string;
 }

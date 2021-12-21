@@ -5,5 +5,5 @@ import { Component, Input } from '@angular/core';
   templateUrl: './task-cancelled.component.html'
 })
 export class TaskCancelledComponent {
-  @Input() public caseId: string = null;
+  @Input() public caseId: string;
 }
