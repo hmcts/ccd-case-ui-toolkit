@@ -15,7 +15,7 @@
   <div class="govuk-form-group govuk-form-group--error">
       <h2 class="govuk-heading-m">Task assignment required</h2>
 
-    <p>This task is assigned to William Priest. You must assigned it to yourself to continue.</p>
+    <p>This task is assigned to {{task.assignee}}. You must assigned it to yourself to continue.</p>
 
     <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">Return to tasks tab</a>
   </div>

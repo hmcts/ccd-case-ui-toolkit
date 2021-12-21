@@ -7,5 +7,5 @@ import { Task } from '../../../../domain/work-allocation/Task';
 })
 export class TaskAssignedComponent {
   @Input() public task: Task = null;
-  @Input() public caseId = '1620409659381330';
+  @Input() public caseId: string = null;
 }

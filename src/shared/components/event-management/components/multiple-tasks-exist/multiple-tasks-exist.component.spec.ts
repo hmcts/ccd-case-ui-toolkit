@@ -1,9 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MultipleTasksExistComponent } from './multiple-tasks-exist.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MultipleTasksExistComponent } from './multiple-tasks-exist.component';
 
 describe('MultipleTasksExistComponent', () => {
   let component: MultipleTasksExistComponent;

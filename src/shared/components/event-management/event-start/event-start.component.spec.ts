@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { EventStartComponent } from './event-start.component';
-import { EventStateMachineService } from '../services/event-state-machine.service';
-import createSpyObj = jasmine.createSpyObj;
 import { EventStates } from '../models';
+import { EventStateMachineService } from '../services/event-state-machine.service';
+import { EventStartComponent } from './event-start.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('EventStartComponent', () => {
   let fixture: ComponentFixture<EventStartComponent>;
