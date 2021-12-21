@@ -13,6 +13,7 @@ import { EventStartGuard } from './event-guard/event-start.guard';
 import { EventStartComponent } from './event-start/event-start.component';
 import { EventTriggerComponent } from './event-trigger/event-trigger.component';
 import { EventTasksResolverService } from './resolvers/event-tasks-resolver.service';
+import { EventStateMachineService } from './services';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { EventTasksResolverService } from './resolvers/event-tasks-resolver.serv
   ],
   providers: [
     EventStartGuard,
-    EventTasksResolverService
+    EventTasksResolverService,
+    EventStateMachineService
   ],
   exports: [
     EventStartComponent,

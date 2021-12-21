@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
-import { EventStates, StateMachineStates } from '../models';
+import { EventStates, StateMachineContext, StateMachineStates } from '../models';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 
@@ -22,11 +21,8 @@ export class EventStateMachineService {
   public stateCancel: State;
   public stateFinal: State;
 
-  constructor(private router: Router, private route: ActivatedRoute, private context: any) {
-  }
-
-  public initialiseStateMachine(): StateMachine {
-    return new StateMachine(EVENT_STATE_MACHINE, this.context);
+  public initialiseStateMachine(context: StateMachineContext): StateMachine {
+    return new StateMachine(EVENT_STATE_MACHINE, context);
   }
 
   public createStates(stateMachine: StateMachine): void {
@@ -123,10 +119,8 @@ export class EventStateMachineService {
   /**
    * Initial entry state, decided based on the number of tasks
    */
-  public initialEntryState(state: State): void {
-		debugger;
-    const taskCount =
-      this.context && this.context.tasks ? this.context.tasks.length : 0;
+  public initialEntryState(state: State, context: StateMachineContext): void {
+    const taskCount = context && context.tasks ? context.tasks.length : 0;
     switch (taskCount) {
       case 0:
         // No tasks
@@ -178,23 +172,21 @@ export class EventStateMachineService {
   /**
    * State decide action
    */
-  public decideAction(state: State): void {
+  public decideAction(state: State, context: StateMachineContext): void {
     // Find out the relevant event
-    const taskCount =
-      this.context && this.context.tasks ? this.context.tasks.length : 0;
+    const taskCount = context && context.tasks ? context.tasks.length : 0;
     // TODO: To be implemented based on the number of tasks
   }
 
-	public actionNoTaskAvailable(state: State): void {
-		this.router.navigate(['/no'], { relativeTo: this.route });
-	}
+  public actionNoTaskAvailable(state: State, context: StateMachineContext): void {
+    context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+  }
 
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
-		debugger;
     // TODO: Add required transitions
     this.stateCheckForMatchingTasks.addTransition(
       EventStates.NO_TASK,
