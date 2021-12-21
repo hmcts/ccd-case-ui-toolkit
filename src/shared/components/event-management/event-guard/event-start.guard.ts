@@ -24,9 +24,6 @@ export class EventStartGuard implements CanActivate {
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string): Observable<boolean> {
-    console.log('payload', payload);
-    console.log('caseId', caseId);
-
     if (payload.task_required_for_event) {
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId } });
       return of(false);
