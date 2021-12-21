@@ -180,17 +180,7 @@ export class EventStateMachineService {
     // Find out the relevant event
     const taskCount =
       this.context && this.context.tasks ? this.context.tasks.length : 0;
-    switch (taskCount) {
-      case 0:
-        // No tasks
-        break;
-      case 1:
-        // One task
-        break;
-      default:
-        // Multiple tasks
-        break;
-    }
+    // TODO: To be implemented based on the number of tasks
   }
 
   public finalAction(state: State): void {
