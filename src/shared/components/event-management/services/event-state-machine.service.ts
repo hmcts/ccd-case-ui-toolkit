@@ -149,7 +149,7 @@ export class EventStateMachineService {
     switch (state.id) {
       case EventStates.NO_TASK:
         // Example below
-        state.trigger(EventStates.SHOW_WARNING);
+        // state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
         break;
@@ -168,7 +168,7 @@ export class EventStateMachineService {
   /**
    * State exit action
    */
-  private exitAction(state: State): boolean {
+  public exitAction(state: State): boolean {
     // TODO: Return true or false based on the scenario
     return true;
   }
