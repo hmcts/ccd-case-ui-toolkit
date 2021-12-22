@@ -1,43 +1,79 @@
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
-import { EventStates, StateMachineStates } from '../models';
+import { Task } from '../../../domain/work-allocation/Task';
+import { EventStates, StateMachineContext, StateMachineStates } from '../models';
 import { EventStateMachineService } from './event-state-machine.service';
 
 describe('EventStateMachineService', () => {
   let service: EventStateMachineService;
   let stateMachine: StateMachine;
-  const tasks = [
+  let mockRoute: ActivatedRoute;
+  let mockRouter: any;
+
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate'),
+    routerState: {}
+  };
+
+  const noTask: Task[] = [];
+
+  const oneTask: Task[] = [
     {
       assignee: null,
-      assigneeName: null,
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
-      task_title: 'Some lovely task name',
-      dueDate: '2021-05-20T16:00:00.000+0000',
-      description:
-        '[End the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
-      location_name: 'Newcastle',
-      location_id: '366796',
-      case_id: '1620409659381330',
+      auto_assigned: false,
       case_category: 'asylum',
+      case_id: '1620409659381330',
+      case_management_category: null,
       case_name: 'Alan Jonson',
-      permissions: [],
-    },
+      case_type_id: null,
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      execution_type: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+      jurisdiction: 'Immigration and Asylum',
+      location: null,
+      location_name: null,
+      name: 'Task name',
+      permissions: null,
+      region: null,
+      security_classification: null,
+      task_state: null,
+      task_system: null,
+      task_title: 'Some lovely task name',
+      type: null,
+      warning_list: null,
+      warnings: true,
+      work_type_id: null
+    }
   ];
-  let context = {
-    tasks: tasks
+
+  let context: StateMachineContext = {
+    tasks: [],
+    caseId: '1620409659381330',
+    router: mockRouter,
+    route: mockRoute
   };
 
   beforeEach(() => {
-    service = new EventStateMachineService(context);
-    stateMachine = new StateMachine('EVENT STATE MACHINE', context);
-    service.createStates(stateMachine);
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: Router, useValue: mockRouter }
+      ]
+    });
+    service = new EventStateMachineService();
   });
 
   it('should initialise state machine', () => {
+    stateMachine = service.initialiseStateMachine(context);
     expect(stateMachine).toBeDefined();
   });
 
   it('should create states', () => {
-    // expect(stateMachine.createState).toHaveBeenCalledTimes(13);
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     expect(service.stateCheckForMatchingTasks.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
     expect(service.stateNoTask.id).toEqual(EventStates.NO_TASK);
     expect(service.stateOneTask.id).toEqual(EventStates.ONE_TASK);
@@ -66,7 +102,11 @@ describe('EventStateMachineService', () => {
     spyOn(service, 'addTransitionsForStateShowErrorMessage');
     spyOn(service, 'addTransitionsForStateCancel');
     spyOn(service, 'addTransitionsForStateFinal');
+
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitions();
+
     expect(service.addTransitionsForStateCheckForMatchingTasks).toHaveBeenCalled();
     expect(service.addTransitionsForStateNoTask).toHaveBeenCalled();
     expect(service.addTransitionsForStateOneTask).toHaveBeenCalled();
@@ -81,16 +121,24 @@ describe('EventStateMachineService', () => {
     expect(service.addTransitionsForStateFinal).toHaveBeenCalled();
   });
 
-  it('should start state machine', () => {
+  it('should start state machine with no task', () => {
+    spyOn(service, 'initialEntryState');
+    // Context with no tasks
+    context.tasks = [];
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventStates.NO_TASK);
+    expect(stateMachine.currentState.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
+    expect(service.initialEntryState).toHaveBeenCalled();
   });
 
   it('should entry action', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    service.entryAction(stateMachine.currentState);
+    service.entryAction(stateMachine.currentState, context);
     expect(service.entryAction).toBeTruthy();
   });
 
@@ -100,18 +148,28 @@ describe('EventStateMachineService', () => {
   });
 
   it('should decide action', () => {
-    service.decideAction(stateMachine.currentState);
+    service.decideAction(stateMachine.currentState, context);
     expect(service.decideAction).toBeTruthy();
   });
 
+  it('should action no task available', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitions();
+    expect(mockRouter.navigate).toHaveBeenCalled();
+  });
+
   it('should add transition for state check for matching tasks', () => {
-    // TODO: To be implemented
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitionsForStateCheckForMatchingTasks();
     expect(service.addTransitionsForStateCheckForMatchingTasks).toBeTruthy();
   });
 
   it ('should add transition for state no task', () => {
     // TODO: To be implemented
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitionsForStateNoTask();
     expect(service.addTransitionsForStateNoTask).toBeTruthy();
   });
@@ -154,6 +212,8 @@ describe('EventStateMachineService', () => {
 
   it ('should add transition for state show warning', () => {
     // TODO: To be implemented
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitionsForStateShowWarning();
     expect(service.addTransitionsForStateShowWarning).toBeTruthy();
   });

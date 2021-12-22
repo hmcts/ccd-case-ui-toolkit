@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
-import { EventStates, StateMachineStates } from '../models';
+import { EventStates, StateMachineContext, StateMachineStates } from '../models';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 
@@ -21,11 +21,8 @@ export class EventStateMachineService {
   public stateCancel: State;
   public stateFinal: State;
 
-  constructor(private context: any) {
-  }
-
-  public initialiseStateMachine(): StateMachine {
-    return new StateMachine(EVENT_STATE_MACHINE, this.context);
+  public initialiseStateMachine(context: StateMachineContext): StateMachine {
+    return new StateMachine(EVENT_STATE_MACHINE, context);
   }
 
   public createStates(stateMachine: StateMachine): void {
@@ -38,7 +35,7 @@ export class EventStateMachineService {
     this.stateNoTask = stateMachine.createState(
       EventStates.NO_TASK,
       false,
-      this.decideAction
+      this.entryAction
     );
     this.stateOneTask = stateMachine.createState(
       EventStates.ONE_TASK,
@@ -78,7 +75,7 @@ export class EventStateMachineService {
     this.stateShowWarning = stateMachine.createState(
       EventStates.SHOW_WARNING,
       false,
-      this.exitAction
+      this.navigateToNoTaskAvailablePage
     );
     this.stateShowErrorMessage = stateMachine.createState(
       EventStates.SHOW_ERROR_MESSAGE,
@@ -122,9 +119,8 @@ export class EventStateMachineService {
   /**
    * Initial entry state, decided based on the number of tasks
    */
-  public initialEntryState(state: State): void {
-    const taskCount =
-      this.context && this.context.tasks ? this.context.tasks.length : 0;
+  public initialEntryState(state: State, context: StateMachineContext): void {
+    const taskCount = context && context.tasks ? context.tasks.length : 0;
     switch (taskCount) {
       case 0:
         // No tasks
@@ -141,15 +137,20 @@ export class EventStateMachineService {
     }
   }
 
+  public navigateToNoTaskAvailablePage(state: State, context: StateMachineContext): void {
+    console.log('Context action not available', context);
+    context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+  }
+
   /**
    * State entry action
    */
-  public entryAction(state: State): void {
+  public entryAction(state: State, context: StateMachineContext): void {
     // TODO: Actions based on the state id
     switch (state.id) {
       case EventStates.NO_TASK:
         // Example below
-        // state.trigger(EventStates.SHOW_WARNING);
+        state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
         break;
@@ -176,10 +177,9 @@ export class EventStateMachineService {
   /**
    * State decide action
    */
-  public decideAction(state: State): void {
+  public decideAction(state: State, context: StateMachineContext): void {
     // Find out the relevant event
-    const taskCount =
-      this.context && this.context.tasks ? this.context.tasks.length : 0;
+    const taskCount = context && context.tasks ? context.tasks.length : 0;
     // TODO: To be implemented based on the number of tasks
   }
 
@@ -188,19 +188,29 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
-    // TODO: Add required transitions
+    // No tasks
     this.stateCheckForMatchingTasks.addTransition(
       EventStates.NO_TASK,
       this.stateNoTask
+    );
+    // One task
+    this.stateCheckForMatchingTasks.addTransition(
+      EventStates.ONE_TASK,
+      this.stateOneTask
+    );
+    // Multiple tasks
+    this.stateCheckForMatchingTasks.addTransition(
+      EventStates.MULTIPLE_TASKS,
+      this.stateMultipleTask
     );
   }
 
   public addTransitionsForStateNoTask(): void {
     // TODO: Add required transitions
-    // this.stateNoTask.addTransition(
-    //   EventStates.SHOW_WARNING,
-    //   this.stateShowWarning
-    // );
+    this.stateNoTask.addTransition(
+      EventStates.SHOW_WARNING,
+      this.stateShowWarning
+    );
   }
 
   public addTransitionsForStateOneTask(): void {
@@ -232,7 +242,7 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateShowWarning(): void {
-    // TODO: Add required transitions
+    this.stateFinal.addTransition(StateMachineStates.FINAL, this.stateFinal);
   }
 
   public addTransitionsForStateShowErrorMessage(): void {
