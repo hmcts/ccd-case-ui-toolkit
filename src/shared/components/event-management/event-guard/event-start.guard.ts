@@ -29,6 +29,7 @@ export class EventStartGuard implements CanActivate {
       return of(false);
     }
 
-    return of(true);
+    this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId } });
+    return of(false);
   }
 }
