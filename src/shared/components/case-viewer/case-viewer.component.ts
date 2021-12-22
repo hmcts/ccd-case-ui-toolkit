@@ -73,7 +73,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   // remove once Access management goes live
   private setMockData(caseDetails: CaseView): void {
-    const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock()
+    const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock();
     if (accessManagementBasicViewMock && accessManagementBasicViewMock.active && !caseDetails.basicFields) {
       const access_process_index = caseDetails.metadataFields.findIndex(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
@@ -93,6 +93,19 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
       caseDetails.basicFields = accessManagementBasicViewMock.basicFields;
 
+    }
+
+    const accessManagementMockData = this.appConfig.getAccessManagemenViewCaseMock();
+
+    if (accessManagementMockData.active && accessManagementMockData.scenarios['caseBanner']) {
+      const caseIds = accessManagementMockData.scenarios['caseBanner'];
+      if (caseIds.indexOf(this.caseDetails.case_id) > -1) {
+        const access = {access: accessManagementMockData.data['caseBanner'][this.caseDetails.case_id]};
+        this.caseDetails = {
+          ...this.caseDetails,
+          ...access
+        };
+      }
     }
   }
 }

@@ -36,5 +36,11 @@ export class CaseView {
     caseManagementLocation?: {
       baseLocation?: number
     }
-  }
+  };
+  access?: {
+    grantType: string,
+    beginTime: Date,
+    endTime: Date,
+    created: Date
+  };
 }

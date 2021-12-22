@@ -29,6 +29,11 @@
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <ccd-activity [caseId]="caseDetails.case_id" [displayMode]="BANNER"></ccd-activity>
+<cut-alert type="information" *ngIf="caseDetails.access">
+  <ng-container *ngIf="caseDetails.access?.grantType === 'CHALLENGED'">You have been given challenged access to this case until midnight tonight.</ng-container>
+  <ng-container *ngIf="caseDetails.access?.grantType === 'SPECIFIC'">You have been given specific access to this case until midnight on 29 December 2021.</ng-container>
+  Access to this case is logged for auditing purposes.
+</cut-alert>
 <div class="grid-row">
   <div class="column-one-half">
     <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
