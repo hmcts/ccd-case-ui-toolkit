@@ -49,7 +49,7 @@ describe('EventStartGuard', () => {
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
-      expect(canActivate).toBeTruthy();
+      expect(canActivate).toEqual(true);
     });
   });
 });
