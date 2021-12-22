@@ -35,7 +35,7 @@ export class EventStateMachineService {
     this.stateNoTask = stateMachine.createState(
       EventStates.NO_TASK,
       false,
-      this.actionNoTaskAvailable
+      this.entryAction
     );
     this.stateOneTask = stateMachine.createState(
       EventStates.ONE_TASK,
@@ -75,7 +75,7 @@ export class EventStateMachineService {
     this.stateShowWarning = stateMachine.createState(
       EventStates.SHOW_WARNING,
       false,
-      this.exitAction
+      this.navigateToNoTaskAvailablePage
     );
     this.stateShowErrorMessage = stateMachine.createState(
       EventStates.SHOW_ERROR_MESSAGE,
@@ -137,15 +137,20 @@ export class EventStateMachineService {
     }
   }
 
+  public navigateToNoTaskAvailablePage(state: State, context: StateMachineContext): void {
+    console.log('Context action not available', context);
+    context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+  }
+
   /**
    * State entry action
    */
-  public entryAction(state: State): void {
+  public entryAction(state: State, context: StateMachineContext): void {
     // TODO: Actions based on the state id
     switch (state.id) {
       case EventStates.NO_TASK:
         // Example below
-        // state.trigger(EventStates.SHOW_WARNING);
+        state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
         break;
@@ -178,19 +183,25 @@ export class EventStateMachineService {
     // TODO: To be implemented based on the number of tasks
   }
 
-  public actionNoTaskAvailable(state: State, context: StateMachineContext): void {
-    context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
-  }
-
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
-    // TODO: Add required transitions
+    // No tasks
     this.stateCheckForMatchingTasks.addTransition(
       EventStates.NO_TASK,
       this.stateNoTask
+    );
+    // One task
+    this.stateCheckForMatchingTasks.addTransition(
+      EventStates.ONE_TASK,
+      this.stateOneTask
+    );
+    // Multiple tasks
+    this.stateCheckForMatchingTasks.addTransition(
+      EventStates.MULTIPLE_TASKS,
+      this.stateMultipleTask
     );
   }
 
@@ -231,7 +242,7 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateShowWarning(): void {
-    // TODO: Add required transitions
+    this.stateFinal.addTransition(StateMachineStates.FINAL, this.stateFinal);
   }
 
   public addTransitionsForStateShowErrorMessage(): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
+import { Task } from '../../../domain/work-allocation/Task';
 import { StateMachineContext } from '../models';
 import { EventStateMachineService } from '../services';
 
@@ -20,7 +21,7 @@ export class EventStartComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get task and case id payload from route data
-    const tasks = this.route.snapshot.data.tasks;
+    const tasks: Task[] = this.route.snapshot.data.tasks;
     const caseId = this.route.snapshot.data.case.case_id;
 
     // Setup the context
