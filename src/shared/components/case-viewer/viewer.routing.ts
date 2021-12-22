@@ -2,14 +2,24 @@ import { Routes } from '@angular/router';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
+import { EventStartGuard } from '../event-management/event-guard/event-start.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
-import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
+import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
+import {
+  EventStartComponent,
+  MultipleTasksExistComponent,
+  NoTasksAvailableComponent,
+  TaskAssignedComponent,
+  TaskCancelledComponent,
+  TaskConflictComponent
+} from '../event-management';
+import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
 
 export const viewerRouting: Routes = [
   {
@@ -23,7 +33,43 @@ export const viewerRouting: Routes = [
     },
     component: CaseEventTriggerComponent,
     children: editorRouting,
+    canActivate: [EventStartGuard],
     canDeactivate: [FileUploadProgressGuard],
+  },
+  {
+    path: 'event-start',
+    component: EventStartComponent,
+    resolve: {
+      tasks: EventTasksResolverService
+    }
+  },
+  {
+    path: 'task-assignment',
+    component: TaskAssignedComponent
+  },
+  {
+    path: 'multiple-tasks-exist',
+    component: MultipleTasksExistComponent
+  },
+  {
+    path: 'no-tasks-available',
+    component: NoTasksAvailableComponent
+  },
+  {
+    path: 'task-cancelled',
+    component: TaskCancelledComponent
+  },
+  {
+    path: 'task-conflict',
+    component: TaskConflictComponent
+  },
+  {
+    path: 'event/:eid/history',
+    component: CaseHistoryComponent,
+  },
+  {
+    path: 'access-request',
+    component: CaseChallengedAccessRequestComponent
   },
   {
     path: 'event/:eid/history',
