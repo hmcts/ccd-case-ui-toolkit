@@ -7,3 +7,10 @@ export enum SpecificAccessRequestPageText {
 export enum SpecificAccessRequestErrors {
   NO_REASON = 'Enter a reason'
 }
+
+export enum SpecificAccessType {
+  NONE,
+  INPROGRESS,
+  FUTURE,
+  INDEFINITE
+}

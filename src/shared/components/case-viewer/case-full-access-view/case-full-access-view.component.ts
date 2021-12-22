@@ -22,6 +22,7 @@ import {
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
+import { SpecificAccessType } from '../case-specific-access-request/models';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -227,6 +228,24 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.tabGroup.selectedIndex = matTab.position;
       }
     }
+
+  }
+
+  public get specificAccessType(): SpecificAccessType {
+    let response = SpecificAccessType.NONE;
+    if (this.caseDetails.access) {
+      const thisMoment = new Date().getTime();
+      const beginTime = new Date(this.caseDetails.access.beginTime).getTime();
+      const endTime = new Date(this.caseDetails.access.endTime).getTime();
+      if (beginTime < thisMoment && !endTime) {
+        response = SpecificAccessType.INDEFINITE;
+      } else if (beginTime < thisMoment) {
+        response = SpecificAccessType.INPROGRESS;
+      } else {
+        response = SpecificAccessType.FUTURE;
+      }
+    }
+    return response;
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
