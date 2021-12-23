@@ -142,6 +142,16 @@ export class EventStateMachineService {
     context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
+	public taskAssignedToUser(state: State, context: StateMachineContext): void {
+		console.log('Context action task assigned to user', context);
+		console.log('Task assignee', context.tasks[0].assignee);
+		if (context.tasks[0].assignee === 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8') {
+
+		} else {
+			context.router.navigate([`/cases/case-details/${context.caseId}/task-reassigned`], { relativeTo: context.route });
+		}
+	}
+
   /**
    * State entry action
    */
@@ -149,10 +159,10 @@ export class EventStateMachineService {
     // TODO: Actions based on the state id
     switch (state.id) {
       case EventStates.NO_TASK:
-        // Example below
         state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
+				state.trigger(EventStates.TASK_ASSIGNED_TO_USER);
         break;
       case EventStates.MULTIPLE_TASKS:
         break;
@@ -206,7 +216,6 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateNoTask(): void {
-    // TODO: Add required transitions
     this.stateNoTask.addTransition(
       EventStates.SHOW_WARNING,
       this.stateShowWarning
@@ -214,7 +223,10 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateOneTask(): void {
-    // TODO: Add required transitions
+		this.stateOneTask.addTransition(
+			EventStates.TASK_ASSIGNED_TO_USER,
+			this.stateTaskAssignedToUser
+		);
   }
 
   public addTransitionsForStateMultipleTasks(): void {

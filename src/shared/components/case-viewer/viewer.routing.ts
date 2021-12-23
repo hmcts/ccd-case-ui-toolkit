@@ -17,7 +17,8 @@ import {
   NoTasksAvailableComponent,
   TaskAssignedComponent,
   TaskCancelledComponent,
-  TaskConflictComponent
+  TaskConflictComponent,
+  TaskReAssignedComponent
 } from '../event-management';
 import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
 
@@ -62,6 +63,10 @@ export const viewerRouting: Routes = [
   {
     path: 'task-conflict',
     component: TaskConflictComponent
+  },
+  {
+    path: 'task-reassigned',
+    component: TaskReAssignedComponent
   },
   {
     path: 'event/:eid/history',
