@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -586,6 +586,9 @@ xdescribe('CaseFullAccessViewComponent', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1029,6 +1032,9 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ActivityPollingService, useValue: activityService},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1114,6 +1120,9 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1212,6 +1221,9 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1326,6 +1338,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1446,6 +1461,9 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();

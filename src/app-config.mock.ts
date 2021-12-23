@@ -152,4 +152,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getRefundsUrl(): string {
     return '';
   }
+
+  getAccessManagemenViewCaseMock(): any {
+    return '';
+  }
 }
