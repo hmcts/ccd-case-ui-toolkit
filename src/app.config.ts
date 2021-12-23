@@ -72,6 +72,9 @@ export abstract class AbstractAppConfig {
   getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
+  getAccessManagemenViewCaseMock(): any {
+    return undefined;
+  }
   getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
     return undefined;
   }
@@ -126,6 +129,7 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
+  access_management_case_view_mock?: any;
   access_management_request_review_mock?: {
   active?: boolean;
   details?: {
