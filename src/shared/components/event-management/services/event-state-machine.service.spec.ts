@@ -133,6 +133,18 @@ describe('EventStateMachineService', () => {
     expect(service.initialEntryState).toHaveBeenCalled();
   });
 
+  it('should start state machine with one task', () => {
+    spyOn(service, 'taskAssignedToUser');
+    // Context with one task
+    context.tasks = oneTask;
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitions();
+    service.startStateMachine(stateMachine);
+    expect(stateMachine.currentState.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
+    expect(service.taskAssignedToUser).toHaveBeenCalled();
+  });
+
   it('should entry action', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
