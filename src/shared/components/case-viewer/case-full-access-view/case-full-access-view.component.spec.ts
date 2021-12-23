@@ -41,6 +41,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import createSpyObj = jasmine.createSpyObj;
+import { SpecificAccessType } from '../case-specific-access-request/models';
 
 @Component({
   // tslint:disable-next-line
@@ -1502,3 +1503,160 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
   });
 });
+
+describe('CaseFullAccessViewComponent - specificAccessType', () => {
+
+  let comp: CaseFullAccessViewComponent;
+  let f: ComponentFixture<CaseFullAccessViewComponent>;
+  let d: DebugElement;
+  beforeEach((() => {
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
+        ]
+      })
+      .compileComponents();
+
+    f = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = f.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    comp.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    comp.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    d = f.debugElement;
+    f.detectChanges();
+  }));
+
+  it('should determine Specifc access in the future', () => {
+    const beginTime = new Date();
+    beginTime.setDate(beginTime.getDate() + 30);
+    const endTime = new Date();
+    endTime.setDate(endTime.getDate() + 60);
+    comp.caseDetails.access = {
+      grantType: 'SPECIFIC',
+      created: new Date(),
+      beginTime,
+      endTime
+    };
+
+    expect(comp.specificAccessType).toBe(SpecificAccessType.FUTURE);
+  });
+
+  it('should determine Specifc access in progress', () => {
+    const beginTime = new Date();
+    beginTime.setDate(beginTime.getDate() - 30);
+    const endTime = new Date();
+    endTime.setDate(endTime.getDate() + 60);
+    comp.caseDetails.access = {
+      grantType: 'SPECIFIC',
+      created: new Date(),
+      beginTime,
+      endTime
+    };
+
+    expect(comp.specificAccessType).toBe(SpecificAccessType.INPROGRESS);
+  });
+
+  it('should determine Specifc access indefinite', () => {
+    const beginTime = new Date();
+    beginTime.setDate(beginTime.getDate() - 30);
+    const endTime = null;
+    comp.caseDetails.access = {
+      grantType: 'SPECIFIC',
+      created: new Date(),
+      beginTime,
+      endTime
+    };
+
+    expect(comp.specificAccessType).toBe(SpecificAccessType.INDEFINITE);
+  });
+
+})
