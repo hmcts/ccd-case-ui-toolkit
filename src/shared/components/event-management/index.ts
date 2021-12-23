@@ -6,4 +6,5 @@ export * from './components/no-tasks-available/no-tasks-available.component';
 export * from './components/task-assigned/task-assigned.component';
 export * from './components/task-cancelled/task-cancelled.component';
 export * from './components/task-conflict/task-conflict.component';
+export * from './components/task-unassigned/task-unassigned.component';
 export * from './event-management.module';

@@ -50,12 +50,12 @@ export class EventStateMachineService {
     this.stateTaskAssignedToUser = stateMachine.createState(
       EventStates.TASK_ASSIGNED_TO_USER,
       false,
-      this.taskAssignedToUser
+      this.entryActionForStateTaskAssignedToUser
     );
     this.stateTaskUnassigned = stateMachine.createState(
       EventStates.TASK_UNASSIGNED,
       false,
-      this.entryAction
+      this.entryActionForStateTaskUnAssigned
     );
     this.stateTaskAssignmentRequired = stateMachine.createState(
       EventStates.TASK_ASSIGNMENT_REQUIRED,
@@ -100,7 +100,7 @@ export class EventStateMachineService {
     this.addTransitionsForStateNoTask();
     this.addTransitionsForStateOneTask();
     this.addTransitionsForStateMultipleTasks();
-		this.addTransitionsForStateTaskAssignedToUser();
+    this.addTransitionsForStateTaskAssignedToUser();
     this.addTransitionsForStateTaskUnassigned();
     this.addTransitionsForStateTaskAssignmentRequired();
     this.addTransitionsForStateAssignTaskToSelf();
@@ -121,6 +121,7 @@ export class EventStateMachineService {
    * Initial entry state, decided based on the number of tasks
    */
   public initialEntryState(state: State, context: StateMachineContext): void {
+    console.log('Initial Entry State', state);
     const taskCount = context && context.tasks ? context.tasks.length : 0;
     switch (taskCount) {
       case 0:
@@ -129,6 +130,7 @@ export class EventStateMachineService {
         break;
       case 1:
         // One task
+        console.log('Initial Entry State trigger ONE TASK');
         state.trigger(EventStates.ONE_TASK);
         break;
       default:
@@ -143,15 +145,35 @@ export class EventStateMachineService {
     context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
-	public taskAssignedToUser(state: State, context: StateMachineContext): void {
-		console.log('Context action task assigned to user', context);
-		console.log('Task assignee', context.tasks[0].assignee);
-		if (context.tasks[0].assignee === 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8') {
+  public entryActionForStateTaskAssignedToUser(state: State, context: StateMachineContext): void {
+    console.log('Context action task assigned to user', context);
+    console.log('Task assignee', context.tasks[0].assignee);
 
-		} else {
-			context.router.navigate([`/cases/case-details/${context.caseId}/task-reassigned`], { relativeTo: context.route });
-		}
-	}
+    if (context.tasks[0].assignee === 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8') {
+      // Task assigned to user, trigger state final
+      state.trigger(StateMachineStates.FINAL);
+    } else {
+      // Task not assigned to user, trigger state task unassigned
+      state.trigger(EventStates.TASK_UNASSIGNED);
+    }
+  }
+
+  public entryActionForStateTaskUnAssigned(state: State, context: StateMachineContext): void {
+    console.log('Context action task unassigned', context);
+    console.log('State action task unassigned', state);
+    console.log('State id action task unassigned', state.id);
+    console.log('Task assignee', context.tasks[0].assignee);
+
+    if (context.tasks[0].assignee) {
+      console.log('True state for task unassigned');
+      // Task is assigned to some other user, trigger state assign task to self
+      state.trigger(EventStates.ASK_MANAGER_TO_ASSIGN_TASK);
+    } else {
+      console.log('False state for task unassigned');
+      // Task is unassigned, trigger final state and display task unassigned error page
+      context.router.navigate([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: context.route });
+    }
+  }
 
   /**
    * State entry action
@@ -163,13 +185,9 @@ export class EventStateMachineService {
         state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
-				state.trigger(EventStates.TASK_ASSIGNED_TO_USER);
+        state.trigger(EventStates.TASK_ASSIGNED_TO_USER);
         break;
       case EventStates.MULTIPLE_TASKS:
-        break;
-      case EventStates.TASK_ASSIGNED_TO_USER:
-        break;
-      case EventStates.TASK_UNASSIGNED:
         break;
       default:
         throwError('Invalid state');
@@ -196,6 +214,7 @@ export class EventStateMachineService {
 
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
+    console.log('FINAL action here');
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
@@ -224,10 +243,11 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateOneTask(): void {
-		this.stateOneTask.addTransition(
-			EventStates.TASK_ASSIGNED_TO_USER,
-			this.stateTaskAssignedToUser
-		);
+    console.log('Add transition for ONE TASK');
+    this.stateOneTask.addTransition(
+      EventStates.TASK_ASSIGNED_TO_USER,
+      this.stateTaskAssignedToUser
+    );
   }
 
   public addTransitionsForStateMultipleTasks(): void {
@@ -235,25 +255,26 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateTaskAssignedToUser(): void {
+    console.log('Add transition for TASK ASSIGNED TO USER');
     this.stateTaskAssignedToUser.addTransition(
-			EventStates.CHECK_FOR_MATCHING_TASKS,
-			this.stateFinal
-		);
-		this.stateTaskAssignedToUser.addTransition(
-			EventStates.TASK_UNASSIGNED,
-			this.stateTaskUnassigned
-		);
+      StateMachineStates.FINAL,
+      this.stateFinal
+    );
+    this.stateTaskAssignedToUser.addTransition(
+      EventStates.TASK_UNASSIGNED,
+      this.stateTaskUnassigned
+    );
   }
 
   public addTransitionsForStateTaskUnassigned(): void {
     this.stateTaskUnassigned.addTransition(
-			EventStates.ASSIGN_TASK_TO_SELF,
-			this.stateAssignTaskToSelf
-		);
-		this.stateTaskUnassigned.addTransition(
-			EventStates.ASK_MANAGER_TO_ASSIGN_TASK,
-			this.stateAskManagerToAssignTask
-		);
+      EventStates.ASSIGN_TASK_TO_SELF,
+      this.stateAssignTaskToSelf
+    );
+    this.stateTaskUnassigned.addTransition(
+      EventStates.ASK_MANAGER_TO_ASSIGN_TASK,
+      this.stateAskManagerToAssignTask
+    );
   }
 
   public addTransitionsForStateTaskAssignmentRequired(): void {

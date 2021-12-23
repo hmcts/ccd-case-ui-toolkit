@@ -19,8 +19,7 @@ describe('EventStateMachineService', () => {
 
   const noTask: Task[] = [];
 
-  const oneTask: Task[] = [
-    {
+  const oneTask: Task = {
       assignee: null,
       auto_assigned: false,
       case_category: 'asylum',
@@ -46,8 +45,7 @@ describe('EventStateMachineService', () => {
       warning_list: null,
       warnings: true,
       work_type_id: null
-    }
-  ];
+    };
 
   let context: StateMachineContext = {
     tasks: [],
@@ -133,17 +131,38 @@ describe('EventStateMachineService', () => {
     expect(service.initialEntryState).toHaveBeenCalled();
   });
 
-  it('should start state machine with one task', () => {
-    spyOn(service, 'taskAssignedToUser');
-    // Context with one task
-    context.tasks = oneTask;
+  it('should navigate to task unassigned error page if one unassigned task', () => {
+    oneTask.assignee = null;
+    context.tasks = [oneTask];
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
-    expect(service.taskAssignedToUser).toHaveBeenCalled();
+    expect(stateMachine.currentState.id).toEqual(EventStates.TASK_UNASSIGNED);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: mockRoute });
   });
+
+// it('should navigate to task unassigned error page if one assigned task to logged in user', () => {
+// oneTask.assignee = '';
+// context.tasks = [oneTask];
+// stateMachine = service.initialiseStateMachine(context);
+// service.createStates(stateMachine);
+// service.addTransitions();
+// service.startStateMachine(stateMachine);
+// expect(stateMachine.currentState.id).toEqual(EventStates.TASK_UNASSIGNED);
+// expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: mockRoute });
+// });
+
+// it('should ask manager to assign task if one task assigned to another user', () => {
+// oneTask.assignee = 'another user';
+// context.tasks = [oneTask];
+// stateMachine = service.initialiseStateMachine(context);
+// service.createStates(stateMachine);
+// service.addTransitions();
+// service.startStateMachine(stateMachine);
+// expect(stateMachine.currentState.id).toEqual(EventStates.TASK_UNASSIGNED);
+// expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: mockRoute });
+// });
 
   it('should entry action', () => {
     stateMachine = service.initialiseStateMachine(context);
@@ -194,12 +213,20 @@ describe('EventStateMachineService', () => {
 
   it ('should add transition for state multiple tasks', () => {
     // TODO: To be implemented
+    service.addTransitionsForStateMultipleTasks();
+    expect(service.addTransitionsForStateMultipleTasks).toBeTruthy();
+  });
+
+  it ('should add transition for state task assigned to user', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitionsForStateTaskAssignedToUser();
     expect(service.addTransitionsForStateTaskAssignedToUser).toBeTruthy();
   });
 
   it ('should add transition for state task unassigned', () => {
-    // TODO: To be implemented
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
     service.addTransitionsForStateTaskUnassigned();
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
   });

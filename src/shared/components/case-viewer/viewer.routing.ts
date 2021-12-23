@@ -20,6 +20,7 @@ import {
   TaskConflictComponent
 } from '../event-management';
 import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
+import { TaskUnassignedComponent } from '../event-management/components/task-unassigned/task-unassigned.component';
 
 export const viewerRouting: Routes = [
   {
@@ -46,6 +47,10 @@ export const viewerRouting: Routes = [
   {
     path: 'task-assignment',
     component: TaskAssignedComponent
+  },
+  {
+    path: 'task-unassigned',
+    component: TaskUnassignedComponent
   },
   {
     path: 'multiple-tasks-exist',

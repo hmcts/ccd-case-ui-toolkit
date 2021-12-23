@@ -99,13 +99,4 @@ describe('EventStartComponent', () => {
     expect(component.stateMachine.currentState.id).toEqual(EventStates.SHOW_WARNING);
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
-
-  it('should ngOnInit setup context and state machine with one task', () => {
-    mockRoute.snapshot.data.tasks = tasks;
-    component.ngOnInit();
-    expect(component.context.tasks).toEqual(tasks);
-    expect(component.stateMachine).toBeDefined();
-    expect(component.stateMachine.currentState.id).toEqual(EventStates.TASK_ASSIGNED_TO_USER);
-    expect(mockRouter.navigate).toHaveBeenCalled();
-  });
 });
