@@ -16,4 +16,8 @@ export class TaskReAssignedComponent {
       ? this.route.snapshot.data.tasks[0].assignee
       : 'another user'
   }
+
+	onContinue(): void {
+		console.log('Continue');
+	}
 }

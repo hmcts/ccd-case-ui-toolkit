@@ -50,7 +50,7 @@ export class EventStateMachineService {
     this.stateTaskAssignedToUser = stateMachine.createState(
       EventStates.TASK_ASSIGNED_TO_USER,
       false,
-      this.entryAction
+      this.taskAssignedToUser
     );
     this.stateTaskUnassigned = stateMachine.createState(
       EventStates.TASK_UNASSIGNED,
@@ -100,6 +100,7 @@ export class EventStateMachineService {
     this.addTransitionsForStateNoTask();
     this.addTransitionsForStateOneTask();
     this.addTransitionsForStateMultipleTasks();
+		this.addTransitionsForStateTaskAssignedToUser();
     this.addTransitionsForStateTaskUnassigned();
     this.addTransitionsForStateTaskAssignmentRequired();
     this.addTransitionsForStateAssignTaskToSelf();
@@ -234,11 +235,25 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateTaskAssignedToUser(): void {
-    // TODO: Add required transitions
+    this.stateTaskAssignedToUser.addTransition(
+			EventStates.CHECK_FOR_MATCHING_TASKS,
+			this.stateFinal
+		);
+		this.stateTaskAssignedToUser.addTransition(
+			EventStates.TASK_UNASSIGNED,
+			this.stateTaskUnassigned
+		);
   }
 
   public addTransitionsForStateTaskUnassigned(): void {
-    // TODO: Add required transitions
+    this.stateTaskUnassigned.addTransition(
+			EventStates.ASSIGN_TASK_TO_SELF,
+			this.stateAssignTaskToSelf
+		);
+		this.stateTaskUnassigned.addTransition(
+			EventStates.ASK_MANAGER_TO_ASSIGN_TASK,
+			this.stateAskManagerToAssignTask
+		);
   }
 
   public addTransitionsForStateTaskAssignmentRequired(): void {

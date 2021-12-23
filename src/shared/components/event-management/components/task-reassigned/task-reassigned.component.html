@@ -20,7 +20,7 @@
     <p>Click Continue to reassign the task to you and save your progress.</p>
     <p>Alternatively, click Cancel to return to the tasks tab without saving your progress.</p>
 
-    <button type="submit" class="govuk-button govuk-!-margin-right-2" data-module="govuk-button">Continue</button>
+    <button click="onContinue()" class="govuk-button govuk-!-margin-right-2" data-module="govuk-button">Continue</button>
     <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">Cancel</a>
   </div>
 </div>
