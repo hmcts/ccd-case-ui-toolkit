@@ -9,6 +9,7 @@ import { NoTasksAvailableComponent } from './components/no-tasks-available/no-ta
 import { TaskAssignedComponent } from './components/task-assigned/task-assigned.component';
 import { TaskCancelledComponent } from './components/task-cancelled/task-cancelled.component';
 import { TaskConflictComponent } from './components/task-conflict/task-conflict.component';
+import { TaskUnassignedComponent } from './components/task-unassigned/task-unassigned.component';
 import { EventStartGuard } from './event-guard/event-start.guard';
 import { EventStartComponent } from './event-start/event-start.component';
 import { EventTriggerComponent } from './event-trigger/event-trigger.component';
@@ -30,7 +31,8 @@ import { EventStateMachineService } from './services';
     NoTasksAvailableComponent,
     TaskAssignedComponent,
     TaskCancelledComponent,
-    TaskConflictComponent
+    TaskConflictComponent,
+    TaskUnassignedComponent
   ],
   providers: [
     EventStartGuard,
@@ -40,7 +42,8 @@ import { EventStateMachineService } from './services';
   exports: [
     EventStartComponent,
     EventTriggerComponent,
-    TaskAssignedComponent
+    TaskAssignedComponent,
+    TaskUnassignedComponent
   ]
 })
 export class EventManagementModule {}

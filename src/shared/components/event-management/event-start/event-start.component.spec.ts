@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Task } from '../../../domain/work-allocation/Task';
+import { SessionStorageService } from '../../../services';
 import { EventStates } from '../models';
 import { EventStateMachineService } from '../services/event-state-machine.service';
 import { EventStartComponent } from './event-start.component';
@@ -76,6 +77,7 @@ describe('EventStartComponent', () => {
       declarations: [EventStartComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        SessionStorageService,
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: EventStateMachineService, useValue: eventStateMachineService },

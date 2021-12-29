@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
+import { UserInfo } from '../../../domain/user/user-info.model';
 import { EventStates, StateMachineContext, StateMachineStates } from '../models';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
@@ -121,7 +123,6 @@ export class EventStateMachineService {
    * Initial entry state, decided based on the number of tasks
    */
   public initialEntryState(state: State, context: StateMachineContext): void {
-    console.log('Initial Entry State', state);
     const taskCount = context && context.tasks ? context.tasks.length : 0;
     switch (taskCount) {
       case 0:
@@ -130,7 +131,6 @@ export class EventStateMachineService {
         break;
       case 1:
         // One task
-        console.log('Initial Entry State trigger ONE TASK');
         state.trigger(EventStates.ONE_TASK);
         break;
       default:
@@ -141,15 +141,14 @@ export class EventStateMachineService {
   }
 
   public navigateToNoTaskAvailablePage(state: State, context: StateMachineContext): void {
-    console.log('Context action not available', context);
     context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
   public entryActionForStateTaskAssignedToUser(state: State, context: StateMachineContext): void {
-    console.log('Context action task assigned to user', context);
-    console.log('Task assignee', context.tasks[0].assignee);
+    const userInfoStr = context.sessionStorageService.getItem('userDetails');
+    const userInfo: UserInfo = JSON.parse(userInfoStr);
 
-    if (context.tasks[0].assignee === 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8') {
+    if (context.tasks[0].assignee === userInfo.id) {
       // Task assigned to user, trigger state final
       state.trigger(StateMachineStates.FINAL);
     } else {
@@ -159,18 +158,12 @@ export class EventStateMachineService {
   }
 
   public entryActionForStateTaskUnAssigned(state: State, context: StateMachineContext): void {
-    console.log('Context action task unassigned', context);
-    console.log('State action task unassigned', state);
-    console.log('State id action task unassigned', state.id);
-    console.log('Task assignee', context.tasks[0].assignee);
-
     if (context.tasks[0].assignee) {
-      console.log('True state for task unassigned');
-      // Task is assigned to some other user, trigger state assign task to self
-      state.trigger(EventStates.ASK_MANAGER_TO_ASSIGN_TASK);
+      // Task is assigned to some other user, navigate to task assigned error page
+      context.router.navigate([`/cases/case-details/${context.caseId}/task-assigned`],
+        { queryParams: context.tasks[0], relativeTo: context.route });
     } else {
-      console.log('False state for task unassigned');
-      // Task is unassigned, trigger final state and display task unassigned error page
+      // Task is unassigned, navigate to task unassigned error page
       context.router.navigate([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: context.route });
     }
   }
@@ -243,7 +236,6 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateOneTask(): void {
-    console.log('Add transition for ONE TASK');
     this.stateOneTask.addTransition(
       EventStates.TASK_ASSIGNED_TO_USER,
       this.stateTaskAssignedToUser
@@ -255,7 +247,6 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateTaskAssignedToUser(): void {
-    console.log('Add transition for TASK ASSIGNED TO USER');
     this.stateTaskAssignedToUser.addTransition(
       StateMachineStates.FINAL,
       this.stateFinal
