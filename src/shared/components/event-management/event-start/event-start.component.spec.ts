@@ -62,6 +62,9 @@ describe('EventStartComponent', () => {
           case_id: '1620409659381330'
         }
       },
+      queryParams: {
+        eventId: 'editAppealAfterSubmit'
+      }
     }
   };
 

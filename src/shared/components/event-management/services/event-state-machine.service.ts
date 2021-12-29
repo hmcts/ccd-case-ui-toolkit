@@ -19,8 +19,6 @@ export class EventStateMachineService {
   public stateAssignTaskToSelf: State;
   public stateAskManagerToAssignTask: State;
   public stateShowWarning: State;
-  public stateShowErrorMessage: State;
-  public stateCancel: State;
   public stateFinal: State;
 
   public initialiseStateMachine(context: StateMachineContext): StateMachine {
@@ -84,16 +82,6 @@ export class EventStateMachineService {
       false,
       this.navigateToNoTaskAvailablePage
     );
-    this.stateShowErrorMessage = stateMachine.createState(
-      EventStates.SHOW_ERROR_MESSAGE,
-      false,
-      this.exitAction
-    );
-    this.stateCancel = stateMachine.createState(
-      EventStates.CANCEL,
-      false,
-      this.exitAction
-    );
     // Create final state, the second param isComplete is set to true
     this.stateFinal = stateMachine.createState(
       StateMachineStates.FINAL,
@@ -109,12 +97,6 @@ export class EventStateMachineService {
     this.addTransitionsForStateMultipleTasks();
     this.addTransitionsForStateTaskAssignedToUser();
     this.addTransitionsForStateTaskUnassigned();
-    this.addTransitionsForStateTaskAssignmentRequired();
-    this.addTransitionsForStateAssignTaskToSelf();
-    this.addTransitionsForStateAskManagerToAssignTask();
-    this.addTransitionsForStateShowWarning();
-    this.addTransitionsForStateShowErrorMessage();
-    this.addTransitionsForStateCancel();
 
     // Define final state transition
     this.addTransitionsForStateFinal();
@@ -215,23 +197,6 @@ export class EventStateMachineService {
     }
   }
 
-  /**
-   * State exit action
-   */
-  public exitAction(state: State): boolean {
-    // TODO: Return true or false based on the scenario
-    return true;
-  }
-
-  /**
-   * State decide action
-   */
-  public decideAction(state: State, context: StateMachineContext): void {
-    // Find out the relevant event
-    const taskCount = context && context.tasks ? context.tasks.length : 0;
-    // TODO: To be implemented based on the number of tasks
-  }
-
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
     console.log('FINAL action here');
@@ -301,30 +266,6 @@ export class EventStateMachineService {
       EventStates.ASK_MANAGER_TO_ASSIGN_TASK,
       this.stateAskManagerToAssignTask
     );
-  }
-
-  public addTransitionsForStateTaskAssignmentRequired(): void {
-    // TODO: Add required transitions
-  }
-
-  public addTransitionsForStateAssignTaskToSelf(): void {
-    // TODO: Add required transitions
-  }
-
-  public addTransitionsForStateAskManagerToAssignTask(): void {
-    // TODO: Add required transitions
-  }
-
-  public addTransitionsForStateShowWarning(): void {
-    this.stateFinal.addTransition(StateMachineStates.FINAL, this.stateFinal);
-  }
-
-  public addTransitionsForStateShowErrorMessage(): void {
-    // TODO: Add required transitions
-  }
-
-  public addTransitionsForStateCancel(): void {
-    // TODO: Add required transitions
   }
 
   public addTransitionsForStateFinal(): void {
