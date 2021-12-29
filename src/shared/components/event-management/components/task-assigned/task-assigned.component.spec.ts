@@ -58,7 +58,7 @@ describe('TaskRequirementComponent', () => {
       imports: [RouterTestingModule],
       declarations: [TaskAssignedComponent],
       providers: [
-        {provide:SessionStorageService, useValue: mockSessionStorageService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
         {provide: ActivatedRoute, useValue: mockRoute}
       ]
     })
