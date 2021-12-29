@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
 import { UserInfo } from '../../../domain/user/user-info.model';
@@ -12,8 +11,9 @@ export class EventStateMachineService {
   public stateCheckForMatchingTasks: State;
   public stateNoTask: State;
   public stateOneTask: State;
-  public stateMultipleTask: State;
+  public stateMultipleTasks: State;
   public stateTaskAssignedToUser: State;
+  public stateMultipleTasksAssignedToUser: State;
   public stateTaskUnassigned: State;
   public stateTaskAssignmentRequired: State;
   public stateAssignTaskToSelf: State;
@@ -44,15 +44,20 @@ export class EventStateMachineService {
       false,
       this.entryAction
     );
-    this.stateMultipleTask = stateMachine.createState(
+    this.stateMultipleTasks = stateMachine.createState(
       EventStates.MULTIPLE_TASKS,
       false,
-      this.decideAction
+      this.entryAction
     );
     this.stateTaskAssignedToUser = stateMachine.createState(
       EventStates.TASK_ASSIGNED_TO_USER,
       false,
       this.entryActionForStateTaskAssignedToUser
+    );
+    this.stateMultipleTasksAssignedToUser = stateMachine.createState(
+      EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER,
+      false,
+      this.entryActionForStateMultipleTasksAssignedToUser
     );
     this.stateTaskUnassigned = stateMachine.createState(
       EventStates.TASK_UNASSIGNED,
@@ -157,6 +162,27 @@ export class EventStateMachineService {
     }
   }
 
+  public entryActionForStateMultipleTasksAssignedToUser(state: State, context: StateMachineContext): void {
+    const userInfoStr = context.sessionStorageService.getItem('userDetails');
+    const userInfo: UserInfo = JSON.parse(userInfoStr);
+    const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id);
+    switch (tasksAssignedToUser.length) {
+      case 0:
+        // No tasks assigned to user
+        context.router.navigate([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: context.route });
+        break;
+      case 1:
+        // One task assigned to user
+        context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
+          { queryParams: { isComplete: true }, relativeTo: context.route });
+        break;
+      default:
+        // Multiple tasks assigned to user
+        context.router.navigate([`/cases/case-details/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
+        break;
+    }
+  }
+
   public entryActionForStateTaskUnAssigned(state: State, context: StateMachineContext): void {
     if (context.tasks[0].assignee) {
       // Task is assigned to some other user, navigate to task assigned error page
@@ -181,6 +207,7 @@ export class EventStateMachineService {
         state.trigger(EventStates.TASK_ASSIGNED_TO_USER);
         break;
       case EventStates.MULTIPLE_TASKS:
+        state.trigger(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
         break;
       default:
         throwError('Invalid state');
@@ -208,6 +235,7 @@ export class EventStateMachineService {
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
     console.log('FINAL action here');
+    console.log('State is complete', state.isComplete);
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
@@ -224,7 +252,7 @@ export class EventStateMachineService {
     // Multiple tasks
     this.stateCheckForMatchingTasks.addTransition(
       EventStates.MULTIPLE_TASKS,
-      this.stateMultipleTask
+      this.stateMultipleTasks
     );
   }
 
@@ -243,7 +271,14 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateMultipleTasks(): void {
-    // TODO: Add required transitions
+    this.stateMultipleTasks.addTransition(
+      EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER,
+      this.stateMultipleTasksAssignedToUser
+    );
+    this.stateMultipleTasks.addTransition(
+      StateMachineStates.FINAL,
+      this.stateFinal
+    );
   }
 
   public addTransitionsForStateTaskAssignedToUser(): void {

@@ -5,6 +5,7 @@ import { SessionStorageService } from '../../../services';
 export interface StateMachineContext {
   tasks: Task[];
   caseId: string;
+  eventId: string;
   router: Router;
   route: ActivatedRoute;
   sessionStorageService: SessionStorageService

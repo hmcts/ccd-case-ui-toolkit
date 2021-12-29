@@ -1,16 +1,30 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MultipleTasksExistComponent } from './multiple-tasks-exist.component';
 
 describe('MultipleTasksExistComponent', () => {
   let component: MultipleTasksExistComponent;
   let fixture: ComponentFixture<MultipleTasksExistComponent>;
+  const mockRoute: any = {
+    snapshot: {
+      data: {
+        case: {
+          case_id: '1620409659381330'
+        }
+      }
+    }
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [MultipleTasksExistComponent]
+      declarations: [MultipleTasksExistComponent],
+      providers: [
+        {provide: ActivatedRoute, useValue: mockRoute}
+      ]
     })
       .compileComponents();
   }));

@@ -83,7 +83,7 @@ describe('EventStateMachineService', () => {
     expect(service.stateCheckForMatchingTasks.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
     expect(service.stateNoTask.id).toEqual(EventStates.NO_TASK);
     expect(service.stateOneTask.id).toEqual(EventStates.ONE_TASK);
-    expect(service.stateMultipleTask.id).toEqual(EventStates.MULTIPLE_TASKS);
+    expect(service.stateMultipleTasks.id).toEqual(EventStates.MULTIPLE_TASKS);
     expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.TASK_ASSIGNED_TO_USER);
     expect(service.stateTaskUnassigned.id).toEqual(EventStates.TASK_UNASSIGNED);
     expect(service.stateTaskAssignmentRequired.id).toEqual(EventStates.TASK_ASSIGNMENT_REQUIRED);
