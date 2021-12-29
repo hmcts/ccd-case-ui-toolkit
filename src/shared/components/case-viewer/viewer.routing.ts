@@ -1,25 +1,26 @@
 import { Routes } from '@angular/router';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
-import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
-import { EventStartGuard } from '../event-management/event-guard/event-start.guard';
-import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
-import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
-import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
-import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
-import { CaseEventTriggerComponent } from './case-event-trigger';
-import { CasePrinterComponent } from './printer';
-import { EventTriggerResolver } from './services';
-import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
 import {
   EventStartComponent,
   MultipleTasksExistComponent,
   NoTasksAvailableComponent,
   TaskAssignedComponent,
   TaskCancelledComponent,
-  TaskConflictComponent
+  TaskConflictComponent,
+  TaskUnassignedComponent
 } from '../event-management';
+import { EventStartGuard } from '../event-management/event-guard/event-start.guard';
 import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
+import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
+import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
+import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
+import { CaseEventTriggerComponent } from './case-event-trigger';
+import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
+import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
+import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
+import { CasePrinterComponent } from './printer';
+import { EventTriggerResolver } from './services';
 
 export const viewerRouting: Routes = [
   {
@@ -44,8 +45,12 @@ export const viewerRouting: Routes = [
     }
   },
   {
-    path: 'task-assignment',
+    path: 'task-assigned',
     component: TaskAssignedComponent
+  },
+  {
+    path: 'task-unassigned',
+    component: TaskUnassignedComponent
   },
   {
     path: 'multiple-tasks-exist',

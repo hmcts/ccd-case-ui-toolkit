@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
+import { UserInfo } from '../../../domain/user/user-info.model';
 import { EventStates, StateMachineContext, StateMachineStates } from '../models';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
@@ -50,12 +52,12 @@ export class EventStateMachineService {
     this.stateTaskAssignedToUser = stateMachine.createState(
       EventStates.TASK_ASSIGNED_TO_USER,
       false,
-      this.entryAction
+      this.entryActionForStateTaskAssignedToUser
     );
     this.stateTaskUnassigned = stateMachine.createState(
       EventStates.TASK_UNASSIGNED,
       false,
-      this.entryAction
+      this.entryActionForStateTaskUnAssigned
     );
     this.stateTaskAssignmentRequired = stateMachine.createState(
       EventStates.TASK_ASSIGNMENT_REQUIRED,
@@ -100,6 +102,7 @@ export class EventStateMachineService {
     this.addTransitionsForStateNoTask();
     this.addTransitionsForStateOneTask();
     this.addTransitionsForStateMultipleTasks();
+    this.addTransitionsForStateTaskAssignedToUser();
     this.addTransitionsForStateTaskUnassigned();
     this.addTransitionsForStateTaskAssignmentRequired();
     this.addTransitionsForStateAssignTaskToSelf();
@@ -138,8 +141,31 @@ export class EventStateMachineService {
   }
 
   public navigateToNoTaskAvailablePage(state: State, context: StateMachineContext): void {
-    console.log('Context action not available', context);
     context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+  }
+
+  public entryActionForStateTaskAssignedToUser(state: State, context: StateMachineContext): void {
+    const userInfoStr = context.sessionStorageService.getItem('userDetails');
+    const userInfo: UserInfo = JSON.parse(userInfoStr);
+
+    if (context.tasks[0].assignee === userInfo.id) {
+      // Task assigned to user, trigger state final
+      state.trigger(StateMachineStates.FINAL);
+    } else {
+      // Task not assigned to user, trigger state task unassigned
+      state.trigger(EventStates.TASK_UNASSIGNED);
+    }
+  }
+
+  public entryActionForStateTaskUnAssigned(state: State, context: StateMachineContext): void {
+    if (context.tasks[0].assignee) {
+      // Task is assigned to some other user, navigate to task assigned error page
+      context.router.navigate([`/cases/case-details/${context.caseId}/task-assigned`],
+        { queryParams: context.tasks[0], relativeTo: context.route });
+    } else {
+      // Task is unassigned, navigate to task unassigned error page
+      context.router.navigate([`/cases/case-details/${context.caseId}/task-unassigned`], { relativeTo: context.route });
+    }
   }
 
   /**
@@ -149,16 +175,12 @@ export class EventStateMachineService {
     // TODO: Actions based on the state id
     switch (state.id) {
       case EventStates.NO_TASK:
-        // Example below
         state.trigger(EventStates.SHOW_WARNING);
         break;
       case EventStates.ONE_TASK:
+        state.trigger(EventStates.TASK_ASSIGNED_TO_USER);
         break;
       case EventStates.MULTIPLE_TASKS:
-        break;
-      case EventStates.TASK_ASSIGNED_TO_USER:
-        break;
-      case EventStates.TASK_UNASSIGNED:
         break;
       default:
         throwError('Invalid state');
@@ -185,6 +207,7 @@ export class EventStateMachineService {
 
   public finalAction(state: State): void {
     // TODO: Perform final actions, the state machine finished running
+    console.log('FINAL action here');
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
@@ -206,7 +229,6 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateNoTask(): void {
-    // TODO: Add required transitions
     this.stateNoTask.addTransition(
       EventStates.SHOW_WARNING,
       this.stateShowWarning
@@ -214,7 +236,10 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateOneTask(): void {
-    // TODO: Add required transitions
+    this.stateOneTask.addTransition(
+      EventStates.TASK_ASSIGNED_TO_USER,
+      this.stateTaskAssignedToUser
+    );
   }
 
   public addTransitionsForStateMultipleTasks(): void {
@@ -222,11 +247,25 @@ export class EventStateMachineService {
   }
 
   public addTransitionsForStateTaskAssignedToUser(): void {
-    // TODO: Add required transitions
+    this.stateTaskAssignedToUser.addTransition(
+      StateMachineStates.FINAL,
+      this.stateFinal
+    );
+    this.stateTaskAssignedToUser.addTransition(
+      EventStates.TASK_UNASSIGNED,
+      this.stateTaskUnassigned
+    );
   }
 
   public addTransitionsForStateTaskUnassigned(): void {
-    // TODO: Add required transitions
+    this.stateTaskUnassigned.addTransition(
+      EventStates.ASSIGN_TASK_TO_SELF,
+      this.stateAssignTaskToSelf
+    );
+    this.stateTaskUnassigned.addTransition(
+      EventStates.ASK_MANAGER_TO_ASSIGN_TASK,
+      this.stateAskManagerToAssignTask
+    );
   }
 
   public addTransitionsForStateTaskAssignmentRequired(): void {
