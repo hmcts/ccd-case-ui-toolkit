@@ -9,7 +9,5 @@ export enum EventStates {
   TASK_ASSIGNMENT_REQUIRED = 'task-assignment-required',
   ASSIGN_TASK_TO_SELF = 'assign-task-to-self',
   ASK_MANAGER_TO_ASSIGN_TASK = 'ask-manager-to-assign-task',
-  SHOW_WARNING = 'show-warning',
-  SHOW_ERROR_MESSAGE = 'show-error-message',
-  CANCEL = 'cancel'
+  SHOW_WARNING = 'show-warning'
 }
