@@ -83,24 +83,18 @@ describe('EventStateMachineService', () => {
     service.createStates(stateMachine);
     expect(service.stateCheckForMatchingTasks.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
     expect(service.stateNoTask.id).toEqual(EventStates.NO_TASK);
-    expect(service.stateOneTask.id).toEqual(EventStates.ONE_TASK);
-    expect(service.stateMultipleTasks.id).toEqual(EventStates.MULTIPLE_TASKS);
-    expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.TASK_ASSIGNED_TO_USER);
+    expect(service.stateOneTask.id).toEqual(EventStates.ONE_OR_MORE_TASKS);
     expect(service.stateTaskUnassigned.id).toEqual(EventStates.TASK_UNASSIGNED);
-    expect(service.stateTaskAssignmentRequired.id).toEqual(EventStates.TASK_ASSIGNMENT_REQUIRED);
-    expect(service.stateAssignTaskToSelf.id).toEqual(EventStates.ASSIGN_TASK_TO_SELF);
-    expect(service.stateAskManagerToAssignTask.id).toEqual(EventStates.ASK_MANAGER_TO_ASSIGN_TASK);
-    expect(service.stateShowWarning.id).toEqual(EventStates.SHOW_WARNING);
+    expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.TASK_ASSIGNED_TO_USER);
+    expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.ONE_TASK_ASSIGNED_TO_USER);
+    expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
     expect(service.stateFinal.id).toEqual(StateMachineStates.FINAL);
   });
 
   it('should add transitions', () => {
     spyOn(service, 'addTransitionsForStateCheckForMatchingTasks');
     spyOn(service, 'addTransitionsForStateNoTask');
-    spyOn(service, 'addTransitionsForStateOneTask');
-    spyOn(service, 'addTransitionsForStateMultipleTasks');
     spyOn(service, 'addTransitionsForStateTaskUnassigned');
-    spyOn(service, 'addTransitionsForStateFinal');
 
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
@@ -108,14 +102,11 @@ describe('EventStateMachineService', () => {
 
     expect(service.addTransitionsForStateCheckForMatchingTasks).toHaveBeenCalled();
     expect(service.addTransitionsForStateNoTask).toHaveBeenCalled();
-    expect(service.addTransitionsForStateOneTask).toHaveBeenCalled();
-    expect(service.addTransitionsForStateMultipleTasks).toHaveBeenCalled();
     expect(service.addTransitionsForStateTaskUnassigned).toHaveBeenCalled();
-    expect(service.addTransitionsForStateFinal).toHaveBeenCalled();
   });
 
   it('should start state machine with no task', () => {
-    spyOn(service, 'initialEntryState');
+    spyOn(service, 'entryActionForStateCheckForMatchingTasks');
     // Context with no tasks
     context.tasks = [];
     stateMachine = service.initialiseStateMachine(context);
@@ -123,7 +114,7 @@ describe('EventStateMachineService', () => {
     service.addTransitions();
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
-    expect(service.initialEntryState).toHaveBeenCalled();
+    expect(service.entryActionForStateCheckForMatchingTasks).toHaveBeenCalled();
   });
 
   it('should navigate to task unassigned error page if one unassigned task', () => {
@@ -149,15 +140,6 @@ describe('EventStateMachineService', () => {
       { queryParams: context.tasks[0], relativeTo: context.route });
   });
 
-  it('should entry action', () => {
-    stateMachine = service.initialiseStateMachine(context);
-    service.createStates(stateMachine);
-    service.addTransitions();
-    service.startStateMachine(stateMachine);
-    service.entryAction(stateMachine.currentState, context);
-    expect(service.entryAction).toBeTruthy();
-  });
-
   it('should action no task available', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
@@ -173,25 +155,17 @@ describe('EventStateMachineService', () => {
   });
 
   it ('should add transition for state no task', () => {
-    // TODO: To be implemented
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitionsForStateNoTask();
     expect(service.addTransitionsForStateNoTask).toBeTruthy();
   });
 
-  it ('should add transition for state one task', () => {
+  it ('should add transition for state one or more tasks', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
-    service.addTransitionsForStateOneTask();
-    expect(service.addTransitionsForStateOneTask).toBeTruthy();
-  });
-
-  it ('should add transition for state multiple tasks', () => {
-    stateMachine = service.initialiseStateMachine(context);
-    service.createStates(stateMachine);
-    service.addTransitionsForStateMultipleTasks();
-    expect(service.addTransitionsForStateMultipleTasks).toBeTruthy();
+    service.addTransitionsForStateOneOrMoreTasks();
+    expect(service.addTransitionsForStateOneOrMoreTasks).toBeTruthy();
   });
 
   it ('should add transition for state task assigned to user', () => {
@@ -201,16 +175,17 @@ describe('EventStateMachineService', () => {
     expect(service.addTransitionsForStateTaskAssignedToUser).toBeTruthy();
   });
 
+  it ('should add transition for state one task assigned to user', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitionsForStateOneTaskAssignedToUser();
+    expect(service.addTransitionsForStateOneTaskAssignedToUser).toBeTruthy();
+  });
+
   it ('should add transition for state task unassigned', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitionsForStateTaskUnassigned();
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
-  });
-
-  it ('should add transition for state final', () => {
-    // TODO: To be implemented
-    service.addTransitionsForStateFinal();
-    expect(service.addTransitionsForStateFinal).toBeTruthy();
   });
 });
