@@ -125,7 +125,8 @@ describe('EventStateMachineService', () => {
     service.addTransitions();
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`], { queryParams: {}, relativeTo: mockRoute });
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`],
+      { queryParams: {}, relativeTo: mockRoute });
   });
 
   it('should navigate to task unassigned error page if one task assigned to another user', () => {
