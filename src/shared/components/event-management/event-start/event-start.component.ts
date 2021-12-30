@@ -25,11 +25,13 @@ export class EventStartComponent implements OnInit {
     // Get task and case id payload from route data
     const tasks: Task[] = this.route.snapshot.data.tasks;
     const caseId = this.route.snapshot.data.case.case_id;
+    const eventId = this.route.snapshot.queryParams['eventId'];
 
     // Setup the context
     this.context = {
       tasks: tasks,
       caseId: caseId,
+      eventId: eventId,
       router: this.router,
       route: this.route,
       sessionStorageService: this.sessionStorageService

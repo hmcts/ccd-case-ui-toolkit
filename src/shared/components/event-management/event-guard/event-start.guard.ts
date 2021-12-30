@@ -14,6 +14,7 @@ export class EventStartGuard implements CanActivate {
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const caseId = route.params['cid'];
     const eventId = route.params['eid'];
+    // TODO: NavigationExtras should be used once Angular upgrade changes have been incorporated
     const isComplete = route.queryParams['isComplete'];
     if (isComplete) {
       return of(true);
