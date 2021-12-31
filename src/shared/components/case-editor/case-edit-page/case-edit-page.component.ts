@@ -198,6 +198,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.isSubmitting = true;
       this.error = null;
       let caseEventData: CaseEventData = this.buildCaseEventData();
+      this.showSpinner = true;
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
           if (jsonData) {

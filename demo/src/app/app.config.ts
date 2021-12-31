@@ -31,8 +31,8 @@ export class AppConfig extends AbstractAppConfig {
     'user_info_api_url': '/user-info',
     'document_management_url_v2': '/v2/health',
     'document_management_secure_enabled':true,
-    'access_management_mode':true
-
+    'access_management_mode':true,
+    'refunds_url': '/api/refunds'
   };
 
   constructor(private http: HttpClient) {
@@ -160,5 +160,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getAccessManagementMode(): boolean {
     return this.config.access_management_mode;
+  }
+
+  public getRefundsUrl(): string {
+    return this.config.refunds_url;
   }
 }

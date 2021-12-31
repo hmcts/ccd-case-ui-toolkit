@@ -1464,7 +1464,6 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   });
 
 })
-
 // noinspection DuplicatedCode
 describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let mockLocation: any;

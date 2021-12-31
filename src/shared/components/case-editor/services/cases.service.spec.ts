@@ -539,75 +539,31 @@ describe('CasesService', () => {
     });
   });
 
-  describe('setDynamicListDefinition()', () => {
-
-    it('should set data for dynamic lists', () => {
-
-      const callbackResponse = {
-            field_type: {
-              complex_fields: [
-                {
-                  field_type: {
-                    type: 'DynamicList'
-                  },
-                  id: 'complex_dl',
-                  value: {},
-                  formatted_value: {}
-                }
-              ],
-              type: 'Complex'
-            },
-            value: {
-              complex_dl: {
-                list_items: [
-                  {code: '1', value: '1'},
-                  {code: '2', value: '2'}
-                ],
-                value: {code: '2', value: '2'}
-              }
-            }
+  describe('createChallengedAccessRequest()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should make an api call', () => {
+      const car: ChallengedAccessRequest = {
+        reason: 0,
+        caseReference: '1234',
+        otherReason: 'dummy'
       };
+      casesService.createChallengedAccessRequest(CASE_ID, car);
+      expect(httpService.post).toHaveBeenCalled();
+    });
+  });
 
-      (casesService as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
-
-      const expected = {
-            field_type: {
-              complex_fields: [
-                {
-                  field_type: {
-                    type: 'DynamicList'
-                  },
-                  id: 'complex_dl',
-                  value: {
-                    list_items: [
-                      {code: '1', value: '1'},
-                      {code: '2', value: '2'}
-                    ],
-                    value: {code: '2', value: '2'}
-                  },
-                  formatted_value: {
-                    list_items: [
-                      {code: '1', value: '1'},
-                      {code: '2', value: '2'}
-                    ],
-                    value: {code: '2', value: '2'}
-                  }
-                }
-              ],
-              type: 'Complex'
-            },
-            value: {
-              complex_dl: {
-                list_items: [
-                  {code: '1', value: '1'},
-                  {code: '2', value: '2'}
-                ],
-                value: {code: '2', value: '2'}
-              }
-            }
+  describe('createSpecificAccessRequest()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should make an api call', () => {
+      const sar: SpecificAccessRequest = {
+        specificReason: 'dummy'
       };
-
-      expect(callbackResponse).toEqual(expected);
+      casesService.createSpecificAccessRequest(CASE_ID, sar);
+      expect(httpService.post).toHaveBeenCalled();
     });
   });
 

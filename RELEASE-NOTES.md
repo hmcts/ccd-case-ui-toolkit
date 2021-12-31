@@ -59,6 +59,7 @@
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
 
+
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
 
