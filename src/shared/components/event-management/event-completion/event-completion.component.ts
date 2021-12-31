@@ -4,24 +4,25 @@ import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
 import { StateMachineContext } from '../models';
-import { EventStartStateMachineService } from '../services';
+import { EventCompletionStateMachineService } from '../services';
 
 @Component({
-  selector: 'ccd-event-start',
-  templateUrl: './event-start.component.html'
+	selector: 'ccd-event-completion',
+	templateUrl: './event-completion.component.html'
 })
-export class EventStartComponent implements OnInit {
+
+export class EventCompletionComponent implements OnInit {
 
   public stateMachine: StateMachine;
   public context: StateMachineContext;
 
-  constructor(private service: EventStartStateMachineService,
+	constructor(private service: EventCompletionStateMachineService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService) {
   }
 
-  public ngOnInit(): void {
+	public ngOnInit(): void {
     // Get task and case id payload from route data
     const tasks: Task[] = this.route.snapshot.data.tasks;
     const caseId = this.route.snapshot.data.case.case_id;
@@ -38,7 +39,7 @@ export class EventStartComponent implements OnInit {
     };
 
     // Initialise state machine
-    this.service = new EventStartStateMachineService();
+    this.service = new EventCompletionStateMachineService();
     this.stateMachine = this.service.initialiseStateMachine(this.context);
     // Create states
     this.service.createStates(this.stateMachine);

@@ -5,11 +5,11 @@ import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
 import { EventStates, StateMachineContext, StateMachineStates } from '../models';
-import { EventStateMachineService } from './event-state-machine.service';
+import { EventStartStateMachineService } from './event-start-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('EventStateMachineService', () => {
-  let service: EventStateMachineService;
+describe('EventStartStateMachineService', () => {
+  let service: EventStartStateMachineService;
   let stateMachine: StateMachine;
   let mockSessionStorageService: any;
   let mockRoute: ActivatedRoute;
@@ -70,7 +70,7 @@ describe('EventStateMachineService', () => {
         { provide: Router, useValue: mockRouter }
       ]
     });
-    service = new EventStateMachineService();
+    service = new EventStartStateMachineService();
   });
 
   it('should initialise state machine', () => {

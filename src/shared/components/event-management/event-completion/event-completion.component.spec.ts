@@ -6,12 +6,12 @@ import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
 import { StateMachineStates } from '../models';
 import { EventStartStateMachineService } from '../services/event-start-state-machine.service';
-import { EventStartComponent } from './event-start.component';
+import { EventCompletionComponent } from './event-completion.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('EventStartComponent', () => {
-  let fixture: ComponentFixture<EventStartComponent>;
-  let component: EventStartComponent;
+describe('EventCompletionComponent', () => {
+  let fixture: ComponentFixture<EventCompletionComponent>;
+  let component: EventCompletionComponent;
   let de: DebugElement;
   let mockRouter: any;
   let mockRoute: any;
@@ -77,7 +77,7 @@ describe('EventStartComponent', () => {
     ]);
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [EventStartComponent],
+      declarations: [EventCompletionComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         SessionStorageService,
@@ -87,7 +87,7 @@ describe('EventStartComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EventStartComponent);
+    fixture = TestBed.createComponent(EventCompletionComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement;
     fixture.detectChanges();

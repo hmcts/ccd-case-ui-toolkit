@@ -3,10 +3,10 @@ import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { EventStates, StateMachineContext, StateMachineStates } from '../models';
 
-const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
+const EVENT_START_STATE_MACHINE = 'EVENT START STATE MACHINE';
 
 @Injectable()
-export class EventStateMachineService {
+export class EventStartStateMachineService {
   public stateCheckForMatchingTasks: State;
   public stateNoTask: State;
   public stateOneTask: State;
@@ -18,7 +18,11 @@ export class EventStateMachineService {
   public stateFinal: State;
 
   public initialiseStateMachine(context: StateMachineContext): StateMachine {
-    return new StateMachine(EVENT_STATE_MACHINE, context);
+    return new StateMachine(EVENT_START_STATE_MACHINE, context);
+  }
+
+  public startStateMachine(stateMachine: StateMachine): void {
+    stateMachine.start(this.stateCheckForMatchingTasks);
   }
 
   public createStates(stateMachine: StateMachine): void {
@@ -84,10 +88,6 @@ export class EventStateMachineService {
     this.addTransitionsForStateTaskAssignedToUser();
     this.addTransitionsForStateOneTaskAssignedToUser();
     this.addTransitionsForStateMultipleTasksAssignedToUser();
-  }
-
-  public startStateMachine(stateMachine: StateMachine): void {
-    stateMachine.start(this.stateCheckForMatchingTasks);
   }
 
   /**

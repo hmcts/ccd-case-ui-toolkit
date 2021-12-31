@@ -6,7 +6,7 @@ import { WorkAllocationService } from '../../case-editor';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 
 @Injectable()
-export class EventStartGuard implements CanActivate {
+export class EventGuard implements CanActivate {
 
   constructor(private readonly workAllocationService: WorkAllocationService, private readonly router: Router) {
   }

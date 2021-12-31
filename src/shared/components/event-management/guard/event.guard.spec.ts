@@ -1,9 +1,9 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { EventStartGuard } from './event-start.guard';
+import { EventGuard } from './event.guard';
 import { of } from 'rxjs';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 
-describe('EventStartGuard', () => {
+describe('EventGuard', () => {
   const tasks: any[] = [
     {
       assignee: null,
@@ -27,7 +27,7 @@ describe('EventStartGuard', () => {
   route.queryParams = {};
   const router = jasmine.createSpyObj('router', ['navigate']);
   const service = jasmine.createSpyObj('service', ['getTasksByCaseIdAndEventId']);
-  const guard = new EventStartGuard(service, router);
+  const guard = new EventGuard(service, router);
 
   it('canActivate should return false', () => {
     const payload: TaskPayload = {

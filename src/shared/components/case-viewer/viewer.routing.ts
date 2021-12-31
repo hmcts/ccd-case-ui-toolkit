@@ -10,7 +10,7 @@ import {
   TaskConflictComponent,
   TaskUnassignedComponent
 } from '../event-management';
-import { EventStartGuard } from '../event-management/event-guard/event-start.guard';
+import { EventGuard } from '../event-management/guard/event.guard';
 import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
@@ -34,7 +34,7 @@ export const viewerRouting: Routes = [
     },
     component: CaseEventTriggerComponent,
     children: editorRouting,
-    canActivate: [EventStartGuard],
+    canActivate: [EventGuard],
     canDeactivate: [FileUploadProgressGuard],
   },
   {
