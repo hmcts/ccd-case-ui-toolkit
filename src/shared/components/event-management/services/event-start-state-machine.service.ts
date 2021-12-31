@@ -124,7 +124,7 @@ export class EventStartStateMachineService {
     // Get number of tasks assigned to user
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
-    const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id);
+    const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id || x.assignee === userInfo.uid);
 
     switch (tasksAssignedToUser.length) {
       case 0:
