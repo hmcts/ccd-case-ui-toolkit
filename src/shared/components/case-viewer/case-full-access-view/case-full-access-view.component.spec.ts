@@ -1393,13 +1393,14 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     f.detectChanges();
   }));
 
-  it('TODO', () => {
+  it('should navigate return succesful promise', () => {
     mockRouter = TestBed.get(Router);
     spyOn(mockRouter, 'navigate').and.callFake((url: string) => {
       return Promise.resolve('someResult');
     });
     fixture = TestBed.createComponent(CaseFullAccessViewComponent);
     comp.ngAfterViewInit();
+    expect(comp).toBeTruthy();
   });
 
   it('should render appended tabs hearings', () => {
@@ -1410,36 +1411,35 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
-  it('should navigate appended tabs hearings', () => {
+  it('should navigate called when tabChanged called', () => {
     mockRouter = TestBed.get(Router);
     spyOn(mockRouter, 'navigate').and.returnValue(any);
     fixture = TestBed.createComponent(CaseFullAccessViewComponent);
-
-       comp.tabChanged(
+    comp.tabChanged(
         {tab: {_viewContainerRef: { element: { nativeElement: {id: 1}}}}, index: 0} as any
         );
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
-  it('should alertService not have been called', () => {
-       comp.hasTabsPresent();
+  it('should hasTabsPresent be called without error', () => {
+    comp.hasTabsPresent();
     expect(comp.error).toBe(undefined);
     expect(alertService.clear).not.toHaveBeenCalled();
   });
 
   it('should appendedTabs need to be assigned to component', () => {
     comp.resetErrors();
-     expect(comp.appendedTabs.length ).toBe(1);
+    expect(comp.appendedTabs.length ).toBe(1);
    });
 
-   it('should set triggerText', () => {
+   it('should set triggerText when callbackErrorsNotify called', () => {
     comp.callbackErrorsNotify(
       {ignore_warning: 'warning', trigger_text: 'warning_text'} as any
       );
      expect(comp.triggerText ).toBe('warning_text');
    });
 
-   it('should not display generic error heading and message when there are specific callback errors', () => {
+   it('should set error when emit errors', () => {
     ERROR.status = 422;
     ERROR.callbackErrors = ['First error', 'Second error'];
     ERROR.details = null;
