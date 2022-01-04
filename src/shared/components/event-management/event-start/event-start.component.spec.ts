@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
 import { StateMachineStates } from '../models';
-import { EventStartStateMachineService } from '../services/event-start-state-machine.service';
+import { EventStartStateMachineService } from '../services';
 import { EventStartComponent } from './event-start.component';
 import createSpyObj = jasmine.createSpyObj;
 

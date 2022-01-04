@@ -7,8 +7,8 @@ import { StateMachineContext } from '../models';
 import { EventCompletionStateMachineService } from '../services';
 
 @Component({
-	selector: 'ccd-event-completion',
-	templateUrl: './event-completion.component.html'
+  selector: 'ccd-event-completion',
+  templateUrl: './event-completion.component.html'
 })
 
 export class EventCompletionComponent implements OnInit {
@@ -16,13 +16,13 @@ export class EventCompletionComponent implements OnInit {
   public stateMachine: StateMachine;
   public context: StateMachineContext;
 
-	constructor(private service: EventCompletionStateMachineService,
+  constructor(private service: EventCompletionStateMachineService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService) {
   }
 
-	public ngOnInit(): void {
+  public ngOnInit(): void {
     // Get task and case id payload from route data
     const tasks: Task[] = this.route.snapshot.data.tasks;
     const caseId = this.route.snapshot.data.case.case_id;

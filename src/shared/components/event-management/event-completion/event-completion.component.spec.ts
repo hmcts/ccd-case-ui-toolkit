@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { StateMachineStates } from '../models';
-import { EventStartStateMachineService } from '../services/event-start-state-machine.service';
+import { EventCompletionStates, StateMachineStates } from '../models';
+import { EventCompletionStateMachineService } from '../services';
 import { EventCompletionComponent } from './event-completion.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -15,7 +15,7 @@ describe('EventCompletionComponent', () => {
   let de: DebugElement;
   let mockRouter: any;
   let mockRoute: any;
-  let eventStartStateMachineService: EventStartStateMachineService;
+  let eventCompletionStateMachineService: EventCompletionStateMachineService;
 
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -69,7 +69,7 @@ describe('EventCompletionComponent', () => {
   };
 
   beforeEach(async(() => {
-    createSpyObj<EventStartStateMachineService>('EventStartStateMachineService', [
+    createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', [
       'initialiseStateMachine',
       'createStates',
       'addTransitions',
@@ -83,7 +83,7 @@ describe('EventCompletionComponent', () => {
         SessionStorageService,
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: EventStartStateMachineService, useValue: eventStartStateMachineService },
+        { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
       ],
     }).compileComponents();
 
@@ -95,13 +95,5 @@ describe('EventCompletionComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should ngOnInit setup context and state machine with no tasks', () => {
-    component.ngOnInit();
-    expect(component.context.tasks).toEqual(noTasks);
-    expect(component.stateMachine).toBeDefined();
-    expect(component.stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
-    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 });

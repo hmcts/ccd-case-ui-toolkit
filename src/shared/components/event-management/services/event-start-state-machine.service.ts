@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
-import { EventStates, StateMachineContext, StateMachineStates } from '../models';
+import { EventStartStates, StateMachineContext, StateMachineStates } from '../models';
 
 const EVENT_START_STATE_MACHINE = 'EVENT START STATE MACHINE';
 
@@ -28,41 +28,41 @@ export class EventStartStateMachineService {
   public createStates(stateMachine: StateMachine): void {
     // Initial state
     this.stateCheckForMatchingTasks = stateMachine.createState(
-      EventStates.CHECK_FOR_MATCHING_TASKS,
+      EventStartStates.CHECK_FOR_MATCHING_TASKS,
       false,
       this.entryActionForStateCheckForMatchingTasks
     );
 
     // States based on number of tasks available
     this.stateNoTask = stateMachine.createState(
-      EventStates.NO_TASK,
+      EventStartStates.NO_TASK,
       false,
       this.entryActionForStateNoTask
     );
     this.stateOneOrMoreTasks = stateMachine.createState(
-      EventStates.ONE_OR_MORE_TASKS,
+      EventStartStates.ONE_OR_MORE_TASKS,
       false,
       this.entryActionForStateOneOrMoreTasks
     );
 
     // States based on number of tasks assigned to user
     this.stateTaskUnassigned = stateMachine.createState(
-      EventStates.TASK_UNASSIGNED,
+      EventStartStates.TASK_UNASSIGNED,
       false,
       this.entryActionForStateTaskUnAssigned
     );
     this.stateTaskAssignedToUser = stateMachine.createState(
-      EventStates.TASK_ASSIGNED_TO_USER,
+      EventStartStates.TASK_ASSIGNED_TO_USER,
       false,
       this.entryActionForStateTaskAssignedToUser
     );
     this.stateOneTaskAssignedToUser = stateMachine.createState(
-      EventStates.ONE_TASK_ASSIGNED_TO_USER,
+      EventStartStates.ONE_TASK_ASSIGNED_TO_USER,
       false,
       this.entryActionForStateOneTaskAssignedToUser
     );
     this.stateMultipleTasksAssignedToUser = stateMachine.createState(
-      EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER,
+      EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER,
       false,
       this.entryActionForStateMultipleTasksAssignedToUser
     );
@@ -98,10 +98,10 @@ export class EventStartStateMachineService {
 
     if (taskCount === 0) {
       // Trigger state no task
-      state.trigger(EventStates.NO_TASK);
+      state.trigger(EventStartStates.NO_TASK);
     } else {
       // Trigger state one or more tasks
-      state.trigger(EventStates.ONE_OR_MORE_TASKS);
+      state.trigger(EventStartStates.ONE_OR_MORE_TASKS);
     }
   }
 
@@ -113,11 +113,11 @@ export class EventStartStateMachineService {
   }
 
   public entryActionForStateOneOrMoreTasks(state: State, context: StateMachineContext): void {
-    state.trigger(EventStates.TASK_ASSIGNED_TO_USER);
+    state.trigger(EventStartStates.TASK_ASSIGNED_TO_USER);
   }
 
   public entryActionForStateMultipleTasks(state: State, context: StateMachineContext): void {
-    state.trigger(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
+    state.trigger(EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
   }
 
   public entryActionForStateTaskAssignedToUser(state: State, context: StateMachineContext): void {
@@ -129,15 +129,15 @@ export class EventStartStateMachineService {
     switch (tasksAssignedToUser.length) {
       case 0:
         // No tasks assigned to user, trigger state task unassigned
-        state.trigger(EventStates.TASK_UNASSIGNED);
+        state.trigger(EventStartStates.TASK_UNASSIGNED);
         break;
       case 1:
         // One task assigned to user
-        state.trigger(EventStates.ONE_TASK_ASSIGNED_TO_USER);
+        state.trigger(EventStartStates.ONE_TASK_ASSIGNED_TO_USER);
         break;
       default:
         // Multiple tasks assigned to user, trigger state multiple tasks assigned to user
-        state.trigger(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
+        state.trigger(EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
         break;
     }
   }
@@ -177,20 +177,18 @@ export class EventStartStateMachineService {
   }
 
   public finalAction(state: State): void {
-    // TODO: Perform final actions, the state machine finished running
-    console.log('FINAL action here', state);
-    console.log('State is complete', state.isComplete);
+    // Final actions can be performed here, the state machine finished running
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
     // No tasks
     this.stateCheckForMatchingTasks.addTransition(
-      EventStates.NO_TASK,
+      EventStartStates.NO_TASK,
       this.stateNoTask
     );
     // One task
     this.stateCheckForMatchingTasks.addTransition(
-      EventStates.ONE_OR_MORE_TASKS,
+      EventStartStates.ONE_OR_MORE_TASKS,
       this.stateOneOrMoreTasks
     );
   }
@@ -204,7 +202,7 @@ export class EventStartStateMachineService {
 
   public addTransitionsForStateOneOrMoreTasks(): void {
     this.stateOneOrMoreTasks.addTransition(
-      EventStates.TASK_ASSIGNED_TO_USER,
+      EventStartStates.TASK_ASSIGNED_TO_USER,
       this.stateTaskAssignedToUser
     );
   }
@@ -218,15 +216,15 @@ export class EventStartStateMachineService {
 
   public addTransitionsForStateTaskAssignedToUser(): void {
     this.stateTaskAssignedToUser.addTransition(
-      EventStates.ONE_TASK_ASSIGNED_TO_USER,
+      EventStartStates.ONE_TASK_ASSIGNED_TO_USER,
       this.stateOneTaskAssignedToUser
     );
     this.stateTaskAssignedToUser.addTransition(
-      EventStates.TASK_UNASSIGNED,
+      EventStartStates.TASK_UNASSIGNED,
       this.stateTaskUnassigned
     );
     this.stateTaskAssignedToUser.addTransition(
-      EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER,
+      EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER,
       this.stateMultipleTasksAssignedToUser
     );
     this.stateTaskAssignedToUser.addTransition(

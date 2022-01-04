@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { EventStates, StateMachineContext, StateMachineStates } from '../models';
+import { EventStartStates, StateMachineContext, StateMachineStates } from '../models';
 import { EventStartStateMachineService } from './event-start-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -81,13 +81,13 @@ describe('EventStartStateMachineService', () => {
   it('should create states', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
-    expect(service.stateCheckForMatchingTasks.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
-    expect(service.stateNoTask.id).toEqual(EventStates.NO_TASK);
-    expect(service.stateOneOrMoreTasks.id).toEqual(EventStates.ONE_OR_MORE_TASKS);
-    expect(service.stateTaskUnassigned.id).toEqual(EventStates.TASK_UNASSIGNED);
-    expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.TASK_ASSIGNED_TO_USER);
-    expect(service.stateOneTaskAssignedToUser.id).toEqual(EventStates.ONE_TASK_ASSIGNED_TO_USER);
-    expect(service.stateMultipleTasksAssignedToUser.id).toEqual(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
+    expect(service.stateCheckForMatchingTasks.id).toEqual(EventStartStates.CHECK_FOR_MATCHING_TASKS);
+    expect(service.stateNoTask.id).toEqual(EventStartStates.NO_TASK);
+    expect(service.stateOneOrMoreTasks.id).toEqual(EventStartStates.ONE_OR_MORE_TASKS);
+    expect(service.stateTaskUnassigned.id).toEqual(EventStartStates.TASK_UNASSIGNED);
+    expect(service.stateTaskAssignedToUser.id).toEqual(EventStartStates.TASK_ASSIGNED_TO_USER);
+    expect(service.stateOneTaskAssignedToUser.id).toEqual(EventStartStates.ONE_TASK_ASSIGNED_TO_USER);
+    expect(service.stateMultipleTasksAssignedToUser.id).toEqual(EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
     expect(service.stateFinal.id).toEqual(StateMachineStates.FINAL);
   });
 
@@ -113,7 +113,7 @@ describe('EventStartStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.CHECK_FOR_MATCHING_TASKS);
     expect(service.entryActionForStateCheckForMatchingTasks).toHaveBeenCalled();
   });
 
