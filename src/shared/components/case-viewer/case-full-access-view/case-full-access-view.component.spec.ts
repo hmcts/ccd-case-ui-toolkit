@@ -1260,8 +1260,32 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
   let mockRouter: jasmine.SpyObj<Router>;
-  alertService = createSpyObj('alertService', ['clear']);
+  const ERROR: HttpError = new HttpError();
+  ERROR.message = 'Critical error!';
+
+  orderService = new OrderService();
+
+  draftService = createSpyObj('draftService', ['deleteDraft']);
+  draftService.deleteDraft.and.returnValue(Observable.of({}));
+
+  caseNotifier = createSpyObj('caseService', ['announceCase']);
+
+  alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+  alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
+  alertService.success.and.returnValue(Observable.of({}));
+  alertService.warning.and.returnValue(Observable.of({}));
   alertService.clear.and.returnValue(Observable.of({}));
+
+  navigationNotifierService = new NavigationNotifierService();
+  const errNotifierService = new ErrorNotifierService();
+
+  dialog = createSpyObj<MatDialog>('dialog', ['open']);
+  matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
+
+  activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
+  activityService.postViewActivity.and.returnValue(Observable.of());
+
+  mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
   beforeEach((() => {
     TestBed
@@ -1304,6 +1328,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           CaseHeaderComponent,
           LinkComponent,
           CallbackErrorsComponent,
+           MarkdownComponent,
         ],
         providers: [
           FieldsUtils,
@@ -1316,12 +1341,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
               public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
             }
           },
-          ErrorNotifierService,
           {provide: AbstractAppConfig, useClass: AppMockConfig},
-          NavigationNotifierService,
           {provide: CaseNotifier, useValue: caseNotifier},
           {provide: ActivatedRoute, useValue: mockRoute},
-          ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
@@ -1332,11 +1354,16 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
+          {provide: NavigationNotifierService, useValue: navigationNotifierService},
+          {provide: ErrorNotifierService, useValue: errNotifierService},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          {provide: ActivityPollingService, useValue: activityService},
+
         ]
       })
       .compileComponents();
-
+      spyOn(orderService, 'sort').and.callThrough();
+      spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
     f = TestBed.createComponent(CaseFullAccessViewComponent);
     comp = f.componentInstance;
     comp.caseDetails = CASE_VIEW;
@@ -1365,6 +1392,15 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     d = f.debugElement;
     f.detectChanges();
   }));
+
+  it('TODO', () => {
+    mockRouter = TestBed.get(Router);
+    spyOn(mockRouter, 'navigate').and.callFake((url: string) => {
+      return Promise.resolve('someResult');
+    });
+    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp.ngAfterViewInit();
+  });
 
   it('should render appended tabs hearings', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
@@ -1402,6 +1438,14 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
       );
      expect(comp.triggerText ).toBe('warning_text');
    });
+
+   it('should not display generic error heading and message when there are specific callback errors', () => {
+    ERROR.status = 422;
+    ERROR.callbackErrors = ['First error', 'Second error'];
+    ERROR.details = null;
+    errNotifierService.announceError(ERROR);
+    expect(comp.error).toBeTruthy();
+  });
 })
 
 describe('CaseFullAccessViewComponent - ends with caseID', () => {
