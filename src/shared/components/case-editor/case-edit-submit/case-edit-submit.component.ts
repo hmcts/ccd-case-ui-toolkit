@@ -94,6 +94,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     this.isSubmitting = true;
+
+    
+
+
+
+
+
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
