@@ -176,7 +176,7 @@ export class EventStateMachineService {
 
     // Get task assigned to user
     let task = context.tasks.find(x => x.id === context.taskId);
-    if (task === undefined) {
+    if (!task) {
       task = context.tasks[0];
     }
 
