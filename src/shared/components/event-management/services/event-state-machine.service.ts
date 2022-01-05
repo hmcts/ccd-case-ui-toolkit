@@ -127,7 +127,7 @@ export class EventStateMachineService {
     const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id || x.assignee === userInfo.uid);
 
     // Check if user initiated the event from task tab
-    const isEventInitiatedFromTaskTab = context.taskId && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;
+    const isEventInitiatedFromTaskTab = context.taskId !== undefined && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;
 
     if (isEventInitiatedFromTaskTab) {
       // User initiated event from task tab
@@ -173,8 +173,15 @@ export class EventStateMachineService {
   public entryActionForStateOneTaskAssignedToUser(state: State, context: StateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(StateMachineStates.FINAL);
+
+    // Get task assigned to user
+    let task = context.tasks.find(x => x.id === context.taskId);
+    if (task === undefined) {
+      task = context.tasks[0];
+    }
+
     // Store task to session
-    context.sessionStorageService.setItem('taskToComplete', JSON.stringify(context.tasks[0]));
+    context.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: context.route });
