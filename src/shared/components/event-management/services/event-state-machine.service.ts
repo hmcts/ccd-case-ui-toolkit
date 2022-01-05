@@ -126,19 +126,28 @@ export class EventStateMachineService {
     const userInfo = JSON.parse(userInfoStr);
     const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id || x.assignee === userInfo.uid);
 
-    switch (tasksAssignedToUser.length) {
-      case 0:
-        // No tasks assigned to user, trigger state task unassigned
-        state.trigger(EventStates.TASK_UNASSIGNED);
-        break;
-      case 1:
-        // One task assigned to user
-        state.trigger(EventStates.ONE_TASK_ASSIGNED_TO_USER);
-        break;
-      default:
-        // Multiple tasks assigned to user, trigger state multiple tasks assigned to user
-        state.trigger(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
-        break;
+    // Check if user initiated the event from task tab
+    const isEventInitiatedFromTaskTab = context.taskId && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;
+
+    if (isEventInitiatedFromTaskTab) {
+      // User initiated event from task tab
+      state.trigger(EventStates.ONE_TASK_ASSIGNED_TO_USER);
+    } else {
+      // User initiated event from dropdown
+      switch (tasksAssignedToUser.length) {
+        case 0:
+          // No tasks assigned to user, trigger state task unassigned
+          state.trigger(EventStates.TASK_UNASSIGNED);
+          break;
+        case 1:
+          // One task assigned to user
+          state.trigger(EventStates.ONE_TASK_ASSIGNED_TO_USER);
+          break;
+        default:
+          // Multiple tasks assigned to user, trigger state multiple tasks assigned to user
+          state.trigger(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
+          break;
+      }
     }
   }
 
@@ -164,6 +173,8 @@ export class EventStateMachineService {
   public entryActionForStateOneTaskAssignedToUser(state: State, context: StateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(StateMachineStates.FINAL);
+    // Store task to session
+    context.sessionStorageService.setItem('taskToComplete', JSON.stringify(context.tasks[0]));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: context.route });
