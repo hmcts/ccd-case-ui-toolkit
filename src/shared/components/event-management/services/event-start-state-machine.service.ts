@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
-import { EventStartStates, StateMachineContext, StateMachineStates } from '../models';
+import { EventStartStates, EventStartStateMachineContext, StateMachineStates } from '../models';
 
 const EVENT_START_STATE_MACHINE = 'EVENT START STATE MACHINE';
 
@@ -17,7 +17,7 @@ export class EventStartStateMachineService {
   public stateTaskUnassigned: State;
   public stateFinal: State;
 
-  public initialiseStateMachine(context: StateMachineContext): StateMachine {
+  public initialiseStateMachine(context: EventStartStateMachineContext): StateMachine {
     return new StateMachine(EVENT_START_STATE_MACHINE, context);
   }
 
@@ -93,7 +93,7 @@ export class EventStartStateMachineService {
   /**
    * Initial entry action for state check for matching tasks, decided based on the number of tasks
    */
-  public entryActionForStateCheckForMatchingTasks(state: State, context: StateMachineContext): void {
+  public entryActionForStateCheckForMatchingTasks(state: State, context: EventStartStateMachineContext): void {
     const taskCount = context && context.tasks ? context.tasks.length : 0;
 
     if (taskCount === 0) {
@@ -105,22 +105,22 @@ export class EventStartStateMachineService {
     }
   }
 
-  public entryActionForStateNoTask(state: State, context: StateMachineContext): void {
+  public entryActionForStateNoTask(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(StateMachineStates.FINAL);
     // Navigate to no tasks available error page
     context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
-  public entryActionForStateOneOrMoreTasks(state: State, context: StateMachineContext): void {
+  public entryActionForStateOneOrMoreTasks(state: State, context: EventStartStateMachineContext): void {
     state.trigger(EventStartStates.TASK_ASSIGNED_TO_USER);
   }
 
-  public entryActionForStateMultipleTasks(state: State, context: StateMachineContext): void {
+  public entryActionForStateMultipleTasks(state: State, context: EventStartStateMachineContext): void {
     state.trigger(EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
   }
 
-  public entryActionForStateTaskAssignedToUser(state: State, context: StateMachineContext): void {
+  public entryActionForStateTaskAssignedToUser(state: State, context: EventStartStateMachineContext): void {
     // Get number of tasks assigned to user
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
@@ -142,7 +142,7 @@ export class EventStartStateMachineService {
     }
   }
 
-  public entryActionForStateTaskUnAssigned(state: State, context: StateMachineContext): void {
+  public entryActionForStateTaskUnAssigned(state: State, context: EventStartStateMachineContext): void {
     let navigationURL = '';
     let theQueryParams: Params = {};
 
@@ -161,7 +161,7 @@ export class EventStartStateMachineService {
     context.router.navigate([`${navigationURL}`], { queryParams: theQueryParams, relativeTo: context.route });
   }
 
-  public entryActionForStateOneTaskAssignedToUser(state: State, context: StateMachineContext): void {
+  public entryActionForStateOneTaskAssignedToUser(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(StateMachineStates.FINAL);
     // Allow user to perform the event
@@ -169,7 +169,7 @@ export class EventStartStateMachineService {
       { queryParams: { isComplete: true }, relativeTo: context.route });
   }
 
-  public entryActionForStateMultipleTasksAssignedToUser(state: State, context: StateMachineContext): void {
+  public entryActionForStateMultipleTasksAssignedToUser(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(StateMachineStates.FINAL);
     // Navigate to multiple tasks exist error page

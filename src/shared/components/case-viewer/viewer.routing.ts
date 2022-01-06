@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { editorRouting } from '../case-editor';
 import { CaseHistoryComponent } from '../case-history';
 import {
-  EventCompletionComponent,
   EventStartComponent,
   MultipleTasksExistComponent,
   NoTasksAvailableComponent,
@@ -45,13 +44,6 @@ export const viewerRouting: Routes = [
       tasks: EventTasksResolverService
     }
   },
-  {
-    path: 'event-completion',
-    component: EventCompletionComponent,
-    resolve: {
-      tasks: EventTasksResolverService
-    }
-	},
   {
     path: 'task-assigned',
     component: TaskAssignedComponent

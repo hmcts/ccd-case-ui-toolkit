@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { EventStartStates, StateMachineContext, StateMachineStates } from '../models';
+import { EventStartStates, EventStartStateMachineContext, StateMachineStates } from '../models';
 import { EventStartStateMachineService } from './event-start-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -54,7 +54,7 @@ describe('EventStartStateMachineService', () => {
   mockSessionStorageService.getItem.and.returnValue(`{"id": "test-user-id", "forename": "Test", "surname": "User",
     "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com", "token": null}`);
 
-  let context: StateMachineContext = {
+  let context: EventStartStateMachineContext = {
     tasks: [],
     caseId: '1620409659381330',
     eventId: 'editAppealAfterSubmit',

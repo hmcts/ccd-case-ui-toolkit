@@ -10,7 +10,6 @@ import { TaskAssignedComponent } from './components/task-assigned/task-assigned.
 import { TaskCancelledComponent } from './components/task-cancelled/task-cancelled.component';
 import { TaskConflictComponent } from './components/task-conflict/task-conflict.component';
 import { TaskUnassignedComponent } from './components/task-unassigned/task-unassigned.component';
-import { EventCompletionComponent } from './event-completion/event-completion.component';
 import { EventGuard } from './guard/event.guard';
 import { EventStartComponent } from './event-start/event-start.component';
 import { EventTriggerComponent } from './event-trigger/event-trigger.component';
@@ -27,7 +26,6 @@ import { EventCompletionStateMachineService, EventStartStateMachineService } fro
   ],
   declarations: [
     EventStartComponent,
-    EventCompletionComponent,
     EventTriggerComponent,
     MultipleTasksExistComponent,
     NoTasksAvailableComponent,
@@ -44,7 +42,6 @@ import { EventCompletionStateMachineService, EventStartStateMachineService } fro
   ],
   exports: [
     EventStartComponent,
-    EventCompletionComponent,
     EventTriggerComponent,
     TaskAssignedComponent,
     TaskUnassignedComponent

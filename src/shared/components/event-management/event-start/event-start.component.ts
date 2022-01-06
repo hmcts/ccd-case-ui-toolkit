@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { StateMachineContext } from '../models';
+import { EventStartStateMachineContext } from '../models';
 import { EventStartStateMachineService } from '../services';
 
 @Component({
@@ -13,7 +13,7 @@ import { EventStartStateMachineService } from '../services';
 export class EventStartComponent implements OnInit {
 
   public stateMachine: StateMachine;
-  public context: StateMachineContext;
+  public context: EventStartStateMachineContext;
 
   constructor(private service: EventStartStateMachineService,
     private readonly router: Router,

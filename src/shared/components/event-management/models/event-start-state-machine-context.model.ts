@@ -2,11 +2,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
 
-export interface StateMachineContext {
+export interface EventStartStateMachineContext {
   tasks: Task[];
   caseId: string;
   eventId: string;
   router: Router;
   route: ActivatedRoute;
-  sessionStorageService: SessionStorageService
+  sessionStorageService: SessionStorageService;
 }

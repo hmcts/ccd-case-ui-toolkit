@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
@@ -14,10 +15,13 @@ import {
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
+import { EventCompletionStateMachineService } from '../../event-management';
+import { EventCompletionStateMachineContext } from '../../event-management/models';
 import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
+import { WorkAllocationService } from '../services';
 
 // @dynamic
 @Component({
@@ -69,11 +73,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private formErrorService: FormErrorService,
     private fieldsUtils: FieldsUtils,
     private caseFieldService: CaseFieldService,
+    private router: Router,
     private route: ActivatedRoute,
     private orderService: OrderService,
     private profileService: ProfileService,
     private profileNotifier: ProfileNotifier,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private readonly workAllocationService: WorkAllocationService
   ) {
   }
 
@@ -97,17 +103,46 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public submit(): void {
     this.isSubmitting = true;
 
-    // Check if event in session storage
-    const taskStr = this.sessionStorageService.getItem('');
-    
-    // If event in session storage
-    
+    // We have to run the event completion checks if task in session storage
+    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task = JSON.parse(taskStr);
+      this.runEventCompletionChecks(task);
 
+    } else {
+      // Task not in session storage, proceed to submit
+      // const caseEventData = this.generateCaseEventData();
+      // this.caseSubmit(caseEventData);
+      debugger;
+    }
+  }
 
+  public runEventCompletionChecks(task: Task): void {
+    // Setup the context
+    const context: EventCompletionStateMachineContext = {
+      tasks: [task],
+      caseId: this.getCaseId(),
+      eventId: this.editForm.value.event,
+      router: this.router,
+      route: this.route,
+      sessionStorageService: this.sessionStorageService,
+      workAllocationService: this.workAllocationService
+    };
 
+    console.log('CONTEXT', context);
 
-    
-    
+    debugger;
+
+    // Initialise state machine
+    const eventCompletionStateMachineService = new EventCompletionStateMachineService();
+    const stateMachine = eventCompletionStateMachineService.initialiseStateMachine(context);
+    // Create states
+    eventCompletionStateMachineService.createStates(stateMachine);
+    // Add transitions for the states
+    eventCompletionStateMachineService.addTransitions();
+    // Start state machine
+    eventCompletionStateMachineService.startStateMachine(stateMachine);
   }
 
   private generateCaseEventData(): CaseEventData {

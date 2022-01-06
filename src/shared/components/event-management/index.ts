@@ -1,6 +1,5 @@
 export * from './services';
 export * from './event-start/event-start.component';
-export * from './event-completion/event-completion.component';
 export * from './event-trigger/event-trigger.component';
 export * from './components/multiple-tasks-exist/multiple-tasks-exist.component';
 export * from './components/no-tasks-available/no-tasks-available.component';
