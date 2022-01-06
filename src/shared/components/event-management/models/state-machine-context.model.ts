@@ -6,6 +6,7 @@ export interface StateMachineContext {
   tasks: Task[];
   caseId: string;
   eventId: string;
+  taskId: string;
   router: Router;
   route: ActivatedRoute;
   sessionStorageService: SessionStorageService
