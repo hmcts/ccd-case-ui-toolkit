@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-
-import { CaseEventData, CaseEventTrigger, CaseField, FieldTypeEnum, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
 import {
   CaseFieldService,
   FieldsUtils,
@@ -12,6 +11,7 @@ import {
   OrderService,
   ProfileNotifier,
   ProfileService,
+  SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { PaletteContext } from '../../palette';
@@ -37,6 +37,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   showSummaryFields: CaseField[];
   paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
   isSubmitting: boolean;
+  isCompleting: boolean;
   profileSubscription: Subscription;
   contextFields: CaseField[];
 
@@ -72,6 +73,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private profileService: ProfileService,
     private profileNotifier: ProfileNotifier,
+    private sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -95,12 +97,20 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public submit(): void {
     this.isSubmitting = true;
 
+    // Check if event in session storage
+    const taskStr = this.sessionStorageService.getItem('');
+    
+    // If event in session storage
     
 
 
 
 
+    
+    
+  }
 
+  private generateCaseEventData(): CaseEventData {
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
@@ -116,6 +126,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
+
+    return caseEventData;
+  }
+
+  private caseSubmit(caseEventData: CaseEventData): void {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
