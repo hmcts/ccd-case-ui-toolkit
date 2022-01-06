@@ -26,12 +26,14 @@ export class EventStartComponent implements OnInit {
     const tasks: Task[] = this.route.snapshot.data.tasks;
     const caseId = this.route.snapshot.data.case.case_id;
     const eventId = this.route.snapshot.queryParams['eventId'];
+    const taskId = this.route.snapshot.queryParams['taskId'];
 
     // Setup the context
     this.context = {
       tasks: tasks,
       caseId: caseId,
       eventId: eventId,
+      taskId: taskId,
       router: this.router,
       route: this.route,
       sessionStorageService: this.sessionStorageService

@@ -50,7 +50,64 @@ describe('EventStartStateMachineService', () => {
     work_type_id: null
   };
 
-  mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+  const multipleTasks: Task[] = [
+    {
+      assignee: '1234-1234-1234-1234',
+      auto_assigned: false,
+      case_category: 'asylum',
+      case_id: '1620409659381330',
+      case_management_category: null,
+      case_name: 'Alan Jonson',
+      case_type_id: null,
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      execution_type: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+      jurisdiction: 'Immigration and Asylum',
+      location: null,
+      location_name: null,
+      name: 'Task name',
+      permissions: null,
+      region: null,
+      security_classification: null,
+      task_state: null,
+      task_system: null,
+      task_title: 'Some lovely task name',
+      type: null,
+      warning_list: null,
+      warnings: true,
+      work_type_id: null
+    },
+    {
+      assignee: '4321-4321-4321-4321',
+      auto_assigned: false,
+      case_category: 'asylum',
+      case_id: '1620409659381330',
+      case_management_category: null,
+      case_name: 'Alan Jonson',
+      case_type_id: null,
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      execution_type: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+      jurisdiction: 'Immigration and Asylum',
+      location: null,
+      location_name: null,
+      name: 'Task name',
+      permissions: null,
+      region: null,
+      security_classification: null,
+      task_state: null,
+      task_system: null,
+      task_title: 'Some lovely task name',
+      type: null,
+      warning_list: null,
+      warnings: true,
+      work_type_id: null
+    }
+  ];
+
+  mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
   mockSessionStorageService.getItem.and.returnValue(`{"id": "test-user-id", "forename": "Test", "surname": "User",
     "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com", "token": null}`);
 
@@ -58,6 +115,7 @@ describe('EventStartStateMachineService', () => {
     tasks: [],
     caseId: '1620409659381330',
     eventId: 'editAppealAfterSubmit',
+    taskId: '1122-3344-5566-7788',
     router: mockRouter,
     route: mockRoute,
     sessionStorageService: mockSessionStorageService
@@ -115,6 +173,40 @@ describe('EventStartStateMachineService', () => {
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(EventStartStates.CHECK_FOR_MATCHING_TASKS);
     expect(service.entryActionForStateCheckForMatchingTasks).toHaveBeenCalled();
+  });
+
+  it('should allow user to perform event if initiated from task tab', () => {
+    // Context with one task, and task id matches with context's task id
+    // Context's task assignee should be logged in user id
+    context.taskId = '1234-1234-1234-1234';
+    oneTask.id = '1234-1234-1234-1234';
+    oneTask.assignee = 'test-user-id';
+    context.tasks = [oneTask];
+
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitions();
+    service.startStateMachine(stateMachine);
+    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(mockSessionStorageService.setItem).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
+      { queryParams: { isComplete: true }, relativeTo: mockRoute });
+  });
+
+  it('should allow user to perform event if one task assigned to user and initiated from dropdown', () => {
+    context.taskId = null;
+    // Context's task assignee should be logged in user id
+    oneTask.assignee = 'test-user-id';
+    context.tasks = [oneTask];
+
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitions();
+    service.startStateMachine(stateMachine);
+    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(mockSessionStorageService.setItem).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
+      { queryParams: { isComplete: true }, relativeTo: mockRoute });
   });
 
   it('should navigate to task unassigned error page if one unassigned task', () => {
