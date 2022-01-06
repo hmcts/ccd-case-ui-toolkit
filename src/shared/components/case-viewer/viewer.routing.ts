@@ -30,7 +30,7 @@ export const viewerRouting: Routes = [
   {
     path: 'trigger/:eid',
     resolve: {
-      eventTrigger: EventTriggerResolver,
+      eventTrigger: EventTriggerResolver
     },
     component: CaseEventTriggerComponent,
     children: editorRouting,
@@ -40,11 +40,11 @@ export const viewerRouting: Routes = [
   {
     path: 'trigger/:eid/task/:tid',
     resolve: {
-      eventTrigger: EventTriggerResolver,
+      eventTrigger: EventTriggerResolver
     },
     component: CaseEventTriggerComponent,
     children: editorRouting,
-    canActivate: [EventStartGuard],
+    canActivate: [EventGuard],
     canDeactivate: [FileUploadProgressGuard],
   },
   {

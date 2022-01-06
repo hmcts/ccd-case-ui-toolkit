@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
-import { EventManagementModule } from '..';
 import { AlertModule } from '../../../components/banners/alert';
 import { TabsModule } from '../../../components/tabs';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
@@ -23,6 +22,7 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { ErrorsModule } from '../error/errors.module';
+import { EventManagementModule } from '../event-management';
 import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
@@ -75,7 +75,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   exports: [
     CaseViewerComponent,
-    CaseViewComponent,
+    CaseViewComponent
   ],
   providers: [
     CaseNotifier,
@@ -88,7 +88,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     DraftService,
     HttpService,
     CaseResolver,
-    ErrorNotifierService,
+    ErrorNotifierService
   ]
 })
 export class CaseViewerModule {
