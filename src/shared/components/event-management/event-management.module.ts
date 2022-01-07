@@ -10,11 +10,12 @@ import { TaskAssignedComponent } from './components/task-assigned/task-assigned.
 import { TaskCancelledComponent } from './components/task-cancelled/task-cancelled.component';
 import { TaskConflictComponent } from './components/task-conflict/task-conflict.component';
 import { TaskUnassignedComponent } from './components/task-unassigned/task-unassigned.component';
+import { EventCompletionComponent } from './event-completion/event-completion.component';
 import { EventStartGuard } from './event-guard/event-start.guard';
 import { EventStartComponent } from './event-start/event-start.component';
 import { EventTriggerComponent } from './event-trigger/event-trigger.component';
 import { EventTasksResolverService } from './resolvers/event-tasks-resolver.service';
-import { EventStateMachineService } from './services';
+import { EventCompletionStateMachineService, EventStartStateMachineService } from './services';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { EventStateMachineService } from './services';
   ],
   declarations: [
     EventStartComponent,
+    EventCompletionComponent,
     EventTriggerComponent,
     MultipleTasksExistComponent,
     NoTasksAvailableComponent,
@@ -37,10 +39,12 @@ import { EventStateMachineService } from './services';
   providers: [
     EventStartGuard,
     EventTasksResolverService,
-    EventStateMachineService
+    EventStartStateMachineService,
+    EventCompletionStateMachineService
   ],
   exports: [
     EventStartComponent,
+    EventCompletionComponent,
     EventTriggerComponent,
     TaskAssignedComponent,
     TaskUnassignedComponent

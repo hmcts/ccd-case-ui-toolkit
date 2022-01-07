@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-
-import { CaseEventData, CaseEventTrigger, CaseField, FieldTypeEnum, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
@@ -12,8 +12,10 @@ import {
   OrderService,
   ProfileNotifier,
   ProfileService,
+  SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
+import { EventCompletionReturnStates } from '../../event-management/models';
 import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
@@ -39,6 +41,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   isSubmitting: boolean;
   profileSubscription: Subscription;
   contextFields: CaseField[];
+  task: Task;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -72,6 +75,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private profileService: ProfileService,
     private profileNotifier: ProfileNotifier,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -94,6 +98,30 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     this.isSubmitting = true;
+
+    // We have to run the event completion checks if task in session storage
+    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task = JSON.parse(taskStr);
+      this.task = task;
+    } else {
+      // Task not in session storage, proceed to submit
+      // const caseEventData = this.generateCaseEventData();
+      // this.caseSubmit(caseEventData);
+    }
+  }
+
+  public onReturnStateEmitted(event: string): void {
+    if (event === EventCompletionReturnStates.COMPLETE_EVENT) {
+      // this.generateCaseEventData();
+      // this.caseSubmit();
+    } else {
+      // TODO: Further event return states processing here
+    }
+  }
+
+  private generateCaseEventData(): CaseEventData {
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
@@ -109,6 +137,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
+
+    return caseEventData;
+  }
+
+  private caseSubmit(caseEventData: CaseEventData): void {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {

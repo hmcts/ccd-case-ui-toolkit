@@ -112,3 +112,4 @@
   </div>
   <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="isSubmitting">{{getCancelText()}}</a></p>
 </form>
+<ccd-event-completion [caseId]="getCaseId()" [eventId]="editForm.value.event.id" [task]="task"></ccd-event-completion>
