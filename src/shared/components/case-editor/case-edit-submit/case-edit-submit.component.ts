@@ -42,7 +42,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   profileSubscription: Subscription;
   contextFields: CaseField[];
   task: Task;
-  taskEventCompletionProcessRequired = false;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -97,14 +96,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onEventCanBeCompleted(event: boolean): void {
-    console.log('TASK EVENT COMPLETION PROCESS COMPLETED', event);
-    if (event) {
-      // this.generateCaseEventData();
-      // this.caseSubmit();
-    }
-  }
-
   public submit(): void {
     this.isSubmitting = true;
 
@@ -114,7 +105,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       // Task is in session storage
       const task = JSON.parse(taskStr);
       this.task = task;
-      this.taskEventCompletionProcessRequired = true;
     } else {
       // Task not in session storage, proceed to submit
       // const caseEventData = this.generateCaseEventData();

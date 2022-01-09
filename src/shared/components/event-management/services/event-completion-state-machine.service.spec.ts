@@ -21,8 +21,7 @@ describe('EventCompletionStateMachineService', () => {
     router: mockRouter,
     route: mockRoute,
     sessionStorageService: mockSessionStorageService,
-    workAllocationService: mockWorkAllocationService,
-    eventCanBeCompleted: false
+    workAllocationService: mockWorkAllocationService
   }
 
   mockRouter = {

@@ -11,5 +11,4 @@ export interface EventCompletionStateMachineContext {
   route: ActivatedRoute;
   sessionStorageService: SessionStorageService;
   workAllocationService: WorkAllocationService;
-  eventCanBeCompleted: boolean;
 }
