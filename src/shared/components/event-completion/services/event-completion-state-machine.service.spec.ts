@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
-import { EventCompletionStateMachineContext } from '../models';
+import { EventCompletionStateMachineContext } from '../models/event-completion-state-machine-context.model';
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 

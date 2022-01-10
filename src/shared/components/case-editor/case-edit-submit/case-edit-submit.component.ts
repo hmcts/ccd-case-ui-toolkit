@@ -15,7 +15,6 @@ import {
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
-import { EventCompletionReturnStates } from '../../event-management/models';
 import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
@@ -105,6 +104,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       // Task is in session storage
       const task = JSON.parse(taskStr);
       this.task = task;
+			// Show event completion component
     } else {
       // Task not in session storage, proceed to submit
       // const caseEventData = this.generateCaseEventData();
@@ -112,8 +112,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onReturnStateEmitted(event: string): void {
-    if (event === EventCompletionReturnStates.COMPLETE_EVENT) {
+  public onEventCanBeCompleted(event: boolean): void {
+    if (event) {
+			// Submit
       // this.generateCaseEventData();
       // this.caseSubmit();
     } else {

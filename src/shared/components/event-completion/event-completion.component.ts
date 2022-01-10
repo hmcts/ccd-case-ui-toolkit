@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { WorkAllocationService } from '../..';
-import { Task } from '../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../services';
-import { EventCompletionStateMachineContext } from '../models';
-import { EventCompletionStateMachineService } from '../services';
+import { WorkAllocationService } from '..';
+import { Task } from '../../domain/work-allocation/Task';
+import { SessionStorageService } from '../../services';
+import { EventCompletionStateMachineContext } from './models';
+import { EventCompletionStateMachineService } from './services';
 
 @Component({
   selector: 'ccd-event-completion',
@@ -21,7 +21,7 @@ export class EventCompletionComponent implements OnInit {
   public task: Task;
 
   @Output()
-  state: EventEmitter<any> = new EventEmitter();
+  eventCanBeCompleted: EventEmitter<boolean> = new EventEmitter();
 
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
@@ -55,5 +55,8 @@ export class EventCompletionComponent implements OnInit {
     this.service.addTransitions();
     // Start state machine
     this.service.startStateMachine(this.stateMachine);
+
+		// Listen to context changes and emit
+		// this.eventCanBeCompleted.emit(true);
   }
 }

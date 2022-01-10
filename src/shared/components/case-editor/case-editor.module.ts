@@ -2,13 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { EventManagementModule } from '..';
-
 import { CallbackErrorsComponent } from '../../components/error';
 import { MarkdownModule } from '../../components/markdown/markdown.module';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
-    ConditionalShowRegistrarService,
+  ConditionalShowRegistrarService
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
@@ -40,6 +38,7 @@ import { EventTriggerService } from './services/event-trigger.service';
 import { PageValidationService } from './services/page-validation.service';
 import { WizardFactoryService } from './services/wizard-factory.service';
 import { WorkAllocationService } from './services/work-allocation.service';
+import { EventCompletionModule } from '../event-completion';
 
 @NgModule({
     imports: [
@@ -54,7 +53,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         LabelSubstitutorModule,
         ErrorsModule,
         ComplexModule,
-        EventManagementModule
+        EventCompletionModule
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -75,7 +74,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         CaseCreateComponent,
         CaseProgressComponent,
         CallbackErrorsComponent,
-        LoadingSpinnerComponent,
+        LoadingSpinnerComponent
     ],
     providers: [
         FieldsUtils,

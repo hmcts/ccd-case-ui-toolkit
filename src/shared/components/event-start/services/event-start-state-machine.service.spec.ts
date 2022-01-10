@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { EventStartStates, EventStartStateMachineContext, StateMachineStates } from '../models';
+import { EventStartStates, EventStartStateMachineContext } from '../models';
 import { EventStartStateMachineService } from './event-start-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -146,7 +146,7 @@ describe('EventStartStateMachineService', () => {
     expect(service.stateTaskAssignedToUser.id).toEqual(EventStartStates.TASK_ASSIGNED_TO_USER);
     expect(service.stateOneTaskAssignedToUser.id).toEqual(EventStartStates.ONE_TASK_ASSIGNED_TO_USER);
     expect(service.stateMultipleTasksAssignedToUser.id).toEqual(EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
-    expect(service.stateFinal.id).toEqual(StateMachineStates.FINAL);
+    expect(service.stateFinal.id).toEqual(EventStartStates.FINAL);
   });
 
   it('should add transitions', () => {
@@ -187,7 +187,7 @@ describe('EventStartStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: mockRoute });
@@ -203,7 +203,7 @@ describe('EventStartStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: mockRoute });
@@ -216,7 +216,7 @@ describe('EventStartStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`],
       { queryParams: {}, relativeTo: mockRoute });
   });
@@ -228,7 +228,7 @@ describe('EventStartStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-assigned`],
       { queryParams: context.tasks[0], relativeTo: context.route });
   });

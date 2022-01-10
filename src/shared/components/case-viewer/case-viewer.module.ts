@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
-import { EventManagementModule } from '..';
 import { AlertModule } from '../../../components/banners/alert';
 import { TabsModule } from '../../../components/tabs';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
@@ -23,6 +22,8 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { ErrorsModule } from '../error/errors.module';
+import { EventStartModule } from '../event-start';
+import { EventTriggerModule } from '../event-trigger';
 import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
@@ -44,7 +45,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
     ErrorsModule,
     ActivityModule,
     CaseHeaderModule,
-    EventManagementModule,
+    EventStartModule,
+    EventTriggerModule,
     TabsModule,
     PaletteModule,
     LabelSubstitutorModule,

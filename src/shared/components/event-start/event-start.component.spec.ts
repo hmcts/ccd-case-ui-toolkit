@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { StateMachineStates } from '../models';
+import { EventStartStates } from '../models';
 import { EventStartStateMachineService } from '../services/event-start-state-machine.service';
 import { EventStartComponent } from './event-start.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -101,7 +101,7 @@ describe('EventStartComponent', () => {
     component.ngOnInit();
     expect(component.context.tasks).toEqual(noTasks);
     expect(component.stateMachine).toBeDefined();
-    expect(component.stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(component.stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
 });

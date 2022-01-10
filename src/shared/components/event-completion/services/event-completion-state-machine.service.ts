@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { EventCompletionStates, EventCompletionStateMachineContext, StateMachineStates } from '../models';
+import { EventCompletionStates, EventCompletionStateMachineContext } from '../models';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 
@@ -61,7 +61,7 @@ export class EventCompletionStateMachineService {
 
     // Create final state, the second param isComplete is set to true to make sure state machine finished running
     this.stateFinal = stateMachine.createState(
-      StateMachineStates.FINAL,
+      EventCompletionStates.FINAL,
       true,
       this.entryActionForStateFinal
     );
@@ -105,23 +105,23 @@ export class EventCompletionStateMachineService {
 
   public entryActionForStateTaskCompletedOrCancelled(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(StateMachineStates.FINAL);
+    state.trigger(EventCompletionStates.FINAL);
     // Navigate to no task available error page
   }
 
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(StateMachineStates.FINAL);
+    state.trigger(EventCompletionStates.FINAL);
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(StateMachineStates.FINAL);
+    state.trigger(EventCompletionStates.FINAL);
   }
 
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(StateMachineStates.FINAL);
+    state.trigger(EventCompletionStates.FINAL);
     // Navigate to tasks tab on case details page
 
   }
@@ -146,28 +146,28 @@ export class EventCompletionStateMachineService {
 
   public addTransitionsForStateTaskCompletedOrCancelled(): void {
     this.stateTaskCompletedOrCancelled.addTransition(
-      StateMachineStates.FINAL,
+      EventCompletionStates.FINAL,
       this.stateFinal
     );
   }
 
   public addTransitionsForStateCompleteEventAndTask(): void {
     this.stateCompleteEventAndTask.addTransition(
-      StateMachineStates.FINAL,
+      EventCompletionStates.FINAL,
       this.stateFinal
     );
   }
 
   public addTransitionsForStateTaskAssignedToAnotherUser(): void {
     this.stateTaskAssignedToAnotherUser.addTransition(
-      StateMachineStates.FINAL,
+      EventCompletionStates.FINAL,
       this.stateFinal
     );
   }
 
   public addTransitionsForStateTaskUnassigned(): void {
     this.stateTaskUnassigned.addTransition(
-      StateMachineStates.FINAL,
+      EventCompletionStates.FINAL,
       this.stateFinal
     );
   }
