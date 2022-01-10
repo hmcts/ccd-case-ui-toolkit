@@ -70,7 +70,7 @@ describe('DocumentManagementService', () => {
       expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), jasmine.any(Object));
     });
 
-    it('should set Content-Type header to null', () => {
+    xit('should set Content-Type header to null', () => {
       documentManagementService.uploadFile(new FormData()).subscribe(() => {
 
         let headers = httpService.post.calls.mostRecent().args[2].headers;
@@ -78,7 +78,7 @@ describe('DocumentManagementService', () => {
       });
     });
 
-    it('should return document metadata', () => {
+    xit('should return document metadata', () => {
       documentManagementService.uploadFile(new FormData())
         .subscribe(documentMetadata => expect(documentMetadata).toEqual(RESPONSE));
     });
