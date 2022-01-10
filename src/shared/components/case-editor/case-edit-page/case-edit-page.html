@@ -1,3 +1,4 @@
+<ccd-loading-spinner  *ngIf="showSpinner"></ccd-loading-spinner>
 <ng-container *ngIf="currentPage">
   <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name}}</h1>
   <ng-container *ngIf="currentPage.label">
@@ -9,7 +10,7 @@
 <!--Case ID or Title -->
 <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
 <ng-template #titleBlock>
-  <h2 class="heading-h2">{{ getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data'] }}</h2>
+  <ccd-markdown [content]="getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data']"></ccd-markdown>
 </ng-template>
 <ng-template #idBlock>
   <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>

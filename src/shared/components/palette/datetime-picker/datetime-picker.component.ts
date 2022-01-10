@@ -6,6 +6,7 @@ import {
   NgxMatDateFormats,
   NgxMatDatetimePicker
 } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { ThemePalette } from '@angular/material';
 
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -20,7 +21,9 @@ import moment = require('moment/moment');
   styleUrls: ['./datetime-picker.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    {provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS}
+    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+    { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
   ]
 })
 
@@ -61,17 +64,16 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public ngOnInit(): void {
     this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
-    this.setDateTimeFormat();
     // set date control based on mandatory field
     this.dateControl = (this.caseField.isMandatory ?
-     this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
-      : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
+      this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
+       : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
       this.formatValueAndSetErrors();
-    }, 1);
+    }, 1000);
     // when the status changes check that the maximum/minimum date has not been exceeded
     this.dateControl.statusChanges.subscribe(() => {
       this.minError = this.dateControl.hasError('matDatetimePickerMin');
@@ -79,7 +81,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     });
   }
 
-  // reset format whenever changes are made for specific instance
   public setDateTimeFormat(): void {
     this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
     this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;

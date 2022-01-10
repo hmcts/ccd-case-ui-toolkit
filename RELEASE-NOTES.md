@@ -1,10 +1,77 @@
 ## RELEASE NOTES
-
-### Version 4.2.0-strategic-activity-tracker-kappa
+### Version 4.8.5-strategic-activity-tracker-lima
 **EUI-2976** Socket-based Activity Tracker.
+### Version 4.3.6-hotfix-EUI-4404
+**EUI-4404** Fix rendering of read-only Collection field within editable Complex field
+
+### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details
+
+### Version 4.7.0-EUI-4412-order-fields-CYA-page
+**EUI-4414** Field order on the CYA page changes
+
+### Version 3.1.5-complex-type-showing-in-tab
+**EUI-3798** 'Empty' complex type showing in tab (due to Label)
+
+### Version 3.1.5-complex-field-check-answers
+**EUI-4033** Ensured complex fields were interpolated on check you answers page
+
+### Version 3.1.5-pcm-role-non-completion
+### Version 4.3.1-EUI-4202-challenged-access-request-screen-functionality
+**EUI-4202** Challenged Access Request screen functionality - happy path
+
+### Version 4.5.0-rc.4
+**EUI-4415** Label not rendering
+
+### Version 4.3.1-EUI-3473-challenged-access-request-screen
+**EUI-3473** Challenged Access Request screen for Case Access Management
+
+### Version 4.3.1-switch-tabs
+**EUI-3881** Fix bug that it can't switch case detail tabs after inserting prepended tabs
+
+### Version 4.0.0-value-disappearing
+**EUI-4364** Values disappearing after mid event callback when modifying case data
+
+### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
+**EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+### Version 4.3.2-rc3
+**EUI-4430** Case reference field regression bugs
+
+### Version 4.3.2-rc1
+**EUI-4348** Filter options not retained for search
+
+### Version 4.3.2
+**EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled
+**EUI-4346** Link a case event throws error
+**EUI-4349** Reset caseDetailsPage Position to Top
+
+### Version 4.3.0-rc.16-case-submission-error
+**EUI-4462** "edit case event submission throws error"
+
+### Version 4.3.4
+**EUI-4210** Automated Test Failures
+
+### Version 4.1.6-EUI-3528-4205-RHF-enhancements
+**EUI-3528** "Retain Hidden Value" support for DynamicList fields, _only_ for `retain_hidden_value` flag set to `false` or unspecified
+**EUI-4205** "Retain Hidden Value" - prevent deletion of Complex sub-field value if parent unknown
+
+### Version 4.3.0
+**EUI-4344** Document uploaded shows incorrect name
+**EUI-4377** removing unwanted html tags from title
+
+
+### Version 4.2.3
+**EUI-3425** Hotfix for work already done. Secure uploading for new cases
+
+### Version 4.2.2
+**EUI-4161** Turn HRS documentLink URLs into relative URLs, as is done for dm-store URLs
+
+### Version 4.2.1
+**EUI-3425** Update Document Management Service to call new document upload API in ccd-case-ui-toolkit
+**EUI-3426** Repoint node layer at the new document store API
 
 ### Version 4.2.0
-**EUI-2276** Case field showing on summary screen when complext type field is hidden
+**EUI-2276** Case field showing on summary screen when complex type field is hidden
 **EUI-2829** Support Dynamic RadioList
 **EUI-3621** Add support for searching cases wrt collections of fixed lists
 **EUI-4095** Time stamp on case events incorrect
@@ -61,8 +128,74 @@
 ### Version 3.1.5-complex-hidden-collection-show
 **EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
 
-### Version 3.1.5-event-log-local
-**EUI-4095** Event logs to display local time
+### Version 3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden
+**EUI-2276** Case field showing on summary screen when complex type field is hidden
+
+### Version 3.1.5-nested-multi-select-labels-theta
+**EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
+fixed an issue with the rendering of complex collections on the Case Details tabs.
+
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
+### Version 3.1.5-datetime-picker-validation
+**EUI-4118** Add and improve validation to datetime picker
+
+### Version 4.1.6-ccd-cve-fix
+**EUI-4112** CVE fix for ccd toolkit
+
+### Version 4.0.0-activity-tracker-unauthorised-beta
+**EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
+
+### Version 3.1.5-complex-hidden-collection-show
+**EUI-3983** Fixed issue with show fields displaying momentarily before show-condition logic evaluated
+
+### Version 4.1.0
+**EUI-2027** Button Labels (AA)
+**EUI-2030** Colour Contrast (AA)
+**EUI-3155** Non-Descriptive Headings (AA) - issues 02, 06, 05 (part of it)
+**EUI-4118** Mandatory datetime picker fields are not giving required field errors
+**EUI-1621** Date/time DISPLAY for Workbasket & Search Input & Results
+**EUI-1692** DateTime Entry & Display Formatting for Complex Types
+**EUI-2792** Date and Time entry (Testing Story)
+**EUI-4155** WA post-MVP Pagination- Angular - My tasks (in Tasks list) - CCD UI Toolkit
+**EUI-3049** Wrap and restyle date time picker component
+**EUI-3051** Handle #DATETIMEENTRY field context
+**EUI-3581** Field interpolation does not work for the field type MultiSelectList
+**EUI-4244** SSCS - Midevent callbacks sending empty fields for optional empty document
+
+### Version 4.0.0-prepended-tabs-v3
+**EUI-3777** Create prepended tabs on case view
+
+### Version 4.0.0
+**EUI-4227** Fixed an error with show/hide not working quite right in some configurations.
+**EUI-2022** ExUI - Error Messages (Complex Type)
+**EUI-4033** Ensured complex fields were interpolated on Check Your Answers page
+**EUI-4077** Ensuring searchForCompletable not called if user is pui-case-manager
+**EUI-2027** Accessibility amends for button labels
+**EUI-3155** Accessibility amends for non-descriptive headings
+**EUI-3550** Replace heading tags with spans on case edit pages
+**EUI-2792** Datetime picker fixes after testing integration with webapp
+**EUI-3825** Fix for missing FTPA tab contents.
+**EUI-2017** ExUI - Navigate in table using keyboard
+**EUI-2022** ExUI - Error Messages (A)
+**EUI-2023** ExUI - Labels (A)
+**EUI-3538** ExUI - FieldShowCondition failing on SearchInputFields and WorkBasketInputFields
+**EUI-3466** ExUI - Spinner issue in demo MO unassigned cases page
+**EUI-3497** ExUI - Unassigned cases does not show all unassigned cases
+**EUI-3049** Create datetime picker for use in write date fields (and edit read date fields for consistency)
+**EUI-3732** ExUI - Breathing space data not persisted on Previous button click with ExpUI Demo
+**EUI-2569** ExUI - Labels not displaying in Case Heading
+**EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
+**EUI-3682** Callback Error still not showing proper error message in XUI screen
+**EUI-3505** Applied fix to disable and enable collection remove button based on CRUD permissions
+**EUI-2039** Changed Date Input fields to conform to accessibility standards
+**EUI-2029** WCAG AA Status Message Fixes
+**EUI-2739** Fix "retain hidden fields" functionality for Complex collection, nested Complex, and nested Complex collection types
+**EUI-3622** Re-evaluate "retain hidden value" matrix linked to acceptance criteria
+**EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
+**EUI-2744** EventToComplexTypes regression with hidden fields
+**EUI-4106** Show/hide functionality
 
 ### Version 3.1.5-nested-multi-select-labels-theta
 **EUI-3581** Fixed an issue with label placeholders not working for multiselects within complex fields or collections. Also fixed an issue with FixedRadioList fields showing the code, not the label. Finally,
@@ -89,7 +222,7 @@ Activity Tracker Performance changes
 ### Version 3.0.3
 **EUI-3505** OCMC: OCON9x paper response form button should be disabled continued...
 
-### Version 3.0.0 
+### Version 3.0.0
 **EUI-3997** Master release candidate
 **EUI-2569** ExUI - Labels not displaying in Case Heading
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
@@ -175,7 +308,7 @@ Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.
 Fix EUI-3403 - fix for optional top-level documents incorrectly showing.
 
 ### Version 2.71.3-conditional-show-perf
-Fix EUI-3398 - don't submit labels with empty string values 
+Fix EUI-3398 - don't submit labels with empty string values
 
 ### Version 2.71.2-conditional-show-perf
 Fix EUI-3381 - fix for missing alert banner.
@@ -216,8 +349,8 @@ We do need to submit labels
 **EUI-3331** Problem with event_data submission
 
 ### Version 2.68.11-prerelease-conditional-show-perf
-**EUI-3270** Improve performance of event forms. 
-Work around for case when profile data is not available. 
+**EUI-3270** Improve performance of event forms.
+Work around for case when profile data is not available.
 Merge master to simplify final branch merge
 
 ### Version 2.68.10-prerelease-conditional-show-perf
@@ -294,7 +427,7 @@ Merge master to simplify final branch merge
 **EUI** Undoing retain hidden fields functionality
 
 ### Version 2.65.1
-**EUI** Undoing retain hidden fields revert 
+**EUI** Undoing retain hidden fields revert
 
 ### Version 2.65
 **EUI** Catching up with releases
@@ -447,8 +580,8 @@ release from master branch
 ### Version 2.62.28-RDM-6061-prerelease - December 17 2019
 **RDM-6061** - JS error when a non-available case field is used in showCondition
 
-### Version 2.62.26-RDM-6716-prerelease - December 17 2019 
-**RDM-6716** default '--select a value--' bug fix for fixed list 
+### Version 2.62.26-RDM-6716-prerelease - December 17 2019
+**RDM-6716** default '--select a value--' bug fix for fixed list
 
 ### Version 2.62.27-RDM-6555-prerelease - December 12 2019
 ***RDM-6555** Address Current known security vulnerabilities in ccd-case-ui-toolkit
@@ -501,7 +634,7 @@ release from master branch
 Revert 5398 - Document in collections
 
 ### Version 2.59.3 - August 19 2019
-REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type 
+REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type
 
 ### Version 2.59.2 - August 19 2019
 **RDM-5072** remove some bad code introduced in WriteAddressFieldComponent
@@ -543,7 +676,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-5031** redirect to case-list when user do not have access to the case after an event
 
 ### Version 2.58.8 - July 12 2019
-**RDM-4673** Show/Hide condition handling on New Collection View UI change 
+**RDM-4673** Show/Hide condition handling on New Collection View UI change
 
 ### Version 2.58.7 - July 11 2019
 **RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
@@ -560,7 +693,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 
 ### Version 2.58.2 - July 01 2019
 **RDM-4266** DAC - List mark-up
-**RDM-4274** DAC - Non-Descriptive form fields 
+**RDM-4274** DAC - Non-Descriptive form fields
 **RDM-4282** DAC - no postcode link P1 - Colour contrast
 
 ### Version 2.58.1 - July 1 2019
@@ -572,7 +705,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4906** Payment web-component v1.8.6 integration in CCD
 
 ### Version 2.57.0 - June 26 2019
-**RDM-4525** Ordering of fixed lists 
+**RDM-4525** Ordering of fixed lists
 
 ### Version 2.56.0 - June 25 2019
 **RDM-2987** Markdown supporting Iterating collection items when accessing Complex elements
@@ -587,7 +720,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4781** RDM-4781-Data not being shown on multi-select list
 
 ### Version 2.54.0 - June 07 2019
-**RDM-4336** RDM-4336 New external V2 Create Event endpoint  
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint
 
 ### Version 2.53.0 - June 07 2019
 **RDM-4537** Case List Filters extraction and new contract
@@ -611,7 +744,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4537** Case List Filters extraction and new contract
 
 ### Version 2.49.2 - May 21 2019
-**RDM-876** Hide print button when not configured  
+**RDM-876** Hide print button when not configured
 
 ### REVRTED Version 2.49.0 - May 14 2019
 **RDM-4537** Case List Filters extraction and new contract
@@ -620,7 +753,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4575** search filters definition service
 
 ### Version 2.47.0 - May 7 2019
-**RDM-4574** Create Case Filters componant retrieve jurisdiction internally 
+**RDM-4574** Create Case Filters componant retrieve jurisdiction internally
 
 ### Version 2.46.0 - May 1 2019
 **RDM-3496** Case View of Nested Complex Types - Collection of complex types within complex types
@@ -630,7 +763,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 
 ### Version 2.43.0 - April 29 2019
 **RDM-4386** Make print, event selector and history tab optional but present by default
-**RDM-4130** Extract Results List Component to toolkit 
+**RDM-4130** Extract Results List Component to toolkit
 
 ### Version 2.42.3 - April 23 2019
 **RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
@@ -707,7 +840,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-3820** - New contract - extract Case Search Form component
 
 ### Version 2.24.1 - February 13 2019
-**RDM-2963** changed initialisation values to null 
+**RDM-2963** changed initialisation values to null
 
 ### Version 2.24.0 - February 12 2019
 **RDM-3821** - Extract Case Search Form to ui-toolkit as is

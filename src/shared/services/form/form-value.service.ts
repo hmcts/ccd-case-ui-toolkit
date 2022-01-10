@@ -8,7 +8,7 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 export class FormValueService {
   /**
    * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
-   * There are two exeptions:
+   * There are two exceptions:
    * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
    *      form= { 'list': ['code1', 'code2'],
    *              'list---LABEL': ['label1', 'label2'] },
@@ -252,8 +252,15 @@ export class FormValueService {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+        if (Array.isArray(sanitisedObject[key])) {
+          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
+          // delete the property from the sanatised object
+          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+            delete sanitisedObject[key];
+          }
+        }
       }
-    };
+    }
     return sanitisedObject;
   }
 
@@ -424,6 +431,8 @@ export class FormValueService {
               }
               break;
             case 'Collection':
+              // Check for valid collection data
+              this.removeInvalidCollectionData(data, field);
               // Get hold of the collection.
               const collection = data[field.id];
               // Check if we actually have a collection to work with.
@@ -448,6 +457,22 @@ export class FormValueService {
 
     // Clear out any MultiSelect labels.
     FormValueService.removeMultiSelectLabels(data);
+  }
+
+  /**
+   * Remove any empty or invalid arry with only id
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param field {@link CaseField} domain model object for each field
+   */
+  removeInvalidCollectionData(data: object, field: CaseField) {
+    if (data[field.id] && data[field.id].length > 0) {
+      for (const objCollection of data[field.id]) {
+        if (Object.keys(objCollection).length === 1 && Object.keys(objCollection).indexOf('id') > -1) {
+          data[field.id] = [];
+        }
+      }
+    }
   }
 
   /**

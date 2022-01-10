@@ -20,12 +20,13 @@ describe('DocumentManagementService', () => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
       'getHrsUrl', 'getRemoteHrsUrl',
-      'getAnnotationApiUrl'
+      'getAnnotationApiUrl', 'getDocumentSecureMode'
     ]);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
     appConfig.getRemoteHrsUrl.and.returnValue(REMOTE_HRS_URL);
     appConfig.getHrsUrl.and.returnValue(HRS_URL);
+    appConfig.getDocumentSecureMode.and.returnValue(false);
 
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     documentManagementService = new DocumentManagementService(httpService, appConfig);
@@ -45,7 +46,18 @@ describe('DocumentManagementService', () => {
             }
           }
         }]
-      }
+      },
+      documents: [{
+        originalDocumentName: 'something.pdf',
+        _links: {
+          self: {
+            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+          },
+          binary: {
+            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+          }
+        }
+      }]
     };
 
     beforeEach(() => {

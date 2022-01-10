@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 
@@ -87,7 +87,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.profileSubscription.unsubscribe();
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
   }
 
   public submit(): void {
@@ -178,35 +180,37 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       const caseField: CaseField = caseFieldsLookup[key];
       // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
       // both null and undefined are equal to *neither false nor true*)
-      if (caseField &&
+      if (caseField && caseField.retain_hidden_value &&
         (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
-        const fieldType: FieldTypeEnum = caseField.field_type.type;
-        switch (fieldType) {
+        if (caseField.field_type.type === 'Complex') {
           // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
           // handle both null and undefined values
-          case 'Complex':
-            if (caseField.retain_hidden_value && caseField.value != null) {
-              // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
-              // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
-              // parent)
-              // Update rawFormValueData for this field
-              rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
-                formGroup.controls[key] as FormGroup, caseField.field_type.complex_fields, caseField);
+          if (caseField.value != null) {
+            // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
+            // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
+            // parent)
+            // Update rawFormValueData for this field
+            // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
+            let form: FormGroup = new FormGroup({});
+            if (formGroup.controls[key].value) {
+              Object.keys(formGroup.controls[key].value).forEach((item) => {
+                form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
+              })
             }
-            break;
-          default:
-            // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
-            // replaced with the original from formatted_value
-            if (caseField.retain_hidden_value) {
-              // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
-              // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
-              // from the CaseField itself.
-              if (parentField && parentField.formatted_value) {
-                rawFormValueData[key] = parentField.formatted_value[caseField.id];
-              } else {
-                rawFormValueData[key] = caseField.formatted_value;
-              }
-            }
+            rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+              form, caseField.field_type.complex_fields, caseField);
+          }
+        } else {
+          // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
+          // replaced with the original from formatted_value
+          // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
+          // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
+          // from the CaseField itself.
+          if (parentField && parentField.formatted_value) {
+            rawFormValueData[key] = parentField.formatted_value[caseField.id];
+          } else {
+            rawFormValueData[key] = caseField.formatted_value;
+          }
         }
       }
     });
@@ -347,6 +351,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isSolicitor(): boolean {
     return this.profile.isSolicitor();
+  }
+
+  private announceProfile(route: ActivatedRoute): void {
+    route.snapshot.pathFromRoot[1].data.profile ?
+      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
+    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: object): Confirmation {

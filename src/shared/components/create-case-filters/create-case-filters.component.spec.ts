@@ -8,7 +8,9 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { Observable } from 'rxjs';
-import { DefinitionsService, OrderService, AlertService } from '../../services';
+import { DefinitionsService, OrderService, AlertService, SessionStorageService } from '../../services';
+import { AccessControlList } from '../../domain/definition/access-control-list.model';
+import { createACL } from '../../fixture/shared.test.fixture';
 
 const EVENT_ID_1 = 'ID_1';
 const EVENT_NAME_1 = 'Event one';
@@ -16,6 +18,11 @@ const EVENT_ID_2 = 'ID_2';
 const EVENT_NAME_2 = 'Event two';
 const EVENT_ID_3 = 'ID_3';
 const EVENT_NAME_3 = 'Event three';
+
+const acl1: AccessControlList = createACL('role1', true, true, true, false);
+const acl2: AccessControlList = createACL('role2', true, true, false, false);
+const acl3: AccessControlList = createACL('role3', false, true, false, false);
+let sessionStorageService: any;
 
 const CASE_TYPES_1: CaseTypeLite[] = [
   {
@@ -31,7 +38,8 @@ const CASE_TYPES_1: CaseTypeLite[] = [
         pre_states: [],
         case_fields: [],
         description: 'description_1',
-        order: 1
+        order: 1,
+        acls: [acl1, acl2]
       },
       {
         id: EVENT_ID_2,
@@ -40,7 +48,8 @@ const CASE_TYPES_1: CaseTypeLite[] = [
         pre_states: ['pre_state_1', 'pre_state_2'],
         case_fields: [],
         description: 'description_2',
-        order: 2
+        order: 2,
+        acls: [acl2, acl3]
       },
       {
         id: EVENT_ID_3,
@@ -49,7 +58,8 @@ const CASE_TYPES_1: CaseTypeLite[] = [
         pre_states: [],
         case_fields: [],
         description: 'description_3',
-        order: 3
+        order: 3,
+        acls: [acl1, acl2]
       }
     ],
   }
@@ -76,7 +86,8 @@ const CASE_TYPES_2: CaseTypeLite[] = [
         pre_states: [],
         case_fields: [],
         description: 'description_1',
-        order: 1
+        order: 1,
+        acls: [acl1, acl2]
       },
       {
         id: EVENT_ID_2,
@@ -85,7 +96,8 @@ const CASE_TYPES_2: CaseTypeLite[] = [
         pre_states: ['pre_state_1', 'pre_state_2'],
         case_fields: [],
         description: 'description_2',
-        order: 2
+        order: 2,
+        acls: [acl2, acl3]
       },
       {
         id: EVENT_ID_3,
@@ -94,7 +106,8 @@ const CASE_TYPES_2: CaseTypeLite[] = [
         pre_states: [],
         case_fields: [],
         description: 'description_3',
-        order: 3
+        order: 3,
+        acls: [acl1, acl2]
       }
     ],
   },
@@ -129,7 +142,8 @@ const CASE_TYPES_2: CaseTypeLite[] = [
         pre_states: [],
         case_fields: [],
         description: 'description_1',
-        order: 1
+        order: 1,
+        acls: [acl1, acl2]
       }
     ],
   }
@@ -149,7 +163,8 @@ const SINGLE_EVENT: CaseEvent[] = [{
   pre_states: [],
   case_fields: [],
   description: 'description_1',
-  order: 1
+  order: 1,
+  acls: [acl1, acl2]
 }];
 
 const CASE_TYPES_SINGLE_EVENT: CaseTypeLite[] = [
@@ -180,7 +195,8 @@ const CASE_TYPE: CaseTypeLite = {
       pre_states: [],
       case_fields: [],
       description: 'description_1',
-      order: 1
+      order: 1,
+      acls: [acl1, acl2]
     },
     {
       id: EVENT_ID_2,
@@ -189,7 +205,8 @@ const CASE_TYPE: CaseTypeLite = {
       pre_states: ['pre_state_1', 'pre_state_2'],
       case_fields: [],
       description: 'description_2',
-      order: 2
+      order: 2,
+      acls: [acl2, acl3]
     },
     {
       id: EVENT_ID_3,
@@ -198,7 +215,8 @@ const CASE_TYPE: CaseTypeLite = {
       pre_states: [],
       case_fields: [],
       description: 'description_3',
-      order: 3
+      order: 3,
+      acls: [acl1, acl2]
     }
   ],
   states: [],
@@ -213,7 +231,8 @@ const CASE_EVENTS_NO_PRE_STATES: CaseEvent[] = [
     pre_states: [],
     case_fields: [],
     description: 'description_1',
-    order: 1
+    order: 1,
+    acls: [acl1, acl2]
   },
   {
     id: EVENT_ID_3,
@@ -222,11 +241,23 @@ const CASE_EVENTS_NO_PRE_STATES: CaseEvent[] = [
     pre_states: [],
     case_fields: [],
     description: 'description_3',
-    order: 3
+    order: 3,
+    acls: [acl1, acl2]
   }
 ];
 
 const SORTED_CASE_EVENTS: CaseEvent[] = [...CASE_EVENTS_NO_PRE_STATES];
+
+const FILTERED_CASE_EVENTS: CaseEvent[] = [{
+  id: EVENT_ID_3,
+  name: EVENT_NAME_3,
+  post_state: 'state_3',
+  pre_states: [],
+  case_fields: [],
+  description: 'description_3',
+  order: 3,
+  acls: [acl1, acl3]
+}];
 
 let mockDefinitionsService: any;
 let mockOrderService: any;
@@ -262,6 +293,9 @@ describe('CreateCaseFiltersComponent', () => {
     mockAlertService = createSpyObj<AlertService>('alertService', ['clear']);
     mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
     mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["role1", "role3"], "email": "test@mail.com","token": null}`);
 
     TestBed
       .configureTestingModule({
@@ -274,7 +308,8 @@ describe('CreateCaseFiltersComponent', () => {
         ], providers: [
           { provide: OrderService, useValue: mockOrderService },
           { provide: AlertService, useValue: mockAlertService },
-          { provide: DefinitionsService, useValue: mockDefinitionsService }
+          { provide: DefinitionsService, useValue: mockDefinitionsService },
+          { provide: SessionStorageService, useValue: sessionStorageService}
         ]
       })
       .compileComponents();
@@ -329,6 +364,36 @@ describe('CreateCaseFiltersComponent', () => {
     fixture.detectChanges();
     expect(mockOrderService.sort).toHaveBeenCalledWith(CASE_EVENTS_NO_PRE_STATES);
     expect(component.selectedCaseTypeEvents).toBe(SORTED_CASE_EVENTS);
+  });
+
+  it('should return blank list of events when user doesnt have create access', () => {
+    sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["role3"], "email": "test@mail.com","token": null}`);
+    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    fixture.detectChanges();
+    component.ngOnInit();
+    component.filterJurisdictionControl.setValue(JURISDICTION_1.id);
+    component.onJurisdictionIdChange();
+    component.filterCaseTypeControl.setValue(CASE_TYPES_1[0].id);
+    component.onCaseTypeIdChange();
+
+    fixture.detectChanges();
+    expect(mockOrderService.sort).toHaveBeenCalledWith([]);
+  });
+
+  it('should return events list based on the create access to user', () => {
+    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    mockOrderService.sort.and.returnValue(FILTERED_CASE_EVENTS);
+    fixture.detectChanges();
+    component.ngOnInit();
+    component.filterJurisdictionControl.setValue(JURISDICTION_1.id);
+    component.onJurisdictionIdChange();
+    component.filterCaseTypeControl.setValue(CASE_TYPES_1[0].id);
+    component.onCaseTypeIdChange();
+
+    fixture.detectChanges();
+    expect(mockOrderService.sort).toHaveBeenCalledWith(CASE_EVENTS_NO_PRE_STATES);
+    expect(component.selectedCaseTypeEvents).toBe(FILTERED_CASE_EVENTS);
   });
 
   it('should initialise jurisdiction selector with given jurisdictions and no selection', () => {
