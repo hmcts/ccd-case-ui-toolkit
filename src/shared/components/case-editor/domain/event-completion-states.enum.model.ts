@@ -8,5 +8,5 @@ export enum EventCompletionStates {
   TASK_REASSIGN_TO_USER = 'task-reassign-to-user',
   TASK_ASSIGN_TO_USER = 'task-assign-to-user',
   TASK_UNASSIGNED = 'task-unassigned',
-	FINAL = 'final'
+  FINAL = 'final'
 }

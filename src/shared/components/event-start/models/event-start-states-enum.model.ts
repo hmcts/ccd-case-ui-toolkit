@@ -10,5 +10,5 @@ export enum EventStartStates {
   ASSIGN_TASK_TO_SELF = 'assign-task-to-self',
   ASK_MANAGER_TO_ASSIGN_TASK = 'ask-manager-to-assign-task',
   SHOW_WARNING = 'show-warning',
-	FINAL = 'final'
+  FINAL = 'final'
 }

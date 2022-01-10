@@ -2,22 +2,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
-import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { EventCompletionStateMachineContext } from '../domain';
+import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain';
+import { EventCompletionParams } from '../domain/event-completion-params.model';
 
 @Component({
   selector: 'ccd-case-event-completion',
   templateUrl: './case-event-completion.html'
 })
-export class CaseEventCompletionComponent implements OnInit {
+export class CaseEventCompletionComponent implements OnInit, EventCompletionComponentEmitter {
 
   @Input()
-  public caseId: string;
-  @Input()
-  public eventId: string;
-  @Input()
-  public task: Task;
+  public eventCompletionParams: EventCompletionParams;
 
   @Output()
   eventCanBeCompleted: EventEmitter<boolean> = new EventEmitter();
@@ -36,13 +32,15 @@ export class CaseEventCompletionComponent implements OnInit {
 
     // Setup the context
     this.context = {
-      task: this.task,
-      caseId: this.caseId,
-      eventId: this.eventId,
+      task: this.eventCompletionParams.task,
+      caseId: this.eventCompletionParams.caseId,
+      eventId: this.eventCompletionParams.eventId,
       router: this.router,
       route: this.route,
       sessionStorageService: this.sessionStorageService,
-      workAllocationService: this.workAllocationService
+      workAllocationService: this.workAllocationService,
+      canBeCompleted: false,
+      component: this
     };
 
     // Initialise state machine
@@ -54,8 +52,5 @@ export class CaseEventCompletionComponent implements OnInit {
     this.service.addTransitions();
     // Start state machine
     this.service.startStateMachine(this.stateMachine);
-
-		// Listen to context changes and emit
-		// this.eventCanBeCompleted.emit(true);
   }
 }

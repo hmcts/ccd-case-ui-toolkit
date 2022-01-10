@@ -112,6 +112,8 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.FINAL);
+    // Emit event to parent component
+    context.component.eventCanBeCompleted.emit(false);
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
@@ -129,6 +131,10 @@ export class EventCompletionStateMachineService {
   public entryActionForStateFinal(state: State, context: EventCompletionStateMachineContext): void {
     // Final actions can be performed here, the state machine finished running
     console.log('FINAL');
+  }
+
+  public testFn(): void {
+    console.log('TEST FUNCTION CALL');
   }
 
   public addTransitionsForStateCheckTasksCanBeCompleted(): void {

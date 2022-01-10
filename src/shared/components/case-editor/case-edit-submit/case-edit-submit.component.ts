@@ -19,6 +19,7 @@ import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
+import { EventCompletionParams } from '../domain/event-completion-params.model';
 
 // @dynamic
 @Component({
@@ -41,6 +42,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   profileSubscription: Subscription;
   contextFields: CaseField[];
   task: Task;
+  eventCompletionParams: EventCompletionParams;
+  eventCompletionChecksRequired = false;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -104,7 +107,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       // Task is in session storage
       const task = JSON.parse(taskStr);
       this.task = task;
-			// Show event completion component
+      // Show event completion component
+      this.eventCompletionParams = {
+        caseId: this.getCaseId(),
+        eventId: this.editForm.value.event.id,
+        task: task
+      };
+      this.eventCompletionChecksRequired = true;
     } else {
       // Task not in session storage, proceed to submit
       // const caseEventData = this.generateCaseEventData();
@@ -114,9 +123,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public onEventCanBeCompleted(event: boolean): void {
     if (event) {
-			// Submit
-      // this.generateCaseEventData();
-      // this.caseSubmit();
+      // Submit
+      const caseEventData = this.generateCaseEventData();
+      this.caseSubmit(caseEventData);
     } else {
       // TODO: Further event return states processing here
     }
