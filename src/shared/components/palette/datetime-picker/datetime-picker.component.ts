@@ -4,7 +4,8 @@ import { Moment } from 'moment/moment';
 import {
   NGX_MAT_DATE_FORMATS,
   NgxMatDateFormats,
-  NgxMatDatetimePicker
+  NgxMatDatetimePicker,
+  NgxMatDateAdapter
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { ThemePalette } from '@angular/material';
