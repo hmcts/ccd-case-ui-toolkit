@@ -1,17 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { WorkAllocationService } from '..';
-import { Task } from '../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../services';
-import { EventCompletionStateMachineContext } from './models';
-import { EventCompletionStateMachineService } from './services';
+import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
+import { Task } from '../../../domain/work-allocation/Task';
+import { SessionStorageService } from '../../../services';
+import { EventCompletionStateMachineContext } from '../domain';
 
 @Component({
-  selector: 'ccd-event-completion',
-  templateUrl: './event-completion.component.html'
+  selector: 'ccd-case-event-completion',
+  templateUrl: './case-event-completion.html'
 })
-export class EventCompletionComponent implements OnInit {
+export class CaseEventCompletionComponent implements OnInit {
 
   @Input()
   public caseId: string;

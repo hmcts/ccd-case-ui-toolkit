@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { EventCompletionStates, EventCompletionStateMachineContext } from '../models';
+import { EventCompletionStates, EventCompletionStateMachineContext } from '../domain';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 

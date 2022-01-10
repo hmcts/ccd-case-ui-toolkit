@@ -9,7 +9,6 @@ export * from './dialogs';
 export * from './error';
 export * from './error-message';
 export * from './event-start';
-export * from './event-completion';
 export * from './markdown';
 export * from './palette';
 export * from './search-filters';

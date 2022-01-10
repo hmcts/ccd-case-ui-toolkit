@@ -22,7 +22,7 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { ErrorsModule } from '../error/errors.module';
-import { EventStartModule } from '../event-start';
+import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
 import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
@@ -77,7 +77,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   exports: [
     CaseViewerComponent,
-    CaseViewComponent,
+    CaseViewComponent
   ],
   providers: [
     CaseNotifier,

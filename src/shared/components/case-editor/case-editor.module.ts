@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { EventCompletionStateMachineService } from './services/event-completion-state-machine.service';
 import { CallbackErrorsComponent } from '../../components/error';
 import { MarkdownModule } from '../../components/markdown/markdown.module';
 import { ConditionalShowModule } from '../../directives/conditional-show';
@@ -32,13 +33,13 @@ import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
+import { CaseEventCompletionComponent } from './case-event-completion/case-event-completion.component';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { EventTriggerService } from './services/event-trigger.service';
 import { PageValidationService } from './services/page-validation.service';
 import { WizardFactoryService } from './services/wizard-factory.service';
 import { WorkAllocationService } from './services/work-allocation.service';
-import { EventCompletionModule } from '../event-completion';
 
 @NgModule({
     imports: [
@@ -52,8 +53,7 @@ import { EventCompletionModule } from '../event-completion';
         ConditionalShowModule,
         LabelSubstitutorModule,
         ErrorsModule,
-        ComplexModule,
-        EventCompletionModule
+        ComplexModule
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -61,6 +61,7 @@ import { EventCompletionModule } from '../event-completion';
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseEventCompletionComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         LoadingSpinnerComponent
@@ -71,6 +72,7 @@ import { EventCompletionModule } from '../event-completion';
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseEventCompletionComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         CallbackErrorsComponent,
@@ -96,7 +98,8 @@ import { EventCompletionModule } from '../event-completion';
         ProfileService,
         CaseEditWizardGuard,
         WorkAllocationService,
-        SessionStorageService
+        SessionStorageService,
+        EventCompletionStateMachineService
     ]
 })
 export class CaseEditorModule {}
