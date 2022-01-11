@@ -98,6 +98,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Handler function for event completion
+   *
+   * @memberof CaseEditSubmitComponent
+   */
   public submit(): void {
     this.isSubmitting = true;
 
@@ -107,7 +112,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       // Task is in session storage
       const task = JSON.parse(taskStr);
       this.task = task;
-      // Show event completion component
+      // Show event completion component to perform event completion checks
       this.eventCompletionParams = {
         caseId: this.getCaseId(),
         eventId: this.editForm.value.event.id,
@@ -116,21 +121,32 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.eventCompletionChecksRequired = true;
     } else {
       // Task not in session storage, proceed to submit
-      // const caseEventData = this.generateCaseEventData();
-      // this.caseSubmit(caseEventData);
+      const caseEventData = this.generateCaseEventData();
+      this.caseSubmit(caseEventData);
     }
   }
 
-  public onEventCanBeCompleted(event: boolean): void {
-    if (event) {
+  /**
+   * Handler function for event emitted from case event completion component
+   *
+   * @param {boolean} eventCanBeCompleted
+   * @memberof CaseEditSubmitComponent
+   */
+  public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
+    if (eventCanBeCompleted) {
       // Submit
       const caseEventData = this.generateCaseEventData();
       this.caseSubmit(caseEventData);
-    } else {
-      // TODO: Further event return states processing here
     }
   }
 
+  /**
+   * Function to generate and return case event data for completing the event
+   *
+   * @private
+   * @return {*}  {CaseEventData}
+   * @memberof CaseEditSubmitComponent
+   */
   private generateCaseEventData(): CaseEventData {
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
@@ -151,6 +167,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return caseEventData;
   }
 
+  /**
+   * Function to complete the event
+   *
+   * @private
+   * @param {CaseEventData} caseEventData
+   * @memberof CaseEditSubmitComponent
+   */
   private caseSubmit(caseEventData: CaseEventData): void {
     this.caseEdit.submit(caseEventData)
       .subscribe(

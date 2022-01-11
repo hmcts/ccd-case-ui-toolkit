@@ -2,11 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Task } from '../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../services';
-import { EventStartStates } from '../models';
-import { EventStartStateMachineService } from '../services/event-start-state-machine.service';
+import { Task } from '../../domain/work-allocation/Task';
+import { SessionStorageService } from '../../services';
 import { EventStartComponent } from './event-start.component';
+import { EventStartStates } from './models';
+import { EventStartStateMachineService } from './services';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('EventStartComponent', () => {
