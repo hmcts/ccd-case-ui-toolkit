@@ -38,6 +38,6 @@ describe('TaskReassignedComponent', () => {
   it('should display error message task reassigned', () => {
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
     const headingHtml = heading.nativeElement as HTMLElement;
-    expect(headingHtml.innerText).toBe('Task assignment required');
+    expect(headingHtml.innerText).toBe('Task reassigned');
   });
 });
