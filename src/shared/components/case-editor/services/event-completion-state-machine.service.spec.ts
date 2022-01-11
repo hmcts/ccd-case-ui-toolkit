@@ -2,7 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
+import { of } from 'rxjs';
+import { WorkAllocationService } from '.';
+import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
+import { HttpErrorService, HttpService } from '../../../services';
 import {
   EventCompletionComponentEmitter,
   EventCompletionStateMachineContext,
@@ -11,11 +15,16 @@ import {
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('EventCompletionStateMachineService', () => {
+describe('EventCompletionStateMachineService', () => {
+  const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
   let mockSessionStorageService: any;
-  let mockWorkAllocationService: any;
+  let appConfig: any;
+  let httpService: any;
+  let errorService: any;
+  let alertService: any;
+  let mockWorkAllocationService: WorkAllocationService;
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
   let eventCompletionComponentEmittter: EventCompletionComponentEmitter;
@@ -24,7 +33,7 @@ fdescribe('EventCompletionStateMachineService', () => {
     navigate: jasmine.createSpy('navigate'),
     routerState: {}
   };
-  
+
   const noTask: Task[] = [];
 
   const oneTask: Task = {
@@ -112,6 +121,15 @@ fdescribe('EventCompletionStateMachineService', () => {
     }
   ];
 
+  appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
+  appConfig.getApiUrl.and.returnValue(API_URL);
+  appConfig.getCaseDataUrl.and.returnValue(API_URL);
+  appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
+  httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+  errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
+  alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+
   let context: EventCompletionStateMachineContext = {
     task: null,
     caseId: '1620409659381330',
@@ -128,7 +146,8 @@ fdescribe('EventCompletionStateMachineService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        {provide: Router, useValue: mockRouter}
+        {provide: Router, useValue: mockRouter},
+        {provide: WorkAllocationService, useValue: mockWorkAllocationService}
       ]
     });
     service = new EventCompletionStateMachineService();
@@ -166,7 +185,21 @@ fdescribe('EventCompletionStateMachineService', () => {
     expect(service.addTransitionsForStateTaskUnassigned).toHaveBeenCalled();
   });
 
-
+  it('should emit can be completed true if task assigned to user', () => {
+    const taskPayload = {
+      task_required_for_event: true,
+      tasks: [oneTask]
+    };
+    spyOn(context.workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of({taskPayload}));
+    oneTask.task_state = 'assigned';
+    context.task = oneTask;
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitions();
+    service.startStateMachine(stateMachine);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CHECK_TASKS_CAN_BE_COMPLETED);
+    expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
+  });
 
   it('should add transition for state check taks can be completed', () => {
     stateMachine = service.initialiseStateMachine(context);
