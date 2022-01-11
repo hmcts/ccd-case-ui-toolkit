@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@ang
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -12,7 +13,6 @@ import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../../domain';
 import {
-  ActivityPollingService,
   AlertService,
   DraftService,
   ErrorNotifierService,
@@ -20,6 +20,8 @@ import {
   NavigationOrigin,
   OrderService,
 } from '../../../services';
+import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../../services/activity';
+import { MODES } from '../../../services/activity/utils';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 
@@ -51,6 +53,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public triggerText: string = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   public ignoreWarning = false;
   public activitySubscription: Subscription;
+  public socketConnectSub: Subscription;
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
@@ -64,7 +67,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly router: Router,
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
+    private readonly activityService: ActivityService,
     private readonly activityPollingService: ActivityPollingService,
+    private readonly activitySocketService: ActivitySocketService,
     private readonly dialog: MatDialog,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
@@ -73,7 +78,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     initDialog(this.dialogConfig);
 
     this.init();
@@ -134,9 +139,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.DRAFT_DELETED });
             }, _ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.ERROR_DELETING_DRAFT });
             });
         }
       });
@@ -196,7 +201,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       let foundTab: CaseTab = null;
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
+        foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
       // found tasks or hearing tab
       if (foundTab) {
@@ -206,7 +211,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
             this.tabGroup.selectedIndex = matTab.position;
           }
         });
-      // last path is caseId
+        // last path is caseId
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
@@ -222,7 +227,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
-                                hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
+        hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
       if (matTab && matTab.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
@@ -235,7 +240,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
     if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
       (tabChangeEvent.index >= tabsLengthBeforeAppended && this.appendedTabs.length)) {
-      this.router.navigate([id], {relativeTo: this.route});
+      this.router.navigate([id], { relativeTo: this.route });
     } else {
       const label = tabChangeEvent.tab.textLabel;
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
@@ -251,12 +256,26 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
 
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular(() => {
-        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
-          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
-        });
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+          this.socketConnectSub = this.activitySocketService.connected
+            .subscribe(connected => {
+              if (connected) {
+                this.activitySocketService.viewCase(this.caseDetails.case_id);
+              }
+            });
+        } else if (mode === MODES.polling) {
+          this.ngZone.runOutsideAngular(() => {
+            this.activitySubscription = this.postViewActivity().subscribe((_resolved) => { });
+          });
+        }
       });
+
+    if (this.socketConnectSub) {
+      this.socketConnectSub.unsubscribe();
     }
 
     if (this.caseDetails.triggers && this.error) {
@@ -266,7 +285,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
@@ -294,7 +313,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         };
       });
     }
-    return new FormGroup({data: new FormControl(value)});
+    return new FormGroup({ data: new FormControl(value) });
   }
 
   private resetErrors(): void {

@@ -118,8 +118,8 @@ const MarkdownComponent: any = MockComponent({
 });
 
 let CaseActivityComponent: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
+  selector: 'ccd-case-activity',
+  inputs: ['caseId', 'iconOnly']
 });
 
 let FieldReadComponent: any = MockComponent({
@@ -1325,7 +1325,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          CaseActivityComponent
         ]
       })
       .compileComponents();

@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 @Component({
   selector: 'ccd-activity-icon',
   templateUrl: './activity-icon.component.html',
-  styleUrls: ['./activity-icon.component.css']
+  styleUrls: ['./activity-icon.component.scss']
 })
 export class ActivityIconComponent implements OnInit {
   @Input()

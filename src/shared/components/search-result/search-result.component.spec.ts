@@ -1,25 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SearchResultComponent } from './search-result.component';
 import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
-import { FormGroup } from '@angular/forms';
-import {
-  CaseState,
-  CaseType,
-  CaseView,
-  DRAFT_PREFIX,
-  Jurisdiction,
-  PaginationMetadata,
-  SearchResultView,
-  SearchResultViewItem
-} from '../../domain';
-import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
+import { BehaviorSubject } from 'rxjs';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
+import { CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata } from '../../domain';
+import { SearchResultView, SearchResultViewItem } from '../../domain/search';
+import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
+import {
+  ActivityService,
+  ActivitySocketService,
+  BrowserService,
+  FieldsUtils,
+  SearchResultViewItemComparatorFactory,
+  SessionStorageService,
+} from '../../services';
+import { MODES } from '../../services/activity/utils';
+import { SearchResultComponent } from './search-result.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
@@ -32,6 +34,33 @@ class FieldReadComponent {
 }
 
 describe('SearchResultComponent', () => {
+  const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
+  const switchMap = {
+    switchMap: () => ({
+      retryWhen: () => ({
+        subscribe: () => ({})
+      })
+    })
+  };
+  let sessionStorageService: any;
+  let activitySocketService: any;
+  let activityService: any;
+
+  beforeEach(() => {
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
+    activitySocketService = {
+      watching: [],
+      isEnabled: true,
+      watchCases: (caseIds: string[]): void => {
+        activitySocketService.watching.push(caseIds);
+      },
+      user: MOCK_USER
+    };
+    activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
+    activityService.postActivity.and.returnValue(switchMap);
+    activityService.modeSubject = new BehaviorSubject<MODES>(MODES.off);
+  });
 
   describe('with results', () => {
 
@@ -107,7 +136,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -126,7 +155,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -137,7 +166,7 @@ describe('SearchResultComponent', () => {
             PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -147,19 +176,11 @@ describe('SearchResultComponent', () => {
             PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         }
       ],
       hasDrafts: () => false
-    };
-
-    const switchMap = {
-      switchMap: () => ({
-        retryWhen: () => ({
-          subscribe: () => ({})
-        })
-      })
     };
 
     let fixture: ComponentFixture<SearchResultComponent>;
@@ -169,14 +190,11 @@ describe('SearchResultComponent', () => {
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
-    let activityService: any;
     let searchHandler;
     let appConfig: any;
     let caseReferencePipe = new CaseReferencePipe();
 
     beforeEach(async(() => {
-      activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
-      activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
 
       searchHandler = createSpyObj('searchHandler', ['applyFilters', 'navigateToCase']);
@@ -203,7 +221,9 @@ describe('SearchResultComponent', () => {
             PlaceholderService,
             FieldsUtils,
             SearchResultViewItemComparatorFactory,
+            { provide: SessionStorageService, useValue: sessionStorageService },
             { provide: ActivityService, useValue: activityService },
+            { provide: ActivitySocketService, useValue: activitySocketService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
@@ -375,7 +395,7 @@ describe('SearchResultComponent', () => {
       expect(component.selected.page).toBe(2);
       expect(searchHandler.applyFilters).toHaveBeenCalledWith({
         selected: selected,
-        queryParams: {jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id}
+        queryParams: { jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id }
       });
     });
 
@@ -480,7 +500,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         },
       };
       expect(component.canBeShared(caseView)).toEqual(true);
@@ -497,7 +517,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('can any be shared', () => {
-        component.resultView.results = [{
+      component.resultView.results = [{
         case_id: '1',
         case_fields: {
           OrganisationPolicyField: {
@@ -510,14 +530,14 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         },
       }]
       expect(component.canAnyBeShared()).toEqual(true);
     });
 
     it('check if case is selected', () => {
-        component.selectedCases = [{
+      component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -529,14 +549,14 @@ describe('SearchResultComponent', () => {
         case_id: '1',
         case_fields: null,
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       }
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
     });
 
     it('check if case is not selected', () => {
-        component.selectedCases = [{
+      component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -554,7 +574,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('select all cases is enabled', () => {
-       component.selectedCases = [{
+      component.selectedCases = [{
         case_id: 'DRAFT190',
         case_fields: {
           PersonFirstName: 'Jason',
@@ -570,7 +590,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       }];
       const tempCaseItem: SearchResultViewItem = {
@@ -589,7 +609,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       };
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
@@ -617,7 +637,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -636,7 +656,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -647,7 +667,7 @@ describe('SearchResultComponent', () => {
             PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -665,7 +685,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         }
       ]
@@ -689,7 +709,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       }
       component.changeSelection(aSelectedCase);
@@ -758,13 +778,13 @@ describe('SearchResultComponent', () => {
           PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
         }
       },
-        {
-          case_id: '0000000000000002',
-          case_fields: {
-            PersonFirstName: 'Bill',
-            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
-          }
-        }];
+      {
+        case_id: '0000000000000002',
+        case_fields: {
+          PersonFirstName: 'Bill',
+          PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+        }
+      }];
       component.ngOnInit();
       expect(component.selectedCases.length).toEqual(2);
     });
@@ -814,25 +834,14 @@ describe('SearchResultComponent', () => {
     let component: SearchResultComponent;
     let de: DebugElement;
 
-    const switchMap = {
-      switchMap: () => ({
-        retryWhen: () => ({
-          subscribe: () => ({})
-        })
-      })
-    };
-
     let CaseActivityComponent: any = MockComponent({
-      selector: 'ccd-activity',
-      inputs: ['caseId', 'displayMode']
+      selector: 'ccd-case-activity',
+      inputs: ['caseId', 'iconOnly']
     });
-    let activityService: any;
     let appConfig: any;
     let caseReferencePipe = new CaseReferencePipe();
 
     beforeEach(async(() => {
-      activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
-      activityService.postActivity.and.returnValue(switchMap);
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
       TestBed
@@ -854,6 +863,7 @@ describe('SearchResultComponent', () => {
             PlaceholderService,
             FieldsUtils,
             SearchResultViewItemComparatorFactory,
+            { provide: SessionStorageService, useValue: sessionStorageService },
             { provide: ActivityService, useValue: activityService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },

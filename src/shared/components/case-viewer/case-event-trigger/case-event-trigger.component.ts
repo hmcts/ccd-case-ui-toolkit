@@ -1,11 +1,19 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
+import {
+  ActivityPollingService,
+  ActivityService,
+  ActivitySocketService,
+  AlertService,
+  EventStatusService,
+} from '../../../services';
+import { MODES } from '../../../services/activity/utils';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
@@ -28,7 +36,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private route: ActivatedRoute,
     private caseReferencePipe: CaseReferencePipe,
-    private activityPollingService: ActivityPollingService
+    private readonly activityService: ActivityService,
+    private readonly activityPollingService: ActivityPollingService,
+    private readonly activitySocketService: ActivitySocketService
   ) {
   }
 
@@ -36,18 +46,29 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
-        this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
-          this.caseDetails = caseDetails;
-        });
-    }
-    this.eventTrigger = this.route.snapshot.data.eventTrigger;
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postEditActivity().subscribe((_resolved) => {
-          // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
-        });
+      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+        this.caseDetails = caseDetails;
       });
     }
+    this.eventTrigger = this.route.snapshot.data.eventTrigger;
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+          this.activitySocketService.connected
+            .subscribe(connected => {
+              if (connected) {
+                this.activitySocketService.editCase(this.caseDetails.case_id);
+              }
+            });
+        } else if (mode === MODES.polling) {
+          this.ngZone.runOutsideAngular(() => {
+            this.activitySubscription = this.postEditActivity().subscribe((_resolved) => { });
+          });
+        }
+      });
+
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });
@@ -89,7 +110,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         } else {
           this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`);
         }
-    });
+      });
   }
 
   cancel(): Promise<boolean> {

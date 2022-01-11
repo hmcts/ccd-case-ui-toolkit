@@ -3,7 +3,7 @@
     <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
-      <span class="text-16" id="search-result-summary__text">Showing 
+      <span class="text-16" id="search-result-summary__text">Showing
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
         to
         <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
@@ -35,7 +35,7 @@
           </tr>
         </table>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;"></th>
+      <th *ngIf="activityEnabled" class="activity-column"></th>
     </tr>
   </thead>
   <tbody>
@@ -69,9 +69,9 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
+            <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>
       </tr>
@@ -106,9 +106,9 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
+            <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>
       </tr>
@@ -117,10 +117,10 @@
   </tbody>
 </table>
 
-<ccd-pagination 
+<ccd-pagination
   *ngIf="hasResults()"
   (pageChange)="goToPage($event)"
-  [visibilityLabel]="hideRows ? 'hidden' : 'visible'" 
+  [visibilityLabel]="hideRows ? 'hidden' : 'visible'"
   [autoHide]="true"
   [maxSize]="8"
   [screenReaderPaginationLabel]="Pagination"

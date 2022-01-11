@@ -49,7 +49,7 @@ export class HttpErrorService {
   }
 
   public removeError(): HttpError {
-    let error = this.error;
+    const error = this.error;
     this.error = null;
     return error;
   }
