@@ -38,16 +38,6 @@ export const viewerRouting: Routes = [
     canDeactivate: [FileUploadProgressGuard],
   },
   {
-    path: 'trigger/:eid/task/:tid',
-    resolve: {
-      eventTrigger: EventTriggerResolver,
-    },
-    component: CaseEventTriggerComponent,
-    children: editorRouting,
-    canActivate: [EventStartGuard],
-    canDeactivate: [FileUploadProgressGuard],
-  },
-  {
     path: 'event-start',
     component: EventStartComponent,
     resolve: {
