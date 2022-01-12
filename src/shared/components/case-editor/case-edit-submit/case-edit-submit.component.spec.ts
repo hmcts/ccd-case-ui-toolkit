@@ -42,7 +42,7 @@ describe('CaseEditSubmitComponent', () => {
   let de: DebugElement;
 
   let sessionStorageService: any;
-  const task: string = `{
+  const task = `{
     "assignee": null,
     "auto_assigned": false,
     "case_category": "asylum",

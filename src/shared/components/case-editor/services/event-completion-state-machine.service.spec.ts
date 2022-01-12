@@ -140,7 +140,7 @@ describe('EventCompletionStateMachineService', () => {
     workAllocationService: mockWorkAllocationService,
     canBeCompleted: false,
     component: eventCompletionComponentEmittter
-  };  
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
