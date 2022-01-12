@@ -115,7 +115,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = {
         caseId: this.getCaseId(),
-        eventId: this.editForm.value.event.id,
+        eventId: this.getEventId(),
         task: task
       };
       this.eventCompletionChecksRequired = true;
@@ -454,6 +454,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  public getEventId(): string {
+    return this.editForm.value.event.id;
   }
 
   public getCaseTitle(): string {

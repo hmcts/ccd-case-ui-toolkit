@@ -4204,6 +4204,9 @@ describe('CaseEditSubmitComponent', () => {
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
         'fieldsPurger': new FieldsPurger(fieldsUtils),
         'data': '',
+        'event': {
+          'id': 'sendDirection'
+        },
         'eventTrigger': {
           'case_fields': [documentCollectionField, caseField3],
           'can_save_draft': true
@@ -4231,7 +4234,6 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-      sessionStorageService.getItem.and.returnValue(task);
 
       TestBed.configureTestingModule({
         declarations: [
@@ -4268,17 +4270,52 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    fit('should submit CaseEventData with task in session and even completion checks', () => {
+    it('should submit CaseEventData with task in session and even completion checks', () => {
+      sessionStorageService.getItem.and.returnValue(task);
+      spyOn(comp, 'getEventId').and.returnValue('09470b68-3bd0-11ec-9740-b6b84d919277');
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
-
-			comp.editForm.value.event.id = 'editAppealAfterSubmit';
-
       // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
       comp.submit();
 
-			expect(sessionStorageService.getItem).toHaveBeenCalled();
+      expect(sessionStorageService.getItem).toHaveBeenCalled();
+      expect(comp.getEventId).toHaveBeenCalled();
+      expect(comp.eventCompletionChecksRequired).toEqual(true);
+    });
 
+    it('should submit CaseEventData with task not in session and even completion checks not required', () => {
+      sessionStorageService.getItem.and.returnValue(null);
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+
+      expect(sessionStorageService.getItem).toHaveBeenCalled();
+      expect(comp.eventCompletionChecksRequired).toEqual(false);
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
+          // agreed handling of Scenarios 5 and 8 in EUI-3868
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+              document_filename: DOCUMENT_FILENAME_ORIGINAL_VALUE,
+              document_url: DOCUMENT_URL_VALUE
+            }
+          }],
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+
+    it('should submit CaseEventData when event emitter handler is called with true', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+      comp.onEventCanBeCompleted(true);
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
           // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
