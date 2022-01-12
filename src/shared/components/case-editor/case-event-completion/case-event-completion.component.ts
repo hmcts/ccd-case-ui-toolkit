@@ -30,7 +30,6 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
 
   public ngOnChanges(changes?: SimpleChanges): void {
     if (changes.eventCompletionParams && changes.eventCompletionParams.currentValue) {
-      console.log('ONE');
       // Setup the context
       this.context = {
         task: this.eventCompletionParams.task,
@@ -43,7 +42,6 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
         canBeCompleted: false,
         component: this
       };
-      console.log('TWO');
       // Initialise state machine
       this.service = new EventCompletionStateMachineService();
       this.stateMachine = this.service.initialiseStateMachine(this.context);
