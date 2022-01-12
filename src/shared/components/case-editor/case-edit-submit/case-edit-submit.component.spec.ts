@@ -4231,7 +4231,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-      sessionStorageService.getItem.and.returnValue(null);
+      sessionStorageService.getItem.and.returnValue(task);
 
       TestBed.configureTestingModule({
         declarations: [
@@ -4268,12 +4268,17 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should submit CaseEventData with the Document collection field, using *original* values', () => {
+    fit('should submit CaseEventData with task in session and even completion checks', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
 
+			comp.editForm.value.event.id = 'editAppealAfterSubmit';
+
       // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
       comp.submit();
+
+			expect(sessionStorageService.getItem).toHaveBeenCalled();
+
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
           // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
