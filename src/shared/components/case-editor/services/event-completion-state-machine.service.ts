@@ -19,13 +19,11 @@ export class EventCompletionStateMachineService {
   public stateFinal: State;
 
   public initialiseStateMachine(context: EventCompletionStateMachineContext): StateMachine {
-    console.log('INITIALISED');
     return new StateMachine(EVENT_COMPLETION_STATE_MACHINE, context);
   }
 
   public startStateMachine(stateMachine: StateMachine): void {
     stateMachine.start(this.stateCheckTasksCanBeCompleted);
-    console.log('STARTED');
   }
 
   public createStates(stateMachine: StateMachine): void {
@@ -66,7 +64,6 @@ export class EventCompletionStateMachineService {
       true,
       this.entryActionForStateFinal
     );
-    console.log('STATES CREATED');
   }
 
   public addTransitions(): void {
@@ -75,27 +72,20 @@ export class EventCompletionStateMachineService {
     this.addTransitionsForStateCompleteEventAndTask();
     this.addTransitionsForStateTaskAssignedToAnotherUser();
     this.addTransitionsForStateTaskUnassigned();
-    console.log('TRANSITIONS ADDED');
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
-    console.log('ENTRY ACTION FOR STATE CHECK TASKS CAN BE COMPLETED');
     context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
       const taskPayLoad = <TaskPayload>payload;
-      console.log('TASK PAYLOAD', taskPayLoad);
       if (taskPayLoad.task_required_for_event) {
-        console.log('TASK REQUIRED FOR EVENT', taskPayLoad.task_required_for_event);
-        console.log('TASKS FROM PAYLOAD', taskPayLoad.tasks);
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
         if (task) {
-          console.log('TASK ASSIGNEE', task.assignee);
           if (!task.assignee && task.task_state === 'unassigned') {
             // Task unassigned
             state.trigger(EventCompletionStates.TASK_UNASSIGNED);
           } else if (task.assignee === context.task.assignee) {
             // Task assigned to current user
             if (task.task_state === 'assigned') {
-              console.log('TASK ASSIGNED', task.task_state);
               // Task is in assigned state
               state.trigger(EventCompletionStates.COMPLETE_EVENT_AND_TASK);
             } else {
@@ -140,10 +130,6 @@ export class EventCompletionStateMachineService {
   public entryActionForStateFinal(state: State, context: EventCompletionStateMachineContext): void {
     // Final actions can be performed here, the state machine finished running
     console.log('FINAL');
-  }
-
-  public testFn(): void {
-    console.log('TEST FUNCTION CALL');
   }
 
   public addTransitionsForStateCheckTasksCanBeCompleted(): void {
