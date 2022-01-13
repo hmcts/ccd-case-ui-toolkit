@@ -17,7 +17,42 @@ import { PhaseComponent } from './components/header/phase/phase.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabsModule } from './components/tabs/tabs.module';
-import { BaseFieldModule, CaseReferencePipe, CaseViewComponent, CaseViewerComponent, ConditionalShowDirective, ConditionalShowModule, FocusElementDirective, FocusElementModule, LabelFieldComponent, LabelSubstitutorDirective, LabelSubstitutorModule, LoadingModule, MarkdownComponent, MarkdownModule, PaginationComponent, PaginationModule, PaletteUtilsModule, PipesModule, ReadCollectionFieldComponent, ReadDateFieldComponent, ReadEmailFieldComponent, ReadNumberFieldComponent, ReadPhoneUKFieldComponent, ReadTextAreaFieldComponent, ReadTextFieldComponent, SearchFiltersModule, UnsupportedFieldComponent, WriteCollectionFieldComponent, WriteDateFieldComponent, WriteEmailFieldComponent, WriteNumberFieldComponent, WritePhoneUKFieldComponent, WriteTextAreaFieldComponent, WriteTextFieldComponent } from './shared';
+import {
+  BaseFieldModule,
+  CaseReferencePipe,
+  CaseViewComponent,
+  CaseViewerComponent,
+  ConditionalShowDirective,
+  ConditionalShowModule,
+  FocusElementDirective,
+  FocusElementModule,
+  LabelFieldComponent,
+  LabelSubstitutorDirective,
+  LabelSubstitutorModule,
+  LoadingModule,
+  MarkdownComponent,
+  MarkdownModule,
+  PaginationComponent,
+  PaginationModule,
+  PaletteUtilsModule,
+  PipesModule,
+  ReadCollectionFieldComponent,
+  ReadDateFieldComponent,
+  ReadEmailFieldComponent,
+  ReadNumberFieldComponent,
+  ReadPhoneUKFieldComponent,
+  ReadTextAreaFieldComponent,
+  ReadTextFieldComponent,
+  SearchFiltersModule,
+  UnsupportedFieldComponent,
+  WriteCollectionFieldComponent,
+  WriteDateFieldComponent,
+  WriteEmailFieldComponent,
+  WriteNumberFieldComponent,
+  WritePhoneUKFieldComponent,
+  WriteTextAreaFieldComponent,
+  WriteTextFieldComponent
+} from './shared';
 import { CaseCreateComponent } from './shared/components/case-editor/case-create/case-create.component';
 import { CaseEditComponent } from './shared/components/case-editor/case-edit/case-edit.component';
 import { CaseEditorModule } from './shared/components/case-editor/case-editor.module';
@@ -31,7 +66,6 @@ import { RemoveDialogComponent } from './shared/components/dialogs/remove-dialog
 import { SaveOrDiscardDialogComponent } from './shared/components/dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
 import { PaletteModule } from './shared/components/palette/palette.module';
-
 
 @NgModule({
     imports: [
@@ -54,7 +88,7 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       FocusElementModule,
       LoadingModule,
       PaginationModule,
-			PortalModule
+      PortalModule
     ],
     exports: [
       AlertComponent,

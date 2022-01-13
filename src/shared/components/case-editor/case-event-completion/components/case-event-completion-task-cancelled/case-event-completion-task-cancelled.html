@@ -1,0 +1,30 @@
+<div class="govuk-!-margin-9">
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      There is a problem
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li>
+          <a href="#">Task cancelled/marked as done</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="govuk-form-group govuk-form-group--error">
+    <h2 class="govuk-heading-m">Task cancelled/marked as done</h2>
+
+    <p>This task has been cancelled or marked as done.</p>
+
+    <p>Click Continue to complete the task and save your progress.</p>
+
+    <p>Alternatively, click Cancel to return to the tasks tab without saving your progress.</p>
+
+    <div class="form-group form-group-related">
+      <button [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']" class="govuk-button govuk-!-margin-right-2" data-module="govuk-button">Continue</button>
+      <a [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']"
+              class="govuk-button govuk-button--secondary" data-module="govuk-button">Cancel</a>
+    </div>
+  </div>
+</div>

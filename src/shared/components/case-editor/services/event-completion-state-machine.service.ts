@@ -1,9 +1,8 @@
-import { ComponentPortal } from '@angular/cdk/portal';
-import { Component, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
+import { TaskState } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { TaskCancelledComponent } from '../../event-start';
-import { EventCompletionStates, EventCompletionStateMachineContext } from '../domain';
+import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
@@ -72,27 +71,29 @@ export class EventCompletionStateMachineService {
   public addTransitions(): void {
     // Initial transition
     this.addTransitionsForStateCheckTasksCanBeCompleted();
+    this.addTransitionsForStateTaskCompletedOrCancelled();
     this.addTransitionsForStateCompleteEventAndTask();
     this.addTransitionsForStateTaskAssignedToAnotherUser();
     this.addTransitionsForStateTaskUnassigned();
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
-    context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
+    console.log('SUBSCRIBE');
+		context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
       const taskPayLoad = <TaskPayload>payload;
       if (taskPayLoad.task_required_for_event) {
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
         if (task) {
-          if (!task.assignee && task.task_state === 'unassigned') {
+          if (!task.assignee && task.task_state.toUpperCase() === TaskState.Unassigned) {
             // Task unassigned
             state.trigger(EventCompletionStates.TaskUnassigned);
           } else if (task.assignee === context.task.assignee) {
             // Task assigned to current user
-            if (task.task_state === 'assigned') {
+            if (task.task_state.toUpperCase() === TaskState.Assigned) {
               // Task is in assigned state
               state.trigger(EventCompletionStates.CompleteEventAndTask);
             } else {
-              if (task.task_state === 'completed' || task.task_state === 'cancelled') {
+              if (task.task_state.toUpperCase() === TaskState.Completed || task.task_state.toUpperCase() === TaskState.Cancelled) {
                 state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
               }
             }
@@ -108,20 +109,22 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskCompletedOrCancelled(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Navigate to no task available error page
+    // Load case event completion task cancelled component
+    context.component.showPortal(EventCompletionPortalTypes.TaskCancelled);
   }
 
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
     // Emit event to parent component
-    // context.component.eventCanBeCompleted.emit(true);
-		context.component.showPortal(EventCompletionPortalTypes.TaskCancelledComponent);
+    context.component.eventCanBeCompleted.emit(true);
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
+    // Load case event completion task reassigned component
+    context.component.showPortal(EventCompletionPortalTypes.TaskReassigned);
   }
 
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
@@ -142,10 +145,20 @@ export class EventCompletionStateMachineService {
       EventCompletionStates.CompleteEventAndTask,
       this.stateCompleteEventAndTask
     );
+    // Task completed or cancelled
+    this.stateCheckTasksCanBeCompleted.addTransition(
+      EventCompletionStates.TaskCompetedOrCancelled,
+      this.stateTaskCompletedOrCancelled
+    );
     // Task assigned to another user
     this.stateCheckTasksCanBeCompleted.addTransition(
       EventCompletionStates.TaskAssignedToAnotherUser,
       this.stateTaskAssignedToAnotherUser
+    );
+    // Task unassigned
+    this.stateCheckTasksCanBeCompleted.addTransition(
+      EventCompletionStates.TaskUnassigned,
+      this.stateTaskUnassigned
     );
   }
 

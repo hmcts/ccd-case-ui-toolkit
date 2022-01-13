@@ -33,7 +33,11 @@ import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
-import { CaseEventCompletionComponent } from './case-event-completion/case-event-completion.component';
+import {
+  CaseEventCompletionComponent,
+  CaseEventCompletionTaskCancelledComponent,
+  CaseEventCompletionTaskReassignedComponent
+} from './case-event-completion';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { EventCompletionStateMachineService } from './services/event-completion-state-machine.service';
@@ -64,9 +68,15 @@ import { WorkAllocationService } from './services/work-allocation.service';
         CaseEditFormComponent,
         CaseEditSubmitComponent,
         CaseEventCompletionComponent,
+        CaseEventCompletionTaskCancelledComponent,
+        CaseEventCompletionTaskReassignedComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         LoadingSpinnerComponent
+    ],
+    entryComponents: [
+      CaseEventCompletionTaskCancelledComponent,
+      CaseEventCompletionTaskReassignedComponent,
     ],
     exports: [
         CaseEditConfirmComponent,
@@ -74,7 +84,6 @@ import { WorkAllocationService } from './services/work-allocation.service';
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
-        CaseEventCompletionComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         CallbackErrorsComponent,

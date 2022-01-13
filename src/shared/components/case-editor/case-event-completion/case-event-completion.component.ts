@@ -2,7 +2,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { TaskCancelledComponent } from '../..';
+import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { SessionStorageService } from '../../../services';
 import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
@@ -23,8 +23,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
 
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
-  public componentPortal: ComponentPortal<any>;
-  public taskCancelledComponentPortal: ComponentPortal<TaskCancelledComponent>;
+  public selectedComponentPortal: ComponentPortal<any>;
 
   constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,
@@ -59,9 +58,13 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   }
 
   public showPortal(portalType: number): void {
-    switch(portalType)  {
-      case EventCompletionPortalTypes.TaskCancelledComponent:
-        this.componentPortal = new ComponentPortal(TaskCancelledComponent);
+    switch (portalType) {
+      case EventCompletionPortalTypes.TaskCancelled:
+        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent);
+        console.log('COMPONENT PORTAL', this.selectedComponentPortal);
+        break;
+      case EventCompletionPortalTypes.TaskReassigned:
+        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskReassignedComponent);
         break;
     }
   }
