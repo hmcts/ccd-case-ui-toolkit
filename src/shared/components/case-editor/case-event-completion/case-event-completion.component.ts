@@ -21,7 +21,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
 
-  constructor(private service: EventCompletionStateMachineService,
+  constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService,
@@ -43,7 +43,6 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
         component: this
       };
       // Initialise state machine
-      this.service = new EventCompletionStateMachineService();
       this.stateMachine = this.service.initialiseStateMachine(this.context);
       // Create states
       this.service.createStates(this.stateMachine);

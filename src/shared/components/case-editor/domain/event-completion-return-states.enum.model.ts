@@ -1,5 +1,5 @@
 export enum EventCompletionReturnStates {
-  IN_PROGRESS = 'in-progress',
-  COMPLETE_EVENT = 'complete-event',
-  CANCEL_EVENT = 'cancel-event'
+  InProgress = 'in-progress',
+  CompleteEvent = 'complete-event',
+  CancelEvent = 'cancel-event'
 }
