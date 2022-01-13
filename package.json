@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.9.0-EUI-4568-resubmit-claim",
+  "version": "4.3.7-markdown-case-ref-EUI-3650",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
