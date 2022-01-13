@@ -95,7 +95,7 @@ describe('CaseEventCompletionComponent', () => {
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
       ],
     })
-    .overrideModule(BrowserDynamicTestingModule, 
+    .overrideModule(BrowserDynamicTestingModule,
       {
         set: {
           entryComponents: [

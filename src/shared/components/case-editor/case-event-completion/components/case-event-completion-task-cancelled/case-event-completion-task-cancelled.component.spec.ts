@@ -14,6 +14,9 @@ describe('TaskCancelledComponent', () => {
         case: {
           case_id: '1620409659381330'
         }
+      },
+      params: {
+        'cid': '1620409659381330'
       }
     }
   };

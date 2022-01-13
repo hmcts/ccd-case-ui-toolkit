@@ -78,8 +78,7 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
-    console.log('SUBSCRIBE');
-		context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
+    context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
       const taskPayLoad = <TaskPayload>payload;
       if (taskPayLoad.task_required_for_event) {
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);

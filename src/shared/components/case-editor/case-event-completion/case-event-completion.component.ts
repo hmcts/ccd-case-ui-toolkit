@@ -61,7 +61,6 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
     switch (portalType) {
       case EventCompletionPortalTypes.TaskCancelled:
         this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent);
-        console.log('COMPONENT PORTAL', this.selectedComponentPortal);
         break;
       case EventCompletionPortalTypes.TaskReassigned:
         this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskReassignedComponent);
