@@ -1,10 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
+import { TaskCancelledComponent } from '../..';
 import { SessionStorageService } from '../../../services';
 import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
+import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
+import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
 
 @Component({
   selector: 'ccd-case-event-completion',
@@ -20,6 +23,8 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
 
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
+  public componentPortal: ComponentPortal<any>;
+  public taskCancelledComponentPortal: ComponentPortal<TaskCancelledComponent>;
 
   constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,
@@ -50,6 +55,14 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
       this.service.addTransitions();
       // Start state machine
       this.service.startStateMachine(this.stateMachine);
+    }
+  }
+
+  public showPortal(portalType: number): void {
+    switch(portalType)  {
+      case EventCompletionPortalTypes.TaskCancelledComponent:
+        this.componentPortal = new ComponentPortal(TaskCancelledComponent);
+        break;
     }
   }
 }

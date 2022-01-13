@@ -1,8 +1,8 @@
+import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { EventCompletionStateMachineService } from './services/event-completion-state-machine.service';
 import { CallbackErrorsComponent } from '../../components/error';
 import { MarkdownModule } from '../../components/markdown/markdown.module';
 import { ConditionalShowModule } from '../../directives/conditional-show';
@@ -36,6 +36,7 @@ import { CaseEditComponent } from './case-edit/case-edit.component';
 import { CaseEventCompletionComponent } from './case-event-completion/case-event-completion.component';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { EventCompletionStateMachineService } from './services/event-completion-state-machine.service';
 import { EventTriggerService } from './services/event-trigger.service';
 import { PageValidationService } from './services/page-validation.service';
 import { WizardFactoryService } from './services/wizard-factory.service';
@@ -53,7 +54,8 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ConditionalShowModule,
         LabelSubstitutorModule,
         ErrorsModule,
-        ComplexModule
+        ComplexModule,
+        PortalModule
     ],
     declarations: [
         CaseEditConfirmComponent,

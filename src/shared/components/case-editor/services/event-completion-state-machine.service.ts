@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { Component, Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { TaskCancelledComponent } from '../../event-start';
 import { EventCompletionStates, EventCompletionStateMachineContext } from '../domain';
+import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 
@@ -112,7 +115,8 @@ export class EventCompletionStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
     // Emit event to parent component
-    context.component.eventCanBeCompleted.emit(true);
+    // context.component.eventCanBeCompleted.emit(true);
+		context.component.showPortal(EventCompletionPortalTypes.TaskCancelledComponent);
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
