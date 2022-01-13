@@ -68,15 +68,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private caseEdit: CaseEditComponent,
-    private formValueService: FormValueService,
-    private formErrorService: FormErrorService,
-    private fieldsUtils: FieldsUtils,
-    private caseFieldService: CaseFieldService,
-    private route: ActivatedRoute,
-    private orderService: OrderService,
-    private profileService: ProfileService,
-    private profileNotifier: ProfileNotifier,
+    private readonly caseEdit: CaseEditComponent,
+    private readonly formValueService: FormValueService,
+    private readonly formErrorService: FormErrorService,
+    private readonly fieldsUtils: FieldsUtils,
+    private readonly caseFieldService: CaseFieldService,
+    private readonly route: ActivatedRoute,
+    private readonly orderService: OrderService,
+    private readonly profileService: ProfileService,
+    private readonly profileNotifier: ProfileNotifier,
     private readonly sessionStorageService: SessionStorageService
   ) {
   }

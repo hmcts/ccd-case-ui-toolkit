@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
-import { HttpErrorService, HttpService } from '../../../services';
+import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import {
   EventCompletionComponentEmitter,
   EventCompletionStateMachineContext,
@@ -19,11 +19,11 @@ describe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
-  let mockSessionStorageService: any;
-  let appConfig: any;
-  let httpService: any;
-  let errorService: any;
-  let alertService: any;
+  let mockSessionStorageService: SessionStorageService;
+  let appConfig: jasmine.SpyObj<AbstractAppConfig>;
+  let httpService: HttpService;
+  let errorService: HttpErrorService;
+  let alertService: AlertService;
   let mockWorkAllocationService: WorkAllocationService;
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
@@ -127,7 +127,7 @@ describe('EventCompletionStateMachineService', () => {
   appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-  alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
 
   let context: EventCompletionStateMachineContext = {
