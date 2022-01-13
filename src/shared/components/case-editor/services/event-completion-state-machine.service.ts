@@ -29,38 +29,38 @@ export class EventCompletionStateMachineService {
   public createStates(stateMachine: StateMachine): void {
     // Initial state
     this.stateCheckTasksCanBeCompleted = stateMachine.createState(
-      EventCompletionStates.CHECK_TASKS_CAN_BE_COMPLETED,
+      EventCompletionStates.CheckTasksCanBeCompleted,
       false,
       this.entryActionForStateCheckTasksCanBeCompleted
     )
 
     this.stateCompleteEventAndTask = stateMachine.createState(
-      EventCompletionStates.COMPLETE_EVENT_AND_TASK,
+      EventCompletionStates.CompleteEventAndTask,
       false,
       this.entryActionForStateCompleteEventAndTask
     )
 
     this.stateTaskCompletedOrCancelled = stateMachine.createState(
-      EventCompletionStates.TASK_COMPLETED_OR_CANCELLED,
+      EventCompletionStates.TaskCompetedOrCancelled,
       false,
       this.entryActionForStateTaskCompletedOrCancelled
     )
 
     this.stateTaskAssignedToAnotherUser = stateMachine.createState(
-      EventCompletionStates.TASK_ASSIGNED_TO_ANOTHER_USER,
+      EventCompletionStates.TaskAssignedToAnotherUser,
       false,
       this.entryActionForStateTaskAssignedToAnotherUser
     )
 
     this.stateTaskUnassigned = stateMachine.createState(
-      EventCompletionStates.TASK_UNASSIGNED,
+      EventCompletionStates.TaskUnassigned,
       false,
       this.entryActionForStateTaskUnassigned
     )
 
     // Create final state, the second param isComplete is set to true to make sure state machine finished running
     this.stateFinal = stateMachine.createState(
-      EventCompletionStates.FINAL,
+      EventCompletionStates.Final,
       true,
       this.entryActionForStateFinal
     );
@@ -82,20 +82,20 @@ export class EventCompletionStateMachineService {
         if (task) {
           if (!task.assignee && task.task_state === 'unassigned') {
             // Task unassigned
-            state.trigger(EventCompletionStates.TASK_UNASSIGNED);
+            state.trigger(EventCompletionStates.TaskUnassigned);
           } else if (task.assignee === context.task.assignee) {
             // Task assigned to current user
             if (task.task_state === 'assigned') {
               // Task is in assigned state
-              state.trigger(EventCompletionStates.COMPLETE_EVENT_AND_TASK);
+              state.trigger(EventCompletionStates.CompleteEventAndTask);
             } else {
               if (task.task_state === 'completed' || task.task_state === 'cancelled') {
-                state.trigger(EventCompletionStates.TASK_COMPLETED_OR_CANCELLED);
+                state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
               }
             }
           } else {
             // Task not assigned to user
-            state.trigger(EventCompletionStates.TASK_ASSIGNED_TO_ANOTHER_USER);
+            state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
           }
         }
       }
@@ -104,25 +104,25 @@ export class EventCompletionStateMachineService {
 
   public entryActionForStateTaskCompletedOrCancelled(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(EventCompletionStates.FINAL);
+    state.trigger(EventCompletionStates.Final);
     // Navigate to no task available error page
   }
 
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(EventCompletionStates.FINAL);
+    state.trigger(EventCompletionStates.Final);
     // Emit event to parent component
     context.component.eventCanBeCompleted.emit(true);
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(EventCompletionStates.FINAL);
+    state.trigger(EventCompletionStates.Final);
   }
 
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
-    state.trigger(EventCompletionStates.FINAL);
+    state.trigger(EventCompletionStates.Final);
     // Navigate to tasks tab on case details page
 
   }
@@ -135,40 +135,40 @@ export class EventCompletionStateMachineService {
   public addTransitionsForStateCheckTasksCanBeCompleted(): void {
     // Complete event and task
     this.stateCheckTasksCanBeCompleted.addTransition(
-      EventCompletionStates.COMPLETE_EVENT_AND_TASK,
+      EventCompletionStates.CompleteEventAndTask,
       this.stateCompleteEventAndTask
     );
     // Task assigned to another user
     this.stateCheckTasksCanBeCompleted.addTransition(
-      EventCompletionStates.TASK_ASSIGNED_TO_ANOTHER_USER,
+      EventCompletionStates.TaskAssignedToAnotherUser,
       this.stateTaskAssignedToAnotherUser
     );
   }
 
   public addTransitionsForStateTaskCompletedOrCancelled(): void {
     this.stateTaskCompletedOrCancelled.addTransition(
-      EventCompletionStates.FINAL,
+      EventCompletionStates.Final,
       this.stateFinal
     );
   }
 
   public addTransitionsForStateCompleteEventAndTask(): void {
     this.stateCompleteEventAndTask.addTransition(
-      EventCompletionStates.FINAL,
+      EventCompletionStates.Final,
       this.stateFinal
     );
   }
 
   public addTransitionsForStateTaskAssignedToAnotherUser(): void {
     this.stateTaskAssignedToAnotherUser.addTransition(
-      EventCompletionStates.FINAL,
+      EventCompletionStates.Final,
       this.stateFinal
     );
   }
 
   public addTransitionsForStateTaskUnassigned(): void {
     this.stateTaskUnassigned.addTransition(
-      EventCompletionStates.FINAL,
+      EventCompletionStates.Final,
       this.stateFinal
     );
   }

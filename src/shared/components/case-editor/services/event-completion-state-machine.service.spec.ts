@@ -161,12 +161,12 @@ describe('EventCompletionStateMachineService', () => {
   it('should create states', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
-    expect(service.stateCheckTasksCanBeCompleted.id).toEqual(EventCompletionStates.CHECK_TASKS_CAN_BE_COMPLETED);
-    expect(service.stateCompleteEventAndTask.id).toEqual(EventCompletionStates.COMPLETE_EVENT_AND_TASK);
-    expect(service.stateTaskCompletedOrCancelled.id).toEqual(EventCompletionStates.TASK_COMPLETED_OR_CANCELLED);
-    expect(service.stateTaskAssignedToAnotherUser.id).toEqual(EventCompletionStates.TASK_ASSIGNED_TO_ANOTHER_USER);
-    expect(service.stateTaskUnassigned.id).toEqual(EventCompletionStates.TASK_UNASSIGNED);
-    expect(service.stateFinal.id).toEqual(EventCompletionStates.FINAL);
+    expect(service.stateCheckTasksCanBeCompleted.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(service.stateCompleteEventAndTask.id).toEqual(EventCompletionStates.CompleteEventAndTask);
+    expect(service.stateTaskCompletedOrCancelled.id).toEqual(EventCompletionStates.TaskCompetedOrCancelled);
+    expect(service.stateTaskAssignedToAnotherUser.id).toEqual(EventCompletionStates.TaskAssignedToAnotherUser);
+    expect(service.stateTaskUnassigned.id).toEqual(EventCompletionStates.TaskUnassigned);
+    expect(service.stateFinal.id).toEqual(EventCompletionStates.Final);
   });
 
   it('should add transitions', () => {
@@ -197,7 +197,7 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CHECK_TASKS_CAN_BE_COMPLETED);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
     expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
   });
 
