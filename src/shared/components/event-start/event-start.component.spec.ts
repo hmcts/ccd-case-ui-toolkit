@@ -2,11 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Task } from '../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../services';
-import { StateMachineStates } from '../models';
-import { EventStateMachineService } from '../services/event-state-machine.service';
+import { Task } from '../../domain/work-allocation/Task';
+import { SessionStorageService } from '../../services';
 import { EventStartComponent } from './event-start.component';
+import { EventStartStates } from './models';
+import { EventStartStateMachineService } from './services';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('EventStartComponent', () => {
@@ -15,7 +15,7 @@ describe('EventStartComponent', () => {
   let de: DebugElement;
   let mockRouter: any;
   let mockRoute: any;
-  let eventStateMachineService: EventStateMachineService;
+  let eventStartStateMachineService: EventStartStateMachineService;
 
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -69,7 +69,7 @@ describe('EventStartComponent', () => {
   };
 
   beforeEach(async(() => {
-    createSpyObj<EventStateMachineService>('EventStateMachineService', [
+    createSpyObj<EventStartStateMachineService>('EventStartStateMachineService', [
       'initialiseStateMachine',
       'createStates',
       'addTransitions',
@@ -83,7 +83,7 @@ describe('EventStartComponent', () => {
         SessionStorageService,
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: EventStateMachineService, useValue: eventStateMachineService },
+        { provide: EventStartStateMachineService, useValue: eventStartStateMachineService },
       ],
     }).compileComponents();
 
@@ -101,7 +101,7 @@ describe('EventStartComponent', () => {
     component.ngOnInit();
     expect(component.context.tasks).toEqual(noTasks);
     expect(component.stateMachine).toBeDefined();
-    expect(component.stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(component.stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
 });

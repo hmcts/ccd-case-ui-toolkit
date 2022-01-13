@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ActivityModule } from '..';
 import { MultipleTasksExistComponent } from './components/multiple-tasks-exist/multiple-tasks-exist.component';
 import { NoTasksAvailableComponent } from './components/no-tasks-available/no-tasks-available.component';
 import { TaskAssignedComponent } from './components/task-assigned/task-assigned.component';
@@ -11,22 +10,19 @@ import { TaskCancelledComponent } from './components/task-cancelled/task-cancell
 import { TaskConflictComponent } from './components/task-conflict/task-conflict.component';
 import { TaskUnassignedComponent } from './components/task-unassigned/task-unassigned.component';
 import { EventStartGuard } from './event-guard/event-start.guard';
-import { EventStartComponent } from './event-start/event-start.component';
-import { EventTriggerComponent } from './event-trigger/event-trigger.component';
+import { EventStartComponent } from './event-start.component';
 import { EventTasksResolverService } from './resolvers/event-tasks-resolver.service';
-import { EventStateMachineService } from './services';
+import { EventStartStateMachineService } from './services';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ActivityModule,
     PortalModule,
     RouterModule
   ],
   declarations: [
     EventStartComponent,
-    EventTriggerComponent,
     MultipleTasksExistComponent,
     NoTasksAvailableComponent,
     TaskAssignedComponent,
@@ -37,13 +33,12 @@ import { EventStateMachineService } from './services';
   providers: [
     EventStartGuard,
     EventTasksResolverService,
-    EventStateMachineService
+    EventStartStateMachineService
   ],
   exports: [
     EventStartComponent,
-    EventTriggerComponent,
     TaskAssignedComponent,
     TaskUnassignedComponent
   ]
 })
-export class EventManagementModule {}
+export class EventStartModule {}

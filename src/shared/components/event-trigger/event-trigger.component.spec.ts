@@ -2,9 +2,9 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { CaseViewTrigger } from '../../../domain';
-import { OrderService } from '../../../services';
-import { attr, text } from '../../../test/helpers';
+import { CaseViewTrigger } from '../../domain';
+import { OrderService } from '../../services';
+import { attr, text } from '../../test/helpers';
 import { EventTriggerComponent } from './event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
 

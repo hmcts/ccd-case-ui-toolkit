@@ -5,3 +5,4 @@ export * from './event-trigger.service';
 export * from './case.notifier';
 export * from './cases.service';
 export * from './work-allocation.service';
+export * from './event-completion-state-machine.service';

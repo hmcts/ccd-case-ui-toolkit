@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { EventCompletionStateMachineService } from './services/event-completion-state-machine.service';
 import { CallbackErrorsComponent } from '../../components/error';
 import { MarkdownModule } from '../../components/markdown/markdown.module';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
-    ConditionalShowRegistrarService,
+  ConditionalShowRegistrarService
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
@@ -33,6 +33,7 @@ import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
+import { CaseEventCompletionComponent } from './case-event-completion/case-event-completion.component';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { EventTriggerService } from './services/event-trigger.service';
@@ -52,7 +53,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ConditionalShowModule,
         LabelSubstitutorModule,
         ErrorsModule,
-        ComplexModule,
+        ComplexModule
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -60,6 +61,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseEventCompletionComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         LoadingSpinnerComponent
@@ -70,10 +72,11 @@ import { WorkAllocationService } from './services/work-allocation.service';
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseEventCompletionComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         CallbackErrorsComponent,
-        LoadingSpinnerComponent,
+        LoadingSpinnerComponent
     ],
     providers: [
         FieldsUtils,
@@ -95,7 +98,8 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ProfileService,
         CaseEditWizardGuard,
         WorkAllocationService,
-        SessionStorageService
+        SessionStorageService,
+        EventCompletionStateMachineService
     ]
 })
 export class CaseEditorModule {}

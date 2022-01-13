@@ -9,9 +9,9 @@ import {
   TaskCancelledComponent,
   TaskConflictComponent,
   TaskUnassignedComponent
-} from '../event-management';
-import { EventStartGuard } from '../event-management/event-guard/event-start.guard';
-import { EventTasksResolverService } from '../event-management/resolvers/event-tasks-resolver.service';
+} from '../event-start';
+import { EventStartGuard } from '../event-start/event-guard/event-start.guard';
+import { EventTasksResolverService } from '../event-start/resolvers/event-tasks-resolver.service';
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';

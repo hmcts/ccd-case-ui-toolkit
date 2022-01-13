@@ -4,12 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../../services';
-import { EventStates, StateMachineContext, StateMachineStates } from '../models';
-import { EventStateMachineService } from './event-state-machine.service';
+import { EventStartStates, EventStartStateMachineContext } from '../models';
+import { EventStartStateMachineService } from './event-start-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('EventStateMachineService', () => {
-  let service: EventStateMachineService;
+describe('EventStartStateMachineService', () => {
+  let service: EventStartStateMachineService;
   let stateMachine: StateMachine;
   let mockSessionStorageService: any;
   let mockRoute: ActivatedRoute;
@@ -111,7 +111,7 @@ describe('EventStateMachineService', () => {
   mockSessionStorageService.getItem.and.returnValue(`{"id": "test-user-id", "forename": "Test", "surname": "User",
     "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com", "token": null}`);
 
-  let context: StateMachineContext = {
+  let context: EventStartStateMachineContext = {
     tasks: [],
     caseId: '1620409659381330',
     eventId: 'editAppealAfterSubmit',
@@ -128,7 +128,7 @@ describe('EventStateMachineService', () => {
         { provide: Router, useValue: mockRouter }
       ]
     });
-    service = new EventStateMachineService();
+    service = new EventStartStateMachineService();
   });
 
   it('should initialise state machine', () => {
@@ -139,14 +139,14 @@ describe('EventStateMachineService', () => {
   it('should create states', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
-    expect(service.stateCheckForMatchingTasks.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
-    expect(service.stateNoTask.id).toEqual(EventStates.NO_TASK);
-    expect(service.stateOneOrMoreTasks.id).toEqual(EventStates.ONE_OR_MORE_TASKS);
-    expect(service.stateTaskUnassigned.id).toEqual(EventStates.TASK_UNASSIGNED);
-    expect(service.stateTaskAssignedToUser.id).toEqual(EventStates.TASK_ASSIGNED_TO_USER);
-    expect(service.stateOneTaskAssignedToUser.id).toEqual(EventStates.ONE_TASK_ASSIGNED_TO_USER);
-    expect(service.stateMultipleTasksAssignedToUser.id).toEqual(EventStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
-    expect(service.stateFinal.id).toEqual(StateMachineStates.FINAL);
+    expect(service.stateCheckForMatchingTasks.id).toEqual(EventStartStates.CHECK_FOR_MATCHING_TASKS);
+    expect(service.stateNoTask.id).toEqual(EventStartStates.NO_TASK);
+    expect(service.stateOneOrMoreTasks.id).toEqual(EventStartStates.ONE_OR_MORE_TASKS);
+    expect(service.stateTaskUnassigned.id).toEqual(EventStartStates.TASK_UNASSIGNED);
+    expect(service.stateTaskAssignedToUser.id).toEqual(EventStartStates.TASK_ASSIGNED_TO_USER);
+    expect(service.stateOneTaskAssignedToUser.id).toEqual(EventStartStates.ONE_TASK_ASSIGNED_TO_USER);
+    expect(service.stateMultipleTasksAssignedToUser.id).toEqual(EventStartStates.MULTIPLE_TASKS_ASSIGNED_TO_USER);
+    expect(service.stateFinal.id).toEqual(EventStartStates.FINAL);
   });
 
   it('should add transitions', () => {
@@ -171,7 +171,7 @@ describe('EventStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventStates.CHECK_FOR_MATCHING_TASKS);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.CHECK_FOR_MATCHING_TASKS);
     expect(service.entryActionForStateCheckForMatchingTasks).toHaveBeenCalled();
   });
 
@@ -187,7 +187,7 @@ describe('EventStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: mockRoute });
@@ -203,7 +203,7 @@ describe('EventStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: mockRoute });
@@ -216,7 +216,7 @@ describe('EventStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`],
       { queryParams: {}, relativeTo: mockRoute });
   });
@@ -228,7 +228,7 @@ describe('EventStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(StateMachineStates.FINAL);
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-assigned`],
       { queryParams: context.tasks[0], relativeTo: context.route });
   });

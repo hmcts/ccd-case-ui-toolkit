@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { Task } from '../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../services';
-import { StateMachineContext } from '../models';
-import { EventStateMachineService } from '../services';
+import { Task } from '../../domain/work-allocation/Task';
+import { SessionStorageService } from '../../services';
+import { EventStartStateMachineContext } from './models';
+import { EventStartStateMachineService } from './services';
 
 @Component({
   selector: 'ccd-event-start',
@@ -13,9 +13,9 @@ import { EventStateMachineService } from '../services';
 export class EventStartComponent implements OnInit {
 
   public stateMachine: StateMachine;
-  public context: StateMachineContext;
+  public context: EventStartStateMachineContext;
 
-  constructor(private service: EventStateMachineService,
+  constructor(private service: EventStartStateMachineService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService) {
@@ -40,7 +40,7 @@ export class EventStartComponent implements OnInit {
     };
 
     // Initialise state machine
-    this.service = new EventStateMachineService();
+    this.service = new EventStartStateMachineService();
     this.stateMachine = this.service.initialiseStateMachine(this.context);
     // Create states
     this.service.createStates(this.stateMachine);
