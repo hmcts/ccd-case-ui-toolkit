@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.3.7-markdown-case-ref-EUI-3650
+### Version 4.3.9-markdown-case-ref-EUI-3650
 **EUI-3650** Added formatting for case reference inside markdown
 
 ### Version 4.3.6-hotfix-EUI-4404
