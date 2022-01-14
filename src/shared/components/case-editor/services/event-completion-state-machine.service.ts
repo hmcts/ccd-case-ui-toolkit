@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
-import { TaskState } from '../../../domain/work-allocation/Task';
+import { combineLatest } from 'rxjs';
+import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
@@ -129,8 +130,47 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Navigate to tasks tab on case details page
 
+    let userId: string;
+    let taskId: string;
+
+    // Get user details
+    const userInfoStr = context.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo = JSON.parse(userInfoStr);
+      userId = userInfo.id ? userInfo.id : userInfo.uid;
+    }
+
+    // Get task details
+    const taskStr = context.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task: Task = JSON.parse(taskStr);
+      taskId = task.id;
+    }
+
+    if (userId && taskId) {
+      // Reassign task to current user
+      const reassignTaskObservable$ = context.workAllocationService.assignTask(taskId, userId);
+      // Complete task
+      const completeTaskObservable$ = context.workAllocationService.completeTask(taskId);
+
+      debugger;
+
+      combineLatest([reassignTaskObservable$, completeTaskObservable$]).toPromise()
+        .then(() => {
+          debugger;
+          console.log('UPDATED');
+          // Emit event can be completed event
+          context.component.eventCanBeCompleted.emit(true);
+        })
+        .catch(error => {
+          debugger;
+          console.log('ERROR', error);
+          // Emit event cannot be completed event
+          context.component.eventCanBeCompleted.emit(false);
+        });
+    }
   }
 
   public entryActionForStateFinal(state: State, context: EventCompletionStateMachineContext): void {

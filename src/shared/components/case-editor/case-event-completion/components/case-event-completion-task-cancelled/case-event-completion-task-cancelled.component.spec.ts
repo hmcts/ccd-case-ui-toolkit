@@ -10,11 +10,6 @@ describe('TaskCancelledComponent', () => {
   let fixture: ComponentFixture<CaseEventCompletionTaskCancelledComponent>;
   const mockRoute: any = {
     snapshot: {
-      data: {
-        case: {
-          case_id: '1620409659381330'
-        }
-      },
       params: {
         'cid': '1620409659381330'
       }
@@ -38,7 +33,7 @@ describe('TaskCancelledComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should display error message task cancelled', () => {
+  fit('should display error message task cancelled', () => {
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task cancelled/marked as done');

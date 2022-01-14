@@ -1,5 +1,5 @@
 import { ComponentPortal } from '@angular/cdk/portal';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, InjectionToken, Injector, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
@@ -8,6 +8,8 @@ import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } f
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
+
+export const COMPONENT_PORTAL_INJECTION_TOKEN = new InjectionToken<CaseEventCompletionComponent>('');
 
 @Component({
   selector: 'ccd-case-event-completion',
@@ -58,12 +60,17 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   }
 
   public showPortal(portalType: number): void {
+    const injector = Injector.create({
+      providers: [
+        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: this}
+      ]
+    });
     switch (portalType) {
       case EventCompletionPortalTypes.TaskCancelled:
-        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent);
+        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent, null, injector);
         break;
       case EventCompletionPortalTypes.TaskReassigned:
-        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskReassignedComponent);
+        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskReassignedComponent, null, injector);
         break;
     }
   }

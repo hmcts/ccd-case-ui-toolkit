@@ -23,7 +23,7 @@
     <p>Alternatively, click Cancel to return to the tasks tab without saving your progress.</p>
 
     <div class="form-group form-group-related">
-      <button type="submit" class="govuk-button govuk-!-margin-right-2" data-module="govuk-button">Continue</button>
+      <button class="govuk-button govuk-!-margin-right-2" data-module="govuk-button" (click)="onContinue()">Continue</button>
       <a  [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']"
               class="govuk-button govuk-button--secondary" data-module="govuk-button">Cancel</a>
     </div>
