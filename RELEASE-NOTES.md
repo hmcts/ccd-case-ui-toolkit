@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.9.8-state-machine
+### Version 4.9.9-state-machine
 **Task event completion and state machine** Task event completion and state machine
 
 ### Version 4.3.6-hotfix-EUI-4404
