@@ -1,12 +1,14 @@
-import { DebugElement } from '@angular/core';
+import { DebugElement, EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
 import { CaseEventCompletionTaskCancelledComponent } from './case-event-completion-task-cancelled.component';
 
 describe('TaskCancelledComponent', () => {
   let component: CaseEventCompletionTaskCancelledComponent;
+  let mockParentComponent: any;
   let fixture: ComponentFixture<CaseEventCompletionTaskCancelledComponent>;
   const mockRoute: any = {
     snapshot: {
@@ -16,12 +18,19 @@ describe('TaskCancelledComponent', () => {
     }
   };
 
+  mockParentComponent = {
+    eventCanBeCompleted: new EventEmitter<boolean>(true)
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+      ],
       declarations: [CaseEventCompletionTaskCancelledComponent],
       providers: [
-        {provide: ActivatedRoute, useValue: mockRoute}
+        {provide: ActivatedRoute, useValue: mockRoute},
+        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: mockParentComponent}
       ]
     })
       .compileComponents();
@@ -33,9 +42,15 @@ describe('TaskCancelledComponent', () => {
     fixture.detectChanges();
   });
 
-  fit('should display error message task cancelled', () => {
+  it('should display error message task cancelled', () => {
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task cancelled/marked as done');
+  });
+
+  it('shoud emit event can be completed true when clicked on continue button', () => {
+    spyOn(mockParentComponent.eventCanBeCompleted, 'emit');
+    component.onContinue();
+    expect(mockParentComponent.eventCanBeCompleted.emit).toHaveBeenCalledWith(true);
   });
 });

@@ -167,6 +167,34 @@ describe('WorkAllocationService', () => {
 
   });
 
+  describe('assignAndCompleteTask', () => {
+
+    beforeEach(() => {
+      httpService.post.and.returnValue(Observable.of({}));
+    });
+
+    it('should call post with the correct parameters', () => {
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {'completion_options': {'assign_and_complete': true}});
+    });
+
+    it('should set error service error when the call fails', (done) => {
+      httpService.post.and.returnValue(throwError(ERROR));
+      workAllocationService.completeTask(MOCK_TASK_1.id)
+        .subscribe(() => {
+          // Should not get here... so if we do, make sure it fails.
+          done.fail('Completed task instead of erroring');
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          expect(alertService.setPreserveAlerts).toHaveBeenCalled();
+          expect(alertService.warning).toHaveBeenCalled();
+          done();
+        });
+    });
+
+  });
+
   describe('handleTaskCompletionError', () => {
     it('should set a warning on the alertService if the role is of caseworker', () => {
       workAllocationService.handleTaskCompletionError(getExampleUserDetails()[1]);

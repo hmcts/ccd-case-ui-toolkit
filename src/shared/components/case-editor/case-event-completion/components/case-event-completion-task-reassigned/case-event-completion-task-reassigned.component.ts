@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { Subscription, throwError } from 'rxjs';
 import { Task } from '../../../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../../../services';
+import { AlertService, SessionStorageService } from '../../../../../services';
 import { WorkAllocationService } from '../../../services';
 import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
 
@@ -10,19 +10,19 @@ import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from '
   selector: 'app-case-event-completion-task-reassigned',
   templateUrl: './case-event-completion-task-reassigned.html'
 })
-export class CaseEventCompletionTaskReassignedComponent implements OnInit {
+export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {
 
   public caseId: string;
   public assignedUserId: string;
   public assignedUserName: string;
+  public subscription: Subscription;
 
   constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private parentComponent: CaseEventCompletionComponent,
     private readonly route: ActivatedRoute,
     private readonly workAllocationService: WorkAllocationService,
-    private readonly sessionStorageService: SessionStorageService) {
-      debugger;
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly alertService: AlertService) {
     this.caseId = this.route.snapshot.params['cid'];
-    const eventId = this.route.snapshot.params['eid'];
   }
 
   public ngOnInit(): void {
@@ -32,6 +32,12 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit {
     // TODO: If the task is not assigned to a caseworker, then
     // we have to perform an api call to check whether the task is assigned to judicial user
     // and display the judicial user name instead of 'another user'
+  }
+
+  public ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   public onContinue(): void {
@@ -53,27 +59,17 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit {
       taskId = task.id;
     }
 
-    if (userId && taskId) {
-      // Reassign task to current user
-      const reassignTaskObservable$ = this.workAllocationService.assignTask(taskId, userId);
-      // Complete task
-      const completeTaskObservable$ = this.workAllocationService.completeTask(taskId);
-
-      debugger;
-
-      combineLatest([reassignTaskObservable$, completeTaskObservable$]).toPromise()
-        .then(() => {
-          debugger;
-          console.log('UPDATED');
-          // Emit event can be completed event
-          this.parentComponent.eventCanBeCompleted.emit(true);
-        })
-        .catch(error => {
-          debugger;
-          console.log('ERROR', error);
-          // Emit event cannot be completed event
-          this.parentComponent.eventCanBeCompleted.emit(false);
-        });
-    }
+    // Assign and complete task
+    this.subscription = this.workAllocationService.assignAndCompleteTask(taskId).subscribe(
+      response => {
+        // Emit event can be completed event
+        this.parentComponent.eventCanBeCompleted.emit(true);
+      },
+      error => {
+        // Emit event cannot be completed event
+        this.parentComponent.eventCanBeCompleted.emit(false);
+        this.alertService.error(error.message);
+        return throwError(error);
+      });
   }
 }

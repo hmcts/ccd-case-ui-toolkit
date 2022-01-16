@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
-import { HttpErrorService, HttpService } from '../../../services';
+import { AlertService, HttpErrorService, HttpService } from '../../../services';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
@@ -22,9 +22,9 @@ describe('CaseEventCompletionComponent', () => {
   let component: CaseEventCompletionComponent;
   let de: DebugElement;
   let appConfig: any;
-  let httpService: any;
-  let errorService: any;
-  let alertService: any;
+  let httpService: HttpService;
+  let errorService: HttpErrorService;
+  let alertService: AlertService;
   let mockWorkAllocationService: WorkAllocationService;
   let eventCompletionStateMachineService: EventCompletionStateMachineService;
 
@@ -92,6 +92,7 @@ describe('CaseEventCompletionComponent', () => {
       providers: [
         SessionStorageService,
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
+        { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
       ],
     })

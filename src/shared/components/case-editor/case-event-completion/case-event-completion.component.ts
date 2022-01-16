@@ -3,7 +3,7 @@ import { Component, EventEmitter, InjectionToken, Injector, Input, OnChanges, Ou
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
-import { SessionStorageService } from '../../../services';
+import { AlertService, SessionStorageService } from '../../../services';
 import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
@@ -31,7 +31,8 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly workAllocationService: WorkAllocationService) {
+    private readonly workAllocationService: WorkAllocationService,
+    private readonly alertService: AlertService) {
   }
 
   public ngOnChanges(changes?: SimpleChanges): void {
@@ -45,6 +46,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
         route: this.route,
         sessionStorageService: this.sessionStorageService,
         workAllocationService: this.workAllocationService,
+        alertService: this.alertService,
         canBeCompleted: false,
         component: this
       };

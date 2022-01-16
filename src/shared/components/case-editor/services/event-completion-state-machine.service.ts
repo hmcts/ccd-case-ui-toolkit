@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
-import { combineLatest } from 'rxjs';
+import { combineLatest, throwError } from 'rxjs';
 import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
@@ -79,27 +79,37 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
+    console.log('entryActionForStateCheckTasksCanBeCompleted ONE');
     context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
+      console.log('entryActionForStateCheckTasksCanBeCompleted TWO');
       const taskPayLoad = <TaskPayload>payload;
       if (taskPayLoad.task_required_for_event) {
+        console.log('entryActionForStateCheckTasksCanBeCompleted THREE');
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
+        console.log('entryActionForStateCheckTasksCanBeCompleted FOUR');
         if (task) {
-          if (!task.assignee && task.task_state.toUpperCase() === TaskState.Unassigned) {
-            // Task unassigned
-            state.trigger(EventCompletionStates.TaskUnassigned);
-          } else if (task.assignee === context.task.assignee) {
-            // Task assigned to current user
-            if (task.task_state.toUpperCase() === TaskState.Assigned) {
+          console.log('entryActionForStateCheckTasksCanBeCompleted FIVE');
+          console.log('TASK', task);
+          switch (task.task_state.toUpperCase()) {
+            case TaskState.Unassigned:
+              // Task unassigned
+              state.trigger(EventCompletionStates.TaskUnassigned);
+              break;
+            case TaskState.Completed:
+            case TaskState.Cancelled:
+              // Task completed or cancelled
+              state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
+              break;
+            case TaskState.Assigned:
               // Task is in assigned state
-              state.trigger(EventCompletionStates.CompleteEventAndTask);
-            } else {
-              if (task.task_state.toUpperCase() === TaskState.Completed || task.task_state.toUpperCase() === TaskState.Cancelled) {
-                state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
-              }
-            }
-          } else {
-            // Task not assigned to user
-            state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              task.assignee === context.task.assignee
+                ? state.trigger(EventCompletionStates.CompleteEventAndTask)
+                : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              break;
+            default:
+              // Task not assigned to user
+              state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              break;
           }
         }
       }
@@ -150,26 +160,18 @@ export class EventCompletionStateMachineService {
     }
 
     if (userId && taskId) {
-      // Reassign task to current user
-      const reassignTaskObservable$ = context.workAllocationService.assignTask(taskId, userId);
-      // Complete task
-      const completeTaskObservable$ = context.workAllocationService.completeTask(taskId);
-
-      debugger;
-
-      combineLatest([reassignTaskObservable$, completeTaskObservable$]).toPromise()
-        .then(() => {
-          debugger;
-          console.log('UPDATED');
+      context.workAllocationService.assignAndCompleteTask(taskId).subscribe(
+        response => {
           // Emit event can be completed event
           context.component.eventCanBeCompleted.emit(true);
-        })
-        .catch(error => {
-          debugger;
-          console.log('ERROR', error);
-          // Emit event cannot be completed event
-          context.component.eventCanBeCompleted.emit(false);
+        },
+        error => {
+          context.alertService.error(error.message);
+          return throwError(error);
         });
+    } else {
+      // Emit event can be completed event
+      context.component.eventCanBeCompleted.emit(false);
     }
   }
 
