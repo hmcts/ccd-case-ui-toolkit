@@ -79,17 +79,11 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
-    console.log('entryActionForStateCheckTasksCanBeCompleted ONE');
     context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
-      console.log('entryActionForStateCheckTasksCanBeCompleted TWO');
       const taskPayLoad = <TaskPayload>payload;
       if (taskPayLoad.task_required_for_event) {
-        console.log('entryActionForStateCheckTasksCanBeCompleted THREE');
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
-        console.log('entryActionForStateCheckTasksCanBeCompleted FOUR');
         if (task) {
-          console.log('entryActionForStateCheckTasksCanBeCompleted FIVE');
-          console.log('TASK', task);
           switch (task.task_state.toUpperCase()) {
             case TaskState.Unassigned:
               // Task unassigned
