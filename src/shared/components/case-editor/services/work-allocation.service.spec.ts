@@ -68,6 +68,7 @@ describe('WorkAllocationService', () => {
   const MOCK_TASK_1 = { id: 'Task_1', caseReference: '1234567890' };
   const MOCK_TASK_2 = { id: 'Task_2', caseReference: '2345678901' };
   const TASK_SEARCH_URL = `${API_URL}/searchForCompletable`;
+  const TASK_ASSIGN_URL = `${API_URL}/task/${MOCK_TASK_1.id}/assign`;
   const TASK_COMPLETE_URL = `${API_URL}/task/${MOCK_TASK_1.id}/complete`;
 
   const ERROR: HttpError = new HttpError();
@@ -139,6 +140,34 @@ describe('WorkAllocationService', () => {
 
   });
 
+  describe('assignTask', () => {
+
+    beforeEach(() => {
+      httpService.post.and.returnValue(Observable.of({}));
+    });
+
+    it('should call post with the correct parameters', () => {
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_ASSIGN_URL, {userId});
+    });
+
+    it('should set error service error when the call fails', (done) => {
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      httpService.post.and.returnValue(throwError(ERROR));
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId)
+        .subscribe(() => {
+          // Should not get here... so if we do, make sure it fails.
+          done.fail('Completed task instead of erroring');
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          done();
+        });
+    });
+
+  });
+
   describe('completeTask', () => {
 
     beforeEach(() => {
@@ -180,7 +209,7 @@ describe('WorkAllocationService', () => {
 
     it('should set error service error when the call fails', (done) => {
       httpService.post.and.returnValue(throwError(ERROR));
-      workAllocationService.completeTask(MOCK_TASK_1.id)
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id)
         .subscribe(() => {
           // Should not get here... so if we do, make sure it fails.
           done.fail('Completed task instead of erroring');
