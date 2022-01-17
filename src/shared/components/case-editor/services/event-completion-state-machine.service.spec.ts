@@ -217,6 +217,13 @@ describe('EventCompletionStateMachineService', () => {
     expect(service.addTransitionsForStateCompleteEventAndTask).toBeTruthy();
   });
 
+  it('should add transition for state task completed or cancelled', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitionsForStateTaskCompletedOrCancelled();
+    expect(service.addTransitionsForStateTaskCompletedOrCancelled).toBeTruthy();
+  });
+
   it('should add transition for state task assigned to another user', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
