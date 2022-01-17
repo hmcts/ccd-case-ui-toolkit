@@ -135,36 +135,26 @@ export class EventCompletionStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
 
-    let userId: string;
-    let taskId: string;
-
-    // Get user details
-    const userInfoStr = context.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = JSON.parse(userInfoStr);
-      userId = userInfo.id ? userInfo.id : userInfo.uid;
-    }
-
     // Get task details
     const taskStr = context.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
       // Task is in session storage
       const task: Task = JSON.parse(taskStr);
-      taskId = task.id;
-    }
 
-    if (userId && taskId) {
-      context.workAllocationService.assignAndCompleteTask(taskId).subscribe(
+      // Assign and complete task
+      context.workAllocationService.assignAndCompleteTask(task.id).subscribe(
         response => {
           // Emit event can be completed event
           context.component.eventCanBeCompleted.emit(true);
         },
         error => {
+          // Emit event cannot be completed event
+          context.component.eventCanBeCompleted.emit(false);
           context.alertService.error(error.message);
           return throwError(error);
         });
     } else {
-      // Emit event can be completed event
+      // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
     }
   }
