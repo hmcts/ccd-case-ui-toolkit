@@ -1,3 +1,4 @@
+import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,10 +36,19 @@ import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.com
 import { CaseEditComponent } from './case-edit/case-edit.component';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
-import { EventTriggerService } from './services/event-trigger.service';
-import { PageValidationService } from './services/page-validation.service';
-import { WizardFactoryService } from './services/wizard-factory.service';
-import { WorkAllocationService } from './services/work-allocation.service';
+import {
+  CaseEventCompletionComponent,
+  CaseEventCompletionTaskCancelledComponent,
+  CaseEventCompletionTaskReassignedComponent
+} from './case-event-completion';
+import {
+  EventCompletionStateMachineService,
+  EventTriggerService,
+  JudicialworkerService,
+  PageValidationService,
+  WizardFactoryService,
+  WorkAllocationService
+} from './services';
 
 @NgModule({
     imports: [
@@ -53,6 +63,7 @@ import { WorkAllocationService } from './services/work-allocation.service';
         LabelSubstitutorModule,
         ErrorsModule,
         ComplexModule,
+        PortalModule
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -60,9 +71,16 @@ import { WorkAllocationService } from './services/work-allocation.service';
         CaseEditPageComponent,
         CaseEditFormComponent,
         CaseEditSubmitComponent,
+        CaseEventCompletionComponent,
+        CaseEventCompletionTaskCancelledComponent,
+        CaseEventCompletionTaskReassignedComponent,
         CaseCreateComponent,
         CaseProgressComponent,
         LoadingSpinnerComponent
+    ],
+    entryComponents: [
+      CaseEventCompletionTaskCancelledComponent,
+      CaseEventCompletionTaskReassignedComponent,
     ],
     exports: [
         CaseEditConfirmComponent,
@@ -95,7 +113,8 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ProfileService,
         CaseEditWizardGuard,
         WorkAllocationService,
-        SessionStorageService
+        SessionStorageService,
+        EventCompletionStateMachineService
     ]
 })
 export class CaseEditorModule {}

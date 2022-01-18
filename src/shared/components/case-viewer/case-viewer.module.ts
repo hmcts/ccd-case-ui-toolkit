@@ -36,6 +36,7 @@ import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseResolver, EventTriggerResolver } from './services';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
+import { EventStartModule } from '../event-start';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-
     ErrorsModule,
     ActivityModule,
     CaseHeaderModule,
+    EventStartModule,
     EventTriggerModule,
     TabsModule,
     PaletteModule,
