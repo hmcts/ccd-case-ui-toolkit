@@ -158,7 +158,7 @@ describe('WorkAllocationService', () => {
       workAllocationService.assignTask(MOCK_TASK_1.id, userId)
         .subscribe(() => {
           // Should not get here... so if we do, make sure it fails.
-          done.fail('Completed task instead of erroring');
+          done.fail('Assign task instead of erroring');
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);

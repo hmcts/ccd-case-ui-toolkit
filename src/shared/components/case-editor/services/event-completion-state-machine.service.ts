@@ -83,7 +83,7 @@ export class EventCompletionStateMachineService {
       const taskPayLoad = <TaskPayload>payload;
       if (taskPayLoad.task_required_for_event) {
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
-        if (task) {
+        if (task && task.task_state) {
           switch (task.task_state.toUpperCase()) {
             case TaskState.Unassigned:
               // Task unassigned
@@ -106,6 +106,11 @@ export class EventCompletionStateMachineService {
               break;
           }
         }
+      } else {
+        // This code should never be hit, as checks are aleady in place in the parent component
+        // This is just a fail safe code
+        // Event completion checks not required, inform parent to complete the event
+        state.trigger(EventCompletionStates.CompleteEventAndTask);
       }
     });
   }

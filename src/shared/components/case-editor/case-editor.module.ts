@@ -40,11 +40,15 @@ import {
 } from './case-event-completion';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
-import { EventCompletionStateMachineService } from './services/event-completion-state-machine.service';
-import { EventTriggerService } from './services/event-trigger.service';
-import { PageValidationService } from './services/page-validation.service';
-import { WizardFactoryService } from './services/wizard-factory.service';
-import { WorkAllocationService } from './services/work-allocation.service';
+import { CaseworkerService } from './services/case-worker.service';
+import {
+  EventCompletionStateMachineService,
+  EventTriggerService,
+  JudicialworkerService,
+  PageValidationService,
+  WizardFactoryService,
+  WorkAllocationService
+} from './services';
 
 @NgModule({
     imports: [
@@ -109,6 +113,8 @@ import { WorkAllocationService } from './services/work-allocation.service';
         ProfileService,
         CaseEditWizardGuard,
         WorkAllocationService,
+        JudicialworkerService,
+        CaseworkerService,
         SessionStorageService,
         EventCompletionStateMachineService
     ]

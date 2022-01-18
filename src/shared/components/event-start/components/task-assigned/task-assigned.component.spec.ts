@@ -3,15 +3,25 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../app.config';
+import { Caseworker } from '../../../../domain/work-allocation/case-worker.model';
+import { Judicialworker } from '../../../../domain/work-allocation/judicial-worker.model';
 import { Task } from '../../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../../services';
+import { HttpErrorService, HttpService } from '../../../../services';
+import { CaseworkerService, JudicialworkerService } from '../../../case-editor/services';
 import { TaskAssignedComponent } from './task-assigned.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('TaskRequirementComponent', () => {
+  const API_URL = 'http://aggregated.ccd.reform';
   let component: TaskAssignedComponent;
   let fixture: ComponentFixture<TaskAssignedComponent>;
-  let mockSessionStorageService: any;
+  let appConfig: any;
+  let httpService: HttpService;
+  let errorService: HttpErrorService;
+  let mockCaseworkerService: CaseworkerService;
+  let mockJudicialworkerService: JudicialworkerService;
   const task: Task = {
     assignee: '123-123-123-123',
     auto_assigned: false,
@@ -39,6 +49,21 @@ describe('TaskRequirementComponent', () => {
     warnings: true,
     work_type_id: null
   };
+  const caseworker: Caseworker = {
+    idamId: '4321-4321-4321-4321',
+    firstName: 'Test',
+    lastName: 'Caseworker',
+    email: 'testuser@demoenv.com',
+    location: null,
+    roleCategory: null
+  }
+  const judicialworker: Judicialworker = {
+    idamId: '4321-4321-4321-4321',
+    firstName: 'Test',
+    lastName: 'Judicial User',
+    email: 'testuser@demoenv.com',
+    location: null
+  }
   const mockRoute: any = {
     snapshot: {
       data: {
@@ -50,16 +75,23 @@ describe('TaskRequirementComponent', () => {
     }
   };
 
+  appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
+  appConfig.getApiUrl.and.returnValue(API_URL);
+  appConfig.getCaseDataUrl.and.returnValue(API_URL);
+  appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
+  httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+  errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
+  mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
+  mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
+
   beforeEach(async(() => {
-    mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-    mockSessionStorageService.getItem.and.returnValue(`[{"email": "testuser@mail.com", "firstName": "Test", "lastName": "User",
-      "idamId": "123-123-123-123", "location": null, "roleCategory": null}]`);
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [TaskAssignedComponent],
       providers: [
-        {provide: SessionStorageService, useValue: mockSessionStorageService},
-        {provide: ActivatedRoute, useValue: mockRoute}
+        {provide: ActivatedRoute, useValue: mockRoute},
+        {provide: CaseworkerService, useValue: mockCaseworkerService},
+        {provide: JudicialworkerService, useValue: mockJudicialworkerService},
       ]
     })
       .compileComponents();
@@ -68,6 +100,9 @@ describe('TaskRequirementComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskAssignedComponent);
     component = fixture.componentInstance;
+    spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of([caseworker]));
+    spyOn(mockJudicialworkerService, 'getJudicialworkers').and.returnValue(of([judicialworker]));
+    component.task.assignee = '4321-4321-4321-4321';
     fixture.detectChanges();
   });
 
@@ -75,6 +110,5 @@ describe('TaskRequirementComponent', () => {
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task assignment required');
-    expect(component.assignedUserName).toEqual('Test User');
   });
 });

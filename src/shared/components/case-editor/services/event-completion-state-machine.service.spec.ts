@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,7 +28,9 @@ describe('EventCompletionStateMachineService', () => {
   let mockWorkAllocationService: WorkAllocationService;
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
-  let eventCompletionComponentEmitter: EventCompletionComponentEmitter;
+  let eventCompletionComponentEmitter: any = {
+    eventCanBeCompleted: new EventEmitter<boolean>(true)
+  }
 
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -199,7 +202,7 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
     expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
   });
 

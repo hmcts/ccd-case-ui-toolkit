@@ -48,7 +48,7 @@ describe('TaskCancelledComponent', () => {
     expect(headingHtml.innerText).toBe('Task cancelled/marked as done');
   });
 
-  it('shoud emit event can be completed true when clicked on continue button', () => {
+  it('should emit event can be completed true when clicked on continue button', () => {
     spyOn(mockParentComponent.eventCanBeCompleted, 'emit');
     component.onContinue();
     expect(mockParentComponent.eventCanBeCompleted.emit).toHaveBeenCalledWith(true);
