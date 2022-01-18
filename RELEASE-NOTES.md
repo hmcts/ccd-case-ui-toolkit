@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.9.9-state-machine"
+**Task event completion and state machine** 
+
 ### Version 4.7.6-tab-not-defined-error"
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
