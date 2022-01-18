@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
