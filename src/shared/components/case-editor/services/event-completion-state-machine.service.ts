@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
+import { combineLatest, throwError } from 'rxjs';
+import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { EventCompletionStates, EventCompletionStateMachineContext } from '../domain';
+import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
+import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 
@@ -69,6 +72,7 @@ export class EventCompletionStateMachineService {
   public addTransitions(): void {
     // Initial transition
     this.addTransitionsForStateCheckTasksCanBeCompleted();
+    this.addTransitionsForStateTaskCompletedOrCancelled();
     this.addTransitionsForStateCompleteEventAndTask();
     this.addTransitionsForStateTaskAssignedToAnotherUser();
     this.addTransitionsForStateTaskUnassigned();
@@ -79,25 +83,34 @@ export class EventCompletionStateMachineService {
       const taskPayLoad = <TaskPayload>payload;
       if (taskPayLoad.task_required_for_event) {
         const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
-        if (task) {
-          if (!task.assignee && task.task_state === 'unassigned') {
-            // Task unassigned
-            state.trigger(EventCompletionStates.TaskUnassigned);
-          } else if (task.assignee === context.task.assignee) {
-            // Task assigned to current user
-            if (task.task_state === 'assigned') {
+        if (task && task.task_state) {
+          switch (task.task_state.toUpperCase()) {
+            case TaskState.Unassigned:
+              // Task unassigned
+              state.trigger(EventCompletionStates.TaskUnassigned);
+              break;
+            case TaskState.Completed:
+            case TaskState.Cancelled:
+              // Task completed or cancelled
+              state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
+              break;
+            case TaskState.Assigned:
               // Task is in assigned state
-              state.trigger(EventCompletionStates.CompleteEventAndTask);
-            } else {
-              if (task.task_state === 'completed' || task.task_state === 'cancelled') {
-                state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
-              }
-            }
-          } else {
-            // Task not assigned to user
-            state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              task.assignee === context.task.assignee
+                ? state.trigger(EventCompletionStates.CompleteEventAndTask)
+                : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              break;
+            default:
+              // Task not assigned to user
+              state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              break;
           }
         }
+      } else {
+        // This code should never be hit, as checks are aleady in place in the parent component
+        // This is just a fail safe code
+        // Event completion checks not required, inform parent to complete the event
+        state.trigger(EventCompletionStates.CompleteEventAndTask);
       }
     });
   }
@@ -105,7 +118,8 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskCompletedOrCancelled(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Navigate to no task available error page
+    // Load case event completion task cancelled component
+    context.component.showPortal(EventCompletionPortalTypes.TaskCancelled);
   }
 
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
@@ -118,13 +132,36 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
+    // Load case event completion task reassigned component
+    context.component.showPortal(EventCompletionPortalTypes.TaskReassigned);
   }
 
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Navigate to tasks tab on case details page
 
+    // Get task details
+    const taskStr = context.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task: Task = JSON.parse(taskStr);
+
+      // Assign and complete task
+      context.workAllocationService.assignAndCompleteTask(task.id).subscribe(
+        response => {
+          // Emit event can be completed event
+          context.component.eventCanBeCompleted.emit(true);
+        },
+        error => {
+          // Emit event cannot be completed event
+          context.component.eventCanBeCompleted.emit(false);
+          context.alertService.error(error.message);
+          return throwError(error);
+        });
+    } else {
+      // Emit event cannot be completed event
+      context.component.eventCanBeCompleted.emit(false);
+    }
   }
 
   public entryActionForStateFinal(state: State, context: EventCompletionStateMachineContext): void {
@@ -138,10 +175,20 @@ export class EventCompletionStateMachineService {
       EventCompletionStates.CompleteEventAndTask,
       this.stateCompleteEventAndTask
     );
+    // Task completed or cancelled
+    this.stateCheckTasksCanBeCompleted.addTransition(
+      EventCompletionStates.TaskCompetedOrCancelled,
+      this.stateTaskCompletedOrCancelled
+    );
     // Task assigned to another user
     this.stateCheckTasksCanBeCompleted.addTransition(
       EventCompletionStates.TaskAssignedToAnotherUser,
       this.stateTaskAssignedToAnotherUser
+    );
+    // Task unassigned
+    this.stateCheckTasksCanBeCompleted.addTransition(
+      EventCompletionStates.TaskUnassigned,
+      this.stateTaskUnassigned
     );
   }
 

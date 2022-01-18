@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,7 +28,9 @@ describe('EventCompletionStateMachineService', () => {
   let mockWorkAllocationService: WorkAllocationService;
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
-  let eventCompletionComponentEmittter: EventCompletionComponentEmitter;
+  let eventCompletionComponentEmitter: any = {
+    eventCanBeCompleted: new EventEmitter<boolean>(true)
+  }
 
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -37,7 +40,7 @@ describe('EventCompletionStateMachineService', () => {
   const noTask: Task[] = [];
 
   const oneTask: Task = {
-    assignee: null,
+    assignee: '1234-1234-1234-1234',
     auto_assigned: false,
     case_category: 'asylum',
     case_id: '1620409659381330',
@@ -138,8 +141,9 @@ describe('EventCompletionStateMachineService', () => {
     route: mockRoute,
     sessionStorageService: mockSessionStorageService,
     workAllocationService: mockWorkAllocationService,
+    alertService: alertService,
     canBeCompleted: false,
-    component: eventCompletionComponentEmittter
+    component: eventCompletionComponentEmitter
   };
 
   beforeEach(() => {
@@ -192,12 +196,13 @@ describe('EventCompletionStateMachineService', () => {
     };
     spyOn(context.workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of({taskPayload}));
     oneTask.task_state = 'assigned';
+    oneTask.assignee = '1234-1234-1234-1234';
     context.task = oneTask;
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
     expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
   });
 
@@ -213,6 +218,13 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitionsForStateCompleteEventAndTask();
     expect(service.addTransitionsForStateCompleteEventAndTask).toBeTruthy();
+  });
+
+  it('should add transition for state task completed or cancelled', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitionsForStateTaskCompletedOrCancelled();
+    expect(service.addTransitionsForStateTaskCompletedOrCancelled).toBeTruthy();
   });
 
   it('should add transition for state task assigned to another user', () => {

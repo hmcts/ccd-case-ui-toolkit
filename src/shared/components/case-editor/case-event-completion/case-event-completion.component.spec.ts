@@ -1,11 +1,16 @@
+import { ComponentPortal, PortalModule } from '@angular/cdk/portal';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
-import { HttpErrorService, HttpService } from '../../../services';
+import { AlertService, HttpErrorService, HttpService } from '../../../services';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
 import { WorkAllocationService } from '../services/work-allocation.service';
 import { CaseEventCompletionComponent } from './case-event-completion.component';
@@ -16,12 +21,10 @@ describe('CaseEventCompletionComponent', () => {
   let fixture: ComponentFixture<CaseEventCompletionComponent>;
   let component: CaseEventCompletionComponent;
   let de: DebugElement;
-  let mockRouter: any;
-  let mockRoute: any;
   let appConfig: any;
-  let httpService: any;
-  let errorService: any;
-  let alertService: any;
+  let httpService: HttpService;
+  let errorService: HttpErrorService;
+  let alertService: AlertService;
   let mockWorkAllocationService: WorkAllocationService;
   let eventCompletionStateMachineService: EventCompletionStateMachineService;
 
@@ -53,25 +56,6 @@ describe('CaseEventCompletionComponent', () => {
     work_type_id: null
   };
 
-  mockRouter = {
-    navigate: jasmine.createSpy('navigate'),
-    routerState: {}
-  };
-
-  mockRoute = {
-    snapshot: {
-      data: {
-        task: task,
-        case: {
-          case_id: '1620409659381330'
-        }
-      },
-      queryParams: {
-        eventId: 'editAppealAfterSubmit'
-      }
-    }
-  };
-
   const eventCompletionParams = {
     task: task,
     caseId: '1234-1234-1234-1234',
@@ -95,17 +79,34 @@ describe('CaseEventCompletionComponent', () => {
       'startStateMachine',
     ]);
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [CaseEventCompletionComponent],
+      imports: [
+        RouterTestingModule,
+        PortalModule
+      ],
+      declarations: [
+        CaseEventCompletionComponent,
+        CaseEventCompletionTaskCancelledComponent,
+        CaseEventCompletionTaskReassignedComponent
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         SessionStorageService,
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockRoute },
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
+        { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
       ],
-    }).compileComponents();
+    })
+    .overrideModule(BrowserDynamicTestingModule,
+      {
+        set: {
+          entryComponents: [
+            CaseEventCompletionTaskCancelledComponent,
+            CaseEventCompletionTaskReassignedComponent
+          ]
+        }
+      }
+    )
+    .compileComponents();
 
     fixture = TestBed.createComponent(CaseEventCompletionComponent);
     component = fixture.componentInstance;
@@ -117,5 +118,13 @@ describe('CaseEventCompletionComponent', () => {
   it('should create', () => {
     component.eventCompletionParams = eventCompletionParams;
     expect(component).toBeTruthy();
+  });
+
+  it('should load task cancelled component in cdk portal', () => {
+    component.showPortal(EventCompletionPortalTypes.TaskCancelled);
+    fixture.detectChanges();
+    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
+    const headingHtml = heading.nativeElement as HTMLElement;
+    expect(headingHtml.innerText).toBe('Task cancelled/marked as done');
   });
 });

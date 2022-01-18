@@ -33,3 +33,15 @@ export enum Permissions {
   Manage= 'MANAGE',
   Cancel= 'CANCEL',
 }
+
+export enum TaskState {
+  UnConfigured = 'UNCONFIGURED',
+  PendingAutoAssign = 'PENDING_AUTO_ASSIGN',
+  Assigned = 'ASSIGNED',
+  Configured = 'CONFIGURED',
+  Unassigned = 'UNASSIGNED',
+  Completed = 'COMPLETED',
+  Cancelled = 'CANCELLED',
+  Terminated = 'TERMINATED',
+  PendingReConfiguration = 'PENDING_RECONFIGURATION'
+}

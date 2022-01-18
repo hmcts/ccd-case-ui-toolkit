@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
@@ -74,6 +74,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly fieldsUtils: FieldsUtils,
     private readonly caseFieldService: CaseFieldService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly orderService: OrderService,
     private readonly profileService: ProfileService,
     private readonly profileNotifier: ProfileNotifier,
@@ -137,6 +138,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       // Submit
       const caseEventData = this.generateCaseEventData();
       this.caseSubmit(caseEventData);
+    } else {
+      // Navigate to tasks tab on case details page
+      this.router.navigate([`/cases/case-details/${this.getCaseId()}/tasks`], { relativeTo: this.route });
     }
   }
 

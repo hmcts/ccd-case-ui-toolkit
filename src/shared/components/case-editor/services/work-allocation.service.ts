@@ -47,6 +47,23 @@ export class WorkAllocationService {
   }
 
   /**
+   * Call the API to assign a task.
+   * @param taskId specifies which task should be assigned.
+   * @param userId specifies the user the task should be assigned to.
+   */
+  public assignTask(taskId: string, userId: string): Observable<any> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/assign`;
+    return this.http
+      .post(url, {userId})
+      .pipe(
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
+  }
+
+  /**
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
    */
@@ -54,6 +71,30 @@ export class WorkAllocationService {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
+      .pipe(
+        catchError(error => {
+          this.errorService.setError(error);
+          // this will subscribe to get the user details and decide whether to display an error message
+          this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response).subscribe((response) => {
+            this.handleTaskCompletionError(response);
+          });
+          return throwError(error);
+        })
+      );
+  }
+
+  /**
+   * Call the API to assign and complete a task.
+   * @param taskId specifies which task should be completed.
+   */
+  public assignAndCompleteTask(taskId: string): Observable<any> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
+    return this.http
+      .post(url, {
+        'completion_options': {
+          'assign_and_complete': true
+        }
+      })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -128,8 +169,13 @@ export class WorkAllocationService {
       );
   }
 
+  /**
+   * Return tasks for case and event.
+   *
+   * @param eventId The ID of the event to find tasks for.
+   * @param caseId The ID of the case to find tasks for.
+   */
   public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<TaskPayload> {
-    return this.http.get(`/workallocation2/case/tasks/${caseId}/event/${eventId}`);
+    return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}`);
   }
-
 }

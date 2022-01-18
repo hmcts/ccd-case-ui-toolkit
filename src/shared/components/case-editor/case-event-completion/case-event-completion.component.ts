@@ -1,10 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { Component, EventEmitter, InjectionToken, Injector, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
-import { SessionStorageService } from '../../../services';
+import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
+import { AlertService, SessionStorageService } from '../../../services';
 import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
+import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
+import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
+
+export const COMPONENT_PORTAL_INJECTION_TOKEN = new InjectionToken<CaseEventCompletionComponent>('');
 
 @Component({
   selector: 'ccd-case-event-completion',
@@ -20,12 +25,14 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
 
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
+  public selectedComponentPortal: ComponentPortal<any>;
 
   constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly workAllocationService: WorkAllocationService) {
+    private readonly workAllocationService: WorkAllocationService,
+    private readonly alertService: AlertService) {
   }
 
   public ngOnChanges(changes?: SimpleChanges): void {
@@ -39,6 +46,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
         route: this.route,
         sessionStorageService: this.sessionStorageService,
         workAllocationService: this.workAllocationService,
+        alertService: this.alertService,
         canBeCompleted: false,
         component: this
       };
@@ -50,6 +58,22 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
       this.service.addTransitions();
       // Start state machine
       this.service.startStateMachine(this.stateMachine);
+    }
+  }
+
+  public showPortal(portalType: number): void {
+    const injector = Injector.create({
+      providers: [
+        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: this}
+      ]
+    });
+    switch (portalType) {
+      case EventCompletionPortalTypes.TaskCancelled:
+        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent, null, injector);
+        break;
+      case EventCompletionPortalTypes.TaskReassigned:
+        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskReassignedComponent, null, injector);
+        break;
     }
   }
 }

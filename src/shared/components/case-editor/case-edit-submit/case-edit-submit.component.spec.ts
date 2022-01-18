@@ -2,7 +2,7 @@ import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
@@ -40,6 +40,11 @@ describe('CaseEditSubmitComponent', () => {
   let comp: CaseEditSubmitComponent;
   let fixture: ComponentFixture<CaseEditSubmitComponent>;
   let de: DebugElement;
+
+  let mockRouter: any;
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate')
+  };
 
   let sessionStorageService: any;
   const task = `{
@@ -414,6 +419,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService,
         ]
       }).compileComponents();
@@ -715,6 +721,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService,
         ]
       }).compileComponents();
@@ -857,6 +864,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService,
         ]
       }).compileComponents();
@@ -1099,6 +1107,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1242,6 +1251,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1388,6 +1398,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1533,6 +1544,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1681,6 +1693,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1834,6 +1847,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1972,6 +1986,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2109,6 +2124,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2254,6 +2270,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2411,6 +2428,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2574,6 +2592,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2718,6 +2737,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2865,6 +2885,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3012,6 +3033,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3158,6 +3180,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3309,6 +3332,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3462,6 +3486,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3615,6 +3640,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3779,6 +3805,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3942,6 +3969,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -4099,6 +4127,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -4258,6 +4287,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
