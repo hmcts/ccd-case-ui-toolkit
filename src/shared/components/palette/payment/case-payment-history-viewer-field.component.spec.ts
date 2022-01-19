@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
-import { MockComponent } from 'ng2-mock-component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 
