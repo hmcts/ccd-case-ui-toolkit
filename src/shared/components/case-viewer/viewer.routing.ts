@@ -15,7 +15,7 @@ import { EventTasksResolverService } from '../event-start/resolvers/event-tasks-
 import { FileUploadProgressGuard } from '../palette/document/file-upload-progress.guard';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
-import { CaseEventTriggerComponent } from './case-event-trigger/case-event-trigger.component';
+import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';

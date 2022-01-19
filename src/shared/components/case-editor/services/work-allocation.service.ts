@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
@@ -31,7 +30,7 @@ export class WorkAllocationService {
   public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
-      .post(url, { searchRequest }, null, false)
+      .post(url, {searchRequest}, null, false)
       .pipe(
         map(response => response),
         catchError(error => {
@@ -52,7 +51,7 @@ export class WorkAllocationService {
    * @param taskId specifies which task should be assigned.
    * @param userId specifies the user the task should be assigned to.
    */
-   public assignTask(taskId: string, userId: string): Observable<any> {
+  public assignTask(taskId: string, userId: string): Observable<any> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/assign`;
     return this.http
       .post(url, {userId})
@@ -88,7 +87,7 @@ export class WorkAllocationService {
    * Call the API to assign and complete a task.
    * @param taskId specifies which task should be completed.
    */
-   public assignAndCompleteTask(taskId: string): Observable<any> {
+  public assignAndCompleteTask(taskId: string): Observable<any> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {
@@ -129,7 +128,7 @@ export class WorkAllocationService {
     const lowerCaseRoles = roles.map(role => role.toLowerCase());
     // When/if lib & target permanently change to es2016, replace indexOf with includes
     return (lowerCaseRoles.indexOf(WorkAllocationService.IACCaseOfficer) !== -1)
-     || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
+      || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
   }
 
   /**
@@ -176,7 +175,7 @@ export class WorkAllocationService {
    * @param eventId The ID of the event to find tasks for.
    * @param caseId The ID of the case to find tasks for.
    */
-   public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<TaskPayload> {
+  public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<TaskPayload> {
     return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}`);
   }
 }

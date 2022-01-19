@@ -8,13 +8,13 @@ import { TabsModule } from '../../../components/tabs';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe, PipesModule } from '../../pipes';
 import {
-	ActivityPollingService,
-	ActivityService,
-	DraftService,
-	ErrorNotifierService,
-	HttpService,
-	NavigationNotifierService,
-	OrderService
+  ActivityPollingService,
+  ActivityService,
+  DraftService,
+  ErrorNotifierService,
+  HttpService,
+  NavigationNotifierService,
+  OrderService
 } from '../../services';
 import { ActivityModule } from '../activity';
 import { CaseEditorModule, CaseNotifier } from '../case-editor';
@@ -77,7 +77,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   exports: [
     CaseViewerComponent,
-    CaseViewComponent,
+    CaseViewComponent
   ],
   providers: [
     CaseNotifier,

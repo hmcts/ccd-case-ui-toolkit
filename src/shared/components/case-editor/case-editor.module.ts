@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { CallbackErrorsComponent } from '../../components/error';
 import { MarkdownModule } from '../../components/markdown/markdown.module';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
-    ConditionalShowRegistrarService,
+  ConditionalShowRegistrarService
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
@@ -34,13 +33,14 @@ import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
-import { CaseProgressComponent } from './case-progress/case-progress.component';
-import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import {
   CaseEventCompletionComponent,
   CaseEventCompletionTaskCancelledComponent,
   CaseEventCompletionTaskReassignedComponent
 } from './case-event-completion';
+import { CaseProgressComponent } from './case-progress/case-progress.component';
+import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { CaseworkerService } from './services/case-worker.service';
 import {
   EventCompletionStateMachineService,
   EventTriggerService,
@@ -91,7 +91,7 @@ import {
         CaseCreateComponent,
         CaseProgressComponent,
         CallbackErrorsComponent,
-        LoadingSpinnerComponent,
+        LoadingSpinnerComponent
     ],
     providers: [
         FieldsUtils,
@@ -113,6 +113,8 @@ import {
         ProfileService,
         CaseEditWizardGuard,
         WorkAllocationService,
+        JudicialworkerService,
+        CaseworkerService,
         SessionStorageService,
         EventCompletionStateMachineService
     ]
