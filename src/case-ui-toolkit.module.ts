@@ -67,7 +67,6 @@ import { SaveOrDiscardDialogComponent } from './shared/components/dialogs/save-o
 import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
 import { PaletteModule } from './shared/components/palette/palette.module';
 
-
 @NgModule({
     imports: [
       BannersModule,
