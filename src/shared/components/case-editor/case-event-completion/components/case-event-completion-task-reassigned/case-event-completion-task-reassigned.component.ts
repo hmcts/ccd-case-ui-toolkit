@@ -38,7 +38,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     // Get the caseworker based on the assigned user id
     const caseworkers$: Observable<Caseworker[]> = this.caseworkerService.getCaseworkers([this.assignedUserId]);
     this.caseworkerSubscription = caseworkers$.subscribe(caseworkers => {
-      if (caseworkers && caseworkers[0].firstName && caseworkers[0].lastName) {
+      if (caseworkers && caseworkers[0] && caseworkers[0].firstName && caseworkers[0].lastName) {
         this.assignedUserName = `${caseworkers[0].firstName} ${caseworkers[0].lastName}`;
       } else {
         // Get the judicial worker based on the assigned user id
