@@ -297,7 +297,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     return new FormGroup({data: new FormControl(value)});
   }
 
-  private resetErrors(): void {
+  public resetErrors(): void {
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
