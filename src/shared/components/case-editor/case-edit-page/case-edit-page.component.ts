@@ -193,7 +193,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
     }
-    this.showSpinner = true;
     if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
       this.error = null;
