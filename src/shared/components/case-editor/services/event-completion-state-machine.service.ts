@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
-import { combineLatest, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';

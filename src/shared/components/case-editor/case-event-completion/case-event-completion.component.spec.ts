@@ -1,19 +1,20 @@
-import { ComponentPortal, PortalModule } from '@angular/cdk/portal';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { PortalModule } from '@angular/cdk/portal';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
+import { CaseworkerService, JudicialworkerService } from '../services';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
 import { WorkAllocationService } from '../services/work-allocation.service';
-import { CaseEventCompletionComponent } from './case-event-completion.component';
+import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from './case-event-completion.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventCompletionComponent', () => {
@@ -26,7 +27,10 @@ describe('CaseEventCompletionComponent', () => {
   let errorService: HttpErrorService;
   let alertService: AlertService;
   let mockWorkAllocationService: WorkAllocationService;
-  let eventCompletionStateMachineService: EventCompletionStateMachineService;
+  let mockCaseworkerService: CaseworkerService;
+  let mockJudicialworkerService: JudicialworkerService;
+  let eventCompletionStateMachineService: any;
+  let parentComponent: any;
 
   const task: Task = {
     assignee: null,
@@ -56,10 +60,19 @@ describe('CaseEventCompletionComponent', () => {
     work_type_id: null
   };
 
-  const eventCompletionParams = {
+  const eventCompletionParams: EventCompletionParams = {
     task: task,
     caseId: '1234-1234-1234-1234',
     eventId: '4321-4321-4321-4321'
+  };
+
+  parentComponent = {
+    context: {
+      task: {
+        assignee: '1234-1234-1234-1234'
+      }
+    },
+    eventCanBeCompleted: new EventEmitter<boolean>(true)
   };
 
   appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
@@ -68,16 +81,13 @@ describe('CaseEventCompletionComponent', () => {
   appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-  alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  alertService = createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+  mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
+  mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
+  eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);
 
   beforeEach(async(() => {
-    createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', [
-      'initialiseStateMachine',
-      'createStates',
-      'addTransitions',
-      'startStateMachine',
-    ]);
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -94,6 +104,9 @@ describe('CaseEventCompletionComponent', () => {
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
         { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
+        {provide: CaseworkerService, useValue: mockCaseworkerService},
+        {provide: JudicialworkerService, useValue: mockJudicialworkerService},
+        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: parentComponent}
       ],
     })
     .overrideModule(BrowserDynamicTestingModule,
@@ -118,6 +131,20 @@ describe('CaseEventCompletionComponent', () => {
   it('should create', () => {
     component.eventCompletionParams = eventCompletionParams;
     expect(component).toBeTruthy();
+  });
+
+  it('should create context and start state machine', () => {
+    eventCompletionStateMachineService.initialiseStateMachine.and.returnValue();
+    component.eventCompletionParams = eventCompletionParams;
+    component.ngOnChanges({ eventCompletionParams: new SimpleChange(null, eventCompletionParams, false) });
+    fixture.detectChanges();
+    expect(component.context.caseId).toEqual('1234-1234-1234-1234');
+    expect(component.context.eventId).toEqual('4321-4321-4321-4321');
+    expect(component.context.task).toEqual(task);
+    expect(eventCompletionStateMachineService.initialiseStateMachine).toHaveBeenCalled();
+    expect(eventCompletionStateMachineService.createStates).toHaveBeenCalled();
+    expect(eventCompletionStateMachineService.addTransitions).toHaveBeenCalled();
+    expect(eventCompletionStateMachineService.startStateMachine).toHaveBeenCalled();
   });
 
   it('should load task cancelled component in cdk portal', () => {
