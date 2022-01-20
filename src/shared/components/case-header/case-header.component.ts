@@ -9,6 +9,7 @@ import { CaseView, CaseField, Draft } from '../../domain';
 
 export class CaseHeaderComponent implements OnInit {
 
+  public label: string;
   @Input()
   caseDetails: CaseView;
   caseTitle: CaseField;
@@ -18,6 +19,7 @@ export class CaseHeaderComponent implements OnInit {
     this.caseTitle = new CaseField();
     if (!this.isDraft() && this.caseDetails.state.title_display) {
       this.caseTitle.label = this.caseDetails.state.title_display;
+      this.label = this.caseTitle.label;
       this.caseFields = this.getCaseFields();
     }
   }
