@@ -10,4 +10,5 @@
                              [prependedTabs]="prependedTabs"
                              [appendedTabs]="appendedTabs">
   </ccd-case-full-access-view>
+  <ccd-case-full-access-view *ngIf="hasStandardAccess()" [caseDetails]="caseDetails" [hasPrint]="hasPrint" [hasEventSelector]="hasEventSelector" [prependedTabs]="prependedTabs" [appendedTabs]="appendedTabs"></ccd-case-full-access-view>
 </div>

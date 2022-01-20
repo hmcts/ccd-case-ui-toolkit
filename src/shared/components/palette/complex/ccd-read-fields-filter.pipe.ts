@@ -44,10 +44,6 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   }
 
   private static isValidCollection(field: CaseField, values?: object): boolean {
-    // if field is collection and it has complex/collection child field; parent field doesnt have value defined
-    if (!Array.isArray(field.value) && values && values.hasOwnProperty(field.id)) {
-      return true;
-    }
     const isNotEmpty = Array.isArray(field.value) && field.value.length > 0;
     if (isNotEmpty && field.field_type.collection_field_type.type === 'Complex') {
       return !!field.value.find(item => {
