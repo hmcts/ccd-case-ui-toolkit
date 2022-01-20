@@ -32,8 +32,9 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   }
 
   public ngOnInit(): void {
-    // Get the assigned user id from the parent component
+    // Get case id and assigned user id from the parent component
     this.assignedUserId = this.parentComponent.context.task.assignee;
+    this.caseId = this.parentComponent.context.caseId;
 
     // Get the caseworker based on the assigned user id
     const caseworkers$: Observable<Caseworker[]> = this.caseworkerService.getCaseworkers([this.assignedUserId]);
