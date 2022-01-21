@@ -79,40 +79,64 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
-    context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
-      const taskPayLoad = <TaskPayload>payload;
-      if (taskPayLoad.task_required_for_event) {
-        const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
-        if (task && task.task_state) {
-          switch (task.task_state.toUpperCase()) {
-            case TaskState.Unassigned:
-              // Task unassigned
-              state.trigger(EventCompletionStates.TaskUnassigned);
-              break;
-            case TaskState.Completed:
-            case TaskState.Cancelled:
-              // Task completed or cancelled
-              state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
-              break;
-            case TaskState.Assigned:
-              // Task is in assigned state
-              task.assignee === context.task.assignee
-                ? state.trigger(EventCompletionStates.CompleteEventAndTask)
-                : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
-              break;
-            default:
-              // Task not assigned to user
-              state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
-              break;
-          }
-        }
-      } else {
-        // This code should never be hit, as checks are aleady in place in the parent component
-        // This is just a fail safe code
-        // Event completion checks not required, inform parent to complete the event
-        state.trigger(EventCompletionStates.CompleteEventAndTask);
+    context.workAllocationService.getTask(context.task.id).subscribe(task => {
+
+      switch(task.task_state.toUpperCase()) {
+        case TaskState.Unassigned:
+          // Task unassigned
+          state.trigger(EventCompletionStates.TaskUnassigned);
+          break;
+        case TaskState.Completed:
+        case TaskState.Cancelled:
+          // Task completed or cancelled
+          state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
+          break;
+        case TaskState.Assigned:
+          // Task is in assigned state
+          task.assignee === context.task.assignee
+            ? state.trigger(EventCompletionStates.CompleteEventAndTask)
+            : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+          break;
+        default:
+          // Task not assigned to user
+          state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+          break;
       }
     });
+    // context.workAllocationService.getTasksByCaseIdAndEventId(context.eventId, context.caseId).subscribe(payload => {
+    //   const taskPayLoad = <TaskPayload>payload;
+    //   if (taskPayLoad.task_required_for_event) {
+    //     const task = taskPayLoad.tasks.find(x => x.id === context.task.id);
+    //     if (task && task.task_state) {
+    //       switch (task.task_state.toUpperCase()) {
+    //         case TaskState.Unassigned:
+    //           // Task unassigned
+    //           state.trigger(EventCompletionStates.TaskUnassigned);
+    //           break;
+    //         case TaskState.Completed:
+    //         case TaskState.Cancelled:
+    //           // Task completed or cancelled
+    //           state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
+    //           break;
+    //         case TaskState.Assigned:
+    //           // Task is in assigned state
+    //           task.assignee === context.task.assignee
+    //             ? state.trigger(EventCompletionStates.CompleteEventAndTask)
+    //             : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+    //           break;
+    //         default:
+    //           // Task not assigned to user
+    //           state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+    //           break;
+    //       }
+    //     }
+    //   } else {
+    //     // This code should never be hit, as checks are aleady in place in the parent component
+    //     // This is just a fail safe code
+    //     // Event completion checks not required, inform parent to complete the event
+    //     state.trigger(EventCompletionStates.CompleteEventAndTask);
+    //   }
+    // });
   }
 
   public entryActionForStateTaskCompletedOrCancelled(state: State, context: EventCompletionStateMachineContext): void {
