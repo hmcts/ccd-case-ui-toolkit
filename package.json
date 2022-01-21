@@ -53,6 +53,7 @@
     "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
+    "@edium/fsm": "^2.1.2",  
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
