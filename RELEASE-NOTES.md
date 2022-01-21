@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.9.11-state-machine"
+### Version 4.9.12-state-machine"
 **Task event completion and state machine** Task event completion and state machine
 
 ### Version 4.7.6-tab-not-defined-error"
