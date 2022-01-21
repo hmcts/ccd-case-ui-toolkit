@@ -567,32 +567,4 @@ describe('CasesService', () => {
     });
   });
 
-  describe('createChallengedAccessRequest()', () => {
-    beforeEach(() => {
-      httpService.post.and.callThrough();
-    });
-    it('should make an api call', () => {
-      const car: ChallengedAccessRequest = {
-        reason: 0,
-        caseReference: '1234',
-        otherReason: 'dummy'
-      };
-      casesService.createChallengedAccessRequest(CASE_ID, car);
-      expect(httpService.post).toHaveBeenCalled();
-    });
-  });
-
-  describe('createSpecificAccessRequest()', () => {
-    beforeEach(() => {
-      httpService.post.and.callThrough();
-    });
-    it('should make an api call', () => {
-      const sar: SpecificAccessRequest = {
-        specificReason: 'dummy'
-      };
-      casesService.createSpecificAccessRequest(CASE_ID, sar);
-      expect(httpService.post).toHaveBeenCalled();
-    });
-  });
-
 });

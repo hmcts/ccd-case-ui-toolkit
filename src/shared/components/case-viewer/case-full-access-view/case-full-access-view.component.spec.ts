@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 import { attr, text } from '../../../test/helpers';
@@ -33,7 +33,7 @@ import { AlertService } from '../../../services/alert';
 import { CallbackErrorsContext } from '../../../components/error/domain';
 import { DraftService } from '../../../services/draft';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatTab, MatTabChangeEvent, MatTabsModule } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { CaseNotifier } from '../../case-editor';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ComplexModule, PaletteModule } from '../../palette';
@@ -41,7 +41,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
+
 @Component({
   // tslint:disable-next-line
   selector: 'mat-tab-group',
@@ -102,10 +102,6 @@ class CallbackErrorsComponent {
   triggerTextContinue: string;
   @Input()
   callbackErrorsSubject: Subject<any> = new Subject();
-  @Input()
-  activitySubscription: Subject<any> = new Subject();
-  @Input()
-  caseSubscription: Subject<any> = new Subject();
   @Output()
   callbackErrorsContext: EventEmitter<any> = new EventEmitter();
 
@@ -1256,36 +1252,10 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
 })
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
+
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
-  let mockRouter: jasmine.SpyObj<Router>;
-  const ERROR: HttpError = new HttpError();
-  ERROR.message = 'Critical error!';
-
-  orderService = new OrderService();
-
-  draftService = createSpyObj('draftService', ['deleteDraft']);
-  draftService.deleteDraft.and.returnValue(Observable.of({}));
-
-  caseNotifier = createSpyObj('caseService', ['announceCase']);
-
-  alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-  alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-  alertService.success.and.returnValue(Observable.of({}));
-  alertService.warning.and.returnValue(Observable.of({}));
-  alertService.clear.and.returnValue(Observable.of({}));
-
-  navigationNotifierService = new NavigationNotifierService();
-  const errNotifierService = new ErrorNotifierService();
-
-  dialog = createSpyObj<MatDialog>('dialog', ['open']);
-  matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
-
-  activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-  activityService.postViewActivity.and.returnValue(Observable.of());
-
-  mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
   beforeEach((() => {
     TestBed
@@ -1328,7 +1298,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           CaseHeaderComponent,
           LinkComponent,
           CallbackErrorsComponent,
-           MarkdownComponent,
         ],
         providers: [
           FieldsUtils,
@@ -1341,9 +1310,12 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
               public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
             }
           },
+          ErrorNotifierService,
           {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
           {provide: CaseNotifier, useValue: caseNotifier},
           {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
@@ -1354,16 +1326,11 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errNotifierService},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: ActivityPollingService, useValue: activityService},
-
+          DeleteOrCancelDialogComponent
         ]
       })
       .compileComponents();
-      spyOn(orderService, 'sort').and.callThrough();
-      spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+
     f = TestBed.createComponent(CaseFullAccessViewComponent);
     comp = f.componentInstance;
     comp.caseDetails = CASE_VIEW;
@@ -1393,16 +1360,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     f.detectChanges();
   }));
 
-  it('should navigate return succesful promise', () => {
-    mockRouter = TestBed.get(Router);
-    spyOn(mockRouter, 'navigate').and.callFake((url: string) => {
-      return Promise.resolve('someResult');
-    });
-    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
-    comp.ngAfterViewInit();
-    expect(comp).toBeTruthy();
-  });
-
   it('should render appended tabs hearings', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
@@ -1411,136 +1368,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
-  it('should navigate called when tabChanged called', () => {
-    mockRouter = TestBed.get(Router);
-    spyOn(mockRouter, 'navigate').and.returnValue(any);
-    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
-    comp.tabChanged(
-        {tab: {_viewContainerRef: { element: { nativeElement: {id: 1}}}}, index: 0} as any
-        );
-    expect(mockRouter.navigate).toHaveBeenCalled();
-  });
-
-  it('should hasTabsPresent be called without error', () => {
-    comp.hasTabsPresent();
-    expect(comp.error).toBe(undefined);
-    expect(alertService.clear).not.toHaveBeenCalled();
-  });
-
-  it('should appendedTabs need to be assigned to component', () => {
-    comp.resetErrors();
-    expect(comp.appendedTabs.length ).toBe(1);
-   });
-
-   it('should set triggerText when callbackErrorsNotify called', () => {
-    comp.callbackErrorsNotify(
-      {ignore_warning: 'warning', trigger_text: 'warning_text'} as any
-      );
-     expect(comp.triggerText ).toBe('warning_text');
-   });
-
-   it('should set error when emit errors', () => {
-    ERROR.status = 422;
-    ERROR.callbackErrors = ['First error', 'Second error'];
-    ERROR.details = null;
-    errNotifierService.announceError(ERROR);
-    expect(comp.error).toBeTruthy();
-  });
 })
 
-describe('CaseFullAccessViewComponent - ends with caseID', () => {
-  let comp: CaseFullAccessViewComponent;
-  let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
-  let debugElement: DebugElement;
-  beforeEach((() => {
-    TestBed
-      .configureTestingModule({
-        imports: [
-          PaletteUtilsModule,
-          MatTabsModule,
-          ComplexModule,
-          BrowserAnimationsModule,
-          PaletteModule,
-          RouterTestingModule.withRoutes([
-            {
-              path: 'cases',
-              children: [
-                {
-                  path: 'case-details',
-                  children: [
-                    {
-                      path: ':id',
-                      children: [
-                        {
-                          path: 'tasks',
-                          component: TasksContainerComponent
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]),
-        ],
-        declarations: [
-          TasksContainerComponent,
-          CaseFullAccessViewComponent,
-          DeleteOrCancelDialogComponent,
-          // Mock
-          CaseActivityComponent,
-          EventTriggerComponent,
-          CaseHeaderComponent,
-          LinkComponent,
-          CallbackErrorsComponent,
-        ],
-        providers: [
-          FieldsUtils,
-          PlaceholderService,
-          CaseReferencePipe,
-          OrderService,
-          {
-            provide: Location,
-            useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
-            }
-          },
-          ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
-          NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          ActivityPollingService,
-          ActivityService,
-          HttpService,
-          HttpErrorService,
-          AuthService,
-          SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
-        ]
-      })
-      .compileComponents();
-
-    compFixture = TestBed.createComponent(CaseFullAccessViewComponent);
-    comp = compFixture.componentInstance;
-    comp.caseDetails = CASE_VIEW;
-    debugElement = compFixture.debugElement;
-    compFixture.detectChanges();
-  }));
-
-  it('should render 1st order of tabs', () => {
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(3);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
-  });
-})
 // noinspection DuplicatedCode
 describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let mockLocation: any;
