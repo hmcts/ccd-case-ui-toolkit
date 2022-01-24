@@ -5,6 +5,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
 import { Task } from '../../../domain/work-allocation/Task';
+import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
@@ -185,7 +186,7 @@ export class WorkAllocationService {
   *
   * @param {string} taskId
   */
- public getTask(taskId: string): Observable<Task> {
+ public getTask(taskId: string): Observable<TaskRespone> {
   return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}`);
  }
 }

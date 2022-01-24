@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
+import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import {
   EventCompletionStateMachineContext,
@@ -36,8 +37,6 @@ describe('EventCompletionStateMachineService', () => {
     routerState: {}
   };
 
-  const noTask: Task[] = [];
-
   const oneTask: Task = {
     assignee: '1234-1234-1234-1234',
     auto_assigned: false,
@@ -57,7 +56,7 @@ describe('EventCompletionStateMachineService', () => {
     permissions: null,
     region: null,
     security_classification: null,
-    task_state: null,
+    task_state: 'assigned',
     task_system: null,
     task_title: 'Some lovely task name',
     type: null,
@@ -65,63 +64,6 @@ describe('EventCompletionStateMachineService', () => {
     warnings: true,
     work_type_id: null
   };
-
-  const multipleTasks: Task[] = [
-    {
-      assignee: '1234-1234-1234-1234',
-      auto_assigned: false,
-      case_category: 'asylum',
-      case_id: '1620409659381330',
-      case_management_category: null,
-      case_name: 'Alan Jonson',
-      case_type_id: null,
-      created_date: '2021-04-19T14:00:00.000+0000',
-      due_date: '2021-05-20T16:00:00.000+0000',
-      execution_type: null,
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
-      jurisdiction: 'Immigration and Asylum',
-      location: null,
-      location_name: null,
-      name: 'Task name',
-      permissions: null,
-      region: null,
-      security_classification: null,
-      task_state: null,
-      task_system: null,
-      task_title: 'Some lovely task name',
-      type: null,
-      warning_list: null,
-      warnings: true,
-      work_type_id: null
-    },
-    {
-      assignee: '4321-4321-4321-4321',
-      auto_assigned: false,
-      case_category: 'asylum',
-      case_id: '1620409659381330',
-      case_management_category: null,
-      case_name: 'Alan Jonson',
-      case_type_id: null,
-      created_date: '2021-04-19T14:00:00.000+0000',
-      due_date: '2021-05-20T16:00:00.000+0000',
-      execution_type: null,
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
-      jurisdiction: 'Immigration and Asylum',
-      location: null,
-      location_name: null,
-      name: 'Task name',
-      permissions: null,
-      region: null,
-      security_classification: null,
-      task_state: null,
-      task_system: null,
-      task_title: 'Some lovely task name',
-      type: null,
-      warning_list: null,
-      warnings: true,
-      work_type_id: null
-    }
-  ];
 
   appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
   appConfig.getApiUrl.and.returnValue(API_URL);
@@ -133,7 +75,7 @@ describe('EventCompletionStateMachineService', () => {
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
 
   let context: EventCompletionStateMachineContext = {
-    task: null,
+    task: oneTask,
     caseId: '1620409659381330',
     eventId: 'editAppealAfterSubmit',
     router: mockRouter,
@@ -189,11 +131,10 @@ describe('EventCompletionStateMachineService', () => {
   });
 
   it('should perform state task assigned to user', () => {
-    const taskPayload = {
-      task_required_for_event: true,
-      tasks: [oneTask]
+    const taskResponse: TaskRespone = {
+      task: oneTask
     };
-    spyOn(context.workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of({taskPayload}));
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
     oneTask.task_state = 'assigned';
     oneTask.assignee = '1234-1234-1234-1234';
     context.task = oneTask;
@@ -201,17 +142,16 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
-    expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(context.workAllocationService.getTask).toHaveBeenCalled();
   });
 
   it('should perform state task assigned to another user', () => {
     const task = oneTask;
-    const taskPayload = {
-      task_required_for_event: true,
-      tasks: [oneTask]
+    const taskResponse: TaskRespone = {
+      task: oneTask
     };
-    spyOn(context.workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of({taskPayload}));
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
     task.task_state = 'assigned';
     task.assignee = '4321-4321-4321-4321';
     context.task = task;
@@ -219,43 +159,41 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
-    expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(context.workAllocationService.getTask).toHaveBeenCalled();
   });
 
   it('should perform state task unassigned', () => {
-    const task = oneTask;
-    task.assignee = null;
-    task.task_state = 'unassigned';
-    const taskPayload = {
-      task_required_for_event: true,
-      tasks: [task]
+    const taskToTest = oneTask;
+    taskToTest.assignee = null;
+    taskToTest.task_state = 'unassigned';
+    const taskResponse: TaskRespone = {
+      task: taskToTest
     };
-    spyOn(context.workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of({taskPayload}));
-    context.task = task;
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
+    context.task = taskToTest;
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
-    expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(context.workAllocationService.getTask).toHaveBeenCalled();
   });
 
   it('should perform state task completed or cancelled', () => {
-    const task = oneTask;
-    task.task_state = 'completed';
-    const taskPayload = {
-      task_required_for_event: true,
-      tasks: [task]
+    const taskToTest = oneTask;
+    taskToTest.task_state = 'completed';
+    const taskResponse: TaskRespone = {
+      task: taskToTest
     };
-    spyOn(context.workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of({taskPayload}));
-    context.task = task;
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
+    context.task = taskToTest;
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
-    expect(context.workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(context.workAllocationService.getTask).toHaveBeenCalled();
   });
 
   it('should add transition for state check taks can be completed', () => {
@@ -291,5 +229,9 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitionsForStateTaskUnassigned();
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
+  });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 });

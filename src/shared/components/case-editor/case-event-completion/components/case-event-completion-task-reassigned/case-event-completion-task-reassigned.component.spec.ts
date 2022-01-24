@@ -151,4 +151,8 @@ describe('TaskReassignedComponent', () => {
     expect(component.caseworkerSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.judicialworkerSubscription.unsubscribe).toHaveBeenCalled();
   });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

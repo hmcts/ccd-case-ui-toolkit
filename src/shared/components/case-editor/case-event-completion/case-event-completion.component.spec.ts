@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, SimpleChange } from
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -31,6 +32,8 @@ describe('CaseEventCompletionComponent', () => {
   let mockJudicialworkerService: JudicialworkerService;
   let eventCompletionStateMachineService: any;
   let parentComponent: any;
+  let mockRouter: Router;
+  let mockRoute: ActivatedRoute;
 
   const task: Task = {
     assignee: null,
@@ -66,15 +69,6 @@ describe('CaseEventCompletionComponent', () => {
     eventId: '4321-4321-4321-4321'
   };
 
-  parentComponent = {
-    context: {
-      task: {
-        assignee: '1234-1234-1234-1234'
-      }
-    },
-    eventCanBeCompleted: new EventEmitter<boolean>(true)
-  };
-
   appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
   appConfig.getApiUrl.and.returnValue(API_URL);
   appConfig.getCaseDataUrl.and.returnValue(API_URL);
@@ -86,6 +80,24 @@ describe('CaseEventCompletionComponent', () => {
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
   eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);
+
+  const context = {
+    task: task,
+    caseId: '1620409659381330',
+    eventId: null,
+    router: mockRouter,
+    route: mockRoute,
+    sessionStorageService: null,
+    workAllocationService: mockWorkAllocationService,
+    alertService: alertService,
+    canBeCompleted: false,
+    component: this
+  };
+
+  parentComponent = {
+    context: context,
+    eventCanBeCompleted: new EventEmitter<boolean>(true)
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -148,10 +160,13 @@ describe('CaseEventCompletionComponent', () => {
   });
 
   it('should load task cancelled component in cdk portal', () => {
+    component.context = context;
     component.showPortal(EventCompletionPortalTypes.TaskCancelled);
-    fixture.detectChanges();
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
-    const headingHtml = heading.nativeElement as HTMLElement;
-    expect(headingHtml.innerText).toBe('Task cancelled/marked as done');
+    expect(component.selectedComponentPortal).toBeTruthy();
+  });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 });
