@@ -76,7 +76,7 @@
     "@angular/core": "~7.0.3",
     "@angular/forms": "~7.0.3",
     "@angular/router": "~7.0.3",
-    "@hmcts/ccpay-web-component": "4.x",
+    "@hmcts/ccpay-web-component": "3.0.x",
     "local-storage": "^2.0.0"
   },
   "devDependencies": {
