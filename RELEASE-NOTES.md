@@ -3,6 +3,12 @@
 ### Version 4.3.6-hotfix-EUI-4404
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 
+### Version 4.3.6-hotfix-EUI-4404
+**EUI-4404** Fix rendering of read-only Collection field within editable Complex field
+
+### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details
+
 ### Version 4.7.6-hearings-tab
 **EUI-4441** Add hearings tab in case details
 **EUI-4627** Can't access /hearings tab from URL
