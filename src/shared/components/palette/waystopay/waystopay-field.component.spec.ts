@@ -1,13 +1,13 @@
-import { DebugElement } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { MockComponent } from "ng2-mock-component";
-import { AbstractAppConfig } from "../../../../app.config";
-import { CaseField } from "../../../domain/definition/case-field.model";
-import { FieldType } from "../../../domain/definition/field-type.model";
-import { SessionStorageService } from "../../../services/session/session-storage.service";
-import { PaletteUtilsModule } from "../utils/utils.module";
-import { WaysToPayFieldComponent } from "../waystopay/waystopay-field.component";
+import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MockComponent } from 'ng2-mock-component';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { WaysToPayFieldComponent } from '../waystopay/waystopay-field.component';
 
 const FIELD_ID = 'CaseWaysToPay';
 const FIELD_TYPE: FieldType = {
@@ -89,13 +89,12 @@ describe('Ways To Pay Component', () => {
             'DCN_NUMBER',
             'LOGGEDINUSERROLES'
           ]});
-          
+
         TestBed
           .configureTestingModule({
             imports: [
               ReactiveFormsModule,
-              PaletteUtilsModule,
-              
+              PaletteUtilsModule
             ],
             declarations: [
               WaysToPayFieldComponent,
@@ -109,13 +108,13 @@ describe('Ways To Pay Component', () => {
             ]
           })
           .compileComponents();
-    
+
         fixture = TestBed.createComponent(WaysToPayFieldComponent);
         component = fixture.componentInstance;
-    
+
         component.caseField = CASE_FIELD;
         component.formGroup = FORM_GROUP;
-    
+
         de = fixture.debugElement;
         fixture.detectChanges();
       }));
