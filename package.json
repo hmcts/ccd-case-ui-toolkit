@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.9.0-ways-to-pay",
+  "version": "4.9.0-ways-to-pay.1",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -76,7 +76,7 @@
     "@angular/core": "~7.0.3",
     "@angular/forms": "~7.0.3",
     "@angular/router": "~7.0.3",
-    "@hmcts/ccpay-web-component": "3.0.x",
+    "@hmcts/ccpay-web-component": "~4.0.1-beta24",
     "local-storage": "^2.0.0"
   },
   "devDependencies": {
