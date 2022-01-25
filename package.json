@@ -76,7 +76,7 @@
     "@angular/core": "~7.0.3",
     "@angular/forms": "~7.0.3",
     "@angular/router": "~7.0.3",
-    "@hmcts/ccpay-web-component": "~4.0.1-beta24",
+    "@hmcts/ccpay-web-component": "6.x",
     "local-storage": "^2.0.0"
   },
   "devDependencies": {
@@ -95,7 +95,7 @@
     "@angular/router": "~7.0.3",
     "@angular/upgrade": "~7.0.3",
     "@compodoc/compodoc": "^1.1.7",
-    "@hmcts/ccpay-web-component": "~4.0.1-beta24",
+    "@hmcts/ccpay-web-component": "6.0.0-beta1",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
