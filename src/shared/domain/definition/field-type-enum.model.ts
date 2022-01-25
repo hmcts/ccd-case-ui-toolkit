@@ -23,4 +23,5 @@ export type FieldTypeEnum =
   | 'AddressUK'
   | 'CasePaymentHistoryViewer'
   | 'CaseHistoryViewer'
-  | 'Organisation';
+  | 'Organisation'
+  | 'CaseFlag';

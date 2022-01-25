@@ -31,6 +31,7 @@ import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summa
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { WriteDateContainerFieldComponent } from '.';
+import { WriteCaseFlagFieldComponent } from './case-flag';
 
 describe('PaletteService', () => {
 
@@ -201,5 +202,8 @@ describe('PaletteService', () => {
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get WriteCaseFlagFieldComponent component class for CaseFlag input', () => {
+      assertComponent('CaseFlag', true, WriteCaseFlagFieldComponent, 'AnID');
+    });
   });
 });
