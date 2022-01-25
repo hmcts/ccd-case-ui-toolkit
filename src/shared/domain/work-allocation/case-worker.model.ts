@@ -5,4 +5,10 @@ export interface Caseworker {
   email: string;
   location: Location;
   roleCategory: string;
+  service?: string;
+}
+
+export interface CaseworkersByService {
+  service: string;
+  caseworkers: Caseworker[];
 }

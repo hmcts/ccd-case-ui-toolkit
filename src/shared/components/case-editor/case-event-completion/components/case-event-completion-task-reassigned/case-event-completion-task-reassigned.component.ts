@@ -1,8 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, Subscription, throwError } from 'rxjs';
-import { Caseworker } from '../../../../../domain/work-allocation/case-worker.model';
-import { Judicialworker } from '../../../../../domain/work-allocation/judicial-worker.model';
+import { Subscription, throwError } from 'rxjs';
 import { Task } from '../../../../../domain/work-allocation/Task';
 import { AlertService, SessionStorageService } from '../../../../../services';
 import { JudicialworkerService, WorkAllocationService } from '../../../services';
@@ -32,23 +30,31 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   }
 
   public ngOnInit(): void {
-    // Get case id and assigned user id from the parent component
-    this.assignedUserId = this.parentComponent.context.task.assignee;
+    // Get case id and task from the parent component
     this.caseId = this.parentComponent.context.caseId;
+    const task = this.parentComponent.context.task;
 
-    // Get the caseworker based on the assigned user id
-    const caseworkers$: Observable<Caseworker[]> = this.caseworkerService.getCaseworkers([this.assignedUserId]);
-    this.caseworkerSubscription = caseworkers$.subscribe(caseworkers => {
-      if (caseworkers && caseworkers[0] && caseworkers[0].firstName && caseworkers[0].lastName) {
-        this.assignedUserName = `${caseworkers[0].firstName} ${caseworkers[0].lastName}`;
-      } else {
-        // Get the judicial worker based on the assigned user id
-        const judicialworkers$: Observable<Judicialworker[]> = this.judicialworkerService.getJudicialworkers([this.assignedUserId]);
-        this.judicialworkerSubscription = judicialworkers$.subscribe(judicialworkers => {
-          if (judicialworkers && judicialworkers[0].firstName && judicialworkers[0].lastName) {
-            this.assignedUserName = `${judicialworkers[0].firstName} ${judicialworkers[0].lastName}`;
-          } else {
-            // As a fail safe display assigned user name as 'another user'
+    // Current user is a caseworker?
+    this.caseworkerSubscription = this.caseworkerService.getCaseworkers(task.jurisdiction).subscribe(result => {
+      if (result && result[0].service === task.jurisdiction && result[0].caseworkers) {
+        const caseworker = result[0].caseworkers.find(x => x.idamId === task.assignee);
+        if (caseworker) {
+          this.assignedUserName = `${caseworker.firstName} ${caseworker.lastName}`;
+        }
+      }
+
+      if (!this.assignedUserName) {
+        // Current user is a judicial user?
+        this.judicialworkerSubscription = this.judicialworkerService.getJudicialworkers([task.assignee], task.jurisdiction)
+        .subscribe(judicialworkers => {
+          if (judicialworkers) {
+            const judicialworker = judicialworkers.find(x => x.sidam_id === task.assignee);
+            if (judicialworker) {
+              this.assignedUserName = judicialworker.full_name;
+            }
+          }
+
+          if (!this.assignedUserName) {
             this.assignedUserName = 'another user';
           }
         });

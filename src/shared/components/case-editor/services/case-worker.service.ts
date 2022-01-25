@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
+import { CaseworkersByService } from '../../../domain/work-allocation/case-worker.model';
 import { HttpErrorService, HttpService } from '../../../services';
 
 @Injectable()
@@ -14,10 +15,10 @@ export class CaseworkerService {
   ) {
   }
 
-  public getCaseworkers(userIds: string[]): Observable<any> {
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker`;
+  public getCaseworkers(serviceId): Observable<CaseworkersByService[]> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/retrieveCaseWorkersForServices`;
     return this.http
-      .post(url, {userIds})
+      .post(url, { serviceIds: [serviceId]})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

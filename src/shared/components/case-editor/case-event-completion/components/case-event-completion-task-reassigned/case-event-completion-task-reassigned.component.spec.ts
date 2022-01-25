@@ -66,11 +66,11 @@ describe('TaskReassignedComponent', () => {
   }
 
   const judicialworker: Judicialworker = {
-    idamId: '4321-4321-4321-4321',
-    firstName: 'Test',
-    lastName: 'Judicialworker',
-    email: 'testuser@demoenv.com',
-    location: null
+    title: null,
+    knownAs: null,
+    sidam_id: '1234-1234-1234-1234',
+    full_name: 'Test Judicialworker',
+    email_id: 'testuser@demoenv.com'
   }
 
   const mockRoute: any = {
@@ -123,7 +123,7 @@ describe('TaskReassignedComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseEventCompletionTaskReassignedComponent);
     component = fixture.componentInstance;
-    spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of([]));
+    spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of(null));
     spyOn(mockJudicialworkerService, 'getJudicialworkers').and.returnValue(of([judicialworker]));
     fixture.detectChanges();
   });

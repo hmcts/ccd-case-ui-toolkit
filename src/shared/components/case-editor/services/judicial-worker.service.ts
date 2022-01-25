@@ -15,10 +15,10 @@ export class JudicialworkerService {
   ) {
   }
 
-  public getJudicialworkers(userIds: string[]): Observable<Judicialworker[]> {
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}/roles/getJudicialUsers`;
+  public getJudicialworkers(userIds: string[], serviceId: string): Observable<Judicialworker[]> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/getJudicialUsers`;
     return this.http
-      .post(url, {userIds})
+      .post(url, {userIds, services: [serviceId]})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

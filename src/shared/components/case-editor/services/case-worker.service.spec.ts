@@ -8,7 +8,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseworkerService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
-  const CASE_WORKER_URL = `${API_URL}/caseworker`;
+  const CASE_WORKER_URL = `${API_URL}/retrieveCaseWorkersForServices`;
   const CASE_WORKER_1: Caseworker = {
     idamId: '4321-4321-4321-4321',
     firstName: 'Test',
@@ -35,10 +35,10 @@ describe('CaseworkerService', () => {
   });
 
   it('should call post with correct parameters', () => {
-    const userIds = ['1234-1234-1234-1234'];
+    const serviceId = 'IA';
     httpService.post.and.returnValue(of([CASE_WORKER_1]));
-    caseworkerService.getCaseworkers(userIds).subscribe();
-    expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, {userIds});
+    caseworkerService.getCaseworkers(serviceId).subscribe();
+    expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, {serviceIds: [serviceId]});
   });
 
   it('should set error service error when the call fails', (done) => {

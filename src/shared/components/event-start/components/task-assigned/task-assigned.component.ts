@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { Caseworker } from '../../../../domain/work-allocation/case-worker.model';
-import { Judicialworker } from '../../../../domain/work-allocation/judicial-worker.model';
+import { Subscription } from 'rxjs';
 import { Task } from '../../../../domain/work-allocation/Task';
 import { CaseworkerService, JudicialworkerService } from '../../../case-editor/services';
 
@@ -26,22 +24,33 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // Get the caseworker based on the assigned user id
-    const caseworkers$: Observable<Caseworker[]> = this.caseworkerService.getCaseworkers([this.task.assignee]);
-    this.caseworkerSubscription = caseworkers$.subscribe(caseworkers => {
-      if (caseworkers && caseworkers[0] && caseworkers[0].firstName && caseworkers[0].lastName) {
-        this.assignedUserName = `${caseworkers[0].firstName} ${caseworkers[0].lastName}`;
-      } else {
-        // Get the judicial worker based on the assigned user id
-        const judicialworkers$: Observable<Judicialworker[]> = this.judicialworkerService.getJudicialworkers([this.task.assignee]);
-        this.judicialworkerSubscription = judicialworkers$.subscribe(judicialworkers => {
-          if (judicialworkers && judicialworkers[0].firstName && judicialworkers[0].lastName) {
-            this.assignedUserName = `${judicialworkers[0].firstName} ${judicialworkers[0].lastName}`;
-          } else {
-            // As a fail safe display assigned user name as 'another user'
-            this.assignedUserName = 'another user';
-          }
-        });
+    // Current user is a caseworker?
+    this.caseworkerSubscription = this.caseworkerService.getCaseworkers(this.task.jurisdiction).subscribe(result => {
+      console.log('CASE WORKERS', result);
+      if (result && result[0].service === this.task.jurisdiction && result[0].caseworkers) {
+        const caseworker = result[0].caseworkers.find(x => x.idamId === this.task.assignee);
+        if (caseworker) {
+          this.assignedUserName = `${caseworker.firstName} ${caseworker.lastName}`;
+        }
+      }
+
+      if (!this.assignedUserName) {
+        // Current user is a judicial user?
+        this.judicialworkerSubscription =
+          this.judicialworkerService.getJudicialworkers([this.task.assignee], this.task.jurisdiction)
+            .subscribe(judicialworkers => {
+              console.log('JUDICIAL WORKERS', result);
+              if (judicialworkers) {
+                const judicialworker = judicialworkers.find(x => x.sidam_id === this.task.assignee);
+                if (judicialworker) {
+                  this.assignedUserName = judicialworker.full_name;
+                }
+              }
+
+              if (!this.assignedUserName) {
+                this.assignedUserName = 'another user';
+              }
+            });
       }
     });
   }

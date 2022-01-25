@@ -1,7 +1,7 @@
 export interface Judicialworker {
-  idamId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  location: Location;
+  title: string;
+  knownAs: string;
+  full_name: string;
+  sidam_id: string;
+  email_id: string;
 }

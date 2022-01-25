@@ -58,11 +58,11 @@ describe('TaskRequirementComponent', () => {
     roleCategory: null
   }
   const judicialworker: Judicialworker = {
-    idamId: '4321-4321-4321-4321',
-    firstName: 'Test',
-    lastName: 'Judicialworker',
-    email: 'testuser@demoenv.com',
-    location: null
+    title: null,
+    knownAs: null,
+    sidam_id: '4321-4321-4321-4321',
+    full_name: 'Test Judicialworker',
+    email_id: 'testuser@demoenv.com'
   }
   const mockRoute: any = {
     snapshot: {
@@ -100,7 +100,7 @@ describe('TaskRequirementComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskAssignedComponent);
     component = fixture.componentInstance;
-    spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of([]));
+    spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of(null));
     spyOn(mockJudicialworkerService, 'getJudicialworkers').and.returnValue(of([judicialworker]));
     component.task.assignee = '4321-4321-4321-4321';
     fixture.detectChanges();

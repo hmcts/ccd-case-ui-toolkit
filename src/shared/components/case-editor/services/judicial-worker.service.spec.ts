@@ -8,13 +8,13 @@ import createSpyObj = jasmine.createSpyObj;
 
 describe('JudicialworkerService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
-  const JUDICIAL_WORKER_URL = `${API_URL}/roles/getJudicialUsers`;
+  const JUDICIAL_WORKER_URL = `${API_URL}/getJudicialUsers`;
   const JUDICIAL_WORKER_1: Judicialworker = {
-    idamId: '4321-4321-4321-4321',
-    firstName: 'Test',
-    lastName: 'Judicial User',
-    email: 'testuser@demoenv.com',
-    location: null
+    title: null,
+    knownAs: null,
+    sidam_id: '4321-4321-4321-4321',
+    full_name: 'Test Judicial user',
+    email_id: 'testuser@demoenv.com'
   }
 
   const ERROR: HttpError = new HttpError();
@@ -35,15 +35,17 @@ describe('JudicialworkerService', () => {
 
   it('should call post with correct parameters', () => {
     const userIds = ['1234-1234-1234-1234'];
+    const serviceId = 'IA';
     httpService.post.and.returnValue(of([JUDICIAL_WORKER_1]));
-    judicialworkerService.getJudicialworkers(userIds).subscribe();
-    expect(httpService.post).toHaveBeenCalledWith(JUDICIAL_WORKER_URL, {userIds});
+    judicialworkerService.getJudicialworkers(userIds, serviceId).subscribe();
+    expect(httpService.post).toHaveBeenCalledWith(JUDICIAL_WORKER_URL, {userIds, services: [serviceId]});
   });
 
   it('should set error service error when the call fails', (done) => {
     const userIds = ['1234-1234-1234-1234'];
+    const serviceId = 'IA';
     httpService.post.and.returnValue(throwError(ERROR));
-    judicialworkerService.getJudicialworkers(userIds)
+    judicialworkerService.getJudicialworkers(userIds, serviceId)
       .subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Get judicial workers instead of erroring');
