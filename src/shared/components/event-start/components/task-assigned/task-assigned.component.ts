@@ -26,7 +26,6 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     // Current user is a caseworker?
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(this.task.jurisdiction).subscribe(result => {
-      console.log('CASE WORKERS', result);
       if (result && result[0].service === this.task.jurisdiction && result[0].caseworkers) {
         const caseworker = result[0].caseworkers.find(x => x.idamId === this.task.assignee);
         if (caseworker) {
@@ -39,7 +38,6 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
         this.judicialworkerSubscription =
           this.judicialworkerService.getJudicialworkers([this.task.assignee], this.task.jurisdiction)
             .subscribe(judicialworkers => {
-              console.log('JUDICIAL WORKERS', result);
               if (judicialworkers) {
                 const judicialworker = judicialworkers.find(x => x.sidam_id === this.task.assignee);
                 if (judicialworker) {
