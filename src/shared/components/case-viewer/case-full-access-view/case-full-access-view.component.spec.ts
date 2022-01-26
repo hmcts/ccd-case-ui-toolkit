@@ -1256,6 +1256,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
+
   beforeEach((() => {
     TestBed
       .configureTestingModule({
