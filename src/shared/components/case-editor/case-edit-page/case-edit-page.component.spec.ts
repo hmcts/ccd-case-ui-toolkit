@@ -837,6 +837,7 @@ describe('CaseEditPageComponent', () => {
       'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
                               , 'Invalidfield2': new FormControl(null, Validators.required)
                               , 'OrganisationField': new FormControl(null, Validators.required)
+                              , 'complexField1': new FormControl(null, Validators.required)
                             })
     });
 
@@ -940,6 +941,24 @@ describe('CaseEditPageComponent', () => {
         expect(error.message).toEqual(`${error.id} is required`)
       });
     });
+
+    it('should validate mandatory complex type fields and log error message', () => {
+      const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'MANDATORY', 1, null, true, true);
+      const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'MANDATORY', 2, null, false, true);
+      wizardPage.case_fields.push(aCaseField('complexField1', 'complexField1', 'Complex', 'MANDATORY', 1,
+        [complexSubField1, complexSubField2], true, true));
+
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is required`)
+      });
+    })
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
