@@ -3,6 +3,7 @@ import { DebugElement } from '@angular/core';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 import { NgxMdModule, NgxMdComponent } from 'ngx-md';
 import { By } from '@angular/platform-browser';
+import { PipesModule } from '../../pipes';
 
 describe('MarkdownComponent', () => {
 
@@ -46,7 +47,8 @@ describe('MarkdownComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
-          NgxMdModule.forRoot()
+          NgxMdModule.forRoot(),
+          PipesModule
         ],
         declarations: [
           CCDMarkDownComponent,
