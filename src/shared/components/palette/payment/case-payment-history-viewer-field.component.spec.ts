@@ -93,4 +93,24 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
     expect(paymentComponent.ISBSENABLE).toEqual('true');
   });
+
+  it('Returns correct base url', () => {
+    expect(component.getBaseURL()).toEqual(PAYMENTS_URL);
+});
+
+it('returns correct bulkscan url', () => {
+    expect(component.getPayBulkScanBaseURL()).toEqual(BULKSCAN_API_URL);
+});
+
+it('returns correct refunds url', () => {
+    expect(component.getRefundsUrl()).toEqual(REFUNDS_URL);
+});
+
+it('returns empty roles when not initialized', () => {
+    expect(component.getUserRoles().length).toBe(0);
+});
+
+it('returns empty email when not initialized', () => {
+    expect(component.getUserEmail()).toEqual('');
+});
 });

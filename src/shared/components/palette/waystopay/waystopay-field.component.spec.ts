@@ -137,5 +137,5 @@ describe('Ways To Pay Component', () => {
 
       it('returns empty email when not initialized', () => {
           expect(component.getUserEmail()).toEqual('');
-      })
+      });
 });
