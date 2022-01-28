@@ -525,14 +525,14 @@ describe('FieldsUtils', () => {
                       {code: '1', value: '1'},
                       {code: '2', value: '2'}
                     ],
-                    value: {code: '2', value: '2'}
+                    value: [{code: '2', value: '2'}]
                   },
                   formatted_value: {
                     list_items: [
                       {code: '1', value: '1'},
                       {code: '2', value: '2'}
                     ],
-                    value: {code: '2', value: '2'}
+                    value: [{code: '2', value: '2'}]
                   }
                 }
               ],

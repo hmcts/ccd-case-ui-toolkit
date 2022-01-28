@@ -211,7 +211,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
-        const preSelectTab: CaseTab = this.caseDetails.tabs[0];
+        const preSelectTab: CaseTab = this.caseDetails.tabs.find(x => x.order === 1) ?
+              this.caseDetails.tabs.find(x => x.order === 1) : this.caseDetails.tabs[0];
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
