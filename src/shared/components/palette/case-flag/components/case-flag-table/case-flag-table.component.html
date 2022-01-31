@@ -1,0 +1,20 @@
+<table class="govuk-table">
+  <tr>
+    <th></th>
+    <th>Comments</th>
+    <th>Creation date</th>
+    <th>Last modified</th>
+    <th>Flag status</th>
+  </tr>
+  <tr *ngFor="let flag of caseFlagData">
+    <td>{{flag.flagName}}<br>{{flag.description}}</td>
+    <td>{{flag.comments}}</td>
+    <td>{{flag.creationDate}}</td>
+    <td>{{flag.lastModified}}</td>
+    <td>{{flag.status}}</td>
+    <td>
+      <strong *ngIf="flag.status === 'active'" class="govuk-tag">Active</strong>
+      <strong *ngIf="flag.status === 'inactive'" class="govuk-tag govuk-tag--grey">Inactive</strong>
+    </td>
+  </tr>
+</table>
