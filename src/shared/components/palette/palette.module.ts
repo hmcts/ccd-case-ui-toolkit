@@ -16,6 +16,9 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { MarkdownModule } from '../markdown/markdown.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
+import { CaseFlagModule } from './case-flag/case-flag.module';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { CaseLinkModule } from './case-link/case-link.module';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
@@ -23,8 +26,8 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ComplexModule } from './complex/complex.module';
+import { WriteDateContainerFieldComponent } from './date';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
-import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { WriteDateFieldComponent } from './date/write-date-field.component';
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { DocumentModule } from './document/document.module';
@@ -95,7 +98,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    PaymentLibModule
+    PaymentLibModule,
+    CaseFlagModule
   ],
   declarations: [
     UnsupportedFieldComponent,
@@ -121,6 +125,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseFlagFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -137,6 +142,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadOrganisationFieldComponent,
+    ReadCaseFlagFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -149,7 +155,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
     WriteDateContainerFieldComponent,
-    WriteOrganisationFieldComponent
+    WriteOrganisationFieldComponent,
+    WriteCaseFlagFieldComponent
   ],
   exports: [
     BaseFieldModule,
@@ -178,6 +185,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteDateContainerFieldComponent,
+    WriteCaseFlagFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,

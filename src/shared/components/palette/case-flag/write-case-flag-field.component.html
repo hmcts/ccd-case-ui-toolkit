@@ -1,0 +1,24 @@
+<div class="form-group" [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngSwitch]="fieldState">
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
+      <p>
+        This is the flag location step
+      </p>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
+      <p>
+        This is the flag comments step
+      </p>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_SUMMARY">
+      <p>
+        This is the flag summary (and final) step
+      </p>
+    </ng-container>
+  </div>
+  <div class="govuk-button-group">
+    <button class="button bottom-30" type="button" (click)="onNext()">
+      Next
+    </button>
+  </div>
+</div>

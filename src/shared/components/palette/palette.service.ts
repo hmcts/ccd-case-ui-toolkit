@@ -44,6 +44,7 @@ import { ReadOrganisationFieldComponent } from './organisation/read-organisation
 import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 
 @Injectable()
 export class PaletteService {
@@ -104,6 +105,8 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'CaseFlag':
+        return write ? WriteCaseFlagFieldComponent : UnsupportedFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
