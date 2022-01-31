@@ -40,7 +40,7 @@ import { EventDetails} from './common/eventDetails.component'
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    BrowserAnimationsModule,    
+    BrowserAnimationsModule,
     HttpClientModule,
     CreateCaseFiltersModule,
     CaseTimelineModule,

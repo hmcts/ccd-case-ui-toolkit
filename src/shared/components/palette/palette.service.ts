@@ -41,6 +41,7 @@ import { CaseHistoryViewerFieldComponent } from './history';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 import { ReadDynamicRadioListFieldComponent, WriteDynamicRadioListFieldComponent } from './dynamic-radio-list';
+import { WriteCaseFlagFieldComponent } from './case-flag';
 
 @Injectable()
 export class PaletteService {
@@ -99,6 +100,8 @@ export class PaletteService {
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
+      case 'CaseFlag':
+        return write ? WriteCaseFlagFieldComponent : UnsupportedFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

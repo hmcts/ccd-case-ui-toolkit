@@ -17,7 +17,7 @@ import { ComplexModule } from './complex/complex.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { PaletteUtilsModule } from './utils/utils.module';
@@ -55,6 +55,7 @@ import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { OrganisationModule } from './organisation/organisation.module';
 import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
+import { WriteCaseFlagFieldComponent } from './case-flag';
 
 @NgModule({
   imports: [
@@ -116,6 +117,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseFlagFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -143,7 +145,8 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
     WriteDateContainerFieldComponent,
-    WriteOrganisationFieldComponent
+    WriteOrganisationFieldComponent,
+    WriteCaseFlagFieldComponent
   ],
   exports: [
     BaseFieldModule,
@@ -171,6 +174,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteDateContainerFieldComponent,
+    WriteCaseFlagFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,
