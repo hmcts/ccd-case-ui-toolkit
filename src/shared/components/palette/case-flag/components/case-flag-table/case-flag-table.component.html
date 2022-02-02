@@ -1,7 +1,7 @@
-<table class="govuk-table">
+<table class="govuk-table" *ngIf="flagData">
   <thead class="govuk-table__head">
-    <tr>
-      <th class="govuk-table__header"></th>
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header">{{flagData.partyName}}</th>
       <th class="govuk-table__header">Comments</th>
       <th class="govuk-table__header">Creation date</th>
       <th class="govuk-table__header">Last modified</th>
@@ -9,11 +9,14 @@
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <tr class="govuk-table__row" *ngFor="let flag of caseFlagData">
-      <td class="govuk-table__cell">{{flag.flagName}}<br>{{flag.description}}</td>
-      <td class="govuk-table__cell">{{flag.comments}}</td>
-      <td class="govuk-table__cell">{{flag.creationDate}}</td>
-      <td class="govuk-table__cell">{{flag.lastModified}}</td>
+    <tr class="govuk-table__row" *ngFor="let flag of flagData">
+      <td class="govuk-table__cell">
+        <div>{{flag.name}}</div>
+        <div>{{flag.otherDescription}}</div>
+      </td>
+      <td class="govuk-table__cell">{{flag.flagComment}}</td>
+      <td class="govuk-table__cell">{{flag.dateTimeCreated}}</td>
+      <td class="govuk-table__cell">{{flag.dateTimeModified}}</td>
       <td class="govuk-table__cell">{{flag.status}}</td>
       <td class="govuk-table__cell">
         <strong *ngIf="flag.status === 'active'" class="govuk-tag">Active</strong>

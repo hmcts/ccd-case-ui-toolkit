@@ -41,6 +41,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import createSpyObj = jasmine.createSpyObj;
+import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
 
 @Component({
   // tslint:disable-next-line
@@ -1151,6 +1152,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1265,6 +1267,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1387,6 +1390,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',

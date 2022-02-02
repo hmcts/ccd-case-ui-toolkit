@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CaseFlag } from '../../domain/case-flag.model';
+import { Flag } from '../../domain';
 
 @Component({
   selector: 'ccd-case-flag-table',
@@ -8,7 +8,7 @@ import { CaseFlag } from '../../domain/case-flag.model';
 export class CaseFlagTableComponent implements OnInit {
 
   @Input()
-  public caseFlagData: CaseFlag[];
+  public flagData: Flag[];
 
   constructor() {
   }
