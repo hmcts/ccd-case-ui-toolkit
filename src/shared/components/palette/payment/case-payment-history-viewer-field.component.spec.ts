@@ -28,6 +28,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   let appConfig;
   let PaymentWebComponent;
+  let sessionStorage;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
@@ -38,6 +39,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
+
+    sessionStorage = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+    sessionStorage.getItem.and.returnValue(undefined);
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
@@ -100,5 +104,15 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   it('returns empty email when not initialized', () => {
       expect(component.getUserEmail()).toEqual('');
+  });
+
+  it('returns roles when initialized', () => {
+    sessionStorage.getItem.and.returnValue('{"roles":["roleA", "roleB"]}');
+    expect(component.getUserRoles().length).toBe(2);
+  });
+
+  it('returns email when initialized', () => {
+    sessionStorage.getItem.and.returnValue('{"sub":"email@domain.com"}');
+    expect(component.getUserEmail()).toEqual('email@domain.com');
   });
 });
