@@ -24,6 +24,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
   const BULKSCAN_API_URL = 'http://bulkscant-api:123';
+  const REFUNDS_URL = 'http://refunds-api:123';
 
   let appConfig;
   let PaymentWebComponent;
@@ -33,9 +34,10 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let de: DebugElement;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
+    appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
 
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
