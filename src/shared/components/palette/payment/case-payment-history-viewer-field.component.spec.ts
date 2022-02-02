@@ -5,9 +5,9 @@ import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
 import createSpyObj = jasmine.createSpyObj;
-import { SessionStorageService } from '../../../services/session/session-storage.service';
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
 
@@ -27,14 +27,13 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   let appConfig;
   let PaymentWebComponent;
-  let sessionStorage: jasmine.SpyObj<SessionStorageService>;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
   let de: DebugElement;
 
   beforeEach(async(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
 
@@ -49,8 +48,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'LOGGEDINUSEREMAIL',
         'REFUNDS_API_ROOT'
       ]});
-
-      sessionStorage = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
 
     TestBed
       .configureTestingModule({
@@ -89,25 +86,5 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException')
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
     expect(paymentComponent.ISBSENABLE).toEqual('true');
-  });
-
-  it('should return empty array for roles when not set', () => {
-    let paymentComponent = fixture.componentInstance;
-    sessionStorage.getItem.and.returnValue('null');
-    expect(paymentComponent.getUserRoles()).toEqual([]);
-    sessionStorage.getItem.and.returnValue('{}');
-    expect(paymentComponent.getUserRoles()).toEqual([]);
-    sessionStorage.getItem.and.returnValue('{"roles":["a","b"]}');
-    expect(paymentComponent.getUserRoles()).toEqual(['a', 'b']);
-  });
-
-  it('should return empty string for email when not set', () => {
-    let paymentComponent = fixture.componentInstance;
-    sessionStorage.getItem.and.returnValue('null');
-    expect(paymentComponent.getUserEmail()).toEqual('');
-    sessionStorage.getItem.and.returnValue('{}');
-    expect(paymentComponent.getUserEmail()).toEqual('');
-    sessionStorage.getItem.and.returnValue('{"sub":"test@test.com"}');
-    expect(paymentComponent.getUserEmail()).toEqual('test@test.com');
   });
 });

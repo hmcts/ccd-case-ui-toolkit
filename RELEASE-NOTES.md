@@ -1,7 +1,11 @@
 ## RELEASE NOTES
 
+### Version 4.11.2
+Add refunds functionality
+
 ### Version 4.3.6-hotfix-EUI-4404
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
+
 ### Version 4.7.6-tab-not-defined-error"
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
