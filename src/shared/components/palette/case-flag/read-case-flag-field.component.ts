@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CaseFlag } from './domain';
+import { Flag } from './domain';
 import { CaseFlagStatus } from './enums';
-import { CaseFlagType } from './enums/case-flag-type.enum';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -9,70 +8,124 @@ import { CaseFlagType } from './enums/case-flag-type.enum';
 })
 export class ReadCaseFlagFieldComponent implements OnInit {
 
-  public caseFlagData: CaseFlag[];
-  public partyLevelCaseFlagData: CaseFlag[];
-  public caseLevelCaseFlagData: CaseFlag[];
+  public caseFlagData: Flag[];
+  public partyLevelCaseFlagData: Flag[];
+  public caseLevelCaseFlagData: Flag[];
 
   constructor() {
   }
 
   public ngOnInit(): void {
     this.generateCaseFlagData();
-    this.categoriseCaseFlagData();
+    // this.categoriseCaseFlagData();
   }
 
   public generateCaseFlagData(): void {
-    this.caseFlagData = [
+    this.partyLevelCaseFlagData = [
       {
-        flagName: 'Wheel chair access',
-        type: CaseFlagType.PARTY_LEVEL,
-        description: '',
-        comments: '',
-        creationDate: new Date('2021-09-09 00:00:00'),
-        lastModified: new Date('2021-09-09 00:00:00'),
-        status: CaseFlagStatus.ACTIVE
+        partyName: 'John Smith',
+        roleOnCase: '',
+        details: [
+          {
+            name: 'Wheel chair access',
+            subTypeValue: '',
+            subTypeKey: '',
+            otherDescription: '',
+            flagComment: '',
+            dateTimeModified: new Date('2021-09-09 00:00:00'),
+            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            path: [],
+            hearingRelevant: false,
+            flagCode: '',
+            status: CaseFlagStatus.ACTIVE
+          },
+          {
+            name: 'Sign language',
+            subTypeValue: 'British Sign Language (BSL)',
+            subTypeKey: '',
+            otherDescription: '',
+            flagComment: '',
+            dateTimeModified: new Date('2021-09-09 00:00:00'),
+            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            path: [],
+            hearingRelevant: false,
+            flagCode: '',
+            status: CaseFlagStatus.ACTIVE
+          }
+        ]
       },
       {
-        flagName: 'Sign Language',
-        type: CaseFlagType.PARTY_LEVEL,
-        description: 'British Sign Language (BSL)',
-        comments: '',
-        creationDate: new Date('2021-09-06 00:00:00'),
-        lastModified: new Date('2021-09-06 00:00:00'),
-        status: CaseFlagStatus.ACTIVE
-      },
+        partyName: 'Ann Peterson',
+        roleOnCase: '',
+        details: [
+          {
+            name: 'Foreign national offender',
+            subTypeValue: '',
+            subTypeKey: '',
+            otherDescription: '',
+            flagComment: 'Flight risk',
+            dateTimeModified: new Date('2021-09-09 00:00:00'),
+            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            path: [],
+            hearingRelevant: false,
+            flagCode: '',
+            status: CaseFlagStatus.ACTIVE
+          },
+          {
+            name: 'Sign language',
+            subTypeValue: 'British Sign Language (BSL)',
+            subTypeKey: '',
+            otherDescription: '',
+            flagComment: '',
+            dateTimeModified: new Date('2021-09-09 00:00:00'),
+            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            path: [],
+            hearingRelevant: false,
+            flagCode: '',
+            status: CaseFlagStatus.ACTIVE
+          }
+        ]
+      }
+    ];
+
+    this.caseLevelCaseFlagData = [
       {
-        flagName: 'Foreign national offender',
-        type: CaseFlagType.PARTY_LEVEL,
-        description: '',
-        comments: 'Flight risk',
-        creationDate: new Date('2021-09-07 00:00:00'),
-        lastModified: new Date('2021-09-07 00:00:00'),
-        status: CaseFlagStatus.INACTIVE
-      },
-      {
-        flagName: 'Potentially violent person fraud',
-        type: CaseFlagType.CASE_LEVEL,
-        description: '',
-        comments: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
-        creationDate: new Date('2021-09-09 00:00:00'),
-        lastModified: new Date('2021-09-09 00:00:00'),
-        status: CaseFlagStatus.ACTIVE
-      },
-      {
-        flagName: 'Complex case',
-        type: CaseFlagType.CASE_LEVEL,
-        description: '',
-        comments: 'Requires senior case worker',
-        creationDate: new Date('2021-09-08 00:00:00'),
-        lastModified: new Date('2021-09-08 00:00:00'),
-        status: CaseFlagStatus.ACTIVE
+        partyName: 'Smith v Peterson',
+        roleOnCase: '',
+        details: [
+          {
+            name: 'Potentially violent person fraud',
+            subTypeValue: '',
+            subTypeKey: '',
+            otherDescription: '',
+            flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
+            dateTimeModified: new Date('2021-09-09 00:00:00'),
+            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            path: [],
+            hearingRelevant: false,
+            flagCode: '',
+            status: CaseFlagStatus.ACTIVE
+          },
+          {
+            name: 'Complex case',
+            subTypeValue: '',
+            subTypeKey: '',
+            otherDescription: '',
+            flagComment: 'Requires senior case worker',
+            dateTimeModified: new Date('2021-09-09 00:00:00'),
+            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            path: [],
+            hearingRelevant: false,
+            flagCode: '',
+            status: CaseFlagStatus.ACTIVE
+          }
+        ]
       }
     ];
   }
 
-  public categoriseCaseFlagData(): void {
-    this.partyLevelCaseFlagData = this.caseFlagData.filter(x => x.type === CaseFlagType.PARTY_LEVEL);
-    this.caseLevelCaseFlagData = this.caseFlagData.filter(x => x.type === CaseFlagType.CASE_LEVEL);
-  }
+  // public categoriseCaseFlagData(): void {
+  //   this.partyLevelCaseFlagData = this.caseFlagData.filter(x => x.type === CaseFlagType.PARTY_LEVEL);
+  //   this.caseLevelCaseFlagData = this.caseFlagData.filter(x => x.type === CaseFlagType.CASE_LEVEL);
+  // }
 }

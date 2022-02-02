@@ -43,6 +43,9 @@
   </div>
 </div>
 <div class="grid-row">
+  <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig"></ccd-notification-banner>
+</div>
+<div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true">

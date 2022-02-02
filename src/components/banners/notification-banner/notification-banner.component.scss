@@ -1,0 +1,33 @@
+.govuk-notification-banner {
+  
+  .govuk-notification-banner__content {
+
+    .govuk-notification-banner__heading {
+      margin-left: 0;
+      max-width: 900px;
+
+      .govuk-notification-banner__link {
+        padding-left: 10px;
+      }
+    }
+  }
+}
+
+.notification-banner-information {
+  background-color: #d4351c;
+  border: 5px solid #d4351c;
+}
+.notification-banner-error {
+  background-color: #d4351c;
+  border: 5px solid #d4351c;
+}
+
+.notification-banner-warning {
+  background-color: #912b88;
+  border: 5px solid #912b88;
+}
+
+.notification-banner-success {
+  background-color: #006435;
+  border: 5px solid #006435;
+}

@@ -23,6 +23,7 @@ import {
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
+import { NotificationBannerConfig, NotificationBannerType } from '../../../../components/banners/notification-banner';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -58,6 +59,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public markdownUseHrefAsRouterLink: boolean;
   public message: string;
   public subscription: Subscription;
+
+  public notificationBannerConfig: NotificationBannerConfig = {
+    bannerType: NotificationBannerType.INFORMATION,
+    headingText: 'Important',
+    description: 'There are 4 active flags on this case.',
+    linkText: 'View case flags',
+    linkUrl: '/case/ddd',
+    headerClass: 'notification-banner-information'
+  }
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;

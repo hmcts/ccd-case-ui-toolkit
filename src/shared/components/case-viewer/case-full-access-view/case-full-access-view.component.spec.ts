@@ -42,6 +42,7 @@ import { CaseNotifier, ConvertHrefToRouterService } from '../../case-editor';
 import { ComplexModule, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
+import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
 
 @Component({
   // tslint:disable-next-line
@@ -1161,6 +1162,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1281,6 +1283,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1512,6 +1515,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',

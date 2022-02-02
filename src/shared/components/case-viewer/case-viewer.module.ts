@@ -37,6 +37,7 @@ import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseResolver, EventTriggerResolver } from './services';
+import { NotificationBannerModule } from '../../../components/banners/notification-banner/notification-banner.module';
 
 @NgModule({
   imports: [
@@ -58,7 +59,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
     MatTabsModule,
     ComplexModule,
     ReactiveFormsModule,
-    AlertModule
+    AlertModule,
+    NotificationBannerModule
   ],
   declarations: [
     CaseEventTriggerComponent,
