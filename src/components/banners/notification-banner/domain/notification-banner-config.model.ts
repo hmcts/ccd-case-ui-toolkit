@@ -4,7 +4,8 @@ export interface NotificationBannerConfig {
   bannerType: NotificationBannerType;
   headingText: string;
   description: string;
-  linkUrl: string;
-  linkText: string;
+  showLink: boolean;
+  linkUrl?: string;
+  linkText?: string;
   headerClass: string;
 }
