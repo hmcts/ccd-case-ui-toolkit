@@ -2,7 +2,7 @@ import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
@@ -20,6 +20,7 @@ import {
   OrderService,
   ProfileNotifier,
   ProfileService,
+  SessionStorageService,
 } from '../../../services';
 import { text } from '../../../test/helpers';
 import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
@@ -39,6 +40,40 @@ describe('CaseEditSubmitComponent', () => {
   let comp: CaseEditSubmitComponent;
   let fixture: ComponentFixture<CaseEditSubmitComponent>;
   let de: DebugElement;
+
+  let mockRouter: any;
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate')
+  };
+
+  let sessionStorageService: any;
+  const task = `{
+    "assignee": null,
+    "auto_assigned": false,
+    "case_category": "asylum",
+    "case_id": "1620409659381330",
+    "case_management_category": null,
+    "case_name": "Alan Jonson",
+    "case_type_id": null,
+    "created_date": "2021-04-19T14:00:00.000+0000",
+    "due_date": "2021-05-20T16:00:00.000+0000",
+    "execution_type": null,
+    "id": "0d22d838-b25a-11eb-a18c-f2d58a9b7bc6",
+    "jurisdiction": "Immigration and Asylum",
+    "location": null,
+    "location_name": null,
+    "name": "Task name",
+    "permissions": null,
+    "region": null,
+    "security_classification": null,
+    "task_state": null,
+    "task_system": null,
+    "task_title": "Some lovely task name",
+    "type": null,
+    "warning_list": null,
+    "warnings": true,
+    "work_type_id": null
+  }`;
 
   const END_BUTTON_LABEL = 'Go now!';
   let formValueService: jasmine.SpyObj<FormValueService>;
@@ -357,6 +392,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -380,6 +418,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService,
         ]
       }).compileComponents();
@@ -654,6 +694,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -677,6 +720,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService,
         ]
       }).compileComponents();
@@ -792,6 +837,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -815,6 +863,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService,
         ]
       }).compileComponents();
@@ -1031,6 +1081,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1053,6 +1106,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1170,6 +1225,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1192,6 +1250,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1312,6 +1372,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1334,6 +1397,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1453,6 +1518,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1475,6 +1543,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1597,6 +1667,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1619,6 +1692,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1746,6 +1821,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1768,6 +1846,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -1880,6 +1960,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1902,6 +1985,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2013,6 +2098,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2035,6 +2123,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2154,6 +2244,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2176,6 +2269,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2307,6 +2402,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2329,6 +2427,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2466,6 +2566,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2488,6 +2591,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2606,6 +2711,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2628,6 +2736,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2749,6 +2859,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2771,6 +2884,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -2892,6 +3007,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -2914,6 +3032,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3034,6 +3154,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3056,6 +3179,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3181,6 +3306,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3203,6 +3331,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3330,6 +3460,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3352,6 +3485,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3479,6 +3614,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3501,6 +3639,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3639,6 +3779,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3661,6 +3804,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3798,6 +3943,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3820,6 +3968,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3951,6 +4101,9 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -3973,6 +4126,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: OrderService, useValue: orderService},
           {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
           PlaceholderService
         ]
       }).compileComponents();
@@ -3991,6 +4146,206 @@ describe('CaseEditSubmitComponent', () => {
 
       // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
       comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
+          // agreed handling of Scenarios 5 and 8 in EUI-3868
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+              document_filename: DOCUMENT_FILENAME_ORIGINAL_VALUE,
+              document_url: DOCUMENT_URL_VALUE
+            }
+          }],
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+  });
+
+  describe('Form submit test with event completion checks', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = {case_field_id: documentCollectionField.id};
+    const WP_FIELD_2: WizardPageField = {case_field_id: caseField3.id};
+    firstPage.wizard_page_fields = [WP_FIELD_1, WP_FIELD_2];
+    firstPage.case_fields = [documentCollectionField, caseField3];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              'isSolicitor': () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(async(() => {
+      documentCollectionField.retain_hidden_value = true;
+      documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
+      documentCollectionField.value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+          document_filename: DOCUMENT_FILENAME_VALUE,
+          document_url: DOCUMENT_URL_VALUE
+        }
+      }];
+      documentCollectionField.formatted_value = [{
+        id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+        value: {
+          document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+          document_filename: DOCUMENT_FILENAME_ORIGINAL_VALUE,
+          document_url: DOCUMENT_URL_VALUE
+        }
+      }];
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': createFormGroupWithCollectionField(
+          createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'event': {
+          'id': 'sendDirection'
+        },
+        'eventTrigger': {
+          'case_fields': [documentCollectionField, caseField3],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
+          CcdPageFieldsPipe,
+          CaseReferencePipe,
+          CcdCaseTitlePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
+          PlaceholderService
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should submit CaseEventData with task in session and even completion checks', () => {
+      sessionStorageService.getItem.and.returnValue(task);
+      spyOn(comp, 'getEventId').and.returnValue('09470b68-3bd0-11ec-9740-b6b84d919277');
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+
+      expect(sessionStorageService.getItem).toHaveBeenCalled();
+      expect(comp.getEventId).toHaveBeenCalled();
+      expect(comp.eventCompletionChecksRequired).toEqual(true);
+    });
+
+    it('should submit CaseEventData with task not in session and even completion checks not required', () => {
+      sessionStorageService.getItem.and.returnValue(null);
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+
+      expect(sessionStorageService.getItem).toHaveBeenCalled();
+      expect(comp.eventCompletionChecksRequired).toEqual(false);
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
+          // agreed handling of Scenarios 5 and 8 in EUI-3868
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              document_binary_url: DOCUMENT_BINARY_URL_VALUE,
+              document_filename: DOCUMENT_FILENAME_ORIGINAL_VALUE,
+              document_url: DOCUMENT_URL_VALUE
+            }
+          }],
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+    });
+
+    it('should submit CaseEventData when event emitter handler is called with true', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+      comp.onEventCanBeCompleted(true);
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
           // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
