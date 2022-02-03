@@ -23,7 +23,11 @@ import {
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
-import { NotificationBannerConfig, NotificationBannerType } from '../../../../components/banners/notification-banner';
+import {
+  NotificationBannerConfig,
+  NotificationBannerHeaderClass,
+  NotificationBannerType
+} from '../../../../components/banners/notification-banner';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -66,7 +70,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     description: 'There are 4 active flags on this case.',
     linkText: 'View case flags',
     linkUrl: '/case/ddd',
-    headerClass: 'notification-banner-information'
+    headerClass: NotificationBannerHeaderClass.INFORMATION
   }
 
   public callbackErrorsSubject: Subject<any> = new Subject();
@@ -317,6 +321,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
           ...value,
           [caseField.id]: caseField.value
         };
+        console.log('CASE FIELD', caseField);
+        console.log('CASE FIELD VALUE', caseField.value);
       });
     }
     return new FormGroup({data: new FormControl(value)});
