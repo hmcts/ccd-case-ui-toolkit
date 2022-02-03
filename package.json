@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.8.3-no-refunds-rc.1",
+  "version": "4.9.15-state-machine",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -53,6 +53,7 @@
     "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "~7.0.3",
+    "@edium/fsm": "^2.1.2",  
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
