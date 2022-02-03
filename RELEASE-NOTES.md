@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.11.3
+### Version 4.12.0
 Add refunds functionality
 
 ### Version 4.9.15-state-machine"
