@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CaseFlagStatus } from '../../enums';
 import { CaseFlagTableComponent } from './case-flag-table.component';
 
 describe('CaseFlagTableComponent', () => {
@@ -22,5 +23,48 @@ describe('CaseFlagTableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display case flag table if there is case flag data', () => {
+    component.flagData = [{
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      }]
+    }];
+    fixture.detectChanges();
+    const tableElement = fixture.debugElement.nativeElement.querySelector('govuk-table');
+    expect(tableElement).toBeDefined();
+  });
+
+  it('should not display case flag table if there is no case flag data', () => {
+    component.flagData = null;
+    fixture.detectChanges();
+    const tableElement = fixture.debugElement.nativeElement.querySelector('govuk-table');
+    expect(tableElement).toBeNull();
   });
 });
