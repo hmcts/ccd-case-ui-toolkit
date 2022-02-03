@@ -64,6 +64,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     bannerType: NotificationBannerType.INFORMATION,
     headingText: 'Important',
     description: 'There are 4 active flags on this case.',
+    showLink: true,
     linkText: 'View case flags',
     linkUrl: '/case/ddd',
     headerClass: NotificationBannerHeaderClass.INFORMATION

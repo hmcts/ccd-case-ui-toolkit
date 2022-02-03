@@ -40,7 +40,9 @@
         </ng-container>
       </ng-container>
       {{notificationBannerConfig.description}}
-      <a class="govuk-notification-banner__link" href="{{notificationBannerConfig.linkUrl}}">{{notificationBannerConfig.linkText}}</a>
+      <a *ngIf="notificationBannerConfig.showLink"
+        class="govuk-notification-banner__link"
+        href="{{notificationBannerConfig.linkUrl}}">{{notificationBannerConfig.linkText}}</a>
     </p>
   </div>
 </div>
