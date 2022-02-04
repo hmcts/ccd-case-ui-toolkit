@@ -15,7 +15,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public caseLevelCaseFlagData: Flag;
 
   public ngOnInit(): void {
-		console.log('CASE FIELD - CASE FLAG', this.caseField);
+    console.log('CASE FIELD - CASE FLAG', this.caseField);
 
     this.generateCaseFlagData();
     // this.categoriseCaseFlagData();
@@ -33,8 +33,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
             subTypeKey: '',
             otherDescription: '',
             flagComment: '',
-            dateTimeModified: new Date('2021-09-09 00:00:00'),
-            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            dateTimeModified: new Date('2021-08-19 00:00:00'),
+            dateTimeCreated: new Date('2021-06-09 00:00:00'),
             path: [],
             hearingRelevant: false,
             flagCode: '',
@@ -46,8 +46,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
             subTypeKey: '',
             otherDescription: '',
             flagComment: '',
-            dateTimeModified: new Date('2021-09-09 00:00:00'),
-            dateTimeCreated: new Date('2021-09-09 00:00:00'),
+            dateTimeModified: new Date('2021-11-10 00:00:00'),
+            dateTimeCreated: new Date('2021-12-03 00:00:00'),
             path: [],
             hearingRelevant: false,
             flagCode: '',
