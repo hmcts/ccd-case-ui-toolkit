@@ -30,6 +30,7 @@ describe('NotificationBannerComponent', () => {
     bannerType: NotificationBannerType.INFORMATION,
     headingText: 'Important',
     description: 'There are 4 active flags on this case.',
+    showLink: true,
     linkText: 'View case flags',
     linkUrl: '/case/ddd',
     headerClass: 'notification-banner-information'
@@ -45,8 +46,7 @@ describe('NotificationBannerComponent', () => {
     bannerType: NotificationBannerType.WARNING,
     headingText: 'Warning',
     description: 'There are 4 active flags on this case.',
-    linkText: 'View case flags',
-    linkUrl: '/case/ddd',
+    showLink: false,
     headerClass: 'notification-banner-warning'
   };
   fixture.detectChanges();
@@ -60,8 +60,7 @@ describe('NotificationBannerComponent', () => {
     bannerType: NotificationBannerType.ERROR,
     headingText: 'Error',
     description: 'There are 4 active flags on this case.',
-    linkText: 'View case flags',
-    linkUrl: '/case/ddd',
+    showLink: false,
     headerClass: 'notification-banner-error'
   };
   fixture.detectChanges();
@@ -75,6 +74,7 @@ describe('NotificationBannerComponent', () => {
     bannerType: NotificationBannerType.SUCCESS,
     headingText: 'Success',
     description: 'There are 4 active flags on this case.',
+    showLink: true,
     linkText: 'View case flags',
     linkUrl: '/case/ddd',
     headerClass: 'notification-banner-success'

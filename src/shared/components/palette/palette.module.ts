@@ -124,8 +124,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WritePhoneUKFieldComponent,
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
-    WriteDateFieldComponent,
-    WriteCaseFlagFieldComponent
+    WriteDateFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -185,7 +184,6 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteDateContainerFieldComponent,
-    WriteCaseFlagFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,

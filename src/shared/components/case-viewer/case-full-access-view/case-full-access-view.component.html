@@ -42,7 +42,7 @@
                         (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>
-<div class="grid-row">
+<div class="grid-row" *ngIf="isCaseFlagActive()">
   <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig"></ccd-notification-banner>
 </div>
 <div class="grid-row">

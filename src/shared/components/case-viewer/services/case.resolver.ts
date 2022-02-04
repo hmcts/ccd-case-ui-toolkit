@@ -7,6 +7,8 @@ import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { CaseFlagStatus } from '../../palette/case-flag/enums';
+import { Flag } from '../../palette/case-flag/domain';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -62,6 +64,7 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
+    debugger;
     if (Draft.isDraft(cid)) {
       return this.getAndCacheDraft(cid);
     } else {
@@ -70,12 +73,50 @@ export class CaseResolver implements Resolve<CaseView> {
         .pipe(
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
+            this.addCaseFlags();
             this.caseNotifier.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))
         ).toPromise();
     }
+  }
+
+  addCaseFlags(): void {
+    const caseFlag: Flag = {
+      partyName: 'Smith v Peterson',
+      roleOnCase: '',
+      details: [
+        {
+          name: 'Potentially violent person fraud',
+          subTypeValue: '',
+          subTypeKey: '',
+          otherDescription: '',
+          flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
+          dateTimeModified: new Date('2021-09-09 00:00:00'),
+          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+          path: [],
+          hearingRelevant: false,
+          flagCode: '',
+          status: CaseFlagStatus.INACTIVE
+        },
+        {
+          name: 'Complex case',
+          subTypeValue: '',
+          subTypeKey: '',
+          otherDescription: '',
+          flagComment: 'Requires senior case worker',
+          dateTimeModified: new Date('2021-09-09 00:00:00'),
+          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+          path: [],
+          hearingRelevant: false,
+          flagCode: '',
+          status: CaseFlagStatus.INACTIVE
+        }
+      ]
+    };
+
+    this.cachedCaseView.case_flag = caseFlag;
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {

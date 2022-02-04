@@ -44,7 +44,6 @@ import {
   ReadTextFieldComponent,
   SearchFiltersModule,
   UnsupportedFieldComponent,
-  WriteCaseFlagFieldComponent,
   WriteCollectionFieldComponent,
   WriteDateFieldComponent,
   WriteEmailFieldComponent,
@@ -137,7 +136,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       WriteNumberFieldComponent,
       WriteEmailFieldComponent,
       WriteDateFieldComponent,
-      WriteCaseFlagFieldComponent,
       LabelSubstitutorDirective,
       FocusElementDirective,
       PaginatePipe

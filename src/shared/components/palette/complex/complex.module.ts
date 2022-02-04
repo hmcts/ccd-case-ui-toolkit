@@ -17,6 +17,7 @@ import { ReadComplexFieldComponent } from './read-complex-field.component';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
+import { CaseFlagModule } from '../case-flag/case-flag.module';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-v
     CaseLinkModule,
     BaseFieldModule,
     PaletteUtilsModule,
-    ConditionalShowModule
+    ConditionalShowModule,
+    CaseFlagModule
   ],
   providers: [
     IsCompoundPipe,
