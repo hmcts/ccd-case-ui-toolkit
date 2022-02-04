@@ -85,6 +85,8 @@ export class PaletteService {
             return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
+          case 'CaseFlag':
+            return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }

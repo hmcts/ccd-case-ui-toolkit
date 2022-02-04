@@ -1,26 +1,26 @@
 <table class="govuk-table" *ngIf="flagData">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header">{{flagData.partyName}}</th>
-      <th class="govuk-table__header">Comments</th>
-      <th class="govuk-table__header">Creation date</th>
-      <th class="govuk-table__header">Last modified</th>
-      <th class="govuk-table__header">Flag status</th>
+      <th scope="col" class="govuk-table__header col-party-name">{{flagData.partyName}}</th>
+      <th scope="col" class="govuk-table__header col-comments">Comments</th>
+      <th scope="col" class="govuk-table__header col-creation-date">Creation date</th>
+      <th scope="col" class="govuk-table__header col-last-modified">Last modified</th>
+      <th scope="col" class="govuk-table__header col-flag-status">Flag status</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <tr class="govuk-table__row" *ngFor="let flag of flagData">
+    <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.details">
       <td class="govuk-table__cell">
-        <div>{{flag.name}}</div>
-        <div>{{flag.otherDescription}}</div>
+        <div>{{flagDetail.name}}</div>
+        <div>{{flagDetail.otherDescription}}</div>
       </td>
-      <td class="govuk-table__cell">{{flag.flagComment}}</td>
-      <td class="govuk-table__cell">{{flag.dateTimeCreated}}</td>
-      <td class="govuk-table__cell">{{flag.dateTimeModified}}</td>
-      <td class="govuk-table__cell">{{flag.status}}</td>
+      <td class="govuk-table__cell">{{flagDetail.flagComment}}</td>
+      <td class="govuk-table__cell">{{flagDetail.dateTimeCreated}}</td>
+      <td class="govuk-table__cell">{{flagDetail.dateTimeModified}}</td>
       <td class="govuk-table__cell">
-        <strong *ngIf="flag.status === 'active'" class="govuk-tag">Active</strong>
-        <strong *ngIf="flag.status === 'inactive'" class="govuk-tag govuk-tag--grey">Inactive</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag">Active</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">Inactive</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--grey">Requested</strong>
       </td>
     </tr>
   </tbody>

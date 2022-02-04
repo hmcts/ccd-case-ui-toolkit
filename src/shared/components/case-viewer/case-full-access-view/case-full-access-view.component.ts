@@ -27,6 +27,7 @@ import {
   NotificationBannerHeaderClass,
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
+import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -245,6 +246,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    console.log('CASE DETAILS', this.caseDetails);
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
     const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
@@ -257,6 +259,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         window.location.hash = label;
       });
     }
+  }
+
+  public isCaseFlagActive(): boolean {
+    return this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE).length > 0;
   }
 
   private init(): void {

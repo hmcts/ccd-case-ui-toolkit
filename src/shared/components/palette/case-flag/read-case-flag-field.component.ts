@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Flag } from './domain';
 import { CaseFlagStatus } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
-  templateUrl: './read-case-flag-field.component.html'
+  templateUrl: './read-case-flag-field.component.html',
+  styleUrls: ['./read-case-flag-field.component.scss']
 })
-export class ReadCaseFlagFieldComponent implements OnInit {
+export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
   public caseFlagData: Flag[];
   public partyLevelCaseFlagData: Flag[];
-  public caseLevelCaseFlagData: Flag[];
-
-  constructor() {
-  }
+  public caseLevelCaseFlagData: Flag;
 
   public ngOnInit(): void {
+		console.log('CASE FIELD - CASE FLAG', this.caseField);
+
     this.generateCaseFlagData();
     // this.categoriseCaseFlagData();
   }
@@ -50,7 +51,7 @@ export class ReadCaseFlagFieldComponent implements OnInit {
             path: [],
             hearingRelevant: false,
             flagCode: '',
-            status: CaseFlagStatus.ACTIVE
+            status: CaseFlagStatus.INACTIVE
           }
         ]
       },
@@ -82,46 +83,44 @@ export class ReadCaseFlagFieldComponent implements OnInit {
             path: [],
             hearingRelevant: false,
             flagCode: '',
-            status: CaseFlagStatus.ACTIVE
+            status: CaseFlagStatus.INACTIVE
           }
         ]
       }
     ];
 
-    this.caseLevelCaseFlagData = [
-      {
-        partyName: 'Smith v Peterson',
-        roleOnCase: '',
-        details: [
-          {
-            name: 'Potentially violent person fraud',
-            subTypeValue: '',
-            subTypeKey: '',
-            otherDescription: '',
-            flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
-            dateTimeModified: new Date('2021-09-09 00:00:00'),
-            dateTimeCreated: new Date('2021-09-09 00:00:00'),
-            path: [],
-            hearingRelevant: false,
-            flagCode: '',
-            status: CaseFlagStatus.ACTIVE
-          },
-          {
-            name: 'Complex case',
-            subTypeValue: '',
-            subTypeKey: '',
-            otherDescription: '',
-            flagComment: 'Requires senior case worker',
-            dateTimeModified: new Date('2021-09-09 00:00:00'),
-            dateTimeCreated: new Date('2021-09-09 00:00:00'),
-            path: [],
-            hearingRelevant: false,
-            flagCode: '',
-            status: CaseFlagStatus.ACTIVE
-          }
-        ]
-      }
-    ];
+    this.caseLevelCaseFlagData = {
+      partyName: 'Smith v Peterson',
+      roleOnCase: '',
+      details: [
+        {
+          name: 'Potentially violent person fraud',
+          subTypeValue: '',
+          subTypeKey: '',
+          otherDescription: '',
+          flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
+          dateTimeModified: new Date('2021-09-09 00:00:00'),
+          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+          path: [],
+          hearingRelevant: false,
+          flagCode: '',
+          status: CaseFlagStatus.ACTIVE
+        },
+        {
+          name: 'Complex case',
+          subTypeValue: '',
+          subTypeKey: '',
+          otherDescription: '',
+          flagComment: 'Requires senior case worker',
+          dateTimeModified: new Date('2021-09-09 00:00:00'),
+          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+          path: [],
+          hearingRelevant: false,
+          flagCode: '',
+          status: CaseFlagStatus.INACTIVE
+        }
+      ]
+    };
   }
 
   // public categoriseCaseFlagData(): void {
