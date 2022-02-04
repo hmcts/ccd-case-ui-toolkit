@@ -64,7 +64,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
-    debugger;
     if (Draft.isDraft(cid)) {
       return this.getAndCacheDraft(cid);
     } else {

@@ -277,7 +277,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public isCaseFlagActive(): boolean {
-    return this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE).length > 0;
+    return this.caseDetails &&
+      this.caseDetails.case_flag &&
+      this.caseDetails.case_flag.details &&
+      this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE).length > 0;
   }
 
   private init(): void {
@@ -328,8 +331,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
           ...value,
           [caseField.id]: caseField.value
         };
-        console.log('CASE FIELD', caseField);
-        console.log('CASE FIELD VALUE', caseField.value);
       });
     }
     return new FormGroup({data: new FormControl(value)});

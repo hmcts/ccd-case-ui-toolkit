@@ -26,7 +26,7 @@ describe('CaseFlagTableComponent', () => {
   });
 
   it('should display case flag table if there is case flag data', () => {
-    component.flagData = [{
+    component.flagData = {
       partyName: 'John Smith',
       roleOnCase: '',
       details: [{
@@ -55,7 +55,7 @@ describe('CaseFlagTableComponent', () => {
         flagCode: '',
         status: CaseFlagStatus.ACTIVE
       }]
-    }];
+    };
     fixture.detectChanges();
     const tableElement = fixture.debugElement.nativeElement.querySelector('govuk-table');
     expect(tableElement).toBeDefined();

@@ -15,8 +15,8 @@
         <div>{{flagDetail.otherDescription}}</div>
       </td>
       <td class="govuk-table__cell">{{flagDetail.flagComment}}</td>
-      <td class="govuk-table__cell">{{flagDetail.dateTimeCreated}}</td>
-      <td class="govuk-table__cell">{{flagDetail.dateTimeModified}}</td>
+      <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
+      <td class="govuk-table__cell">{{flagDetail.dateTimeModified | date: 'dd LLL yyyy'}}</td>
       <td class="govuk-table__cell">
         <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag">Active</strong>
         <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">Inactive</strong>
