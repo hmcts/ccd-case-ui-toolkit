@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 4.13.0-case-flags-tab-and-banner-message
+**EUI-4836** Add case flags tab to case details
+**EUI-4897** Add banner message to case details
+
 ### Version 4.3.6-hotfix-EUI-4404
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 

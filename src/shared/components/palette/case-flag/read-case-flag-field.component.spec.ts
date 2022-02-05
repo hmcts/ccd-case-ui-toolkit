@@ -23,4 +23,6 @@ describe('ReadCaseFlagFieldComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO: More tests will be added during further development of this component using real data
 });

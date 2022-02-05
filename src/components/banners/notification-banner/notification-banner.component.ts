@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NotificationBannerConfig } from './domain';
 import { NotificationBannerType } from './enums';
 
@@ -11,7 +11,14 @@ export class NotificationBannerComponent {
   @Input()
   public notificationBannerConfig: NotificationBannerConfig;
 
+  @Output()
+  public linkClicked: EventEmitter<string> = new EventEmitter<string>();
+
   public get notificationBannerType(): typeof NotificationBannerType {
     return NotificationBannerType;
+  }
+
+  public onLinkClick(triggerOutputEventText: string): void {
+    this.linkClicked.emit(triggerOutputEventText);
   }
 }

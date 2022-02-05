@@ -60,16 +60,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
-
-  public notificationBannerConfig: NotificationBannerConfig = {
-    bannerType: NotificationBannerType.INFORMATION,
-    headingText: 'Important',
-    description: 'There are 4 active flags on this case.',
-    showLink: true,
-    linkText: 'View case flags',
-    linkUrl: '/case/ddd',
-    headerClass: NotificationBannerHeaderClass.INFORMATION
-  }
+  public notificationBannerConfig: NotificationBannerConfig;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -246,7 +237,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    console.log('CASE DETAILS', this.caseDetails);
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
     const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
@@ -261,11 +251,38 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     }
   }
 
+  public onLinkClicked(triggerOutputEventText: string): void {
+    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === triggerOutputEventText);
+    if (matTab && matTab.position) {
+      this.tabGroup.selectedIndex = matTab.position;
+    }
+  }
+
   public isCaseFlagActive(): boolean {
-    return this.caseDetails &&
+    const activeCaseFlags = this.caseDetails &&
       this.caseDetails.case_flag &&
       this.caseDetails.case_flag.details &&
-      this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE).length > 0;
+      this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE);
+
+    if (activeCaseFlags && activeCaseFlags.length > 0) {
+      const description = activeCaseFlags.length > 1
+        ? `There are ${activeCaseFlags.length} active flags on this case.` : 'There is 1 active flag on this case.';
+      // Initialise and display notification banner
+      this.notificationBannerConfig = {
+        bannerType: NotificationBannerType.INFORMATION,
+        headingText: 'Important',
+        description: description,
+        showLink: true,
+        linkText: 'View case flags',
+        linkUrl: `/cases/case-details/${this.caseDetails.case_id}`,
+        triggerOutputEvent: true,
+        triggerOutputEventText: 'Case flags',
+        headerClass: NotificationBannerHeaderClass.INFORMATION
+      }
+      return true;
+    }
+
+    return false;
   }
 
   private init(): void {

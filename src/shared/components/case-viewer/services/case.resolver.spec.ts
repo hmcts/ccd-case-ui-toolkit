@@ -29,7 +29,7 @@ describe('CaseResolver', () => {
           path: [],
           hearingRelevant: false,
           flagCode: '',
-          status: CaseFlagStatus.INACTIVE
+          status: CaseFlagStatus.ACTIVE
         },
         {
           name: 'Complex case',

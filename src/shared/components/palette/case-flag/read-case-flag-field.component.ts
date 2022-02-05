@@ -15,6 +15,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public caseLevelCaseFlagData: Flag;
 
   public ngOnInit(): void {
+    // TODO: Remove hard-coding
+    // The development of this component is in-progress state
+    // Added temporarily until case flags are available as part of case details
     console.log('CASE FIELD - CASE FLAG', this.caseField);
 
     this.generateCaseFlagData();
@@ -22,6 +25,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public generateCaseFlagData(): void {
+    // TODO: Remove hard-coding
+    // The development of this component is in-progress state
+    // Added temporarily until case flags are available as part of case details
     this.partyLevelCaseFlagData = [
       {
         partyName: 'John Smith',
