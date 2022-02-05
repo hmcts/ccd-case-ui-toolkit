@@ -39,7 +39,7 @@ import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
 import { CaseNotifier, ConvertHrefToRouterService } from '../../case-editor';
-import { ComplexModule, PaletteModule } from '../../palette';
+import { CaseFlagStatus, ComplexModule, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
@@ -1387,6 +1387,81 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
+  it('should display active case flags banner message if at least one of the case flag is active', () => {
+    comp.caseDetails = CASE_VIEW;
+    comp.caseDetails.case_flag = {
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      }]
+    };
+    f.detectChanges();
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain('View case flags');
+    expect(comp.isCaseFlagActive()).toEqual(true);
+  });
+
+  it('should not display active case flags banner message if none of the case flag is active', () => {
+    comp.caseDetails = CASE_VIEW;
+    comp.caseDetails.case_flag = {
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      }]
+    };
+    f.detectChanges();
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement).toBeNull();
+    expect(comp.isCaseFlagActive()).toEqual(false);
+  });
 })
 
 describe('CaseFullAccessViewComponent - ends with caseID', () => {

@@ -72,6 +72,8 @@ export class CaseResolver implements Resolve<CaseView> {
         .pipe(
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
+            // TODO: Remove the below method call 'addClaseFlags'
+            // Added temporarily until case flags are available as part of case details
             this.addCaseFlags();
             this.caseNotifier.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
@@ -81,6 +83,9 @@ export class CaseResolver implements Resolve<CaseView> {
     }
   }
 
+  // TODO: Remove the below method
+  // Added temporarily until case flags are available as part of case details
+  // This is to enable testing
   addCaseFlags(): void {
     const caseFlag: Flag = {
       partyName: 'Smith v Peterson',
@@ -97,7 +102,7 @@ export class CaseResolver implements Resolve<CaseView> {
           path: [],
           hearingRelevant: false,
           flagCode: '',
-          status: CaseFlagStatus.INACTIVE
+          status: CaseFlagStatus.ACTIVE
         },
         {
           name: 'Complex case',

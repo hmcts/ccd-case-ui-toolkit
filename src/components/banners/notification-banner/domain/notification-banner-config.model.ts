@@ -7,5 +7,7 @@ export interface NotificationBannerConfig {
   showLink: boolean;
   linkUrl?: string;
   linkText?: string;
+  triggerOutputEvent?: boolean;
+  triggerOutputEventText?: string;
   headerClass: string;
 }
