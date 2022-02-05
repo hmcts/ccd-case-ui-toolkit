@@ -40,7 +40,7 @@
         </ng-container>
       </ng-container>
       {{notificationBannerConfig.description}}
-      <a *ngIf="notificationBannerConfig.showLink && notificationBannerConfig.triggerOutputEvent"
+      <a *ngIf="notificationBannerConfig.showLink && !notificationBannerConfig.triggerOutputEvent"
         class="govuk-notification-banner__link"
         href="{{notificationBannerConfig.linkUrl}}">{{notificationBannerConfig.linkText}}</a>
       <a *ngIf="notificationBannerConfig.showLink && notificationBannerConfig.triggerOutputEvent"
