@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-
 import { ConditionalShowModule } from '../../../directives/conditional-show';
 import { MarkdownModule } from '../../markdown';
 import { BaseFieldModule } from '../base-field';
@@ -17,7 +16,6 @@ import { ReadComplexFieldComponent } from './read-complex-field.component';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
-import { CaseFlagModule } from '../case-flag/case-flag.module';
 
 @NgModule({
   imports: [
@@ -26,8 +24,7 @@ import { CaseFlagModule } from '../case-flag/case-flag.module';
     CaseLinkModule,
     BaseFieldModule,
     PaletteUtilsModule,
-    ConditionalShowModule,
-    CaseFlagModule
+    ConditionalShowModule
   ],
   providers: [
     IsCompoundPipe,
