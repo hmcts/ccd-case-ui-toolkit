@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from '.';
 import { FormModule } from '../../../../components/form/form.module';
-import { CaseFlagTableComponent } from './components';
+import { CaseFlagTableComponent, SelectFlagTypeComponent } from './components';
 
 @NgModule({
   imports: [
@@ -14,12 +14,12 @@ import { CaseFlagTableComponent } from './components';
   declarations: [
     ReadCaseFlagFieldComponent,
     WriteCaseFlagFieldComponent,
-    CaseFlagTableComponent
+    CaseFlagTableComponent,
+    SelectFlagTypeComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,
-    WriteCaseFlagFieldComponent,
-    CaseFlagTableComponent
+    WriteCaseFlagFieldComponent
   ]
 })
 export class CaseFlagModule {}
