@@ -102,8 +102,6 @@ export class PaletteService {
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
-      case 'CaseFlag':
-        return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
