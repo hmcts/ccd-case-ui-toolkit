@@ -10,7 +10,7 @@
   </thead>
   <tbody class="govuk-table__body">
     <tr *ngIf="flagData && flagData.details && flagData.details.length === 0">
-      <td colspan="5">None</td>
+      <td colspan="5" class="no-data-row">None</td>
     </tr>
     <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.details">
       <td class="govuk-table__cell">

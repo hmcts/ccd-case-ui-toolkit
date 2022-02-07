@@ -32,34 +32,35 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       {
         partyName: 'John Smith',
         roleOnCase: '',
-        details: [
-          {
-            name: 'Wheel chair access',
-            subTypeValue: '',
-            subTypeKey: '',
-            otherDescription: '',
-            flagComment: '',
-            dateTimeModified: new Date('2021-08-19 00:00:00'),
-            dateTimeCreated: new Date('2021-06-09 00:00:00'),
-            path: [],
-            hearingRelevant: false,
-            flagCode: '',
-            status: CaseFlagStatus.ACTIVE
-          },
-          {
-            name: 'Sign language',
-            subTypeValue: 'British Sign Language (BSL)',
-            subTypeKey: '',
-            otherDescription: '',
-            flagComment: '',
-            dateTimeModified: new Date('2021-11-10 00:00:00'),
-            dateTimeCreated: new Date('2021-12-03 00:00:00'),
-            path: [],
-            hearingRelevant: false,
-            flagCode: '',
-            status: CaseFlagStatus.INACTIVE
-          }
-        ]
+        details: []
+        // details: [
+        //   {
+        //     name: 'Wheel chair access',
+        //     subTypeValue: '',
+        //     subTypeKey: '',
+        //     otherDescription: '',
+        //     flagComment: '',
+        //     dateTimeModified: new Date('2021-08-19 00:00:00'),
+        //     dateTimeCreated: new Date('2021-06-09 00:00:00'),
+        //     path: [],
+        //     hearingRelevant: false,
+        //     flagCode: '',
+        //     status: CaseFlagStatus.ACTIVE
+        //   },
+        //   {
+        //     name: 'Sign language',
+        //     subTypeValue: 'British Sign Language (BSL)',
+        //     subTypeKey: '',
+        //     otherDescription: '',
+        //     flagComment: '',
+        //     dateTimeModified: new Date('2021-11-10 00:00:00'),
+        //     dateTimeCreated: new Date('2021-12-03 00:00:00'),
+        //     path: [],
+        //     hearingRelevant: false,
+        //     flagCode: '',
+        //     status: CaseFlagStatus.INACTIVE
+        //   }
+        // ]
       },
       {
         partyName: 'Ann Peterson',
