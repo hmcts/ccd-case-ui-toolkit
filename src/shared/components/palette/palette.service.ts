@@ -86,6 +86,7 @@ export class PaletteService {
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
           case 'CaseFlag':
+            // TODO: This code might change based on how we are going to get the data from the service
             return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
@@ -103,6 +104,7 @@ export class PaletteService {
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
       case 'CaseFlag':
+        // TODO: This code might change based on how we are going to get the data from the service
         return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
       default:
         return UnsupportedFieldComponent;
