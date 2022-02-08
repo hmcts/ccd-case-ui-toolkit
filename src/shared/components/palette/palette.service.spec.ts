@@ -31,7 +31,7 @@ import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summa
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { WriteDateContainerFieldComponent } from '.';
-import { WriteCaseFlagFieldComponent } from './case-flag';
+import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from './case-flag';
 
 describe('PaletteService', () => {
 

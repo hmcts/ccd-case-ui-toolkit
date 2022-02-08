@@ -41,7 +41,7 @@ import { CaseHistoryViewerFieldComponent } from './history';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 import { ReadDynamicRadioListFieldComponent, WriteDynamicRadioListFieldComponent } from './dynamic-radio-list';
-import { WriteCaseFlagFieldComponent } from './case-flag';
+import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from './case-flag';
 
 @Injectable()
 export class PaletteService {
@@ -85,6 +85,9 @@ export class PaletteService {
             return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
+          case 'CaseFlag':
+            // TODO: This code might change based on how we are going to get the data from the service
+            return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
@@ -101,7 +104,8 @@ export class PaletteService {
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
       case 'CaseFlag':
-        return write ? WriteCaseFlagFieldComponent : UnsupportedFieldComponent;
+        // TODO: This code might change based on how we are going to get the data from the service
+        return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
