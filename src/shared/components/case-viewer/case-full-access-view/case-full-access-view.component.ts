@@ -196,34 +196,16 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#')) {
+    // if we have prepended tabs route to one of the prepended tabs
+    if (!url.includes('#') && this.prependedTabs && this.prependedTabs.length) {
       const paths = url.split('/');
-      // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
-      const lastPath = decodeURIComponent(paths[paths.length - 1]);
-      let foundTab: CaseTab = null;
-      const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
-      if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
-      }
-      // found tasks or hearing tab
-      if (foundTab) {
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
-          matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          if (matTab && matTab.position) {
-            this.tabGroup.selectedIndex = matTab.position;
-          }
-        });
-      // last path is caseId
-      } else {
-        // sort with the order of CCD predefined tabs
-        this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
-        // preselect the 1st order of CCD predefined tabs
-        const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-          matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
-        });
-      }
+      const tabName = decodeURIComponent(paths[paths.length - 1]);
+      const selectedTab: CaseTab = this.prependedTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === tabName.toLowerCase());
+      const tab: string = selectedTab ? selectedTab.id : 'tasks'
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, tab]).then(() => {
+        matTab = this.tabGroup._tabs.find((x) => x.textLabel === selectedTab.label);
+        this.tabGroup.selectedIndex = matTab.position;
+      });
     } else {
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
