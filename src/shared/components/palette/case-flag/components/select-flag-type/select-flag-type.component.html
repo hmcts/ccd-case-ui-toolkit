@@ -1,26 +1,28 @@
 <h1 class="govuk-heading-xl">Select flag type</h1>
-<div class="govuk-radios">
-  <div class="govuk-radios__item">
-
-  </div>
-  <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-    <!-- TODO: Loop through the case flag type list and display radio buttons-->
-    <div class="govuk-radios__item">
-      <input class="govuk-radios__input" id="flag-type-0" name="flagType" type="radio" value="urgent-case" data-aria-controls="conditional-flag-type-0" (change)="onFlagTypeChanged($event)">
-      <label class="govuk-label govuk-radios__label" for="flag-type-0">Urgent case</label>
-    </div>
-    <div class="govuk-radios__item">
-      <input class="govuk-radios__input" id="flag-type-1" name="flagType" type="radio" value="vulnerable-user" data-aria-controls="conditional-flag-type-1" (change)="onFlagTypeChanged($event)">
-      <label class="govuk-label govuk-radios__label" for="flag-type-1">Vulnerable user</label>
-    </div>
-    <div class="govuk-radios__item">
-      <input class="govuk-radios__input" id="flag-type-2" name="flagType" type="radio" value="other" data-aria-controls="conditional-flag-type-2" (change)="onFlagTypeChanged($event)">
-      <label class="govuk-label govuk-radios__label" for="flag-type-2">Other</label>
-    </div>
-    <div class="govuk-radios__conditional" [ngClass]="{'hidden': flagTypeSelected !== 'others'}" id="conditional-flag-type-2">
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="other-flag-type">Enter a flag type</label>
-        <input class="govuk-input govuk-!-width-one-half" id="other-flag-type" name="other-flag-type" type="text" maxlength="80"></div>
-    </div>
+<!-- Error message summary -->
+<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li>
+        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message}}</a>
+      </li>
+    </ul>
   </div>
 </div>
+<form class="form" [formGroup]="selectFlagTypeForm" (submit)="onSubmit()">
+  <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+    <div class="govuk-radios__item" *ngFor="let flagType of flagTypes">
+      <input class="govuk-radios__input" id="flag-type-{{flagType.id}}" name="flagType" type="radio" [value]="flagType.id" (change)="onFlagTypeChanged($event)">
+      <label class="govuk-label govuk-radios__label" for="flag-type-{{flagType.id}}">{{flagType.name}}</label>
+    </div>
+    <div class="govuk-radios__conditional" [ngClass]="{'hidden': flagTypeSelected !== 'other'}" id="conditional-flag-type-other">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
+        <input class="govuk-input govuk-!-width-one-half" id="other-flag-type-description" name="other-flag-type-description" type="text" formControlName="otherFlagTypeDescription"></div>
+    </div>
+  </div>
+  <button class="button button-primary">Next</button>
+</form>
