@@ -40,7 +40,13 @@ describe('WriteCaseFlagFieldComponent', () => {
     const nextButton = fixture.debugElement.nativeElement.querySelector('button[type=button]');
     nextButton.click();
     fixture.detectChanges();
-    // Field is expected to move to next state but not the final one yet
+    // Field is expected to move to next state (flag type) but not the final one yet
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_TYPE);
+    expect(component.isAtFinalState()).toBe(false);
+    expect(component.formGroup.valid).toBe(false);
+    nextButton.click();
+    fixture.detectChanges();
+    // Field is expected to move to next state (flag comments) but not the final one yet
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);

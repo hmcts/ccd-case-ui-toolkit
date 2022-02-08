@@ -19,6 +19,6 @@ export interface Flag {
 }
 
 export interface FlagType {
-	id: string,
-	name: string
+  id: string,
+  name: string
 }
