@@ -1,23 +1,20 @@
-import { Component, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FlagType } from "../../domain";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { FlagType } from '../../domain';
 
 @Component({
   selector: 'ccd-select-flag-type',
   templateUrl: './select-flag-type.component.html',
   styleUrls: ['./select-flag-type.component.scss']
 })
-export class SelectFlagTypeComponent implements OnInit { 
+export class SelectFlagTypeComponent implements OnInit {
 
   public selectFlagTypeForm: FormGroup;
   public flagTypes: FlagType[];
   public flagTypeSelected: string;
   public validationErrors: { id: string, message: string }[] = [];
 
-  constructor(private readonly fb: FormBuilder,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute) {
+  constructor(private readonly fb: FormBuilder) {
   }
 
   public ngOnInit(): void {
@@ -31,14 +28,12 @@ export class SelectFlagTypeComponent implements OnInit {
 
   public onFlagTypeChanged(event: any): void {
     this.flagTypeSelected = event.target.value;
-    console.log(this.flagTypeSelected);
   }
 
   public onSubmit(): void {
     this.validationErrors = [];
     if (this.validateForm()) {
-      // TODO: Navigate if the form validation succeeds
-      // this.router.navigate([''], { relativeTo: this.route });
+      // TODO: Navigate or emit event if the form validation succeeds
     }
   }
 
@@ -53,13 +48,10 @@ export class SelectFlagTypeComponent implements OnInit {
   }
 
   private validateForm(): boolean {
-    console.log('Select flag type form', this.selectFlagTypeForm.value);
     if (!this.flagTypeSelected) {
-      // TODO: Validation error message if none of the radio buttons are selected
       this.validationErrors.push({id: '', message: 'Please select a flag type '})
       return false;
     }
-
     if (this.flagTypeSelected === 'other') {
       const otherFlagTypeDescription = this.selectFlagTypeForm.controls['otherFlagTypeDescription'].value;
       if (!otherFlagTypeDescription) {
@@ -77,6 +69,7 @@ export class SelectFlagTypeComponent implements OnInit {
   }
 
   private getFlagTypes(): FlagType[] {
+    // TODO: Get the list of flag types using the API call in future sprints
     return [
       {id: 'urgent-case', name: 'Urgent case'},
       {id: 'vulnerable-user', name: 'Vulnerable user'},
