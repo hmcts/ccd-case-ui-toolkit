@@ -1462,7 +1462,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect(bannerElement).toBeNull();
     expect(comp.isCaseFlagActive()).toEqual(false);
   });
-})
+});
 
 describe('CaseFullAccessViewComponent - ends with caseID', () => {
 
@@ -1563,8 +1563,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
   });
-
-})
+});
 
 // noinspection DuplicatedCode
 describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {

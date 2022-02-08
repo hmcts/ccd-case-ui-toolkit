@@ -17,8 +17,3 @@ export interface Flag {
   roleOnCase?: string;
   details: FlagDetail[];
 }
-
-export interface FlagType {
-  id: string,
-  name: string
-}
