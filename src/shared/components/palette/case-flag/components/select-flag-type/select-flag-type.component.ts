@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { FlagType } from '../../domain';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CaseFlagFieldState } from '../..';
+import { ErrorMessage } from '../../../../../domain';
+import { CaseFlagState, FlagType } from '../../domain';
 
 @Component({
   selector: 'ccd-select-flag-type',
@@ -9,32 +11,37 @@ import { FlagType } from '../../domain';
 })
 export class SelectFlagTypeComponent implements OnInit {
 
-  public selectFlagTypeForm: FormGroup;
+  @Input()
+  public formGroup: FormGroup;
+  
+  @Output()
+  public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
+
   public flagTypes: FlagType[];
   public flagTypeSelected: string;
-  public validationErrors: { id: string, message: string }[] = [];
-
-  constructor(private readonly fb: FormBuilder) {
-  }
-
+  public submitted = false;
+  public errorMessages: ErrorMessage[];
+  
   public ngOnInit(): void {
-    this.selectFlagTypeForm = this.fb.group({
-      flagTypes: [''],
-      'otherFlagTypeDescription': ['']
-    });
-
     this.flagTypes = this.getFlagTypes();
+    this.flagTypes.forEach(flagType => {
+      this.formGroup.addControl(flagType.id, new FormControl(''));
+    });
+    this.formGroup.addControl('otherFlagTypeDescription', new FormControl('', Validators.required));
   }
 
   public onFlagTypeChanged(event: any): void {
     this.flagTypeSelected = event.target.value;
   }
 
-  public onSubmit(): void {
-    this.validationErrors = [];
-    if (this.validateForm()) {
-      // TODO: Navigate or emit event if the form validation succeeds
-    }
+  public onNext(): void {
+    this.submitted = true;
+    this.errorMessages = [];
+    this.formGroup.updateValueAndValidity();
+    // Validate form
+    this.validateForm();
+    // Return case flag field state and error messages to the parent
+    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -49,18 +56,17 @@ export class SelectFlagTypeComponent implements OnInit {
 
   private validateForm(): boolean {
     if (!this.flagTypeSelected) {
-      this.validationErrors.push({id: '', message: 'Please select a flag type '})
+      this.errorMessages.push({title: '', description: 'Please select a flag type', fieldId: ''})
       return false;
     }
     if (this.flagTypeSelected === 'other') {
-      const otherFlagTypeDescription = this.selectFlagTypeForm.controls['otherFlagTypeDescription'].value;
+      const otherFlagTypeDescription = this.formGroup.controls['otherFlagTypeDescription'].value;
       if (!otherFlagTypeDescription) {
-        this.validationErrors.push({id: 'conditional-flag-type-other', message: 'Please enter a flag type'});
+        this.errorMessages.push({title: '', description: 'Please enter a flag type', fieldId: 'conditional-flag-type-other'});
         return false;
       }
-
       if (otherFlagTypeDescription.length > 80) {
-        this.validationErrors.push({id: 'conditional-flag-type-other', message: 'You can enter up to 80 characters only'});
+        this.errorMessages.push({title: '', description: 'You can enter up to 80 characters only', fieldId: 'conditional-flag-type-other'});
         return false;
       }
     }
