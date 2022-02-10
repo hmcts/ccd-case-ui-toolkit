@@ -5,6 +5,9 @@
         This is the flag location step
       </p>
     </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
+      <ccd-search-language-interpreter></ccd-search-language-interpreter>
+    </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
       <p>
         This is the flag comments step
