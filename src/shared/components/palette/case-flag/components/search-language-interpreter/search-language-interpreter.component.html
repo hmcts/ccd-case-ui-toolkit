@@ -12,18 +12,19 @@
     <!-- <mat-option *ngIf="!languages.length && showAutocomplete && term && term.length >= this.minSearchCharacters">No results found</mat-option> -->
   </mat-autocomplete>
 </div>
-<div class="govuk-checkboxes__item">
-  <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="enterLanguageManually()" />
-  <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
-  </label>
-</div>
 <div class="govuk-form-group">
-  <label class="govuk-label" for="language">Enter the language</label>
-  <!-- <div id="language-error-message" class="govuk-error-message" *ngIf="formGroup.get('language').invalid && submitted">
-    {{errorMessages[0].description}}
+  <div class="govuk-checkboxes govuk-checkboxes--small govuk-checkboxes--conditional" data-module="govuk-checkboxes">
+    <div class="govuk-radios__item">
+      <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="onEnterLanguageManually($event)">
+      <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
+        Enter the language manually
+      </label>
+    </div>
+    <div class="govuk-radios__conditional" [ngClass]="{'hidden': !isCheckboxEnabled}">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="language-typed-in">Enter the language</label>
+        <input class="govuk-input govuk-input--width-20" id="language-typed-in" name="language-typed-in" type="text">
+      </div>
+    </div>
   </div>
-  <input class="govuk-input govuk-!-width-one-half"
-    [ngClass]="{'govuk-input--error': formGroup.get('language').invalid && submitted}"
-    id="language" name="language" type="text"> -->
-  <input class="govuk-input govuk-!-width-one-half" id="language" name="language" type="text">
 </div>

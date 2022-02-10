@@ -6,7 +6,8 @@ import { Language } from "../../domain";
 
 @Component({
   selector: 'ccd-search-language-interpreter',
-  templateUrl: './search-language-interpreter.component.html'
+  templateUrl: './search-language-interpreter.component.html',
+  styleUrls: ['./search-language-interpreter.component.scss']
 })
 export class SearchLanguageInterpreterComponent implements OnInit {
 
@@ -17,6 +18,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public filteredLanguages$: Observable<string[]>;
   public showAutocomplete = false;
   public term: string = '';
+  public isCheckboxEnabled = false;
 
   constructor(private readonly fb: FormBuilder, private readonly cd: ChangeDetectorRef) {
     this.form = this.fb.group({
@@ -30,7 +32,8 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     );
   }
   
-  public enterLanguageManually(): void {
+  public onEnterLanguageManually(event: any): void {
+    this.isCheckboxEnabled = event.target.checked;
   }
 
   public onSelectionChange(language: Language): void {
