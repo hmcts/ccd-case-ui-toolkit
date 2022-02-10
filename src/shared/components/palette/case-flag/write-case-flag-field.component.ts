@@ -31,7 +31,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
     // Set starting field state
-    this.fieldState = CaseFlagFieldState.FLAG_TYPE;
+    this.fieldState = CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER;
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {

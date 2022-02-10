@@ -1,0 +1,29 @@
+<h2 class="govuk-heading-l">Search for a language interpreter</h2>
+<div class="auto-complete-container">
+  <p>Enter the language that will need to be interpreted. If this language is not listed, you can enter it manually.</p>
+  <input
+    [formControl]="form.controls.searchTerm"
+    [matAutocomplete]="autoSearchLanguage"
+    class="govuk-input">
+  <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete">
+    <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
+      {{language}}
+    </mat-option>
+    <!-- <mat-option *ngIf="!languages.length && showAutocomplete && term && term.length >= this.minSearchCharacters">No results found</mat-option> -->
+  </mat-autocomplete>
+</div>
+<div class="govuk-checkboxes__item">
+  <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="enterLanguageManually()" />
+  <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
+  </label>
+</div>
+<div class="govuk-form-group">
+  <label class="govuk-label" for="language">Enter the language</label>
+  <!-- <div id="language-error-message" class="govuk-error-message" *ngIf="formGroup.get('language').invalid && submitted">
+    {{errorMessages[0].description}}
+  </div>
+  <input class="govuk-input govuk-!-width-one-half"
+    [ngClass]="{'govuk-input--error': formGroup.get('language').invalid && submitted}"
+    id="language" name="language" type="text"> -->
+  <input class="govuk-input govuk-!-width-one-half" id="language" name="language" type="text">
+</div>
