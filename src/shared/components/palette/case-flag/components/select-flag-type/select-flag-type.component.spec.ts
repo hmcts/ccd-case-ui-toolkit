@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectFlagTypeErrorMessage } from '../..';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
-fdescribe('SelectFlagTypeComponent', () => {
+describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
 
