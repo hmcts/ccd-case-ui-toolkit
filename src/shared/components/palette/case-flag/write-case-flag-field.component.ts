@@ -8,7 +8,7 @@ import { CaseFlagFieldState } from './enums';
 @Component({
   selector: 'ccd-write-case-flag-field',
   templateUrl: './write-case-flag-field.component.html',
-	styleUrls: ['./write-case-flag-field.component.scss']
+  styleUrls: ['./write-case-flag-field.component.scss']
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
@@ -36,7 +36,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
-		console.log('FORM GROUP', this.formGroup.value);
+    console.log('FORM GROUP', this.formGroup.value);
     console.log('Case Flag State', caseFlagState);
     this.errorMessages = caseFlagState.errorMessages;
     if (this.errorMessages.length === 0) {

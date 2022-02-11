@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CaseFlagFieldState } from '../..';
+import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagType } from '../../domain';
 
@@ -13,7 +13,7 @@ export class SelectFlagTypeComponent implements OnInit {
 
   @Input()
   public formGroup: FormGroup;
-  
+
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -22,7 +22,7 @@ export class SelectFlagTypeComponent implements OnInit {
   public errorMessages: ErrorMessage[];
   public flagTypeNotSelectedErrorMessage = '';
   public flagTypeErrorMessage = '';
-  
+
   public ngOnInit(): void {
     this.flagTypes = this.getFlagTypes();
     this.flagTypes.forEach(flagType => {
@@ -50,20 +50,20 @@ export class SelectFlagTypeComponent implements OnInit {
     this.errorMessages = [];
 
     if (!this.flagTypeSelected) {
-      this.flagTypeNotSelectedErrorMessage = 'Please select a flag type'
-      this.errorMessages.push({title: '', description: `${this.flagTypeNotSelectedErrorMessage}`, fieldId: 'conditional-radios-list'})
+      this.flagTypeNotSelectedErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
+      this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'})
       return false;
     }
     if (this.flagTypeSelected === 'other') {
       const otherFlagTypeDescription = this.formGroup.get('otherFlagTypeDescription').value;
       if (!otherFlagTypeDescription) {
-        this.flagTypeErrorMessage = 'Please enter a flag type';
-        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
+        this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
+        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
         return false;
       }
       if (otherFlagTypeDescription.length > 80) {
-        this.flagTypeErrorMessage = 'You can enter up to 80 characters only';
-        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
+        this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
+        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
         return false;
       }
     }

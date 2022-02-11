@@ -1,9 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { SelectFlagTypeErrorMessage } from '../..';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
-describe('SelectFlagTypeComponent', () => {
+fdescribe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
 
@@ -19,6 +20,13 @@ describe('SelectFlagTypeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFlagTypeComponent);
     component = fixture.componentInstance;
+    component.formGroup = new FormGroup({
+      'flagType': new FormControl(''),
+      'urgent-case': new FormControl(''),
+      'vulnerable-user': new FormControl(''),
+      'other': new FormControl(''),
+      'otherFlagTypeDescription': new FormControl('')
+    });
     fixture.detectChanges();
   });
 
@@ -32,26 +40,36 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.flagTypeSelected).toEqual('other');
   });
 
-  it('should call submit form if next button is clicked', () => {
-    spyOn(component, 'onSubmit');
-    expect(component.validationErrors.length).toEqual(0);
+  it('should fail validation if flag type is not selected', () => {
+    spyOn(component, 'onNext');
     const nextButtonElement = fixture.debugElement.nativeElement.querySelector('.button');
     nextButtonElement.click();
-    expect(component.onSubmit).toHaveBeenCalled();
+    expect(component.onNext).toHaveBeenCalled();
   });
 
   it ('should fail vaildation if other flag type selected and description not entered', () => {
-    fixture.debugElement.nativeElement.querySelector('#flag-type-other').click();
-    fixture.debugElement.nativeElement.querySelector('.button').click();
-    // TODO: Will be implemented further once this component is completely plugged in to the wizard
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-other').click();
+    const otherFlagTypeDescriptionElement = nativeElement.querySelector('#other-flag-type-description');
+    expect(otherFlagTypeDescriptionElement).toBeDefined();
+    nativeElement.querySelector('.button').click();
+    fixture.detectChanges();
+    const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
+    expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED);
   });
 
   it ('should fail vaildation if other flag type selected and description entered is more than 80 characters', () => {
-    fixture.debugElement.nativeElement.querySelector('#flag-type-other').click();
-    const otherFlagTypeDescriptionElement = fixture.debugElement.nativeElement.querySelector('#other-flag-type-description');
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-other').click();
+    fixture.detectChanges();
+    const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
     expect(otherFlagTypeDescriptionElement).toBeDefined();
-    otherFlagTypeDescriptionElement.text = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
-    fixture.debugElement.nativeElement.querySelector('.button').click();
-    // TODO: Will be implemented further once this component is completely plugged in to the wizard
+    fixture.detectChanges();
+    otherFlagTypeDescriptionElement.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
+    otherFlagTypeDescriptionElement.dispatchEvent(new Event('input'));
+    nativeElement.querySelector('.button').click();
+    fixture.detectChanges();
+    const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
+    expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED);
   });
 });
