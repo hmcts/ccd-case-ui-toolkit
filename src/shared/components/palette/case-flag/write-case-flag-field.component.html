@@ -19,7 +19,8 @@
       </p>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
-      <ccd-select-flag-type [formGroup]="formGroup" (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-type>
+      <ccd-select-flag-type [formGroup]="formGroup"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-type>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
       <p>
