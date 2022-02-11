@@ -36,8 +36,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
-    console.log('FORM GROUP', this.formGroup.value);
-    console.log('Case Flag State', caseFlagState);
     this.errorMessages = caseFlagState.errorMessages;
     if (this.errorMessages.length === 0) {
       // Validation succeeded, can proceed to next state
