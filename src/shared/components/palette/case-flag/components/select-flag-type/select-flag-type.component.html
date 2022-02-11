@@ -1,7 +1,7 @@
 <h1 class="govuk-heading-xl">Select flag type</h1>
 <div class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
-    <div class="govuk-error-message" *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
+    <div id="flag-type-not-selected-error-message" class="govuk-error-message" *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
       {{flagTypeNotSelectedErrorMessage}}
     </div>
     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
@@ -21,7 +21,7 @@
           </div>
           <div class="govuk-form-group" [ngClass]="{'hidden': flagTypeSelected !== 'other', 'form-group-error': flagTypeErrorMessage.length > 0}">
             <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
-            <div class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
+            <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
               {{flagTypeErrorMessage}}
             </div>
             <input class="govuk-input govuk-!-width-one-half"
