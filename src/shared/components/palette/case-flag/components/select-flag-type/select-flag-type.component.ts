@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { CaseFlagFieldState } from '../..';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagType } from '../../domain';
@@ -19,54 +19,51 @@ export class SelectFlagTypeComponent implements OnInit {
 
   public flagTypes: FlagType[];
   public flagTypeSelected: string;
-  public submitted = false;
   public errorMessages: ErrorMessage[];
+  public flagTypeNotSelectedErrorMessage = '';
+  public flagTypeErrorMessage = '';
   
   public ngOnInit(): void {
     this.flagTypes = this.getFlagTypes();
     this.flagTypes.forEach(flagType => {
       this.formGroup.addControl(flagType.id, new FormControl(''));
     });
-    this.formGroup.addControl('otherFlagTypeDescription', new FormControl('', Validators.required));
+    this.formGroup.addControl('other', new FormControl(''));
+    this.formGroup.addControl('otherFlagTypeDescription', new FormControl(''));
   }
 
-  public onFlagTypeChanged(event: any): void {
-    this.flagTypeSelected = event.target.value;
+  public onFlagTypeChanged(flagTypeId: string): void {
+    // Display description textbox if 'other' checkbox is selected
+    this.flagTypeSelected = flagTypeId;
   }
 
   public onNext(): void {
-    this.submitted = true;
-    this.errorMessages = [];
-    this.formGroup.updateValueAndValidity();
     // Validate form
     this.validateForm();
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
 
-  public navigateToErrorElement(elementId: string): void {
-    if (elementId) {
-      const htmlElement = document.getElementById(elementId);
-      if (htmlElement) {
-        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        htmlElement.focus();
-      }
-    }
-  }
-
   private validateForm(): boolean {
+    this.flagTypeNotSelectedErrorMessage = '';
+    this.flagTypeErrorMessage = '';
+    this.errorMessages = [];
+
     if (!this.flagTypeSelected) {
-      this.errorMessages.push({title: '', description: 'Please select a flag type', fieldId: ''})
+      this.flagTypeNotSelectedErrorMessage = 'Please select a flag type'
+      this.errorMessages.push({title: '', description: `${this.flagTypeNotSelectedErrorMessage}`, fieldId: 'conditional-radios-list'})
       return false;
     }
     if (this.flagTypeSelected === 'other') {
-      const otherFlagTypeDescription = this.formGroup.controls['otherFlagTypeDescription'].value;
+      const otherFlagTypeDescription = this.formGroup.get('otherFlagTypeDescription').value;
       if (!otherFlagTypeDescription) {
-        this.errorMessages.push({title: '', description: 'Please enter a flag type', fieldId: 'conditional-flag-type-other'});
+        this.flagTypeErrorMessage = 'Please enter a flag type';
+        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
         return false;
       }
       if (otherFlagTypeDescription.length > 80) {
-        this.errorMessages.push({title: '', description: 'You can enter up to 80 characters only', fieldId: 'conditional-flag-type-other'});
+        this.flagTypeErrorMessage = 'You can enter up to 80 characters only';
+        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
         return false;
       }
     }
@@ -78,8 +75,7 @@ export class SelectFlagTypeComponent implements OnInit {
     // TODO: Get the list of flag types using the API call in future sprints
     return [
       {id: 'urgent-case', name: 'Urgent case'},
-      {id: 'vulnerable-user', name: 'Vulnerable user'},
-      {id: 'other', name: 'Other'}
+      {id: 'vulnerable-user', name: 'Vulnerable user'}
     ];
   }
 }
