@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -130,10 +131,8 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
-      declarations: [ WriteCaseFlagFieldComponent ],
-      providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
-      ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ WriteCaseFlagFieldComponent ]
     })
     .compileComponents();
   }));
@@ -152,7 +151,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_TYPE);
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER);
     // Initial validity of the form is expected to be false because it is at the starting state (only valid at the final state)
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
@@ -183,26 +182,5 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalledTimes(1);
     expect(component.formGroup.errors).toBeNull();
     expect(component.formGroup.valid).toBe(true);
-  });
-
-  it('should extract all flags-related data from the CaseEventTrigger object in the snapshot data', () => {
-    component.caseField = flagLauncherCaseField;
-    component.ngOnInit();
-    expect(component.flags).toBeTruthy();
-    expect(component.flags.length).toBe(2);
-    expect(component.flags[0].partyName).toEqual(caseFlag1PartyName);
-    expect(component.flags[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
-    expect(component.flags[0].details.length).toBe(2);
-    expect(component.flags[0].details[0].name).toEqual(caseFlag1DetailsValue1.name);
-    expect(component.flags[0].details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
-    expect(component.flags[0].details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
-    expect(component.flags[0].details[0].hearingRelevant).toBe(false);
-    expect(component.flags[1].partyName).toEqual(caseFlag2PartyName);
-    expect(component.flags[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
-    expect(component.flags[1].details.length).toBe(2);
-    expect(component.flags[1].details[1].name).toEqual(caseFlag2DetailsValue2.name);
-    expect(component.flags[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
-    expect(component.flags[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
-    expect(component.flags[1].details[1].hearingRelevant).toBe(true);
   });
 });
