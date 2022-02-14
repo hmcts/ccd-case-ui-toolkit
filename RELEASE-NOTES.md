@@ -3,11 +3,21 @@
 ### Version 4.13.2-case-flags-select-flag-type
 **EUI-4891** Create case flag- select flag type page - Other flag type
 
+### Version 4.3.9-markdown-case-ref-EUI-3650
+**EUI-3650** Added formatting for case reference inside markdown
+
+### Version 4.3.6-hotfix-EUI-4404
+**EUI-4404** Fix rendering of read-only Collection field within editable Complex field
+
 ### Version 4.3.6-hotfix-EUI-4404
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 
 ### Version 4.7.6-hearings-tab
 **EUI-4441** Add hearings tab in case details
+
+### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details
+**EUI-4627** Can't access /hearings tab from URL
 
 ### Version 4.7.0-EUI-4412-order-fields-CYA-page
 **EUI-4414** Field order on the CYA page changes
