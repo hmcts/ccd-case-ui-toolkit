@@ -1,10 +1,10 @@
 export interface FlagDetail {
   name: string;
-  subTypeValue: string;
-  subTypeKey: string;
-  otherDescription: string;
-  flagComment: string;
-  dateTimeModified: Date,
+  subTypeValue?: string;
+  subTypeKey?: string;
+  otherDescription?: string;
+  flagComment?: string;
+  dateTimeModified?: Date,
   dateTimeCreated: Date,
   path: string[];
   hearingRelevant: boolean;
@@ -12,8 +12,8 @@ export interface FlagDetail {
   status: string;
 }
 
-export interface Flag {
-  partyName: string;
+export interface Flags {
+  partyName?: string;
   roleOnCase?: string;
-  details: FlagDetail[];
+  details?: FlagDetail[];
 }

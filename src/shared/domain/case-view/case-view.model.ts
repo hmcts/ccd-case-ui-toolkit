@@ -3,7 +3,7 @@ import { CaseViewEvent } from './case-view-event.model';
 import { CaseViewTrigger } from './case-view-trigger.model';
 import { CaseField } from '../definition';
 import { Type } from 'class-transformer';
-import { Flag } from '../../components/palette/case-flag/domain';
+import { Flags } from '../../components/palette/case-flag/domain';
 
 // @dynamic
 export class CaseView {
@@ -38,5 +38,5 @@ export class CaseView {
       baseLocation?: number
     }
   };
-  case_flag?: Flag;
+  case_flag?: Flags;
 }
