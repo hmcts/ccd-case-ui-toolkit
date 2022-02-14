@@ -8,7 +8,7 @@ import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { CaseFlagStatus } from '../../palette/case-flag/enums';
-import { Flag } from '../../palette/case-flag/domain';
+import { Flags } from '../../palette/case-flag/domain';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -87,7 +87,7 @@ export class CaseResolver implements Resolve<CaseView> {
   // Added temporarily until case flags are available as part of case details
   // This is to enable testing
   addCaseFlags(): void {
-    const caseFlag: Flag = {
+    const caseFlag: Flags = {
       partyName: 'Smith v Peterson',
       roleOnCase: '',
       details: [
