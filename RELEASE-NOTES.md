@@ -4,6 +4,12 @@
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
+### Version 4.12.0
+Add refunds functionality
+
+### Version 4.9.15-state-machine"
+**Task event completion and state machine** Task event completion and state machine
+
 ### Version 4.3.9-markdown-case-ref-EUI-3650
 **EUI-3650** Added formatting for case reference inside markdown
 
