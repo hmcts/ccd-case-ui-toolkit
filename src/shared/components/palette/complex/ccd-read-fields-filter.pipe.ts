@@ -18,7 +18,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     {}
   ];
 
-  private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer'];
+  private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer', 'WaysToPay'];
 
   private static readonly NESTED_TYPES = {
     'Complex': ReadFieldsFilterPipe.isValidComplex,
