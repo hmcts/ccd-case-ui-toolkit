@@ -19,7 +19,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagLocationCaption: string;
   public flagLocationTitle: string;
   public errorMessage: ErrorMessage;
-  public flags: Flags[];
+  public flagsData: Flags[];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -45,7 +45,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
-      this.flags = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
+      this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
       .reduce((flags, caseField) => {
         if (FieldsUtils.isFlagsCaseField(caseField)) {
           flags.push(
