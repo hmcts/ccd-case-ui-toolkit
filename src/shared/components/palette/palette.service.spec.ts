@@ -202,8 +202,12 @@ describe('PaletteService', () => {
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
-    it('should get WriteCaseFlagFieldComponent component class for CaseFlag input', () => {
-      assertComponent('CaseFlag', true, WriteCaseFlagFieldComponent, 'AnID');
+    it('should get WriteCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', true, WriteCaseFlagFieldComponent, 'AnID');
+    });
+
+    it('should get ReadCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', false, ReadCaseFlagFieldComponent, 'AnID');
     });
   });
 });
