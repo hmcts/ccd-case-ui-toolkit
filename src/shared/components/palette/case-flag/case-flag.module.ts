@@ -11,7 +11,7 @@ import { CaseFlagTableComponent, SearchLanguageInterpreterComponent } from './co
     CommonModule,
     FormModule,
     ReactiveFormsModule,
-		MatAutocompleteModule
+    MatAutocompleteModule
   ],
   declarations: [
     ReadCaseFlagFieldComponent,
@@ -21,8 +21,7 @@ import { CaseFlagTableComponent, SearchLanguageInterpreterComponent } from './co
   ],
   exports: [
     ReadCaseFlagFieldComponent,
-    WriteCaseFlagFieldComponent,
-    CaseFlagTableComponent
+    WriteCaseFlagFieldComponent
   ]
 })
 export class CaseFlagModule {}
