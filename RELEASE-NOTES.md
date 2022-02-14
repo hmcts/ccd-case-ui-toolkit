@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.13.0-case-flags-tab-and-banner-message
+### Version 4.13.1-case-flags-tab-and-banner-message
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
