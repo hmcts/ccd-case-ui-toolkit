@@ -58,7 +58,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   }
 
   private validateForm(): boolean {
-
+    this.errorMessages = [];
     return true;
   }
 

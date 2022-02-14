@@ -30,15 +30,12 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show/hide enter the language text input based on enter the langauge manually checkbox state', () => {
+  it('should show enter the language text input if enter the langauge manually checkbox is checked', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     const checkboxElement = nativeElement.querySelector('.govuk-checkboxes__input');
     checkboxElement.click();
     fixture.detectChanges();
     expect(nativeElement.querySelector('#language-typed-in')).toBeDefined();
-    checkboxElement.click();
-    fixture.detectChanges();
-    expect(nativeElement.querySelector('#language-typed-in')).toBeNull();
   });
 
   // TODO: Further tests to be added when this component is properly integrated with the user journery
