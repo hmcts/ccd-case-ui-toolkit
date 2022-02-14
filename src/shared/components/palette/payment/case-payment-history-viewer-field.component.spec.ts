@@ -28,6 +28,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   let appConfig;
   let PaymentWebComponent;
+  let sessionStorage;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
