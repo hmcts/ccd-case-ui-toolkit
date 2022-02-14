@@ -183,4 +183,25 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.formGroup.errors).toBeNull();
     expect(component.formGroup.valid).toBe(true);
   });
+
+  it('should extract all flags-related data from the CaseEventTrigger object in the snapshot data', () => {
+    component.caseField = flagLauncherCaseField;
+    component.ngOnInit();
+    expect(component.flagsData).toBeTruthy();
+    expect(component.flagsData.length).toBe(2);
+    expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].details.length).toBe(2);
+    expect(component.flagsData[0].details[0].name).toEqual(caseFlag1DetailsValue1.name);
+    expect(component.flagsData[0].details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[0].details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
+    expect(component.flagsData[0].details[0].hearingRelevant).toBe(false);
+    expect(component.flagsData[1].partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
+    expect(component.flagsData[1].details.length).toBe(2);
+    expect(component.flagsData[1].details[1].name).toEqual(caseFlag2DetailsValue2.name);
+    expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
+    expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
+  });
 });
