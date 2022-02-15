@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagType } from '../../domain';
 
@@ -22,6 +22,10 @@ export class SelectFlagTypeComponent implements OnInit {
   public errorMessages: ErrorMessage[];
   public flagTypeNotSelectedErrorMessage = '';
   public flagTypeErrorMessage = '';
+
+  public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
+    return CaseFlagWizardStepTitle
+  };
 
   public ngOnInit(): void {
     this.flagTypes = this.getFlagTypes();

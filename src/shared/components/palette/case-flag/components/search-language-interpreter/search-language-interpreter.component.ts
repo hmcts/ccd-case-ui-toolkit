@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, Language } from '../../domain';
-import { CaseFlagFieldState } from '../../enums';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
 
 @Component({
   selector: 'ccd-search-language-interpreter',
@@ -32,6 +32,10 @@ export class SearchLanguageInterpreterComponent implements OnInit {
       searchTerm: ['']
     });
   }
+
+  public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
+    return CaseFlagWizardStepTitle
+  };
 
   public ngOnInit(): void {
     this.filteredLanguages$ = this.formGroup.controls.searchTerm.valueChanges.pipe(
