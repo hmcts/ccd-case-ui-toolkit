@@ -1,0 +1,35 @@
+<h2 class="govuk-heading-l">Search for a language interpreter</h2>
+<div class="form-group" [formGroup]="formGroup">
+  <div class="auto-complete-container">
+    <p>Enter the language that will need to be interpreted. If this language is not listed, you can enter it manually.</p>
+    <input
+      [formControl]="formGroup.controls.searchTerm"
+      [matAutocomplete]="autoSearchLanguage"
+      class="govuk-input">
+    <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete">
+      <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
+        {{language}}
+      </mat-option>
+      <!-- <mat-option *ngIf="!languages.length && showAutocomplete && term && term.length >= this.minSearchCharacters">No results found</mat-option> -->
+    </mat-autocomplete>
+  </div>
+  <div class="govuk-form-group">
+    <div class="govuk-checkboxes govuk-checkboxes--small govuk-checkboxes--conditional" data-module="govuk-checkboxes">
+      <div class="govuk-radios__item">
+        <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="onEnterLanguageManually($event)">
+        <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
+          Enter the language manually
+        </label>
+      </div>
+      <div class="govuk-radios__conditional" [ngClass]="{'hidden': !isCheckboxEnabled}">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="language-typed-in">Enter the language</label>
+          <input class="govuk-input govuk-input--width-20" id="language-typed-in" name="language-typed-in" type="text">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="govuk-form-group">
+    <button class="button button-primary" (click)="onNext()">Next</button>
+  </div>
+</div>

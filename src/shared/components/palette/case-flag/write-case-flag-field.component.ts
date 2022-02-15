@@ -4,18 +4,20 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FlagDetail, Flags } from './domain';
+import { CaseFlagState, FlagDetail, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagLocationStepText } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
-  templateUrl: './write-case-flag-field.component.html'
+  templateUrl: './write-case-flag-field.component.html',
+  styleUrls: ['./write-case-flag-field.component.scss']
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
+  public errorMessages: ErrorMessage[] = [];
   public flagLocationCaption: string;
   public flagLocationTitle: string;
   public errorMessage: ErrorMessage;
@@ -38,7 +40,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
     // Set starting field state
-    this.fieldState = CaseFlagFieldState.FLAG_LOCATION;
+    this.fieldState = CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER;
 
     this.flagLocationCaption = CaseFlagLocationStepText.CAPTION;
     this.flagLocationTitle = CaseFlagLocationStepText.TITLE;
@@ -75,7 +77,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  public onNext(): void {
+  public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
+    this.errorMessages = caseFlagState.errorMessages;
+    if (this.errorMessages.length === 0) {
+      // Validation succeeded, can proceed to next state
+      this.proceedToNextState();
+    }
+  }
+
+  public proceedToNextState(): void {
     if (!this.isAtFinalState()) {
       this.fieldState++;
     }
@@ -92,5 +102,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // The filter removes the non-numeric keys emitted due to how TypeScript enums are transpiled (see
     // https://www.crojach.com/blog/2019/2/6/getting-enum-keys-in-typescript for an explanation)
     return this.fieldState === Object.keys(CaseFlagFieldState).filter(key => parseInt(key, 10) >= 0).length - 1;
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
   }
 }
