@@ -22,3 +22,8 @@ export interface FlagType {
   id: string,
   name: string
 }
+
+export interface FlagType {
+  id: string,
+  name: string
+}
