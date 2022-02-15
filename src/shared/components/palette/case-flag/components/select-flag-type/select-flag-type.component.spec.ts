@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SelectFlagTypeErrorMessage } from '../..';
+import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 describe('SelectFlagTypeComponent', () => {
@@ -40,11 +40,14 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.flagTypeSelected).toEqual('other');
   });
 
-  it('should fail validation if flag type is not selected', () => {
-    spyOn(component, 'onNext');
-    const nextButtonElement = fixture.debugElement.nativeElement.querySelector('.button');
+  it('should emit to parent if the validation succeeds', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-urgent-case').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit)
+      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: [] });
   });
 
   it ('should fail vaildation if other flag type selected and description not entered', () => {
