@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
 
@@ -23,6 +23,9 @@ describe('SearchLanguageInterpreterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchLanguageInterpreterComponent);
     component = fixture.componentInstance;
+    component.formGroup = new FormGroup({
+      'searchTerm': new FormControl('')
+    });
     fixture.detectChanges();
   });
 
