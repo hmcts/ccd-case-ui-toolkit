@@ -23,6 +23,8 @@ export class SelectFlagTypeComponent implements OnInit {
   public flagTypeNotSelectedErrorMessage = '';
   public flagTypeErrorMessage = '';
 
+  private readonly maxCharactersForOtherFlagType = 80;
+
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle
   };
@@ -65,7 +67,7 @@ export class SelectFlagTypeComponent implements OnInit {
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
         return false;
       }
-      if (otherFlagTypeDescription.length > 80) {
+      if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
         return false;
