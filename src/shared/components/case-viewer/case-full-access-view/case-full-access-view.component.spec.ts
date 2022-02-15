@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
@@ -1185,6 +1185,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
             }
           ])
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1306,6 +1307,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             }
           ])
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1505,6 +1507,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1612,6 +1615,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
             }
           ])
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
