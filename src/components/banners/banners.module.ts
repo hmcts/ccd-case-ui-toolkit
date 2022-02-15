@@ -5,13 +5,13 @@ import { NotificationBannerModule } from './notification-banner/notification-ban
 
 @NgModule({
   imports: [
-      CommonModule,
-      AlertModule,
-      NotificationBannerModule
+    CommonModule,
+    AlertModule,
+    NotificationBannerModule
   ],
   exports: [
-      AlertModule,
-      NotificationBannerModule
+    AlertModule,
+    NotificationBannerModule
   ]
 })
 export class BannersModule {}

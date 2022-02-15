@@ -21,6 +21,7 @@
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
       <ccd-select-flag-type [formGroup]="formGroup"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-type>
+		</ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
       <ccd-search-language-interpreter [formGroup]="formGroup"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
