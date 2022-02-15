@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -1175,6 +1175,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1291,6 +1292,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1484,6 +1486,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1585,6 +1588,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
