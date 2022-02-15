@@ -19,15 +19,17 @@
               (change)="onFlagTypeChanged('other')">
             <label class="govuk-label govuk-radios__label" for="flag-type-other">Other</label>
           </div>
-          <div class="govuk-form-group" [ngClass]="{'hidden': flagTypeSelected !== 'other', 'form-group-error': flagTypeErrorMessage.length > 0}">
-            <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
-            <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
-              {{flagTypeErrorMessage}}
+          <div class="govuk-radios__conditional" [ngClass]="{'hidden': flagTypeSelected !== 'other'}">
+            <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
+              <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
+              <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
+                {{flagTypeErrorMessage}}
+              </div>
+              <input class="govuk-input govuk-!-width-one-half"
+                [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
+                id="other-flag-type-description" name="otherFlagTypeDescription" type="text"
+                formControlName="otherFlagTypeDescription">
             </div>
-            <input class="govuk-input govuk-!-width-one-half"
-              [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
-              id="other-flag-type-description" name="otherFlagTypeDescription" type="text"
-              formControlName="otherFlagTypeDescription">
           </div>
         </div>
       </div>
