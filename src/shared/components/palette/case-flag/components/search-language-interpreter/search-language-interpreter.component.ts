@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
@@ -27,17 +27,12 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public isCheckboxEnabled = false;
   public errorMessages: ErrorMessage[];
 
-  constructor(private readonly fb: FormBuilder, private readonly cd: ChangeDetectorRef) {
-    this.formGroup = this.fb.group({
-      searchTerm: ['']
-    });
-  }
-
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle
   };
 
   public ngOnInit(): void {
+    this.formGroup.addControl('searchTerm', new FormControl(''));
     this.filteredLanguages$ = this.formGroup.controls.searchTerm.valueChanges.pipe(
       map(value => this.getLanguages(value))
     );
