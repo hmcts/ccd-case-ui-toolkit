@@ -131,7 +131,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
@@ -154,7 +154,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER);
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_TYPE);
     // Initial validity of the form is expected to be false because it is at the starting state (only valid at the final state)
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
@@ -166,7 +166,13 @@ describe('WriteCaseFlagFieldComponent', () => {
     const nextButton = fixture.debugElement.nativeElement.querySelector('button[type=button]');
     nextButton.click();
     fixture.detectChanges();
-    // Field is expected to move to next state but not the final one yet
+    // Field is expected to move to next state (flag type) but not the final one yet
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_TYPE);
+    expect(component.isAtFinalState()).toBe(false);
+    expect(component.formGroup.valid).toBe(false);
+    nextButton.click();
+    fixture.detectChanges();
+    // Field is expected to move to next state (flag comments) but not the final one yet
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);

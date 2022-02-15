@@ -1,0 +1,39 @@
+<h1 class="govuk-heading-xl">{{caseFlagWizardStepTitle.SELECT_CASE_FLAG}}</h1>
+<div class="form-group" [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
+    <div id="flag-type-not-selected-error-message" class="govuk-error-message" *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
+      {{flagTypeNotSelectedErrorMessage}}
+    </div>
+    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
+      <div class="govuk-radios__item" *ngFor="let flagType of flagTypes">
+        <input class="govuk-radios__input" id="flag-type-{{flagType.id}}" name="flagType"
+          type="radio" [value]="flagType.id" formControlName="flagType"
+          (change)="onFlagTypeChanged(flagType.id)">
+        <label class="govuk-label govuk-radios__label" for="flag-type-{{flagType.id}}">{{flagType.name}}</label>
+      </div>
+      <div class="govuk-form-group">
+        <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="flag-type-other" name="flagType"
+              type="radio" value="other" formControlName="flagType"
+              (change)="onFlagTypeChanged('other')">
+            <label class="govuk-label govuk-radios__label" for="flag-type-other">Other</label>
+          </div>
+          <div class="govuk-form-group" [ngClass]="{'hidden': flagTypeSelected !== 'other', 'form-group-error': flagTypeErrorMessage.length > 0}">
+            <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
+            <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
+              {{flagTypeErrorMessage}}
+            </div>
+            <input class="govuk-input govuk-!-width-one-half"
+              [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
+              id="other-flag-type-description" name="otherFlagTypeDescription" type="text"
+              formControlName="otherFlagTypeDescription">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="govuk-form-group">
+    <button class="button button-primary" (click)="onNext()">Next</button>
+  </div>
+</div>
