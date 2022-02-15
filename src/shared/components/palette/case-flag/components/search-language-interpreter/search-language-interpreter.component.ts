@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, Language } from '../../domain';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterStep } from '../../enums';
 
 @Component({
   selector: 'ccd-search-language-interpreter',
@@ -28,8 +28,12 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public errorMessages: ErrorMessage[];
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
-    return CaseFlagWizardStepTitle
-  };
+    return CaseFlagWizardStepTitle;
+  }
+
+  public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
+    return SearchLanguageInterpreterStep;
+  }
 
   public ngOnInit(): void {
     this.formGroup.addControl('searchTerm', new FormControl(''));

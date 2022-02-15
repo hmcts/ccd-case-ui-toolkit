@@ -1,7 +1,7 @@
 <h2 class="govuk-heading-l">{{caseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER}}</h2>
 <div class="form-group" [formGroup]="formGroup">
   <div class="auto-complete-container">
-    <p>Enter the language that will need to be interpreted. If this language is not listed, you can enter it manually.</p>
+    <p>{{searchLanguageInterpreterStep.TITLE_DESCRIPTION}}</p>
     <input
       [formControl]="formGroup.controls.searchTerm"
       [matAutocomplete]="autoSearchLanguage"
@@ -18,18 +18,18 @@
       <div class="govuk-radios__item">
         <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="onEnterLanguageManually($event)">
         <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
-          Enter the language manually
+          {{searchLanguageInterpreterStep.CHECKBOX_LABEL}}
         </label>
       </div>
       <div class="govuk-radios__conditional" [ngClass]="{'hidden': !isCheckboxEnabled}">
         <div class="govuk-form-group">
-          <label class="govuk-label" for="language-typed-in">Enter the language</label>
+          <label class="govuk-label" for="language-typed-in">{{searchLanguageInterpreterStep.INPUT_LABEL}}</label>
           <input class="govuk-input govuk-input--width-20" id="language-typed-in" name="language-typed-in" type="text">
         </div>
       </div>
     </div>
   </div>
-  <div class="govuk-form-group">
+  <div class="govuk-button-group">
     <button class="button button-primary" (click)="onNext()">Next</button>
   </div>
 </div>
