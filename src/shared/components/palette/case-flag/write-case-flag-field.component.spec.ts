@@ -131,8 +131,11 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ WriteCaseFlagFieldComponent ]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [ WriteCaseFlagFieldComponent ],
+      providers: [
+        { provide: ActivatedRoute, useValue: mockRoute }
+      ]
     })
     .compileComponents();
   }));

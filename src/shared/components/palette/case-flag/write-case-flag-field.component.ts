@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FlagDetail, Flags } from './domain';
+import { CaseFlagState, FlagDetail, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagLocationStepText } from './enums';
 
 @Component({
@@ -17,6 +17,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
+  public errorMessages: ErrorMessage[] = [];
   public flagLocationCaption: string;
   public flagLocationTitle: string;
   public errorMessage: ErrorMessage;
@@ -39,7 +40,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
     // Set starting field state
-    this.fieldState = CaseFlagFieldState.FLAG_LOCATION;
+    this.fieldState = CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER;
 
     this.flagLocationCaption = CaseFlagLocationStepText.CAPTION;
     this.flagLocationTitle = CaseFlagLocationStepText.TITLE;
@@ -73,6 +74,14 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         }
         return flags;
       }, []) as Flags[];
+    }
+  }
+
+  public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
+    this.errorMessages = caseFlagState.errorMessages;
+    if (this.errorMessages.length === 0) {
+      // Validation succeeded, can proceed to next state
+      this.proceedToNextState();
     }
   }
 
