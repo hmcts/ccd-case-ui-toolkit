@@ -45,7 +45,6 @@
         href="{{notificationBannerConfig.linkUrl}}">{{notificationBannerConfig.linkText}}</a>
       <a *ngIf="notificationBannerConfig.showLink && notificationBannerConfig.triggerOutputEvent"
         class="govuk-notification-banner__link"
-        href="#"
         (click)="onLinkClick(notificationBannerConfig.triggerOutputEventText)">{{notificationBannerConfig.linkText}}</a>
     </p>
   </div>

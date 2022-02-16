@@ -44,7 +44,7 @@
 </div>
 <div class="grid-row" *ngIf="isCaseFlagActive()">
   <div class="column-full">
-    <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)"></ccd-notification-banner>
+    <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onNavigateToTab($event)"></ccd-notification-banner>
   </div>
 </div>
 <div class="grid-row">

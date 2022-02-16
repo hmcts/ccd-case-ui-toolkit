@@ -249,10 +249,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     }
   }
 
-  public onLinkClicked(triggerOutputEventText: string): void {
+  public onNavigateToTab(triggerOutputEventText: string): void {
     const matTab = this.tabGroup._tabs.find((x) => x.textLabel === triggerOutputEventText);
     if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
+      // Tab position shuffles and cannot be relied upon, origin property is consistent
+      this.tabGroup.selectedIndex = matTab.origin;
     }
   }
 
