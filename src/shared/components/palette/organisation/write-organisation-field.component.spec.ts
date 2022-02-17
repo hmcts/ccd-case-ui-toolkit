@@ -351,7 +351,7 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(searchedOrg[1].address).toEqual('69<br>Bay Crescent<br>Liverpool<br>Merseyside<br>UK<br>LA1 4RA<br>');
   });
 
-  fit('should search organisation using both org name and postcode split with n space', () => {
+  it('should search organisation using both org name and postcode split with n space', () => {
     const SIMILAR_ORGANISATION = [{
       organisationIdentifier: 'O555555',
       name: 'Smith LLP',
