@@ -1,5 +1,6 @@
 ## RELEASE NOTES
-
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
 ### Version 4.12.0
 Add refunds functionality
 
