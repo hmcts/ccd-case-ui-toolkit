@@ -132,12 +132,12 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
     let partMatchingResultSet = [], withSpaceMatchingResultSet = [];
     const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT
-    organisations.filter((organisation) => {
+    organisations.forEach((organisation) => {
       if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
         partMatchingResultSet.push(organisation);
       }
     });
-    organisations.filter((org) => {
+    organisations.forEach((org) => {
       const matchingOrg = [...partMatchingResultSet, ...withSpaceMatchingResultSet]
                           .find(item => item.organisationIdentifier === org.organisationIdentifier)
       if (!matchingOrg && [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < MAX_RESULT_COUNT
