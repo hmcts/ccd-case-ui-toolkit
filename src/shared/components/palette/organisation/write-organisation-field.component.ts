@@ -131,20 +131,17 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   // 3. both step 1, 2 will go until max count result reaches, and finally combine both result sets into final collection
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
     let partMatchingResultSet = [], withSpaceMatchingResultSet = [];
+    const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT
     organisations.filter((organisation) => {
-      if (
-        partMatchingResultSet.length < WriteOrganisationFieldComponent.MAX_RESULT_COUNT &&
-        this.searchCriteria(organisation, lowerOrgSearchText)
-      ) {
+      if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
         partMatchingResultSet.push(organisation);
       }
     });
     organisations.filter((org) => {
-      const matchingOrg = [...partMatchingResultSet, ...withSpaceMatchingResultSet].find(item => item.organisationIdentifier === org.organisationIdentifier)
-      if (
-        !matchingOrg && 
-        [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < WriteOrganisationFieldComponent.MAX_RESULT_COUNT &&
-        this.searchWithSpace(org, lowerOrgSearchText)
+      const matchingOrg = [...partMatchingResultSet, ...withSpaceMatchingResultSet]
+                          .find(item => item.organisationIdentifier === org.organisationIdentifier)
+      if (!matchingOrg && [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < MAX_RESULT_COUNT
+        && this.searchWithSpace(org, lowerOrgSearchText)
       ) {
         withSpaceMatchingResultSet.push(org);
       }
@@ -228,4 +225,3 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
 }
-
