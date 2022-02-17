@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { WindowService } from '../../../services/window';
 
-fdescribe('WriteOrganisationFieldComponent', () => {
+describe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
   let fixture: ComponentFixture<WriteOrganisationFieldComponent>;
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
