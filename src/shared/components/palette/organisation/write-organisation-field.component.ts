@@ -125,12 +125,33 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
+  // The way the search works divide into two phases
+  // 1. go through collection of org items one by one by doing the comparsion of search string using includes to all the address fields
+  // 2. split the search string into arrays and apply the each array item into the address fields
+  // 3. both step 1, 2 will go until max count result reaches, and finally combine both result sets into final collection
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
-    return organisations.filter(organisation => {
-      return this.searchCriteria(organisation, lowerOrgSearchText) || this.searchWithSpace(organisation, lowerOrgSearchText);
-    })
-      .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
-      .slice(0, WriteOrganisationFieldComponent.MAX_RESULT_COUNT);
+    let partMatchingResultSet = [], withSpaceMatchingResultSet = [];
+    organisations.filter((organisation) => {
+      if (
+        partMatchingResultSet.length < WriteOrganisationFieldComponent.MAX_RESULT_COUNT &&
+        this.searchCriteria(organisation, lowerOrgSearchText)
+      ) {
+        partMatchingResultSet.push(organisation);
+      }
+    });
+    organisations.filter((org) => {
+      const matchingOrg = [...partMatchingResultSet, ...withSpaceMatchingResultSet].find(item => item.organisationIdentifier === org.organisationIdentifier)
+      if (
+        !matchingOrg && 
+        [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < WriteOrganisationFieldComponent.MAX_RESULT_COUNT &&
+        this.searchWithSpace(org, lowerOrgSearchText)
+      ) {
+        withSpaceMatchingResultSet.push(org);
+      }
+    });
+    return [...partMatchingResultSet, ...withSpaceMatchingResultSet].map((organisation) =>
+      this.organisationConverter.toSimpleOrganisationModel(organisation)
+    );
   }
 
   private searchCriteria(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
@@ -207,3 +228,4 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
 }
+

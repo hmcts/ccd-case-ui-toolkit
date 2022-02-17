@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { WindowService } from '../../../services/window';
 
-describe('WriteOrganisationFieldComponent', () => {
+fdescribe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
   let fixture: ComponentFixture<WriteOrganisationFieldComponent>;
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
@@ -351,7 +351,7 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(searchedOrg[1].address).toEqual('69<br>Bay Crescent<br>Liverpool<br>Merseyside<br>UK<br>LA1 4RA<br>');
   });
 
-  it('should search organisation using both org name and postcode split with n space', () => {
+  fit('should search organisation using both org name and postcode split with n space', () => {
     const SIMILAR_ORGANISATION = [{
       organisationIdentifier: 'O555555',
       name: 'Smith LLP',
@@ -412,6 +412,11 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(searchedOrg[0].organisationIdentifier).toEqual('O555555');
     expect(searchedOrg[0].name).toEqual('Smith LLP');
     expect(searchedOrg[0].address).toEqual('Davidson House<br>55<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EY<br>');
+  });
+
+  it('should bring the exact match in the top order when there are other partial matches of org exist', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'the sn1 solicitor');
+    expect(searchedOrg[0].name).toEqual('The SN1 solicitor');
   });
 
   it('should return organisation if nothing match', () => {
