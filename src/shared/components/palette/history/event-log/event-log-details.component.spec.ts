@@ -113,8 +113,7 @@ describe('EventLogDetails', () => {
 
     expect(rows.length).toBe(6);
 
-    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'local', null) +
-      ' Local: ' + new DatePipe(null).transform(EVENT.timestamp, 'local', null);
+    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'local', null);
     expectRow(rows[0]).toEqual('Date', resultDate);
     expectRow(rows[1]).toEqual('Author', 'Justin SMITH');
     expectRow(rows[2]).toEqual('End state', EVENT.state_name);
