@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -36,11 +36,12 @@ import { CaseReferencePipe } from '../../../pipes/case-reference';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { CaseNotifier } from '../../case-editor';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ComplexModule, PaletteModule } from '../../palette';
+import { CaseFlagStatus, ComplexModule, PaletteModule } from '../../palette';
 import { AbstractAppConfig } from '../../../../app.config';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import createSpyObj = jasmine.createSpyObj;
+import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
 
 @Component({
   // tslint:disable-next-line
@@ -1151,6 +1152,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1173,6 +1175,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1256,6 +1259,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
+
   beforeEach((() => {
     TestBed
       .configureTestingModule({
@@ -1265,6 +1269,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1287,6 +1292,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
@@ -1367,6 +1373,178 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
+  it('should display active case flags banner message if at least one of the case flag is active', () => {
+    comp.caseDetails = CASE_VIEW;
+    comp.caseDetails.case_flag = {
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      }]
+    };
+    f.detectChanges();
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain('View case flags');
+    expect(comp.isCaseFlagActive()).toEqual(true);
+  });
+
+  it('should not display active case flags banner message if none of the case flag is active', () => {
+    comp.caseDetails = CASE_VIEW;
+    comp.caseDetails.case_flag = {
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      }]
+    };
+    f.detectChanges();
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement).toBeNull();
+    expect(comp.isCaseFlagActive()).toEqual(false);
+  });
+})
+
+describe('CaseFullAccessViewComponent - ends with caseID', () => {
+
+  let comp: CaseFullAccessViewComponent;
+  let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let debugElement: DebugElement;
+  beforeEach((() => {
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    compFixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = compFixture.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    debugElement = compFixture.debugElement;
+    compFixture.detectChanges();
+  }));
+
+  it('should render 1st order of tabs', () => {
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(3);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
+    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
+  });
+
 })
 
 // noinspection DuplicatedCode
@@ -1387,6 +1565,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          NotificationBannerModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1409,6 +1588,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
             }
           ]),
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,

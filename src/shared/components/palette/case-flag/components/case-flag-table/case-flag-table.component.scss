@@ -1,0 +1,26 @@
+.govuk-table {
+  .govuk-table__head {
+    .govuk-table__row {
+      .col-party-name {
+        width: 18%;
+      }
+      .col-comments {
+        width: 48%;
+      }
+      .col-creation-date {
+        width: 12%;
+      }
+      .col-last-modified {
+        width: 12%;
+      }
+      .col-flag-status {
+        width: 10%;
+      }
+    }
+  }
+  .govuk-table__body {
+    .no-data-row {
+      text-align: center;
+    }
+  }
+}

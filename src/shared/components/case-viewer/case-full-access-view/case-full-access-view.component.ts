@@ -22,6 +22,12 @@ import {
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
+import {
+  NotificationBannerConfig,
+  NotificationBannerHeaderClass,
+  NotificationBannerType
+} from '../../../../components/banners/notification-banner';
+import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -54,6 +60,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
+  public notificationBannerConfig: NotificationBannerConfig;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -202,9 +209,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       if (foundTab) {
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          if (matTab && matTab.position) {
-            this.tabGroup.selectedIndex = matTab.position;
-          }
+          this.tabGroup.selectedIndex = matTab.position;
         });
       // last path is caseId
       } else {
@@ -242,6 +247,40 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         window.location.hash = label;
       });
     }
+  }
+
+  public onLinkClicked(triggerOutputEventText: string): void {
+    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === triggerOutputEventText);
+    if (matTab && matTab.position) {
+      this.tabGroup.selectedIndex = matTab.position;
+    }
+  }
+
+  public isCaseFlagActive(): boolean {
+    const activeCaseFlags = this.caseDetails &&
+      this.caseDetails.case_flag &&
+      this.caseDetails.case_flag.details &&
+      this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE);
+
+    if (activeCaseFlags && activeCaseFlags.length > 0) {
+      const description = activeCaseFlags.length > 1
+        ? `There are ${activeCaseFlags.length} active flags on this case.` : 'There is 1 active flag on this case.';
+      // Initialise and display notification banner
+      this.notificationBannerConfig = {
+        bannerType: NotificationBannerType.INFORMATION,
+        headingText: 'Important',
+        description: description,
+        showLink: true,
+        linkText: 'View case flags',
+        linkUrl: `/cases/case-details/${this.caseDetails.case_id}`,
+        triggerOutputEvent: true,
+        triggerOutputEventText: 'Case flags',
+        headerClass: NotificationBannerHeaderClass.INFORMATION
+      }
+      return true;
+    }
+
+    return false;
   }
 
   private init(): void {

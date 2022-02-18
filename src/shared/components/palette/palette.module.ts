@@ -55,7 +55,8 @@ import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { OrganisationModule } from './organisation/organisation.module';
 import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
-import { WriteCaseFlagFieldComponent } from './case-flag';
+import { CaseFlagModule } from './case-flag/case-flag.module';
+import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from './case-flag';
 
 @NgModule({
   imports: [
@@ -92,7 +93,8 @@ import { WriteCaseFlagFieldComponent } from './case-flag';
     NgxMatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    CaseFlagModule
   ],
   declarations: [
     UnsupportedFieldComponent,
@@ -116,8 +118,7 @@ import { WriteCaseFlagFieldComponent } from './case-flag';
     WritePhoneUKFieldComponent,
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
-    WriteDateFieldComponent,
-    WriteCaseFlagFieldComponent
+    WriteDateFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -133,6 +134,7 @@ import { WriteCaseFlagFieldComponent } from './case-flag';
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadOrganisationFieldComponent,
+    ReadCaseFlagFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,

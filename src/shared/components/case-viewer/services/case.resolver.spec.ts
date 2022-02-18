@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 describe('CaseResolver', () => {
   describe('resolve()', () => {
@@ -13,6 +14,38 @@ describe('CaseResolver', () => {
     const CASE_ID = '42';
     const CASE: CaseView = new CaseView();
     CASE.case_id = 'CASE_ID_1';
+    CASE.case_flag = {
+      partyName: 'Smith v Peterson',
+      roleOnCase: '',
+      details: [
+        {
+          name: 'Potentially violent person fraud',
+          subTypeValue: '',
+          subTypeKey: '',
+          otherDescription: '',
+          flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
+          dateTimeModified: new Date('2021-09-09 00:00:00'),
+          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+          path: [],
+          hearingRelevant: false,
+          flagCode: '',
+          status: CaseFlagStatus.ACTIVE
+        },
+        {
+          name: 'Complex case',
+          subTypeValue: '',
+          subTypeKey: '',
+          otherDescription: '',
+          flagComment: 'Requires senior case worker',
+          dateTimeModified: new Date('2021-09-09 00:00:00'),
+          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+          path: [],
+          hearingRelevant: false,
+          flagCode: '',
+          status: CaseFlagStatus.INACTIVE
+        }
+      ]
+    };
 
     const CASE_CACHED: CaseView = new CaseView();
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
