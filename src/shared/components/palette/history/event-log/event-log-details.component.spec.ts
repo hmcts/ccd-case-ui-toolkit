@@ -108,12 +108,12 @@ describe('EventLogDetails', () => {
     fixture.detectChanges();
   }));
 
-  xit('should render a table with the case details', () => {
+  it('should render a table with the case details', () => {
     let rows = de.queryAll($TABLE_ROWS);
 
     expect(rows.length).toBe(6);
 
-    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'utc', null) +
+    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'local', null); +
       ' Local: ' + new DatePipe(null).transform(EVENT.timestamp, 'local', null);
     expectRow(rows[0]).toEqual('Date', resultDate);
     expectRow(rows[1]).toEqual('Author', 'Justin SMITH');
