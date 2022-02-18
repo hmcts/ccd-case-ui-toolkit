@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.12.1",
+  "version": "4.12.4-eui-2051-ui-formatting",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
