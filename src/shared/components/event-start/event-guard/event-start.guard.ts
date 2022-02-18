@@ -16,7 +16,7 @@ export class EventStartGuard implements CanActivate {
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     // Checks must be performed only for Work Allocation 2
-    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation2') {
+    if (this.appConfig.getWorkAllocationApiUrl() && this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation2') {
       const caseId = route.params['cid'];
       const eventId = route.params['eid'];
       const taskId = route.queryParams['tid'];
