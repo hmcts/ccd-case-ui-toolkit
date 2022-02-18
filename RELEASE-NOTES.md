@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.12.1-hotfix-EUI-5316
+**EUI-5316** extra check for workallocation url
+
 ### Version 4.12.0
 Add refunds functionality
 
