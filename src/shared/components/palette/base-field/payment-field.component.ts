@@ -4,8 +4,8 @@ import { AbstractFieldReadComponent } from './abstract-field-read.component';
 
 export abstract class PaymentField extends AbstractFieldReadComponent {
     constructor(
-        private appConfig: AbstractAppConfig,
-        private readonly sessionStorage: SessionStorageService
+        protected readonly appConfig: AbstractAppConfig,
+        protected readonly sessionStorage: SessionStorageService
     ) {
         super();
     }

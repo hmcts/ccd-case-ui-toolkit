@@ -14,4 +14,8 @@ export class WaysToPayFieldComponent extends PaymentField {
   ) {
     super(appConfig, sessionStorage);
   }
+
+  public getCardPaymentReturnUrl(): string {
+    return this.appConfig.getPaymentReturnUrl();
+  }
 }
