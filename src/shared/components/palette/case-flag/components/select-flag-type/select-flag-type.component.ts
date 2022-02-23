@@ -31,9 +31,7 @@ export class SelectFlagTypeComponent implements OnInit {
 
   public ngOnInit(): void {
     this.flagTypes = this.getFlagTypes();
-    this.flagTypes.forEach(flagType => {
-      this.formGroup.addControl('flagType', new FormControl(''));
-    });
+    this.formGroup.addControl('flagType', new FormControl(''));
     this.formGroup.addControl('other', new FormControl(''));
     this.formGroup.addControl('otherFlagTypeDescription', new FormControl(''));
   }

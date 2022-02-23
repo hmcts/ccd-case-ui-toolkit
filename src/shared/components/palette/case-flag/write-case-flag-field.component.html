@@ -13,17 +13,19 @@
 </div>
 <div class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
+    <div id="create-flag-caption" class="govuk-caption-l">
+      {{createFlagCaption}}
+    </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
-      <p>
-        This is the flag location step
-      </p>
+      <ccd-select-flag-location [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
-      <ccd-select-flag-type [formGroup]="formGroup"
+      <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-type>
 		</ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
-      <ccd-search-language-interpreter [formGroup]="formGroup"
+      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">

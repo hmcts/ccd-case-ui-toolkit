@@ -4,7 +4,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from '.';
 import { FormModule } from '../../../../components/form/form.module';
-import { CaseFlagTableComponent, SelectFlagTypeComponent, SearchLanguageInterpreterComponent } from './components';
+import {
+  CaseFlagTableComponent,
+  SelectFlagTypeComponent,
+  SelectFlagLocationComponent,
+  SearchLanguageInterpreterComponent
+} from './components';
 
 @NgModule({
   imports: [
@@ -18,7 +23,8 @@ import { CaseFlagTableComponent, SelectFlagTypeComponent, SearchLanguageInterpre
     WriteCaseFlagFieldComponent,
     CaseFlagTableComponent,
     SelectFlagTypeComponent,
-    SearchLanguageInterpreterComponent
+    SearchLanguageInterpreterComponent,
+    SelectFlagLocationComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,

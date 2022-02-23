@@ -31,7 +31,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       .filter(tab => tab.fields && tab.fields
         .some(caseField => caseField.field_type.id === 'FlagLauncher' && caseField.field_type.type === 'FlagLauncher'))
       )[0].fields.reduce((flags, caseField) => {
-        if (FieldsUtils.isFlagsCaseField(caseField)) {
+        if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
           flags.push(
             {
               partyName: caseField.value.partyName,

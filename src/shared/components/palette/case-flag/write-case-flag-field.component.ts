@@ -5,7 +5,7 @@ import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, Flags } from './domain';
-import { CaseFlagFieldState, CaseFlagLocationStepText } from './enums';
+import { CaseFlagFieldState, CaseFlagText } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -18,10 +18,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
-  public flagLocationCaption: string;
-  public flagLocationTitle: string;
+  public createFlagCaption: CaseFlagText;
   public errorMessage: ErrorMessage;
   public flagsData: Flags[];
+  public caseFlagParentFormGroup = new FormGroup({});
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -40,41 +40,46 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
     // Set starting field state
-    this.fieldState = CaseFlagFieldState.FLAG_TYPE;
+    this.fieldState = CaseFlagFieldState.FLAG_LOCATION;
 
-    this.flagLocationCaption = CaseFlagLocationStepText.CAPTION;
-    this.flagLocationTitle = CaseFlagLocationStepText.TITLE;
+    this.createFlagCaption = CaseFlagText.CAPTION;
 
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
       this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
       .reduce((flags, caseField) => {
-        if (FieldsUtils.isFlagsCaseField(caseField)) {
+        if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
           flags.push(
             {
               partyName: caseField.value.partyName,
               roleOnCase: caseField.value.roleOnCase,
-              details: ((caseField.value.details) as any[]).map(detail => {
-                return Object.assign({}, ...Object.keys(detail.value).map(k => {
-                  switch (k) {
-                    // These two fields are date-time fields
-                    case 'dateTimeModified':
-                    case 'dateTimeCreated':
-                      return {[k]: new Date(detail.value[k])};
-                    // This field is a "yes/no" field
-                    case 'hearingRelevant':
-                      return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
-                    default:
-                      return {[k]: detail.value[k]};
-                  }
-                }))
-              }) as FlagDetail[]
+              details: caseField.value.details
+                ? ((caseField.value.details) as any[]).map(detail => {
+                  return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                    switch (k) {
+                      // These two fields are date-time fields
+                      case 'dateTimeModified':
+                      case 'dateTimeCreated':
+                        return {[k]: new Date(detail.value[k])};
+                      // This field is a "yes/no" field
+                      case 'hearingRelevant':
+                        return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
+                      default:
+                        return {[k]: detail.value[k]};
+                    }
+                  }))
+                }) as FlagDetail[]
+                : null
             }
           );
         }
         return flags;
       }, []) as Flags[];
     }
+
+    // Set the parent Case Flag FormGroup for this component's children
+    // TODO This needs to happen after the user has made the initial selection on flag location (first screen)
+    // this.setCaseFlagParentFormGroup();
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
@@ -112,5 +117,20 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         htmlElement.focus();
       }
     }
+  }
+
+  /**
+   * Set the parent {@link FormGroup} for this component's children, depending on the `Flags` {@link CaseField} instance
+   * to which data should be attached. **Note:** The parent is not _this_ component's `FormGroup` (as might otherwise be
+   * expected) because this component is not expected to have a value, given it is used for the empty `FlagLauncher` base
+   * field type.
+   */
+  public setCaseFlagParentFormGroup(): void {
+    // Dummy implementation for now, which uses the FormGroup of the first of this CaseField's siblings of type `Flags`
+    // as the parent. The real one needs to use the FormGroup of the Flags object corresponding to the user's selection
+    // of flag location
+    const caseFlagFormGroupKey = Object.keys(this.formGroup.parent.controls).filter(
+      key => FieldsUtils.isFlagsCaseField(this.formGroup.parent.controls[key].caseField))[0];
+    this.caseFlagParentFormGroup = this.formGroup.parent.controls[caseFlagFormGroupKey];
   }
 }

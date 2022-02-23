@@ -142,8 +142,8 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ReadCaseFlagFieldComponent],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [ ReadCaseFlagFieldComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
@@ -181,4 +181,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
   });
+
+  // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
 });
