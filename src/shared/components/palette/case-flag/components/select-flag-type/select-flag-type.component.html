@@ -8,7 +8,7 @@
       <div class="govuk-radios__item" *ngFor="let flagType of flagTypes">
         <input class="govuk-radios__input" id="flag-type-{{flagType.id}}" name="flagType"
           type="radio" [value]="flagType.id" formControlName="flagType"
-          (change)="onFlagTypeChanged(flagType.id)">
+          (change)="onFlagTypeChanged(flagType.id)"/>
         <label class="govuk-label govuk-radios__label" for="flag-type-{{flagType.id}}">{{flagType.name}}</label>
       </div>
       <div class="govuk-form-group">
@@ -16,7 +16,7 @@
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="flag-type-other" name="flagType"
               type="radio" value="other" formControlName="flagType"
-              (change)="onFlagTypeChanged('other')">
+              (change)="onFlagTypeChanged('other')"/>
             <label class="govuk-label govuk-radios__label" for="flag-type-other">Other</label>
           </div>
           <div class="govuk-radios__conditional" [ngClass]="{'hidden': flagTypeSelected !== 'other'}">
@@ -28,7 +28,7 @@
               <input class="govuk-input govuk-!-width-one-half"
                 [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
                 id="other-flag-type-description" name="otherFlagTypeDescription" type="text"
-                formControlName="otherFlagTypeDescription">
+                formControlName="otherFlagTypeDescription"/>
             </div>
           </div>
         </div>

@@ -50,7 +50,7 @@ describe('SelectFlagTypeComponent', () => {
       .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: [] });
   });
 
-  it ('should fail vaildation if other flag type selected and description not entered', () => {
+  it('should fail vaildation if other flag type selected and description not entered', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-other').click();
     const otherFlagTypeDescriptionElement = nativeElement.querySelector('#other-flag-type-description');
@@ -61,7 +61,7 @@ describe('SelectFlagTypeComponent', () => {
     expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED);
   });
 
-  it ('should fail vaildation if other flag type selected and description entered is more than 80 characters', () => {
+  it('should fail vaildation if other flag type selected and description entered is more than 80 characters', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-other').click();
     fixture.detectChanges();

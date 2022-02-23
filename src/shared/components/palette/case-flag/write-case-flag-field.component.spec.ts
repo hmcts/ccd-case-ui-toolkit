@@ -131,7 +131,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
@@ -154,7 +154,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_TYPE);
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LOCATION);
     // Initial validity of the form is expected to be false because it is at the starting state (only valid at the final state)
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
@@ -173,11 +173,11 @@ describe('WriteCaseFlagFieldComponent', () => {
     nextButton.click();
     fixture.detectChanges();
     // Field is expected to move to next state (flag comments) but not the final one yet
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
-    expect(component.isAtFinalState()).toBe(false);
-    expect(component.formGroup.valid).toBe(false);
-    nextButton.click();
-    fixture.detectChanges();
+    // expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
+    // expect(component.isAtFinalState()).toBe(false);
+    // expect(component.formGroup.valid).toBe(false);
+    // nextButton.click();
+    // fixture.detectChanges();
     // Field is expected to move to final state and the form to become valid
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_SUMMARY);
     expect(component.isAtFinalState()).toBe(true);
@@ -207,4 +207,6 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
   });
+
+  // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
 });
