@@ -1,6 +1,11 @@
 ## RELEASE NOTES
+
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.14.1-EUI-5305-change-link-accessibility-update
+**EUI-5305** Accessibility improvement for 'Change' links
+
 ### Version 4.12.0
 Add refunds functionality
 
