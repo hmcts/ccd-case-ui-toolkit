@@ -18,7 +18,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
-  
+
   private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
 
   ICON = DisplayMode.ICON;
@@ -76,7 +76,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   paginationPageSize: number;
 
-  paginationLimitEnforced: boolean = true;
+  paginationLimitEnforced: boolean;
 
   hideRows: boolean;
 
@@ -149,7 +149,10 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   get resultTotal(): number {
     const total = this.paginationMetadata.total_results_count;
-    return total >= this.PAGINATION_MAX_ITEM_RESULT ? this.PAGINATION_MAX_ITEM_RESULT : total;
+    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
+    this.paginationLimitEnforced = maximumResultReached;
+
+    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   public clearSelection(): void {
