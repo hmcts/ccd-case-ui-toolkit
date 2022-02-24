@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.12.1-EUI-5225-organisation-search",
+  "version": "4.12.1-EUI-5225-organisation-search-rc1",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
