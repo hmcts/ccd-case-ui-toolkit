@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.13.1-case-flags-select-location-step
+**EUI-4838** Add "select location" step of Create Case Flag journey
+
 ### Version 4.13.1-case-flags-tab-and-banner-message
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
