@@ -28,11 +28,13 @@
       <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
     </ng-container>
+    <!--
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
       <p>
         This is the flag comments step
       </p>
     </ng-container>
+    -->
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_SUMMARY">
       <p>
         This is the flag summary (and final) step

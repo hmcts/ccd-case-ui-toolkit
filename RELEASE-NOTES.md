@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.13.1-case-flags-select-location-step
+### Version 4.13.1-case-flags-select-location-step-rc.2
 **EUI-4838** Add "select location" step of Create Case Flag journey
 
 ### Version 4.13.1-case-flags-tab-and-banner-message
