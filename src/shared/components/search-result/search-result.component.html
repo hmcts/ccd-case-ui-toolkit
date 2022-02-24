@@ -1,6 +1,15 @@
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
     <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
+
+    <div class="govuk-warning-text" *ngIf="paginationLimitEnforced">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        The first 10,000 are available for display. Refine your search to see more.
+      </strong>
+    </div>
+
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
       <span class="text-16" id="search-result-summary__text">Showing 
@@ -42,7 +51,7 @@
 
     <!-- sorted by consumer -->
     <ng-container *ngIf="consumerSortingEnabled">
-      <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
+      <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
@@ -78,7 +87,7 @@
     </ng-container>
     <!-- sorted by toolkit -->
     <ng-container *ngIf="!consumerSortingEnabled">
-      <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: paginationMetadata.total_results_count }">
+      <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
