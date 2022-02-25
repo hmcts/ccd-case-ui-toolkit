@@ -76,7 +76,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   paginationPageSize: number;
 
-  paginationLimitEnforced: boolean;
+  paginationLimitEnforced: boolean = false;
 
   hideRows: boolean;
 
