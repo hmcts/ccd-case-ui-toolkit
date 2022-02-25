@@ -2,7 +2,7 @@
   <caption>
     <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
 
-    <div class="govuk-warning-text" *ngIf="paginationLimitEnforced">
+    <div class="govuk-warning-text pagination-limit-warning" *ngIf="paginationLimitEnforced">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
       <strong class="govuk-warning-text__text">
         <span class="govuk-warning-text__assistive">Warning</span>

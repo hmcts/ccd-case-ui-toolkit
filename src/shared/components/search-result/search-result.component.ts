@@ -74,9 +74,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
   @Output()
   sortHandler: EventEmitter<any> = new EventEmitter();
 
-  paginationPageSize: number;
+  public paginationLimitEnforced = false;
 
-  paginationLimitEnforced = false;
+  paginationPageSize: number;
 
   hideRows: boolean;
 
