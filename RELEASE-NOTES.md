@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.12.6-layout-usability-issues
+**EUI-2044** Usability improvement for search result table
+
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
