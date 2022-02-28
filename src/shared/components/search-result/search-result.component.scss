@@ -24,6 +24,10 @@ table {
   .caseid-col {
     white-space: nowrap;
   }
+
+  &.table-layout-fixed {
+    table-layout: fixed;
+  }
 }
 
 .notification {
@@ -80,5 +84,5 @@ span.heading-medium {
 }
 
 #search-result-heading__text:focus {
-  outline: none; 
+  outline: none;
 }

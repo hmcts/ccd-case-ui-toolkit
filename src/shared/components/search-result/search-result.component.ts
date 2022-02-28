@@ -60,6 +60,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
   @Input()
   public consumerSortingEnabled = false;
 
+  @Input()
+  public tableLayoutFixed = false;
+
   @Output()
   public selection = new EventEmitter<SearchResultViewItem[]>();
 
