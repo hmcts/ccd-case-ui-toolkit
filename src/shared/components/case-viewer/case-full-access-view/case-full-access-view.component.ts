@@ -269,7 +269,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (!this.caseFlagsTabName && this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
       this.caseFlagsTabName = (this.route.snapshot.data.case.tabs as CaseTab[])
       .filter(tab => tab.fields && tab.fields
-        .some(caseField => caseField.field_type.id === 'FlagLauncher' && caseField.field_type.type === 'FlagLauncher'))[0].label;
+        .some(caseField => caseField.field_type.type === 'FlagLauncher'))[0].label;
     }
 
     return this.caseFlagsTabName;
