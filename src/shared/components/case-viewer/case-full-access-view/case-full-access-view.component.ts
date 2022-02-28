@@ -61,6 +61,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
   public notificationBannerConfig: NotificationBannerConfig;
+  public selectedTabIndex = 0;
+  public caseFlagsTabName = '';
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -235,6 +237,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    // Update selected tab index
+    this.selectedTabIndex = tabChangeEvent.index;
+
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
     const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
@@ -250,10 +255,24 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public onLinkClicked(triggerOutputEventText: string): void {
-    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === triggerOutputEventText);
-    if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
+    // Get the *absolute* (not relative) index of the target tab and set as the active tab, using the selectedIndex input
+    // of mat-tab-group (bound to selectedTabIndex)
+    const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
+    if (targetTabIndex > -1) {
+      this.selectedTabIndex = targetTabIndex;
     }
+  }
+
+  public getCaseFlagsTabName(): string {
+    // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data,
+    // and get its label
+    if (!this.caseFlagsTabName && this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
+      this.caseFlagsTabName = (this.route.snapshot.data.case.tabs as CaseTab[])
+      .filter(tab => tab.fields && tab.fields
+        .some(caseField => caseField.field_type.id === 'FlagLauncher' && caseField.field_type.type === 'FlagLauncher'))[0].label;
+    }
+
+    return this.caseFlagsTabName;
   }
 
   public isCaseFlagActive(): boolean {
@@ -272,9 +291,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         description: description,
         showLink: true,
         linkText: 'View case flags',
-        linkUrl: `/cases/case-details/${this.caseDetails.case_id}`,
         triggerOutputEvent: true,
-        triggerOutputEventText: 'Case flags',
+        triggerOutputEventText: this.getCaseFlagsTabName(),
         headerClass: NotificationBannerHeaderClass.INFORMATION
       }
       return true;

@@ -1,18 +1,27 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { CaseFullAccessViewComponent } from './case-full-access-view.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
-import { attr, text } from '../../../test/helpers';
 import { Subject } from 'rxjs/Subject';
-import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
+import { AppMockConfig } from '../../../../app-config.mock';
+import { AbstractAppConfig } from '../../../../app.config';
+import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
+import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
+import { CallbackErrorsContext } from '../../../components/error/domain';
 import { PaletteUtilsModule } from '../../../components/palette/utils';
-import { CaseField } from '../../../domain/definition';
+import { LabelSubstitutorDirective } from '../../../directives/substitutor';
 import { PlaceholderService } from '../../../directives/substitutor/services';
+import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { CaseField } from '../../../domain/definition';
+import { HttpError } from '../../../domain/http';
+import { CaseReferencePipe } from '../../../pipes/case-reference';
 import {
   ActivityService,
   AuthService,
@@ -24,24 +33,16 @@ import {
   NavigationOrigin,
   SessionStorageService
 } from '../../../services/';
-import { LabelSubstitutorDirective } from '../../../directives/substitutor';
-import { HttpError } from '../../../domain/http';
-import { OrderService } from '../../../services/order';
-import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
-import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
 import { AlertService } from '../../../services/alert';
-import { CallbackErrorsContext } from '../../../components/error/domain';
 import { DraftService } from '../../../services/draft';
-import { CaseReferencePipe } from '../../../pipes/case-reference';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
+import { OrderService } from '../../../services/order';
+import { attr, text } from '../../../test/helpers';
 import { CaseNotifier } from '../../case-editor';
-import { RouterTestingModule } from '@angular/router/testing';
 import { CaseFlagStatus, ComplexModule, PaletteModule } from '../../palette';
-import { AbstractAppConfig } from '../../../../app.config';
-import { AppMockConfig } from '../../../../app-config.mock';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CaseFullAccessViewComponent } from './case-full-access-view.component';
+
 import createSpyObj = jasmine.createSpyObj;
-import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
 
 @Component({
   // tslint:disable-next-line
@@ -118,19 +119,19 @@ const MarkdownComponent: any = MockComponent({
   inputs: ['content']
 });
 
-let CaseActivityComponent: any = MockComponent({
+const CaseActivityComponent: any = MockComponent({
   selector: 'ccd-activity',
   inputs: ['caseId', 'displayMode']
 });
 
-let FieldReadComponent: any = MockComponent({
+const FieldReadComponent: any = MockComponent({
   selector: 'ccd-field-read', inputs: [
     'caseField',
     'caseReference'
   ]
 });
 
-let LinkComponent: any = MockComponent({
+const LinkComponent: any = MockComponent({
   selector: 'a', inputs: [
     'routerLink'
   ]
@@ -441,13 +442,31 @@ const CASE_VIEW: CaseView = {
       fields: [],
       show_condition: ''
     },
+    {
+      id: 'CaseFlagsTab',
+      label: 'Case flags',
+      fields: [Object.assign(new CaseField(), {
+        id: 'FlagLauncher1',
+        label: 'Flag launcher',
+        display_context: 'OPTIONAL',
+        field_type: {
+          id: 'FlagLauncher',
+          type: 'FlagLauncher'
+        },
+        order: 4,
+        value: null,
+        show_condition: '',
+        hint_text: ''
+      })],
+      show_condition: null
+    }
   ],
   triggers: TRIGGERS,
   events: EVENTS,
   metadataFields: METADATA,
 };
 
-let mockRoute: any = {
+const mockRoute: any = {
   snapshot: {
     data: {
       case: CASE_VIEW
@@ -502,14 +521,14 @@ let deDialog: DebugElement;
 let component: CaseFullAccessViewComponent;
 let de: DebugElement;
 
-let orderService;
+let orderService: OrderService;
 let mockCallbackErrorSubject: any;
-let activityService: any;
-let draftService: any;
-let alertService: any;
-let dialog: any;
-let matDialogRef: any;
-let caseNotifier: any;
+let activityService: jasmine.SpyObj<ActivityPollingService>;
+let draftService: jasmine.SpyObj<DraftService>;
+let alertService: jasmine.SpyObj<AlertService>;
+let dialog: jasmine.SpyObj<MatDialog>;
+let matDialogRef: jasmine.SpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>;
+let caseNotifier: jasmine.SpyObj<CaseNotifier>;
 let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
@@ -1195,7 +1214,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
             }
           },
           ErrorNotifierService,
@@ -1240,19 +1259,19 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     f.detectChanges();
   }));
 
-  it('should render two pretended tabs', () => {
+  it('should render two prepended tabs', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(5);
+    expect(matTabHTMLElement.children.length).toBe(6);
   });
 
-  it('should display "Tasks" tab as the first tab ', () => {
+  it('should display "Tasks" tab as the first tab', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>tasksTab.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
   });
-})
+});
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
@@ -1312,7 +1331,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
             }
           },
           ErrorNotifierService,
@@ -1368,8 +1387,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   it('should render appended tabs hearings', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(6);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(7);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
@@ -1405,10 +1424,22 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         status: CaseFlagStatus.INACTIVE
       }]
     };
+
+    // Spy on the getCaseFlagsTabName function to check it is called to set caseFlagsTabName in the component class
+    // (the notification banner should be initialised)
+    spyOn(comp, 'getCaseFlagsTabName').and.callThrough();
+
+    // Case Flags tab name expected to be empty string until the notification banner is initialised
+    expect(comp.caseFlagsTabName).toEqual('');
+
     f.detectChanges();
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
     expect(bannerElement.textContent).toContain('View case flags');
     expect(comp.isCaseFlagActive()).toEqual(true);
+
+    // Case Flags tab name expected to be non-empty now the notification banner is initialised
+    expect(comp.caseFlagsTabName).toEqual('Case flags');
+    expect(comp.getCaseFlagsTabName).toHaveBeenCalled();
   });
 
   it('should not display active case flags banner message if none of the case flag is active', () => {
@@ -1443,12 +1474,75 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         status: CaseFlagStatus.INACTIVE
       }]
     };
+
+    // Reset Case Flags tab name
+    comp.caseFlagsTabName = '';
+
+    // Spy on the getCaseFlagsTabName function to check it is not called to set caseFlagsTabName in the component
+    // class (the notification banner should *not* be initialised)
+    spyOn(comp, 'getCaseFlagsTabName').and.callThrough();
+
     f.detectChanges();
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
     expect(bannerElement).toBeNull();
     expect(comp.isCaseFlagActive()).toEqual(false);
+
+    // Case Flags tab name expected to remain empty string because the notification banner is not initialised
+    expect(comp.caseFlagsTabName).toEqual('');
+    expect(comp.getCaseFlagsTabName).not.toHaveBeenCalled();
   });
-})
+
+  it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
+    comp.caseDetails = CASE_VIEW;
+    comp.caseDetails.case_flag = {
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.INACTIVE
+      }]
+    };
+    f.detectChanges();
+    const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
+    // Case Flags tab is expected to be the sixth tab (i.e. index 5)
+    const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
+    // Click the "View case flags" link and check the Case Flags tab is now active
+    viewCaseFlagsLink.click();
+    f.detectChanges();
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
+    // Change the active tab to a different one and check the Case Flags tab is no longer active
+    comp.selectedTabIndex = 6;
+    f.detectChanges();
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
+    // Click the "View case flags" link and check the Case Flags tab is active again
+    viewCaseFlagsLink.click();
+    f.detectChanges();
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
+  });
+});
 
 describe('CaseFullAccessViewComponent - ends with caseID', () => {
 
@@ -1506,7 +1600,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
+              public path = (_: string) => 'cases/case-details/1234567890123456'
             }
           },
           ErrorNotifierService,
@@ -1540,12 +1634,11 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   it('should render 1st order of tabs', () => {
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(3);
+    expect(matTabHTMLElement.children.length).toBe(4);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
   });
-
-})
+});
 
 // noinspection DuplicatedCode
 describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {

@@ -27,30 +27,32 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     // Determine the tab this CaseField belongs to (should be only one), from the CaseView object in the snapshot data,
     // and extract all flags-related data from its Flags fields
     if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
-      this.flagsData = ((this.route.snapshot.data.case.tabs as CaseTab[])
+      this.flagsData = (this.route.snapshot.data.case.tabs as CaseTab[])
       .filter(tab => tab.fields && tab.fields
         .some(caseField => caseField.field_type.id === 'FlagLauncher' && caseField.field_type.type === 'FlagLauncher'))
-      )[0].fields.reduce((flags, caseField) => {
+      [0].fields.reduce((flags, caseField) => {
         if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
           flags.push(
             {
               partyName: caseField.value.partyName,
               roleOnCase: caseField.value.roleOnCase,
-              details: ((caseField.value.details) as any[]).map(detail => {
-                return Object.assign({}, ...Object.keys(detail.value).map(k => {
-                  switch (k) {
-                    // These two fields are date-time fields
-                    case 'dateTimeModified':
-                    case 'dateTimeCreated':
-                      return {[k]: new Date(detail.value[k])};
-                    // This field is a "yes/no" field
-                    case 'hearingRelevant':
-                      return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
-                    default:
-                      return {[k]: detail.value[k]};
-                  }
-                }))
-              }) as FlagDetail[]
+              details: caseField.value.details
+                ? ((caseField.value.details) as any[]).map(detail => {
+                  return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                    switch (k) {
+                      // These two fields are date-time fields
+                      case 'dateTimeModified':
+                      case 'dateTimeCreated':
+                        return {[k]: new Date(detail.value[k])};
+                      // This field is a "yes/no" field
+                      case 'hearingRelevant':
+                        return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
+                      default:
+                        return {[k]: detail.value[k]};
+                    }
+                  }))
+                }) as FlagDetail[]
+                : null
             }
           );
         }
