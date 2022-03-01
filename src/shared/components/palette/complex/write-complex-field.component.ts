@@ -87,11 +87,15 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   private addressValidatorsRequired(caseField: CaseField): boolean {
-    return this.isSmallAddressLine1(caseField) && this.isMandatory(caseField);
+    return (this.isSmallAddressLine1(caseField) || this.isSmallAddressPostcode(caseField)) && this.isMandatory(caseField);
   }
 
   private isSmallAddressLine1(caseField: CaseField): boolean {
     return caseField.id === 'AddressLine1' && caseField.field_type.id === 'TextMax150';
+  }
+
+  private isSmallAddressPostcode(caseField: CaseField): boolean {
+    return caseField.id === 'PostCode' && caseField.field_type.id === 'TextMax14';
   }
 
   private isMandatory(caseField: CaseField): boolean {

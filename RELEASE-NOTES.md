@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.12.6-address-postcode-validation
+**EUI-4702** Added postcode validation to simple address
+
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
