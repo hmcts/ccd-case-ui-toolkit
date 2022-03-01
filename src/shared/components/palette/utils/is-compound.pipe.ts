@@ -15,13 +15,16 @@ export class IsCompoundPipe implements PipeTransform {
     'CaseLink'
   ];
 
-  public transform(field: CaseField): boolean {
+  transform(field: CaseField): boolean {
     if (!field || !field.field_type || !field.field_type.type) {
       return false;
     }
 
     if (IsCompoundPipe.COMPOUND_TYPES.indexOf(field.field_type.type) !== -1) {
-      return IsCompoundPipe.EXCLUDE.indexOf(field.field_type.id) === -1;
+      if (IsCompoundPipe.EXCLUDE.indexOf(field.field_type.id) !== -1) {
+        return false;
+      }
+      return true;
     }
 
     return false;
