@@ -64,6 +64,16 @@ describe('Date input component', function () {
     expect(results).toBeUndefined();
   });
 
+  it('should be invalid when the date is before 1900', () => {
+    const results = component.validate({ value: '1891-04-09T08:02:27.542' } as FormControl);
+    expect(results).toEqual({ pattern: 'Date is not valid' });
+  });
+
+  it('should be invalid when the date is after 2100', () => {
+    const results = component.validate({ value: '2100-04-09T08:02:27.542' } as FormControl);
+    expect(results).toEqual({ pattern: 'Date is not valid' });
+  });
+
   it('should be invalid when invalid date pattern', () => {
     const results = component.validate({ value: INVALIDDATE } as FormControl);
     expect(results).toEqual({ pattern: 'Date is not valid' });
