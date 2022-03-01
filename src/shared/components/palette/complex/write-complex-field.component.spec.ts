@@ -451,6 +451,23 @@ describe('WriteComplexFieldComponent', () => {
       field_type: { id: 'Text', type: 'Text' },
       value: '111 East India road'
     });
+
+    const ADDRESS_POSTCODE: CaseField = <CaseField>({
+      id: 'PostCode',
+      label: 'Line 1',
+      display_context: 'MANDATORY',
+      field_type: { id: 'TextMax14', type: 'Text' },
+      value: ''
+    });
+
+    const BROKEN_ADDRESS_POSTCODE: CaseField = <CaseField>({
+      id: 'PostCode',
+      label: 'Line 1',
+      display_context: 'MANDATORY',
+      field_type: { id: 'TextMax150', type: 'Text' },
+      value: ''
+    });
+
     const BROKEN_ADDRESS_LINE_1: CaseField = <CaseField>({
       id: 'AddressLine1',
       label: 'Line 1',
@@ -502,6 +519,47 @@ describe('WriteComplexFieldComponent', () => {
         field_type: {
           ...ADDRESS_TYPE,
           complex_fields: [ BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+        }
+      });
+      component.ngOnInit();
+      buildFields(component);
+      fixture.detectChanges();
+
+      // Should have been called for the group overall, but not for either of the complex_fields.
+      expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+    });
+
+    it('should add validators when case field is PostCode and TextMax14', () => {
+      formValidatorService.addValidators.calls.reset();
+      component.caseField = <CaseField>({
+        id: 'anotherComplexField',
+        label: 'Complex Field',
+        display_context: 'MANDATORY',
+        field_type: {
+          ...ADDRESS_TYPE,
+          complex_fields: [ ADDRESS_POSTCODE ]
+        }
+      });
+      component.ngOnInit();
+      buildFields(component);
+      fixture.detectChanges();
+
+      // Should have been called for the group overall, but not for either of the complex_fields.
+      // expect(formValidatorService.addValidators).toHaveBeenCalledTimes(2);
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(ADDRESS_POSTCODE, jasmine.any(FormControl));
+    });
+
+    it('should not add validators when case field is PostCode but NOT TextMax14', () => {
+      formValidatorService.addValidators.calls.reset();
+      component.caseField = <CaseField>({
+        id: 'anotherComplexField',
+        label: 'Complex Field',
+        display_context: 'MANDATORY',
+        field_type: {
+          ...ADDRESS_TYPE,
+          complex_fields: [ BROKEN_ADDRESS_POSTCODE, ADDRESS_LINE_2 ]
         }
       });
       component.ngOnInit();
