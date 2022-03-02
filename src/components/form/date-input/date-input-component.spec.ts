@@ -74,7 +74,7 @@ describe('Date input component', function () {
     expect(results).toEqual({ pattern: 'Date is not valid' });
   });
 
-  it('should be invalid when the date is after 2100', () => {
+  it('should be invalid when the date is after 2099', () => {
     const results = component.validate({ value: '2100-01-01T00:00:00.000' } as FormControl);
     expect(results).toEqual({ pattern: 'Date is not valid' });
   });
