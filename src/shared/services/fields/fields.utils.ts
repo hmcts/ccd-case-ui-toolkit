@@ -280,11 +280,11 @@ export class FieldsUtils {
           if (isDynamicField) {
             const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
             if (dynamicListValue) {
-              const list_items = dynamicListValue.list_items;
-              const complexValue = dynamicListValue.value;
+              const list_items = dynamicListValue[0].list_items;
+              const complexValue = dynamicListValue.map(data => data.value);
               const value = {
                 list_items: list_items,
-                value: complexValue ? complexValue : undefined
+                value: complexValue.length > 0 ? complexValue : undefined
               };
               field.value = {
                 ...value
@@ -310,17 +310,22 @@ export class FieldsUtils {
 
   private static getDynamicListValue(jsonBlock: any, key: string) {
 
-    if (jsonBlock[key]) {
-      return jsonBlock[key];
+    const data = jsonBlock ? this.getNestedFieldValues(jsonBlock, key, []) : [];
+
+    return data.length > 0 ? data : null;
+  }
+
+  private static getNestedFieldValues(jsonData: any, key: string, output: any[] = []) {
+    if (jsonData && jsonData[key]) {
+      output.push(jsonData[key]);
     } else  {
-      for (const elementKey in jsonBlock) {
-        if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
-          return this.getDynamicListValue(jsonBlock[elementKey], key);
+      for (const elementKey in jsonData) {
+        if (typeof jsonData === 'object' && jsonData.hasOwnProperty(elementKey)) {
+          this.getNestedFieldValues(jsonData[elementKey], key, output);
         }
       }
     }
-
-    return null;
+    return output;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

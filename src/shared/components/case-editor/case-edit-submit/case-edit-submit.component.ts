@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-
-import { CaseEventData, CaseEventTrigger, CaseField, FieldTypeEnum, HttpError, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
@@ -12,12 +12,14 @@ import {
   OrderService,
   ProfileNotifier,
   ProfileService,
+  SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
+import { EventCompletionParams } from '../domain/event-completion-params.model';
 
 // @dynamic
 @Component({
@@ -39,6 +41,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   isSubmitting: boolean;
   profileSubscription: Subscription;
   contextFields: CaseField[];
+  task: Task;
+  eventCompletionParams: EventCompletionParams;
+  eventCompletionChecksRequired = false;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -63,15 +68,17 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private caseEdit: CaseEditComponent,
-    private formValueService: FormValueService,
-    private formErrorService: FormErrorService,
-    private fieldsUtils: FieldsUtils,
-    private caseFieldService: CaseFieldService,
-    private route: ActivatedRoute,
-    private orderService: OrderService,
-    private profileService: ProfileService,
-    private profileNotifier: ProfileNotifier,
+    private readonly caseEdit: CaseEditComponent,
+    private readonly formValueService: FormValueService,
+    private readonly formErrorService: FormErrorService,
+    private readonly fieldsUtils: FieldsUtils,
+    private readonly caseFieldService: CaseFieldService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly orderService: OrderService,
+    private readonly profileService: ProfileService,
+    private readonly profileNotifier: ProfileNotifier,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -92,8 +99,59 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Handler function for event completion
+   *
+   * @memberof CaseEditSubmitComponent
+   */
   public submit(): void {
     this.isSubmitting = true;
+
+    // We have to run the event completion checks if task in session storage
+    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task = JSON.parse(taskStr);
+      this.task = task;
+      // Show event completion component to perform event completion checks
+      this.eventCompletionParams = {
+        caseId: this.getCaseId(),
+        eventId: this.getEventId(),
+        task: task
+      };
+      this.eventCompletionChecksRequired = true;
+    } else {
+      // Task not in session storage, proceed to submit
+      const caseEventData = this.generateCaseEventData();
+      this.caseSubmit(caseEventData);
+    }
+  }
+
+  /**
+   * Handler function for event emitted from case event completion component
+   *
+   * @param {boolean} eventCanBeCompleted
+   * @memberof CaseEditSubmitComponent
+   */
+  public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
+    if (eventCanBeCompleted) {
+      // Submit
+      const caseEventData = this.generateCaseEventData();
+      this.caseSubmit(caseEventData);
+    } else {
+      // Navigate to tasks tab on case details page
+      this.router.navigate([`/cases/case-details/${this.getCaseId()}/tasks`], { relativeTo: this.route });
+    }
+  }
+
+  /**
+   * Function to generate and return case event data for completing the event
+   *
+   * @private
+   * @return {*}  {CaseEventData}
+   * @memberof CaseEditSubmitComponent
+   */
+  private generateCaseEventData(): CaseEventData {
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
@@ -112,6 +170,18 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseEdit.confirmation) {
       caseEventData.data = {};
     }
+
+    return caseEventData;
+  }
+
+  /**
+   * Function to complete the event
+   *
+   * @private
+   * @param {CaseEventData} caseEventData
+   * @memberof CaseEditSubmitComponent
+   */
+  private caseSubmit(caseEventData: CaseEventData): void {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
@@ -391,6 +461,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  public getEventId(): string {
+    return this.editForm.value.event.id;
   }
 
   public getCaseTitle(): string {
