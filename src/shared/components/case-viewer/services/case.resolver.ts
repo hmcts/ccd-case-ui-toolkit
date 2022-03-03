@@ -72,9 +72,6 @@ export class CaseResolver implements Resolve<CaseView> {
         .pipe(
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-            // TODO: Remove the below method call 'addClaseFlags'
-            // Added temporarily until case flags are available as part of case details
-            this.addCaseFlags();
             this.caseNotifier.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
           }),

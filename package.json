@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.1-case-flags-tab-navigation",
+  "version": "4.13.1-case-flags-banner-message-fix-active-count",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

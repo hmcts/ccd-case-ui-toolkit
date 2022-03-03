@@ -445,19 +445,69 @@ const CASE_VIEW: CaseView = {
     {
       id: 'CaseFlagsTab',
       label: 'Case flags',
-      fields: [Object.assign(new CaseField(), {
-        id: 'FlagLauncher1',
-        label: 'Flag launcher',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'FlagLauncher',
-          type: 'FlagLauncher'
-        },
-        order: 4,
-        value: null,
-        show_condition: '',
-        hint_text: ''
-      })],
+      fields: [
+        Object.assign(new CaseField(), {
+          id: 'FlagLauncher1',
+          label: 'Flag launcher',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'FlagLauncher',
+            type: 'FlagLauncher'
+          },
+          order: 4,
+          value: null,
+          show_condition: '',
+          hint_text: ''
+        }),
+        Object.assign(new CaseField(), {
+          id: 'CaseFlag1',
+          label: 'First Case Flag',
+          display_context: null,
+          // Temporary field type; will need to be changed over to "Flags" field type in future
+          field_type: {
+            id: 'CaseFlag',
+            type: 'Complex'
+          },
+          value: {
+            partyName: 'John Smith',
+            roleOnCase: '',
+            details: [
+              {
+                id: '9c2129ba-3fc6-4bae-afc3-32808ffd9cbe',
+                value: {
+                  name: 'Wheel chair access',
+                  subTypeValue: '',
+                  subTypeKey: '',
+                  otherDescription: '',
+                  flagComment: '',
+                  dateTimeModified: new Date('2021-09-09 00:00:00'),
+                  dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                  path: [],
+                  hearingRelevant: false,
+                  flagCode: '',
+                  status: CaseFlagStatus.ACTIVE
+                }
+              },
+              {
+                id: '9125aac8-1506-4753-b820-b3a3be451235',
+                value: {
+                  name: 'Sign language',
+                  subTypeValue: 'British Sign Language (BSL)',
+                  subTypeKey: '',
+                  otherDescription: '',
+                  flagComment: '',
+                  dateTimeModified: new Date('2021-09-09 00:00:00'),
+                  dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                  path: [],
+                  hearingRelevant: false,
+                  flagCode: '',
+                  status: CaseFlagStatus.INACTIVE
+                }
+              }
+            ]
+          }
+        })
+      ],
       show_condition: null
     }
   ],
@@ -1392,139 +1442,55 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
-  it('should display active case flags banner message if at least one of the case flag is active', () => {
-    comp.caseDetails = CASE_VIEW;
-    comp.caseDetails.case_flag = {
-      partyName: 'John Smith',
-      roleOnCase: '',
-      details: [{
-        name: 'Wheel chair access',
-        subTypeValue: '',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.ACTIVE
-      },
-      {
-        name: 'Sign language',
-        subTypeValue: 'British Sign Language (BSL)',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      }]
-    };
+  it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
 
-    // Spy on the getCaseFlagsTabName function to check it is called to set caseFlagsTabName in the component class
-    // (the notification banner should be initialised)
-    spyOn(comp, 'getCaseFlagsTabName').and.callThrough();
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
 
-    // Case Flags tab name expected to be empty string until the notification banner is initialised
-    expect(comp.caseFlagsTabName).toEqual('');
-
-    f.detectChanges();
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).toContain('View case flags');
-    expect(comp.isCaseFlagActive()).toEqual(true);
-
-    // Case Flags tab name expected to be non-empty now the notification banner is initialised
-    expect(comp.caseFlagsTabName).toEqual('Case flags');
-    expect(comp.getCaseFlagsTabName).toHaveBeenCalled();
+    expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
+    expect(comp.activeCaseFlags).toBe(true);
   });
 
-  it('should not display active case flags banner message if none of the case flag is active', () => {
-    comp.caseDetails = CASE_VIEW;
-    comp.caseDetails.case_flag = {
-      partyName: 'John Smith',
-      roleOnCase: '',
-      details: [{
-        name: 'Wheel chair access',
-        subTypeValue: '',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      },
-      {
-        name: 'Sign language',
-        subTypeValue: 'British Sign Language (BSL)',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      }]
-    };
+  it('should not display active Case Flags banner message if none of the Case Flags are active', () => {
+    // Set first Case Flag status to "Inactive"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.INACTIVE;
 
-    // Reset Case Flags tab name
-    comp.caseFlagsTabName = '';
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
 
-    // Spy on the getCaseFlagsTabName function to check it is not called to set caseFlagsTabName in the component
-    // class (the notification banner should *not* be initialised)
-    spyOn(comp, 'getCaseFlagsTabName').and.callThrough();
-
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
     f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
     expect(bannerElement).toBeNull();
-    expect(comp.isCaseFlagActive()).toEqual(false);
+    expect(comp.activeCaseFlags).toBe(false);
+  });
 
-    // Case Flags tab name expected to remain empty string because the notification banner is not initialised
-    expect(comp.caseFlagsTabName).toEqual('');
-    expect(comp.getCaseFlagsTabName).not.toHaveBeenCalled();
+  it('should display active Case Flags banner message with the correct text when there is more than one active Case Flag', () => {
+    // Set both Case Flags' status to "Active"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.ACTIVE;
+    CASE_VIEW.tabs[3].fields[1].value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain('There are 2 active flags on this case');
+    expect(comp.activeCaseFlags).toBe(true);
   });
 
   it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
-    comp.caseDetails = CASE_VIEW;
-    comp.caseDetails.case_flag = {
-      partyName: 'John Smith',
-      roleOnCase: '',
-      details: [{
-        name: 'Wheel chair access',
-        subTypeValue: '',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.ACTIVE
-      },
-      {
-        name: 'Sign language',
-        subTypeValue: 'British Sign Language (BSL)',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      }]
-    };
-    f.detectChanges();
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
     const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
