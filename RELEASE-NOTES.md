@@ -4,7 +4,7 @@
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 
 ### Version 4.7.6-hearings-tab
-**EUI-4441** Add hearings tab in case details
+**EUI-4441** Add hearings tab in case details 
 
 ### Version 4.7.0-EUI-4412-order-fields-CYA-page
 **EUI-4414** Field order on the CYA page changes
