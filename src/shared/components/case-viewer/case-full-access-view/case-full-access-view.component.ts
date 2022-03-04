@@ -269,7 +269,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public hasActiveCaseFlags(): boolean {
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
     const caseFlagsTab = this.caseDetails.tabs
-      ? (this.caseDetails.tabs as CaseTab[]).filter(
+      ? (this.caseDetails.tabs).filter(
         tab => tab.fields && tab.fields.some(caseField => caseField.field_type.type === 'FlagLauncher'))[0]
       : null;
 

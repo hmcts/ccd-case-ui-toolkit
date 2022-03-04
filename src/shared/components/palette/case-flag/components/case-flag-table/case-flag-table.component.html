@@ -1,7 +1,8 @@
 <table class="govuk-table" *ngIf="flagData">
+  <caption class="govuk-table__caption govuk-table__caption--m">{{flagData.partyName}}</caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header col-party-name">{{flagData.partyName}}</th>
+      <th scope="col" class="govuk-table__header col-party-name">{{firstColumnHeader}}</th>
       <th scope="col" class="govuk-table__header col-comments">Comments</th>
       <th scope="col" class="govuk-table__header col-creation-date">Creation date</th>
       <th scope="col" class="govuk-table__header col-last-modified">Last modified</th>

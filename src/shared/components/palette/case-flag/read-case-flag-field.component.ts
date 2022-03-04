@@ -15,7 +15,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
 
   public flagsData: Flags[];
   public partyLevelCaseFlagData: Flags[];
-  public caseLevelCaseFlagData: Flags;
+  public caseLevelCaseFlagData: Flags[];
 
   constructor(
     private readonly route: ActivatedRoute
@@ -60,48 +60,13 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       }, []) as Flags[];
     }
 
-    // TODO: Remove hard-coding
+    // TODO: In future, this needs to separate party-level and case-level flags
     this.generateCaseFlagData();
   }
 
   public generateCaseFlagData(): void {
-    // TODO: Remove hard-coding
-    // The development of this component is in-progress state
-    // Added temporarily until case flags are available as part of case details
+    // Temporary assignment of all flags data to party level until it is known how party-level and case-level will be
+    // distinguished
     this.partyLevelCaseFlagData = this.flagsData;
-
-    // Not in use for now
-    this.caseLevelCaseFlagData = {
-      partyName: 'Smith v Peterson',
-      roleOnCase: '',
-      details: [
-        {
-          name: 'Potentially violent person fraud',
-          subTypeValue: '',
-          subTypeKey: '',
-          otherDescription: '',
-          flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
-          dateTimeModified: new Date('2021-09-09 00:00:00'),
-          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
-          hearingRelevant: false,
-          flagCode: '',
-          status: CaseFlagStatus.ACTIVE
-        },
-        {
-          name: 'Complex case',
-          subTypeValue: '',
-          subTypeKey: '',
-          otherDescription: '',
-          flagComment: 'Requires senior case worker',
-          dateTimeModified: new Date('2021-09-09 00:00:00'),
-          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
-          hearingRelevant: false,
-          flagCode: '',
-          status: CaseFlagStatus.INACTIVE
-        }
-      ]
-    };
   }
 }

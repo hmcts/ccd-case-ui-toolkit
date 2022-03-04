@@ -22,8 +22,6 @@ export class SelectFlagLocationComponent implements OnInit {
   public readonly selectedLocationControlName = 'selectedLocation';
   public nextClicked = false;
 
-  constructor() { }
-
   public ngOnInit(): void {
     this.flagLocationTitle = CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
     this.flagLocationNotSelectedErrorMessage = SelectFlagLocationErrorMessage.FLAG_LOCATION_NOT_SELECTED;
