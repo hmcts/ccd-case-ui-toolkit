@@ -124,7 +124,9 @@ export class EventStartStateMachineService {
     // Get number of tasks assigned to user
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
-    const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id || x.assignee === userInfo.uid);
+    const tasksAssignedToUser = context.tasks.filter(x =>
+        x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+      );
 
     // Check if user initiated the event from task tab
     const isEventInitiatedFromTaskTab = context.taskId !== undefined && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;

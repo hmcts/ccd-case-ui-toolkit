@@ -177,8 +177,8 @@ export class WorkAllocationService {
    * @param eventId The ID of the event to find tasks for.
    * @param caseId The ID of the case to find tasks for.
    */
-  public getTasksByCaseIdAndEventId(eventId: string, caseId): Observable<TaskPayload> {
-    return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}`);
+  public getTasksByCaseIdAndEventId(eventId: string, caseId: string, caseType: string, jurisdiction: string): Observable<TaskPayload> {
+    return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`);
   }
 
  /**
