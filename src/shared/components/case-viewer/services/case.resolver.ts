@@ -72,55 +72,12 @@ export class CaseResolver implements Resolve<CaseView> {
         .pipe(
           map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-            // TODO: Remove the below method call 'addClaseFlags'
-            // Added temporarily until case flags are available as part of case details
-            this.addCaseFlags();
             this.caseNotifier.announceCase(this.cachedCaseView);
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))
         ).toPromise();
     }
-  }
-
-  // TODO: Remove the below method
-  // Added temporarily until case flags are available as part of case details
-  // This is to enable testing
-  addCaseFlags(): void {
-    const caseFlag: Flags = {
-      partyName: 'Smith v Peterson',
-      roleOnCase: '',
-      details: [
-        {
-          name: 'Potentially violent person fraud',
-          subTypeValue: '',
-          subTypeKey: '',
-          otherDescription: '',
-          flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
-          dateTimeModified: new Date('2021-09-09 00:00:00'),
-          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
-          hearingRelevant: false,
-          flagCode: '',
-          status: CaseFlagStatus.ACTIVE
-        },
-        {
-          name: 'Complex case',
-          subTypeValue: '',
-          subTypeKey: '',
-          otherDescription: '',
-          flagComment: 'Requires senior case worker',
-          dateTimeModified: new Date('2021-09-09 00:00:00'),
-          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
-          hearingRelevant: false,
-          flagCode: '',
-          status: CaseFlagStatus.INACTIVE
-        }
-      ]
-    };
-
-    this.cachedCaseView.case_flag = caseFlag;
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {

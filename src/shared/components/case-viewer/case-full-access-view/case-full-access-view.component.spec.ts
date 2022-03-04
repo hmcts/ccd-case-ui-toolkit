@@ -13,6 +13,7 @@ import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
+import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
 import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
 import { CallbackErrorsContext } from '../../../components/error/domain';
 import { PaletteUtilsModule } from '../../../components/palette/utils';
@@ -42,7 +43,6 @@ import { CaseNotifier, ConvertHrefToRouterService } from '../../case-editor';
 import { CaseFlagStatus, ComplexModule, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
-import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
 
 @Component({
   // tslint:disable-next-line
@@ -119,19 +119,19 @@ const MarkdownComponent: any = MockComponent({
   inputs: ['content', 'markdownUseHrefAsRouterLink']
 });
 
-let CaseActivityComponent: any = MockComponent({
+const CaseActivityComponent: any = MockComponent({
   selector: 'ccd-activity',
   inputs: ['caseId', 'displayMode']
 });
 
-let FieldReadComponent: any = MockComponent({
+const FieldReadComponent: any = MockComponent({
   selector: 'ccd-field-read', inputs: [
     'caseField',
     'caseReference'
   ]
 });
 
-let LinkComponent: any = MockComponent({
+const LinkComponent: any = MockComponent({
   selector: 'a', inputs: [
     'routerLink'
   ]
@@ -442,13 +442,81 @@ const CASE_VIEW: CaseView = {
       fields: [],
       show_condition: ''
     },
+    {
+      id: 'CaseFlagsTab',
+      label: 'Case flags',
+      fields: [
+        Object.assign(new CaseField(), {
+          id: 'FlagLauncher1',
+          label: 'Flag launcher',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'FlagLauncher',
+            type: 'FlagLauncher'
+          },
+          order: 4,
+          value: null,
+          show_condition: '',
+          hint_text: ''
+        }),
+        Object.assign(new CaseField(), {
+          id: 'CaseFlag1',
+          label: 'First Case Flag',
+          display_context: null,
+          // Temporary field type; will need to be changed over to "Flags" field type in future
+          field_type: {
+            id: 'CaseFlag',
+            type: 'Complex'
+          },
+          value: {
+            partyName: 'John Smith',
+            roleOnCase: '',
+            details: [
+              {
+                id: '9c2129ba-3fc6-4bae-afc3-32808ffd9cbe',
+                value: {
+                  name: 'Wheel chair access',
+                  subTypeValue: '',
+                  subTypeKey: '',
+                  otherDescription: '',
+                  flagComment: '',
+                  dateTimeModified: new Date('2021-09-09 00:00:00'),
+                  dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                  path: [],
+                  hearingRelevant: false,
+                  flagCode: '',
+                  status: CaseFlagStatus.ACTIVE
+                }
+              },
+              {
+                id: '9125aac8-1506-4753-b820-b3a3be451235',
+                value: {
+                  name: 'Sign language',
+                  subTypeValue: 'British Sign Language (BSL)',
+                  subTypeKey: '',
+                  otherDescription: '',
+                  flagComment: '',
+                  dateTimeModified: new Date('2021-09-09 00:00:00'),
+                  dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                  path: [],
+                  hearingRelevant: false,
+                  flagCode: '',
+                  status: CaseFlagStatus.INACTIVE
+                }
+              }
+            ]
+          }
+        })
+      ],
+      show_condition: null
+    }
   ],
   triggers: TRIGGERS,
   events: EVENTS,
   metadataFields: METADATA,
 };
 
-let mockRoute: any = {
+const mockRoute: any = {
   snapshot: {
     data: {
       case: CASE_VIEW
@@ -503,14 +571,14 @@ let deDialog: DebugElement;
 let component: CaseFullAccessViewComponent;
 let de: DebugElement;
 
-let orderService;
+let orderService: OrderService;
 let mockCallbackErrorSubject: any;
-let activityService: any;
-let draftService: any;
-let alertService: any;
-let dialog: any;
-let matDialogRef: any;
-let caseNotifier: any;
+let activityService: jasmine.SpyObj<ActivityPollingService>;
+let draftService: jasmine.SpyObj<DraftService>;
+let alertService: jasmine.SpyObj<AlertService>;
+let dialog: jasmine.SpyObj<MatDialog>;
+let matDialogRef: jasmine.SpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>;
+let caseNotifier: jasmine.SpyObj<CaseNotifier>;
 let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
@@ -1205,7 +1273,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
             }
           },
           ErrorNotifierService,
@@ -1251,19 +1319,19 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     f.detectChanges();
   }));
 
-  it('should render two pretended tabs', () => {
+  it('should render two prepended tabs', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(5);
+    expect(matTabHTMLElement.children.length).toBe(6);
   });
 
-  it('should display "Tasks" tab as the first tab ', () => {
+  it('should display "Tasks" tab as the first tab', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>tasksTab.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
   });
-})
+});
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
@@ -1327,7 +1395,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
             }
           },
           ErrorNotifierService,
@@ -1384,85 +1452,76 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   it('should render appended tabs hearings', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(6);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(7);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
-  it('should display active case flags banner message if at least one of the case flag is active', () => {
-    comp.caseDetails = CASE_VIEW;
-    comp.caseDetails.case_flag = {
-      partyName: 'John Smith',
-      roleOnCase: '',
-      details: [{
-        name: 'Wheel chair access',
-        subTypeValue: '',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.ACTIVE
-      },
-      {
-        name: 'Sign language',
-        subTypeValue: 'British Sign Language (BSL)',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      }]
-    };
-    f.detectChanges();
+  it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).toContain('View case flags');
-    expect(comp.isCaseFlagActive()).toEqual(true);
+    expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
+    expect(comp.activeCaseFlags).toBe(true);
   });
 
-  it('should not display active case flags banner message if none of the case flag is active', () => {
-    comp.caseDetails = CASE_VIEW;
-    comp.caseDetails.case_flag = {
-      partyName: 'John Smith',
-      roleOnCase: '',
-      details: [{
-        name: 'Wheel chair access',
-        subTypeValue: '',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      },
-      {
-        name: 'Sign language',
-        subTypeValue: 'British Sign Language (BSL)',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.INACTIVE
-      }]
-    };
+  it('should not display active Case Flags banner message if none of the Case Flags are active', () => {
+    // Set first Case Flag status to "Inactive"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.INACTIVE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
     f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
     expect(bannerElement).toBeNull();
-    expect(comp.isCaseFlagActive()).toEqual(false);
+    expect(comp.activeCaseFlags).toBe(false);
+  });
+
+  it('should display active Case Flags banner message with the correct text when there is more than one active Case Flag', () => {
+    // Set both Case Flags' status to "Active"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.ACTIVE;
+    CASE_VIEW.tabs[3].fields[1].value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain('There are 2 active flags on this case');
+    expect(comp.activeCaseFlags).toBe(true);
+  });
+
+  it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
+    const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
+    // Case Flags tab is expected to be the sixth tab (i.e. index 5)
+    const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
+    // Click the "View case flags" link and check the Case Flags tab is now active
+    viewCaseFlagsLink.click();
+    f.detectChanges();
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
+    // Change the active tab to a different one and check the Case Flags tab is no longer active
+    comp.selectedTabIndex = 6;
+    f.detectChanges();
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
+    // Click the "View case flags" link and check the Case Flags tab is active again
+    viewCaseFlagsLink.click();
+    f.detectChanges();
+    expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
   });
 });
 
@@ -1527,7 +1586,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
+              public path = (_: string) => 'cases/case-details/1234567890123456'
             }
           },
           ErrorNotifierService,
@@ -1562,7 +1621,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   it('should render 1st order of tabs', () => {
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(3);
+    expect(matTabHTMLElement.children.length).toBe(4);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
   });

@@ -42,15 +42,17 @@
                         (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>
-<div class="grid-row" *ngIf="isCaseFlagActive()">
+<div class="grid-row" *ngIf="activeCaseFlags">
   <div class="column-full">
-    <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)"></ccd-notification-banner>
+    <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)">
+    </ccd-notification-banner>
   </div>
 </div>
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
-      <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true">
+      <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true"
+        [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
         </mat-tab>
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">

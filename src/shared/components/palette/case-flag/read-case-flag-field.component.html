@@ -1,7 +1,5 @@
 <h2 class="govuk-heading-l">Case flags</h2>
-<h3 class="govuk-heading-m">Party level flags</h3>
 <div *ngFor="let flagData of partyLevelCaseFlagData">
-  <ccd-case-flag-table [flagData]="flagData"></ccd-case-flag-table>
+  <ccd-case-flag-table [flagData]="flagData" [firstColumnHeader]="'Party level flags'"></ccd-case-flag-table>
 </div>
-<h3 class="govuk-heading-m">Case level flags</h3>
-<ccd-case-flag-table [flagData]="caseLevelCaseFlagData"></ccd-case-flag-table>
+<!-- <ccd-case-flag-table [flagData]="caseLevelCaseFlagData" [firstColumnHeader]="'Case level flags'"></ccd-case-flag-table> -->
