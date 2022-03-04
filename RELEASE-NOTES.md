@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-banner-message-fix-active-count
+**EUI-4897** Fix count of active case flags in message banner
+
+### Version 4.13.1-case-flags-tab-navigation
+**EUI-4897** Fix case flags tab navigation from message banner
 
 ### Version 4.13.1-case-flags-select-location-step-rc.2
 **EUI-4838** Add "select location" step of Create Case Flag journey

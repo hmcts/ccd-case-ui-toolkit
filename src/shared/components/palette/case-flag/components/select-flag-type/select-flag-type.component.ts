@@ -27,7 +27,7 @@ export class SelectFlagTypeComponent implements OnInit {
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle
-  };
+  }
 
   public ngOnInit(): void {
     this.flagTypes = this.getFlagTypes();

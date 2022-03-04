@@ -7,26 +7,26 @@ import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-
-import { DeleteOrCancelDialogComponent } from '../../dialogs';
-import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../../domain';
-import {
-  ActivityPollingService,
-  AlertService,
-  DraftService,
-  ErrorNotifierService,
-  NavigationNotifierService,
-  NavigationOrigin,
-  OrderService,
-} from '../../../services';
-import { CallbackErrorsContext } from '../../error';
-import { initDialog } from '../../helpers';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
+import { ShowCondition } from '../../../directives';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import {
+  ActivityPollingService,
+  AlertService,
+  DraftService,
+  ErrorNotifierService,
+  FieldsUtils,
+  NavigationNotifierService,
+  NavigationOrigin,
+  OrderService
+} from '../../../services';
+import { DeleteOrCancelDialogComponent } from '../../dialogs';
+import { CallbackErrorsContext } from '../../error';
+import { initDialog } from '../../helpers';
 import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 @Component({
@@ -61,6 +61,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
   public notificationBannerConfig: NotificationBannerConfig;
+  public selectedTabIndex = 0;
+  public activeCaseFlags = false;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -80,7 +82,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     initDialog(this.dialogConfig);
 
     this.init();
@@ -94,13 +96,16 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.callbackErrorsSubject.next(this.error);
       }
     });
+
+    // Check for active Case Flags
+    this.activeCaseFlags = this.hasActiveCaseFlags();
   }
 
   public isPrintEnabled(): boolean {
     return this.caseDetails.case_type.printEnabled;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.activitySubscription && this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
@@ -235,6 +240,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    // Update selected tab index
+    this.selectedTabIndex = tabChangeEvent.index;
+
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
     const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
@@ -250,34 +258,46 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public onLinkClicked(triggerOutputEventText: string): void {
-    const matTab = this.tabGroup._tabs.find((x) => x.textLabel === triggerOutputEventText);
-    if (matTab && matTab.position) {
-      this.tabGroup.selectedIndex = matTab.position;
+    // Get the *absolute* (not relative) index of the target tab and set as the active tab, using the selectedIndex input
+    // of mat-tab-group (bound to selectedTabIndex)
+    const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
+    if (targetTabIndex > -1) {
+      this.selectedTabIndex = targetTabIndex;
     }
   }
 
-  public isCaseFlagActive(): boolean {
-    const activeCaseFlags = this.caseDetails &&
-      this.caseDetails.case_flag &&
-      this.caseDetails.case_flag.details &&
-      this.caseDetails.case_flag.details.filter(x => x.status === CaseFlagStatus.ACTIVE);
+  public hasActiveCaseFlags(): boolean {
+    // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
+    const caseFlagsTab = this.caseDetails.tabs
+      ? (this.caseDetails.tabs).filter(
+        tab => tab.fields && tab.fields.some(caseField => caseField.field_type.type === 'FlagLauncher'))[0]
+      : null;
 
-    if (activeCaseFlags && activeCaseFlags.length > 0) {
-      const description = activeCaseFlags.length > 1
-        ? `There are ${activeCaseFlags.length} active flags on this case.` : 'There is 1 active flag on this case.';
-      // Initialise and display notification banner
-      this.notificationBannerConfig = {
-        bannerType: NotificationBannerType.INFORMATION,
-        headingText: 'Important',
-        description: description,
-        showLink: true,
-        linkText: 'View case flags',
-        linkUrl: `/cases/case-details/${this.caseDetails.case_id}`,
-        triggerOutputEvent: true,
-        triggerOutputEventText: 'Case flags',
-        headerClass: NotificationBannerHeaderClass.INFORMATION
+    if (caseFlagsTab) {
+      const activeCaseFlags = caseFlagsTab.fields
+        .filter(caseField => FieldsUtils.isFlagsCaseField(caseField) && caseField.value && caseField.value.details)
+        .reduce((active, caseFlag) => {
+          (caseFlag.value.details as any[])
+          .forEach(detail => active = detail.value.status === CaseFlagStatus.ACTIVE ? active + 1 : active);
+          return active;
+        }, 0);
+
+      if (activeCaseFlags > 0) {
+        const description = activeCaseFlags > 1
+          ? `There are ${activeCaseFlags} active flags on this case.` : 'There is 1 active flag on this case.';
+        // Initialise and display notification banner
+        this.notificationBannerConfig = {
+          bannerType: NotificationBannerType.INFORMATION,
+          headingText: 'Important',
+          description: description,
+          showLink: true,
+          linkText: 'View case flags',
+          triggerOutputEvent: true,
+          triggerOutputEventText: caseFlagsTab.label,
+          headerClass: NotificationBannerHeaderClass.INFORMATION
+        }
+        return true;
       }
-      return true;
     }
 
     return false;
