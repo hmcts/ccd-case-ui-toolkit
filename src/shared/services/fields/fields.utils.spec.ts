@@ -552,4 +552,20 @@ describe('FieldsUtils', () => {
       expect(callbackResponse).toEqual(expected);
     });
   });
+
+  describe('isFlagLauncherCaseField() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isFlagLauncherCaseField(null)).toBe(false);
+    });
+
+    it('should return false if case field is not of type FlagLauncher', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isFlagLauncherCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if case field is of type FlagLauncher', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isFlagLauncherCaseField(caseField)).toBe(true);
+    });
+  });
 });
