@@ -1,6 +1,7 @@
 import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
+import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
 import { HttpErrorService, HttpService } from '../../../services';
 import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.service';
 
@@ -62,12 +63,45 @@ function getExampleUserDetails(): UserDetails[] {
   }]
 }
 
+function getExampleTask(): TaskRespone {
+  return {
+    task: {
+      assignee: '1234-1234-1234-1234',
+      auto_assigned: false,
+      case_category: 'asylum',
+      case_id: '2345678901',
+      case_management_category: null,
+      case_name: 'Alan Jonson',
+      case_type_id: null,
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      execution_type: null,
+      id: 'Task_2',
+      jurisdiction: 'Immigration and Asylum',
+      location: null,
+      location_name: null,
+      name: 'Task name',
+      permissions: null,
+      region: null,
+      security_classification: null,
+      task_state: null,
+      task_system: null,
+      task_title: 'Some lovely task name',
+      type: null,
+      warning_list: null,
+      warnings: true,
+      work_type_id: null
+    }
+  };
+}
+
 describe('WorkAllocationService', () => {
 
   const API_URL = 'http://aggregated.ccd.reform';
   const MOCK_TASK_1 = { id: 'Task_1', caseReference: '1234567890' };
   const MOCK_TASK_2 = { id: 'Task_2', caseReference: '2345678901' };
   const TASK_SEARCH_URL = `${API_URL}/searchForCompletable`;
+  const TASK_ASSIGN_URL = `${API_URL}/task/${MOCK_TASK_1.id}/assign`;
   const TASK_COMPLETE_URL = `${API_URL}/task/${MOCK_TASK_1.id}/complete`;
 
   const ERROR: HttpError = new HttpError();
@@ -139,6 +173,34 @@ describe('WorkAllocationService', () => {
 
   });
 
+  describe('assignTask', () => {
+
+    beforeEach(() => {
+      httpService.post.and.returnValue(Observable.of({}));
+    });
+
+    it('should call post with the correct parameters', () => {
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_ASSIGN_URL, {userId});
+    });
+
+    it('should set error service error when the call fails', (done) => {
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      httpService.post.and.returnValue(throwError(ERROR));
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId)
+        .subscribe(() => {
+          // Should not get here... so if we do, make sure it fails.
+          done.fail('Assign task instead of erroring');
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          done();
+        });
+    });
+
+  });
+
   describe('completeTask', () => {
 
     beforeEach(() => {
@@ -153,6 +215,34 @@ describe('WorkAllocationService', () => {
     it('should set error service error when the call fails', (done) => {
       httpService.post.and.returnValue(throwError(ERROR));
       workAllocationService.completeTask(MOCK_TASK_1.id)
+        .subscribe(() => {
+          // Should not get here... so if we do, make sure it fails.
+          done.fail('Completed task instead of erroring');
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          expect(alertService.setPreserveAlerts).toHaveBeenCalled();
+          expect(alertService.warning).toHaveBeenCalled();
+          done();
+        });
+    });
+
+  });
+
+  describe('assignAndCompleteTask', () => {
+
+    beforeEach(() => {
+      httpService.post.and.returnValue(Observable.of({}));
+    });
+
+    it('should call post with the correct parameters', () => {
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {'completion_options': {'assign_and_complete': true}});
+    });
+
+    it('should set error service error when the call fails', (done) => {
+      httpService.post.and.returnValue(throwError(ERROR));
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id)
         .subscribe(() => {
           // Should not get here... so if we do, make sure it fails.
           done.fail('Completed task instead of erroring');
@@ -250,6 +340,16 @@ describe('WorkAllocationService', () => {
       }, error => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         expect(error.message).toEqual(COMPLETE_ERROR.message); // The error for completing the task.
+        done();
+      });
+    });
+
+    it('should get task for the task id provided', (done) => {
+      const taskResponse = getExampleTask();
+      const getSpy = spyOn(workAllocationService, 'getTask').and.returnValue(Observable.of(taskResponse));
+      httpService.get.and.returnValue(Observable.of({taskResponse}));
+      workAllocationService.getTask(MOCK_TASK_2.id).subscribe(result => {
+        expect(getSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
       });
     });

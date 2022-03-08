@@ -8,7 +8,7 @@ export * from './create-case-filters';
 export * from './dialogs';
 export * from './error';
 export * from './error-message';
-export * from './event-trigger';
+export * from './event-start';
 export * from './markdown';
 export * from './palette';
 export * from './search-filters';
