@@ -978,7 +978,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual('Please select Next to go to the next page');
+        expect(error.message).toEqual('Please select Next to complete the creation of the case flag');
       });
     });
   });

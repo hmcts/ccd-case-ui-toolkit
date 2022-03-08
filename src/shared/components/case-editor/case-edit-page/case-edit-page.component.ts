@@ -176,7 +176,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                 this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
-              this.validationErrors.push({ id, message: 'Please select Next to go to the next page' });
+              this.validationErrors.push({ id, message: 'Please select Next to complete the creation of the case flag' });
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();
