@@ -66,7 +66,7 @@ describe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeTruthy();
-    result.setValue(' valid ');
+    result.setValue(' This text is valid. ');
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.valid).toBeTruthy();
