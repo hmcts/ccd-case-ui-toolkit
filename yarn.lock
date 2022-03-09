@@ -407,10 +407,10 @@
     lodash "^4.17.21"
     tslib "^2.2.0"
 
-"@hmcts/ccpay-web-component@6.0.0-beta13":
-  version "6.0.0-beta13"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-6.0.0-beta13.tgz#0837606c7c080e30e28d02a485f05a2a60206faa"
-  integrity sha512-zZhcE/3a4oHUz4V5WhhJ06yVhOaUllAmZZskbcqCUNopzEt4RUMsJJDziGOluWe6C7y1i0Esl37Kec1NSXj0IA==
+"@hmcts/ccpay-web-component@5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.4.tgz#bca6ed5daf543ee4033ea299b383939f80228b4e"
+  integrity sha512-KVXShRgxkdDITY1ILlzyWpKSUKeCZP/7PiFa62EZ4XYnSRNw2wpIYLayqtgi0CnP2WyhKuSok1oHFOHUF9ErSg==
   dependencies:
     tslib "^1.9.0"
 
