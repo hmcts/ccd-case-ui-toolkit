@@ -10,7 +10,7 @@ describe('CaseListComponent', () => {
   const cases: any[] = [
     {
       case_id: 'c111111',
-      caseCreatedDate: '2020-03-19T07:13:35.151Z',
+      caseCreatedDate: null,
       caseDueDate: '2021-04-17T23:58:28.201Z',
       caseRef: 'd2e373c6-4e6a-4a01-88b1-983b4a6bdbd7',
       petFirstName: 'Vaughn',
@@ -110,12 +110,18 @@ describe('CaseListComponent', () => {
 
       const firstRowData = firstRow.children.slice(1, 4);
       const firstRowExpectedResult = cases[0];
+      const secondRowExpectedResult = cases[1];
 
       // Check the data rendered is as expected, bearing in mind the dates should be formatted to the en-GB locale
       expect(firstRowData[0].nativeElement.textContent.trim()).toEqual(
-        formatDate(firstRowExpectedResult.caseCreatedDate, 'dd MMM yyyy', 'en-GB)'));
+        '-');
       expect(firstRowData[1].nativeElement.textContent.trim()).toEqual(
         formatDate(firstRowExpectedResult.caseDueDate, 'dd MMM yyyy', 'en-GB'));
+
+      expect(component.formatDateAtTime(firstRowExpectedResult.caseCreatedDate)).toEqual('-');
+
+      expect(component.formatDateAtTime(secondRowExpectedResult.caseCreatedDate)).toEqual('14 Dec 2019 at 4:19 pm');
+
       expect(firstRowData[2].nativeElement.textContent.trim()).toEqual(firstRowExpectedResult.caseRef);
     });
 

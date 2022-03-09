@@ -9,6 +9,7 @@ import { PaletteModule } from '../palette';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivityModule } from '../activity';
 import { LabelSubstitutorModule } from '../../directives';
+import { PaginationModule } from '../pagination/pagination.module';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { LabelSubstitutorModule } from '../../directives';
     ReactiveFormsModule,
     PaletteModule,
     ActivityModule,
-    LabelSubstitutorModule
+    LabelSubstitutorModule,
+    PaginationModule
   ],
   declarations: [
     SearchResultComponent,

@@ -1,4 +1,4 @@
-import { _ as _score } from 'underscore';
+import  * as _score from 'underscore';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -106,8 +106,6 @@ export class ShowCondition {
           }
           if (caseField) {
             allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1;
-          } else {
-            allUnchangeable = false;
           }
         }
         return allUnchangeable;
@@ -131,7 +129,28 @@ export class ShowCondition {
     if (!this.condition) {
       return true;
     }
-    return this.matchAndConditions(fields, path);
+    return this.matchAndConditions(fields, this.updatePathName(path));
+  }
+  /**
+   * Path Name gets updated for complex sub fields
+   * @param path Path name.
+   */
+   private updatePathName(path: string): string {
+    if (path && path.split(/[_]+/g).length > 0) {
+      let [pathName, ...pathTail] = path.split(/[_]+/g);
+      const pathFinalIndex = pathTail.pop();
+      const pathTailString = pathTail.toString();
+
+      pathTail = pathTail.map((value) => {
+        return Number(pathFinalIndex) === Number(value) ? pathName : value;
+      });
+
+      return pathTailString !== pathTail.toString()
+        ? `${pathName}_${pathTail.join('_')}_${pathFinalIndex}`
+        : path;
+    } else {
+      return path;
+    }
   }
 
   public matchByContextFields(contextFields: CaseField[]): boolean {
@@ -175,7 +194,10 @@ export class ShowCondition {
     if (expectedValue.search('[,]') > -1) { // for  multi-select list
       return this.checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor);
     } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== ShowCondition.CONDITION_NOT_EQUALS) {
-      return currentValue.startsWith(this.removeStarChar(expectedValue));
+      if (typeof currentValue === 'string') {
+        return currentValue.startsWith(this.removeStarChar(expectedValue));
+      }
+      return expectedValue === '*';
     } else {
       // changed from '===' to '==' to cover number field conditions
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
@@ -242,7 +264,7 @@ export class ShowCondition {
 
   private findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
     // use the path to resolve which array element we refer to
-    if (path.startsWith(head)) {
+    if (path && path.startsWith(head)) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {

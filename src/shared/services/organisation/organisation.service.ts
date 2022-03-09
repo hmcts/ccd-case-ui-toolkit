@@ -87,7 +87,6 @@ export class OrganisationService {
                 return of([]);
             });
             timer(cacheTimeOut).subscribe(() => {
-                console.log('subscribe');
                 this.organisations$ = null;
             });
         }

@@ -9,14 +9,10 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent implements OnChanges {
 
   @Input()
-  isExpanded = false;
+  public isExpanded = false;
 
   @Input()
-  idPrefix = '';
-
-  public id() {
-    return this.idPrefix + this.caseField.id;
-  }
+  public isInSearchBlock = false;
 
   public constructor() {
     super();
@@ -41,5 +37,9 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
     if (this.caseField && !(this.caseField instanceof CaseField)) {
       this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
     }
+  }
+
+  createElementId(elementId: string): string {
+    return `${this.id()}_${elementId}`;
   }
 }

@@ -6,12 +6,14 @@
            class="form-control"
            [id]="dayId()"
            [name]="dayId()"
-           type="number"
+           type="text"
+           pattern="[0-9]*"
+           inputmode="numeric"
            [value]="displayDay"
            (change)="dayChange(dayInput.value)"
            (keyup)="dayChange(dayInput.value)"
-           (blur)="inputBlur()"
-           (focus)="inputFocus()">
+           (focus)="inputFocus()"
+           [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
 
   <div class="form-group form-group-month">
@@ -20,12 +22,14 @@
            class="form-control"
            [id]="monthId()"
            [name]="monthId()"
-           type="number"
+           type="text"
+           pattern="[0-9]*"
+           inputmode="numeric"
            [value]="displayMonth"
            (change)="monthChange(monthInput.value)"
            (keyup)="monthChange(monthInput.value)"
-           (blur)="inputBlur()"
-           (focus)="inputFocus()">
+           (focus)="inputFocus()"
+           [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
 
   <div class="form-group form-group-year">
@@ -34,12 +38,14 @@
            class="form-control"
            [id]="yearId()"
            [name]="yearId()"
-           type="number"
+           type="text"
+           pattern="[0-9]*"
+           inputmode="numeric"
            [value]="displayYear"
            (change)="yearChange(yearInput.value)"
            (keyup)="yearChange(yearInput.value)"
-           (blur)="inputBlur()"
-           (focus)="inputFocus()">
+           (focus)="inputFocus()"
+           [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
 
   <div class="form-group form-group-hour" *ngIf="isDateTime">
@@ -52,8 +58,8 @@
            [value]="displayHour"
            (change)="hourChange(hourInput.value)"
            (keyup)="hourChange(hourInput.value)"
-           (blur)="inputBlur()"
-           (focus)="inputFocus()">
+           (focus)="inputFocus()"
+           [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
 
   <div class="form-group form-group-minute" *ngIf="isDateTime">
@@ -66,8 +72,8 @@
            [value]="displayMinute"
            (change)="minuteChange(minuteInput.value)"
            (keyup)="minuteChange(minuteInput.value)"
-           (blur)="inputBlur()"
-           (focus)="inputFocus()">
+           (focus)="inputFocus()"
+           [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
 
   <div class="form-group form-group-second" *ngIf="isDateTime">
@@ -80,8 +86,8 @@
            [value]="displaySecond"
            (change)="secondChange(secondInput.value)"
            (keyup)="secondChange(secondInput.value)"
-           (blur)="inputBlur()"
-           (focus)="inputFocus()">
+           (focus)="inputFocus()"
+           [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
 
 </div>

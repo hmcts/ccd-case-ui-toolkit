@@ -1,6 +1,6 @@
 import { Profile } from './profile.model';
 
-export let createAProfile = () => {
+export const createAProfile = () => {
   const p = new Profile();
   p.user = {
     idam: {

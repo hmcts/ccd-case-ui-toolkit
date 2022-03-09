@@ -74,7 +74,6 @@ export class CaseEditComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
-    this.announceProfile(this.route);
   }
 
   getPage(pageId: string): WizardPage {
@@ -128,9 +127,4 @@ export class CaseEditComponent implements OnInit {
     return this.router.navigate(['confirm'], {relativeTo: this.route});
   }
 
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
-  }
 }

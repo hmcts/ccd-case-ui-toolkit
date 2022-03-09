@@ -1,12 +1,19 @@
 import { Type } from 'class-transformer';
 import { Jurisdiction } from '../definition/jurisdiction.model';
 
+function hasRoles(profile: Profile): boolean {
+  if (profile.user && profile.user.idam && Array.isArray(profile.user.idam.roles)) {
+    return profile.user.idam.roles.length > 0;
+  }
+  return false;
+}
+
 // @dynamic
 export class Profile {
   user: {
     idam: {
       id: string,
-      email: string
+      email: string,
       forename: string,
       surname: string,
       roles: string[]
@@ -27,10 +34,16 @@ export class Profile {
   };
 
   isSolicitor(): boolean {
-    return this.user.idam.roles.find(r => r.endsWith('-solicitor')) !== undefined;
+    if (hasRoles(this)) {
+      return this.user.idam.roles.find(r => r.endsWith('-solicitor')) !== undefined;
+    }
+    return false;
   }
 
   isCourtAdmin(): boolean {
-    return this.user.idam.roles.find(r => r.endsWith('-courtadmin')) !== undefined;
+    if (hasRoles(this)) {
+      return this.user.idam.roles.find(r => r.endsWith('-courtadmin')) !== undefined;
+    }
+    return false;
   }
 }

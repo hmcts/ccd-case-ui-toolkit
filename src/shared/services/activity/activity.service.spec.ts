@@ -3,10 +3,12 @@ import { ActivityService } from './activity.service';
 import { AbstractAppConfig } from '../../../';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../services/http';
+import { SessionStorageService } from '../session/session-storage.service';
 
 let httpService: any;
 let appConfig: any;
 let activityService: ActivityService;
+let sessionStorageService: any;
 
 const response = {
   map: () => ({})
@@ -17,11 +19,13 @@ describe('ActivityService', () => {
   beforeEach(() => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
     appConfig.getActivityUrl.and.returnValue('someUrl');
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
     httpService.get.and.returnValue(Observable.of(response));
     httpService.post.and.returnValue(Observable.of(response));
+    sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"')
 
-    activityService = new ActivityService(httpService, appConfig);
+    activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   });
 
   it('should access AppConfig and HttpService for getActivities', () => {

@@ -9,6 +9,7 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
+import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 @Component({
   selector: 'ccd-field-read',
@@ -108,6 +109,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
+            ReadFieldsFilterPipe,
 
             // Mock
             MockFieldReadComponent,
@@ -311,6 +313,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
+            ReadFieldsFilterPipe,
 
             // Mock
             MockFieldReadComponent,

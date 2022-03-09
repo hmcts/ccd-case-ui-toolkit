@@ -236,7 +236,7 @@ describe('SearchResultComponent', () => {
     it('should render pagination header', () => {
       let pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeTruthy();
-      expect(pagination.nativeElement.textContent.trim()).toBe('Displaying 1 - 4 out of 4 results');
+      expect(pagination.nativeElement.textContent.trim()).toBe('Showing 1 to 4 of 4 results');
     });
 
     it('should render a table <thead> and <tbody>', () => {
@@ -251,7 +251,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render pagination controls if results and metadata not empty', () => {
-      let pagination = de.queryAll(By.css('pagination-controls.pagination'));
+      let pagination = de.queryAll(By.css('ccd-pagination'));
 
       expect(pagination.length).toBeTruthy();
     });

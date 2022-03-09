@@ -10,6 +10,7 @@ import { JurisdictionService, SearchService, OrderService, WindowService } from 
 import { Jurisdiction, CaseType } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
+import { ConditionalShowModule } from '../../directives';
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
@@ -166,7 +167,8 @@ describe('SearchFiltersComponent', () => {
       .configureTestingModule({
         imports: [
           FormsModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+          ConditionalShowModule
         ],
         declarations: [
           SearchFiltersComponent,
@@ -555,7 +557,8 @@ describe('Clear localStorage', () => {
       .configureTestingModule({
         imports: [
           FormsModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+          ConditionalShowModule
         ],
         declarations: [
           SearchFiltersComponent,

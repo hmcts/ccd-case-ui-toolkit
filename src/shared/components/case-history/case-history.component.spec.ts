@@ -1,23 +1,25 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseHistoryComponent } from './case-history.component';
-import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DebugElement } from '@angular/core';
+import { MockComponent } from 'ng2-mock-component';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
+import { CaseView, HttpError } from '../../domain';
+import { createCaseHistory } from '../../fixture';
+import { CaseReferencePipe } from '../../pipes';
+import { AlertService, FieldsUtils, OrderService } from '../../services';
+import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
+import { CaseNotifier } from '../case-editor';
+import { FieldsFilterPipe, PaletteUtilsModule, ReadFieldsFilterPipe } from '../palette';
+import { CcdTabFieldsPipe } from '../palette/complex/ccd-tab-fields.pipe';
+import { CaseHistoryComponent } from './case-history.component';
+import { CaseHistory } from './domain';
+import { CaseHistoryService } from './services';
+
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { attr } from '../../test/helpers';
-import { CaseHistory } from './domain';
-import { HttpError, CaseView } from '../../domain';
-import { OrderService, FieldsUtils, AlertService } from '../../services';
-import { PaletteUtilsModule } from '../palette';
-import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
-import { CaseReferencePipe } from '../../pipes';
-import { createCaseHistory } from '../../fixture';
-import { CaseNotifier } from '../case-editor';
-import { CaseHistoryService } from './services';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 
 describe('CaseHistoryComponent', () => {
 
@@ -79,10 +81,11 @@ describe('CaseHistoryComponent', () => {
   let caseHistoryService;
   let alertService;
 
-  let FieldReadComponent: any = MockComponent({ selector: 'ccd-field-read', inputs: [
-      'caseField',
-      'caseReference'
-    ]});
+  let FieldReadComponent: any = MockComponent({
+    selector: 'ccd-field-read', inputs: [
+      'caseField', 'caseReference', 'formGroup', 'topLevelFormGroup', 'idPrefix'
+    ]
+  });
 
   let LinkComponent: any = MockComponent({
     selector: 'a', inputs: [
@@ -113,6 +116,9 @@ describe('CaseHistoryComponent', () => {
           FieldReadComponent,
           CaseHeaderComponent,
           LinkComponent,
+          CcdTabFieldsPipe,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
           MarkdownComponent
         ],
         providers: [
@@ -120,12 +126,12 @@ describe('CaseHistoryComponent', () => {
           PlaceholderService,
           CaseReferencePipe,
           FormatTranslatorService,
-          { provide: AlertService, useValue: alertService },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
-          { provide: CaseNotifier, useValue: caseNotifier },
-          { provide: CaseHistoryService, useValue: caseHistoryService },
-          { provide: Router, useValue: router }
+          {provide: AlertService, useValue: alertService},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          {provide: OrderService, useValue: orderService},
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: CaseHistoryService, useValue: caseHistoryService},
+          {provide: Router, useValue: router}
         ]
       })
       .compileComponents();
@@ -159,8 +165,7 @@ describe('CaseHistoryComponent', () => {
   });
 
   it('should render the field labels based on show_condition', () => {
-    let headers = de.query($NAME_TAB_CONTENT).queryAll(By.css('tbody>tr>th'));
-
+    const headers = de.query($NAME_TAB_CONTENT).queryAll(By.css('tbody>tr>th'));
     expect(headers.find(r => r.nativeElement.textContent.trim() === 'Complex field'))
       .toBeFalsy('Found row with label Complex field');
     expect(headers.find(r => r.nativeElement.textContent.trim() === 'Last name'))
@@ -169,11 +174,11 @@ describe('CaseHistoryComponent', () => {
       .toBeTruthy('Cannot find row with label First name');
   });
 
-  it('should render a row for each field in a given section', () => {
-    let rows = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr'));
-    expect(rows.length).toBe(FIELDS.length);
+  it('should render a row for each rendered field in a given section', () => {
+    const tab = de.query($NAME_TAB_CONTENT);
+    const rows = tab.queryAll(By.css('tbody>tr'));
+    // The compound row won't be rendered as it's not valid.
+    expect(rows.length).toBe(FIELDS.length - 1);
   });
 
   it('should render each simple field label as a table header', () => {
@@ -188,39 +193,35 @@ describe('CaseHistoryComponent', () => {
   });
 
   it('should render each compound field without label as a cell spanning 2 columns', () => {
-    let headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr.complex-field>th'));
-
+    const tab = de.query($NAME_TAB_CONTENT);
+    const headers = tab.queryAll(By.css('tbody>tr.complex-field>th'));
     expect(headers.length).toBe(0);
 
-    let cells = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr.compound-field>td'));
-
-    expect(cells.length).toEqual(COMPLEX_FIELDS.length);
-
-    cells.forEach(cell => {
-      expect(attr(cell, 'colspan')).toBe('2');
-    });
+    // None of the fields are valid compound fields.
+    const rows = tab.queryAll(By.css('tbody>tr.compound-field'));
+    expect(rows.length).toBe(0);
   });
 
   it('should render each field value using FieldReadComponent', () => {
-    let readFields = de
+    const readFields = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr td>ccd-field-read'));
 
     FIELDS.forEach(field => {
-      let readField = readFields.find(f => {
-        let fieldInstance = f.componentInstance;
-        return JSON.stringify(fieldInstance.caseField) === JSON.stringify(field);
+      const readField = readFields.find(f => {
+        return f.componentInstance.caseField.id === field.id;
       });
-      let readFieldComponent = readField.componentInstance;
 
-      expect(readField).toBeTruthy(`Could not find field with type ${field.field_type}`);
-      expect(readFieldComponent.caseReference).toEqual(CASE_HISTORY.case_id);
+      // This one doesn't get rendered as it's filtered out due to being invalid.
+      if (field.id === 'PersonComplex') {
+        expect(readField).not.toBeDefined();
+      } else {
+        expect(readField).toBeTruthy(`Could not find field with type ${field.field_type}`);
+        const readFieldComponent = readField.componentInstance;
+        expect(readFieldComponent.caseReference).toEqual(CASE_HISTORY.case_id);
+      }
     });
-    expect(FIELDS.length).toBe(readFields.length);
+    expect(readFields.length).toBe(FIELDS.length - 1);
   });
 
   it('should render fields in ascending order', () => {

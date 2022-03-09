@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValueService } from '../../../services/form/form-value.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-edit-form',
@@ -27,9 +28,13 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
 
   constructor(private formValueService: FormValueService) {}
 
-  ngOnDestroy() {
-    this.pageChangeSubscription.unsubscribe();
-    this.formGroupChangeSubscription.unsubscribe();
+  public ngOnDestroy(): void {
+    if (this.pageChangeSubscription) {
+      this.pageChangeSubscription.unsubscribe();
+    }
+    if (this.formGroupChangeSubscription) {
+      this.formGroupChangeSubscription.unsubscribe();
+    }
   }
 
   // We need the below un/subscribe complexity as we do not have proper page component per page with its AfterViewInit hook
@@ -37,7 +42,9 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.retrieveInitialFormValues();
     this.pageChangeSubscription = this.pageChangeSubject.subscribe(() => {
-      this.formGroupChangeSubscription.unsubscribe();
+      if (this.formGroupChangeSubscription) {
+        this.formGroupChangeSubscription.unsubscribe();
+      }
       // Timeout is required for the form to be rendered before subscription to form changes and initial form values retrieval.
       setTimeout(() => {
         this.subscribeToFormChanges();
@@ -48,7 +55,11 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   }
 
   subscribeToFormChanges() {
-    this.formGroupChangeSubscription = this.formGroup.valueChanges.subscribe(_ => this.detectChangesAndEmit(_));
+    this.formGroupChangeSubscription = this.formGroup.valueChanges
+      .pipe(
+        debounceTime(200)
+      )
+      .subscribe(_ => this.detectChangesAndEmit(_));
   }
 
   retrieveInitialFormValues() {
