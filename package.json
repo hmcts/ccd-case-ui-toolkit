@@ -1,6 +1,7 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "4.12.6-date-year-validation",
+  "version": "4.12.6-limit-search-results-10k-400-5",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
