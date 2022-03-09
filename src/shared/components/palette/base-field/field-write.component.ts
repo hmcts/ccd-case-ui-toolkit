@@ -1,6 +1,7 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
@@ -34,11 +35,11 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     FormValidatorsService.addValidators(caseField, control);
   }
 
-  ngOnInit(): void {
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
+  public ngOnInit(): void {
+    const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance
@@ -58,6 +59,9 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['isExpanded'] = this.isExpanded;
     component.instance['isInSearchBlock'] = this.isInSearchBlock;
+    // Add a reference to the parent CaseEditPageComponent to this component (needed for access to the parent
+    // CaseEditPageComponent's validation error messages)
+    component.instance['caseEditPageComponent'] = component.injector.get(CaseEditPageComponent);
     this.fieldContainer.insert(component.hostView);
 
     // EUI-3267.

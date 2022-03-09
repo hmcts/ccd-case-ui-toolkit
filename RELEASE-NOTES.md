@@ -1,4 +1,11 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes-2
+**EUI-5374** Revision to error message text
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes
+**EUI-5374** Fix error message text on clicking "Continue" when creating a Case Flag
+**EUI-5372** Fix incorrect handling of display of Case Event flow error message
+
 ### Version 4.13.1-case-flags-banner-message-fix-active-count
 **EUI-4897** Fix count of active case flags in message banner
 
