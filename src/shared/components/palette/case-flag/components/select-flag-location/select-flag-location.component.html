@@ -1,5 +1,5 @@
 <div class="form-group" [formGroup]="formGroup">
-  <div class="govuk-form-group" [ngClass]="{'form-group-error': formGroup.invalid && nextClicked}">
+  <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-location-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 id="flag-location-heading" class="govuk-fieldset__heading">
@@ -7,19 +7,19 @@
         </h1>
       </legend>
       <div id="flag-location-not-selected-error-message" class="govuk-error-message"
-        *ngIf="formGroup.get('selectedLocation') && formGroup.get('selectedLocation').invalid && nextClicked">
-        {{flagLocationNotSelectedErrorMessage}}
+        *ngIf="errorMessages.length > 0">
+        <span class="govuk-visually-hidden">Error:</span> {{flagLocationNotSelectedErrorMessage}}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagsInstance of filteredFlagsData; index as i">
           <input class="govuk-radios__input" id="flag-location-{{i}}" [name]="selectedLocationControlName"
-            type="radio" [value]="flagsInstance.partyName" [formControlName]="selectedLocationControlName" (change)="onChange()"/>
+            type="radio" [value]="flagsInstance.partyName" [formControlName]="selectedLocationControlName"/>
           <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">{{flagsInstance.partyName}}</label>
         </div>
       </div>
     </fieldset>
   </div>
   <div class="govuk-button-group">
-    <button class="button button-primary" (click)="onNext()">Next</button>
+    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
   </div>
 </div>

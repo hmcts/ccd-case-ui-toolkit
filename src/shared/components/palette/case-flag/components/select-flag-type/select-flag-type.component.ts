@@ -48,7 +48,7 @@ export class SelectFlagTypeComponent implements OnInit {
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
 
-  private validateForm(): boolean {
+  private validateForm(): void {
     this.flagTypeNotSelectedErrorMessage = '';
     this.flagTypeErrorMessage = '';
     this.errorMessages = [];
@@ -56,23 +56,18 @@ export class SelectFlagTypeComponent implements OnInit {
     if (!this.flagTypeSelected) {
       this.flagTypeNotSelectedErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
       this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'})
-      return false;
     }
     if (this.flagTypeSelected === 'other') {
       const otherFlagTypeDescription = this.formGroup.get('otherFlagTypeDescription').value;
       if (!otherFlagTypeDescription) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
-        return false;
       }
       if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
-        return false;
       }
     }
-
-    return true;
   }
 
   private getFlagTypes(): FlagType[] {

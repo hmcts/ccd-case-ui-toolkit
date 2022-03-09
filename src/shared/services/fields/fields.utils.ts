@@ -332,6 +332,14 @@ export class FieldsUtils {
     return caseField.field_type.type === 'Complex' && caseField.field_type.id === 'CaseFlag';
   }
 
+  public static isFlagLauncherCaseField(caseField: CaseField): boolean {
+    if (!caseField) {
+      return false;
+    }
+
+    return caseField.field_type.type === 'FlagLauncher';
+  }
+
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
     const currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
