@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
+### Version 4.14.1-EUI-5305-change-link-accessibility-update
+**EUI-5305** Accessibility improvement for 'Change' links
+
 ### Version 4.12.0
 Add refunds functionality
+
+### Version 4.12.6-limit-search-results-10k-400-5"
+**Limit search results to 10k / 400 pages** Limit search results to 10k / 400 pages
 
 ### Version 4.9.15-state-machine"
 **Task event completion and state machine** Task event completion and state machine
