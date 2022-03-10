@@ -16,7 +16,6 @@ import { ReadComplexFieldTableComponent } from './read-complex-field-table.compo
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
-import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
 
 @NgModule({
   imports: [
@@ -40,21 +39,19 @@ import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-v
     ReadComplexFieldRawComponent,
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
-    CcdCollectionTableCaseFieldsFilterPipe,
     CcdCYAPageLabelFilterPipe,
   ],
   entryComponents: [
     ReadComplexFieldComponent,
     WriteComplexFieldComponent,
   ],
-  exports: [
-    CcdPageFieldsPipe,
-    FieldsFilterPipe,
-    CcdTabFieldsPipe,
-    ReadFieldsFilterPipe,
-    CcdCYAPageLabelFilterPipe
-    CcdCollectionTableCaseFieldsFilterPipe,
-    WriteComplexFieldComponent
-  ]
+    exports: [
+        CcdPageFieldsPipe,
+        FieldsFilterPipe,
+        CcdTabFieldsPipe,
+        ReadFieldsFilterPipe,
+        WriteComplexFieldComponent,
+        CcdCYAPageLabelFilterPipe
+    ]
 })
 export class ComplexModule {}

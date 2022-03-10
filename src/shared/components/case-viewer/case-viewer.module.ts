@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { AlertModule } from '../../../components/banners/alert';
@@ -22,6 +22,7 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { ErrorsModule } from '../error/errors.module';
+import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
 import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
@@ -29,6 +30,9 @@ import { CaseChallengedAccessRequestComponent } from './case-challenged-access-r
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
 import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseFullAccessViewComponent } from './case-full-access-view/case-full-access-view.component';
+import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
+import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request/case-review-specific-access-request.component';
+import { CaseSpecificAccessRequestComponent } from './case-specific-access-request/case-specific-access-request.component';
 import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
@@ -41,6 +45,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     ErrorsModule,
     ActivityModule,
     CaseHeaderModule,
+    EventStartModule,
     EventTriggerModule,
     TabsModule,
     PaletteModule,
@@ -52,7 +57,6 @@ import { CaseResolver, EventTriggerResolver } from './services';
     EventLogModule,
     MatTabsModule,
     ComplexModule,
-    FormsModule,
     ReactiveFormsModule,
     AlertModule
   ],
@@ -65,12 +69,15 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseViewComponent,
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
+    CaseSpecificAccessRequestComponent,
+    CaseReviewSpecificAccessRequestComponent,
     ErrorMessageComponent,
-    CaseChallengedAccessSuccessComponent
+    CaseChallengedAccessSuccessComponent,
+    CaseReviewSpecificAccessRejectComponent
   ],
   exports: [
     CaseViewerComponent,
-    CaseViewComponent,
+    CaseViewComponent
   ],
   providers: [
     CaseNotifier,

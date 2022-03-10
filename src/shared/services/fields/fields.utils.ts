@@ -6,7 +6,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { DatePipe } from '../../components/palette/utils';
-import { CaseEventTrigger, CaseField, CaseTab, CaseView, FixedListItem, Predicate } from '../../domain';
+import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
 
 // @dynamic
@@ -17,6 +17,11 @@ export class FieldsUtils {
   private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
   // EUI-4244. 3 dashes instead of 1 to make this less likely to clash with a real field.
   public static readonly LABEL_SUFFIX = '---LABEL';
+
+  // Handling of Dynamic Lists in Complex Types
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
@@ -240,6 +245,87 @@ export class FieldsUtils {
         : typeof x === 'number' || x.length > 0)
     ));
     return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
+  }
+
+  /**
+   * handleNestedDynamicLists()
+   * Reassigns list_item and value data to DynamicList children
+   * down the tree. Server response returns data only in
+   * the `value` object of parent complex type
+   *
+   * EUI-2530 Dynamic Lists for Elements in a Complex Type
+   *
+   * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
+   */
+   public static handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
+
+    if (jsonBody.case_fields) {
+      jsonBody.case_fields.forEach(caseField => {
+        if (caseField.field_type) {
+          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
+        }
+      });
+    }
+
+    return jsonBody;
+  }
+
+  private static setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {
+    if (caseFieldType.type === FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
+
+      caseFieldType.complex_fields.forEach(field => {
+        try {
+          const isDynamicField = FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE.indexOf(field.field_type.type) !== -1;
+
+          if (isDynamicField) {
+            const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
+            if (dynamicListValue) {
+              const list_items = dynamicListValue[0].list_items;
+              const complexValue = dynamicListValue.map(data => data.value);
+              const value = {
+                list_items: list_items,
+                value: complexValue.length > 0 ? complexValue : undefined
+              };
+              field.value = {
+                ...value
+              };
+              field.formatted_value = {
+                ...field.formatted_value,
+                ...value
+              };
+            }
+          } else {
+            this.setDynamicListDefinition(field, field.field_type, rootCaseField);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    } else if (caseFieldType.type === FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
+      if (caseFieldType.collection_field_type) {
+        this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
+      }
+    }
+  }
+
+  private static getDynamicListValue(jsonBlock: any, key: string) {
+
+    const data = jsonBlock ? this.getNestedFieldValues(jsonBlock, key, []) : [];
+
+    return data.length > 0 ? data : null;
+  }
+
+  private static getNestedFieldValues(jsonData: any, key: string, output: any[] = []) {
+    if (jsonData && jsonData[key]) {
+      output.push(jsonData[key]);
+    } else  {
+      for (const elementKey in jsonData) {
+        if (typeof jsonData === 'object' && jsonData.hasOwnProperty(elementKey)) {
+          this.getNestedFieldValues(jsonData[elementKey], key, output);
+        }
+      }
+    }
+    return output;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
