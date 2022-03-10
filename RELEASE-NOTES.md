@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 4.12.0
-Add refunds functionality
+Add refunds functionality 
 
 ### Version 4.9.15-state-machine"
 **Task event completion and state machine** Task event completion and state machine
