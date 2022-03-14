@@ -33,10 +33,11 @@ describe('EventStartGuard', () => {
   const router = createSpyObj('router', ['navigate']);
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
   const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
-
+  const sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
   it('canActivate should return false', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig);
+    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: true,
       tasks
@@ -50,7 +51,7 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return true', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig);
+    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: false,
       tasks: []
@@ -64,7 +65,7 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return true for work allocation 1', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_1_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig);
+    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
       expect(canActivate).toEqual(true);
