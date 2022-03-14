@@ -7,8 +7,6 @@
                       [caseField]="buildField(field)"
                       [caseFields]="caseFields"
                       [formGroup]="formGroup"
-                      [attr.field_id]="field.id"
-                      [attr.field_type]="field.field_type.type"
                       [withLabel]="true">
       </ccd-field-read>
       <ccd-field-write *ngSwitchCase="false"
@@ -17,13 +15,11 @@
                        [caseFields]="caseFields"
                        [formGroup]="formGroup"
                        [parent]="complexGroup"
-                       [attr.field_id]="field.id"
-                       [attr.field_type]="field.field_type.type"
                        [idPrefix]="buildIdPrefix(field)"
                        [hidden]="field.hidden"
                        [isExpanded]="isExpanded"
                        [isInSearchBlock]="isInSearchBlock">
       </ccd-field-write>
     </ng-container>
-  </fieldset>
+  </ng-container>
 </div>
