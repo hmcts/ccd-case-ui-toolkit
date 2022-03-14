@@ -17,6 +17,9 @@ export class SelectFlagTypeComponent implements OnInit {
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
+  @Output()
+  public flagCommentsOptionalEmitter: EventEmitter<any> = new EventEmitter();
+
   public flagTypes: FlagType[];
   public flagTypeSelected: string;
   public errorMessages: ErrorMessage[];
@@ -46,6 +49,11 @@ export class SelectFlagTypeComponent implements OnInit {
     this.validateForm();
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+    // Emit "flag comments optional" event if the user selects a flag type where comments are optional
+    // TODO Change for real implementation once integrated with Reference Data API
+    if (this.flagTypeSelected === 'flag-with-optional-comments') {
+      this.flagCommentsOptionalEmitter.emit(null);
+    }
   }
 
   private validateForm(): void {
@@ -74,7 +82,8 @@ export class SelectFlagTypeComponent implements OnInit {
     // TODO: Get the list of flag types using the API call in future sprints
     return [
       {id: 'urgent-case', name: 'Urgent case'},
-      {id: 'vulnerable-user', name: 'Vulnerable user'}
+      {id: 'vulnerable-user', name: 'Vulnerable user'},
+      {id: 'flag-with-optional-comments', name: 'Flag where comments are optional'}
     ];
   }
 }

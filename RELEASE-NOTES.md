@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-add-comments-step
+**EUI-4851** Add "add comments" step of Create Case Flag journey
+
 ### Version 4.13.1-case-flags-case-event-flow-error-message-fixes-2
 **EUI-5374** Revision to error message text
 
