@@ -190,7 +190,7 @@ describe('MoneyGbpInputComponent', () => {
 
     expect(results['pattern']).toBeTruthy();
   });
-  
+
   it('should be valid when empty string', () => {
     let results = component.validate({ value: ''} as FormControl);
 

@@ -137,7 +137,7 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
         expect(de.nativeElement.textContent).toEqual('-£42.20');
       });
-      
+
       it('should prefix pences with leading 0.', () => {
         component.amount = 20;
         component.ngOnInit();
@@ -169,7 +169,7 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
         expect(de.nativeElement.textContent).toEqual('-£4,200,000.20');
       });
-      
+
       it('should render undefined value as empty string', () => {
         component.amount = undefined;
         component.ngOnInit();
