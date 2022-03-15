@@ -245,13 +245,10 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should search organisation using post code with/without space', () => {
     const searchedOrg = component.searchOrg(ORGANISATIONS, 'rg1 1eb');
-    expect(searchedOrg.length).toEqual(2);
+    expect(searchedOrg.length).toEqual(1);
     expect(searchedOrg[0].organisationIdentifier).toEqual('O333333');
     expect(searchedOrg[0].name).toEqual('The Ethical solicitor');
     expect(searchedOrg[0].address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
-    expect(searchedOrg[1].organisationIdentifier).toEqual('O444444');
-    expect(searchedOrg[1].name).toEqual('The SN1 solicitor');
-    expect(searchedOrg[1].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
   });
 
   it('should search organisation using post code and org name', () => {
