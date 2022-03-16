@@ -278,7 +278,7 @@ export class CasesService {
     if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
       // This is used a feature toggle to
       // control the work allocation
-      if (this.appConfig.getWorkAllocationApiUrl() && !this.isPuiCaseManager()) {
+      if (!this.isPuiCaseManager()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
