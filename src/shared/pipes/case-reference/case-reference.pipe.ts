@@ -13,7 +13,18 @@ export class CaseReferencePipe implements PipeTransform {
     if (Draft.isDraft(caseReference)) {
       return DRAFT_PREFIX;
     } else {
-      return String(caseReference).replace(/(?<!\/)(\d{4})(\d{4})(\d{4})(\d{4})/g, '$1-$2-$3-$4');
+      const regex = /(?:\/)?(\d{4})(\d{4})(\d{4})(\d{4})/g;
+      const result = String(caseReference).replace(regex, (match,
+        g1, g2, g3, g4) => {
+          const isLink = match[0] === '/';
+          if (isLink) {
+            return match;
+          };
+
+          return [g1, g2, g3, g4].join('-');
+      });
+
+      return result;
     }
   }
 }
