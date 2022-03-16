@@ -9,7 +9,6 @@ import { FormGroup } from '@angular/forms';
 import {
   CaseState,
   CaseType,
-  CaseView,
   DRAFT_PREFIX,
   Jurisdiction,
   PaginationMetadata,
@@ -222,6 +221,7 @@ describe('SearchResultComponent', () => {
       component.resultView = RESULT_VIEW;
       component.caseState = CASE_STATE;
       component.paginationMetadata = PAGINATION_METADATA;
+      component.paginationLimitEnforced = false;
       component.caseFilterFG = new FormGroup({});
       component.metadataFields = METADATA_FIELDS;
       component.ngOnChanges({
@@ -254,6 +254,20 @@ describe('SearchResultComponent', () => {
       let pagination = de.queryAll(By.css('ccd-pagination'));
 
       expect(pagination.length).toBeTruthy();
+    });
+
+    it('should not render the pagination limit warning ', () => {
+      const paginationLimitWarning = de.query(By.css('div.pagination-limit-warning'));
+      expect(paginationLimitWarning).toBeFalsy();
+    });
+
+    it('should render the pagination limit warning ', () => {
+      component.paginationMetadata = {
+        total_results_count: 10100,
+        total_pages_count: 500
+      };
+
+      expect(component.resultTotal).toBe(10000);
     });
 
     it('should render columns based on SearchResultView', () => {
