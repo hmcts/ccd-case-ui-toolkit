@@ -140,7 +140,8 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     organisations.forEach((org) => {
       const matchingOrg = [...partMatchingResultSet, ...withSpaceMatchingResultSet]
                           .find(item => item.organisationIdentifier === org.organisationIdentifier)
-      if (!matchingOrg && partMatchingResultSet.length === 0 && [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < MAX_RESULT_COUNT
+      if (!matchingOrg && partMatchingResultSet.length === 0
+        && [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < MAX_RESULT_COUNT
         && this.searchWithSpace(org, lowerOrgSearchText)
       ) {
         withSpaceMatchingResultSet.push(org);
