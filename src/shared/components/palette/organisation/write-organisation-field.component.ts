@@ -137,13 +137,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         partMatchingResultSet.push(organisation);
       }
     });
+
     organisations.forEach((org) => {
-      const matchingOrg = [...partMatchingResultSet, ...withSpaceMatchingResultSet]
-                          .find(item => item.organisationIdentifier === org.organisationIdentifier)
-      if (!matchingOrg && partMatchingResultSet.length === 0
-        && [...partMatchingResultSet, ...withSpaceMatchingResultSet].length < MAX_RESULT_COUNT
-        && this.searchWithSpace(org, lowerOrgSearchText)
-      ) {
+      const resultSet = [...partMatchingResultSet, ...withSpaceMatchingResultSet];
+      const hasMatchingOrganisation = resultSet.find(item => item.organisationIdentifier === org.organisationIdentifier);
+      const searchHasSpace = this.searchWithSpace(org, lowerOrgSearchText);
+      const hasResultSetBelowMaxCount = resultSet.length < MAX_RESULT_COUNT;
+
+      if (!hasMatchingOrganisation && partMatchingResultSet.length === 0 && hasResultSetBelowMaxCount && searchHasSpace) {
         withSpaceMatchingResultSet.push(org);
       }
     });
