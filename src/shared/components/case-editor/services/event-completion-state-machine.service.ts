@@ -127,8 +127,28 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Emit event to parent component
-    context.component.eventCanBeCompleted.emit(true);
+
+    const taskStr = context.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task: Task = JSON.parse(taskStr);
+
+      // Task already assigned to current user, just complete task
+      context.workAllocationService.completeTask(task.id).subscribe(
+        response => {
+          // Emit event can be completed event
+          context.component.eventCanBeCompleted.emit(true);
+        },
+        error => {
+          // Emit event cannot be completed event
+          context.component.eventCanBeCompleted.emit(false);
+          context.alertService.error(error.message);
+          return throwError(error);
+        });
+    } else {
+      // Emit event cannot be completed event
+      context.component.eventCanBeCompleted.emit(false);
+    }
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {

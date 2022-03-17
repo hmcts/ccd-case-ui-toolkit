@@ -197,9 +197,8 @@ export class EventStartStateMachineService {
   }
 
   public finalAction(state: State): void {
-    // TODO: Perform final actions, the state machine finished running
-    console.log('FINAL action here', state);
-    console.log('State is complete', state.isComplete);
+    // Final actions can be performed here, the state machine finished running
+    console.log('FINAL', state);
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
