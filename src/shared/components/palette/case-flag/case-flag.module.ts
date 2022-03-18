@@ -7,7 +7,11 @@ import { FormModule } from '../../../../components/form/form.module';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
 import {
-  CaseFlagTableComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent
+  AddCommentsComponent,
+  CaseFlagTableComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  SelectFlagTypeComponent
 } from './components';
 
 @NgModule({
@@ -28,7 +32,8 @@ import {
     CaseFlagTableComponent,
     SelectFlagTypeComponent,
     SearchLanguageInterpreterComponent,
-    SelectFlagLocationComponent
+    SelectFlagLocationComponent,
+    AddCommentsComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,
