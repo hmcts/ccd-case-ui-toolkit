@@ -13,7 +13,7 @@
 </div>
 <div class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
-    <div id="create-flag-caption" class="govuk-caption-l">
+    <div id="create-flag-caption" class="govuk-caption-l" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       {{createFlagCaption}}
     </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
@@ -22,19 +22,17 @@
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
       <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-type>
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+        (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
 		</ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
       <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
     </ng-container>
-    <!--
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
-      <p>
-        This is the flag comments step
-      </p>
+      <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-add-comments>
     </ng-container>
-    -->
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_SUMMARY">
       <p>
         This is the flag summary (and final) step

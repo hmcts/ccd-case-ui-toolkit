@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, Flags } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMessage } from '../../enums';
@@ -17,13 +17,12 @@ export class SelectFlagLocationComponent implements OnInit {
 
   public flagLocationTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
-  public flagLocationNotSelectedErrorMessage: SelectFlagLocationErrorMessage;
+  public flagLocationNotSelectedErrorMessage: SelectFlagLocationErrorMessage = null;
   public filteredFlagsData: Flags[];
   public readonly selectedLocationControlName = 'selectedLocation';
 
   public ngOnInit(): void {
     this.flagLocationTitle = CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
-    this.flagLocationNotSelectedErrorMessage = SelectFlagLocationErrorMessage.FLAG_LOCATION_NOT_SELECTED;
 
     // Filter out any flags instances that don't have a party name
     if (this.flagsData) {
@@ -44,8 +43,10 @@ export class SelectFlagLocationComponent implements OnInit {
   }
 
   private validateSelection(): void {
+    this.flagLocationNotSelectedErrorMessage = null;
     this.errorMessages = [];
     if (!this.formGroup.get(this.selectedLocationControlName).value) {
+      this.flagLocationNotSelectedErrorMessage = SelectFlagLocationErrorMessage.FLAG_LOCATION_NOT_SELECTED;
       this.errorMessages.push({
         title: '',
         description: SelectFlagLocationErrorMessage.FLAG_LOCATION_NOT_SELECTED,

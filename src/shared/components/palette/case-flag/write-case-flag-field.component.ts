@@ -25,6 +25,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public errorMessage: ErrorMessage;
   public flagsData: Flags[];
   public caseFlagParentFormGroup = new FormGroup({});
+  public flagCommentsOptional = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -123,6 +124,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         htmlElement.focus();
       }
     }
+  }
+
+  public onFlagCommentsOptionalEmitted(_: any): void {
+    this.flagCommentsOptional = true;
   }
 
   /**
