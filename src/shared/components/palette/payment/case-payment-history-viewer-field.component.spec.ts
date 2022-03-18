@@ -52,7 +52,8 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'VIEW',
         'LOGGEDINUSERROLES',
         'LOGGEDINUSEREMAIL',
-        'REFUNDS_API_ROOT'
+        'REFUNDS_API_ROOT',
+        'SERVICEREQUEST'
       ]});
 
     TestBed
