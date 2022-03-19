@@ -14,6 +14,7 @@ export class EventStartComponent implements OnInit {
 
   public stateMachine: StateMachine;
   public context: EventStartStateMachineContext;
+  public showSpinner = true;
 
   constructor(private service: EventStartStateMachineService,
     private readonly router: Router,

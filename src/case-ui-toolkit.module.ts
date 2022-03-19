@@ -14,6 +14,8 @@ import { HeadersModule } from './components/header/headers.module';
 import { NavigationItemComponent } from './components/header/navigation/navigation-item.component';
 import { NavigationComponent } from './components/header/navigation/navigation.component';
 import { PhaseComponent } from './components/header/phase/phase.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { LoadingSpinnerModule } from './components/loading-spinner/loading-spinner.module';
 import { TabComponent } from './components/tabs/tab.component';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabsModule } from './components/tabs/tabs.module';
@@ -87,6 +89,7 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       SearchFiltersModule,
       FocusElementModule,
       LoadingModule,
+      LoadingSpinnerModule,
       PaginationModule,
       PortalModule
     ],
@@ -119,6 +122,7 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       PaletteUtilsModule,
       UnsupportedFieldComponent,
       LabelFieldComponent,
+      LoadingSpinnerComponent,
 
       // Read
       ReadTextFieldComponent,
