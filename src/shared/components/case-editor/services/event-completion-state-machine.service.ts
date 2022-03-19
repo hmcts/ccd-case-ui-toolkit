@@ -95,9 +95,14 @@ export class EventCompletionStateMachineService {
               break;
             case TaskState.Assigned:
               // Task is in assigned state
-              taskResponse.task.assignee === context.task.assignee
-                ? state.trigger(EventCompletionStates.CompleteEventAndTask)
-                : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              if (taskResponse.task.assignee === context.task.assignee) {
+                // Task still assigned to current user, complete event and task
+                state.trigger(EventCompletionStates.CompleteEventAndTask);
+              } else {
+                // Task has been reassigned to another user, display error message
+                context.reassignedTask = taskResponse.task;
+                state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              }
               break;
             default:
               // Allow user to complete the event
