@@ -45,6 +45,13 @@ export class EventStartGuard implements CanActivate {
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
     if (payload.task_required_for_event) {
+      // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
+      // which triggers the CanActivate guard again.
+      // Due to the tight deadline for Live release, we are gracefully handling this issue in a way that
+      // if event start is initiated again, then we do not need to perform state machine processing again.
+      if (this.router.url.includes('event-start')) {
+        return of(true);
+      }
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     }
