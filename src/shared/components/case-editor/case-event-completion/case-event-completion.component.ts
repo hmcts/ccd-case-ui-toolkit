@@ -26,7 +26,6 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
   public selectedComponentPortal: ComponentPortal<any>;
-  public showSpinner = true;
 
   constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,

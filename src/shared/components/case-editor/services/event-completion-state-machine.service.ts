@@ -120,8 +120,6 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskCompletedOrCancelled(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Hide spinner
-    context.component.showSpinner = false;
     // Load case event completion task cancelled component
     context.component.showPortal(EventCompletionPortalTypes.TaskCancelled);
   }
@@ -140,31 +138,22 @@ export class EventCompletionStateMachineService {
         response => {
           // Emit event can be completed event
           context.component.eventCanBeCompleted.emit(true);
-          // Hide spinner
-          context.component.showSpinner = false;
         },
         error => {
           // Emit event cannot be completed event
           context.component.eventCanBeCompleted.emit(false);
-          // Hide spinner
-          context.component.showSpinner = false;
-          // Handle error
           context.alertService.error(error.message);
           return throwError(error);
         });
     } else {
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
-      // Hide spinner
-      context.component.showSpinner = false;
     }
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Hide spinner
-    context.component.showSpinner = false;
     // Load case event completion task reassigned component
     context.component.showPortal(EventCompletionPortalTypes.TaskReassigned);
   }
@@ -184,23 +173,16 @@ export class EventCompletionStateMachineService {
         response => {
           // Emit event can be completed event
           context.component.eventCanBeCompleted.emit(true);
-          // Hide spinner
-          context.component.showSpinner = false;
         },
         error => {
           // Emit event cannot be completed event
           context.component.eventCanBeCompleted.emit(false);
-          // Hide spinner
-          context.component.showSpinner = false;
-          // Handle error
           context.alertService.error(error.message);
           return throwError(error);
         });
     } else {
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
-      // Hide spinner
-      context.component.showSpinner = false;
     }
   }
 

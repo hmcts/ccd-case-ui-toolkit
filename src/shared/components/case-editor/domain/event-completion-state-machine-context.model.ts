@@ -7,7 +7,6 @@ import { WorkAllocationService } from '../services/work-allocation.service';
 
 export interface EventCompletionComponentEmitter {
   eventCanBeCompleted: EventEmitter<boolean>;
-  showSpinner: boolean;
   showPortal(portalType: number);
 }
 

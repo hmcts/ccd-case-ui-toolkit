@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LoadingSpinnerModule } from '../../../components/loading-spinner/loading-spinner.module';
 import { MultipleTasksExistComponent } from './components/multiple-tasks-exist/multiple-tasks-exist.component';
 import { NoTasksAvailableComponent } from './components/no-tasks-available/no-tasks-available.component';
 import { TaskAssignedComponent } from './components/task-assigned/task-assigned.component';
@@ -18,8 +17,7 @@ import { EventStartStateMachineService } from './services';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    LoadingSpinnerModule
+    RouterModule
   ],
   declarations: [
     EventStartComponent,

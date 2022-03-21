@@ -25,6 +25,7 @@ import { ProfileNotifier } from '../../services/profile';
 import { ProfileService } from '../../services/profile/profile.service';
 import { RouterHelperService } from '../../services/router';
 import { ErrorsModule } from '../error/errors.module';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ComplexModule, PaletteModule } from '../palette';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
@@ -48,7 +49,6 @@ import {
   WizardFactoryService,
   WorkAllocationService
 } from './services';
-import { LoadingSpinnerModule } from '../../../components/loading-spinner/loading-spinner.module';
 
 @NgModule({
     imports: [
@@ -63,8 +63,7 @@ import { LoadingSpinnerModule } from '../../../components/loading-spinner/loadin
         LabelSubstitutorModule,
         ErrorsModule,
         ComplexModule,
-        PortalModule,
-        LoadingSpinnerModule
+        PortalModule
     ],
     declarations: [
         CaseEditConfirmComponent,
@@ -76,7 +75,8 @@ import { LoadingSpinnerModule } from '../../../components/loading-spinner/loadin
         CaseEventCompletionTaskCancelledComponent,
         CaseEventCompletionTaskReassignedComponent,
         CaseCreateComponent,
-        CaseProgressComponent
+        CaseProgressComponent,
+        LoadingSpinnerComponent
     ],
     entryComponents: [
       CaseEventCompletionTaskCancelledComponent,
@@ -90,7 +90,8 @@ import { LoadingSpinnerModule } from '../../../components/loading-spinner/loadin
         CaseEditSubmitComponent,
         CaseCreateComponent,
         CaseProgressComponent,
-        CallbackErrorsComponent
+        CallbackErrorsComponent,
+        LoadingSpinnerComponent
     ],
     providers: [
         FieldsUtils,
