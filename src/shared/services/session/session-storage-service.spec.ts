@@ -26,6 +26,12 @@ describe('Session storage service', () => {
     expect(sessionStorage.getItem).toHaveBeenCalledWith('exampleKey');
   });
 
+  it('should allow removing the item', () => {
+    const service = new SessionStorageService();
+    service.getItem('exampleKey');
+    expect(sessionStorage.removeItem).toHaveBeenCalledWith('exampleKey');
+  });
+
   it('should allow clearing the store', () => {
     const service = new SessionStorageService();
     service.clear();
