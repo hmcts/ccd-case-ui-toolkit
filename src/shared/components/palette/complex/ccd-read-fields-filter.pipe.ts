@@ -87,6 +87,16 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       return true;
     }
 
+    // We also shouldn't ditch MultipleDemoType fields.
+    if (field.field_type.type === 'MultipleDemoType') {
+      return true;
+    }
+
+    // We also shouldn't ditch MultipleDemoType fields.
+    if (field.field_type.type === 'LeadDemoType') {
+      return true;
+    }    
+
     value = value || {};
 
     if (ReadFieldsFilterPipe.isCompound(field)) {

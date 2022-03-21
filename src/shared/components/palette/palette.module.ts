@@ -55,6 +55,8 @@ import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { OrganisationModule } from './organisation/organisation.module';
 import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
+import { MultipleDemoModule } from './multiple-demo';
+import { LeadDemoModule } from './lead-demo';
 
 @NgModule({
   imports: [
@@ -91,7 +93,9 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     NgxMatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MultipleDemoModule,
+    LeadDemoModule
   ],
   declarations: [
     UnsupportedFieldComponent,

@@ -41,6 +41,8 @@ import { CaseHistoryViewerFieldComponent } from './history';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 import { ReadDynamicRadioListFieldComponent, WriteDynamicRadioListFieldComponent } from './dynamic-radio-list';
+import { LeadDemoComponent } from './lead-demo/lead-demo.component';
+import { MultipleDemoComponent } from './multiple-demo/multiple-demo.component';
 
 @Injectable()
 export class PaletteService {
@@ -84,6 +86,10 @@ export class PaletteService {
             return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
+          case 'MultipleDemoType':
+            return write ? WriteComplexFieldComponent: MultipleDemoComponent;       
+          case 'LeadDemoType':
+              return write ? WriteComplexFieldComponent: LeadDemoComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }

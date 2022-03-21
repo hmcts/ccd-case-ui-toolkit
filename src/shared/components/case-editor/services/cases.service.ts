@@ -21,6 +21,7 @@ import {
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
+import { CaseDetailsCCD } from '../../../domain/case-details-ccd.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { CaseAccessUtils } from '../case-access-utils';
@@ -38,6 +39,8 @@ export class CasesService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8';
   public static readonly V2_MEDIATYPE_START_DRAFT_TRIGGER =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-draft-trigger.v2+json;charset=UTF-8';
+
+  public static readonly V2_MEDIATYPE_CASE_DATA = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case.v2+json';    
 
   // External (Data Store) API
 
@@ -98,6 +101,25 @@ export class CasesService {
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
+      .set('Content-Type', 'application/json');
+
+    const loadingToken = this.loadingService.register();
+    return this.http
+      .get(url, {headers, observe: 'body'})
+      .pipe(
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
+      );
+  }
+
+  getCaseData(caseId: string): Observable<CaseDetailsCCD> {
+    const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}`;
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA)
       .set('Content-Type', 'application/json');
 
     const loadingToken = this.loadingService.register();

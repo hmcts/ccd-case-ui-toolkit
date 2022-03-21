@@ -1,0 +1,34 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <p></p>
+    <h2 class="govuk-heading-m">Cases in Multiple</h2>
+    <p></p>
+    <table class="govuk-table">
+      <caption></caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Case Number</th>
+          <th class="govuk-table__header" scope="col">Claimant</th>
+          <th class="govuk-table__header" scope="col">Respondent</th>
+          <th class="govuk-table__header" scope="col">Lead Claimant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let result of resultView.results"
+          class="govuk-table__row"
+          scope="col"
+        >
+          <td class="govuk-table__cell">
+            {{ result.case_fields.ethosCaseReference }}
+          </td>
+          <td class="govuk-table__cell">{{ result.case_fields.claimant }}</td>
+          <td class="govuk-table__cell">{{ result.case_fields.respondent }}</td>
+          <td class="govuk-table__cell">
+            {{ result.case_fields.leadClaimant }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
