@@ -1,12 +1,12 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { WriteTextFieldComponent } from './write-text-field.component';
-import { DebugElement } from '@angular/core';
-import { MockComponent } from 'ng2-mock-component';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
+import { MockComponent } from 'ng2-mock-component';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { WriteTextFieldComponent } from './write-text-field.component';
 
 const FIELD_ID = 'PersonFirstName';
 const FIELD_TYPE: FieldType = {
