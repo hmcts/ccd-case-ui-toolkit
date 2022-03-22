@@ -167,7 +167,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
-
+    if (this.caseEdit.confirmation) {
+      caseEventData.data = {};
+    }
     return caseEventData;
   }
 
