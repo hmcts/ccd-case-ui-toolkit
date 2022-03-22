@@ -6,6 +6,9 @@
 ### Version 4.12.0
 Add refunds functionality
 
+### Version 4.12.16-task-event-completion"
+**Task event completion and state machine** Task event completion and state machine
+
 ### Version 4.12.6-limit-search-results-10k-400-5"
 **Limit search results to 10k / 400 pages** Limit search results to 10k / 400 pages
 
