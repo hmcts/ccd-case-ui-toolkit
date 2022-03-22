@@ -40,9 +40,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
 
-    sessionStorage = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
-    sessionStorage.getItem.and.returnValue(undefined);
-
     PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
         'CCD_CASE_NUMBER',
@@ -50,9 +47,14 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'ISBSENABLE',
         'SELECTED_OPTION',
         'VIEW',
+        'REFUNDS_API_ROOT',
+        'TAKEPAYMENT',
+        'SERVICEREQUEST',
+        'PAYMENT_GROUP_REF',
+        'EXC_REFERENCE',
+        'DCN_NUMBER',
         'LOGGEDINUSERROLES',
-        'LOGGEDINUSEREMAIL',
-        'REFUNDS_API_ROOT'
+        'LOGGEDINUSEREMAIL'
       ]});
 
     TestBed
@@ -66,7 +68,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
-          { provide: SessionStorageService, useValue: sessionStorage }
+          SessionStorageService
         ]
       })
       .compileComponents();
@@ -94,25 +96,23 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.ISBSENABLE).toEqual('true');
   });
 
-  it('returns correct refunds url', () => {
+  it('Returns correct base url', () => {
+    expect(component.getBaseURL()).toEqual(PAYMENTS_URL);
+});
+
+it('returns correct bulkscan url', () => {
+    expect(component.getPayBulkScanBaseURL()).toEqual(BULKSCAN_API_URL);
+});
+
+it('returns correct refunds url', () => {
     expect(component.getRefundsUrl()).toEqual(REFUNDS_URL);
-  });
+});
 
-  it('returns empty roles when not initialized', () => {
-      expect(component.getUserRoles().length).toBe(0);
-  });
+it('returns empty roles when not initialized', () => {
+    expect(component.getUserRoles().length).toBe(0);
+});
 
-  it('returns empty email when not initialized', () => {
-      expect(component.getUserEmail()).toEqual('');
-  });
-
-  it('returns roles when initialized', () => {
-    sessionStorage.getItem.and.returnValue('{"roles":["roleA", "roleB"]}');
-    expect(component.getUserRoles().length).toBe(2);
-  });
-
-  it('returns email when initialized', () => {
-    sessionStorage.getItem.and.returnValue('{"sub":"email@domain.com"}');
-    expect(component.getUserEmail()).toEqual('email@domain.com');
-  });
+it('returns empty email when not initialized', () => {
+    expect(component.getUserEmail()).toEqual('');
+});
 });

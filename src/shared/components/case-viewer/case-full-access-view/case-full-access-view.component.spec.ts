@@ -1,18 +1,27 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { CaseFullAccessViewComponent } from './case-full-access-view.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
-import { attr, text } from '../../../test/helpers';
 import { Subject } from 'rxjs/Subject';
-import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
+import { AppMockConfig } from '../../../../app-config.mock';
+import { AbstractAppConfig } from '../../../../app.config';
+import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
+import { CallbackErrorsContext } from '../../../components/error/domain';
 import { PaletteUtilsModule } from '../../../components/palette/utils';
-import { CaseField } from '../../../domain/definition';
+import { LabelSubstitutorDirective } from '../../../directives/substitutor';
 import { PlaceholderService } from '../../../directives/substitutor/services';
+import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { CaseField } from '../../../domain/definition';
+import { HttpError } from '../../../domain/http';
+import { CaseReferencePipe } from '../../../pipes/case-reference';
 import {
   ActivityService,
   AuthService,
@@ -24,22 +33,14 @@ import {
   NavigationOrigin,
   SessionStorageService
 } from '../../../services/';
-import { LabelSubstitutorDirective } from '../../../directives/substitutor';
-import { HttpError } from '../../../domain/http';
-import { OrderService } from '../../../services/order';
-import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
-import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
 import { AlertService } from '../../../services/alert';
-import { CallbackErrorsContext } from '../../../components/error/domain';
 import { DraftService } from '../../../services/draft';
-import { CaseReferencePipe } from '../../../pipes/case-reference';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
+import { OrderService } from '../../../services/order';
+import { attr, text } from '../../../test/helpers';
 import { CaseNotifier } from '../../case-editor';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ComplexModule, PaletteModule } from '../../palette';
-import { AbstractAppConfig } from '../../../../app.config';
-import { AppMockConfig } from '../../../../app-config.mock';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
@@ -554,6 +555,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PaymentLibModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -568,7 +570,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MarkdownComponent,
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -997,6 +999,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PaymentLibModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -1011,7 +1014,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MarkdownComponent,
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -1082,6 +1085,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PaymentLibModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -1096,7 +1100,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MarkdownComponent,
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -1151,6 +1155,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          PaymentLibModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1171,7 +1176,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
                 }
               ]
             }
-          ]),
+          ])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1182,7 +1187,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
-          CallbackErrorsComponent,
+          CallbackErrorsComponent
         ],
         providers: [
           FieldsUtils,
@@ -1266,6 +1271,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          PaymentLibModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1286,7 +1292,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
                 }
               ]
             }
-          ]),
+          ])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1297,7 +1303,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
-          CallbackErrorsComponent,
+          CallbackErrorsComponent
         ],
         providers: [
           FieldsUtils,
@@ -1484,6 +1490,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          PaymentLibModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1504,7 +1511,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
                 }
               ]
             }
-          ]),
+          ])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1515,7 +1522,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
-          CallbackErrorsComponent,
+          CallbackErrorsComponent
         ],
         providers: [
           FieldsUtils,
