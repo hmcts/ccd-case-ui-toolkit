@@ -42,6 +42,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
         task: this.eventCompletionParams.task,
         caseId: this.eventCompletionParams.caseId,
         eventId: this.eventCompletionParams.eventId,
+        reassignedTask: null,
         router: this.router,
         route: this.route,
         sessionStorageService: this.sessionStorageService,

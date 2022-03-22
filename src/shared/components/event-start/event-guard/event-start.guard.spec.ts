@@ -33,7 +33,7 @@ describe('EventStartGuard', () => {
   const router = createSpyObj('router', ['navigate']);
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
   const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
-  const sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
+  const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
   it('canActivate should return false', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
