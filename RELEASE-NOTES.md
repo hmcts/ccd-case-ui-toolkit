@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.14.1-error-withholding-for-401-403-404
+### Version 4.12.16-error-withholding-for-401-403-404
 **EUI-5528** Withholding errors for 401, 403, 404 so does not redirect to default url
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
