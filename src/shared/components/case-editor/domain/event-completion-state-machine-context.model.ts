@@ -14,6 +14,7 @@ export interface EventCompletionStateMachineContext {
   task: Task;
   caseId: string;
   eventId: string;
+  reassignedTask: Task;
   router: Router;
   route: ActivatedRoute;
   sessionStorageService: SessionStorageService;

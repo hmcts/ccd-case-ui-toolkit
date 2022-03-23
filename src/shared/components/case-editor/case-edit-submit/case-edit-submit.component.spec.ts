@@ -51,7 +51,7 @@ describe('CaseEditSubmitComponent', () => {
     "assignee": null,
     "auto_assigned": false,
     "case_category": "asylum",
-    "case_id": "1620409659381330",
+    "case_id": "1234567812345678",
     "case_management_category": null,
     "case_name": "Alan Jonson",
     "case_type_id": null,
@@ -4248,6 +4248,7 @@ describe('CaseEditSubmitComponent', () => {
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         'cancel': () => undefined,
         'cancelled': cancelled,
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [], 'state': {'id': 'incompleteApplication', 'name': 'Incomplete Application', 'title_display': '# 12345678123456: west'}},
         'submit': createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
