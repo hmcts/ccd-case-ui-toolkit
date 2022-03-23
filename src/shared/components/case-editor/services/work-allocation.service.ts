@@ -182,7 +182,7 @@ export class WorkAllocationService {
     return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse) {
         if (error.status === 401 || error.status === 403 || error.status === 404) {
-          // do nothing here - allow error to be withheld
+          // EUI-5528 - do nothing here - allow error to be withheld
         } else {
           return throwError(error);
         }
