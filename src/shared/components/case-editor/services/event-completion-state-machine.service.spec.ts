@@ -78,6 +78,7 @@ describe('EventCompletionStateMachineService', () => {
     task: oneTask,
     caseId: '1620409659381330',
     eventId: 'editAppealAfterSubmit',
+    reassignedTask: null,
     router: mockRouter,
     route: mockRoute,
     sessionStorageService: mockSessionStorageService,
