@@ -18,6 +18,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     {}
   ];
 
+  private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer', 'WaysToPay'];
+
   private static readonly NESTED_TYPES = {
     'Complex': ReadFieldsFilterPipe.isValidComplex,
     'Collection': ReadFieldsFilterPipe.isValidCollection
@@ -82,8 +84,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     if (!ignoreLabels && field.field_type.type === 'Label' && (field.label || '').length > 0) {
       return true;
     }
-    // We also shouldn't ditch CasePaymentHistoryViewer fields.
-    if (field.field_type.type === 'CasePaymentHistoryViewer') {
+    // We also shouldn't ditch fields that will always come back with a null value.
+    if (this.ALWAYS_NULL_FIELDS.indexOf(field.field_type.type) !== -1) {
       return true;
     }
 

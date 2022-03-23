@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
+
 ### Version 4.12.6-date-year-validation
 **EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
 
