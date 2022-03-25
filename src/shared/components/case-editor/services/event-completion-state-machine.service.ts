@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
@@ -134,17 +134,7 @@ export class EventCompletionStateMachineService {
       const task: Task = JSON.parse(taskStr);
 
       // Task already assigned to current user, just complete task
-      context.workAllocationService.completeTask(task.id).subscribe(
-        response => {
-          // Emit event can be completed event
-          context.component.eventCanBeCompleted.emit(true);
-        },
-        error => {
-          // Emit event cannot be completed event
-          context.component.eventCanBeCompleted.emit(false);
-          context.alertService.error(error.message);
-          return throwError(error);
-        });
+      this.completeAndEmit(context.workAllocationService.completeTask(task.id), context);
     } else {
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
@@ -169,17 +159,7 @@ export class EventCompletionStateMachineService {
       const task: Task = JSON.parse(taskStr);
 
       // Assign and complete task
-      context.workAllocationService.assignAndCompleteTask(task.id).subscribe(
-        response => {
-          // Emit event can be completed event
-          context.component.eventCanBeCompleted.emit(true);
-        },
-        error => {
-          // Emit event cannot be completed event
-          context.component.eventCanBeCompleted.emit(false);
-          context.alertService.error(error.message);
-          return throwError(error);
-        });
+      this.completeAndEmit(context.workAllocationService.assignAndCompleteTask(task.id), context);
     } else {
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
@@ -240,5 +220,19 @@ export class EventCompletionStateMachineService {
       EventCompletionStates.Final,
       this.stateFinal
     );
+  }
+
+  public completeAndEmit(completionObservable: Observable<TaskPayload>, context: EventCompletionStateMachineContext): void {
+    completionObservable.subscribe(
+      response => {
+        // Emit event can be completed event
+        context.component.eventCanBeCompleted.emit(true);
+      },
+      error => {
+        // Emit event cannot be completed event
+        context.component.eventCanBeCompleted.emit(false);
+        context.alertService.error(error.message);
+        return throwError(error);
+      });
   }
 }
