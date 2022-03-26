@@ -6,6 +6,7 @@ import { WorkAllocationService } from '../../case-editor';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services';
+import { checkTaskInEventNotRequired } from '../event-start-utils';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
@@ -57,8 +58,8 @@ export class EventStartGuard implements CanActivate {
       }
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
+    } else {
+      return of(checkTaskInEventNotRequired(payload, caseId, eventId, this.sessionStorageService));
     }
-
-    return of(true);
   }
 }
