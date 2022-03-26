@@ -5,7 +5,6 @@ import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
-import { SessionStorageService } from '../../../services';
 import { UserInfo } from '../../../domain/user/user-info.model';
 
 describe('EventStartGuard', () => {
