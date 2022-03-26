@@ -84,7 +84,6 @@ export class EventStartGuard implements CanActivate {
    } else {
      // if one task assigned to user, allow user to complete event
      this.sessionStorageService.setItem('taskToComplete', JSON.stringify(tasksAssignedToUser[0]));
-     this.router.navigate([`/cases/case-details/${caseId}/trigger/${eventId}`]);
      return true;
    }
  }

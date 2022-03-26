@@ -109,7 +109,6 @@ describe('EventStartGuard', () => {
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, eventId)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
-      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/trigger/${eventId}`]);
     });
 
     it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
