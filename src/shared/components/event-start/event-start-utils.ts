@@ -1,4 +1,3 @@
-import { Observable, of } from "rxjs";
 import { TaskPayload } from "../../domain/work-allocation/TaskPayload";
 import { SessionStorageService } from "../../services";
 
@@ -23,7 +22,7 @@ export function checkTaskInEventNotRequired(payload: TaskPayload, caseId: string
     return false;
   } else {
     // if one task assigned to user, allow user to complete event
-    this.sessionStorageService.setItem('taskToComplete', JSON.stringify(tasksAssignedToUser[0]));
+    sessionStorageService.setItem('taskToComplete', JSON.stringify(tasksAssignedToUser[0]));
     this.router.navigate([`/cases/case-details/${caseId}/trigger/${eventId}`]);
     return true;
   }
