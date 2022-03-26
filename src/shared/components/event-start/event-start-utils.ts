@@ -1,7 +1,8 @@
+import { Router } from "@angular/router";
 import { TaskPayload } from "../../domain/work-allocation/TaskPayload";
 import { SessionStorageService } from "../../services";
 
-export function checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, eventId: string, sessionStorageService: SessionStorageService): boolean {
+export function checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, eventId: string, sessionStorageService: SessionStorageService, router: Router): boolean {
   const taskNumber = payload.tasks.length;
   if (taskNumber === 0) {
     // if there are no tasks just carry on
@@ -18,12 +19,12 @@ export function checkTaskInEventNotRequired(payload: TaskPayload, caseId: string
     return true;
   } else if (tasksAssignedToUser.length > 1) {
     // if more than one task assigned to the user then give multiple tasks error
-    this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+    router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
     return false;
   } else {
     // if one task assigned to user, allow user to complete event
     sessionStorageService.setItem('taskToComplete', JSON.stringify(tasksAssignedToUser[0]));
-    this.router.navigate([`/cases/case-details/${caseId}/trigger/${eventId}`]);
+    router.navigate([`/cases/case-details/${caseId}/trigger/${eventId}`]);
     return true;
   }
 }

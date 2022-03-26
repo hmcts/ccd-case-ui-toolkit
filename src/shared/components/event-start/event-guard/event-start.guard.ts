@@ -59,7 +59,7 @@ export class EventStartGuard implements CanActivate {
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
-      return of(checkTaskInEventNotRequired(payload, caseId, eventId, this.sessionStorageService));
+      return of(checkTaskInEventNotRequired(payload, caseId, eventId, this.sessionStorageService, this.router));
     }
   }
 }
