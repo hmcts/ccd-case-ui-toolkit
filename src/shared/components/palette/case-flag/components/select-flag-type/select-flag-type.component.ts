@@ -1,15 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
+import { Subscription } from 'rxjs';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, FlagType } from '../../domain';
+import { FlagType } from '../../../../../domain/case-flag';
+import { CaseFlagRefdataService } from '../../../../../services';
+import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
+import { CaseFlagState } from '../../domain';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
 
 @Component({
   selector: 'ccd-select-flag-type',
   templateUrl: './select-flag-type.component.html',
   styleUrls: ['./select-flag-type.component.scss']
 })
-export class SelectFlagTypeComponent implements OnInit {
+export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
   @Input()
   public formGroup: FormGroup;
@@ -21,27 +25,61 @@ export class SelectFlagTypeComponent implements OnInit {
   public flagCommentsOptionalEmitter: EventEmitter<any> = new EventEmitter();
 
   public flagTypes: FlagType[];
-  public flagTypeSelected: string;
+  public selectedFlagType: FlagType;
   public errorMessages: ErrorMessage[];
   public flagTypeNotSelectedErrorMessage = '';
   public flagTypeErrorMessage = '';
+  public flagRefdata$: Subscription;
+  public otherFlagTypeSelected = false;
+  public refdataError = false;
 
+  public readonly flagTypeControlName = 'flagType';
+  public readonly descriptionControlName = 'otherFlagTypeDescription';
   private readonly maxCharactersForOtherFlagType = 80;
+  // Code for "Other" flag type as defined in Reference Data
+  private readonly otherFlagTypeCode = 'OT0001';
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle
   }
 
+  constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
+
   public ngOnInit(): void {
-    this.flagTypes = this.getFlagTypes();
-    this.formGroup.addControl('flagType', new FormControl(''));
-    this.formGroup.addControl('other', new FormControl(''));
-    this.formGroup.addControl('otherFlagTypeDescription', new FormControl(''));
+    this.flagTypes = [];
+    this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
+    this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
+
+    // HMCTS service code should come from Refdata API lookup via getHmctsServiceCode() but this is not working in AAT;
+    // use test service code 'AAA1' for now
+    this.flagRefdata$ = this.caseFlagRefdataService.getCaseFlagsRefdata('AAA1', RefdataCaseFlagType.PARTY).subscribe({
+      next: flagTypes => {
+        // First (and only) object in the returned array should be the top-level "Party" flag type
+        flagTypes[0].childFlags.forEach(flagType => {
+          this.flagTypes.push(flagType);
+        });
+      },
+      error: error => {
+        // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
+        this.refdataError = true;
+        this.errorMessages = [];
+        this.errorMessages.push({title: '', description: error.message, fieldId: 'conditional-radios-list'});
+        // Return case flag field state and error messages to the parent
+        this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+      }
+    });
   }
 
-  public onFlagTypeChanged(flagTypeId: string): void {
-    // Display description textbox if 'other' checkbox is selected
-    this.flagTypeSelected = flagTypeId;
+  public ngOnDestroy(): void {
+    if (this.flagRefdata$) {
+      this.flagRefdata$.unsubscribe();
+    }
+  }
+
+  public onFlagTypeChanged(flagType: FlagType): void {
+    this.selectedFlagType = flagType;
+    // Display description textbox if 'Other' flag type is selected
+    this.otherFlagTypeSelected = this.selectedFlagType.flagCode === this.otherFlagTypeCode;
   }
 
   public onNext(): void {
@@ -49,9 +87,8 @@ export class SelectFlagTypeComponent implements OnInit {
     this.validateForm();
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
-    // Emit "flag comments optional" event if the user selects a flag type where comments are optional
-    // TODO Change for real implementation once integrated with Reference Data API
-    if (this.flagTypeSelected === 'flag-with-optional-comments') {
+    // Emit "flag comments optional" event if the user selects a flag type where comments are not mandatory
+    if (this.selectedFlagType && !this.selectedFlagType.flagComment) {
       this.flagCommentsOptionalEmitter.emit(null);
     }
   }
@@ -61,12 +98,12 @@ export class SelectFlagTypeComponent implements OnInit {
     this.flagTypeErrorMessage = '';
     this.errorMessages = [];
 
-    if (!this.flagTypeSelected) {
+    if (!this.selectedFlagType) {
       this.flagTypeNotSelectedErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
-      this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'})
+      this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'});
     }
-    if (this.flagTypeSelected === 'other') {
-      const otherFlagTypeDescription = this.formGroup.get('otherFlagTypeDescription').value;
+    if (this.otherFlagTypeSelected) {
+      const otherFlagTypeDescription = this.formGroup.get(this.descriptionControlName).value;
       if (!otherFlagTypeDescription) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
@@ -76,14 +113,5 @@ export class SelectFlagTypeComponent implements OnInit {
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
       }
     }
-  }
-
-  private getFlagTypes(): FlagType[] {
-    // TODO: Get the list of flag types using the API call in future sprints
-    return [
-      {id: 'urgent-case', name: 'Urgent case'},
-      {id: 'vulnerable-user', name: 'Vulnerable user'},
-      {id: 'flag-with-optional-comments', name: 'Flag where comments are optional'}
-    ];
   }
 }
