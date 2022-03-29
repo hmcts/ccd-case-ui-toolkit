@@ -262,7 +262,8 @@ fdescribe('EventCompletionStateMachineService', () => {
         task: oneTask
       };
 
-      spyOn(context.workAllocationService, 'getTask').and.returnValues(of(firstTaskResponse), of(secondTaskResponse), of(thirdTaskResponse));
+      spyOn(context.workAllocationService, 'getTask').and.returnValues(of(firstTaskResponse),
+       of(secondTaskResponse), of(thirdTaskResponse));
       service.entryActionForStateCheckTasksCanBeCompleted(state, context);
       expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.TaskCompletedOrCancelled);
 
