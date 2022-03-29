@@ -17,7 +17,7 @@ import { EventCompletionPortalTypes } from '../domain/event-completion-portal-ty
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('EventCompletionStateMachineService', () => {
+describe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
