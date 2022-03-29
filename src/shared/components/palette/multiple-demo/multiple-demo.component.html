@@ -1,5 +1,5 @@
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
     <p></p>
     <h2 class="govuk-heading-m">Cases in Multiple</h2>
     <p></p>
@@ -15,20 +15,22 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let result of resultView.results"
+          *ngFor="let result of resultView | paginate : config"
           class="govuk-table__row"
           scope="col"
         >
           <td class="govuk-table__cell">
-            {{ result.case_fields.ethosCaseReference }}
+            {{ result.ethosCaseReference }}
           </td>
-          <td class="govuk-table__cell">{{ result.case_fields.claimant }}</td>
-          <td class="govuk-table__cell">{{ result.case_fields.respondent }}</td>
+          <td class="govuk-table__cell">{{ result.claimant }}</td>
+          <td class="govuk-table__cell">{{ result.respondent }}</td>
           <td class="govuk-table__cell">
-            {{ result.case_fields.leadClaimant }}
+            {{ result.leadClaimant }}
           </td>
         </tr>
       </tbody>
-    </table>
+    </table>    
+
+    <pagination-controls (pageChange)="pageChanged($event)" [autoHide]="autoHide"></pagination-controls>
   </div>
 </div>

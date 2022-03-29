@@ -57,6 +57,7 @@ import { OrganisationModule } from './organisation/organisation.module';
 import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
 import { MultipleDemoModule } from './multiple-demo';
 import { LeadDemoModule } from './lead-demo';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { LeadDemoModule } from './lead-demo';
     MatInputModule,
     MatDatepickerModule,
     MultipleDemoModule,
-    LeadDemoModule
+    LeadDemoModule,
+    CdkTableModule
   ],
   declarations: [
     UnsupportedFieldComponent,
