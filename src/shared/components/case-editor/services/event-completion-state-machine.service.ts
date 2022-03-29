@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { Observable, throwError } from 'rxjs';
 import { Task, TaskState } from '../../../domain/work-allocation/Task';
+import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
@@ -44,7 +45,7 @@ export class EventCompletionStateMachineService {
     )
 
     this.stateTaskCompletedOrCancelled = stateMachine.createState(
-      EventCompletionStates.TaskCompetedOrCancelled,
+      EventCompletionStates.TaskCompletedOrCancelled,
       false,
       this.entryActionForStateTaskCompletedOrCancelled
     )
@@ -91,7 +92,7 @@ export class EventCompletionStateMachineService {
             case TaskState.Cancelled:
             case TaskState.Terminated:
               // Task completed or cancelled
-              state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
+              state.trigger(EventCompletionStates.TaskCompletedOrCancelled);
               break;
             case TaskState.Assigned:
               // Task is in assigned state
@@ -179,7 +180,7 @@ export class EventCompletionStateMachineService {
     );
     // Task completed or cancelled
     this.stateCheckTasksCanBeCompleted.addTransition(
-      EventCompletionStates.TaskCompetedOrCancelled,
+      EventCompletionStates.TaskCompletedOrCancelled,
       this.stateTaskCompletedOrCancelled
     );
     // Task assigned to another user

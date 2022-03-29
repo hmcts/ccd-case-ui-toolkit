@@ -2,25 +2,25 @@ import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StateMachine } from '@edium/fsm';
+import { State, StateMachine } from '@edium/fsm';
 import { of } from 'rxjs';
 import { WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
-import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
+import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import {
   EventCompletionStateMachineContext,
   EventCompletionStates
 } from '../domain';
+import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('EventCompletionStateMachineService', () => {
+fdescribe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
-  let mockSessionStorageService: SessionStorageService;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let httpService: HttpService;
   let errorService: HttpErrorService;
@@ -29,7 +29,8 @@ describe('EventCompletionStateMachineService', () => {
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
   let eventCompletionComponentEmitter: any = {
-    eventCanBeCompleted: new EventEmitter<boolean>(true)
+    eventCanBeCompleted: new EventEmitter<boolean>(true),
+    showPortal: jasmine.createSpy('showPortal')
   }
 
   mockRouter = {
@@ -72,6 +73,7 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  let mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem', 'removeItem']);
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
 
   let context: EventCompletionStateMachineContext = {
@@ -99,6 +101,8 @@ describe('EventCompletionStateMachineService', () => {
     service = new EventCompletionStateMachineService();
   });
 
+  const state = jasmine.createSpyObj<State>('state', ['trigger']);
+
   it('should initialise state machine', () => {
     stateMachine = service.initialiseStateMachine(context);
     expect(stateMachine).toBeDefined();
@@ -109,7 +113,7 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     expect(service.stateCheckTasksCanBeCompleted.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
     expect(service.stateCompleteEventAndTask.id).toEqual(EventCompletionStates.CompleteEventAndTask);
-    expect(service.stateTaskCompletedOrCancelled.id).toEqual(EventCompletionStates.TaskCompetedOrCancelled);
+    expect(service.stateTaskCompletedOrCancelled.id).toEqual(EventCompletionStates.TaskCompletedOrCancelled);
     expect(service.stateTaskAssignedToAnotherUser.id).toEqual(EventCompletionStates.TaskAssignedToAnotherUser);
     expect(service.stateTaskUnassigned.id).toEqual(EventCompletionStates.TaskUnassigned);
     expect(service.stateFinal.id).toEqual(EventCompletionStates.Final);
@@ -132,7 +136,7 @@ describe('EventCompletionStateMachineService', () => {
   });
 
   it('should perform state task assigned to user', () => {
-    const taskResponse: TaskRespone = {
+    const taskResponse: TaskResponse = {
       task: oneTask
     };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
@@ -149,7 +153,7 @@ describe('EventCompletionStateMachineService', () => {
 
   it('should perform state task assigned to another user', () => {
     const task = oneTask;
-    const taskResponse: TaskRespone = {
+    const taskResponse: TaskResponse = {
       task: oneTask
     };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
@@ -168,7 +172,7 @@ describe('EventCompletionStateMachineService', () => {
     const taskToTest = oneTask;
     taskToTest.assignee = null;
     taskToTest.task_state = 'unassigned';
-    const taskResponse: TaskRespone = {
+    const taskResponse: TaskResponse = {
       task: taskToTest
     };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
@@ -184,7 +188,7 @@ describe('EventCompletionStateMachineService', () => {
   it('should perform state task completed or cancelled', () => {
     const taskToTest = oneTask;
     taskToTest.task_state = 'completed';
-    const taskResponse: TaskRespone = {
+    const taskResponse: TaskResponse = {
       task: taskToTest
     };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
@@ -230,6 +234,93 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitionsForStateTaskUnassigned();
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
+  });
+
+  describe('entryActionForStateCheckTasksCanBeCompleted', () => {
+
+    it('completeTriggerStateLogic unassigned', () => {
+      oneTask.task_state = 'unassigned';
+      const taskResponse: TaskResponse = {
+        task: oneTask
+      };
+      spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
+      service.entryActionForStateCheckTasksCanBeCompleted(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.TaskUnassigned);
+    });
+
+    it('completeTriggerStateLogic complete or cancel', () => {
+      oneTask.task_state = 'completed';
+      const firstTaskResponse: TaskResponse = {
+        task: oneTask
+      };
+      oneTask.task_state = 'cancelled';
+      const secondTaskResponse = {
+        task: oneTask
+      };
+      oneTask.task_state = 'terminated';
+      const thirdTaskResponse = {
+        task: oneTask
+      };
+
+      spyOn(context.workAllocationService, 'getTask').and.returnValues(of(firstTaskResponse), of(secondTaskResponse), of(thirdTaskResponse));
+      service.entryActionForStateCheckTasksCanBeCompleted(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.TaskCompletedOrCancelled);
+
+      service.entryActionForStateCheckTasksCanBeCompleted(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.TaskCompletedOrCancelled);
+
+      service.entryActionForStateCheckTasksCanBeCompleted(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.TaskCompletedOrCancelled);
+    });
+
+    it('completeTriggerStateLogic assigned', () => {
+      oneTask.task_state = 'assigned';
+      const firstTaskResponse: TaskResponse = {
+        task: oneTask
+      };
+      spyOn(context.workAllocationService, 'getTask').and.returnValue(of(firstTaskResponse));
+      service.entryActionForStateCheckTasksCanBeCompleted(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.CompleteEventAndTask);
+    });
+
+  });
+
+  describe('entryActionForStateTaskCompletedOrCancelled', () => {
+
+    it('should move to final state when completed or cancelled', () => {
+      service.entryActionForStateTaskCompletedOrCancelled(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.Final);
+      expect(context.component.showPortal).toHaveBeenCalledWith(EventCompletionPortalTypes.TaskCancelled);
+    });
+
+  });
+
+  describe('entryActionForStateCompleteEventAndTask', () => {
+
+    it('should move to final state and complete event/task', () => {
+      service.entryActionForStateCompleteEventAndTask(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.Final);
+    });
+
+  });
+
+  describe('entryActionForStateTaskAssignedToAnotherUser', () => {
+
+    it('should decide state when task assigned to other user', () => {
+      service.entryActionForStateTaskAssignedToAnotherUser(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.Final);
+      expect(context.component.showPortal).toHaveBeenCalledWith(EventCompletionPortalTypes.TaskReassigned);
+    });
+
+  });
+
+  describe('entryActionForStateTaskUnassigned', () => {
+
+    it('should move to final state and complete event/task', () => {
+      service.entryActionForStateCompleteEventAndTask(state, context);
+      expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.Final);
+    });
+
   });
 
   afterAll(() => {

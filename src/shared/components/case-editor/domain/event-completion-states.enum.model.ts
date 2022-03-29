@@ -3,7 +3,7 @@ export enum EventCompletionStates {
   CompleteEventAndTask = 'complete-event-and-task',
   CancelEvent = 'cancel-event',
   CompleteEventNotTask = 'complete-event-not-task',
-  TaskCompetedOrCancelled = 'task-completed-or-cancelled',
+  TaskCompletedOrCancelled = 'task-completed-or-cancelled',
   TaskAssignedToAnotherUser = 'task-assigned-to-another-user',
   TaskReassignToUser = 'task-reassign-to-user',
   TaskAssignToUser = 'task-assign-to-user',
