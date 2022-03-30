@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { Observable, throwError } from 'rxjs';
 import { Task, TaskState } from '../../../domain/work-allocation/Task';
-import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventCompletionStateMachineContext, EventCompletionStates } from '../domain';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { State, StateMachine } from '@edium/fsm';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
@@ -72,7 +72,7 @@ describe('EventCompletionStateMachineService', () => {
   appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
-  alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts', 'error']);
   let mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem', 'removeItem']);
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
 
@@ -320,6 +320,28 @@ describe('EventCompletionStateMachineService', () => {
     it('should move to final state and complete event/task', () => {
       service.entryActionForStateCompleteEventAndTask(state, context);
       expect(state.trigger).toHaveBeenCalledWith(EventCompletionStates.Final);
+    });
+
+  });
+
+  describe('completeAndEmit', () => {
+
+    const taskPayload = {
+      tasks: [oneTask],
+      task_required_for_event: true
+    };
+
+    it('should complete and emit', () => {
+      spyOn(context.component.eventCanBeCompleted, 'emit');
+      service.completeAndEmit(of(taskPayload), context);
+      expect(context.component.eventCanBeCompleted.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('should give error if cannot complete', () => {
+      spyOn(context.component.eventCanBeCompleted, 'emit');
+      service.completeAndEmit(throwError({status: 404}), context);
+      expect(context.component.eventCanBeCompleted.emit).toHaveBeenCalledWith(false);
+      expect(context.alertService.error).toHaveBeenCalled();
     });
 
   });
