@@ -58,11 +58,11 @@ export class EventStartGuard implements CanActivate {
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
-      return of(this.checkTaskInEventNotRequired(payload, caseId, eventId));
+      return of(this.checkTaskInEventNotRequired(payload, caseId, taskId));
     }
   }
 
-  public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, eventId: string): boolean {
+  public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
    const taskNumber = payload.tasks.length;
    if (taskNumber === 0) {
      // if there are no tasks just carry on
@@ -77,13 +77,19 @@ export class EventStartGuard implements CanActivate {
    if (tasksAssignedToUser.length === 0) {
      // if no tasks assigned to user carry on
      return true;
-   } else if (tasksAssignedToUser.length > 1) {
+   } else if (tasksAssignedToUser.length > 1 && !taskId) {
      // if more than one task assigned to the user then give multiple tasks error
      this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
      return false;
    } else {
+     let task: any;
+     if (taskId) {
+      task = payload.tasks.filter(x =>x.id === taskId);
+     } else {
+       task = tasksAssignedToUser[0];
+     }
      // if one task assigned to user, allow user to complete event
-     this.sessionStorageService.setItem('taskToComplete', JSON.stringify(tasksAssignedToUser[0]));
+     this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
      return true;
    }
  }
