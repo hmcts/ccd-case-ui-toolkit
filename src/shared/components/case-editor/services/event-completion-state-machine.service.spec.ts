@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { State, StateMachine } from '@edium/fsm';
 import { of, throwError } from 'rxjs';
@@ -94,7 +94,6 @@ describe('EventCompletionStateMachineService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        {provide: Router, useValue: mockRouter},
         {provide: WorkAllocationService, useValue: mockWorkAllocationService}
       ]
     });
