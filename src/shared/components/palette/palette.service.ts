@@ -36,11 +36,14 @@ import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summa
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
-import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
-import { CaseHistoryViewerFieldComponent } from './history';
+import { WriteFixedRadioListFieldComponent } from './fixed-radio-list/write-fixed-radio-list-field.component';
+import { ReadFixedRadioListFieldComponent } from './fixed-radio-list/read-fixed-radio-list-field.component';
+import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-field.component';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
-import { ReadDynamicRadioListFieldComponent, WriteDynamicRadioListFieldComponent } from './dynamic-radio-list';
+import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
+import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
+import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
 import { LeadDemoComponent } from './lead-demo/lead-demo.component';
 import { MultipleDemoComponent } from './multiple-demo/multiple-demo.component';
 
@@ -105,6 +108,8 @@ export class PaletteService {
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
+      case 'WaysToPay':
+        return WaysToPayFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

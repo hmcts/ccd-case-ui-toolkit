@@ -3,23 +3,16 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldTypeEnum } from '../../../domain/definition/field-type-enum.model';
 
 @Pipe({
-  name: "ccdIsCompound",
+  name: 'ccdIsCompound'
 })
 export class IsCompoundPipe implements PipeTransform {
   private static readonly COMPOUND_TYPES: FieldTypeEnum[] = [
-    "Complex",
-    "Label",
-    "AddressGlobal",
-    "AddressUK",
-    "AddressGlobalUK",
-    "CasePaymentHistoryViewer",
-    "CaseHistoryViewer",
-    "Organisation",
-    "MultipleDemoType",
-    "LeadDemoType",
+    'Complex', 'Label', 'AddressGlobal', 'AddressUK', 'AddressGlobalUK', 'CasePaymentHistoryViewer', 'CaseHistoryViewer', 'Organisation', 'WaysToPay', 'MultipleDemoType', 'LeadDemoType'
   ];
 
-  private static readonly EXCLUDE: String[] = ["CaseLink"];
+  private static readonly EXCLUDE: String[] = [
+    'CaseLink'
+  ];
 
   transform(field: CaseField): boolean {
     if (!field || !field.field_type || !field.field_type.type) {

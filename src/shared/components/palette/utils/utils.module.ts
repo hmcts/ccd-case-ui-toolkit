@@ -21,7 +21,7 @@ import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collectio
     IsMandatoryPipe,
     IsReadOnlyPipe,
     IsReadOnlyAndNotCollectionPipe,
-    DashPipe,
+    DashPipe
   ],
   exports: [
     DatePipe,
@@ -31,7 +31,7 @@ import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collectio
     IsMandatoryPipe,
     IsReadOnlyPipe,
     IsReadOnlyAndNotCollectionPipe,
-    DashPipe,
+    DashPipe
   ]
 })
 export class PaletteUtilsModule {}
