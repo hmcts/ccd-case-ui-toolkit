@@ -274,9 +274,11 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // This is used a feature toggle to
-    // control the work allocation
-    if (this.appConfig.getWorkAllocationApiUrl() && !this.isPuiCaseManager()) {
+    // The following code is work allocation 1 related
+    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
+      // This is used a feature toggle to
+      // control the work allocation
+      if (!this.isPuiCaseManager()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
@@ -284,6 +286,7 @@ export class CasesService {
             // Show an appropriate warning about something that went wrong.
             console.warn('Could not process tasks for this case event', error);
           });
+      }
     }
   }
 

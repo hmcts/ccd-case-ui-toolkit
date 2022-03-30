@@ -95,9 +95,14 @@ export class EventCompletionStateMachineService {
               break;
             case TaskState.Assigned:
               // Task is in assigned state
-              taskResponse.task.assignee === context.task.assignee
-                ? state.trigger(EventCompletionStates.CompleteEventAndTask)
-                : state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              if (taskResponse.task.assignee === context.task.assignee) {
+                // Task still assigned to current user, complete event and task
+                state.trigger(EventCompletionStates.CompleteEventAndTask);
+              } else {
+                // Task has been reassigned to another user, display error message
+                context.reassignedTask = taskResponse.task;
+                state.trigger(EventCompletionStates.TaskAssignedToAnotherUser);
+              }
               break;
             default:
               // Allow user to complete the event
@@ -122,8 +127,28 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-    // Emit event to parent component
-    context.component.eventCanBeCompleted.emit(true);
+
+    const taskStr = context.sessionStorageService.getItem('taskToComplete');
+    if (taskStr) {
+      // Task is in session storage
+      const task: Task = JSON.parse(taskStr);
+
+      // Task already assigned to current user, just complete task
+      context.workAllocationService.completeTask(task.id).subscribe(
+        response => {
+          // Emit event can be completed event
+          context.component.eventCanBeCompleted.emit(true);
+        },
+        error => {
+          // Emit event cannot be completed event
+          context.component.eventCanBeCompleted.emit(false);
+          context.alertService.error(error.message);
+          return throwError(error);
+        });
+    } else {
+      // Emit event cannot be completed event
+      context.component.eventCanBeCompleted.emit(false);
+    }
   }
 
   public entryActionForStateTaskAssignedToAnotherUser(state: State, context: EventCompletionStateMachineContext): void {
