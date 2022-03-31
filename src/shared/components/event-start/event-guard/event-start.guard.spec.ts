@@ -94,20 +94,20 @@ describe('EventStartGuard', () => {
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = {task_required_for_event: false, tasks: []};
-      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, eventId)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, eventId)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
       tasks[0].assignee = '1';
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, eventId)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
     });
 
@@ -116,8 +116,17 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, eventId)).toBe(false);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+    });
+
+    it('should return true and navigate to event trigger if navigated to via task next steps', () => {
+      tasks[0].assignee = '1';
+      tasks.push(tasks[0]);
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
     });
 
   });
