@@ -63,34 +63,34 @@ export class EventStartGuard implements CanActivate {
   }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
-   const taskNumber = payload.tasks.length;
-   if (taskNumber === 0) {
-     // if there are no tasks just carry on
-     return true;
-   }
-   // Get number of tasks assigned to user
-   const userInfoStr = this.sessionStorageService.getItem('userDetails');
-   const userInfo = JSON.parse(userInfoStr);
-   const tasksAssignedToUser = payload.tasks.filter(x =>
-     x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
-   );
-   if (tasksAssignedToUser.length === 0) {
-     // if no tasks assigned to user carry on
-     return true;
-   } else if (tasksAssignedToUser.length > 1 && !taskId) {
-     // if more than one task assigned to the user then give multiple tasks error
-     this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
-     return false;
-   } else {
-     let task: any;
-     if (taskId) {
-      task = payload.tasks.filter(x =>x.id === taskId);
-     } else {
-       task = tasksAssignedToUser[0];
-     }
-     // if one task assigned to user, allow user to complete event
-     this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
-     return true;
-   }
- }
+    const taskNumber = payload.tasks.length;
+    if (taskNumber === 0) {
+      // if there are no tasks just carry on
+      return true;
+    }
+    // Get number of tasks assigned to user
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    const userInfo = JSON.parse(userInfoStr);
+    const tasksAssignedToUser = payload.tasks.filter(x =>
+      x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+    );
+    if (tasksAssignedToUser.length === 0) {
+      // if no tasks assigned to user carry on
+      return true;
+    } else if (tasksAssignedToUser.length > 1 && !taskId) {
+      // if more than one task assigned to the user then give multiple tasks error
+      this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+      return false;
+    } else {
+      let task: any;
+      if (taskId) {
+        task = payload.tasks.filter(x => x.id === taskId);
+      } else {
+        task = tasksAssignedToUser[0];
+      }
+      // if one task assigned to user, allow user to complete event
+      this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
+      return true;
+    }
+  }
 }
