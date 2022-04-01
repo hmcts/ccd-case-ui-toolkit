@@ -84,7 +84,7 @@ export class EventStartGuard implements CanActivate {
     } else {
       let task: any;
       if (taskId) {
-        task = payload.tasks.filter(x => x.id === taskId);
+        task = payload.tasks.find(x => x.id === taskId);
       } else {
         task = tasksAssignedToUser[0];
       }
