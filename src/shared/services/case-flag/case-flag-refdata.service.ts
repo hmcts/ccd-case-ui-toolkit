@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { FlagType, HmctsServiceDetail } from '../../domain/case-flag';
@@ -52,7 +52,7 @@ export class CaseFlagRefdataService {
         );
     }
 
-    return null;
+    return of(null);
   }
 
   /**
@@ -74,6 +74,6 @@ export class CaseFlagRefdataService {
       return this.http.get(url, {observe: 'body'});
     }
 
-    return null;
+    return of(null);
   }
 }

@@ -132,6 +132,15 @@ describe('Case Flag Refdata Service', () => {
     req.flush(dummyFlagsData);
   });
 
+  it('should return null if caseFlagsRefdataApiUrl in appConfig is null', () => {
+    appConfig.getCaseFlagsRefdataApiUrl.and.returnValue(null);
+    service.getCaseFlagsRefdata('BBA3').subscribe({
+      next: flagTypes => expect(flagTypes).toBeNull()
+    });
+
+    httpMock.expectNone(caseFlagsRefdataApiUrl.replace(':sid', 'BBA3'));
+  });
+
   it('should retrieve the HMCTS service details for the given service name', () => {
     service.getHmctsServiceDetails('SSCS').subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
@@ -150,5 +159,14 @@ describe('Case Flag Refdata Service', () => {
     const req = httpMock.expectOne(`${locationRefApiUrl}/orgServices`);
     expect(req.request.method).toEqual('GET');
     req.flush(dummyServiceDetails);
+  });
+
+  it('should return null if locationRefApiUrl in appConfig is null', () => {
+    appConfig.getLocationRefApiUrl.and.returnValue(null);
+    service.getHmctsServiceDetails('SSCS').subscribe({
+      next: serviceDetails => expect(serviceDetails).toBeNull()
+    });
+
+    httpMock.expectNone(`${locationRefApiUrl}/orgServices?ccdServiceNames=SSCS`);
   });
 });
