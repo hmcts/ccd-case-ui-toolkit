@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../../../services';
@@ -17,6 +18,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
   @Input()
   public formGroup: FormGroup;
+
+  @Input()
+  public jurisdiction: string;
 
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -50,24 +54,24 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
     this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
 
-    // HMCTS service code should come from Refdata API lookup via getHmctsServiceCode() but this is not working in AAT;
-    // use test service code 'AAA1' for now
-    this.flagRefdata$ = this.caseFlagRefdataService.getCaseFlagsRefdata('AAA1', RefdataCaseFlagType.PARTY).subscribe({
-      next: flagTypes => {
-        // First (and only) object in the returned array should be the top-level "Party" flag type
-        flagTypes[0].childFlags.forEach(flagType => {
-          this.flagTypes.push(flagType);
-        });
-      },
-      error: error => {
-        // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
-        this.refdataError = true;
-        this.errorMessages = [];
-        this.errorMessages.push({title: '', description: error.message, fieldId: 'conditional-radios-list'});
-        // Return case flag field state and error messages to the parent
-        this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
-      }
-    });
+    // HMCTS service code for a given jurisdiction is required to retrieve the relevant list of flag types
+    this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetails(this.jurisdiction)
+      .pipe(
+        // Use switchMap to return an inner Observable of the flag types data, having received the service details
+        // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
+        switchMap(serviceDetails => {
+          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+        })
+      )
+      .subscribe({
+        next: flagTypes => {
+          // First (and only) object in the returned array should be the top-level "Party" flag type
+          this.flagTypes = flagTypes[0].childFlags;
+        },
+        error: error => {
+          this.onRefdataError(error);
+        }
+      });
   }
 
   public ngOnDestroy(): void {
@@ -85,11 +89,22 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public onNext(): void {
     // Validate form
     this.validateForm();
-    // Return case flag field state and error messages to the parent
-    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+    // Return case flag field state, whether the selected flag type (if any) is a parent or not, and error messages to
+    // the parent
+    this.caseFlagStateEmitter.emit({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      isParentFlagType: this.selectedFlagType ? this.selectedFlagType.isParent : null,
+      errorMessages: this.errorMessages
+    });
     // Emit "flag comments optional" event if the user selects a flag type where comments are not mandatory
     if (this.selectedFlagType && !this.selectedFlagType.flagComment) {
       this.flagCommentsOptionalEmitter.emit(null);
+    }
+    // If the selected flag type is a parent, load the list of child flag types and reset the current selection
+    if (this.selectedFlagType && this.selectedFlagType.isParent) {
+      this.flagTypes = this.selectedFlagType.childFlags;
+      this.formGroup.get(this.flagTypeControlName).setValue('');
+      this.selectedFlagType = null;
     }
   }
 
@@ -113,5 +128,14 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
       }
     }
+  }
+
+  private onRefdataError(error: any): void {
+    // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
+    this.refdataError = true;
+    this.errorMessages = [];
+    this.errorMessages.push({title: '', description: error.message, fieldId: 'conditional-radios-list'});
+    // Return case flag field state and error messages to the parent
+    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
 }
