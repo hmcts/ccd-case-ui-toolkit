@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-ref-data-integration
+**EUI-5495/EUI-4845** Integrate "select flag type" stage with Reference Data Common API for case flags
+
 ### Version 4.13.1-case-flags-add-comments-step
 **EUI-4851** Add "add comments" step of Create Case Flag journey
 

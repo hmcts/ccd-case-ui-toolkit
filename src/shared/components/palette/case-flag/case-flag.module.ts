@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from '.';
 import { FormModule } from '../../../../components/form/form.module';
+import { CaseFlagRefdataService } from '../../../services';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
 import {
@@ -24,7 +25,8 @@ import {
   providers: [
     CaseEditComponent,
     CaseEditPageComponent,
-    ChangeDetectorRef as Provider
+    ChangeDetectorRef as Provider,
+    CaseFlagRefdataService
   ],
   declarations: [
     ReadCaseFlagFieldComponent,
