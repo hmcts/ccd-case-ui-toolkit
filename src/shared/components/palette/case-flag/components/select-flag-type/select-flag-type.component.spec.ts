@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { of } from 'rxjs';
-import { FlagType } from '../../../../../domain/case-flag';
-import { CaseFlagRefdataService } from '../../../../../services/case-flag';
+import { of, throwError } from 'rxjs';
+import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
+import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
 import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
@@ -13,49 +13,98 @@ describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
-  const otherFlagType = {
-    name: 'Other',
-    hearingRelevant: true,
-    flagComment: true,
-    flagCode: 'OT0001',
-    isParent: false,
-    path: ['Party'],
-    childFlags: []
-  } as FlagType;
+  const flagTypes = [
+    {
+      name: 'Party',
+      hearingRelevant: false,
+      flagComment: false,
+      flagCode: 'CATGRY',
+      isParent: true,
+      path: [''],
+      childFlags: [
+        {
+          name: 'Reasonable adjustment',
+          hearingRelevant: false,
+          flagComment: false,
+          flagCode: 'CATGRY',
+          isParent: true,
+          path: ['Party'],
+          childFlags: [
+            {
+              name: 'I need help with forms',
+              hearingRelevant: false,
+              flagComment: false,
+              flagCode: 'CATGRY',
+              isParent: true,
+              path: ['Party', 'Reasonable adjustment'],
+              childFlags: [
+                {
+                  name: 'Guidance on how to complete forms',
+                  hearingRelevant: false,
+                  flagComment: false,
+                  flagCode: 'RA0017',
+                  isParent: false,
+                  path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                  childFlags: []
+                },
+                {
+                  name: 'Support filling in forms',
+                  hearingRelevant: false,
+                  flagComment: false,
+                  flagCode: 'RA0018',
+                  isParent: false,
+                  path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                  childFlags: []
+                },
+                {
+                  name: 'Other',
+                  hearingRelevant: true,
+                  flagComment: true,
+                  flagCode: 'OT0001',
+                  isParent: false,
+                  path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                  childFlags: []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Potentially suicidal',
+          hearingRelevant: true,
+          flagComment: false,
+          flagCode: 'PF0003',
+          isParent: false,
+          path: ['Party'],
+          childFlags: []
+        },
+        {
+          name: 'Other',
+          hearingRelevant: true,
+          flagComment: true,
+          flagCode: 'OT0001',
+          isParent: false,
+          path: ['Party'],
+          childFlags: []
+        }
+      ]
+    }
+  ] as FlagType[];
+  const serviceDetails = [
+    {
+      ccd_service_name: 'SSCS',
+      org_unit: 'HMCTS',
+      service_code: 'BBA3',
+      service_id: 31
+    }
+  ] as HmctsServiceDetail[];
+  const sscsJurisdiction = 'SSCS';
 
   beforeEach(async(() => {
-    caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getCaseFlagsRefdata']);
-    caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of([
-      {
-        name: 'Party',
-        hearingRelevant: false,
-        flagComment: false,
-        flagCode: 'CATGRY',
-        isParent: true,
-        path: [''],
-        childFlags: [
-          {
-            name: 'Reasonable adjustment',
-            hearingRelevant: false,
-            flagComment: false,
-            flagCode: 'CATGRY',
-            isParent: true,
-            path: ['Party'],
-            childFlags: []
-          },
-          {
-            name: 'Potentially suicidal',
-            hearingRelevant: true,
-            flagComment: false,
-            flagCode: 'PF0003',
-            isParent: false,
-            path: ['Party'],
-            childFlags: []
-          },
-          otherFlagType
-        ]
-      }
-    ]));
+    caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>(
+      'caseFlagRefdataService', ['getCaseFlagsRefdata', 'getHmctsServiceDetails']);
+    caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
+    caseFlagRefdataService.getHmctsServiceDetails.and.returnValue(of(serviceDetails));
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -74,32 +123,70 @@ describe('SelectFlagTypeComponent', () => {
       'flagType': new FormControl(''),
       'otherFlagTypeDescription': new FormControl('')
     });
+    component.jurisdiction = sscsJurisdiction;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set flag type selected if radio button selected', () => {
+  it('should set selected flag type if radio button selected for "Other"', () => {
     // Third radio button (with index 2) expected to be "Other" from test data
     const radioOtherElement = fixture.debugElement.nativeElement.querySelector('#flag-type-2');
     radioOtherElement.click();
-    expect(component.selectedFlagType).toEqual(otherFlagType);
+    expect(component.selectedFlagType).toEqual(flagTypes[0].childFlags[2]);
     expect(component.otherFlagTypeSelected).toBe(true);
   });
 
-  it('should emit to parent if the validation succeeds', () => {
+  it('should set selected flag type if radio button selected but not for "Other"', () => {
+    const radioElement = fixture.debugElement.nativeElement.querySelector('#flag-type-0');
+    radioElement.click();
+    expect(component.selectedFlagType).toEqual(flagTypes[0].childFlags[0]);
+    expect(component.otherFlagTypeSelected).toBe(false);
+  });
+
+  it('should emit to parent if the validation succeeds and a parent flag type is selected', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
+    // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
     nativeElement.querySelector('#flag-type-0').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
     expect(component.caseFlagStateEmitter.emit)
-      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: [] });
+      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: true, errorMessages: [] });
   });
 
-  it('should fail vaildation if other flag type selected and description not entered', () => {
+  it('should emit to parent if the validation succeeds and a non-parent flag type is selected', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    // Second radio button (with index 1) expected to be "Potentially suicidal" from test data; flag type is a non-parent
+    nativeElement.querySelector('#flag-type-1').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
+    nextButtonElement.click();
+    expect(component.caseFlagStateEmitter.emit)
+      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: false, errorMessages: [] });
+  });
+
+  it('should emit "flag comments optional" event to parent if comments for the selected flag type are optional', () => {
+    spyOn(component.flagCommentsOptionalEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    // Second radio button (with index 1) expected to be "Potentially suicidal" from test data; comments optional for this flag type
+    nativeElement.querySelector('#flag-type-1').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
+    nextButtonElement.click();
+    expect(component.flagCommentsOptionalEmitter.emit).toHaveBeenCalledWith(null);
+  });
+
+  it('should fail validation if no flag type is selected', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('.button').click();
+    fixture.detectChanges();
+    const errorMessageElement = nativeElement.querySelector('#flag-type-not-selected-error-message');
+    expect(errorMessageElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED);
+  });
+
+  it('should fail validation if "Other" flag type selected and description not entered', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     const otherFlagTypeDescriptionElement = nativeElement.querySelector('#other-flag-type-description');
@@ -110,7 +197,7 @@ describe('SelectFlagTypeComponent', () => {
     expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED);
   });
 
-  it('should fail vaildation if other flag type selected and description entered is more than 80 characters', () => {
+  it('should fail validation if "Other" flag type selected and description entered is more than 80 characters', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
@@ -123,5 +210,50 @@ describe('SelectFlagTypeComponent', () => {
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
     expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED);
+  });
+
+  it('should load the list of child flag types and reset current selection if selected flag type is a parent', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
+    nativeElement.querySelector('#flag-type-0').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
+    nextButtonElement.click();
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags[0].childFlags);
+    expect(component.formGroup.get(component.flagTypeControlName).value).toEqual('');
+    expect(component.selectedFlagType).toBeNull();
+  });
+
+  it('should retrieve the list of flag types for the specified jurisdiction', () => {
+    component.ngOnInit();
+    expect(caseFlagRefdataService.getHmctsServiceDetails).toHaveBeenCalledWith(sscsJurisdiction);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
+  });
+
+  it('should set an error condition if an error occurs retrieving the list of flag types', () => {
+    caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(throwError(new Error('Unable to retrieve flag data')));
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    component.ngOnInit();
+    expect(component.flagTypes).toEqual([]);
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: 'Unable to retrieve flag data',
+      fieldId: 'conditional-radios-list'
+    });
+    expect(component.caseFlagStateEmitter.emit)
+      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: component.errorMessages });
+    fixture.detectChanges();
+    const nativeElement = fixture.debugElement.nativeElement;
+    const nextButtonElement = nativeElement.querySelector('.button');
+    // The "Next" button should not be present if an error has occurred when retrieving the list of flag types
+    expect(nextButtonElement).toBeNull();
+  });
+
+  it('should unsubscribe from any Observables when the component is destroyed', () => {
+    component.ngOnInit();
+    spyOn(component.flagRefdata$, 'unsubscribe');
+    expect(component.flagRefdata$).toBeTruthy();
+    component.ngOnDestroy();
+    expect(component.flagRefdata$.unsubscribe).toHaveBeenCalled();
   });
 });

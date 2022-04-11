@@ -26,6 +26,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagsData: Flags[];
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
+  public jurisdiction: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -47,6 +48,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.fieldState = CaseFlagFieldState.FLAG_LOCATION;
 
     this.createFlagCaption = CaseFlagText.CAPTION;
+
+    // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
+    // types for a case)
+    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type &&
+      this.route.snapshot.data.case.case_type.jurisdiction) {
+      this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+    }
 
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
@@ -91,7 +99,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
-    if (this.errorMessages.length === 0) {
+    // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
+    // means the user needs to select from the next set of flag types before they can move on
+    if (this.errorMessages.length === 0 && !caseFlagState.isParentFlagType) {
       // Validation succeeded, can proceed to next state
       this.proceedToNextState();
     }

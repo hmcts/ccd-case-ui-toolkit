@@ -1,21 +1,35 @@
-<h1 class="govuk-heading-xl">{{caseFlagWizardStepTitle.SELECT_CASE_FLAG}}</h1>
 <div class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
-    <div id="flag-type-not-selected-error-message" class="govuk-error-message" *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
-      <span class="govuk-visually-hidden">Error:</span> {{flagTypeNotSelectedErrorMessage}}
-    </div>
-    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
-      <div class="govuk-radios__item" *ngFor="let flagType of flagTypes; index as i">
-        <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="flagTypeControlName"
-          type="radio" [value]="flagType.flagCode" [formControlName]="flagTypeControlName"
-          (change)="onFlagTypeChanged(flagType)"/>
-        <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">{{flagType.name}}</label>
+    <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 id="flag-type-heading" class="govuk-fieldset__heading">
+          {{caseFlagWizardStepTitle.SELECT_CASE_FLAG}}
+        </h1>
+      </legend>
+      <div id="flag-type-not-selected-error-message" class="govuk-error-message"
+        *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
+        <span class="govuk-visually-hidden">Error:</span> {{flagTypeNotSelectedErrorMessage}}
       </div>
-      <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">
-        <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
-          <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
-          <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
-            <span class="govuk-visually-hidden">Error:</span> {{flagTypeErrorMessage}}
+      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
+        <div class="govuk-radios__item" *ngFor="let flagType of flagTypes; index as i">
+          <!-- All parent flag types have the same flagCode of "CATGRY", so each radio button value needs to be made
+            unique by appending the index - radio buttons shouldn't share the same value.
+            It is OK to amend flagCode this way because parent flag types cannot be selected as a final value -->
+          <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="flagTypeControlName"
+            type="radio" [value]="flagType.flagCode === 'CATGRY' ? flagType.flagCode + i : flagType.flagCode"
+            [formControlName]="flagTypeControlName" (change)="onFlagTypeChanged(flagType)"/>
+          <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">{{flagType.name}}</label>
+        </div>
+        <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">
+          <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
+            <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
+            <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
+              <span class="govuk-visually-hidden">Error:</span> {{flagTypeErrorMessage}}
+            </div>
+            <input class="govuk-input govuk-!-width-one-half"
+              [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
+              id="other-flag-type-description" [name]="descriptionControlName" type="text"
+              [formControlName]="descriptionControlName"/>
           </div>
           <input class="govuk-input govuk-!-width-one-half"
             [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
@@ -23,7 +37,7 @@
             [formControlName]="descriptionControlName"/>
         </div>
       </div>
-    </div>
+    </fieldset>
   </div>
   <div class="govuk-button-group" *ngIf="!refdataError">
     <button class="button button-primary" type="button" (click)="onNext()">Next</button>

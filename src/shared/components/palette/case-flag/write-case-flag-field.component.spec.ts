@@ -75,6 +75,17 @@ describe('WriteCaseFlagFieldComponent', () => {
   const mockRoute = {
     snapshot: {
       data: {
+        case: {
+          case_id: '1111222233334444',
+          case_type: {
+            id: 'TEST',
+            name: 'Test',
+            jurisdiction: {
+              id: 'SSCS',
+              name: 'Social Security and Child Support'
+            }
+          }
+        },
         eventTrigger: {
           case_fields: [
             flagLauncherCaseField,

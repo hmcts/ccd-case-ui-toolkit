@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-multi-level-flag-types
+**EUI-5351** Support for display and selection of multi-level flag types at "Select flag type" step
+
 ### Version 4.13.1-case-flags-ref-data-integration
 **EUI-5495/EUI-4845** Integrate "select flag type" stage with Reference Data Common API for case flags
 
