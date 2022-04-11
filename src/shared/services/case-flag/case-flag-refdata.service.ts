@@ -1,24 +1,26 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
-import { FlagType } from '../../domain/case-flag';
-import { HttpError } from '../../domain/http';
-import { HttpErrorService, HttpService } from '../http';
+import { FlagType, HmctsServiceDetail } from '../../domain/case-flag';
+import { HttpService } from '../http';
 import { RefdataCaseFlagType } from './refdata-case-flag-type.enum';
 
 @Injectable()
 export class CaseFlagRefdataService {
-  private static readonly CONTENT_TYPE_HEADER = 'Content-Type';
-  private static readonly CONTENT_TYPE_APPLICATION_JSON = 'application/json';
-
   constructor(
     private readonly http: HttpService,
-    private readonly appConfig: AbstractAppConfig,
-    private readonly errorService: HttpErrorService
+    private readonly appConfig: AbstractAppConfig
   ) { }
 
+  /**
+   * Retrieves the Case Flag types for an HMCTS service.
+   *
+   * @param serviceId The HMCTS Service Code for a jurisdiction or service. **Note:** This is _not_ the service name
+   * @param flagType `PARTY` for party-level flags; `CASE` for case-level
+   * @param welshRequired `true` if Welsh language versions of flags are required; `false` otherwise (future feature)
+   * @returns An `Observable` of an array of flag types
+   */
   public getCaseFlagsRefdata(serviceId: string, flagType?: RefdataCaseFlagType, welshRequired?: boolean): Observable<FlagType[]> {
     let url = this.appConfig.getCaseFlagsRefdataApiUrl();
 
@@ -33,10 +35,8 @@ export class CaseFlagRefdataService {
         welshRequired ? url += 'welsh-required=Y' : url += 'welsh-required=N';
       }
 
-      const headers = new HttpHeaders().set(
-        CaseFlagRefdataService.CONTENT_TYPE_HEADER, CaseFlagRefdataService.CONTENT_TYPE_APPLICATION_JSON);
       return this.http
-        .get(url, {headers, observe: 'body'})
+        .get(url, {observe: 'body'})
         .pipe(
           // Reference Data Common API returns a single object with a "flags" array, which itself contains a single object
           // with a "FlagDetails" array, which contains a hierarchy of flag types in an object - one each for "Party" flags
@@ -48,10 +48,6 @@ export class CaseFlagRefdataService {
               return throwError(new Error('No flag types could be retrieved'));
             }
             return body.flags[0].FlagDetails;
-          }),
-          catchError((error: HttpError) => {
-            this.errorService.setError(error);
-            return throwError(error);
           })
         );
     }
@@ -60,13 +56,13 @@ export class CaseFlagRefdataService {
   }
 
   /**
-   * Retrieves the HMCTS Service Code for a jurisdiction or service. For example, the "SSCS" service has a corresponding
-   * service code of "BBA3".
+   * Retrieves the HMCTS service details for a jurisdiction or service, including service code. (For example, the "SSCS"
+   * service has a corresponding service code of "BBA3".)
    *
    * @param serviceNames The service name(s) to look up, comma-separated if more than one
-   * @returns An `Observable` of the service code
+   * @returns An `Observable` of an array of service details
    */
-  public getHmctsServiceCode(serviceNames?: string): Observable<string> {
+  public getHmctsServiceDetails(serviceNames?: string): Observable<HmctsServiceDetail[]> {
     let url = this.appConfig.getLocationRefApiUrl();
 
     if (url) {
@@ -75,18 +71,9 @@ export class CaseFlagRefdataService {
         url += `?ccdServiceNames=${serviceNames}`;
       }
 
-      const headers = new HttpHeaders().set(
-        CaseFlagRefdataService.CONTENT_TYPE_HEADER, CaseFlagRefdataService.CONTENT_TYPE_APPLICATION_JSON);
-      return this.http
-        .get(url, {headers, observe: 'body'})
-        .pipe(
-          map(body => body
-          ),
-          catchError((error: HttpError) => {
-            this.errorService.setError(error);
-            return throwError(error);
-          })
-        );
+      return this.http.get(url, {observe: 'body'});
     }
+
+    return null;
   }
 }
