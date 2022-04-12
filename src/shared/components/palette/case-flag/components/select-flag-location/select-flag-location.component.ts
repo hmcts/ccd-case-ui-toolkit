@@ -19,6 +19,7 @@ export class SelectFlagLocationComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public flagLocationNotSelectedErrorMessage: SelectFlagLocationErrorMessage = null;
   public filteredFlagsData: Flags[];
+  public caseFlagsConfigError = false;
   public readonly selectedLocationControlName = 'selectedLocation';
 
   public ngOnInit(): void {
@@ -30,8 +31,13 @@ export class SelectFlagLocationComponent implements OnInit {
     }
 
     // Add a FormControl for the selected flag location if there is at least one flags instance remaining after filtering
-    if (this.filteredFlagsData) {
+    if (this.filteredFlagsData && this.filteredFlagsData.length > 0) {
       this.formGroup.addControl(this.selectedLocationControlName, new FormControl(null));
+    } else {
+      // No filtered flags instances mean there are no parties to select from. The case has not been configured properly
+      // for case flags and the user cannot proceed with flag creation. (Will need to be extended to check for case-level
+      // flags in future)
+      this.onCaseFlagsConfigError();
     }
   }
 
@@ -53,5 +59,15 @@ export class SelectFlagLocationComponent implements OnInit {
         fieldId: 'conditional-radios-list'
       });
     }
+  }
+
+  private onCaseFlagsConfigError(): void {
+    // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
+    this.caseFlagsConfigError = true;
+    this.errorMessages = [];
+    this.errorMessages.push(
+      {title: '', description: SelectFlagLocationErrorMessage.FLAGS_NOT_CONFIGURED, fieldId: 'conditional-radios-list'});
+    // Return case flag field state and error messages to the parent
+    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
 }
