@@ -16,8 +16,6 @@ import { FileUploadProgressGuard } from '../palette/document/file-upload-progres
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success';
 import { CaseEventTriggerComponent } from './case-event-trigger';
-import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
-import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
@@ -103,26 +101,6 @@ export const viewerRouting: Routes = [
         },
         pathMatch: 'full',
       },
-    ],
-  },
-  {
-    path: 'review-specific-access-request',
-    children: [
-      {
-        path: '',
-        component: CaseReviewSpecificAccessRequestComponent,
-        data: {
-          title: 'Request Specific Access',
-        },
-        pathMatch: 'full',
-      },
-      {
-        path: 'rejected',
-        component: CaseReviewSpecificAccessRejectComponent,
-        data: {
-          title: 'Review Access Rejected'
-        }
-      }
     ],
   },
 ];
