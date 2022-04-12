@@ -240,6 +240,7 @@ describe('SelectFlagTypeComponent', () => {
       description: 'Unable to retrieve flag data',
       fieldId: 'conditional-radios-list'
     });
+    expect(component.refdataError).toBe(true);
     expect(component.caseFlagStateEmitter.emit)
       .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: component.errorMessages });
     fixture.detectChanges();
