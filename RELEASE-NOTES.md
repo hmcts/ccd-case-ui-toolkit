@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-error-handling-no-party-data
+**EUI-5385** Error handling for Create Case Flag when case has not been configured for flags
+
 ### Version 4.13.1-case-flags-multi-level-flag-types
 **EUI-5351** Support for display and selection of multi-level flag types at "Select flag type" step
 
