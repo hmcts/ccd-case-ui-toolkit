@@ -23,7 +23,7 @@ export interface RoleRequest {
   assignerId: any,
   process: any,
   replaceExisting: any,
-  reference:any
+  reference: any
 }
 
 export interface RequestedRoleNote {

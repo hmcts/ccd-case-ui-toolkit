@@ -85,7 +85,7 @@ export class CaseAccessUtils {
         const payload: RoleRequestPayload = {
             roleRequest: {
                 assignerId: assignerId,
-                process: "specific-access",
+                process: 'specific-access',
                 reference: assignerId,
                 replaceExisting: false
             },
