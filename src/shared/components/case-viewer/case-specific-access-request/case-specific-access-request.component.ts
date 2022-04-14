@@ -74,6 +74,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public onSubmit(): void {
+    debugger;
     this.submitted = true;
     if (this.formGroup.get(this.specificReasonControlName).invalid) {
       this.errorMessage = {
@@ -94,6 +95,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
       this.$roleAssignmentResponseSubscription = this.casesService.createSpecificAccessRequest(caseId, specificAccessRequest)
         .subscribe(
           _response => {
+            debugger;
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2!
             this.router.navigate(['success'], {relativeTo: this.route});

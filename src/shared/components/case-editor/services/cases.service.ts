@@ -327,6 +327,18 @@ export class CasesService {
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
   }
 
+  public getReferenceFromRoleCategory(roleName: string): string{
+    switch(roleName){
+      case 'JUDICIAL':
+        return 'specific-access-judiciary'
+      case 'ADMIN':
+        return 'specific-access-admin'
+      case 'LEGAL_OPERATIONS':
+        return 'specific-access-legal-ops'
+    }
+    return '';
+  }
+
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
@@ -343,7 +355,43 @@ export class CasesService {
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
                                       roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
+    debugger;
+    payload.roleRequest = {
+      ...payload.roleRequest,
+      process: "specific-access",
+      replaceExisting: true,
+      assignerId: payload.requestedRoles[0].actorId,
+       reference: `${caseId}/${roleName}/${payload.requestedRoles[0].actorId}`//payload.requestedRoles[0].actorId
+    }
+
+    payload.requestedRoles[0] ={
+      ...payload.requestedRoles[0],
+      roleName: "specific-access-requested",
+      roleCategory: roleCategory,
+      classification: "PRIVATE",
+      endTime: new Date('2023-03-07T23:50Z'),
+      beginTime: null,
+      grantType: 'BASIC',
+      readOnly: true
+    };
+    payload.requestedRoles[0].attributes ={
+      ...payload.requestedRoles[0].attributes,
+      // jurisdiction: "IA",
+      // caseType: "Asylum",
+      requestedRole: roleName
+    }
+    payload.requestedRoles[0].notes[0] ={
+      ...payload.requestedRoles[0].notes[0],
+      userId: payload.requestedRoles[0].actorId
+    }
+
+    debugger;
+
+    return this.http.post(
+      `${this.appConfig.getCamRoleAssignmentsApiUrl()}`,
+      payload
+    );
+    //return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
   }
 
 }
