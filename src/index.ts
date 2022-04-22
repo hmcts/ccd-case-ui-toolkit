@@ -72,7 +72,6 @@ export { DocumentData,
          SortParameters,
          SearchResultViewItemComparator } from './shared/domain';
 export { ShowCondition,
-         ConditionalShowDirective,
          ConditionalShowModule,
          PlaceholderService,
          LabelSubstitutorDirective,
