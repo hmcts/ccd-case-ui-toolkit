@@ -85,6 +85,7 @@ describe('CaseEventCompletionComponent', () => {
     task: task,
     caseId: '1620409659381330',
     eventId: null,
+    reassignedTask: null,
     router: mockRouter,
     route: mockRoute,
     sessionStorageService: null,

@@ -9,6 +9,9 @@ describe('Session storage service', () => {
     spyOn(sessionStorage, 'setItem').and.callFake((key, value) => {
       return mockStore[key] = value + '';
     });
+    spyOn(sessionStorage, 'removeItem').and.callFake(() => {
+      mockStore = {};
+    });
     spyOn(sessionStorage, 'clear').and.callFake(() => {
       mockStore = {};
     });
@@ -24,6 +27,12 @@ describe('Session storage service', () => {
     const service = new SessionStorageService();
     service.getItem('exampleKey');
     expect(sessionStorage.getItem).toHaveBeenCalledWith('exampleKey');
+  });
+
+  it('should allow removing the item', () => {
+    const service = new SessionStorageService();
+    service.removeItem('exampleKey');
+    expect(sessionStorage.removeItem).toHaveBeenCalled();
   });
 
   it('should allow clearing the store', () => {

@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
+### Version 4.14.1-EUI-5305-change-link-accessibility-update
+**EUI-5305** Accessibility improvement for 'Change' links
+
 ### Version 4.12.0
 Add refunds functionality
+
+### Version 4.12.16-task-event-completion"
+**Task event completion and state machine** Task event completion and state machine
+
+### Version 4.12.6-limit-search-results-10k-400-5"
+**Limit search results to 10k / 400 pages** Limit search results to 10k / 400 pages
 
 ### Version 4.9.15-state-machine"
 **Task event completion and state machine** Task event completion and state machine
@@ -19,6 +28,7 @@ Add refunds functionality
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
 ### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details 
 **EUI-4441** Add hearings tab in case details
 
 ### Version 4.7.6-hearings-tab
