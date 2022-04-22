@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.12.1-EUI-5682-complex-table-collection
+### Version 4.12.1-EUI-5682-complex-table-collection-1
 **EUI-5682** Bug fix for the complex collection table view
 
 ### Version 4.12.1-EUI-5225-organisation-search
