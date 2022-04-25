@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, Language } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterStep } from '../../enums';
@@ -16,16 +16,20 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   @Input()
   public formGroup: FormGroup;
 
+  @Input()
+  public languages: Language[];
+
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public readonly minSearchCharacters = 3;
-  public languages: Language[];
-  public filteredLanguages$: Observable<string[]>;
-  public showAutocomplete = false;
-  public term = '';
+  public readonly languageSearchTermControlName = 'languageSearchTerm';
+  public readonly manualLanguageEntryControlName = 'manualLanguageEntry';
+  public filteredLanguages$: Observable<Language[]>;
+  public searchTerm = '';
   public isCheckboxEnabled = false;
   public errorMessages: ErrorMessage[];
+  public noResults = false;
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle;
@@ -36,9 +40,18 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.formGroup.addControl('searchTerm', new FormControl(''));
-    this.filteredLanguages$ = this.formGroup.controls.searchTerm.valueChanges.pipe(
-      map(value => this.getLanguages(value))
+    this.formGroup.addControl(this.languageSearchTermControlName, new FormControl());
+    this.formGroup.addControl(this.manualLanguageEntryControlName, new FormControl());
+    this.filteredLanguages$ = this.formGroup.get(this.languageSearchTermControlName).valueChanges.pipe(
+      // Need to check type of input because it changes to object (i.e. Language) when a value is selected from the
+      // autocomplete panel, instead of string when a value is being typed in
+      map(input => typeof input === 'string' ? input : input.value),
+      map(searchTerm => {
+        // Update the current search term
+        this.searchTerm = searchTerm;
+        return this.filterLanguages(searchTerm);
+      }),
+      tap(languages => this.noResults = languages.length === 0)
     );
   }
 
@@ -52,12 +65,12 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     });
   }
 
-  public onEnterLanguageManually(event: any): void {
-    this.isCheckboxEnabled = event.target.checked;
+  public onEnterLanguageManually(event: Event): void {
+    this.isCheckboxEnabled = (event.target as HTMLInputElement).checked;
   }
 
-  public onSelectionChange(language: Language): void {
-    console.log('LANGUAGE', language);
+  public displayLanguage(language?: Language): string | undefined {
+    return language ? language.value : undefined;
   }
 
   private validateForm(): boolean {
@@ -65,21 +78,11 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     return true;
   }
 
-  private getLanguages(value: string): string[] {
-    // TODO: This will be dynamically pulled from the reference data
-    this.languages = [
-      {key: 'AL1', value: 'Albanian1'},
-      {key: 'AL2', value: 'Albanian2'},
-      {key: 'AL3', value: 'Albanian3'},
-      {key: 'ES', value: 'Spanish'},
-      {key: 'PT', value: 'Portugese'},
-      {key: 'GB', value: 'English'},
-      {key: 'FR', value: 'French'}
-    ];
-    if (value.length < this.minSearchCharacters) {
+  private filterLanguages(searchTerm: string): Language[] {
+    if (searchTerm.length < this.minSearchCharacters) {
       return [];
     }
 
-    return this.languages.filter(x => x.value.toLowerCase().includes(value.toLowerCase(), 0)).map(x => x.value);
+    return this.languages.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0));
   }
 }

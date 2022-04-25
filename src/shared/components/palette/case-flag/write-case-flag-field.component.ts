@@ -27,6 +27,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
+  public listOfValues: {key: string, value: string}[] = null;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -99,6 +100,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
+    this.listOfValues = caseFlagState.listOfValues;
     // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
     // means the user needs to select from the next set of flag types before they can move on
     if (this.errorMessages.length === 0 && !caseFlagState.isParentFlagType) {
@@ -109,7 +111,14 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public proceedToNextState(): void {
     if (!this.isAtFinalState()) {
-      this.fieldState++;
+      // Skip the "language interpreter" state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type doesn't
+      // have a "list of values" - currently, this is present only for those flag types that require language interpreter
+      // selection
+      if (this.fieldState === CaseFlagFieldState.FLAG_TYPE && !this.listOfValues) {
+        this.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+      } else {
+        this.fieldState++;
+      }
     }
 
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
