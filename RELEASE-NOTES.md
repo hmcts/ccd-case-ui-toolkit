@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-validation
+**EUI-4849** Add validation to language search and manual language inputs of the "Search for a language interpreter" step
+
 ### Version 4.13.1-case-flags-search-for-language-interpreter-step-integration
 **EUI-5654** Integrate "Search for a language interpreter" step with Reference Data list of values for selected flag types
 
