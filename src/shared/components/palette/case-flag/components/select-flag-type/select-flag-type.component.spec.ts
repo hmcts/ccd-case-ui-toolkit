@@ -66,6 +66,59 @@ describe('SelectFlagTypeComponent', () => {
                   childFlags: []
                 }
               ]
+            },
+            {
+              name: 'I need help communicating and understanding',
+              hearingRelevant: false,
+              flagComment: false,
+              flagCode: 'CATGRY',
+              childFlags: [
+                {
+                  name: 'Sign Language Interpreter',
+                  hearingRelevant: true,
+                  flagComment: false,
+                  flagCode: 'RA0042',
+                  listOfValuesLength: 3,
+                  listOfValues: [
+                    {
+                      key: 'deafblindManualAlphabet',
+                      value: 'Deafblind manual alphabet'
+                    },
+                    {
+                      key: 'britishSignLanguage',
+                      value: 'British Sign Language (BSL)'
+                    },
+                    {
+                      key: 'americanSignLanguage',
+                      value: 'American Sign Language (ASL)'
+                    }
+                  ],
+                  isParent: false,
+                  Path: [
+                    'Party',
+                    'Reasonable adjustment',
+                    'I need help communicating and understanding'
+                  ]
+                },
+                {
+                  name: 'Other',
+                  hearingRelevant: true,
+                  flagComment: true,
+                  flagCode: 'OT0001',
+                  childFlags: [],
+                  isParent: false,
+                  Path: [
+                    'Party',
+                    'Reasonable adjustment',
+                    'I need help communicating and understanding'
+                  ]
+                }
+              ],
+              isParent: true,
+              Path: [
+                'Party',
+                'Reasonable adjustment'
+              ]
             }
           ]
         },
@@ -153,8 +206,8 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-0').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    expect(component.caseFlagStateEmitter.emit)
-      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: true, errorMessages: [] });
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith(
+      { currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: true, errorMessages: [], listOfValues: null });
   });
 
   it('should emit to parent if the validation succeeds and a non-parent flag type is selected', () => {
@@ -164,8 +217,32 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-1').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    expect(component.caseFlagStateEmitter.emit)
-      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: false, errorMessages: [] });
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith(
+      { currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: false, errorMessages: [], listOfValues: null });
+  });
+
+  it('should emit to parent with a list of values if a flag type that has a list of values is selected', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
+    nativeElement.querySelector('#flag-type-0').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
+    nextButtonElement.click();
+    fixture.detectChanges();
+    // Second radio button (with index 1) at next level expected to be "I need help communicating and understanding" from test data
+    nativeElement.querySelector('#flag-type-1').click();
+    nextButtonElement.click();
+    fixture.detectChanges();
+    // First radio button (with index 0) at next level expected to be "Sign Language Interpreter" from test data,
+    // with list of values
+    nativeElement.querySelector('#flag-type-0').click();
+    nextButtonElement.click();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      isParentFlagType: false,
+      errorMessages: [],
+      listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues
+    });
   });
 
   it('should emit "flag comments optional" event to parent if comments for the selected flag type are optional', () => {
@@ -189,8 +266,9 @@ describe('SelectFlagTypeComponent', () => {
   it('should fail validation if "Other" flag type selected and description not entered', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
-    const otherFlagTypeDescriptionElement = nativeElement.querySelector('#other-flag-type-description');
-    expect(otherFlagTypeDescriptionElement).toBeDefined();
+    fixture.detectChanges();
+    const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
+    expect(otherFlagTypeDescriptionElement).toBeTruthy();
     nativeElement.querySelector('.button').click();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
@@ -202,7 +280,7 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
     const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
-    expect(otherFlagTypeDescriptionElement).toBeDefined();
+    expect(otherFlagTypeDescriptionElement).toBeTruthy();
     fixture.detectChanges();
     otherFlagTypeDescriptionElement.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
     otherFlagTypeDescriptionElement.dispatchEvent(new Event('input'));
