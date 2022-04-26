@@ -18,3 +18,7 @@ export class SearchResultView {
     && Draft.isDraft(this.results[0].case_id);
   }
 }
+
+export class SearchResultViewWithTotal extends SearchResultView {
+  total : number;
+}
