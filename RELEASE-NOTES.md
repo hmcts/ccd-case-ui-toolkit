@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
+
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
 
@@ -37,6 +40,7 @@ Add refunds functionality
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
 ### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details 
 **EUI-4441** Add hearings tab in case details
 
 ### Version 4.7.6-hearings-tab
