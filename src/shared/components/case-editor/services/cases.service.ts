@@ -343,7 +343,38 @@ export class CasesService {
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
                                       roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
+    payload.roleRequest = {
+      ...payload.roleRequest,
+      process: 'specific-access',
+      replaceExisting: true,
+      assignerId: payload.requestedRoles[0].actorId,
+      reference: `${caseId}/${roleName}/${payload.requestedRoles[0].actorId}`
+    }
+
+    payload.requestedRoles[0] = {
+      ...payload.requestedRoles[0],
+      roleName: 'specific-access-requested',
+      roleCategory: roleCategory,
+      classification: 'PRIVATE',
+      endTime: new Date(new Date().setDate(new Date().getDate() + 30)),
+      beginTime: null,
+      grantType: 'BASIC',
+      readOnly: true
+    };
+
+    payload.requestedRoles[0].attributes = {
+      ...payload.requestedRoles[0].attributes,
+      requestedRole: roleName
+    }
+
+    payload.requestedRoles[0].notes[0] = {
+      ...payload.requestedRoles[0].notes[0],
+      userId: payload.requestedRoles[0].actorId
+    }
+    return this.http.post(
+      `${this.appConfig.getCamRoleAssignmentsApiUrl()}`,
+      payload
+    );
   }
 
 }
