@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-integration
+**EUI-5654** Integrate "Search for a language interpreter" step with Reference Data list of values for selected flag types
+
 ### Version 4.13.1-case-flags-error-handling-no-party-data
 **EUI-5385** Error handling for Create Case Flag when case has not been configured for flags
 
@@ -6,7 +9,7 @@
 **EUI-5351** Support for display and selection of multi-level flag types at "Select flag type" step
 
 ### Version 4.13.1-case-flags-ref-data-integration
-**EUI-5495/EUI-4845** Integrate "select flag type" stage with Reference Data Common API for case flags
+**EUI-5495/EUI-4845** Integrate "Select flag type" stage with Reference Data Common API for case flags
 
 ### Version 4.13.1-case-flags-add-comments-step
 **EUI-4851** Add "add comments" step of Create Case Flag journey

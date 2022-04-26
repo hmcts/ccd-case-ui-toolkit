@@ -26,7 +26,7 @@
         (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
 		</ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
-      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup"
+      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup" [languages]="listOfValues"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
