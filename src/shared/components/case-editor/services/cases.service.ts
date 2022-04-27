@@ -274,9 +274,11 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // This is used a feature toggle to
-    // control the work allocation
-    if (this.appConfig.getWorkAllocationApiUrl() && !this.isPuiCaseManager()) {
+    // The following code is work allocation 1 related
+    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
+      // This is used a feature toggle to
+      // control the work allocation
+      if (!this.isPuiCaseManager()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
@@ -284,6 +286,7 @@ export class CasesService {
             // Show an appropriate warning about something that went wrong.
             console.warn('Could not process tasks for this case event', error);
           });
+      }
     }
   }
 
@@ -340,7 +343,38 @@ export class CasesService {
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
                                       roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
+    payload.roleRequest = {
+      ...payload.roleRequest,
+      process: 'specific-access',
+      replaceExisting: true,
+      assignerId: payload.requestedRoles[0].actorId,
+      reference: `${caseId}/${roleName}/${payload.requestedRoles[0].actorId}`
+    }
+
+    payload.requestedRoles[0] = {
+      ...payload.requestedRoles[0],
+      roleName: 'specific-access-requested',
+      roleCategory: roleCategory,
+      classification: 'PRIVATE',
+      endTime: new Date(new Date().setDate(new Date().getDate() + 30)),
+      beginTime: null,
+      grantType: 'BASIC',
+      readOnly: true
+    };
+
+    payload.requestedRoles[0].attributes = {
+      ...payload.requestedRoles[0].attributes,
+      requestedRole: roleName
+    }
+
+    payload.requestedRoles[0].notes[0] = {
+      ...payload.requestedRoles[0].notes[0],
+      userId: payload.requestedRoles[0].actorId
+    }
+    return this.http.post(
+      `${this.appConfig.getCamRoleAssignmentsApiUrl()}`,
+      payload
+    );
   }
 
 }
