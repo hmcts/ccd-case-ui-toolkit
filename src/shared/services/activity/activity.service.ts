@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity';
@@ -52,7 +53,7 @@ export class ActivityService {
       const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
       return this.http
         .get(url, options, false, ActivityService.handleHttpError)
-        .map(response => response);
+        .pipe(map(response => response));
     } catch (error) {
       console.log('user may not be authenticated.' + error);
     }
@@ -65,7 +66,7 @@ export class ActivityService {
       let body = { activity };
       return this.http
         .post(url, body, options, false)
-        .map(response => response);
+        .pipe(map(response => response));
     } catch (error) {
       console.log('user may not be authenticated.' + error);
     }

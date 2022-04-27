@@ -1,4 +1,4 @@
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 import { DraftService } from './draft.service';
 import { AbstractAppConfig } from '../../../app.config';
@@ -64,8 +64,8 @@ describe('Drafts Service', () => {
     };
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(DRAFT_RESPONSE));
-      httpService.put.and.returnValue(Observable.of(DRAFT_RESPONSE));
+      httpService.post.and.returnValue(of(DRAFT_RESPONSE));
+      httpService.put.and.returnValue(of(DRAFT_RESPONSE));
     });
 
     it('should create a draft on server', () => {
@@ -144,7 +144,7 @@ describe('Drafts Service', () => {
     };
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(CASE_VIEW_DATA));
+      httpService.get.and.returnValue(of(CASE_VIEW_DATA));
     });
 
     it('should get draft on server', () => {
@@ -177,7 +177,7 @@ describe('Drafts Service', () => {
   describe('deleteDraft()', () => {
 
     beforeEach(() => {
-      httpService.delete.and.returnValue(Observable.of());
+      httpService.delete.and.returnValue(of());
     });
 
     it('should delete draft on server', () => {

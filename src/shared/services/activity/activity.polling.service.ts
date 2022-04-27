@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
-import { Observable, Subscription, empty, Subject } from 'rxjs';
+import { Observable, Subscription, empty, Subject, EMPTY } from 'rxjs';
 import { NgZone } from '@angular/core';
 import polling, { IOptions } from 'rx-polling';
 import { AbstractAppConfig } from '../../../app.config';
@@ -115,7 +115,7 @@ export class ActivityPollingService {
 
   private postActivity(caseId: string, activityType: string): Observable<Activity[]> {
     if (!this.isEnabled) {
-      return Observable.empty();
+      return EMPTY;
     }
 
     const pollingConfig = {

@@ -1,7 +1,7 @@
 
 import { ActivityService } from './activity.service';
 import { AbstractAppConfig } from '../../../';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { HttpService } from '../../services/http';
 import { SessionStorageService } from '../session/session-storage.service';
 
@@ -21,8 +21,8 @@ describe('ActivityService', () => {
     appConfig.getActivityUrl.and.returnValue('someUrl');
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    httpService.get.and.returnValue(Observable.of(response));
-    httpService.post.and.returnValue(Observable.of(response));
+    httpService.get.and.returnValue(of(response));
+    httpService.post.and.returnValue(of(response));
     sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"')
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
@@ -66,7 +66,7 @@ describe('ActivityService', () => {
     const error = {
       status: 403
     };
-    httpService.get.and.returnValue(Observable.throw(error));
+    httpService.get.and.returnValue(throwError(error));
 
     activityService.verifyUserIsAuthorized();
 
@@ -77,7 +77,7 @@ describe('ActivityService', () => {
     const error = {
       status: 400
     };
-    httpService.get.and.returnValue(Observable.throw(error));
+    httpService.get.and.returnValue(throwError(error));
 
     activityService.verifyUserIsAuthorized();
 

@@ -64,7 +64,7 @@ describe('SearchService', () => {
       appConfig.getCaseDataUrl.and.returnValue(DATA_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of({}));
+      httpService.get.and.returnValue(of({}));
 
       params = new HttpParams();
       requestOptionsArgs = { params, observe: 'body' };
@@ -262,7 +262,7 @@ describe('SearchService', () => {
       appConfig.getPaginationPageSize.and.returnValue(25);
 
       httpService = createSpyObj<HttpService>('httpService', ['post']);
-      httpService.post.and.returnValue(Observable.of({}));
+      httpService.post.and.returnValue(of({}));
 
       params = new HttpParams();
       requestOptionsArgs = { params, observe: 'body' };

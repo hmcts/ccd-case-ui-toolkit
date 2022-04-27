@@ -2,7 +2,7 @@ import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { CaseListFiltersComponent } from './case-list-filters.component';
 import { DebugElement } from '@angular/core';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 let mockDefinitionsService: any;
 import { DefinitionsService } from '../../services';
 import { Jurisdiction, CaseTypeLite } from '../../domain';
@@ -116,7 +116,7 @@ describe('CaseListFiltersComponent', () => {
 
     beforeEach(async(() => {
         mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
-        mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+        mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
         TestBed.configureTestingModule({
             declarations: [
                 CaseListFiltersComponent,

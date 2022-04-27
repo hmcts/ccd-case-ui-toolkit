@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CaseHistoryService } from './case-history.service';
 import { HttpError } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -38,7 +38,7 @@ describe('CaseHistoryService', () => {
     const CASE_HISTORY: CaseHistory = createCaseHistory();
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']})));
+      httpService.get.and.returnValue(of(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']})));
     });
 
     it('should use HttpService::get with correct url', () => {
@@ -64,7 +64,7 @@ describe('CaseHistoryService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       caseHistoryService
         .get(CASE_ID, EVENT_ID)

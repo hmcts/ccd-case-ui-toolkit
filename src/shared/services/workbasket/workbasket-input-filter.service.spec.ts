@@ -2,7 +2,7 @@ import { WorkbasketInputFilterService } from './workbasket-input-filter.service'
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { HttpService } from '../http/http.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { WorkbasketInput, WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -26,7 +26,7 @@ describe('DefinitionsService', () => {
 
   describe('getWorkbasketInputs()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(jsonResponse()));
+      httpService.get.and.returnValue(of(jsonResponse()));
     });
 
     it('should use HttpService::get with correct url', () => {

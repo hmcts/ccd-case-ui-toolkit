@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -530,14 +530,14 @@ xdescribe('CaseFullAccessViewComponent', () => {
     spyOn(orderService, 'sort').and.callThrough();
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(Observable.of({}));
+    draftService.deleteDraft.and.returnValue(of({}));
 
     caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -547,7 +547,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(Observable.of());
+    activityService.postViewActivity.and.returnValue(of());
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
@@ -971,14 +971,14 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
     spyOn(orderService, 'sort').and.callThrough();
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(Observable.of({}));
+    draftService.deleteDraft.and.returnValue(of({}));
 
     caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -989,7 +989,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(Observable.of());
+    activityService.postViewActivity.and.returnValue(of());
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
@@ -1057,14 +1057,14 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
     spyOn(orderService, 'sort').and.callThrough();
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(Observable.of({}));
+    draftService.deleteDraft.and.returnValue(of({}));
 
     caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -1075,7 +1075,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(Observable.of());
+    activityService.postViewActivity.and.returnValue(of());
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 

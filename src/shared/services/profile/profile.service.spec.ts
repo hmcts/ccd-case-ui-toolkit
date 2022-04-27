@@ -1,6 +1,6 @@
 import { ProfileService } from './profile.service';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { createAProfile } from '../../domain/profile/profile.test.fixture';
@@ -27,7 +27,7 @@ describe('ProfileService', () => {
       appConfig.getCaseDataUrl.and.returnValue(API_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of(MOCK_PROFILE));
+      httpService.get.and.returnValue(of(MOCK_PROFILE));
 
       profileService = new ProfileService(httpService, appConfig);
     });

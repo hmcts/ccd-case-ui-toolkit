@@ -7,7 +7,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DefinitionsService, OrderService, AlertService, SessionStorageService } from '../../services';
 import { AccessControlList } from '../../domain/definition/access-control-list.model';
 import { createACL } from '../../fixture/shared.test.fixture';
@@ -292,7 +292,7 @@ describe('CreateCaseFiltersComponent', () => {
     mockOrderService.sort.and.returnValue(SORTED_CASE_EVENTS);
     mockAlertService = createSpyObj<AlertService>('alertService', ['clear']);
     mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["role1", "role3"], "email": "test@mail.com","token": null}`);
@@ -325,7 +325,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should select the jurisdiction if there is only one jurisdiction', () => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1]));
     fixture.detectChanges();
     component.ngOnInit();
     fixture.detectChanges();
@@ -333,7 +333,7 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should select the caseType if there is only one caseType', () => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1]));
     fixture.detectChanges();
     component.ngOnInit();
     fixture.detectChanges();
@@ -342,7 +342,7 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should select the event if there is only one event', () => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_SINGLE_EVENT]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_SINGLE_EVENT]));
     mockOrderService.sort.and.returnValue(SINGLE_EVENT);
     fixture.detectChanges();
     component.ngOnInit();
@@ -353,7 +353,7 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should sort events', () => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_1.id);
@@ -369,7 +369,7 @@ describe('CreateCaseFiltersComponent', () => {
   it('should return blank list of events when user doesnt have create access', () => {
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["role3"], "email": "test@mail.com","token": null}`);
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_1.id);
@@ -382,7 +382,7 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should return events list based on the create access to user', () => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1]));
     mockOrderService.sort.and.returnValue(FILTERED_CASE_EVENTS);
     fixture.detectChanges();
     component.ngOnInit();
@@ -397,7 +397,7 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should initialise jurisdiction selector with given jurisdictions and no selection', () => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1, JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1, JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue('');
@@ -421,7 +421,7 @@ describe('CreateCaseFiltersComponent', () => {
   });
 
   it('should update selected jurisdiction', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_SINGLE_EVENT]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_SINGLE_EVENT]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_SINGLE_EVENT.id);
@@ -435,7 +435,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should initialise case type selector with types from selected jurisdiction but no events', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
@@ -463,7 +463,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should update selected case type', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
@@ -477,7 +477,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should disable case type and event if jurisdiction not selected', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_1, JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1, JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue('');
@@ -505,7 +505,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should initialise event selector from case type with no pre states', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
@@ -530,7 +530,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should reset case type back to empty disabled if set before and jurisdiction changed to empty', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
@@ -557,7 +557,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should reset event back to default if set before and case type changed', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);
@@ -591,7 +591,7 @@ describe('CreateCaseFiltersComponent', () => {
   }));
 
   it('should reset event back to default if set before and jurisdiction changed', async(() => {
-    mockDefinitionsService.getJurisdictions.and.returnValue(Observable.of([JURISDICTION_2]));
+    mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
     component.filterJurisdictionControl.setValue(JURISDICTION_2.id);

@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 import { BannersService } from './banners.service';
@@ -38,7 +38,7 @@ describe('Banner service', () => {
     describe('getBanners()', () => {
 
       beforeEach(() => {
-        httpService.get.and.returnValue(Observable.of(MOCK_BANNER1));
+        httpService.get.and.returnValue(of(MOCK_BANNER1));
       });
 
       it('should use banner url have been called', () => {
@@ -55,7 +55,7 @@ describe('Banner service', () => {
       });
 
       it('should retrieve banners with empty ', () => {
-        httpService.get.and.returnValue(Observable.of());
+        httpService.get.and.returnValue(of());
         bannerService
           .getBanners(JID)
           .subscribe(

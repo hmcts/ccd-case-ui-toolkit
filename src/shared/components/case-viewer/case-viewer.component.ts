@@ -1,6 +1,6 @@
-import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseField, CaseTab, CaseView } from '../../domain';
 import { CaseNotifier } from '../case-editor';

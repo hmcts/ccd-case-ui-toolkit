@@ -2,7 +2,7 @@
 import { ActivityService } from './activity.service';
 import { ActivityPollingService } from './activity.polling.service';
 import { NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 const CASE_ID = '22';
 const CASES = ['111', '222', '333'];
@@ -19,7 +19,7 @@ describe('ActivityPollingService', () => {
     ngZone.runOutsideAngular.and.callFake((fn: Function) => fn());
 
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['getActivities', 'postActivity']);
-    activityService.getActivities.and.returnValue(Observable.of());
+    activityService.getActivities.and.returnValue(of());
     activityService.isEnabled = true;
 
     appConfig = jasmine.createSpyObj('AppConfig', ['getActivityMaxRequestPerBatch', 'getActivityBatchCollectionDelayMs',

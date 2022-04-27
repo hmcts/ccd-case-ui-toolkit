@@ -660,7 +660,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -807,7 +807,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1025,7 +1025,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1177,7 +1177,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1316,7 +1316,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1468,7 +1468,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1608,7 +1608,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1765,7 +1765,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1910,7 +1910,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2049,7 +2049,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2194,7 +2194,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2334,7 +2334,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2502,7 +2502,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2655,7 +2655,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2800,7 +2800,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2956,7 +2956,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3098,7 +3098,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3250,7 +3250,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3401,7 +3401,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3558,7 +3558,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3711,7 +3711,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3879,7 +3879,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -4042,7 +4042,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -4200,7 +4200,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile

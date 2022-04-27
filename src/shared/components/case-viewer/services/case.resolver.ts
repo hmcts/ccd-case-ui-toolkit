@@ -1,7 +1,7 @@
 import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
@@ -26,7 +26,7 @@ export class CaseResolver implements Resolve<CaseView> {
               private navigationNotifierService: NavigationNotifierService,
               private router: Router) {
     router.events
-      .filter(event => event instanceof NavigationEnd)
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl = event.url;
       });
@@ -74,7 +74,7 @@ export class CaseResolver implements Resolve<CaseView> {
             return this.cachedCaseView;
           }),
           catchError(error => this.checkAuthorizationError(error))
-        ).toPromise();
+        ).toPromise<CaseView>();
     }
   }
 
@@ -96,11 +96,11 @@ export class CaseResolver implements Resolve<CaseView> {
     console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case'])
-      return Observable.of(null);
+      return of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
       this.router.navigate(['/error']);
     }
-    return Observable.throw(error);
+    return throwError(error);
   }
 }

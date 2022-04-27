@@ -1,6 +1,6 @@
 import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CaseResolver } from './case.resolver';
 import { CaseEventTrigger, HttpError, CaseView, Profile } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
@@ -17,7 +17,7 @@ describe('EventTriggerResolver', () => {
   const CASE_ID = '42';
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', CASE_ID, true, []);
-  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = Observable.of(EVENT_TRIGGER);
+  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
     status: 422,
@@ -66,7 +66,7 @@ describe('EventTriggerResolver', () => {
     'isCourtAdmin': FUNC
   };
 
-  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+  let PROFILE_OBS: Observable<Profile> = of(PROFILE);
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
@@ -81,7 +81,7 @@ describe('EventTriggerResolver', () => {
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get']);
-    httpService.get.and.returnValue(Observable.of(MOCK_PROFILE));
+    httpService.get.and.returnValue(of(MOCK_PROFILE));
 
     eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier);
 
@@ -189,7 +189,7 @@ describe('EventTriggerResolver', () => {
   });
 
   it('should create error alert when event trigger cannot be retrieved', done => {
-    casesService.getEventTrigger.and.returnValue(Observable.throw(ERROR));
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
     profileService.get.and.returnValue(PROFILE_OBS);
 
     eventTriggerResolver

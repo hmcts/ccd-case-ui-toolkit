@@ -1044,7 +1044,7 @@ describe('CaseEditComponent', () => {
       'isCourtAdmin': FUNC
     };
 
-    const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
 
     beforeEach(async(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);

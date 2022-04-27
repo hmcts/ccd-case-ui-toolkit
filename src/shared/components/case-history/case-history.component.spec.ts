@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
 import { CaseView, HttpError } from '../../domain';
@@ -38,7 +38,7 @@ describe('CaseHistoryComponent', () => {
   const $CASE_DETAIL_HEADERS = 'h3';
 
   const CASE_HISTORY: CaseHistory = createCaseHistory();
-  const CASE_HISTORY_OBS: Observable<CaseHistory> = Observable.of(CASE_HISTORY);
+  const CASE_HISTORY_OBS: Observable<CaseHistory> = of(CASE_HISTORY);
   const CASE_VIEW: CaseView = {
     case_id: '1',
     case_type: {

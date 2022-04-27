@@ -1,8 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
-
+import { Observable, Subscription } from 'rxjs';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';

@@ -1,5 +1,5 @@
 import { AbstractAppConfig } from '../../../app.config';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { OrganisationService, Organisation, OrganisationAddress } from './organisation.service';
 import { HttpService } from '../../services';
 import createSpyObj = jasmine.createSpyObj;
@@ -44,7 +44,7 @@ describe('Organisation Service', () => {
 
   describe('organisation service()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(ORGANISATIONS));
+      httpService.get.and.returnValue(of(ORGANISATIONS));
     });
     it('should call getActiveOrganisations() ', () => {
       let test = spyOn(organisationService, 'getActiveOrganisations');

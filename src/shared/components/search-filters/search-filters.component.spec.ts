@@ -11,6 +11,7 @@ import { Jurisdiction, CaseType } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
 import { ConditionalShowModule } from '../../directives';
+import { of, throwError } from 'rxjs';
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
@@ -308,7 +309,7 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_1;
     component.selected.caseType = CASE_TYPE_1;
     component.jurisdictions = [JURISDICTION_1];
-    mockSearchService.getSearchInputs.and.returnValue(Observable.throw(new Error('Response expired')));
+    mockSearchService.getSearchInputs.and.returnValue(throwError(new Error('Response expired')));
     component.onJurisdictionIdChange();
     expect(component.searchInputsReady).toBeFalsy();
     expect(component.searchInputs.length).toBe(0);
@@ -441,7 +442,7 @@ describe('SearchFiltersComponent', () => {
   it('should update search input when case type is reset', async(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
-    mockSearchService.getSearchInputs.and.returnValue(Observable.of([]));
+    mockSearchService.getSearchInputs.and.returnValue(of([]));
     windowService.getLocalStorage.and.returnValue('{}');
     component.onCaseTypeIdChange();
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[2].id);

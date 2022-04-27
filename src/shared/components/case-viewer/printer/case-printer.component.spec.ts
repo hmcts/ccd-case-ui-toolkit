@@ -11,7 +11,7 @@ import { PaletteUtilsModule } from '../../palette';
 import { attr, text } from '../../../test/helpers';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { AlertService } from '../../../services';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 
 describe('CasePrinterComponent', () => {
 
@@ -57,7 +57,7 @@ describe('CasePrinterComponent', () => {
       url: `${REMOTE_PRINT_SERVICE_URL}/doc2.jpg`
     }
   ];
-  const DOCUMENT_OBS: Observable<CasePrintDocument[]> = Observable.of(DOCUMENTS);
+  const DOCUMENT_OBS: Observable<CasePrintDocument[]> = of(DOCUMENTS);
 
   let fixture: ComponentFixture<CasePrinterComponent>;
   let component: CasePrinterComponent;

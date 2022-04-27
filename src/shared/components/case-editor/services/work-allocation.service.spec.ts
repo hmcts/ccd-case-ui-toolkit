@@ -1,4 +1,4 @@
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
 import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
@@ -122,7 +122,7 @@ describe('WorkAllocationService', () => {
     appConfig.getUserInfoApiUrl.and.returnValue('api/user/details');
 
     httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
-    httpService.get.and.returnValue(Observable.of(getExampleUserDetails()[1]));
+    httpService.get.and.returnValue(of(getExampleUserDetails()[1]));
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
@@ -131,7 +131,7 @@ describe('WorkAllocationService', () => {
   describe('searchTasks', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of({
+      httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_1 ]
       }));
     });
@@ -176,7 +176,7 @@ describe('WorkAllocationService', () => {
   describe('assignTask', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of({}));
+      httpService.post.and.returnValue(of({}));
     });
 
     it('should call post with the correct parameters', () => {
@@ -204,7 +204,7 @@ describe('WorkAllocationService', () => {
   describe('completeTask', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of({}));
+      httpService.post.and.returnValue(of({}));
     });
 
     it('should call post with the correct parameters', () => {
@@ -232,7 +232,7 @@ describe('WorkAllocationService', () => {
   describe('assignAndCompleteTask', () => {
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of({}));
+      httpService.post.and.returnValue(of({}));
     });
 
     it('should call post with the correct parameters', () => {
@@ -292,7 +292,7 @@ describe('WorkAllocationService', () => {
 
     it('should succeed when no tasks are found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      httpService.post.and.returnValue(Observable.of({
+      httpService.post.and.returnValue(of({
         tasks: []
       }));
       workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
@@ -304,8 +304,8 @@ describe('WorkAllocationService', () => {
 
     it('should attempt to complete the task when one is found', (done) => {
       const COMPLETE_TASK_RESULT = 'Bob';
-      const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(Observable.of(COMPLETE_TASK_RESULT));
-      httpService.post.and.returnValue(Observable.of({
+      const completeSpy = spyOn(workAllocationService, 'completeTask').and.returnValue(of(COMPLETE_TASK_RESULT));
+      httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_2 ]
       }));
       workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
@@ -316,7 +316,7 @@ describe('WorkAllocationService', () => {
 
     it('should throw an error when more than one task is found', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      httpService.post.and.returnValue(Observable.of({
+      httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
       }));
       workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(() => {
@@ -331,7 +331,7 @@ describe('WorkAllocationService', () => {
 
     it('should throw an error when failing to complete one task', (done) => {
       const completeSpy = spyOn(workAllocationService, 'completeTask').and.throwError(COMPLETE_ERROR.message);
-      httpService.post.and.returnValue(Observable.of({
+      httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_2 ]
       }));
       workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
@@ -346,8 +346,8 @@ describe('WorkAllocationService', () => {
 
     it('should get task for the task id provided', (done) => {
       const taskResponse = getExampleTask();
-      const getSpy = spyOn(workAllocationService, 'getTask').and.returnValue(Observable.of(taskResponse));
-      httpService.get.and.returnValue(Observable.of({taskResponse}));
+      const getSpy = spyOn(workAllocationService, 'getTask').and.returnValue(of(taskResponse));
+      httpService.get.and.returnValue(of({taskResponse}));
       workAllocationService.getTask(MOCK_TASK_2.id).subscribe(result => {
         expect(getSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();

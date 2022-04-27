@@ -77,7 +77,7 @@ export class WorkAllocationService {
         catchError(error => {
           this.errorService.setError(error);
           // this will subscribe to get the user details and decide whether to display an error message
-          this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response).subscribe((response) => {
+          this.http.get(this.appConfig.getUserInfoApiUrl()).pipe(map(response => response)).subscribe((response) => {
             this.handleTaskCompletionError(response);
           });
           return throwError(error);
@@ -101,7 +101,7 @@ export class WorkAllocationService {
         catchError(error => {
           this.errorService.setError(error);
           // this will subscribe to get the user details and decide whether to display an error message
-          this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response).subscribe((response) => {
+          this.http.get(this.appConfig.getUserInfoApiUrl()).pipe(map(response => response)).subscribe((response) => {
             this.handleTaskCompletionError(response);
           });
           return throwError(error);

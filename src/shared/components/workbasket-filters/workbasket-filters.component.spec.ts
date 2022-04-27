@@ -4,8 +4,7 @@ import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import { By } from '@angular/platform-browser';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import 'rxjs/add/operator/do';
+import { Observable, of, throwError } from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction, CaseType, AlertService,
   JurisdictionService, WindowService } from '../..';
@@ -193,7 +192,7 @@ describe('WorkbasketFiltersComponent', () => {
         'getLocalStorage', 'removeLocalStorage']);
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
       activatedRoute = {
-        queryParams: Observable.of({}),
+        queryParams: of({}),
         snapshot: {
           queryParams: {}
         }
@@ -256,7 +255,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService.getLocalStorage.and.returnValue('{}');
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
       activatedRoute = {
-        queryParams: Observable.of({}),
+        queryParams: of({}),
         snapshot: {
           queryParams: {}
         }
@@ -512,7 +511,7 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = CASE_TYPES_2[1];
       component.selected.caseState = CASE_TYPES_2[1].states[0];
-      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.of([]));
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([]));
 
       component.onCaseTypeIdChange();
       expect(workbasketInputFilterService.getWorkbasketInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[1].id);
@@ -522,7 +521,7 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = CASE_TYPES_2[1];
       component.selected.caseState = CASE_TYPES_2[1].states[0];
-      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.throw(new Error('Response expired')));
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(throwError(new Error('Response expired')));
 
       component.onCaseTypeIdChange();
       expect(component.workbasketInputsReady).toBeFalsy();
@@ -555,7 +554,7 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.caseState = CASE_TYPES_2[1].states[0];
 
       let expectedInput = TEST_WORKBASKET_INPUTS[0];
-      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.of([expectedInput]));
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([expectedInput]));
 
       component.onCaseTypeIdChange();
       fixture.detectChanges();
@@ -577,7 +576,7 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.caseState = CASE_TYPES_2[1].states[0];
 
       let complexFieldSearchInput = TEST_WORKBASKET_INPUTS[2];
-      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.of([complexFieldSearchInput]));
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([complexFieldSearchInput]));
 
       let expectedFieldId = complexFieldSearchInput.field.id;
       component.onCaseTypeIdChange();
@@ -657,7 +656,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       jurisdictionService = new JurisdictionService();
       activatedRoute = {
-        queryParams: Observable.of({}),
+        queryParams: of({}),
         snapshot: {
           queryParams: {}
         }
@@ -755,7 +754,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       jurisdictionService = new JurisdictionService();
       activatedRoute = {
-        queryParams: Observable.of({}),
+        queryParams: of({}),
         snapshot: {
           queryParams: {}
         }
@@ -827,7 +826,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       jurisdictionService = new JurisdictionService();
       activatedRoute = {
-        queryParams: Observable.of({}),
+        queryParams: of({}),
         snapshot: {
           queryParams: {}
         }
@@ -907,7 +906,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
       activatedRoute = {
-        queryParams: Observable.of(QUERY_PARAMS),
+        queryParams: of(QUERY_PARAMS),
         snapshot: {
           queryParams: QUERY_PARAMS
         }
@@ -990,7 +989,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue(JSON.stringify(QUERY_PARAMS));
       activatedRoute = {
-        queryParams: Observable.of(QUERY_PARAMS),
+        queryParams: of(QUERY_PARAMS),
         snapshot: {
           queryParams: QUERY_PARAMS
         }
@@ -1068,7 +1067,7 @@ describe('WorkbasketFiltersComponent', () => {
         'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
       activatedRoute = {
-        queryParams: Observable.of({}),
+        queryParams: of({}),
         snapshot: {
           queryParams: {}
         }
