@@ -71,7 +71,7 @@ describe('ConditionalShowFormDirective', () => {
     let conditionalShowForm: ConditionalShowFormDirective;
     let mockRegistrar: ConditionalShowRegistrarService = createSpyObj<ConditionalShowRegistrarService>(
       'conditionalShowRegistrarService',
-      ['register', 'refresh']
+      ['register']
     );
 
     beforeEach( async(() => {
