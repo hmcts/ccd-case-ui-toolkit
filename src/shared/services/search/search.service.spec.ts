@@ -8,6 +8,7 @@ import { HttpService, OptionsType } from '../http';
 import { AbstractAppConfig } from '../../../app.config';
 import { LoadingService } from '../loading';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 
 describe('SearchService', () => {
 
@@ -238,9 +239,9 @@ describe('SearchService', () => {
     it('should unregister loading token when finished', () => {
       searchService
         .search(JID, CTID, {}, {})
-        .finally(() => {
+        .pipe(finalize(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
-        });
+        }));
     });
 
   });
@@ -334,9 +335,9 @@ describe('SearchService', () => {
     it('should unregister loading token when finished', () => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .finally(() => {
+        .pipe(finalize(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
-        });
+        }));
     });
   });
 });

@@ -33,11 +33,11 @@ export class DraftService {
     return this.http
       .post(saveDraftEndpoint, eventData, {headers, observe: 'body'})
       .pipe(
-				catchError((error: any): any => {
-        	this.errorService.setError(error);
-        	return throwError(error);
-      	})
-			);
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
@@ -49,11 +49,11 @@ export class DraftService {
     return this.http
       .put(saveDraftEndpoint, eventData, {headers, observe: 'body'})
       .pipe(
-				catchError((error: any): any => {
-        	this.errorService.setError(error);
-        	return throwError(error);
-      	})
-			);
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   getDraft(draftId: string): Observable<CaseView> {
@@ -65,11 +65,11 @@ export class DraftService {
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
-				catchError((error: any): any => {
-        	this.errorService.setError(error);
-        	return throwError(error);
-      	})
-			);
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   deleteDraft(draftId: string): Observable<{} | any> {
@@ -81,11 +81,11 @@ export class DraftService {
     return this.http
       .delete(url, {headers, observe: 'body'})
       .pipe(
-				catchError((error: any): any => {
-        	this.errorService.setError(error);
-        	return throwError(error);
-      	})
-			);
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
   }
 
   createOrUpdateDraft(caseTypeId: string, draftId: string, caseEventData: CaseEventData): Observable<Draft> {

@@ -1,5 +1,6 @@
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, ChallengedAccessRequest, HttpError, SpecificAccessRequest } from '../../../domain';
@@ -139,9 +140,9 @@ describe('CasesService', () => {
     it('should unregister loading token when finished', () => {
       casesService
         .getCaseView(JID, CTID, CASE_ID)
-        .finally(() => {
+        .pipe(finalize(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
-        });
+        }));
     });
   });
 
@@ -197,9 +198,9 @@ describe('CasesService', () => {
     it('should unregister loading token when finished', () => {
       casesService
         .getCaseViewV2(CASE_ID)
-        .finally(() => {
+        .pipe(finalize(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
-        });
+        }));
     });
 
   });

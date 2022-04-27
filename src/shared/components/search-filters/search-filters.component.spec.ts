@@ -3,7 +3,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { SearchFiltersComponent } from './search-filters.component';
 import { By } from '@angular/platform-browser';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 import { createSearchInputs } from './domain/search-input.test.fixture';
 import { JurisdictionService, SearchService, OrderService, WindowService } from '../../services';

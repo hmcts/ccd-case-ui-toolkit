@@ -25,12 +25,12 @@ export class CaseHistoryService {
 
     return this.httpService
       .get(url, {headers, observe: 'body'})
-			.pipe(
-				catchError((error: any): any => {
-					this.httpErrorService.setError(error);
-					return throwError(error);
-				}),
-				map((caseHistory: Object) => plainToClass(CaseHistory, caseHistory))
-			);
+      .pipe(
+        catchError((error: any): any => {
+          this.httpErrorService.setError(error);
+          return throwError(error);
+        }),
+        map((caseHistory: Object) => plainToClass(CaseHistory, caseHistory))
+      );
   }
 }

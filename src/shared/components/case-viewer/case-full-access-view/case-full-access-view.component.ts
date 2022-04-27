@@ -8,13 +8,13 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
 import {
-	ActivityPollingService,
-	AlertService,
-	DraftService,
-	ErrorNotifierService,
-	NavigationNotifierService,
-	NavigationOrigin,
-	OrderService
+  ActivityPollingService,
+  AlertService,
+  DraftService,
+  ErrorNotifierService,
+  NavigationNotifierService,
+  NavigationOrigin,
+  OrderService
 } from '../../../services';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
