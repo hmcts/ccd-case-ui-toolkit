@@ -4,7 +4,12 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, Language } from '../../domain';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterStep } from '../../enums';
+import {
+  CaseFlagFieldState,
+  CaseFlagWizardStepTitle,
+  SearchLanguageInterpreterErrorMessage,
+  SearchLanguageInterpreterStep
+} from '../../enums';
 
 @Component({
   selector: 'ccd-search-language-interpreter',
@@ -28,8 +33,12 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public filteredLanguages$: Observable<Language[]>;
   public searchTerm = '';
   public isCheckboxEnabled = false;
-  public errorMessages: ErrorMessage[];
+  public errorMessages: ErrorMessage[] = [];
+  public languageNotSelectedErrorMessage = '';
+  public languageNotEnteredErrorMessage = '';
+  public languageCharLimitErrorMessage = '';
   public noResults = false;
+  private readonly languageMaxCharLimit = 80;
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle;
@@ -56,12 +65,15 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   }
 
   public onNext(): void {
-    // Validate form
-    this.validateForm();
-    // Return case flag field state and error messages to the parent
+    // Validate language interpreter entry
+    this.validateLanguageEntry();
+    // Return case flag field state, error messages, and "list of values" (i.e. languages) to the parent. The
+    // "list of values" must be re-emitted because the parent component repopulates them from handling this
+    // EventEmitter
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: this.errorMessages
+      errorMessages: this.errorMessages,
+      listOfValues: this.languages
     });
   }
 
@@ -73,9 +85,38 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     return language ? language.value : undefined;
   }
 
-  private validateForm(): boolean {
+  private validateLanguageEntry(): void {
+    this.languageNotSelectedErrorMessage = null;
+    this.languageNotEnteredErrorMessage = null;
+    this.languageCharLimitErrorMessage = null;
     this.errorMessages = [];
-    return true;
+    // Checkbox not enabled means the user has opted to search for and select the language
+    if (!this.isCheckboxEnabled && !this.formGroup.get(this.languageSearchTermControlName).value) {
+      this.languageNotSelectedErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED;
+      this.errorMessages.push({
+        title: '',
+        description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
+        fieldId: this.languageSearchTermControlName
+      });
+    }
+    // Checkbox enabled means the user has opted to enter the language manually
+    if (this.isCheckboxEnabled) {
+      if (!this.formGroup.get(this.manualLanguageEntryControlName).value) {
+        this.languageNotEnteredErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED;
+        this.errorMessages.push({
+          title: '',
+          description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
+          fieldId: this.manualLanguageEntryControlName
+        });
+      } else if (this.formGroup.get(this.manualLanguageEntryControlName).value.length > this.languageMaxCharLimit) {
+        this.languageCharLimitErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED;
+        this.errorMessages.push({
+          title: '',
+          description: SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED,
+          fieldId: this.manualLanguageEntryControlName
+        });
+      }
+    }
   }
 
   private filterLanguages(searchTerm: string): Language[] {
@@ -83,6 +124,8 @@ export class SearchLanguageInterpreterComponent implements OnInit {
       return [];
     }
 
-    return this.languages.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0));
+    return this.languages
+      ? this.languages.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0))
+      : [];
   }
 }

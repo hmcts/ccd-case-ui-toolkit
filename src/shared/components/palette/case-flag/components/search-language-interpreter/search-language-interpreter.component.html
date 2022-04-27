@@ -1,18 +1,22 @@
 <h2 class="govuk-heading-l">{{caseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER}}</h2>
 <div class="form-group" [formGroup]="formGroup">
-  <div class="auto-complete-container">
-    <p>{{searchLanguageInterpreterStep.TITLE_DESCRIPTION}}</p>
-    <input aria-label="Language search box" matInput [formControlName]="languageSearchTermControlName" [matAutocomplete]="autoSearchLanguage"
-      class="govuk-input search-language__input" type="text">
-    <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete"
-      [displayWith]="displayLanguage">
-      <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
-        {{language.value}}
-      </mat-option>
-      <mat-option *ngIf="noResults && searchTerm && searchTerm.length >= minSearchCharacters">No results found</mat-option>
-    </mat-autocomplete>
-  </div>
-  <div class="govuk-form-group">
+  <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage}">
+    <div class="auto-complete-container">
+      <p>{{searchLanguageInterpreterStep.TITLE_DESCRIPTION}}</p>
+      <div id="language-not-selected-error-message" class="govuk-error-message"
+        *ngIf="languageNotSelectedErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{languageNotSelectedErrorMessage}}
+      </div>
+      <input aria-label="Language search box" matInput [formControlName]="languageSearchTermControlName" [matAutocomplete]="autoSearchLanguage"
+        class="govuk-input search-language__input" type="text">
+      <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete"
+        [displayWith]="displayLanguage">
+        <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
+          {{language.value}}
+        </mat-option>
+        <mat-option *ngIf="noResults && searchTerm && searchTerm.length >= minSearchCharacters" disabled>No results found</mat-option>
+      </mat-autocomplete>
+    </div>
     <div class="govuk-checkboxes govuk-checkboxes--small govuk-checkboxes--conditional" data-module="govuk-checkboxes">
       <div class="govuk-radios__item">
         <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="onEnterLanguageManually($event)">
@@ -20,9 +24,17 @@
           {{searchLanguageInterpreterStep.CHECKBOX_LABEL}}
         </label>
       </div>
-      <div class="govuk-radios__conditional" [ngClass]="{'hidden': !isCheckboxEnabled}">
-        <div class="govuk-form-group">
+      <div class="govuk-radios__conditional" *ngIf="isCheckboxEnabled">
+        <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotEnteredErrorMessage || languageCharLimitErrorMessage }">
           <label class="govuk-label" for="manual-language-entry">{{searchLanguageInterpreterStep.INPUT_LABEL}}</label>
+          <div id="language-not-entered-error-message" class="govuk-error-message"
+            *ngIf="languageNotEnteredErrorMessage">
+            <span class="govuk-visually-hidden">Error:</span> {{languageNotEnteredErrorMessage}}
+          </div>
+          <div id="language-char-limit-error-message" class="govuk-error-message"
+            *ngIf="languageCharLimitErrorMessage">
+            <span class="govuk-visually-hidden">Error:</span> {{languageCharLimitErrorMessage}}
+          </div>
           <input class="govuk-input govuk-input--width-20" id="manual-language-entry" [name]="manualLanguageEntryControlName" type="text"
             [formControlName]="manualLanguageEntryControlName">
         </div>
