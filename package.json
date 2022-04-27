@@ -51,7 +51,7 @@
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
     "@angular-material-components/moment-adapter": "^5.0.0",
-    "@angular/cli": "^6.0.8",
+    "@angular/cli": "^7.3.10",
     "@angular/compiler-cli": "~7.0.3",
     "@edium/fsm": "^2.1.2",
     "braces": "^2.3.1",
