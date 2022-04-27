@@ -23,7 +23,7 @@ export class ConvertHrefToRouterService {
 
       this.router.navigate([urls[0]], {
         queryParams: {
-          tid: urls[1]?urls[1].split('=')[1]: ''
+          tid: urls[1] ? urls[1].split('=')[1] : ''
         }
       });
     }

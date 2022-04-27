@@ -56,7 +56,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
   public markdownUseHrefAsRouterLink: boolean;
-  public message:string;
+  public message: string;
   public subscription: Subscription;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
