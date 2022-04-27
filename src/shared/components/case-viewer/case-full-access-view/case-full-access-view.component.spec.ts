@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -38,7 +38,7 @@ import { AlertService } from '../../../services/alert';
 import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
-import { CaseNotifier } from '../../case-editor';
+import { CaseNotifier, ConvertHrefToRouterService } from '../../case-editor';
 import { ComplexModule, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -1146,7 +1146,11 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
+  let convertHrefToRouterService;
+
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
         imports: [
@@ -1216,6 +1220,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1261,8 +1266,11 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
+  let convertHrefToRouterService;
 
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
         imports: [
@@ -1332,6 +1340,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1381,7 +1390,11 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   let comp: CaseFullAccessViewComponent;
   let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
+  let convertHrefToRouterService;
+
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
         imports: [
@@ -1450,6 +1463,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1479,7 +1493,11 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let caseViewerComponent: CaseFullAccessViewComponent;
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
+  let convertHrefToRouterService;
+
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     TestBed
@@ -1549,6 +1567,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]
       })

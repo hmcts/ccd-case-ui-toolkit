@@ -22,6 +22,7 @@ import {
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
+import { ConvertHrefToRouterService } from '../../case-editor/services';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -54,6 +55,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
+  public markdownUseHrefAsRouterLink: boolean;
+  public message:string;
+  public subscription: Subscription;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -69,6 +73,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
+    private convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location
   ) {
   }
@@ -86,6 +91,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.error = error;
         this.callbackErrorsSubject.next(this.error);
       }
+    });
+    this.markdownUseHrefAsRouterLink = true;
+
+    this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
+      this.convertHrefToRouterService.callAngularRouter(hrefMarkdownLinkContent);
     });
   }
 
@@ -106,6 +116,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }
+    this.subscription.unsubscribe();
   }
 
   public postViewActivity(): Observable<Activity[]> {
