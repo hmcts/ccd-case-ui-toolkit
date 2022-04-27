@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observer } from 'rxjs/Observer';
 import { NavigationStart, Router } from '@angular/router';
-import 'rxjs/operator/publish';
-import { ConnectableObservable, Observable } from 'rxjs/Rx';
-import { Alert } from '../../domain/alert/alert.model';
+import { ConnectableObservable, Observable, Observer } from 'rxjs';
 import { AlertLevel } from '../../domain';
+import { Alert } from '../../domain/alert/alert.model';
 
 @Injectable()
 export class AlertService {

@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { SearchInput } from './domain/search-input.model';
 import { SearchService, WindowService, OrderService, JurisdictionService, FieldsUtils } from '../../services';
 import { Jurisdiction, CaseTypeLite, CaseState, CaseField } from '../../domain';
+import { tap } from 'rxjs/operators';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
 const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
@@ -162,8 +163,8 @@ export class SearchFiltersComponent implements OnInit {
     this.searchService.getSearchInputs(
       this.selected.jurisdiction.id,
       this.selected.caseType.id
-    )
-      .do(() => this.searchInputsReady = true)
+    ).pipe(
+      tap(() => this.searchInputsReady = true))
       .subscribe(searchInputs => {
         this.searchInputs = searchInputs
           .sort(this.orderService.sortAsc);

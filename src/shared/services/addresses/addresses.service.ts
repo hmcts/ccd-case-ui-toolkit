@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from '../../domain/addresses';
 import { HttpService } from '../http';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AddressesService {

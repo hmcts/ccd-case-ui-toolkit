@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { first } from 'rxjs/operators';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { Predicate } from '../../../domain/predicate.model';
 import { AlertService } from '../../../services/alert/alert.service';
+import { FieldsUtils } from '../../../services/fields';
 import { RouterHelperService } from '../../../services/router/router-helper.service';
-import { WizardFactoryService } from './wizard-factory.service';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
 import { EventTriggerService } from './event-trigger.service';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { FieldsUtils } from '../../../services/fields';
+import { WizardFactoryService } from './wizard-factory.service';
 
 @Injectable()
 export class CaseEditWizardGuard implements Resolve<boolean> {
@@ -24,7 +25,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
-    this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
+    this.eventTriggerService.eventTriggerSource.asObservable().pipe(first()).subscribe(eventTrigger => {
       this.processEventTrigger(route, eventTrigger);
     });
     if (route.parent.data.eventTrigger) {

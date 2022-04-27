@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, timer, of } from 'rxjs';
-import { publishReplay, refCount, take, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable, of, timer } from 'rxjs';
+import { catchError, map, publishReplay, refCount, take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 
 export interface OrganisationSuperUser {
@@ -80,9 +80,13 @@ export class OrganisationService {
             const url = this.appconfig.getPrdUrl();
             const cacheTimeOut = this.appconfig.getCacheTimeOut();
             this.organisations$ = this.http.get<Organisation[]>(url)
-            .pipe(map((orgs) => OrganisationService.mapOrganisation(orgs)),
-            publishReplay(1), refCount(), take(1)).catch(e => {
-                console.log(e);
+            .pipe(
+              map((orgs) => OrganisationService.mapOrganisation(orgs)),
+              publishReplay(1),
+              refCount(),
+              take(1)),
+              catchError(error => {
+                console.log(error);
                 // Handle error and return blank Observable array
                 return of([]);
             });

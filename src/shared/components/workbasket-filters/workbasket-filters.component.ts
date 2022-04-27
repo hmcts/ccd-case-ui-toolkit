@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { FormGroup } from '@angular/forms';
-import 'rxjs/add/operator/do';
-import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel, CaseField } from '../../domain';
-import { JurisdictionService, AlertService, WindowService, OrderService, WorkbasketInputFilterService, FieldsUtils } from '../../services';
 import { isDefined } from '@angular/compiler/src/util';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { CaseField, CaseState, CaseTypeLite, Jurisdiction, WorkbasketInputModel } from '../../domain';
+import { AlertService, FieldsUtils, JurisdictionService, OrderService, WindowService, WorkbasketInputFilterService } from '../../services';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';

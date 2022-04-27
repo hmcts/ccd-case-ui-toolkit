@@ -4,6 +4,7 @@ import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, HttpErrorService } from '../http';
 import { CaseEventData, Draft, DRAFT_PREFIX, CaseView } from '../../domain';
 import { HttpHeaders } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class DraftService {
@@ -31,10 +32,12 @@ export class DraftService {
       .set('Content-Type', 'application/json');
     return this.http
       .post(saveDraftEndpoint, eventData, {headers, observe: 'body'})
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .pipe(
+				catchError((error: any): any => {
+        	this.errorService.setError(error);
+        	return throwError(error);
+      	})
+			);
   }
 
   updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
@@ -45,10 +48,12 @@ export class DraftService {
       .set('Content-Type', 'application/json');
     return this.http
       .put(saveDraftEndpoint, eventData, {headers, observe: 'body'})
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .pipe(
+				catchError((error: any): any => {
+        	this.errorService.setError(error);
+        	return throwError(error);
+      	})
+			);
   }
 
   getDraft(draftId: string): Observable<CaseView> {
@@ -59,10 +64,12 @@ export class DraftService {
       .set('Content-Type', 'application/json');
     return this.http
       .get(url, {headers, observe: 'body'})
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .pipe(
+				catchError((error: any): any => {
+        	this.errorService.setError(error);
+        	return throwError(error);
+      	})
+			);
   }
 
   deleteDraft(draftId: string): Observable<{} | any> {
@@ -73,10 +80,12 @@ export class DraftService {
       .set('Content-Type', 'application/json');
     return this.http
       .delete(url, {headers, observe: 'body'})
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .pipe(
+				catchError((error: any): any => {
+        	this.errorService.setError(error);
+        	return throwError(error);
+      	})
+			);
   }
 
   createOrUpdateDraft(caseTypeId: string, draftId: string, caseEventData: CaseEventData): Observable<Draft> {
