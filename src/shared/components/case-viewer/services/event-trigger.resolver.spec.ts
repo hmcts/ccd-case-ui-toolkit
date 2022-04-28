@@ -1,6 +1,6 @@
 import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { CaseResolver } from './case.resolver';
 import { CaseEventTrigger, HttpError, CaseView } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
@@ -143,7 +143,7 @@ describe('EventTriggerResolver', () => {
   });
 
   it('should create error alert when event trigger cannot be retrieved', done => {
-    casesService.getEventTrigger.and.returnValue(Observable.throw(ERROR));
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
 
     eventTriggerResolver
       .resolve(route)

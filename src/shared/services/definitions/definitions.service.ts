@@ -3,11 +3,12 @@ import { Observable } from 'rxjs';
 import { HttpService } from '../http/http.service';
 import { CaseTypeLite, Jurisdiction } from '../../domain';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class DefinitionsService {
 
-  constructor(private http: HttpService, private appConfig: AppConfig) {}
+  constructor(private http: HttpService, private appConfig: AppConfig) { }
 
   getCaseTypes(jurisdictionId: string, access: string): Observable<CaseTypeLite[]> {
     const url = this.appConfig.getApiUrl()
@@ -16,8 +17,7 @@ export class DefinitionsService {
       + `/case-types?access=${access}`;
 
     return this.http
-      .get(url)
-      .map(response => response.json());
+      .get(url).pipe(map(response => response.json()));
   }
 
   getJurisdictions(access: string): Observable<Jurisdiction[]> {
@@ -26,7 +26,6 @@ export class DefinitionsService {
       + `/jurisdictions?access=${access}`;
 
     return this.http
-      .get(url)
-      .map(response => response.json());
+      .get(url).pipe(map(response => response.json()));
   }
 }

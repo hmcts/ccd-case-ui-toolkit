@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, DoCheck, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { CaseField } from '../../domain/definition';
 import { ShowCondition } from '../../directives/conditional-show/domain';
 import { Draft, DRAFT_QUERY_PARAM } from '../../domain';

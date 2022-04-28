@@ -407,7 +407,7 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+    let PROFILE_OBS: Observable<Profile> = of(PROFILE);
     let mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile

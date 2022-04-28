@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DisplayMode, CaseEventTrigger, CaseView, Activity, CaseEventData } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { AlertService, ActivityPollingService, EventStatusService } from '../../../services';

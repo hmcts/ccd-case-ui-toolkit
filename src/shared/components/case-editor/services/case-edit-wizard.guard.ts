@@ -10,6 +10,7 @@ import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { EventTriggerService } from './event-trigger.service';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { first } from 'rxjs/operators';
 
 @Injectable()
 export class CaseEditWizardGuard implements Resolve<boolean> {
@@ -23,7 +24,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
-    this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
+    this.eventTriggerService.eventTriggerSource.asObservable().pipe(first()).subscribe(eventTrigger => {
       this.processEventTrigger(route, eventTrigger);
     });
     if (route.parent.data.eventTrigger) {

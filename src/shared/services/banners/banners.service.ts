@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
 import { Headers, URLSearchParams } from '@angular/http';
 import { HttpService } from '../http/http.service';
 import { AbstractAppConfig } from '../../../app.config';
 import { Banner } from '../../domain';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class BannersService {
@@ -22,11 +22,11 @@ export class BannersService {
     let params: URLSearchParams = new URLSearchParams();
     jurisdictionReferences.forEach(reference => params.append('ids', reference));
     return this.httpService
-      .get(url, {params, headers})
-      .map(response => {
+      .get(url, { params, headers }).pipe(map(response => {
         let jsonResponse = response.json();
         let banners = jsonResponse.banners;
         return banners;
-      });
+      }))
+      ;
   }
 }

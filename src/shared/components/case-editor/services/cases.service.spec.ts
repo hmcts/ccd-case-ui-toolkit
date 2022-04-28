@@ -1,7 +1,7 @@
 import { Headers, Response, ResponseOptions } from '@angular/http';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CasesService } from './cases.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CasePrintDocument } from '../../../../shared/domain/case-view/case-print-document.model';
 import { HttpErrorService, HttpService } from '../../../services/http';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
@@ -82,7 +82,7 @@ describe('CasesService', () => {
   describe('getCaseView()', () => {
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of(new Response(new ResponseOptions({
         body: JSON.stringify(CASE_VIEW)
       }))));
     });

@@ -1,7 +1,7 @@
 import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
@@ -9,7 +9,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
 @Injectable()
-export class CaseResolver implements Resolve<CaseView> {
+export class CaseResolver implements Resolve<{} | CaseView> {
 
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
@@ -25,14 +25,13 @@ export class CaseResolver implements Resolve<CaseView> {
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
               private router: Router) {
-    router.events
-      .filter(event => event instanceof NavigationEnd)
+    router.events.pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl = event.url;
       });
   }
 
-  resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
+  resolve(route: ActivatedRouteSnapshot): Promise<{} | CaseView> {
 
     let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
 
@@ -61,7 +60,7 @@ export class CaseResolver implements Resolve<CaseView> {
     return route.firstChild && route.firstChild.fragment;
   }
 
-  private getAndCacheCaseView(cid): Promise<CaseView> {
+  private getAndCacheCaseView(cid): Promise<{} | CaseView> {
     if (Draft.isDraft(cid)) {
       return this.getAndCacheDraft(cid);
     } else {
@@ -78,7 +77,7 @@ export class CaseResolver implements Resolve<CaseView> {
     }
   }
 
-  private getAndCacheDraft(cid): Promise<CaseView> {
+  private getAndCacheDraft(cid): Promise<{} | CaseView> {
     return this.draftService
       .getDraft(cid)
       .pipe(
@@ -96,11 +95,11 @@ export class CaseResolver implements Resolve<CaseView> {
     console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case'])
-      return Observable.of(null);
+      return of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
       this.router.navigate(['/error']);
     }
-    return Observable.throw(error);
+    return throwError(error);
   }
 }

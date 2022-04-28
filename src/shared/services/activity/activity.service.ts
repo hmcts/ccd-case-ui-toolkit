@@ -3,6 +3,7 @@ import { Activity } from '../../domain/activity';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../../services/http';
+import { map } from 'rxjs/operators';
 
 // @dynamic
 @Injectable()
@@ -13,21 +14,20 @@ export class ActivityService {
 
   private userAuthorised;
 
-  constructor(private http: HttpService, private appConfig: AbstractAppConfig) {}
+  constructor(private http: HttpService, private appConfig: AbstractAppConfig) { }
 
   getActivities(...caseId: string[]): Observable<Activity[]> {
     const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
     return this.http
-      .get(url, null, false)
-      .map(response => response.json());
+      .get(url, null, false).pipe(map(response => response.json()));
   }
 
   postActivity(caseId: string, activityType: String): Observable<Activity[]> {
     const url = this.activityUrl() + `/cases/${caseId}/activity`;
-    let body = { activity: activityType};
+    let body = { activity: activityType };
     return this.http
-      .post(url, body, null, false)
-      .map(response => response.json());
+      .post(url, body, null, false).pipe(map(response => response.json()));
+
   }
 
   verifyUserIsAuthorized(): void {
@@ -35,11 +35,11 @@ export class ActivityService {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
         data => this.userAuthorised = true,
         error => {
-            if (error.status === 403) {
-              this.userAuthorised = false;
-            } else {
-              this.userAuthorised = true
-            }
+          if (error.status === 403) {
+            this.userAuthorised = false;
+          } else {
+            this.userAuthorised = true
+          }
         }
       );
     }

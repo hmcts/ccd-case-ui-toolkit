@@ -5,7 +5,6 @@ import { By } from '@angular/platform-browser';
 import { attr, text } from '../../test/helpers';
 import { ReactiveFormsModule } from '@angular/forms';
 import createSpyObj = jasmine.createSpyObj;
-import { Subject } from 'rxjs/Subject';
 import { CaseViewTrigger, HttpError } from '../../domain';
 import { OrderService, AlertService } from '../../services';
 

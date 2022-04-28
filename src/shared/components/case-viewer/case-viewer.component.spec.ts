@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 import { attr, text } from '../../test/helpers';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 import { PaletteUtilsModule } from '../../components/palette/utils';
 import { CaseField } from '../../domain/definition';

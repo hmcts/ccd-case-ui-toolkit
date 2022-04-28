@@ -1,7 +1,7 @@
 
 import { ActivityService } from './activity.service';
 import { AbstractAppConfig } from '../../../';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpService } from '../../services/http';
 
 let httpService: any;
@@ -62,7 +62,7 @@ describe('ActivityService', () => {
     const error = {
       status: 403
     };
-    httpService.get.and.returnValue(Observable.throw(error));
+    httpService.get.and.returnValue(throwError(error));
 
     activityService.verifyUserIsAuthorized();
 
@@ -73,7 +73,7 @@ describe('ActivityService', () => {
     const error = {
       status: 400
     };
-    httpService.get.and.returnValue(Observable.throw(error));
+    httpService.get.and.returnValue(throwError(error));
 
     activityService.verifyUserIsAuthorized();
 

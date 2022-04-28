@@ -1,5 +1,5 @@
 import { Headers, Response, ResponseOptions } from '@angular/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { CaseHistoryService } from './case-history.service';
 import { HttpError } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -64,7 +64,7 @@ describe('CaseHistoryService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       caseHistoryService
         .get(CASE_ID, EVENT_ID)

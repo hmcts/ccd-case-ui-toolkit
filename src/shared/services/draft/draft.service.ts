@@ -4,6 +4,7 @@ import { Response, Headers } from '@angular/http';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService, HttpErrorService } from '../http';
 import { CaseEventData, Draft, DRAFT_PREFIX, CaseView } from '../../domain';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class DraftService {
@@ -21,7 +22,7 @@ export class DraftService {
     private http: HttpService,
     private appConfig: AbstractAppConfig,
     private errorService: HttpErrorService
-  ) {}
+  ) { }
 
   createDraft(ctid: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid);
@@ -30,12 +31,12 @@ export class DraftService {
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_CREATE
     });
     return this.http
-      .post(saveDraftEndpoint, eventData, {headers})
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .post(saveDraftEndpoint, eventData, { headers }).
+      pipe(map(response => response.json()),
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }));
   }
 
   updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
@@ -45,12 +46,12 @@ export class DraftService {
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_UPDATE
     });
     return this.http
-      .put(saveDraftEndpoint, eventData, {headers})
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .put(saveDraftEndpoint, eventData, { headers }).
+      pipe(map(response => response.json()),
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }))
   }
 
   getDraft(draftId: string): Observable<CaseView> {
@@ -60,12 +61,13 @@ export class DraftService {
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_READ
     });
     return this.http
-      .get(url, {headers})
-      .map(response => response.json())
-      .catch((error: any): any => {
-        this.errorService.setError(error);
-        return throwError(error);
-      });
+      .get(url, { headers }).
+      pipe(map(response => response.json()),
+        catchError((error: any): any => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      )
   }
 
   deleteDraft(draftId: string): Observable<{} | Response> {
@@ -75,11 +77,10 @@ export class DraftService {
       'Accept': DraftService.V2_MEDIATYPE_DRAFT_DELETE
     });
     return this.http
-      .delete(url, {headers})
-      .catch((error: any): any => {
+      .delete(url, { headers }).pipe(catchError((error: any): any => {
         this.errorService.setError(error);
         return throwError(error);
-      });
+      }))
   }
 
   createOrUpdateDraft(caseTypeId: string, draftId: string, caseEventData: CaseEventData): Observable<Draft> {

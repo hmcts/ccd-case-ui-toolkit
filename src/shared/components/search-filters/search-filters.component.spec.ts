@@ -10,6 +10,7 @@ import { JurisdictionService, SearchService, OrderService, WindowService } from 
 import { Jurisdiction, CaseType } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
+import { throwError } from 'rxjs';
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
@@ -306,7 +307,7 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_1;
     component.selected.caseType = CASE_TYPE_1;
     component.jurisdictions = [JURISDICTION_1];
-    mockSearchService.getSearchInputs.and.returnValue(Observable.throw(new Error('Response expired')));
+    mockSearchService.getSearchInputs.and.returnValue(throwError(new Error('Response expired')));
     component.onJurisdictionIdChange();
     expect(component.searchInputsReady).toBeFalsy();
     expect(component.searchInputs.length).toBe(0);
