@@ -102,12 +102,12 @@
       "ccd",
       "kebab-case"
     ],
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
+    "no-inputs-metadata-property": true,
+    "no-outputs-metadata-property": true,
+    "no-host-metadata-property": true,
     "no-input-rename": true,
     "no-output-rename": true,
-    "use-life-cycle-interface": true,
+    "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true,
@@ -117,7 +117,7 @@
       "cut",
       "ccd"
     ],
-    "no-attribute-parameter-decorator": true,
+    "no-attribute-decorator": true,
     "no-forward-ref": false,
     "import-destructuring-spacing": true,
     "no-consecutive-blank-lines": true

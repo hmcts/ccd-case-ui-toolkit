@@ -23,7 +23,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   @Input()
   caseFields: CaseField[] = [];
 
-  @ViewChild('fieldContainer', {read: ViewContainerRef})
+  @ViewChild('fieldContainer', {static: false, read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
 
   constructor(private resolver: ComponentFactoryResolver, private paletteService: PaletteService) {

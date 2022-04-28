@@ -15,7 +15,7 @@ import { FocusElementDirective } from '../../../directives/focus-element';
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
 
-  @ViewChild('writeComplexFieldComponent')
+  @ViewChild('writeComplexFieldComponent', {static: false})
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
   @ViewChildren(FocusElementDirective)
