@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class AppConfig extends AbstractAppConfig {
     'cache_time_out': 45000
   };
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     super();
   }
 
@@ -71,7 +71,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentsUrl() {
     return this.config.payments_url;
   }
-  
+
   public getPayBulkScanBaseUrl() {
     return this.config.pay_bulk_scan_url;
   }

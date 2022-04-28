@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { RequestOptionsArgs } from '@angular/http';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../http';
-import { Headers } from '@angular/http';
+import { HttpService, OptionsType } from '../http';
 import { RequestOptionsBuilder, SearchView } from '../request';
 import { SearchInput } from '../../components/search-filters';
 import { SearchResultView } from '../../domain/search';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class SearchService {
@@ -30,12 +29,11 @@ export class SearchService {
                                            + `/case-types/${caseTypeId}`
                                            + `/cases`;
 
-    let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
-
+    let options: OptionsType  = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     return this.httpService
       .get(url, options)
       .pipe(
-        map(response => response.json())
+        map(response => response),
       );
   }
 
@@ -43,16 +41,15 @@ export class SearchService {
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
 
-    let options: RequestOptionsArgs = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+    let options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {
       sort,
       size: this.appConfig.getPaginationPageSize()
     };
-
     return this.httpService
       .post(url, body, options)
       .pipe(
-        map(response => response.json())
+        map(response => response),
       );
   }
 
@@ -61,22 +58,22 @@ export class SearchService {
   }
 
   getSearchInputs(jurisdictionId: string, caseTypeId: string): Observable<SearchInput[]> {
-    let url = this.getSearchInputUrl(caseTypeId);
-    const headers = new Headers({
-      'Accept': SearchService.V2_MEDIATYPE_SEARCH_INPUTS,
-      'experimental': 'true',
-    });
+    const url = this.getSearchInputUrl(caseTypeId);
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
+      .set('Content-Type', 'application/json');
     this.currentJurisdiction = jurisdictionId;
     this.currentCaseType = caseTypeId;
     return this.httpService
-      .get(url, { headers })
+      .get(url, { headers, observe: 'body' })
       .pipe(
-        map(response => {
-          let jsonResponse = response.json();
-          let searchInputs = jsonResponse.searchInputs;
+        map(body => {
+          const searchInputs = body.searchInputs;
           if (this.isDataValid(jurisdictionId, caseTypeId)) {
             searchInputs.forEach(item => {
               item.field.label = item.label;
+              item.field.display_context_parameter = item.display_context_parameter;
             });
           } else {
             throw new Error('Response expired');

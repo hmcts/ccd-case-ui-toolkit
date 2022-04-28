@@ -1,10 +1,10 @@
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Headers, URLSearchParams } from '@angular/http';
-import { HttpService } from '../http/http.service';
+import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Banner } from '../../domain';
-import { map } from 'rxjs/operators';
+import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class BannersService {
@@ -14,19 +14,15 @@ export class BannersService {
   }
 
   getBanners(jurisdictionReferences: string[]): Observable<Banner[]> {
-    let url = this.appConfig.getBannersUrl();
-    let headers = new Headers({
-      'experimental': 'true',
-      'Accept': BannersService.V2_MEDIATYPE_BANNERS
-    });
-    let params: URLSearchParams = new URLSearchParams();
-    jurisdictionReferences.forEach(reference => params.append('ids', reference));
+    const url = this.appConfig.getBannersUrl();
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', BannersService.V2_MEDIATYPE_BANNERS)
+      .set('Content-Type', 'application/json');
+    let params = new HttpParams();
+    jurisdictionReferences.forEach(reference => params = params.append('ids', reference));
     return this.httpService
-      .get(url, { params, headers }).pipe(map(response => {
-        let jsonResponse = response.json();
-        let banners = jsonResponse.banners;
-        return banners;
-      }))
-      ;
+      .get(url, {params, headers, observe: 'body'})
+      .pipe(map(body => body.banners));
   }
 }

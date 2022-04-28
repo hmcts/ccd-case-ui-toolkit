@@ -53,7 +53,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
-  @ViewChild('tabGroup') public tabGroup: any;
+  @ViewChild('tabGroup', { static: false }) public tabGroup: any;
 
   constructor(
     private ngZone: NgZone,
@@ -67,7 +67,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     private caseNotifier: CaseNotifier,
     private errorNotifierService: ErrorNotifierService,
     private readonly location: Location
-  ) {}
+  ) { }
   ngOnInit() {
     this.initDialog();
     if (!this.route.snapshot.data.case) {
@@ -132,9 +132,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.DRAFT_DELETED });
             }, _ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.ERROR_DELETING_DRAFT });
             });
         }
       });
@@ -142,17 +142,21 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseViewerComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifierService.announceNavigation(
-        {action: NavigationOrigin.DRAFT_RESUMED,
+        {
+          action: NavigationOrigin.DRAFT_RESUMED,
           jid: this.caseDetails.case_type.jurisdiction.id,
           ctid: this.caseDetails.case_type.id,
           etid: trigger.id,
-          queryParams : theQueryParams});
+          queryParams: theQueryParams
+        });
     } else {
       this.navigationNotifierService.announceNavigation(
-        {action: NavigationOrigin.EVENT_TRIGGERED,
+        {
+          action: NavigationOrigin.EVENT_TRIGGERED,
           queryParams: theQueryParams,
           etid: trigger.id,
-          relativeTo: this.route});
+          relativeTo: this.route
+        });
     }
   }
 
@@ -207,14 +211,14 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngAfterViewInit() {
     const url = this.location.path(true);
     const hashValue = url.substring(url.indexOf('#') + 1);
-    if(hashValue && !isNaN(Number(hashValue))) {
+    if (hashValue && !isNaN(Number(hashValue))) {
       this.tabGroup.selectedIndex = Number(hashValue);
     }
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => new ShowCondition(tab.show_condition).matchByContextFields(this.caseFields));
   }
 

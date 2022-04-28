@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
+import { HttpHeaders } from '@angular/common/http';
 import { plainToClass } from 'class-transformer';
-import { Headers } from '@angular/http';
 import { HttpErrorService, HttpService, OrderService } from '../../../services';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -71,13 +71,13 @@ export class CasesService {
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
-    const headers = new Headers({
+    const headers = new HttpHeaders({
       'Accept': CasesService.V2_MEDIATYPE_CASE_VIEW,
       'experimental': 'true',
     });
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => response.json()),
         catchError(error => {
@@ -95,7 +95,7 @@ export class CasesService {
 
     let url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true'
     });
     if (Draft.isDraft(caseId)) {
@@ -107,7 +107,7 @@ export class CasesService {
     }
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => response.json()),
         catchError(error => {
@@ -123,13 +123,13 @@ export class CasesService {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CREATE_EVENT
     });
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
         map(response => this.processResponse(response)),
         catchError(error => {
@@ -144,13 +144,13 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/validate${pageIdString}`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE
     });
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
         map(response => response.json()),
         catchError(error => {
@@ -169,13 +169,13 @@ export class CasesService {
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CREATE_CASE
     });
 
     return this.http
-      .post(url, eventData, {headers})
+      .post(url, eventData, {headers, observe: 'body'})
       .pipe(
         map(response => this.processResponse(response)),
         catchError(error => {
@@ -190,13 +190,13 @@ export class CasesService {
       + `/cases/${caseId}`
       + `/documents`;
 
-    let headers = new Headers({
+    let headers = new HttpHeaders({
       'experimental': 'true',
       'Accept': CasesService.V2_MEDIATYPE_CASE_DOCUMENTS
     });
 
     return this.http
-      .get(url, {headers})
+      .get(url, {headers, observe: 'body'})
       .pipe(
         map(response => response.json().documentResources),
         catchError(error => {

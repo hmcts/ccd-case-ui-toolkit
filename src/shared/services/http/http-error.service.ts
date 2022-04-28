@@ -1,6 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { Response } from '@angular/http';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth';
 
@@ -24,15 +24,17 @@ export class HttpErrorService {
       this.error = null;
       return error;
   }
-
-  handle(error: Response | any, redirectIfNotAuthorised = true): Observable<never> {
+  public static convertToHttpError(error: HttpErrorResponse | any): HttpError {
+    if (error instanceof HttpError) {
+      return error;
+    }
     let httpError = new HttpError();
-    if (error instanceof Response) {
+    if (error instanceof HttpErrorResponse) {
       if (error.headers
           && error.headers.get(HttpErrorService.CONTENT_TYPE)
           && error.headers.get(HttpErrorService.CONTENT_TYPE).indexOf(HttpErrorService.JSON) !== -1) {
         try {
-          httpError = HttpError.from(error.json() || {});
+          httpError = HttpError.from(error);
         } catch (e) {
           console.error(e, e.message);
         }
@@ -48,10 +50,14 @@ export class HttpErrorService {
         httpError.status = error.status;
       }
     }
+    return httpError;
+  }
+
+  public handle(error: HttpErrorResponse | any, redirectIfNotAuthorised = true): Observable<never> {
+    const httpError: HttpError = HttpErrorService.convertToHttpError(error);
     if (redirectIfNotAuthorised && (httpError.status === 401 || httpError.status === 403)) {
       this.authService.signIn();
     }
-
     return throwError(httpError);
   }
 }
