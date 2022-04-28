@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { DraftService, NavigationOrigin } from '../../../services';
+import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
@@ -24,7 +24,8 @@ export class CaseResolver implements Resolve<CaseView> {
               private casesService: CasesService,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
-              private router: Router) {
+              private router: Router,
+              private sessionStorageService: SessionStorageService) {
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -62,9 +63,10 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
-    if (this.cachedCaseView && this.cachedCaseView.case_id && this.cachedCaseView.case_id === cid) {
-      this.caseNotifier.announceCase(this.cachedCaseView);
-      return of(this.cachedCaseView).toPromise();
+    const caseDetails: CaseView = plainToClassFromExist(new CaseView(), JSON.parse(this.sessionStorageService.getItem('caseDetails')));
+    if (caseDetails && caseDetails.case_id && caseDetails.case_id === cid) {
+      this.caseNotifier.announceCase(caseDetails);
+      return of(caseDetails).toPromise();
     } else {
       if (Draft.isDraft(cid)) {
         return this.getAndCacheDraft(cid);
@@ -73,6 +75,7 @@ export class CaseResolver implements Resolve<CaseView> {
           .getCaseViewV2(cid)
           .pipe(
             map(caseView => {
+              this.sessionStorageService.setItem('caseDetails', JSON.stringify(caseView));
               this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
               this.caseNotifier.announceCase(this.cachedCaseView);
               return this.cachedCaseView;
@@ -88,6 +91,7 @@ export class CaseResolver implements Resolve<CaseView> {
       .getDraft(cid)
       .pipe(
         map(caseView => {
+          this.sessionStorageService.setItem('caseDetails', JSON.stringify(caseView));
           this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
           this.caseNotifier.announceCase(this.cachedCaseView);
           return this.cachedCaseView;
