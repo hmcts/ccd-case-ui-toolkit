@@ -24,6 +24,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public createFlagCaption: CaseFlagText;
   public errorMessage: ErrorMessage;
   public flagsData: Flags[];
+  public selectedFlagDetail:FlagDetail;
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
@@ -56,7 +57,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.route.snapshot.data.case.case_type.jurisdiction) {
       this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
     }
-
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
       this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
@@ -88,6 +88,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         }
         return flags;
       }, []) as Flags[];
+      //this will come from previous screen , selected flag details:
+      debugger;
+      this.selectedFlagDetail = this.flagsData[1].details[0];
     }
 
     // Set the parent Case Flag FormGroup for this component's children
@@ -110,10 +113,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public proceedToNextState(): void {
+    debugger;
     if (!this.isAtFinalState()) {
       // Skip the "language interpreter" state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type doesn't
       // have a "list of values" - currently, this is present only for those flag types that require language interpreter
       // selection
+      debugger;
       if (this.fieldState === CaseFlagFieldState.FLAG_TYPE && !this.listOfValues) {
         this.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
       } else {
@@ -148,6 +153,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public onFlagCommentsOptionalEmitted(_: any): void {
     this.flagCommentsOptional = true;
   }
+
 
   /**
    * Set the parent {@link FormGroup} for this component's children, depending on the `Flags` {@link CaseField} instance

@@ -12,7 +12,8 @@ import {
   CaseFlagTableComponent,
   SearchLanguageInterpreterComponent,
   SelectFlagLocationComponent,
-  SelectFlagTypeComponent
+  SelectFlagTypeComponent,
+  UpdateFlagComponent
 } from './components';
 
 @NgModule({
@@ -35,7 +36,8 @@ import {
     SelectFlagTypeComponent,
     SearchLanguageInterpreterComponent,
     SelectFlagLocationComponent,
-    AddCommentsComponent
+    AddCommentsComponent,
+    UpdateFlagComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,

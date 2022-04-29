@@ -1,5 +1,6 @@
 export enum CaseFlagFieldState {
   FLAG_LOCATION,
+  FLAG_UPDATE,
   FLAG_TYPE,
   FLAG_LANGUAGE_INTERPRETER,
   FLAG_COMMENTS,

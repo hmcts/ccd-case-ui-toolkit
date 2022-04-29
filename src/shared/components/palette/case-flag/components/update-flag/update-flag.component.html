@@ -1,0 +1,47 @@
+<div class="form-group" [formGroup]="formGroup">
+  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
+    <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
+      <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="updateFlagControlName">
+          <!-- {{updateFlagTitle + ' "' + this.selectedFlagDetail?.name + ', '+ this.selectedFlagDetail?.subTypeValue +' "'}}<span *ngIf="optional"> (optional)</span> -->
+          {{updateFlagTitle}}
+        </label>
+      </h1>
+      <div id="add-comments-hint" class="govuk-hint">
+        {{updateFlagHint}}
+      </div>
+      <div id="flag-comments-not-entered-error-message" class="govuk-error-message"
+        *ngIf="updateFlagNotEnteredErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage}}
+      </div>
+      <div id="add-comments-char-limit-error" class="govuk-error-message"
+        *ngIf="updateFlagCharLimitErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage}}
+      </div>
+      <textarea class="govuk-textarea" [id]="updateFlagControlName"
+        [name]="updateFlagControlName" [formControlName]="updateFlagControlName" rows="5"
+        aria-describedby="add-comments-hint add-comments-char-limit-info add-comments-char-limit-error">
+         {{this.selectedFlagDetail?.flagComment}}
+      </textarea>
+      <div id="add-comments-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+        {{updateFlagCharLimitInfo}}
+      </div>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+              <p>Flag status: {{this.selectedFlagDetail?.status}}</p>
+            </div>
+            <div class="govuk-grid-column-one-half">
+              <strong class="govuk-tag govuk-tag--grey" (click)="onChangeStatus()" *ngIf="this.selectedFlagDetail?.status === 'Active'">
+                Make Inactive
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="govuk-button-group">
+    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
+  </div>
+</div>
