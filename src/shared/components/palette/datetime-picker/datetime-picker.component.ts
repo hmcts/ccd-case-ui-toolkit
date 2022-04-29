@@ -51,8 +51,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public maxError = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
-  @ViewChild('picker', {static: false}) datetimePicker: NgxMatDatetimePicker<any>;
-  @ViewChild('input', {static: false}) inputElement: ElementRef<HTMLInputElement>;
+  @ViewChild('picker') datetimePicker: NgxMatDatetimePicker<any>;
+  @ViewChild('input') inputElement: ElementRef<HTMLInputElement>;
   public dateTimeEntryFormat: string;
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 

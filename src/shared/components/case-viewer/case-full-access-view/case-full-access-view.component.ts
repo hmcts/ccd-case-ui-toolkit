@@ -53,7 +53,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public dialogConfig: MatDialogConfig;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
-  @ViewChild('tabGroup', {static: false}) public tabGroup: MatTabGroup;
+  @ViewChild('tabGroup') public tabGroup: MatTabGroup;
 
   constructor(
     private readonly ngZone: NgZone,

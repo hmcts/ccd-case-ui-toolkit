@@ -1,7 +1,9 @@
 import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
+import { Directive } from "@angular/core";
 
+@Directive()
 export abstract class PaymentField extends AbstractFieldReadComponent {
     constructor(
         protected readonly appConfig: AbstractAppConfig,
