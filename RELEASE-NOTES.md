@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.14.0-angular-upgrade-9
+**EUI-5696** Angular upgrade 9
+
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
