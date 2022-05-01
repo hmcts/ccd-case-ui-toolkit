@@ -14,7 +14,7 @@ describe('CaseHeaderComponent', () => {
 
   const MarkdownComponent: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content']
+    inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
 
   const $HEADING = By.css('h1');

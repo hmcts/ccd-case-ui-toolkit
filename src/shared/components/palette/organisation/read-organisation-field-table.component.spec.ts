@@ -13,6 +13,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { OrganisationService } from '../../../services/organisation';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { of } from 'rxjs';
+import { ConvertHrefToRouterService } from '../../case-editor/services';
 
 describe('ReadOrganisationFieldTableComponent', () => {
   let component: ReadOrganisationFieldTableComponent;
@@ -95,8 +96,11 @@ describe('ReadOrganisationFieldTableComponent', () => {
     country: 'UK',
     postCode: 'RG11EX'
   }];
+  let convertHrefToRouterService: ConvertHrefToRouterService;
 
   beforeEach(async(() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
+
     TestBed.configureTestingModule({
       imports: [
         ConditionalShowModule,
@@ -113,6 +117,7 @@ describe('ReadOrganisationFieldTableComponent', () => {
       providers: [
         PaletteService,
         { provide: OrganisationService, useValue: mockOrganisationService },
+        { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
         OrganisationConverter
       ]
     })

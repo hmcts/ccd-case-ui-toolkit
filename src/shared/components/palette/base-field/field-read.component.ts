@@ -24,7 +24,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   caseFields: CaseField[] = [];
 
   @Input()
-  markdownUseHrefAsRouterLink: boolean;
+  markdownUseHrefAsRouterLink?: boolean;
 
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
