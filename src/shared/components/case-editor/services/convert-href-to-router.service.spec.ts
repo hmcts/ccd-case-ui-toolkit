@@ -8,7 +8,10 @@ describe('ConvertHrefToRouterService', () => {
         };
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ ConvertHrefToRouterService , { provide: Router, useValue: router },],
+      providers: [
+        ConvertHrefToRouterService,
+        { provide: Router, useValue: router }
+      ],
     })
     store = TestBed.get(ConvertHrefToRouterService);
   });
