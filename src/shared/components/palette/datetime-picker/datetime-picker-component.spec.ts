@@ -1,20 +1,18 @@
-import { By } from '@angular/platform-browser';
+import { NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
-  from '@angular-material-components/datetime-picker';
-import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
-import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
-import { DatetimePickerComponent } from './datetime-picker.component';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
+import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+import { DatetimePickerComponent } from './datetime-picker.component';
 
 describe('DatetimePickerComponent', () => {
 
