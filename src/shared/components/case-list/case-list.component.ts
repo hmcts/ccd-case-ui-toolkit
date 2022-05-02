@@ -12,6 +12,18 @@ export class DateTimeFormatUtils {
   }
 }
 
+export class TableConfig {
+  // Specifies which field of an item uniquely identifies it among others of the same type
+  public idField: string;
+
+  public columnConfigs: TableColumnConfig[];
+
+  constructor() {
+    this.idField = '';
+    this.columnConfigs = [];
+  }
+}
+
 @Component({
   selector: 'ccd-case-list',
   templateUrl: './case-list.component.html',
@@ -119,17 +131,5 @@ export class TableColumnConfig {
     this.header = '';
     this.key = '';
     this.type = 'text';
-  }
-}
-
-export class TableConfig {
-  // Specifies which field of an item uniquely identifies it among others of the same type
-  public idField: string;
-
-  public columnConfigs: TableColumnConfig[];
-
-  constructor() {
-    this.idField = '';
-    this.columnConfigs = [];
   }
 }

@@ -1,20 +1,19 @@
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Moment } from 'moment/moment';
 import {
-  NGX_MAT_DATE_FORMATS,
-  NgxMatDateAdapter,
-  NgxMatDateFormats,
-  NgxMatDatetimePicker
+	NgxMatDateAdapter,
+	NgxMatDateFormats,
+	NgxMatDatetimePicker, NGX_MAT_DATE_FORMATS
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
-import { ThemePalette } from '@angular/material';
-
-import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { ThemePalette } from '@angular/material/core';
+import * as moment from 'moment/moment';
+import { Moment } from 'moment/moment';
 import { CaseField } from '../../../domain';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
-import moment = require('moment/moment');
+import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
+import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+
 
 @Component({
   selector: 'ccd-datetime-picker',

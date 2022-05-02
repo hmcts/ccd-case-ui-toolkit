@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatTabsModule } from '@angular/material';
+import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
+import { CaseBasicAccessViewComponent } from '.';
 import { AlertModule } from '../../../components/banners/alert';
 import { TabsModule } from '../../../components/tabs';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
@@ -25,7 +26,6 @@ import { ErrorsModule } from '../error/errors.module';
 import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
 import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
-import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -61,10 +61,10 @@ import { CaseResolver, EventTriggerResolver } from './services';
     AlertModule
   ],
   declarations: [
+		CaseBasicAccessViewComponent,
     CaseEventTriggerComponent,
     CasePrinterComponent,
     CaseViewerComponent,
-    CaseBasicAccessViewComponent,
     CaseFullAccessViewComponent,
     CaseViewComponent,
     PrintUrlPipe,

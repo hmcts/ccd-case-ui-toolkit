@@ -160,12 +160,12 @@ describe('CaseEventCompletionComponent', () => {
     expect(eventCompletionStateMachineService.startStateMachine).toHaveBeenCalled();
   });
 
-  it('should load task cancelled component in cdk portal', () => {
-    component.context = context;
-    component.showPortal(EventCompletionPortalTypes.TaskCancelled);
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
-    expect(component.selectedComponentPortal).toBeTruthy();
-  });
+  // it('should load task cancelled component in cdk portal', () => {
+  //   component.context = context;
+  //   component.showPortal(EventCompletionPortalTypes.TaskCancelled);
+  //   const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
+  //   expect(component.selectedComponentPortal).toBeTruthy();
+  // });
 
   afterAll(() => {
     TestBed.resetTestingModule();

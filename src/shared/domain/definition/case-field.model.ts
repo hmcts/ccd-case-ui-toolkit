@@ -7,6 +7,24 @@ import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
 
 // @dynamic
+export class FieldType {
+  id: string;
+  type: FieldTypeEnum;
+  min?: number | Date;
+  max?: number | Date;
+  regular_expression?: string;
+
+  @Type(() => FixedListItem)
+  fixed_list_items?: FixedListItem[];
+
+  @Type(() => CaseField)
+  complex_fields?: CaseField[];
+
+  @Type(() => FieldType)
+  collection_field_type?: FieldType;
+}
+
+// @dynamic
 export class CaseField implements Orderable {
   id: string;
   hidden: boolean;
@@ -162,22 +180,4 @@ export class CaseField implements Orderable {
       }
       return null;
   }
-}
-
-// @dynamic
-export class FieldType {
-  id: string;
-  type: FieldTypeEnum;
-  min?: number | Date;
-  max?: number | Date;
-  regular_expression?: string;
-
-  @Type(() => FixedListItem)
-  fixed_list_items?: FixedListItem[];
-
-  @Type(() => CaseField)
-  complex_fields?: CaseField[];
-
-  @Type(() => FieldType)
-  collection_field_type?: FieldType;
 }
