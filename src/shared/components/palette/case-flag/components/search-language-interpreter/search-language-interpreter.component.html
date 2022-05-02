@@ -7,6 +7,10 @@
         *ngIf="languageNotSelectedErrorMessage">
         <span class="govuk-visually-hidden">Error:</span> {{languageNotSelectedErrorMessage}}
       </div>
+      <div id="language-entered-in-both-fields-error-message" class="govuk-error-message"
+        *ngIf="languageEnteredInBothFieldsErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{languageEnteredInBothFieldsErrorMessage}}
+      </div>
       <input aria-label="Language search box" matInput [formControlName]="languageSearchTermControlName" [matAutocomplete]="autoSearchLanguage"
         class="govuk-input search-language__input" type="text">
       <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete"
@@ -19,7 +23,8 @@
     </div>
     <div class="govuk-checkboxes govuk-checkboxes--small govuk-checkboxes--conditional" data-module="govuk-checkboxes">
       <div class="govuk-radios__item">
-        <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="onEnterLanguageManually($event)">
+        <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox"
+          (change)="onEnterLanguageManually($event)">
         <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
           {{searchLanguageInterpreterStep.CHECKBOX_LABEL}}
         </label>
