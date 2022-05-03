@@ -1,4 +1,3 @@
-
 import { ErrorMessage } from '../../../../domain';
 import { FlagDetail } from './case-flag.model';
 

@@ -22,7 +22,7 @@ export class UpdateFlagComponent implements OnInit {
   public updateFlagHint: UpdateFlagStep;
   public updateFlagCharLimitInfo: UpdateFlagStep;
   public readonly updateFlagControlName = 'flagComments';
-  private readonly commentsMaxCharLimit = 100;
+  private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
     if ( this.selectedFlagDetail && this.selectedFlagDetail.name ) {
@@ -43,7 +43,7 @@ export class UpdateFlagComponent implements OnInit {
   }
 
   public onChangeStatus(): void {
-    this.selectedFlagDetail = {...this.selectedFlagDetail, status: this.selectedFlagDetail.status === 'Active' ? 'InActive' : 'Active'}
+    this.selectedFlagDetail = {...this.selectedFlagDetail, status: this.selectedFlagDetail.status === 'Active' ? 'Inactive' : 'Active'}
   }
 
   private validateTextEntry(): void {

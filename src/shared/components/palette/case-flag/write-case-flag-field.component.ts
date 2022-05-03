@@ -48,6 +48,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
 
+    this.createFlagCaption = CaseFlagText.CAPTION;
     // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
     if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type &&
@@ -95,7 +96,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         }, []) as boolean;
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
-      this.createFlagCaption = CaseFlagText.CAPTION;
     }
 
     // Set the parent Case Flag FormGroup for this component's children

@@ -27,6 +27,7 @@ describe('UpdateFlagComponent', () => {
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
+      '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999';
     fixture.detectChanges();
   });
@@ -66,18 +67,6 @@ describe('UpdateFlagComponent', () => {
       fieldId: component.updateFlagControlName
     });
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
-    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
-    component.ngOnInit();
-    textarea.value = textareaInput + '0';
-    textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
-    fixture.detectChanges();
-    expect(component.errorMessages[0]).toEqual({
-      title: '',
-      description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
-      fieldId: component.updateFlagControlName
-    });
-    errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
   });
 

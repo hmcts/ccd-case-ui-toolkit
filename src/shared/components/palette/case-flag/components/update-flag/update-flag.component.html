@@ -1,27 +1,27 @@
 <div class="form-group" [formGroup]="formGroup">
-  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
+  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="updateFlagControlName">
          {{updateFlagTitle}}
         </label>
       </h1>
-      <div id="add-comments-hint" class="govuk-hint">
+      <div id="update-flag-hint" class="govuk-hint">
         {{updateFlagHint}}
       </div>
-      <div id="flag-comments-not-entered-error-message" class="govuk-error-message"
+      <div id="update-flag-not-entered-error-message" class="govuk-error-message"
         *ngIf="updateFlagNotEnteredErrorMessage">
         <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage}}
       </div>
-      <div id="add-comments-char-limit-error" class="govuk-error-message"
+      <div id="update-flag-char-limit-error" class="govuk-error-message"
         *ngIf="updateFlagCharLimitErrorMessage">
         <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage}}
       </div>
       <textarea class="govuk-textarea" [id]="updateFlagControlName"
         [name]="updateFlagControlName" [formControlName]="updateFlagControlName" rows="5"
-        aria-describedby="add-comments-hint add-comments-char-limit-info add-comments-char-limit-error">
+        aria-describedby="update-flag-hint update-flag-char-limit-info update-flag-char-limit-error">
          {{this.selectedFlagDetail?.flagComment}}
       </textarea>
-      <div id="add-comments-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+      <div id="update-flag-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
         {{updateFlagCharLimitInfo}}
       </div>
       <div class="govuk-grid-row">
