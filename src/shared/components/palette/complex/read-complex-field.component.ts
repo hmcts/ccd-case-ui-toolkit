@@ -18,11 +18,6 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
     super.ngOnInit();
     if (this.caseField.display_context_parameter) {
       this.context = PaletteContext.TABLE_VIEW;
-    } else {
-      // default to default views
-      if (!this.caseField.display_context_parameter && this.context) {
-        this.context = PaletteContext.DEFAULT;
-      }
     }
     if (this.caseField.field_type) {
       this.caseField.field_type.complex_fields.map(field => {
