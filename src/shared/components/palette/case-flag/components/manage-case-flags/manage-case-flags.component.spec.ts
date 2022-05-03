@@ -5,7 +5,7 @@ import { FlagDetail } from '../../domain/case-flag.model';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
 
-fdescribe('ManageCaseFlagsComponent', () => {
+describe('ManageCaseFlagsComponent', () => {
   let component: ManageCaseFlagsComponent;
   let fixture: ComponentFixture<ManageCaseFlagsComponent>;
 
