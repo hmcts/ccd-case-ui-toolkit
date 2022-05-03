@@ -1,11 +1,20 @@
-<h2 class="govuk-heading-l">{{caseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER}}</h2>
 <div class="form-group" [formGroup]="formGroup">
-  <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage}">
+  <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage || languageEnteredInBothFieldsErrorMessage}">
+    <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="languageSearchTermControlName">
+      {{caseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER}}
+      </label>
+    </h1>
+    <div id="language-search-box-hint" class="govuk-hint">
+      {{searchLanguageInterpreterStep.TITLE_DESCRIPTION}}
+    </div>
     <div class="auto-complete-container">
-      <p>{{searchLanguageInterpreterStep.TITLE_DESCRIPTION}}</p>
       <div id="language-not-selected-error-message" class="govuk-error-message"
         *ngIf="languageNotSelectedErrorMessage">
         <span class="govuk-visually-hidden">Error:</span> {{languageNotSelectedErrorMessage}}
+      </div>
+      <div id="language-entered-in-both-fields-error-message" class="govuk-error-message"
+        *ngIf="languageEnteredInBothFieldsErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{languageEnteredInBothFieldsErrorMessage}}
       </div>
       <input aria-label="Language search box" matInput [formControlName]="languageSearchTermControlName" [matAutocomplete]="autoSearchLanguage"
         class="govuk-input search-language__input" type="text">
@@ -19,7 +28,8 @@
     </div>
     <div class="govuk-checkboxes govuk-checkboxes--small govuk-checkboxes--conditional" data-module="govuk-checkboxes">
       <div class="govuk-radios__item">
-        <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox" (change)="onEnterLanguageManually($event)">
+        <input class="govuk-checkboxes__input" id="enter-language-manually" name="enter-language-manually" type="checkbox"
+          (change)="onEnterLanguageManually($event)">
         <label class="govuk-label govuk-checkboxes__label" for="enter-language-manually">
           {{searchLanguageInterpreterStep.CHECKBOX_LABEL}}
         </label>

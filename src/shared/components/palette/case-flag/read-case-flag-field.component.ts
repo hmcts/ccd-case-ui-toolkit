@@ -4,7 +4,6 @@ import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { FlagDetail, Flags } from './domain';
-import { CaseFlagStatus } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',

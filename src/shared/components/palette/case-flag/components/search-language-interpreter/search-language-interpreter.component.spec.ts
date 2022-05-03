@@ -223,4 +223,47 @@ describe('SearchLanguageInterpreterComponent', () => {
     const manualLanguageErrorMessageElement = nativeElement.querySelector('#language-char-limit-error-message');
     expect(manualLanguageErrorMessageElement).toBeNull();
   });
+
+  it('should show an error message if both a language has been selected and a language has been entered manually', () => {
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // It's not possible to programmatically test option selection from the Angular Material autocomplete component
+    // without recreating the entire unit test from the library, so just set the language search FormControl value
+    // manually, as if the user had selected an option
+    component.formGroup.get(component.languageSearchTermControlName).setValue(languages[3]);
+    const nativeElement = fixture.debugElement.nativeElement;
+    const checkboxElement = nativeElement.querySelector('.govuk-checkboxes__input');
+    checkboxElement.click();
+    fixture.detectChanges();
+    const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
+    manualLanguageEntryField.value = fieldInput;
+    manualLanguageEntryField.dispatchEvent(new Event('input'));
+    expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toEqual(fieldInput);
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
+      errorMessages: component.errorMessages,
+      listOfValues: component.languages
+    });
+    expect(component.errorMessages.length).toBe(1);
+    const errorMessageElement = nativeElement.querySelector('#language-entered-in-both-fields-error-message');
+    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS);
+  });
+
+  it('should clear the value for the manual language entry FormControl if "Enter the language manually" is unchecked', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    const checkboxElement = nativeElement.querySelector('.govuk-checkboxes__input');
+    checkboxElement.click();
+    fixture.detectChanges();
+    const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
+    manualLanguageEntryField.value = fieldInput;
+    manualLanguageEntryField.dispatchEvent(new Event('input'));
+    expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toEqual(fieldInput);
+    // Uncheck "Enter the language manually" checkbox
+    checkboxElement.click();
+    expect(component.isCheckboxEnabled).toBe(false);
+    expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toBeNull();
+  });
 });
