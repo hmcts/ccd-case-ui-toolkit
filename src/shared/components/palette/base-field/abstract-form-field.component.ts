@@ -1,7 +1,8 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 import { CaseField } from '../../../domain/definition';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
+@Directive()
 export abstract class AbstractFormFieldComponent {
 
   @Input()

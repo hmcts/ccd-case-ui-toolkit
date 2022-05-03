@@ -12,7 +12,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   caseReferenceControl: AbstractControl;
   caseLinkGroup: FormGroup;
 
-  @ViewChild('writeComplexFieldComponent', {static: false})
+  @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
   constructor() {

@@ -53,7 +53,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   dialogConfig: MatDialogConfig;
 
   callbackErrorsSubject: Subject<any> = new Subject();
-  @ViewChild('tabGroup', { static: false }) public tabGroup: any;
+  @ViewChild('tabGroup') public tabGroup: any;
 
   constructor(
     private ngZone: NgZone,

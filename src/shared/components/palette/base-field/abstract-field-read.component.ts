@@ -1,8 +1,9 @@
-import { Input, OnInit } from '@angular/core';
+import { Input, OnInit, Directive } from '@angular/core';
 import { PaletteContext } from './palette-context.enum';
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 import { FormControl } from '@angular/forms';
 
+@Directive()
 export abstract class AbstractFieldReadComponent extends AbstractFormFieldComponent implements OnInit {
 
   @Input()
