@@ -37,7 +37,6 @@ describe('CaseResolver', () => {
       draftService = createSpyObj('draftService', ['getDraft']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-      
       caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       route = {

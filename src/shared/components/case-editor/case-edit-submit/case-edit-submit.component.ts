@@ -106,6 +106,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
    */
   public submit(): void {
     this.isSubmitting = true;
+
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
     let taskInSessionStorage: Task;
