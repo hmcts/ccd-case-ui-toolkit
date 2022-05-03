@@ -42,7 +42,6 @@ import {
     UpdateFlagComponent
   ],
   exports: [
-    ManageCaseFlagsComponent,
     ReadCaseFlagFieldComponent,
     WriteCaseFlagFieldComponent
   ]
