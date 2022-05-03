@@ -6,7 +6,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormValueService } from '../../../services/form/form-value.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { PageValidationService } from '../services/page-validation.service';

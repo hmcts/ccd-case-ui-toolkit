@@ -205,10 +205,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@angular/material@^7.0.3":
-  version "7.3.7"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-7.3.7.tgz#dcd95e6618ba6254c5880efee1aad349cf5b9140"
-  integrity sha512-Eq+7frkeNGkLOfEtmkmJgR+AgoWajOipXZWWfCSamNfpCcPof82DwvGOpAmgGni9FuN2XFQdqP5MoaffQzIvUA==
+"@angular/material@^8.2.3":
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-8.2.3.tgz#16543e4e06a3fde2651a25cfe126e88e714ae105"
+  integrity sha512-SOczkIaqes+r+9XF/UUiokidfFKBpHkOPIaFK857sFD0FBNPvPEpOr5oHKCG3feERRwAFqHS7Wo2ohVEWypb5A==
   dependencies:
     tslib "^1.7.1"
 

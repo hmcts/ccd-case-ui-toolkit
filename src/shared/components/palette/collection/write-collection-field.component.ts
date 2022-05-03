@@ -3,7 +3,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';

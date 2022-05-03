@@ -3,7 +3,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { HttpError } from '../../../domain/http/http-error.model';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import { Constants } from '../../../commons/constants'
 import { Subscription } from 'rxjs';

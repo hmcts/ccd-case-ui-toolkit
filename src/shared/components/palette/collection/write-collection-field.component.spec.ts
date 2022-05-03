@@ -7,7 +7,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { PaletteUtilsModule } from '../utils';
 import { By } from '@angular/platform-browser';
 import { FormValidatorsService } from '../../../services/form';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { BehaviorSubject, of } from 'rxjs';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';

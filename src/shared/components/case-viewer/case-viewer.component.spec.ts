@@ -21,7 +21,7 @@ import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { CaseReferencePipe } from '../../pipes/case-reference';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { CaseNotifier } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;

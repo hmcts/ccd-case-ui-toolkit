@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeleteOrCancelDialogComponent } from './delete-or-cancel-dialog.component';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import createSpyObj = jasmine.createSpyObj;
