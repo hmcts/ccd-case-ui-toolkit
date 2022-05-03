@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+
+### Version 4.13.2-manage-case-flags-display-select-case-flag-page
+**EUI-4895** Allow user to choose party and case flag
 ### Version 4.13.1-case-flags-search-for-language-interpreter-step-validation
 **EUI-4849** Add validation to language search and manual language inputs of the "Search for a language interpreter" step
 
