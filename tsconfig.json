@@ -16,7 +16,7 @@
     "skipLibCheck": true
   },
   "angularCompilerOptions": {
-    "enableIvy": false
+    "enableIvy": true
   },
   "include": [
     "src/**/*.ts"
