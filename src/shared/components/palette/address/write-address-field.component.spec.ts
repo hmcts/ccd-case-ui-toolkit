@@ -37,7 +37,7 @@ describe('WriteAddressFieldComponent', () => {
     </ccd-write-address-field>`
   })
   class TestHostComponent {
-    @ViewChild(WriteAddressFieldComponent)
+    @ViewChild(WriteAddressFieldComponent, {static: false})
     public componentUnderTest: WriteAddressFieldComponent;
 
     caseField = caseField(null);

@@ -1,7 +1,7 @@
 
 import { ActivityService } from './activity.service';
 import { AbstractAppConfig } from '../../../';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { HttpService } from '../../services/http';
 
 let httpService: any;
@@ -18,8 +18,8 @@ describe('ActivityService', () => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
     appConfig.getActivityUrl.and.returnValue('someUrl');
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    httpService.get.and.returnValue(Observable.of(response));
-    httpService.post.and.returnValue(Observable.of(response));
+    httpService.get.and.returnValue(of(response));
+    httpService.post.and.returnValue(of(response));
 
     activityService = new ActivityService(httpService, appConfig);
   });

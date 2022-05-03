@@ -16,7 +16,7 @@ import { CaseReferencePipe } from '../../pipes';
 import { createCaseHistory } from '../../fixture';
 import { CaseNotifier } from '../case-editor';
 import { CaseHistoryService } from './services';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 
 describe('CaseHistoryComponent', () => {
@@ -36,7 +36,7 @@ describe('CaseHistoryComponent', () => {
   const $CASE_DETAIL_HEADERS = 'h3';
 
   const CASE_HISTORY: CaseHistory = createCaseHistory();
-  const CASE_HISTORY_OBS: Observable<CaseHistory> = Observable.of(CASE_HISTORY);
+  const CASE_HISTORY_OBS: Observable<CaseHistory> = of(CASE_HISTORY);
   const CASE_VIEW: CaseView = {
     case_id: '1',
     case_type: {

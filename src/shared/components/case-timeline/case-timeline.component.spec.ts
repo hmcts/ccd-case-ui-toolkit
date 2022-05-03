@@ -4,7 +4,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent, CaseView, HttpError } from '../../domain';
 import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
 import { CasesService, CaseNotifier } from '../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import { AlertService } from '../../services';
@@ -69,7 +69,7 @@ describe('CaseTimelineComponent', () => {
     triggers: [],
     events: CASE_EVENTS
   };
-  const CASE_VIEW_OBS: Observable<CaseView> = Observable.of(CASE_VIEW);
+  const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
 
   let EventLogComponent;
   let CaseHistoryComponent;
@@ -99,7 +99,7 @@ describe('CaseTimelineComponent', () => {
       casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
 
       alertService = createSpyObj('alertService', ['error']);
-      alertService.error.and.returnValue(Observable.of({}));
+      alertService.error.and.returnValue(of({}));
 
       caseNotifier = new CaseNotifier();
       caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();

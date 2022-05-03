@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CaseViewComponent } from './case-view.component';
 import { CaseView, HttpError } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
@@ -33,7 +33,7 @@ describe('CaseViewComponent', () => {
     triggers: [],
     events: []
   });
-  const CASE_VIEW_OBS: Observable<CaseView> = Observable.of(CASE_VIEW);
+  const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
 
   let caseNotifier;
   let casesService;
@@ -62,7 +62,7 @@ describe('CaseViewComponent', () => {
         casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
 
         alertService = createSpyObj('alertService', ['error']);
-        alertService.error.and.returnValue(Observable.of({}));
+        alertService.error.and.returnValue(of({}));
 
         TestBed
           .configureTestingModule({
@@ -157,7 +157,7 @@ describe('CaseViewComponent', () => {
         draftService.getDraft.and.returnValue(CASE_VIEW_OBS);
 
         alertService = createSpyObj('alertService', ['error']);
-        alertService.error.and.returnValue(Observable.of({}));
+        alertService.error.and.returnValue(of({}));
 
         TestBed
           .configureTestingModule({

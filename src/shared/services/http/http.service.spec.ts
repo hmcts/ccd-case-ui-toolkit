@@ -1,5 +1,5 @@
 import { HttpService } from './http.service';
-import { Headers, Http, RequestOptionsArgs, Response, ResponseOptions } from '@angular/http';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorService } from './http-error.service';
@@ -10,13 +10,13 @@ describe('HttpService', () => {
   const URL = 'http://ccd.reform/';
   const HEADER_1 = 'x-header1';
   const HEADER_1_VALUE = 'x-header1-value';
-  const HEADERS = new Headers({});
+  const HEADERS = new HttpHeaders({});
   const CONTENT_TYPE_HEADER = 'Content-Type';
   const CONTENT_TYPE_HEADER_VALUE = 'X-rated';
   const ACCEPT_HEADER = 'Accept';
   const ACCEPT_HEADER_VALUE = 'text/ccd';
-  const HEADERS_WITH_CONTENT_TYPE_DEFINED = new Headers({});
-  const HEADERS_WITH_CONTENT_TYPE_NULL = new Headers({});
+  const HEADERS_WITH_CONTENT_TYPE_DEFINED = new HttpHeaders({});
+  const HEADERS_WITH_CONTENT_TYPE_NULL = new HttpHeaders({});
   const BODY = JSON.stringify({});
   const error = {
     message: ''
@@ -26,7 +26,7 @@ describe('HttpService', () => {
   HEADERS_WITH_CONTENT_TYPE_DEFINED.append(ACCEPT_HEADER, ACCEPT_HEADER_VALUE);
   HEADERS_WITH_CONTENT_TYPE_NULL.append(CONTENT_TYPE_HEADER, null);
   HEADERS_WITH_CONTENT_TYPE_NULL.append(ACCEPT_HEADER, null);
-  const EXPECTED_RESPONSE = of(new Response(new ResponseOptions()));
+  const EXPECTED_RESPONSE = of(new Response());
 
   let httpService: HttpService;
 
@@ -38,7 +38,7 @@ describe('HttpService', () => {
     catchObservable = createSpyObj<Observable<Response>>('observable', ['pipe']);
     catchObservable.pipe.and.returnValue(EXPECTED_RESPONSE);
 
-    httpMock = createSpyObj<Http>('http', ['get', 'post', 'put', 'delete']);
+    httpMock = createSpyObj<HttpClient>('http', ['get', 'post', 'put', 'delete']);
     httpMock.get.and.returnValue(catchObservable);
     httpMock.post.and.returnValue(catchObservable);
     httpMock.put.and.returnValue(catchObservable);
@@ -60,7 +60,7 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -71,7 +71,7 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -82,7 +82,7 @@ describe('HttpService', () => {
     });
 
     it('should not add `content-type` and `accept` headers when defined', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS_WITH_CONTENT_TYPE_DEFINED,
         withCredentials: true,
       };
@@ -95,7 +95,7 @@ describe('HttpService', () => {
     });
 
     it('should not add `content-type` and `accept` headers when defined with null values', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS_WITH_CONTENT_TYPE_NULL,
         withCredentials: true,
       };
@@ -108,7 +108,7 @@ describe('HttpService', () => {
     });
 
     it('should add `content-type` and `accept` headers when not defined', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -137,7 +137,7 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -148,7 +148,7 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -165,7 +165,7 @@ describe('HttpService', () => {
     });
 
     it('should add a `content-type` and `accept` headers', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -188,7 +188,7 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -199,7 +199,7 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -216,7 +216,7 @@ describe('HttpService', () => {
     });
 
     it('should add a `content-type` and `accept` headers', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -239,7 +239,7 @@ describe('HttpService', () => {
     });
 
     it('should forward headers to Angular Http service', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -250,7 +250,7 @@ describe('HttpService', () => {
     });
 
     it('should sanitise headers when provided', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };
@@ -267,7 +267,7 @@ describe('HttpService', () => {
     });
 
     it('should add a `content-type` and `accept` headers', () => {
-      let options: RequestOptionsArgs = {
+      let options = {
         headers: HEADERS,
         withCredentials: true,
       };

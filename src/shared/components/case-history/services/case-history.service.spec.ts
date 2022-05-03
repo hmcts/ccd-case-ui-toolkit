@@ -1,5 +1,4 @@
-import { Headers, Response, ResponseOptions } from '@angular/http';
-import { Observable, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CaseHistoryService } from './case-history.service';
 import { HttpError } from '../../../domain';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -38,9 +37,9 @@ describe('CaseHistoryService', () => {
     const CASE_HISTORY: CaseHistory = createCaseHistory();
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(new Response(new ResponseOptions({
+      httpService.get.and.returnValue(of({
         body: JSON.stringify(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']}))
-      }))));
+      }));
     });
 
     it('should use HttpService::get with correct url', () => {

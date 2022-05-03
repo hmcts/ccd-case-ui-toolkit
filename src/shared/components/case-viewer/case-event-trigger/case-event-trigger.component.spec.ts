@@ -3,7 +3,7 @@ import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import { DebugElement } from '@angular/core';
 import { MockComponent } from 'ng2-mock-component';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
@@ -108,7 +108,7 @@ describe('CaseEventTriggerComponent', () => {
     new UrlSegment('b', {})
   ];
 
-  let URL_SEGMENTS_OBS: Observable<UrlSegment[]> = Observable.of(URL_SEGMENTS);
+  let URL_SEGMENTS_OBS: Observable<UrlSegment[]> = of(URL_SEGMENTS);
 
   let mockRoute: any = {
     snapshot: {
@@ -132,14 +132,14 @@ describe('CaseEventTriggerComponent', () => {
   beforeEach(async(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
-    casesService.createEvent.and.returnValue(Observable.of());
-    casesService.validateCase.and.returnValue(Observable.of());
+    casesService.createEvent.and.returnValue(of());
+    casesService.validateCase.and.returnValue(of());
 
     casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
 
     alertService = createSpyObj<AlertService>('alertService', ['success', 'warning']);
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
-    activityPollingService.postEditActivity.and.returnValue(Observable.of());
+    activityPollingService.postEditActivity.and.returnValue(of());
     router = createSpyObj('router', ['navigate']);
     router.navigate.and.returnValue({then: f => f()});
 
@@ -193,7 +193,7 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should navigate to case view upon successful event creation', () => {
-    casesService.createEvent.and.returnValue(Observable.of({}));
+    casesService.createEvent.and.returnValue(of({}));
 
     component.submitted({caseId: 123});
 
@@ -201,7 +201,7 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should alert success message after navigation upon successful event creation', () => {
-    casesService.createEvent.and.returnValue(Observable.of({}));
+    casesService.createEvent.and.returnValue(of({}));
 
     component.submitted({caseId: 123});
 
@@ -209,7 +209,7 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should alert success message after navigation upon successful event creation and call back', () => {
-    casesService.createEvent.and.returnValue(Observable.of({}));
+    casesService.createEvent.and.returnValue(of({}));
 
     component.submitted({caseId: 123, status: 'happy'});
 
@@ -217,7 +217,7 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should alert warning message after navigation upon successful event creation but incomplete call back', () => {
-    casesService.createEvent.and.returnValue(Observable.of({}));
+    casesService.createEvent.and.returnValue(of({}));
 
     component.submitted({caseId: 123, status: 'INCOMPLETE_CALLBACK'});
 

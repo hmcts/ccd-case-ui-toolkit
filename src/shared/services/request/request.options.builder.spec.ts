@@ -1,9 +1,8 @@
-import { URLSearchParams, RequestOptionsArgs } from '@angular/http';
 import { RequestOptionsBuilder } from './request.options.builder';
 
 describe('RequestOptionsBuilder', () => {
 
-  let params: URLSearchParams;
+  let params: any;
   let requestOptionsBuilder: RequestOptionsBuilder;
 
   describe('buildOptions()', () => {
@@ -23,7 +22,7 @@ describe('RequestOptionsBuilder', () => {
     it('should not set if no params', () => {
       let result = requestOptionsBuilder.buildOptions({}, {});
 
-      let expected: RequestOptionsArgs = { params };
+      let expected = { params };
       expect(result).toEqual(expected);
     });
 
@@ -31,7 +30,7 @@ describe('RequestOptionsBuilder', () => {
       let result = requestOptionsBuilder.buildOptions({}, {}, 'WORKBASKET');
 
       params.set('view', 'WORKBASKET');
-      let expected: RequestOptionsArgs = { params };
+      let expected = { params };
       expect(result).toEqual(expected);
     });
 
@@ -40,7 +39,7 @@ describe('RequestOptionsBuilder', () => {
       let result = requestOptionsBuilder.buildOptions(metaCriteria, {});
 
       params.set('caseState', 'testState');
-      let expected: RequestOptionsArgs = { params };
+      let expected = { params };
       expect(result).toEqual(expected);
     });
 
@@ -51,7 +50,7 @@ describe('RequestOptionsBuilder', () => {
 
       params.set('case.firstName', 'testFirstName');
       params.set('case.lastName', 'testLastName');
-      let expected: RequestOptionsArgs = { params };
+      let expected = { params };
       expect(result).toEqual(expected);
     });
 
@@ -65,7 +64,7 @@ describe('RequestOptionsBuilder', () => {
       params.set('caseState', 'testState');
       params.set('case.firstName', 'testFirstName');
       params.set('case.lastName', 'testLastName');
-      let expected: RequestOptionsArgs = { params };
+      let expected = { params };
       expect(result).toEqual(expected);
     });
   });

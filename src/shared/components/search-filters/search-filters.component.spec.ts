@@ -3,14 +3,14 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { SearchFiltersComponent } from './search-filters.component';
 import { By } from '@angular/platform-browser';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
+import { Observable, of, throwError } from 'rxjs';
+
 import createSpyObj = jasmine.createSpyObj;
 import { createSearchInputs } from './domain/search-input.test.fixture';
 import { JurisdictionService, SearchService, OrderService, WindowService } from '../../services';
 import { Jurisdiction, CaseType } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
-import { throwError } from 'rxjs';
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
@@ -440,7 +440,7 @@ describe('SearchFiltersComponent', () => {
   it('should update search input when case type is reset', async(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
-    mockSearchService.getSearchInputs.and.returnValue(Observable.of([]));
+    mockSearchService.getSearchInputs.and.returnValue(of([]));
     windowService.getLocalStorage.and.returnValue('{}');
     component.onCaseTypeIdChange();
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[2].id);

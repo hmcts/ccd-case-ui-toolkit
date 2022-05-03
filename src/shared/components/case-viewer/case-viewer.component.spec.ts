@@ -4,7 +4,7 @@ import { CaseViewerComponent } from './case-viewer.component';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { attr, text } from '../../test/helpers';
 import { Subject } from 'rxjs';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
@@ -469,14 +469,14 @@ xdescribe('CaseViewerComponent', () => {
     spyOn(orderService, 'sort').and.callThrough();
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(Observable.of({}));
+    draftService.deleteDraft.and.returnValue(of({}));
 
     caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -486,7 +486,7 @@ xdescribe('CaseViewerComponent', () => {
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(Observable.of());
+    activityService.postViewActivity.and.returnValue(of());
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
@@ -909,14 +909,14 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
     spyOn(orderService, 'sort').and.callThrough();
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(Observable.of({}));
+    draftService.deleteDraft.and.returnValue(of({}));
 
     caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -927,7 +927,7 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(Observable.of());
+    activityService.postViewActivity.and.returnValue(of());
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
@@ -994,14 +994,14 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
     spyOn(orderService, 'sort').and.callThrough();
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(Observable.of({}));
+    draftService.deleteDraft.and.returnValue(of({}));
 
     caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
      navigationNotifierService = new NavigationNotifierService();
      spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -1012,7 +1012,7 @@ xdescribe('CaseViewerComponent - no tabs available', () => {
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
     activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(Observable.of());
+    activityService.postViewActivity.and.returnValue(of());
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 

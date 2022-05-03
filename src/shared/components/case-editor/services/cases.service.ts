@@ -79,7 +79,6 @@ export class CasesService {
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
-        map(response => response.json()),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);

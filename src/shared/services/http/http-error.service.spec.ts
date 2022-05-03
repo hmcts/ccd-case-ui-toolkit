@@ -1,6 +1,6 @@
 import { HttpErrorService } from './http-error.service';
 import { HttpError } from '../../domain/http/http-error.model';
-import { Headers, Response, ResponseOptions } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 
 describe('HttpErrorService', () => {
@@ -29,43 +29,43 @@ describe('HttpErrorService', () => {
     'message': 'The server understood the request but refuses to authorize it....',
     'path': CURRENT_URL
   };
-  const VALID_ERROR_RESPONSE = new Response(new ResponseOptions({
+  const VALID_ERROR_RESPONSE = {
     headers: new Headers({
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(VALID_ERROR_BODY),
     status: 422
-  }));
-  const VALID_ERROR_RESPONSE_WITH_CHARSET = new Response(new ResponseOptions({
+  };
+  const VALID_ERROR_RESPONSE_WITH_CHARSET = {
     headers: new Headers({
       'Content-Type': 'application/json;charset=UTF-8',
     }),
     body: JSON.stringify(VALID_ERROR_BODY),
     status: 422
-  }));
+  };
 
-  const NOT_VALID_ERROR_RESPONSE = new Response(new ResponseOptions({
+  const NOT_VALID_ERROR_RESPONSE = {
     headers: new Headers({
       'Content-Type': 'application/json',
     }),
     body: '{notvalidjson}'
-  }));
+  };
 
-  const HTTP_401_RESPONSE = new Response(new ResponseOptions({
+  const HTTP_401_RESPONSE = {
     headers: new Headers({
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(HTTP_401_ERROR_BODY),
     status: 401
-  }));
+  };
 
-  const HTTP_403_RESPONSE = new Response(new ResponseOptions({
+  const HTTP_403_RESPONSE = {
     headers: new Headers({
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(HTTP_403_ERROR_BODY),
     status: 403
-  }));
+  };
 
   let authService: any;
   let errorService: HttpErrorService;

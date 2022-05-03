@@ -1,6 +1,6 @@
 import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CaseResolver } from './case.resolver';
 import { CaseEventTrigger, HttpError, CaseView } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
@@ -14,7 +14,7 @@ describe('EventTriggerResolver', () => {
   const CASE_ID = '42';
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', CASE_ID, true, []);
-  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = Observable.of(EVENT_TRIGGER);
+  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
     status: 422,

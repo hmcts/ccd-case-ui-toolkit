@@ -111,9 +111,9 @@ export class HttpService {
 
 export interface OptionsType {
   headers?: HttpHeaders;
-  observe: 'body';
+  observe?: any;
   params?: HttpParams | { [param: string]: string | string[]; };
   reportProgress?: boolean;
-  responseType?: 'json';
+  responseType?: "json";
   withCredentials?: boolean;
 }
