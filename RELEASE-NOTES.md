@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error-2
+**EUI-5657** Fix error styling and HTML structure for page title and hint text
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error
+**EUI-5657** Additional validation for "Search for a language interpreter" step, covering dual language entry error scenario
+
 ### Version 4.13.1-case-flags-search-for-language-interpreter-step-validation
 **EUI-4849** Add validation to language search and manual language inputs of the "Search for a language interpreter" step
 
