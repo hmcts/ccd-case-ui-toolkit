@@ -37,6 +37,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public languageNotSelectedErrorMessage = '';
   public languageNotEnteredErrorMessage = '';
   public languageCharLimitErrorMessage = '';
+  public languageEnteredInBothFieldsErrorMessage = '';
   public noResults = false;
   private readonly languageMaxCharLimit = 80;
 
@@ -79,6 +80,12 @@ export class SearchLanguageInterpreterComponent implements OnInit {
 
   public onEnterLanguageManually(event: Event): void {
     this.isCheckboxEnabled = (event.target as HTMLInputElement).checked;
+
+    // If the checkbox is disabled, i.e. unchecked, then clear the manual language entry FormControl of any value to
+    // prevent it being retained even when the field itself is hidden
+    if (!this.isCheckboxEnabled) {
+      this.formGroup.get(this.manualLanguageEntryControlName).setValue(null);
+    }
   }
 
   public displayLanguage(language?: Language): string | undefined {
@@ -89,6 +96,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     this.languageNotSelectedErrorMessage = null;
     this.languageNotEnteredErrorMessage = null;
     this.languageCharLimitErrorMessage = null;
+    this.languageEnteredInBothFieldsErrorMessage = null;
     this.errorMessages = [];
     // Checkbox not enabled means the user has opted to search for and select the language
     if (!this.isCheckboxEnabled && !this.formGroup.get(this.languageSearchTermControlName).value) {
@@ -114,6 +122,14 @@ export class SearchLanguageInterpreterComponent implements OnInit {
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED,
           fieldId: this.manualLanguageEntryControlName
+        });
+      } else if (this.formGroup.get(this.languageSearchTermControlName).value) {
+        // Language entry is permitted in only one field at a time
+        this.languageEnteredInBothFieldsErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS;
+        this.errorMessages.push({
+          title: '',
+          description: SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS,
+          fieldId: this.languageSearchTermControlName
         });
       }
     }
