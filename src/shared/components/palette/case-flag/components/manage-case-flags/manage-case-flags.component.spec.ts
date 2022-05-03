@@ -1,10 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FlagDetail } from '../../domain/case-flag.model';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
 
-describe('ManageCaseFlagsComponent', () => {
+fdescribe('ManageCaseFlagsComponent', () => {
   let component: ManageCaseFlagsComponent;
   let fixture: ComponentFixture<ManageCaseFlagsComponent>;
 
@@ -12,7 +13,7 @@ describe('ManageCaseFlagsComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ManageCaseFlagsComponent ]
+      declarations: [ ManageCaseFlagsComponent ]
     })
     .compileComponents();
   }));
@@ -46,5 +47,30 @@ describe('ManageCaseFlagsComponent', () => {
     const nextButtonElement = nativeElement.querySelector('.button');
     // The "Next" button should not be present if the error condition has been set
     expect(nextButtonElement).toBeNull();
+  });
+
+  it('should return and expression with flag, association and the bracket comment', () => {
+    const flagDisplay = { partyName: 'Ann Peterson', association: 'Language interpreter', comment: 'kiswahili (claimant does not speak English)', flagCode: '333' };
+    const displayedExpression = component.processLabel(flagDisplay);
+    expect(displayedExpression).toEqual(`${flagDisplay.partyName} - ${flagDisplay.association}, ${flagDisplay.comment}`);
+  });
+
+  it('should create display model', () => {
+    const flagDetail = {
+      name: 'Interpreter',
+      dateTimeCreated: new Date(),
+      path: ['path'],
+      flagComment: 'comment',
+      hearingRelevant: true,
+      flagCode: '123',
+      status: 'active'
+    } as FlagDetail;
+
+    const partyName = 'Wayne Sleep';
+    const displayResult = component.flagDetailDisplay(flagDetail, partyName);
+    expect(displayResult.partyName).toEqual(partyName);
+    expect(displayResult.association).toEqual(flagDetail.name);
+    expect(displayResult.comment).toEqual(flagDetail.flagComment);
+    expect(displayResult.flagCode).toEqual(flagDetail.flagCode);
   });
 });

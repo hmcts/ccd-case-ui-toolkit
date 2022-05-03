@@ -1,9 +1,9 @@
 <div class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-    <fieldset class="govuk-fieldset" aria-describedby="flag-location-heading">
+    <fieldset class="govuk-fieldset" aria-describedby="manage-case-flag-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h1 id="flag-location-heading" class="govuk-fieldset__heading">
-          {{flagLocationTitle}}
+        <h1 id="manage-case-flag" class="govuk-fieldset__heading">
+          {{manageCaseFlagTitle}}
         </h1>
       </legend>
       <div id="manage-case-flag-not-selected-error-message" class="govuk-error-message"
@@ -12,9 +12,9 @@
       </div>
       <div *ngIf="filteredFlagsData.length" class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagDetailInstance of filteredFlagsData; index as i">
-          <input class="govuk-radios__input" id="flag-location-{{i}}" [name]="selectedControlName"
+          <input class="govuk-radios__input" id="flag-selection-{{i}}" [name]="selectedControlName"
             type="radio" [value]="flagDetailInstance.flagCode" [formControlName]="selectedControlName"/>
-          <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">{{processLabel(flagDetailInstance)}}</label>
+          <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}">{{processLabel(flagDetailInstance)}}</label>
         </div>
       </div>
     </fieldset>

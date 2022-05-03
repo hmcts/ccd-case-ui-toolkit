@@ -15,15 +15,15 @@ export class ManageCaseFlagsComponent implements OnInit {
   @Input() public flagsData: Flags[];
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
-  public flagLocationTitle: CaseFlagWizardStepTitle;
+  public manageCaseFlagTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
   public manageCaseFlagSelectedErrorMessage: SelectManageCaseFlagErrorMessage = null;
-  public filteredFlagsData: { partyName: string, association: string, comment: string, flagCode: string} [] = [];
+  public filteredFlagsData: { partyName: string, association: string, comment: string, flagCode: string } [] = [];
   public caseFlagsConfigError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
-    this.flagLocationTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
+    this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
 
     // Filter out any flags instances that don't have a party name
     if (this.flagsData) {
@@ -34,7 +34,6 @@ export class ManageCaseFlagsComponent implements OnInit {
         }
         return flagsData;
       }, []) as { partyName: string, association: string, comment: string, flagCode: string }[];
-      console.log('flag-data', this.filteredFlagsData);
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after filtering
@@ -53,7 +52,7 @@ export class ManageCaseFlagsComponent implements OnInit {
     return {
       partyName,
       association: flagDetail.name ? flagDetail.name : '',
-      comment: flagDetail.flagComment ? '(' + flagDetail.flagComment + ')' : '',
+      comment: flagDetail.flagComment ? flagDetail.flagComment : '',
       flagCode: flagDetail.flagCode ?  flagDetail.flagCode : '',
     };
   }
@@ -62,7 +61,7 @@ export class ManageCaseFlagsComponent implements OnInit {
     const name = flagDetail.partyName ? flagDetail.partyName : '';
     const association = flagDetail.association ? flagDetail.association : '';
     const comment = flagDetail.comment ? flagDetail.comment : '';
-    return `${name} ${association} ${comment}`;
+    return `${name} - ${association}, ${comment}`;
   }
 
   public onNext(): void {
