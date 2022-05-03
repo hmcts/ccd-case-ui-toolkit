@@ -54,23 +54,6 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
   });
 
-  it('should not show an error message on clicking "Next" if comments are not mandatory and none have been entered', () => {
-    spyOn(component, 'onNext').and.callThrough();
-    spyOn(component.caseFlagStateEmitter, 'emit');
-    component.optional = true;
-    component.ngOnInit();
-    nextButton.click();
-    fixture.detectChanges();
-    expect(component.onNext).toHaveBeenCalled();
-    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
-      errorMessages: component.errorMessages
-    });
-    expect(component.errorMessages.length).toBe(0);
-    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
-    expect(errorMessageElement).toBeNull();
-  });
-
   it('should show an error message on clicking "Next" if comments exceed a 200-character limit', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = textareaInput + '0';
@@ -84,8 +67,6 @@ describe('UpdateFlagComponent', () => {
     });
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
-    // Change flag comments to optional
-    component.optional = true;
     component.ngOnInit();
     textarea.value = textareaInput + '0';
     textarea.dispatchEvent(new Event('input'));
@@ -100,7 +81,7 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
   });
 
-  it('should not show an error message on clicking "Next" if comments equal a 200-character limit, regardless of optionality', () => {
+  it('should not show an error message on clicking "Next" if comments equal a 200-character limit', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
@@ -109,8 +90,6 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages.length).toBe(0);
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
-    // Change flag comments to optional
-    component.optional = true;
     component.ngOnInit();
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));

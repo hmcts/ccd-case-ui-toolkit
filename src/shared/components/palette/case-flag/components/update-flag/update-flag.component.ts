@@ -11,7 +11,6 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, Up
 export class UpdateFlagComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
-  @Input() public optional = false;
   @Input() public selectedFlagDetail: FlagDetail;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -51,7 +50,7 @@ export class UpdateFlagComponent implements OnInit {
     this.updateFlagNotEnteredErrorMessage = null;
     this.updateFlagCharLimitErrorMessage = null;
     this.errorMessages = [];
-    if (!this.optional && !this.formGroup.get(this.updateFlagControlName).value) {
+    if (!this.formGroup.get(this.updateFlagControlName).value) {
       this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
