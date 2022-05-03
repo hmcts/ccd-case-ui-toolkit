@@ -28,6 +28,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public listOfValues: {key: string, value: string}[] = null;
+  public selectedFlagDetail: FlagDetail;
+  public isDisplayContextParameterUpdate: boolean;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -45,10 +47,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         return null;
       }
     }), true) as FormGroup;
-    // Set starting field state
-    this.fieldState = CaseFlagFieldState.FLAG_LOCATION;
-
-    this.createFlagCaption = CaseFlagText.CAPTION;
 
     // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
@@ -60,34 +58,45 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
       this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-      .reduce((flags, caseField) => {
-        if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
-          flags.push(
-            {
-              partyName: caseField.value.partyName,
-              roleOnCase: caseField.value.roleOnCase,
-              details: caseField.value.details
-                ? ((caseField.value.details) as any[]).map(detail => {
-                  return Object.assign({}, ...Object.keys(detail.value).map(k => {
-                    switch (k) {
-                      // These two fields are date-time fields
-                      case 'dateTimeModified':
-                      case 'dateTimeCreated':
-                        return {[k]: new Date(detail.value[k])};
-                      // This field is a "yes/no" field
-                      case 'hearingRelevant':
-                        return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
-                      default:
-                        return {[k]: detail.value[k]};
-                    }
-                  }))
-                }) as FlagDetail[]
-                : null
-            }
-          );
-        }
-        return flags;
-      }, []) as Flags[];
+        .reduce((flags, caseField) => {
+          if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
+            flags.push(
+              {
+                partyName: caseField.value.partyName,
+                roleOnCase: caseField.value.roleOnCase,
+                details: caseField.value.details
+                  ? ((caseField.value.details) as any[]).map(detail => {
+                    return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                      switch (k) {
+                        // These two fields are date-time fields
+                        case 'dateTimeModified':
+                        case 'dateTimeCreated':
+                          return {[k]: new Date(detail.value[k])};
+                        // This field is a "yes/no" field
+                        case 'hearingRelevant':
+                          return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
+                        default:
+                          return {[k]: detail.value[k]};
+                      }
+                    }));
+                  }) as FlagDetail[]
+                  : null
+              }
+            );
+          }
+          return flags;
+        }, []) as Flags[];
+
+      this.isDisplayContextParameterUpdate = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
+        .reduce((flags, caseField) => {
+          if (FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.display_context_parameter === '#ARGUMENT(UPDATE)') {
+            return true;
+          }
+          return flags;
+        }, []) as boolean;
+      // Set starting field state
+      this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
+      this.createFlagCaption = CaseFlagText.CAPTION;
     }
 
     // Set the parent Case Flag FormGroup for this component's children
@@ -101,6 +110,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
     this.listOfValues = caseFlagState.listOfValues;
+    this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
     // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
     // means the user needs to select from the next set of flag types before they can move on
     if (this.errorMessages.length === 0 && !caseFlagState.isParentFlagType) {

@@ -10,6 +10,7 @@ import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.compone
 import {
   AddCommentsComponent,
   CaseFlagTableComponent,
+  ManageCaseFlagsComponent,
   SearchLanguageInterpreterComponent,
   SelectFlagLocationComponent,
   SelectFlagTypeComponent
@@ -35,9 +36,11 @@ import {
     SelectFlagTypeComponent,
     SearchLanguageInterpreterComponent,
     SelectFlagLocationComponent,
+    ManageCaseFlagsComponent,
     AddCommentsComponent
   ],
   exports: [
+    ManageCaseFlagsComponent,
     ReadCaseFlagFieldComponent,
     WriteCaseFlagFieldComponent
   ]
