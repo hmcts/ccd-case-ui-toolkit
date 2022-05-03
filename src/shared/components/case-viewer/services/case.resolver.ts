@@ -1,10 +1,10 @@
 import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
+import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
@@ -24,8 +24,7 @@ export class CaseResolver implements Resolve<CaseView> {
               private casesService: CasesService,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
-              private router: Router,
-              private sessionStorageService: SessionStorageService) {
+              private router: Router) {
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -63,26 +62,19 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
-    const caseDetails: CaseView = plainToClassFromExist(new CaseView(), JSON.parse(this.sessionStorageService.getItem('caseDetails')));
-    if (caseDetails && caseDetails.case_id && caseDetails.case_id === cid) {
-      this.caseNotifier.announceCase(caseDetails);
-      return of(caseDetails).toPromise();
+    if (Draft.isDraft(cid)) {
+      return this.getAndCacheDraft(cid);
     } else {
-      if (Draft.isDraft(cid)) {
-        return this.getAndCacheDraft(cid);
-      } else {
-        return this.casesService
-          .getCaseViewV2(cid)
-          .pipe(
-            map(caseView => {
-              this.sessionStorageService.setItem('caseDetails', JSON.stringify(caseView));
-              this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-              this.caseNotifier.announceCase(this.cachedCaseView);
-              return this.cachedCaseView;
-            }),
-            catchError(error => this.checkAuthorizationError(error))
-          ).toPromise();
-      }
+      return this.casesService
+        .getCaseViewV2(cid)
+        .pipe(
+          map(caseView => {
+            this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
+            this.caseNotifier.announceCase(this.cachedCaseView);
+            return this.cachedCaseView;
+          }),
+          catchError(error => this.checkAuthorizationError(error))
+        ).toPromise();
     }
   }
 
@@ -91,7 +83,6 @@ export class CaseResolver implements Resolve<CaseView> {
       .getDraft(cid)
       .pipe(
         map(caseView => {
-          this.sessionStorageService.setItem('caseDetails', JSON.stringify(caseView));
           this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
           this.caseNotifier.announceCase(this.cachedCaseView);
           return this.cachedCaseView;

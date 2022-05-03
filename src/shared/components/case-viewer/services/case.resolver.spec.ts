@@ -2,7 +2,7 @@ import { CaseResolver } from './case.resolver';
 import { NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CaseView } from '../../../domain';
-import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin, SessionStorageService } from '../../../services';
+import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseResolver', () => {
@@ -24,7 +24,6 @@ describe('CaseResolver', () => {
     let caseNotifier: any;
     let navigationNotifierService: NavigationNotifierService;
     let route: any;
-    let sessionStorageService: any;
 
     let router: any;
 
@@ -38,9 +37,8 @@ describe('CaseResolver', () => {
       draftService = createSpyObj('draftService', ['getDraft']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
-      sessionStorageService.getItem.and.returnValue(`{"case_id": "CACHED_CASE_ID_1"}`);
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, sessionStorageService);
+      
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       route = {
         firstChild: {
@@ -63,7 +61,6 @@ describe('CaseResolver', () => {
 
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
-      expect(sessionStorageService.setItem).toHaveBeenCalled();
       // allows to access private cachedCaseView field
       expect(caseResolver['cachedCaseView']).toEqual(CASE);
     });
@@ -86,29 +83,7 @@ describe('CaseResolver', () => {
           expect(caseData).toBe(CASE_CACHED);
         });
       expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
-      expect(sessionStorageService.setItem).not.toHaveBeenCalled();
       expect(caseResolver['cachedCaseView']).toBe(CASE_CACHED);
-    });
-
-    it('should resolve case and stored in session, when session doesnt content caseDetails', () => {
-      sessionStorageService.getItem.and.returnValue(null);
-      casesService.getCaseViewV2.and.returnValue(CASE_OBS);
-      route = {
-        firstChild: {
-          url: [],
-          fragment: 'someFragment'
-        },
-        paramMap: createSpyObj('paramMap', ['get'])
-      };
-      route.paramMap.get.and.returnValue(CASE_ID);
-
-      caseResolver
-        .resolve(route)
-        .then(caseData => {
-          expect(caseData).toEqual(CASE);
-        });
-      expect(casesService.getCaseViewV2).toHaveBeenCalled();
-      expect(sessionStorageService.setItem).toHaveBeenCalled();
     });
 
     it('should return retrieve case view when the route is a case view tab but empty cache', () => {
@@ -130,7 +105,6 @@ describe('CaseResolver', () => {
         });
 
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
-      expect(sessionStorageService.setItem).toHaveBeenCalled();
       // allows to access private cachedCaseView field
       expect(caseResolver['cachedCaseView']).toEqual(CASE);
     });
@@ -202,7 +176,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -226,7 +200,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -271,7 +245,6 @@ describe('CaseResolver', () => {
     let alertService: AlertService;
     let navigationNotifierService: NavigationNotifierService;
     let route: any;
-    let sessionStorageService: any;
 
     let router: any;
 
@@ -286,9 +259,7 @@ describe('CaseResolver', () => {
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
-      sessionStorageService.getItem.and.returnValue(`{"case_id": "DRAFT_CASE_CACHED_ID_1"}`)
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
 
       route = {
         firstChild: {
