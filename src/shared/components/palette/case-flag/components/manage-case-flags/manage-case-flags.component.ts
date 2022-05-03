@@ -48,12 +48,13 @@ export class ManageCaseFlagsComponent implements OnInit {
     }
   }
 
-  public flagDetailDisplay(flagDetail: FlagDetail, partyName): { partyName: string, association: string, comment: string, flagCode: string } {
+  public flagDetailDisplay(flagDetail: FlagDetail, partyName):
+  { partyName: string, association: string, comment: string, flagCode: string } {
     return {
       partyName,
       association: flagDetail.name ? flagDetail.name : '',
-      comment: flagDetail.flagComment ? flagDetail.flagComment : '',
-      flagCode: flagDetail.flagCode ? flagDetail.flagCode : '',
+      comment: flagDetail.flagComment ? '(' + flagDetail.flagComment + ')' : '',
+      flagCode: flagDetail.flagCode ?  flagDetail.flagCode : '',
     };
   }
 

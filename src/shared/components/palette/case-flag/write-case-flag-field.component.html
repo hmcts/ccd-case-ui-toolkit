@@ -46,5 +46,9 @@
       <ccd-manage-case-flags [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-manage-case-flags>
     </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE">
+      <ccd-update-flag [formGroup]="caseFlagParentFormGroup" [selectedFlagDetail]="selectedFlagDetail" [optional]="flagCommentsOptional"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
+    </ng-container>
   </div>
 </div>

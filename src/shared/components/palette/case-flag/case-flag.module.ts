@@ -38,7 +38,7 @@ import {
     SearchLanguageInterpreterComponent,
     SelectFlagLocationComponent,
     ManageCaseFlagsComponent,
-    AddCommentsComponent
+    AddCommentsComponent,
     UpdateFlagComponent
   ],
   exports: [

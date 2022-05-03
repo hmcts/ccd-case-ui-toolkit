@@ -16,7 +16,7 @@ export class UpdateFlagComponent implements OnInit {
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
-  public updateFlagTitle: string;
+  public updateFlagTitle = '';
   public errorMessages: ErrorMessage[] = [];
   public updateFlagNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
   public updateFlagCharLimitErrorMessage: UpdateFlagErrorMessage = null;
@@ -26,10 +26,12 @@ export class UpdateFlagComponent implements OnInit {
   private readonly commentsMaxCharLimit = 100;
 
   public ngOnInit(): void {
-    this.updateFlagTitle = this.selectedFlagDetail && this.selectedFlagDetail.subTypeValue ?
-    `$(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE) \"$(this.selectedFlagDetail?.name), $(this.selectedFlagDetail?.subTypeValue)\"`
-    : `$(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE) \"$(this.selectedFlagDetail?.name)\"`;
-    this.updateFlagHint = UpdateFlagStep.HINT_TEXT;
+    if ( this.selectedFlagDetail && this.selectedFlagDetail.name ) {
+    this.updateFlagTitle = (this.selectedFlagDetail && this.selectedFlagDetail.subTypeValue) ?
+    `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.selectedFlagDetail.name}, ${this.selectedFlagDetail.subTypeValue}"`
+    : `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.selectedFlagDetail.name}"`;
+    }
+    this.updateFlagHint = UpdateFlagStep.HINT_TEXT ;
     this.updateFlagCharLimitInfo = UpdateFlagStep.CHARACTER_LIMIT_INFO;
     this.formGroup.addControl(this.updateFlagControlName, new FormControl(''));
   }
@@ -42,12 +44,7 @@ export class UpdateFlagComponent implements OnInit {
   }
 
   public onChangeStatus(): void {
-    debugger;
-    this.selectedFlagDetail = {...this.selectedFlagDetail, status: this.selectedFlagDetail.status === 'Active'? 'InActive' : 'Active'}
-    // // Validate flag comments entry
-    // this.validateTextEntry();
-    // // Return case flag field state and error messages to the parent
-    // this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE, errorMessages: this.errorMessages });
+    this.selectedFlagDetail = {...this.selectedFlagDetail, status: this.selectedFlagDetail.status === 'Active' ? 'InActive' : 'Active'}
   }
 
   private validateTextEntry(): void {

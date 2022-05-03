@@ -24,12 +24,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public createFlagCaption: CaseFlagText;
   public errorMessage: ErrorMessage;
   public flagsData: Flags[];
-  public selectedFlagDetail:FlagDetail;
+  public selectedFlagDetail: FlagDetail;
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public listOfValues: {key: string, value: string}[] = null;
-  public selectedFlagDetail: FlagDetail;
   public isDisplayContextParameterUpdate: boolean;
 
   constructor(
@@ -97,7 +96,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
       this.createFlagCaption = CaseFlagText.CAPTION;
-      this.selectedFlagDetail = this.flagsData[1].details[0];
     }
 
     // Set the parent Case Flag FormGroup for this component's children
@@ -121,12 +119,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public proceedToNextState(): void {
-    debugger;
     if (!this.isAtFinalState()) {
       // Skip the "language interpreter" state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type doesn't
       // have a "list of values" - currently, this is present only for those flag types that require language interpreter
       // selection
-      debugger;
       if (this.fieldState === CaseFlagFieldState.FLAG_TYPE && !this.listOfValues) {
         this.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
       } else {
@@ -161,14 +157,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public onFlagCommentsOptionalEmitted(_: any): void {
     this.flagCommentsOptional = true;
   }
-
-
   /**
    * Set the parent {@link FormGroup} for this component's children, depending on the `Flags` {@link CaseField} instance
    * to which data should be attached. **Note:** The parent is not _this_ component's `FormGroup` (as might otherwise be
    * expected) because this component is not expected to have a value, given it is used for the empty `FlagLauncher` base
    * field type.
-   */
+  */
   public setCaseFlagParentFormGroup(): void {
     // Dummy implementation for now, which uses the FormGroup of the first of this CaseField's siblings of type `Flags`
     // as the parent. The real one needs to use the FormGroup of the Flags object corresponding to the user's selection
