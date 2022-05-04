@@ -33,7 +33,7 @@ xdescribe('AddressesService', () => {
     injector = getTestBed();
     addressesService = injector.get(AddressesService);
     httpMock = injector.get(HttpTestingController);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   it('should be created with all the dependencies', () => {
