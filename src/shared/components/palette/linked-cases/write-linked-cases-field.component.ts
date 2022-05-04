@@ -7,7 +7,7 @@ import { AbstractFieldWriteComponent } from '../base-field';
   styleUrls: ['./write-linked-cases-field.component.scss']
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-  
+
   constructor() {
     super();
   }

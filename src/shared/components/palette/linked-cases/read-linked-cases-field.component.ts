@@ -7,7 +7,7 @@ import { AbstractFieldReadComponent } from '../base-field';
   styleUrls: ['./read-linked-cases-field.component.scss']
 })
 export class ReadLinkedCasesFieldComponent extends AbstractFieldReadComponent implements OnInit {
-  
+
   constructor() {
     super();
   }

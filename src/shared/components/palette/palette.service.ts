@@ -44,6 +44,8 @@ import { ReadOrganisationFieldComponent } from './organisation/read-organisation
 import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
+import { WriteLinkedCasesFieldComponent } from './linked-cases/write-linked-cases-field.component';
+import { ReadLinkedCasesFieldComponent } from './linked-cases/read-linked-cases-field.component';
 
 @Injectable()
 export class PaletteService {
@@ -104,6 +106,8 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'LinkedCases':
+        return write ? WriteLinkedCasesFieldComponent : ReadLinkedCasesFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
