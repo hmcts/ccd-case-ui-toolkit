@@ -165,8 +165,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
-    if ( !component.isDisplayContextParameterUpdate ) {
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LOCATION);
+    if (!component.isDisplayContextParameterUpdate) {
+      expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LOCATION);
     }
     // Initial validity of the form is expected to be false because it is at the starting state (only valid at the final state)
     expect(component.isAtFinalState()).toBe(false);
