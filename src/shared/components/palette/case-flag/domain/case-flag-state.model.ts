@@ -6,5 +6,6 @@ export interface CaseFlagState {
   isParentFlagType?: boolean;
   errorMessages: ErrorMessage[];
   listOfValues?: { key: string, value: string }[];
+  flagCode?: string;
   selectedFlagDetail?: FlagDetail;
 }

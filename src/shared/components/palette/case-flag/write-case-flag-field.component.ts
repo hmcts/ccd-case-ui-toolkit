@@ -29,6 +29,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public listOfValues: {key: string, value: string}[] = null;
+  public flagCode: string;
   public isDisplayContextParameterUpdate: boolean;
 
   constructor(
@@ -109,6 +110,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
     this.listOfValues = caseFlagState.listOfValues;
+    this.flagCode = caseFlagState.flagCode;
     this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
     // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
     // means the user needs to select from the next set of flag types before they can move on

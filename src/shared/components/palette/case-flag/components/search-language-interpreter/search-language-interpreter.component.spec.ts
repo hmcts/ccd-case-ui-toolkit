@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material';
-import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
 
 describe('SearchLanguageInterpreterComponent', () => {
@@ -16,6 +16,8 @@ describe('SearchLanguageInterpreterComponent', () => {
     {key: 'AL3', value: 'Albanian3'},
     {key: 'GB', value: 'English'}
   ];
+  const languageFlagCode = 'PF0015';
+  const signLanguageFlagCode = 'RA0042';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,6 +38,7 @@ describe('SearchLanguageInterpreterComponent', () => {
       [component.languageSearchTermControlName] : new FormControl('')
     });
     component.languages = languages;
+    component.flagCode = languageFlagCode;
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
     fieldInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
@@ -131,7 +134,8 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
       errorMessages: component.errorMessages,
-      listOfValues: component.languages
+      listOfValues: component.languages,
+      flagCode: component.flagCode
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -154,7 +158,8 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
       errorMessages: component.errorMessages,
-      listOfValues: component.languages
+      listOfValues: component.languages,
+      flagCode: component.flagCode
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -184,7 +189,8 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
       errorMessages: component.errorMessages,
-      listOfValues: component.languages
+      listOfValues: component.languages,
+      flagCode: component.flagCode
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -214,7 +220,8 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
       errorMessages: component.errorMessages,
-      listOfValues: component.languages
+      listOfValues: component.languages,
+      flagCode: component.flagCode
     });
     expect(component.errorMessages.length).toBe(0);
     const selectedLanguageErrorMessageElement = nativeElement.querySelector('#language-not-selected-error-message');
@@ -245,7 +252,8 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
       errorMessages: component.errorMessages,
-      listOfValues: component.languages
+      listOfValues: component.languages,
+      flagCode: component.flagCode
     });
     expect(component.errorMessages.length).toBe(1);
     const errorMessageElement = nativeElement.querySelector('#language-entered-in-both-fields-error-message');
@@ -265,5 +273,21 @@ describe('SearchLanguageInterpreterComponent', () => {
     checkboxElement.click();
     expect(component.isCheckboxEnabled).toBe(false);
     expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toBeNull();
+  });
+
+  it('should show the correct page title and hint text depending on whether the flag type is sign language or not', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    let titleElement = nativeElement.querySelector('.govuk-label--l');
+    let hintTextElement = nativeElement.querySelector('#language-search-box-hint');
+    expect(titleElement.textContent).toContain(CaseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER);
+    expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.HINT_TEXT);
+    // Change flag type to sign language
+    component.flagCode = signLanguageFlagCode;
+    component.ngOnInit();
+    fixture.detectChanges();
+    titleElement = nativeElement.querySelector('.govuk-label--l');
+    hintTextElement = nativeElement.querySelector('#language-search-box-hint');
+    expect(titleElement.textContent).toContain(CaseFlagWizardStepTitle.SEARCH_SIGN_LANGUAGE_INTERPRETER);
+    expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.SIGN_HINT_TEXT);
   });
 });
