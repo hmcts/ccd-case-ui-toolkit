@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ReadLinkedCasesFieldComponent } from './read-linked-cases-field.component';
-import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from '.';
+import { BeforeYouStartComponent } from './components';
 
 @NgModule({
   imports: [
@@ -12,7 +12,8 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
   providers: [],
   declarations: [
     ReadLinkedCasesFieldComponent,
-    WriteLinkedCasesFieldComponent
+    WriteLinkedCasesFieldComponent,
+    BeforeYouStartComponent
   ],
   exports: [
     ReadLinkedCasesFieldComponent,
