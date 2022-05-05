@@ -1,5 +1,5 @@
 export interface UserInfo {
-  uid: string | null,
+  uid?: string ,
   id: string,
   forename: string,
   surname: string,

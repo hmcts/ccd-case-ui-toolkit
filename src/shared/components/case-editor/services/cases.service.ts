@@ -339,7 +339,7 @@ export class CasesService {
 
     const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
-    const id: string | null = userInfo.id ? userInfo.id : userInfo.uid;
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
                                       roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
