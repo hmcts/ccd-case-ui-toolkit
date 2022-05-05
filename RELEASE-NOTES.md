@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.1-case-flags-search-for-sign-language-interpreter
+**EUI-5772** Display page title and hint text variation when selected language flag type is sign language
+
 ### Version 4.13.1-case-flags-language-interpreter-dual-entry-error-2
 **EUI-5657** Fix error styling and HTML structure for page title and hint text
 

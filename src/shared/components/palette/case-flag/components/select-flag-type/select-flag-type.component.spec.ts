@@ -206,8 +206,13 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-0').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith(
-      { currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: true, errorMessages: [], listOfValues: null });
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      isParentFlagType: true,
+      errorMessages: [],
+      listOfValues: null,
+      flagCode: flagTypes[0].childFlags[0].flagCode
+    });
   });
 
   it('should emit to parent if the validation succeeds and a non-parent flag type is selected', () => {
@@ -217,8 +222,13 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-1').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith(
-      { currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, isParentFlagType: false, errorMessages: [], listOfValues: null });
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      isParentFlagType: false,
+      errorMessages: [],
+      listOfValues: null,
+      flagCode: flagTypes[0].childFlags[1].flagCode
+    });
   });
 
   it('should emit to parent with a list of values if a flag type that has a list of values is selected', () => {
@@ -241,7 +251,8 @@ describe('SelectFlagTypeComponent', () => {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
       errorMessages: [],
-      listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues
+      listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues,
+      flagCode: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].flagCode
     });
   });
 

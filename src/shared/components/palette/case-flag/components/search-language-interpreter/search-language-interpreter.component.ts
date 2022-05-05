@@ -24,6 +24,9 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   @Input()
   public languages: Language[];
 
+  @Input()
+  public flagCode: string;
+
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -33,6 +36,8 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public filteredLanguages$: Observable<Language[]>;
   public searchTerm = '';
   public isCheckboxEnabled = false;
+  public searchLanguageInterpreterTitle: CaseFlagWizardStepTitle;
+  public searchLanguageInterpreterHint: SearchLanguageInterpreterStep;
   public errorMessages: ErrorMessage[] = [];
   public languageNotSelectedErrorMessage = '';
   public languageNotEnteredErrorMessage = '';
@@ -40,16 +45,19 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public languageEnteredInBothFieldsErrorMessage = '';
   public noResults = false;
   private readonly languageMaxCharLimit = 80;
-
-  public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
-    return CaseFlagWizardStepTitle;
-  }
+  private readonly signLanguageFlagCode = 'RA0042';
 
   public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
     return SearchLanguageInterpreterStep;
   }
 
   public ngOnInit(): void {
+    this.searchLanguageInterpreterTitle = this.flagCode === this.signLanguageFlagCode
+      ? CaseFlagWizardStepTitle.SEARCH_SIGN_LANGUAGE_INTERPRETER
+      : CaseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER;
+    this.searchLanguageInterpreterHint = this.flagCode === this.signLanguageFlagCode
+      ? SearchLanguageInterpreterStep.SIGN_HINT_TEXT
+      : SearchLanguageInterpreterStep.HINT_TEXT;
     this.formGroup.addControl(this.languageSearchTermControlName, new FormControl());
     this.formGroup.addControl(this.manualLanguageEntryControlName, new FormControl());
     this.filteredLanguages$ = this.formGroup.get(this.languageSearchTermControlName).valueChanges.pipe(
@@ -68,13 +76,14 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public onNext(): void {
     // Validate language interpreter entry
     this.validateLanguageEntry();
-    // Return case flag field state, error messages, and "list of values" (i.e. languages) to the parent. The
-    // "list of values" must be re-emitted because the parent component repopulates them from handling this
-    // EventEmitter
+    // Return case flag field state, error messages, "list of values" (i.e. languages), and flag code to the parent.
+    // The "list of values" and flag code must be re-emitted because the parent component repopulates them on handling
+    // this EventEmitter
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
       errorMessages: this.errorMessages,
-      listOfValues: this.languages
+      listOfValues: this.languages,
+      flagCode: this.flagCode
     });
   }
 
