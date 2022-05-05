@@ -176,7 +176,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
     ReadLinkedCasesFieldComponent,
-    
+
     // Write
     WriteCollectionFieldComponent,
     WriteTextFieldComponent,

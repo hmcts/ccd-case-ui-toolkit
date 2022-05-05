@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ErrorMessage } from '../../../domain';
 import { AbstractFieldWriteComponent } from '../base-field';
+import { LinkedCasesState } from './domain';
 import { LinkedCasesPages } from './enums';
 
 @Component({
@@ -20,6 +21,29 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public ngOnInit(): void {
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
+  }
+
+  public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
+    this.errorMessages = linkedCasesState.errorMessages;
+  }
+
+  public proceedToNextState(): void {
+    if (!this.isAtFinalState()) {
+      // Set linkedCasesPage based on whether it is link or unlink journey
+      // Setting it to link journey at the moment
+      this.linkedCasesPage = this.linkedCasesPages.LINK_CASE;
+    }
+    
+    // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
+    // the form is at the final state
+    if (this.isAtFinalState()) {
+      // Trigger validation to clear the "notAtFinalState" error if now at the final state
+      this.formGroup.updateValueAndValidity();
+    }
+  }
+
+  public isAtFinalState(): boolean {
+    return false;
   }
 
   public navigateToErrorElement(elementId: string): void {
