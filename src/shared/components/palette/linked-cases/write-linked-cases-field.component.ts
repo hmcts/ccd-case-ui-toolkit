@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ErrorMessage } from '../../../domain';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field';
 import { LinkedCasesState } from './domain';
 import { LinkedCasesPages } from './enums';
@@ -9,6 +10,9 @@ import { LinkedCasesPages } from './enums';
   templateUrl: './write-linked-cases-field.component.html'
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+	
+	@Input()
+	public caseEditPageComponent: CaseEditPageComponent;
 
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
@@ -24,7 +28,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
+		// Clear validation errors from the parent CaseEditPageComponent
+		// (given the "Next" button in a child component has been clicked)
+    this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = linkedCasesState.errorMessages;
+		if (this.errorMessages.length === 0) {
+			this.proceedToNextState();
+		}
   }
 
   public proceedToNextState(): void {
@@ -43,7 +53,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public isAtFinalState(): boolean {
-    return false;
+    return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
   }
 
   public navigateToErrorElement(elementId: string): void {
