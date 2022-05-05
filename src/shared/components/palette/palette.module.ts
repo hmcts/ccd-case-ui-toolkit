@@ -38,6 +38,8 @@ import { FixedListModule } from './fixed-list/fixed-list.module';
 import { FixedRadioListModule } from './fixed-radio-list/fixed-radio-list.module';
 import { CaseHistoryViewerModule } from './history/case-history-viewer.module';
 import { LabelFieldComponent } from './label/label-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
+import { LinkedCasesModule } from './linked-cases/linked-cases.module';
 import { MoneyGbpModule } from './money-gbp/money-gbp.module';
 import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
 import { ReadNumberFieldComponent } from './number/read-number-field.component';
@@ -95,7 +97,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    PaymentLibModule
+    PaymentLibModule,
+    LinkedCasesModule
   ],
   declarations: [
     UnsupportedFieldComponent,
@@ -137,6 +140,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadOrganisationFieldComponent,
+    ReadLinkedCasesFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -149,7 +153,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
     WriteDateContainerFieldComponent,
-    WriteOrganisationFieldComponent
+    WriteOrganisationFieldComponent,
+    WriteLinkedCasesFieldComponent
   ],
   exports: [
     BaseFieldModule,
@@ -168,6 +173,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadLinkedCasesFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -178,6 +184,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteDateContainerFieldComponent,
+    WriteLinkedCasesFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,
