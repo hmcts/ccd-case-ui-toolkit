@@ -78,6 +78,13 @@ export class FieldsUtils {
     return pageFormFields[0]['value'] !== undefined;
   }
 
+  public static isLinkedCasesCaseField(caseField: CaseField): boolean {
+    if (!caseField) {
+      return false;
+    }
+    return caseField.field_type.type === 'CaseLink';
+  }
+
   public static cloneObject(obj: any): any {
     return Object.assign({}, obj);
   }

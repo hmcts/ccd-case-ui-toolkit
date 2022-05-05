@@ -145,6 +145,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         if (fieldElement) {
           const label = casefield.label || 'Field';
           let id = casefield.id;
+          // TODO Linked cases - this will change once we get the field type
+          if (casefield.isCollection()) {
+            this.validationErrors.push({ id, message: 'Please select Next to complete the linking/unlinking of the cases' });
+          } 
           if (fieldElement['component'] && fieldElement['component'].parent) {
             if (fieldElement['component'].idPrefix.indexOf('_' + id + '_') === -1) {
               id = `${fieldElement['component'].idPrefix}${id}`;
