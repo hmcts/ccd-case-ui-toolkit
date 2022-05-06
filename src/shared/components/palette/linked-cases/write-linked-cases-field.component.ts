@@ -11,7 +11,7 @@ import { LinkedCasesPages } from './enums';
   templateUrl: './write-linked-cases-field.component.html'
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-  
+
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
@@ -54,7 +54,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       // Setting it to link journey at the moment
       this.linkedCasesPage = this.linkedCasesPages.LINK_CASE;
     }
-    
+
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
     // the form is at the final state
     if (this.isAtFinalState()) {

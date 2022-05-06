@@ -144,7 +144,7 @@ describe('CaseEventTriggerComponent', () => {
     activityPollingService.postEditActivity.and.returnValue(Observable.of());
     router = {
       navigate: jasmine.createSpy('navigate'),
-      url: 'linkCases'
+      url: ''
     };
     router.navigate.and.returnValue({then: f => f()});
 
@@ -236,6 +236,8 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should cancel navigate to linked cases tab', () => {
+    const routerWithModifiedUrl = TestBed.get(Router);
+    routerWithModifiedUrl.url = 'linkCases';
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444']);
