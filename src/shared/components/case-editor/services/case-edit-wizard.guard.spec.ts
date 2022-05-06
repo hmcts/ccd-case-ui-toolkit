@@ -89,7 +89,7 @@ describe('CaseEditWizardGuard', () => {
 
       wizardGuard.resolve(route);
 
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
+      expect(router.navigate).toHaveBeenCalledWith([ '', 'case', '123', 'trigger', 'editEvent', 'submit' ], Object({ queryParams: [  ] }));
     });
 
     it('should redirect to submit page when fields are empty', () => {
@@ -97,7 +97,7 @@ describe('CaseEditWizardGuard', () => {
 
       wizardGuard.resolve(route);
 
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
+      expect(router.navigate).toHaveBeenCalledWith([ '', 'case', '123', 'trigger', 'editEvent', 'submit' ], Object({ queryParams: [  ] }));
     });
 
   });
@@ -108,7 +108,7 @@ describe('CaseEditWizardGuard', () => {
 
       wizardGuard.resolve(route);
 
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
+      expect(router.navigate).toHaveBeenCalledWith([ '', 'case', '123', 'trigger', 'editEvent', 'submit' ], Object({ queryParams: [  ] }));
     });
 
     it('should redirect to submit page when pages are empty', () => {
@@ -116,7 +116,7 @@ describe('CaseEditWizardGuard', () => {
 
       wizardGuard.resolve(route);
 
-      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit']);
+      expect(router.navigate).toHaveBeenCalledWith([...PARENT_URL_SEGMENTS, 'submit'], Object({ queryParams: [  ] }));
     });
 
   });
