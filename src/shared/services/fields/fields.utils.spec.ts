@@ -566,7 +566,7 @@ describe('isLinkedCasesCaseField function test', () => {
   });
 
   it('should return true if case field is of type LinkedCases', () => {
-    const caseField = aCaseField('linkedCases', 'linkedCases', 'LinkedCases', 'OPTIONAL', null, null, false, true);
+    const caseField = aCaseField('linkedCases', 'linkedCases', 'CaseLink', 'OPTIONAL', null, null, false, true);
     expect(FieldsUtils.isLinkedCasesCaseField(caseField)).toBe(true);
   });
 });
