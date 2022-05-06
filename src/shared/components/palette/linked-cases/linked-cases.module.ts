@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from '.';
-import { BeforeYouStartComponent } from './components';
+import { BeforeYouStartComponent, CheckYourAnswersComponent } from './components';
 
 @NgModule({
   imports: [
@@ -14,7 +14,8 @@ import { BeforeYouStartComponent } from './components';
   declarations: [
     ReadLinkedCasesFieldComponent,
     WriteLinkedCasesFieldComponent,
-    BeforeYouStartComponent
+    BeforeYouStartComponent,
+    CheckYourAnswersComponent
   ],
   exports: [
     ReadLinkedCasesFieldComponent,

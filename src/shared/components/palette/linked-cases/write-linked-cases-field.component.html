@@ -24,6 +24,7 @@
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.CHECK_YOUR_ANSWERS">
       <!-- Check your answers component goes here -->
+			<ccd-linked-cases-check-your-answers (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-check-your-answers>
     </ng-container>
   </div>
 </div>

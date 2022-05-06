@@ -52,7 +52,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     if (!this.isAtFinalState()) {
       // Set linkedCasesPage based on whether it is link or unlink journey
       // Setting it to link journey at the moment
-      this.linkedCasesPage = this.linkedCasesPages.LINK_CASE;
+      this.linkedCasesPage = this.linkedCasesPages.CHECK_YOUR_ANSWERS;
     }
 
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
