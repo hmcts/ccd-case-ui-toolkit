@@ -371,10 +371,20 @@ export class CasesService {
       ...payload.requestedRoles[0].notes[0],
       userId: payload.requestedRoles[0].actorId
     }
+    debugger;
+
     return this.http.post(
-      `${this.appConfig.getCamRoleAssignmentsApiUrl()}`,
+      `/api/specific-access-request`,
       payload
     );
+    // return this.http.post(
+    //   `/specific-access-request`,
+    //   payload
+    // );
+    // return this.http.post(
+    //   `${this.appConfig.getCamRoleAssignmentsApiUrl()}`,
+    //   payload
+    // );
   }
 
 }
