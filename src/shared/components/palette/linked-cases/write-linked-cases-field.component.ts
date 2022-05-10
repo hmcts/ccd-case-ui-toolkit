@@ -42,7 +42,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     // Clear validation errors from the parent CaseEditPageComponent
     // (given the "Next" button in a child component has been clicked)
     this.caseEditPageComponent.validationErrors = [];
-    this.errorMessages = linkedCasesState.errorMessages;
+    this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
     if (!this.errorMessages) {
       this.proceedToNextState();
     }
@@ -60,6 +60,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     if (this.isAtFinalState()) {
       // Trigger validation to clear the "notAtFinalState" error if now at the final state
       this.formGroup.updateValueAndValidity();
+      this.caseEditPageComponent.next();
     }
   }
 

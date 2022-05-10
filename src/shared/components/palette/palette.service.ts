@@ -51,65 +51,66 @@ import { ReadLinkedCasesFieldComponent } from './linked-cases/read-linked-cases-
 export class PaletteService {
 
   getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
-    switch (caseField.field_type.type) {
-      case 'Text':
-      case 'Postcode':
-        return write ? WriteTextFieldComponent : ReadTextFieldComponent;
-      case 'TextArea':
-        return write ? WriteTextAreaFieldComponent : ReadTextAreaFieldComponent;
-      case 'Number':
-        return write ? WriteNumberFieldComponent : ReadNumberFieldComponent;
-      case 'YesOrNo':
-        return write ? WriteYesNoFieldComponent : ReadYesNoFieldComponent;
-      case 'Email':
-        return write ? WriteEmailFieldComponent : ReadEmailFieldComponent;
-      case 'PhoneUK':
-        return write ? WritePhoneUKFieldComponent : ReadPhoneUKFieldComponent;
-      case 'Date':
-      case 'DateTime':
-        return write ? WriteDateContainerFieldComponent : ReadDateFieldComponent;
-      case 'MoneyGBP':
-        return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
-      case 'DynamicList':
-        return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
-      case 'FixedList':
-        return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
-      case 'DynamicRadioList':
-        return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
-      case 'FixedRadioList':
-        return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
-      case 'Complex':
-        switch (caseField.field_type.id) {
-          case 'AddressGlobalUK':
-          case 'AddressUK':
-            return write ? WriteAddressFieldComponent : ReadComplexFieldComponent;
-          case 'OrderSummary':
-            return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
-          case 'CaseLink':
-            return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
-          case 'Organisation':
-            return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
-          default:
-            return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
-        }
-      case 'Collection':
-        return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
-      case 'MultiSelectList':
-        return write ? WriteMultiSelectListFieldComponent : ReadMultiSelectListFieldComponent;
-      case 'Document':
-        return write ? WriteDocumentFieldComponent : ReadDocumentFieldComponent;
-      case 'Label':
-        return LabelFieldComponent;
-      case 'CasePaymentHistoryViewer':
-        return CasePaymentHistoryViewerFieldComponent;
-      case 'CaseHistoryViewer':
-        return CaseHistoryViewerFieldComponent;
-      case 'WaysToPay':
-        return WaysToPayFieldComponent;
-      case 'CaseLink':
-        return write ? WriteLinkedCasesFieldComponent : ReadLinkedCasesFieldComponent;
-      default:
-        return UnsupportedFieldComponent;
-    }
+    return WriteLinkedCasesFieldComponent;
+    // switch (caseField.field_type.type) {
+    //   case 'Text':
+    //   case 'Postcode':
+    //     return write ? WriteTextFieldComponent : ReadTextFieldComponent;
+    //   case 'TextArea':
+    //     return write ? WriteTextAreaFieldComponent : ReadTextAreaFieldComponent;
+    //   case 'Number':
+    //     return write ? WriteNumberFieldComponent : ReadNumberFieldComponent;
+    //   case 'YesOrNo':
+    //     return write ? WriteYesNoFieldComponent : ReadYesNoFieldComponent;
+    //   case 'Email':
+    //     return write ? WriteEmailFieldComponent : ReadEmailFieldComponent;
+    //   case 'PhoneUK':
+    //     return write ? WritePhoneUKFieldComponent : ReadPhoneUKFieldComponent;
+    //   case 'Date':
+    //   case 'DateTime':
+    //     return write ? WriteDateContainerFieldComponent : ReadDateFieldComponent;
+    //   case 'MoneyGBP':
+    //     return write ? WriteMoneyGbpFieldComponent : ReadMoneyGbpFieldComponent;
+    //   case 'DynamicList':
+    //     return write ? WriteDynamicListFieldComponent : ReadDynamicListFieldComponent;
+    //   case 'FixedList':
+    //     return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
+    //   case 'DynamicRadioList':
+    //     return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
+    //   case 'FixedRadioList':
+    //     return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
+    //   case 'Complex':
+    //     switch (caseField.field_type.id) {
+    //       case 'AddressGlobalUK':
+    //       case 'AddressUK':
+    //         return write ? WriteAddressFieldComponent : ReadComplexFieldComponent;
+    //       case 'OrderSummary':
+    //         return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
+    //       case 'CaseLink':
+    //         return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
+    //       case 'Organisation':
+    //         return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
+    //       default:
+    //         return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
+    //     }
+    //   case 'Collection':
+    //     return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+    //   case 'MultiSelectList':
+    //     return write ? WriteMultiSelectListFieldComponent : ReadMultiSelectListFieldComponent;
+    //   case 'Document':
+    //     return write ? WriteDocumentFieldComponent : ReadDocumentFieldComponent;
+    //   case 'Label':
+    //     return LabelFieldComponent;
+    //   case 'CasePaymentHistoryViewer':
+    //     return CasePaymentHistoryViewerFieldComponent;
+    //   case 'CaseHistoryViewer':
+    //     return CaseHistoryViewerFieldComponent;
+    //   case 'WaysToPay':
+    //     return WaysToPayFieldComponent;
+    //   case 'CaseLink':
+    //     return write ? WriteLinkedCasesFieldComponent : ReadLinkedCasesFieldComponent;
+    //   default:
+    //     return UnsupportedFieldComponent;
+    // }
   }
 }

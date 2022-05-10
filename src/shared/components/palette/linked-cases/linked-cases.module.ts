@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from '.';
-import { BeforeYouStartComponent, CheckYourAnswersComponent } from './components';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
+import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
+import { BeforeYouStartComponent } from './components/before-you-start/before-you-start.component';
 
 @NgModule({
   imports: [
@@ -10,12 +12,15 @@ import { BeforeYouStartComponent, CheckYourAnswersComponent } from './components
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    CaseEditComponent,
+    CaseEditPageComponent,
+    ChangeDetectorRef as Provider,
+  ],
   declarations: [
     ReadLinkedCasesFieldComponent,
     WriteLinkedCasesFieldComponent,
-    BeforeYouStartComponent,
-    CheckYourAnswersComponent
+    BeforeYouStartComponent
   ],
   exports: [
     ReadLinkedCasesFieldComponent,

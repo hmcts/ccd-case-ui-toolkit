@@ -15,6 +15,7 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
   public paletteContext = PaletteContext;
 
   ngOnInit(): void {
+    debugger;
     super.ngOnInit();
     if (this.caseField.display_context_parameter) {
       this.context = PaletteContext.TABLE_VIEW;
