@@ -9,7 +9,7 @@ import { LinkedCase } from '../../domain';
 export class CheckYourAnswersComponent implements OnInit {
 
   @Input()
-  caseFields: CaseField[] = [];
+  caseFields: CaseField[];
 	linkedCases: LinkedCase[];
 
   public ngOnInit(): void {

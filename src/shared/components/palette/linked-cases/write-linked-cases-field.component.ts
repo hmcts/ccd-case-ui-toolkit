@@ -69,14 +69,12 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
 	public getNextPage(): number {
-		switch(this.eventTriggerId) {
-			case LinkedCasesEventTriggers.LINK_CASES:
-				return LinkedCasesPages.LINK_CASE;
-			case LinkedCasesEventTriggers.MANAGE_CASE_LINKS:
-				return LinkedCasesPages.UNLINK_CASE;
-			default:
-				return LinkedCasesPages.CHECK_YOUR_ANSWERS;
+		if (this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) {
+			return this.eventTriggerId === LinkedCasesEventTriggers.LINK_CASES
+				? LinkedCasesPages.LINK_CASE
+				: LinkedCasesPages.UNLINK_CASE;
 		}
+		return LinkedCasesPages.CHECK_YOUR_ANSWERS;
 	}
 
   public navigateToErrorElement(elementId: string): void {
