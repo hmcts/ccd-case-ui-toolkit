@@ -96,7 +96,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
       // do not convert router with initial default value; convert to router only on updated link content
-      if(hrefMarkdownLinkContent !== 'Default') {
+      if (hrefMarkdownLinkContent !== 'Default') {
         this.convertHrefToRouterService.callAngularRouter(hrefMarkdownLinkContent);
       }
     });
