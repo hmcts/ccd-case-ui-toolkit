@@ -1,0 +1,91 @@
+<!-- Error message summary -->
+<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li>
+        <a class="validation-error">{{validationError.message}}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-full">
+    <div>
+      <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+      <span class="govuk-caption-l">Link cases to Smith vs Peterson 1234-5678-9012-3456</span>
+      <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
+    <form class="form" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
+      <h3 class="govuk-heading-s">Enter case number</h3>
+      <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!caseNumberError}">
+        <span class="govuk-error-message" *ngIf="caseNumberError">
+          <span class="govuk-visually-hidden">Error:</span> {{caseNumberError}}
+        </span>
+        <input class="govuk-input govuk-input--width-20" formControlName="caseNumber" id="width-20" name="width-20" type="text">
+      </div>
+      <h3 class="govuk-heading-s">Why should these cases be linked?</h3>
+      <div id="waste-hint" class="govuk-hint">
+        Select all that apply.
+      </div>
+      <span class="govuk-error-message" *ngIf="caseReasonError">
+        <span class="govuk-visually-hidden">Error:</span> {{caseReasonError}}
+      </span>
+      <div class="govuk-checkboxes" data-module="govuk-checkboxes" formArrayName="reasonType" id="caseReason" [ngClass]="{'govuk-form-group--error': !!caseReasonError}">
+        <div class="govuk-checkboxes__item" *ngFor="let reason of linkCaseReasons;index as pos" [formGroupName]="pos">
+          <input class="govuk-checkboxes__input" id="{{reason.key}}" formControlName="selected" name="pos" type="checkbox" [value]="reason.value_en">
+          <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}">{{reason.value_en}}</label>
+        </div>
+      </div>
+
+      <br><br>
+
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="submitCaseInfo()">Propose case link</button>
+    </form>
+      <br><br>
+
+      <hr>
+      <br><br>
+          <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Proposed case links </caption>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header" width="300">Case name and number</th>
+                <th scope="col" class="govuk-table__header" width="150">Case type </th>
+                <th scope="col" class="govuk-table__header" width="200">Service</th>
+                <th scope="col" class="govuk-table__header" width="200">State</th>
+                <th scope="col" class="govuk-table__header" width="400">Reasons for case link</th>
+                <th scope="col" class="govuk-table__header" width="50"></th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row" *ngIf="selectedCases">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr class="govuk-table__row" *ngIf="!selectedCases">
+                <td>None</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+
+            </tbody>
+          </table>
+          <div class="govuk-button-group">
+              <button class="button button-primary" type="button" (click)="onNext()">Next</button>
+          </div>
+    </div>
+
+  </div>
+
+</div>

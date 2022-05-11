@@ -21,6 +21,7 @@ import {
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
+import { LinkCaseReason } from '../../palette/linked-cases/domain/linked-case.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { CaseAccessUtils } from '../case-access-utils';
@@ -73,8 +74,8 @@ export class CasesService {
   }
 
   getCaseView(jurisdictionId: string,
-              caseTypeId: string,
-              caseId: string): Observable<CaseView> {
+    caseTypeId: string,
+    caseId: string): Observable<CaseView> {
     const url = this.appConfig.getApiUrl()
       + `/caseworkers/:uid`
       + `/jurisdictions/${jurisdictionId}`
@@ -102,7 +103,7 @@ export class CasesService {
 
     const loadingToken = this.loadingService.register();
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -112,10 +113,58 @@ export class CasesService {
       );
   }
 
+  getCaseLinkResponses(): Observable<LinkCaseReason[]> {
+    const linkCaseReasons: LinkCaseReason[] = [
+      {
+        key: 'progressed',
+        value_en: 'Progressed as part of this lead case',
+        value_cy: '',
+        hint_text_en: 'Progressed as part of this lead case',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'bail',
+        value_en: 'Bail',
+        value_cy: '',
+        hint_text_en: 'Bail',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'other',
+        value_en: 'Other',
+        value_cy: '',
+        hint_text_en: 'Other',
+        hint_text_cy: '',
+        lov_order: 3,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+    ];
+    return of(linkCaseReasons);
+  }
+
   getEventTrigger(caseTypeId: string,
-                  eventTriggerId: string,
-                  caseId?: string,
-                  ignoreWarning?: string): Observable<CaseEventTrigger> {
+    eventTriggerId: string,
+    caseId?: string,
+    ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
     const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
@@ -135,7 +184,7 @@ export class CasesService {
 		console.log('GET EVENT TRIGGER URL', url);
 
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(body => {
           return FieldsUtils.handleNestedDynamicLists(body);
@@ -159,7 +208,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
@@ -180,7 +229,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -204,7 +253,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
@@ -225,7 +274,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(body => body.documentResources),
         catchError(error => {
@@ -236,9 +285,9 @@ export class CasesService {
   }
 
   private buildEventTriggerUrl(caseTypeId: string,
-                               eventTriggerId: string,
-                               caseId?: string,
-                               ignoreWarning?: string): string {
+    eventTriggerId: string,
+    caseId?: string,
+    ignoreWarning?: string): string {
     let url = this.appConfig.getCaseDataUrl() + `/internal`;
 
     if (Draft.isDraft(caseId)) {
@@ -325,7 +374,7 @@ export class CasesService {
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
 
     const payload: RoleRequestPayload = camUtils.getAMPayload(userInfo.id, userInfo.id, roleName, roleCategory,
-                                                                    'CHALLENGED', caseId, car, beginTime, endTime);
+      'CHALLENGED', caseId, car, beginTime, endTime);
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
   }
@@ -344,7 +393,7 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
 
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
-                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+      roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
     return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
   }

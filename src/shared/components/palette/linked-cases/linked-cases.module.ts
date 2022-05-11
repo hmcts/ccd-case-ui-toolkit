@@ -5,6 +5,7 @@ import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from '.
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
 import { BeforeYouStartComponent } from './components/before-you-start/before-you-start.component';
+import { LinkCaseProposalComponent } from './components/link-case-proposal/link-case-proposal.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { BeforeYouStartComponent } from './components/before-you-start/before-yo
   declarations: [
     ReadLinkedCasesFieldComponent,
     WriteLinkedCasesFieldComponent,
-    BeforeYouStartComponent
+    BeforeYouStartComponent,
+    LinkCaseProposalComponent
   ],
   exports: [
     ReadLinkedCasesFieldComponent,
