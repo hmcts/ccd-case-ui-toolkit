@@ -132,6 +132,8 @@ export class CasesService {
       headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
     }
 
+		console.log('GET EVENT TRIGGER URL', url);
+
     return this.http
       .get(url, {headers, observe: 'body'})
       .pipe(
@@ -262,6 +264,7 @@ export class CasesService {
   }
 
   private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
+		console.log('INITIALISE EVENT TRIGGER', eventTrigger);
     if (!eventTrigger.wizard_pages) {
       eventTrigger.wizard_pages = [];
     }

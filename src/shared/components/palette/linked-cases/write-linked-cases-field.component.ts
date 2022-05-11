@@ -43,7 +43,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     // (given the "Next" button in a child component has been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
-    if (!this.errorMessages) {
+    if (this.errorMessages.length == 0) {
       this.proceedToNextState();
     }
   }
