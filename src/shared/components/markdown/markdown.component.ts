@@ -6,7 +6,6 @@ import { ConvertHrefToRouterService } from '../case-editor/services';
   templateUrl: './markdown.html'
 })
 export class MarkdownComponent implements OnInit {
-
   @Input()
   content: string;
   @Input()
