@@ -25,6 +25,7 @@ export class LinkCaseProposalComponent implements OnInit {
   public validationErrors: { id: string, message: string }[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
+  public noSelectedCaseError: string;
   constructor(
     private casesService: CasesService, private readonly fb: FormBuilder, private readonly validatorsUtils: ValidatorsUtils) { }
 
@@ -107,7 +108,13 @@ export class LinkCaseProposalComponent implements OnInit {
   }
 
   public onNext(): void {
-    // Return linked cases state and error messages to the parent
-    this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.LINK_CASE, errorMessages: this.errorMessages });
+    this.noSelectedCaseError = null;
+    if (this.selectedCases.length) {
+      // Return linked cases state and error messages to the parent
+      this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.LINK_CASE, errorMessages: this.errorMessages });
+    } else {
+      this.noSelectedCaseError = LinkedCaseProposalEnum.CaseSelectionError;
+      this.validationErrors.push({ id: 'caseReason', message: LinkedCaseProposalEnum.CaseSelectionError });
+    }
   }
 }
