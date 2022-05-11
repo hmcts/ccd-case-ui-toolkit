@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
-import { LinkCaseReason } from '../../../../../domain/link-case/link-case-reason.model';
+import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-case.model';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCaseProposalEnum, LinkedCasesPages } from '../../enums';
@@ -20,7 +20,7 @@ export class LinkCaseProposalComponent implements OnInit {
   errorMessages: ErrorMessage[];
   public linkCaseForm: FormGroup;
   public linkCaseReasons: LinkCaseReason[];
-  caseDetails: CaseView;
+  public selectedCases: LinkedCase[];
   public validationErrors: { id: string, message: string }[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
@@ -65,7 +65,19 @@ export class LinkCaseProposalComponent implements OnInit {
     this.caseNumberError = null;
     if (this.linkCaseForm.valid) {
       this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).toPromise()
-        .then(caseView => this.caseDetails = caseView)
+        .then((caseView: CaseView) => {
+          let caseInfo: LinkedCase = {} as LinkedCase;
+          caseInfo.caseLink = {
+            caseReference: caseView.case_id,
+            linkReason: this.getSelectedCaseReasons(),
+            createdDateTime: new Date().toISOString(),
+            caseType: caseView.case_type.name,
+            caseState: caseView.state.name,
+            caseService: '',
+            caseName: '',
+          }
+          this.selectedCases.push(caseInfo);
+        })
         .catch((error: HttpError) => {
           this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
           this.validationErrors.push({ id: 'caseNumber', message: LinkedCaseProposalEnum.CaseCheckAgainError });
@@ -83,7 +95,15 @@ export class LinkCaseProposalComponent implements OnInit {
     }
   }
 
-
+  getSelectedCaseReasons(): LinkReason[] {
+    let selectedReasons: LinkReason[] = [];
+    this.linkCaseForm.controls.reasonType.value.forEach((selectedReason: LinkCaseReason) => {
+      if (selectedReason.selected) {
+        selectedReasons.push({ reason: selectedReason.value_en });
+      }
+    })
+    return selectedReasons
+  }
 
   public onNext(): void {
     // Return linked cases state and error messages to the parent

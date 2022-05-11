@@ -21,7 +21,7 @@ import {
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
-import { LinkCaseReason } from '../../../domain/link-case/link-case-reason.model';
+import { LinkCaseReason } from '../../palette/linked-cases/domain/linked-case.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { CaseAccessUtils } from '../case-access-utils';

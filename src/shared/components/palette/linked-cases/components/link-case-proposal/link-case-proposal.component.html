@@ -62,7 +62,15 @@
               </tr>
             </thead>
             <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
+              <tr class="govuk-table__row" *ngIf="selectedCases">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr class="govuk-table__row" *ngIf="!selectedCases">
                 <td>None</td>
                 <td></td>
                 <td></td>
