@@ -158,7 +158,7 @@ export class CasesService {
         from: 'exui-default',
       },
     ];
-    return of(linkCaseReasons);
+    return of(linkCaseReasons.sort((reasonA, reasonB) => reasonA.value_en > reasonB.value_en ? 1 : -1));
   }
 
   getEventTrigger(caseTypeId: string,

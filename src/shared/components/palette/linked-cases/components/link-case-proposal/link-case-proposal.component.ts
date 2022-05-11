@@ -10,6 +10,7 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
   selector: 'ccd-linked-cases-link-case-proposal',
+  styleUrls: ['./link-case-proposal.component.scss'],
   templateUrl: './link-case-proposal.component.html'
 })
 export class LinkCaseProposalComponent implements OnInit {
@@ -20,7 +21,7 @@ export class LinkCaseProposalComponent implements OnInit {
   errorMessages: ErrorMessage[];
   public linkCaseForm: FormGroup;
   public linkCaseReasons: LinkCaseReason[];
-  public selectedCases: LinkedCase[];
+  public selectedCases: LinkedCase[] = [];
   public validationErrors: { id: string, message: string }[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
