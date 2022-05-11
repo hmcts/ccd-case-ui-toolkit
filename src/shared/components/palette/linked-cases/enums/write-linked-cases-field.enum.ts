@@ -11,3 +11,8 @@ export enum LinkedCaseProposalEnum {
   SomethingWrong = 'Something went wrong, please try again later',
   CaseCheckAgainError = 'Check the case number and try again',
 }
+
+export enum LinkedCasesEventTriggers {
+  LINK_CASES = 'linkCases',
+  MANAGE_CASE_LINKS = 'manageCaseLinks'
+}

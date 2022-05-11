@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
-import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-case.model';
+import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCaseProposalEnum, LinkedCasesPages } from '../../enums';

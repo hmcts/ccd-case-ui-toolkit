@@ -23,6 +23,9 @@ export class CheckYourAnswersComponent implements OnInit {
 			{
 				caseLink: {
 					caseReference: '5283-8196-7254-2864',
+					caseName: '',
+					caseService: '',
+					caseState: '',
 					caseType: '',
 					createdDateTime: '11/05/2022',
 					linkReason: [
@@ -38,6 +41,9 @@ export class CheckYourAnswersComponent implements OnInit {
 			{
 				caseLink: {
 					caseReference: '8254-9025-7233-6147',
+					caseName: '',
+					caseService: '',
+					caseState: '',
 					caseType: '',
 					createdDateTime: '11/05/2022',
 					linkReason: [
@@ -50,6 +56,9 @@ export class CheckYourAnswersComponent implements OnInit {
 			{
 				caseLink: {
 					caseReference: '4652-7249-0269-6213',
+					caseName: '',
+					caseService: '',
+					caseState: '',
 					caseType: '',
 					createdDateTime: '11/05/2022',
 					linkReason: [

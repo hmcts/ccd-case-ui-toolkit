@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessage } from '../../../domain';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field';
 import { LinkedCasesState } from './domain';
-import { LinkedCasesPages } from './enums';
+import { LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
 
 @Component({
   selector: 'ccd-write-linked-cases-field',
@@ -15,9 +16,11 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
+	public eventTriggerId: string;
   public formGroup: FormGroup;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
+	public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public errorMessages: ErrorMessage[] = [];
 
   constructor() {
@@ -36,6 +39,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }), true) as FormGroup;
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
+		this.eventTriggerId = this.caseEditPageComponent.eventTrigger.id;
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
@@ -49,11 +53,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public proceedToNextState(): void {
-    if (!this.isAtFinalState()) {
-      // Set linkedCasesPage based on whether it is link or unlink journey
-      // Setting it to link journey at the moment
-      this.linkedCasesPage = this.linkedCasesPages.CHECK_YOUR_ANSWERS;
-    }
+		this.linkedCasesPage = this.getNextPage();
 
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
     // the form is at the final state
@@ -67,6 +67,17 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public isAtFinalState(): boolean {
     return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
   }
+
+	public getNextPage(): number {
+		switch(this.eventTriggerId) {
+			case LinkedCasesEventTriggers.LINK_CASES:
+				return LinkedCasesPages.LINK_CASE;
+			case LinkedCasesEventTriggers.MANAGE_CASE_LINKS:
+				return LinkedCasesPages.UNLINK_CASE;
+			default:
+				return LinkedCasesPages.CHECK_YOUR_ANSWERS;
+		}
+	}
 
   public navigateToErrorElement(elementId: string): void {
     if (elementId) {

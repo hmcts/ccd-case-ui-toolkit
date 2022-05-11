@@ -11,13 +11,15 @@
     </ul>
   </div>
 </div>
-<div class="form-group" [formGroup]="formGroup">
+<div class="form-group" [formGroup]="formGroup" *ngIf="eventTriggerId">
   <div class="govuk-form-group" [ngSwitch]="linkedCasesPage">
     <ng-container *ngSwitchCase="linkedCasesPages.BEFORE_YOU_START">
-      <ccd-linked-cases-before-you-start (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-before-you-start>
+      <ccd-linked-cases-before-you-start
+				[eventTriggerId]="eventTriggerId"
+				(linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-before-you-start>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.LINK_CASE">
-      <!-- Link cases component goes here -->
+      <ccd-linked-cases-link-case-proposal (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-link-case-proposal>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.UNLINK_CASE">
       <!-- Unlink cases component goes here -->

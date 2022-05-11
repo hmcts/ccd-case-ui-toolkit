@@ -23,6 +23,9 @@ export class CaseLink {
   linkReason: LinkReason[];
   createdDateTime: string;
   caseType: string;
+  caseState: string;
+  caseService: string;
+  caseName: string;
 }
 
 export class LinkReason {

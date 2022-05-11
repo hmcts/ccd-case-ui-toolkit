@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ErrorMessage } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
-import { LinkedCasesPages } from '../../enums';
+import { LinkedCasesEventTriggers, LinkedCasesPages } from '../../enums';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
@@ -9,10 +9,14 @@ import { LinkedCasesPages } from '../../enums';
 })
 export class BeforeYouStartComponent  {
 
+	@Input()
+	public eventTriggerId: string;
+
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  errorMessages: ErrorMessage[];
+	public linkedCasesEventTriggers = LinkedCasesEventTriggers;
+  public errorMessages: ErrorMessage[];
 
   public onNext(): void {
     // Return linked cases state and error messages to the parent
