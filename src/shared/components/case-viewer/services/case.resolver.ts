@@ -1,6 +1,6 @@
 import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
@@ -62,24 +62,19 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
-    if (this.cachedCaseView && this.cachedCaseView.case_id && this.cachedCaseView.case_id === cid) {
-      this.caseNotifier.announceCase(this.cachedCaseView);
-      return of(this.cachedCaseView).toPromise();
+    if (Draft.isDraft(cid)) {
+      return this.getAndCacheDraft(cid);
     } else {
-      if (Draft.isDraft(cid)) {
-        return this.getAndCacheDraft(cid);
-      } else {
-        return this.casesService
-          .getCaseViewV2(cid)
-          .pipe(
-            map(caseView => {
-              this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-              this.caseNotifier.announceCase(this.cachedCaseView);
-              return this.cachedCaseView;
-            }),
-            catchError(error => this.checkAuthorizationError(error))
-          ).toPromise();
-      }
+      return this.casesService
+        .getCaseViewV2(cid)
+        .pipe(
+          map(caseView => {
+            this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
+            this.caseNotifier.announceCase(this.cachedCaseView);
+            return this.cachedCaseView;
+          }),
+          catchError(error => this.checkAuthorizationError(error))
+        ).toPromise();
     }
   }
 
