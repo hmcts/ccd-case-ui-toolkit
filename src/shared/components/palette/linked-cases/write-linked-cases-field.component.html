@@ -25,5 +25,9 @@
     <ng-container *ngSwitchCase="linkedCasesPages.UNLINK_CASE">
       <!-- Unlink cases component goes here -->
     </ng-container>
+    <ng-container *ngSwitchCase="linkedCasesPages.CHECK_YOUR_ANSWERS">
+      <ccd-linked-cases-check-your-answers
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-check-your-answers>
+    </ng-container>
   </div>
 </div>

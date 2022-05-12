@@ -43,24 +43,24 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
-    // Clear validation errors from the parent CaseEditPageComponent
-    // (given the "Next" button in a child component has been clicked)
-    this.caseEditPageComponent.validationErrors = [];
-    this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
-    if (this.errorMessages.length === 0) {
-      this.proceedToNextState();
+    if (linkedCasesState.currentLinkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS && linkedCasesState.navigateToPreviousPage) {
+      this.linkedCasesPage = LinkedCasesPages.LINK_CASE;
+    } else {
+      // Clear validation errors from the parent CaseEditPageComponent
+      // (given the "Next" button in a child component has been clicked)
+      this.caseEditPageComponent.validationErrors = [];
+      this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
+      if (this.errorMessages.length === 0) {
+        this.proceedToNextState();
+      }
     }
   }
 
   public proceedToNextState(): void {
     this.linkedCasesPage = this.getNextPage();
-
-    // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
-    // the form is at the final state
     if (this.isAtFinalState()) {
       // Trigger validation to clear the "notAtFinalState" error if now at the final state
       this.formGroup.updateValueAndValidity();
-      this.caseEditPageComponent.next();
     }
   }
 

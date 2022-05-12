@@ -1,6 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
-import { LinkedCase } from '../../domain';
+import { LinkedCase, LinkedCasesState } from '../../domain';
+import { LinkedCasesPages } from '../../enums';
+import { LinkedCasesService } from '../../services/linked-cases.service';
 
 @Component({
   selector: 'ccd-linked-cases-check-your-answers',
@@ -9,13 +12,26 @@ import { LinkedCase } from '../../domain';
 export class CheckYourAnswersComponent implements OnInit {
 
   @Input()
-  caseFields: CaseField[];
+  formGroup: FormGroup;
+
+  @Output()
+  public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
+
   linkedCases: LinkedCase[];
 
+  constructor(private linkedCasesService: LinkedCasesService) {}
+
   public ngOnInit(): void {
-    console.log('CASE FIELDS', this.caseFields);
+    console.log('FORM GROUP', this.formGroup);
     this.generateData();
     console.log('LINKED CASES', this.linkedCases);
+    this.linkedCases = this.linkedCasesService.linkedCases;
+    console.log('LINKED CASES FROM SERVICE', this.linkedCases);
+  }
+
+  public onChange(): void {
+    this.linkedCasesStateEmitter.emit(
+      { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, errorMessages: [], navigateToPreviousPage: true });
   }
 
   public generateData(): void {
