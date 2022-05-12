@@ -16,11 +16,11 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
-	public eventTriggerId: string;
+  public eventTriggerId: string;
   public formGroup: FormGroup;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
-	public linkedCasesEventTriggers = LinkedCasesEventTriggers;
+  public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public errorMessages: ErrorMessage[] = [];
 
   constructor() {
@@ -39,7 +39,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }), true) as FormGroup;
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
-		this.eventTriggerId = this.caseEditPageComponent.eventTrigger.id;
+    this.eventTriggerId = this.caseEditPageComponent.eventTrigger.id;
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
@@ -47,13 +47,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     // (given the "Next" button in a child component has been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
-    if (this.errorMessages.length == 0) {
+    if (this.errorMessages.length === 0) {
       this.proceedToNextState();
     }
   }
 
   public proceedToNextState(): void {
-		this.linkedCasesPage = this.getNextPage();
+    this.linkedCasesPage = this.getNextPage();
 
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
     // the form is at the final state
@@ -68,14 +68,14 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
   }
 
-	public getNextPage(): number {
-		if (this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) {
-			return this.eventTriggerId === LinkedCasesEventTriggers.LINK_CASES
-				? LinkedCasesPages.LINK_CASE
-				: LinkedCasesPages.UNLINK_CASE;
-		}
-		return LinkedCasesPages.CHECK_YOUR_ANSWERS;
-	}
+  public getNextPage(): number {
+    if (this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) {
+      return this.eventTriggerId === LinkedCasesEventTriggers.LINK_CASES
+        ? LinkedCasesPages.LINK_CASE
+        : LinkedCasesPages.UNLINK_CASE;
+    }
+    return LinkedCasesPages.CHECK_YOUR_ANSWERS;
+  }
 
   public navigateToErrorElement(elementId: string): void {
     if (elementId) {

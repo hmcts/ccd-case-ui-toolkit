@@ -25,7 +25,6 @@ describe('ValidatorsUtils', () => {
     expect(control.hasError('isValid')).toBeFalsy();
   }));
 
-
   it('should check numberLargerThanValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const control = new FormControl();
 
@@ -185,7 +184,6 @@ describe('ValidatorsUtils', () => {
     expect(form.hasError('invalidPauseEndTimeRange')).toBeTruthy();
     expect(form.getError('invalidPauseEndTimeRange').resume.message).toBe('Resume time must be between the hearing start and finish times');
   }));
-
 
   it('should detect duplicate entries', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const parties = new FormArray([]);

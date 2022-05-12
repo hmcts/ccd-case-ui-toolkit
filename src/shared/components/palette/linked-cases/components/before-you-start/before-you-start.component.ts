@@ -9,13 +9,13 @@ import { LinkedCasesEventTriggers, LinkedCasesPages } from '../../enums';
 })
 export class BeforeYouStartComponent  {
 
-	@Input()
-	public eventTriggerId: string;
+  @Input()
+  public eventTriggerId: string;
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-	public linkedCasesEventTriggers = LinkedCasesEventTriggers;
+  public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public errorMessages: ErrorMessage[];
 
   public onNext(): void {
