@@ -553,3 +553,20 @@ describe('FieldsUtils', () => {
     });
   });
 });
+
+describe('isLinkedCasesCaseField function test', () => {
+  // TODO: Revisit these tests once the case field is finalised.
+  it('should return false if case field is null', () => {
+    expect(FieldsUtils.isLinkedCasesCaseField(null)).toBe(false);
+  });
+
+  it('should return false if case field is not of type LinkedCases', () => {
+    const caseField = aCaseField('linkedCases', 'linkedCases', 'Complex', 'OPTIONAL', null, [], false, true);
+    expect(FieldsUtils.isLinkedCasesCaseField(caseField)).toBe(false);
+  });
+
+  it('should return true if case field is of type LinkedCases', () => {
+    const caseField = aCaseField('linkedCases', 'linkedCases', 'CaseLink', 'OPTIONAL', null, null, false, true);
+    expect(FieldsUtils.isLinkedCasesCaseField(caseField)).toBe(true);
+  });
+});

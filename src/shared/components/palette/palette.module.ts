@@ -114,6 +114,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    // ReadLinkedCasesFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -124,6 +125,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    // WriteLinkedCasesFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,

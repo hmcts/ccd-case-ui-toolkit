@@ -106,6 +106,8 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'CaseLink':
+        return write ? WriteLinkedCasesFieldComponent : ReadLinkedCasesFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

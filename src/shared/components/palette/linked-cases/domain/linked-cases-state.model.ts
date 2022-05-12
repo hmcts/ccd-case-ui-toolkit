@@ -1,4 +1,4 @@
-import { ErrorMessage } from "../../../../domain";
+import { ErrorMessage } from '../../../../domain';
 
 export interface LinkedCasesState {
   currentLinkedCasesPage: number;
