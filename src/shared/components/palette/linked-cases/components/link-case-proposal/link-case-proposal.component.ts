@@ -1,13 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
-import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
+import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
 import { LinkedCaseProposalEnum, LinkedCasesPages } from '../../enums';
-import { ValidatorsUtils } from '../../utils/validators.utils';
 import { LinkedCasesService } from '../../services/linked-cases.service';
+import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
   selector: 'ccd-linked-cases-link-case-proposal',
@@ -27,8 +27,11 @@ export class LinkCaseProposalComponent implements OnInit {
   public caseNumberError: string;
   public caseReasonError: string;
   public noSelectedCaseError: string;
-  constructor(
-    private casesService: CasesService, private readonly fb: FormBuilder, private readonly validatorsUtils: ValidatorsUtils) { }
+
+  constructor(private casesService: CasesService,
+              private readonly fb: FormBuilder,
+              private readonly validatorsUtils: ValidatorsUtils,
+              private readonly linkedCasesService: LinkedCasesService) {}
 
   ngOnInit(): void {
     this.casesService.getCaseLinkResponses().toPromise()
@@ -111,6 +114,7 @@ export class LinkCaseProposalComponent implements OnInit {
   public onNext(): void {
     this.noSelectedCaseError = null;
     if (this.selectedCases.length) {
+      this.linkedCasesService.linkedCases = this.selectedCases;
       // Return linked cases state and error messages to the parent
       this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.LINK_CASE, errorMessages: this.errorMessages });
     } else {
