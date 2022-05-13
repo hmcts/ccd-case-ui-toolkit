@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '../../../pipes';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { LinkedCasesTableComponent } from '../linked-cases/linked-cases-table.component';
 
 @NgModule({
   imports: [
@@ -16,10 +17,12 @@ import { PaletteUtilsModule } from '../utils/utils.module';
   declarations: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
+    LinkedCasesTableComponent
   ],
   exports: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
+    LinkedCasesTableComponent
   ]
 })
 export class CaseLinkModule {}

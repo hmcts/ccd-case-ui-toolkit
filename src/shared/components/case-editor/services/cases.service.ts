@@ -28,7 +28,6 @@ import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
-
 @Injectable()
 export class CasesService {
   // Internal (UI) API
@@ -102,8 +101,10 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     const loadingToken = this.loadingService.register();
+    //return Observable.of(mockGetCase)
     return this.http
-      .get(url, { headers, observe: 'body' })
+      .get('assets/getCase.json', {headers, observe: 'body'})
+      //.get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

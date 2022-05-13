@@ -120,6 +120,9 @@ export class FieldsUtils {
   };
 
   private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
+    if (!result) {
+      result = {}
+    }
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
@@ -154,7 +157,7 @@ export class FieldsUtils {
       case 'Complex': {
         if (result[field.id] && field.field_type.complex_fields) {
           field.field_type.complex_fields.forEach((f: CaseField) => {
-            if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+            if (['Collection', 'Complex', 'MultiSelectList', 'Text'].indexOf(f.field_type.type) > -1) {
               FieldsUtils.LABEL_MERGE_FUNCTION(f, result[field.id]);
             }
           });
@@ -177,7 +180,7 @@ export class FieldsUtils {
               case 'Complex': {
                 if (field.field_type.collection_field_type.complex_fields) {
                   field.field_type.collection_field_type.complex_fields.forEach((f: CaseField) => {
-                    if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+                    if (['Collection', 'Complex', 'MultiSelectList', 'Text'].indexOf(f.field_type.type) > -1) {
                       FieldsUtils.LABEL_MERGE_FUNCTION(f, elem.value);
                     }
                   });
