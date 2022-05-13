@@ -1,5 +1,6 @@
 export * from './address';
 export * from './base-field';
+export * from './case-link';
 export * from './collection';
 export * from './complex';
 export * from './date';
@@ -8,7 +9,6 @@ export * from './email';
 export * from './fixed-list';
 export * from './history';
 export * from './label';
-export * from './linked-cases';
 export * from './money-gbp';
 export * from './multi-select-list';
 export * from './number';

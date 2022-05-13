@@ -1,26 +1,26 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CaseEditPageComponent } from '../../case-editor';
-import { LinkedCasesPages } from './enums';
-import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
+import { CaseEditPageComponent } from '../../../case-editor';
+import { LinkedCasesPages } from '../enums';
+import { WriteLinkedCasesComponent } from './write-linked-cases.component';
 
-describe('WriteLinkedCasesFieldComponent', () => {
-  let component: WriteLinkedCasesFieldComponent;
-  let fixture: ComponentFixture<WriteLinkedCasesFieldComponent>;
+describe('WriteLinkedCasesComponent', () => {
+  let component: WriteLinkedCasesComponent;
+  let fixture: ComponentFixture<WriteLinkedCasesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [WriteLinkedCasesFieldComponent],
+      declarations: [WriteLinkedCasesComponent],
       providers: []
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WriteLinkedCasesFieldComponent);
+    fixture = TestBed.createComponent(WriteLinkedCasesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

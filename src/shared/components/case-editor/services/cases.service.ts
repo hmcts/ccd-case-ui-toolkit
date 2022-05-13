@@ -21,14 +21,13 @@ import {
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
-import { LinkCaseReason } from '../../palette/linked-cases/domain/linked-cases.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
-
 @Injectable()
 export class CasesService {
   // Internal (UI) API
@@ -102,8 +101,10 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     const loadingToken = this.loadingService.register();
+    // return Observable.of(mockGetCase)
     return this.http
-      .get(url, { headers, observe: 'body' })
+      .get('assets/getCase.json', {headers, observe: 'body'})
+      // .get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -180,8 +181,6 @@ export class CasesService {
     } else {
       headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
     }
-
-		console.log('GET EVENT TRIGGER URL', url);
 
     return this.http
       .get(url, { headers, observe: 'body' })
@@ -313,7 +312,6 @@ export class CasesService {
   }
 
   private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
-		console.log('INITIALISE EVENT TRIGGER', eventTrigger);
     if (!eventTrigger.wizard_pages) {
       eventTrigger.wizard_pages = [];
     }
