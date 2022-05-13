@@ -52,7 +52,6 @@ s
   }
 
   ngOnInit(): void {
-    super.ngOnInit()
     this.getAllCaseInformation();
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;

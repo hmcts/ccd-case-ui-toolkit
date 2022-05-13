@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from '.';
 import { BeforeYouStartComponent } from './components';
 import { LinkCaseProposalComponent } from './components/link-case-proposal/link-case-proposal.component';
+import { LinkedCasesTableComponent } from './linked-cases-table.component';
 
 @NgModule({
   imports: [
@@ -16,11 +17,11 @@ import { LinkCaseProposalComponent } from './components/link-case-proposal/link-
     ReadLinkedCasesFieldComponent,
     WriteLinkedCasesFieldComponent,
     BeforeYouStartComponent,
-    LinkCaseProposalComponent
+    LinkCaseProposalComponent,
   ],
   exports: [
     ReadLinkedCasesFieldComponent,
-    WriteLinkedCasesFieldComponent
+    WriteLinkedCasesFieldComponent,
   ]
 })
 export class LinkedCasesModule {}
