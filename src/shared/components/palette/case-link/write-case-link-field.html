@@ -1,5 +1,5 @@
 <ng-container>
-  <div *ngIf="!hasCaseLinkCollection(); else caseLinkCollectionBlock" class="form-group"
+  <div *ngIf="!containsCaseLinkCollection; else caseLinkCollectionBlock" class="form-group"
     [ngClass]="{'form-group-error': !caseReferenceControl.valid && (caseReferenceControl.dirty || caseReferenceControl.touched)}">
     <label [for]="id()">
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
@@ -10,7 +10,9 @@
       | ccdFirstError:caseField.label}}</span>
     <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
   </div>
-  <ng-template #caseLinkCollectionBlock>
-    CaseLink related
+  <ng-template #caseLinkCollectionBlock *ngIf="containsCaseLinkCollection">
+		<div>Write linked cases collection</div>
+		<ccd-write-linked-cases></ccd-write-linked-cases>
   </ng-template>
+	<ccd-write-linked-cases></ccd-write-linked-cases>
 </ng-container>

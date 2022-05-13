@@ -38,7 +38,6 @@ import {
   ReadCollectionFieldComponent,
   ReadDateFieldComponent,
   ReadEmailFieldComponent,
-  ReadLinkedCasesFieldComponent,
   ReadNumberFieldComponent,
   ReadPhoneUKFieldComponent,
   ReadTextAreaFieldComponent,
@@ -48,7 +47,6 @@ import {
   WriteCollectionFieldComponent,
   WriteDateFieldComponent,
   WriteEmailFieldComponent,
-  WriteLinkedCasesFieldComponent,
   WriteNumberFieldComponent,
   WritePhoneUKFieldComponent,
   WriteTextAreaFieldComponent,
@@ -129,7 +127,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       ReadPhoneUKFieldComponent,
       ReadDateFieldComponent,
       ReadCollectionFieldComponent,
-      ReadLinkedCasesFieldComponent,
 
       // Write
       WriteCollectionFieldComponent,
@@ -139,7 +136,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       WriteNumberFieldComponent,
       WriteEmailFieldComponent,
       WriteDateFieldComponent,
-      WriteLinkedCasesFieldComponent,
       LabelSubstitutorDirective,
       FocusElementDirective,
       PaginatePipe

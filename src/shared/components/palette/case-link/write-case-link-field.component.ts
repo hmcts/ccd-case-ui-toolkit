@@ -13,6 +13,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
 
   caseReferenceControl: AbstractControl;
   caseLinkGroup: FormGroup;
+	containsCaseLinkCollection: boolean;
 
   constructor(
     private router: Router,
@@ -44,6 +45,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
         caseLinkSubField.retain_hidden_value = this.caseField.retain_hidden_value;
       }
     }
+		this.containsCaseLinkCollection = this.hasCaseLinkCollection();
   }
 
   private caseReferenceValidator(): ValidatorFn {
@@ -70,7 +72,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
   
   public hasCaseLinkCollection(): boolean {
-    return this.caseField.field_type && this.caseField.field_type.collection_field_type.id === "CaseLink";
+    return this.caseField.field_type && this.caseField.field_type.collection_field_type.id === 'CaseLink';
   }
 
   public linkedCasesEvent() {

@@ -1,16 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../domain';
-import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
-import { AbstractFieldWriteComponent } from '../base-field';
-import { LinkedCasesState } from './domain';
-import { LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
+import { ErrorMessage } from '../../../../domain';
+import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
+import { AbstractFieldWriteComponent } from '../../base-field';
+import { LinkedCasesState } from '../domain';
+import { LinkedCasesEventTriggers, LinkedCasesPages } from '../enums';
 
 @Component({
-  selector: 'ccd-write-linked-cases-field',
-  templateUrl: './write-linked-cases-field.component.html'
+  selector: 'ccd-write-linked-cases',
+  templateUrl: './write-linked-cases.component.html'
 })
-export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteLinkedCasesComponent implements OnInit {
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
@@ -23,19 +23,19 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public errorMessages: ErrorMessage[] = [];
 
   constructor() {
-    super();
+    // super();
   }
 
   public ngOnInit(): void {
-    this.formGroup = this.registerControl(new FormGroup({}, {
-      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
-        if (!this.isAtFinalState()) {
-          // Return an error to mark the FormGroup as invalid if not at the final state
-          return {notAtFinalState: true};
-        }
-        return null;
-      }
-    }), true) as FormGroup;
+    // this.formGroup = this.registerControl(new FormGroup({}, {
+    //   validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+    //     if (!this.isAtFinalState()) {
+    //       // Return an error to mark the FormGroup as invalid if not at the final state
+    //       return {notAtFinalState: true};
+    //     }
+    //     return null;
+    //   }
+    // }), true) as FormGroup;
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
     this.eventTriggerId = this.caseEditPageComponent.eventTrigger.id;

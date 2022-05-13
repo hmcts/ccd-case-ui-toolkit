@@ -19,8 +19,8 @@
         (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-before-you-start>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.LINK_CASE">
-      <ccd-linked-cases-link-case-proposal
-        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-link-case-proposal>
+      <ccd-link-cases
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-link-cases>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.UNLINK_CASE">
       <!-- Unlink cases component goes here -->

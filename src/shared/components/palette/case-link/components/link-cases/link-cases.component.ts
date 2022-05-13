@@ -10,11 +10,11 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
-  selector: 'ccd-linked-cases-link-case-proposal',
-  styleUrls: ['./link-case-proposal.component.scss'],
-  templateUrl: './link-case-proposal.component.html'
+  selector: 'ccd-link-cases',
+  styleUrls: ['./link-cases.component.scss'],
+  templateUrl: './link-cases.component.html'
 })
-export class LinkCaseProposalComponent implements OnInit {
+export class LinkCasesComponent implements OnInit {
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
