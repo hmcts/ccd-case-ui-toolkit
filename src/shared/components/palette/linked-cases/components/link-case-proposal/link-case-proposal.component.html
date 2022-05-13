@@ -19,7 +19,7 @@
     <div>
       <span class="govuk-caption-l">Link cases to Smith vs Peterson 1234-5678-9012-3456</span>
       <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
-      <form class="form" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
+      <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
         <h3 class="govuk-heading-s">Enter case number</h3>
         <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!caseNumberError}">
           <span class="govuk-error-message" *ngIf="caseNumberError">
@@ -46,9 +46,9 @@
 
         <br><br>
 
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="submitCaseInfo()">Propose case link</button>
-      </form>
+      </div>
       <br><br>
 
       <hr>

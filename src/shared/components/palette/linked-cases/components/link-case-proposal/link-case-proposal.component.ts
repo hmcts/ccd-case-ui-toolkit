@@ -2,11 +2,12 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
-import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-case.model';
+import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCaseProposalEnum, LinkedCasesPages } from '../../enums';
 import { ValidatorsUtils } from '../../utils/validators.utils';
+import { LinkedCasesService } from '../../services/linked-cases.service';
 
 @Component({
   selector: 'ccd-linked-cases-link-case-proposal',
@@ -27,9 +28,14 @@ export class LinkCaseProposalComponent implements OnInit {
   public caseReasonError: string;
   public noSelectedCaseError: string;
   constructor(
-    private casesService: CasesService, private readonly fb: FormBuilder, private readonly validatorsUtils: ValidatorsUtils) { }
+    private casesService: CasesService,
+    private readonly fb: FormBuilder,
+    private readonly validatorsUtils: ValidatorsUtils,
+    private readonly linkedCasesService: LinkedCasesService
+  ) { }
 
   ngOnInit(): void {
+    this.selectedCases = this.linkedCasesService.linkedCases;
     this.casesService.getCaseLinkResponses().toPromise()
       .then(reasons => {
         this.linkCaseReasons = reasons;
@@ -104,13 +110,14 @@ export class LinkCaseProposalComponent implements OnInit {
         selectedReasons.push({ reason: selectedReason.value_en });
       }
     })
-    return selectedReasons
+    return selectedReasons;
   }
 
   public onNext(): void {
     this.noSelectedCaseError = null;
     if (this.selectedCases.length) {
       // Return linked cases state and error messages to the parent
+      this.linkedCasesService.linkedCases = this.selectedCases;
       this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.LINK_CASE, errorMessages: this.errorMessages });
     } else {
       this.noSelectedCaseError = LinkedCaseProposalEnum.CaseSelectionError;

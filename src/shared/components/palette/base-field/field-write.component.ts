@@ -4,6 +4,7 @@ import { plainToClassFromExist } from 'class-transformer';
 
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
@@ -35,10 +36,10 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   }
 
   ngOnInit(): void {
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
+    const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance
@@ -58,6 +59,9 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['isExpanded'] = this.isExpanded;
     component.instance['isInSearchBlock'] = this.isInSearchBlock;
+    // Add a reference to the parent CaseEditPageComponent to this component (needed for access to the parent
+    // CaseEditPageComponent's validation error messages)
+    component.instance['caseEditPageComponent'] = component.injector.get(CaseEditPageComponent);
     this.fieldContainer.insert(component.hostView);
 
     // EUI-3267.

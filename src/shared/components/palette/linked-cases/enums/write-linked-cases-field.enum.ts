@@ -12,3 +12,8 @@ export enum LinkedCaseProposalEnum {
   CaseCheckAgainError = 'Check the case number and try again',
   CaseSelectionError = 'You need to propose at least one case',
 }
+
+export enum LinkedCasesEventTriggers {
+  LINK_CASES = 'linkCases',
+  MANAGE_CASE_LINKS = 'manageCaseLinks'
+}

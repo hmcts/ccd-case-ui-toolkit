@@ -39,8 +39,6 @@ import {
   CaseEventCompletionTaskReassignedComponent
 } from './case-event-completion';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
-import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
-import { CaseworkerService } from './services/case-worker.service';
 import {
   EventCompletionStateMachineService,
   EventTriggerService,
@@ -49,6 +47,8 @@ import {
   WizardFactoryService,
   WorkAllocationService
 } from './services';
+import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { CaseworkerService } from './services/case-worker.service';
 
 @NgModule({
     imports: [
