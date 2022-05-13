@@ -103,12 +103,8 @@ export class CasesService {
     const loadingToken = this.loadingService.register();
     //return Observable.of(mockGetCase)
     return this.http
-<<<<<<< HEAD
-//      .get('assets/getCase.json', {headers, observe: 'body'})
-      .get(url, {headers, observe: 'body'})
-=======
-      .get(url, { headers, observe: 'body' })
->>>>>>> story/EUI-5568
+      .get('assets/getCase.json', {headers, observe: 'body'})
+      //.get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

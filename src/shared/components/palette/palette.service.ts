@@ -85,15 +85,20 @@ export class PaletteService {
             return write ? WriteAddressFieldComponent : ReadComplexFieldComponent;
           case 'OrderSummary':
             return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
-          case 'CaseLink':
-            return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
-          default:
-            return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
+          case 'CaseLink':
+              return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;            
+              default:
+                return UnsupportedFieldComponent;
         }
       case 'Collection':
-        return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+        switch(caseField.field_type.collection_field_type.id) {
+          case 'CaseLink':
+            return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
+          default:
+            return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+          }
       case 'MultiSelectList':
         return write ? WriteMultiSelectListFieldComponent : ReadMultiSelectListFieldComponent;
       case 'Document':
@@ -106,8 +111,6 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
-      case 'CaseLink':
-        return write ? WriteLinkedCasesFieldComponent : ReadLinkedCasesFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

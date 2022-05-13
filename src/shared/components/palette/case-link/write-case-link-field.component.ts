@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
@@ -12,6 +13,13 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
 
   caseReferenceControl: AbstractControl;
   caseLinkGroup: FormGroup;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
+    super();
+  }
 
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
@@ -60,4 +68,17 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     }
     return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());
   }
+  
+  public hasCaseLinkCollection(): boolean {
+    return this.caseField.field_type && this.caseField.field_type.collection_field_type.id === "CaseLink";
+  }
+
+  public linkedCasesEvent() {
+    return this.router && this.router.url && this.router.url.includes('linkCases')
+  }
+
+  public manageCaseLinksEvent() {
+    return this.router && this.router.url && this.router.url.includes('manageCaseLinks')
+  }
+
 }
