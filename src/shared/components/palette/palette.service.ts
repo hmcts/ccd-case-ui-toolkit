@@ -51,7 +51,9 @@ import { ReadLinkedCasesFieldComponent } from './linked-cases/read-linked-cases-
 export class PaletteService {
 
   getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
-    if (caseField.field_type.collection_field_type.id === 'CaseLink') {
+    if (caseField.field_type && 
+        caseField.field_type.collection_field_type &&
+        caseField.field_type.collection_field_type.id === 'CaseLink') {
       return WriteLinkedCasesFieldComponent;
     }
     switch (caseField.field_type.type) {

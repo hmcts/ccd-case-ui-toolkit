@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseField } from '../../../../../domain';
+import { ErrorMessage } from '../../../../../domain';
 import { LinkedCase, LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -17,7 +17,7 @@ export class CheckYourAnswersComponent implements OnInit {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  linkedCases: LinkedCase[];
+  public linkedCases: LinkedCase[];
 
   constructor(private linkedCasesService: LinkedCasesService) {}
 
@@ -31,7 +31,7 @@ export class CheckYourAnswersComponent implements OnInit {
 
   public onChange(): void {
     this.linkedCasesStateEmitter.emit(
-      { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, errorMessages: [], navigateToPreviousPage: true });
+      { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, navigateToPreviousPage: true });
   }
 
   public generateData(): void {
