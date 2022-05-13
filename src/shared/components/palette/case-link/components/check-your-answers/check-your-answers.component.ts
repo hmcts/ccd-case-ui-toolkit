@@ -5,7 +5,8 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
 
 @Component({
   selector: 'ccd-linked-cases-check-your-answers',
-  templateUrl: './check-your-answers.component.html'
+  templateUrl: './check-your-answers.component.html',
+  styleUrls: ['./check-your-answers.component.scss']
 })
 export class CheckYourAnswersComponent implements OnInit {
 

@@ -14,15 +14,17 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCases">
           <td class="govuk-table__cell">
-            {{case.caseLink.caseName}}<br>{{case.caseLink.caseReference}}
+            {{case.caseLink.caseName}}Smith vs Peterson<br>{{case.caseLink.caseReference}}
           </td>
           <td class="govuk-table__cell">
-            <span *ngFor="let reason of case.caseLink.linkReason">
-              {{reason.reason}}<br>
+            <span *ngFor="let reason of case.caseLink.linkReason; last as isLast">
+              {{reason.reason}}<br *ngIf="!isLast">
             </span>
           </td>
           <td class="govuk-table__cell"></td>
-          <td class="govuk-table__cell"><a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state" (click)="onChange()">Change</a></td>
+          <td class="govuk-table__cell">
+            <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
+          </td>
         </tr>
       </tbody>
     </table>
