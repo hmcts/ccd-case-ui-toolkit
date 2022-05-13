@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../../../base-field/abstract-field-read.component';
 import { CaseField } from '../../../../../domain/definition';
 import { switchMap } from 'rxjs/operators';
@@ -21,13 +21,9 @@ export enum PageType {
   templateUrl: './linked-cases-table.component.html'
 })
 
-export class LinkedCasesTableComponent implements OnInit {
-  @Input()
-  caseFields: CaseField[] = [];
-
+export class LinkedCasesTableComponent extends AbstractFieldReadComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
-
   @Input()
   public type: PageType = PageType.LINKEDCASESTABLBEVIEW;
   pageType = PageType;
@@ -42,12 +38,15 @@ export class LinkedCasesTableComponent implements OnInit {
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
   constructor(
-    private organisationService: OrganisationService,
-    private organisationConverter: OrganisationConverter,
     private route: ActivatedRoute,
-    private readonly http: HttpClient,
-    private readonly searchService: SearchService
-    ) {
+    private readonly searchService: SearchService    ) {
+      super();
+    }
+  ngAfterViewInit(): void {
+    const labelField = document.getElementsByClassName('case-viewer-label');
+    if(labelField) {
+      labelField[0].replaceWith('')
+    }
   }
 
   ngOnInit(): void {
@@ -55,36 +54,31 @@ export class LinkedCasesTableComponent implements OnInit {
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });
-    if (this.caseField && this.caseField.value) {
-      this.organisations$ = this.organisationService.getActiveOrganisations();
-      this.selectedOrg$ = this.organisations$.pipe(
-        switchMap((organisations: OrganisationVm[]) => of(
-            this.organisationConverter.toSimpleOrganisationModel(
-              organisations.find(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)
-            )
-          )
-        )
-      );
-    }
   }
 
+  groupByCaseType = (arrObj, key) => {
+    return arrObj.reduce((rv, x) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x['caseReference']);
+      return rv;
+    }, {});
+  };
+
   public getAllCaseInformation() {
-    console.log('this.route.snapshot.data')
-    console.log(this.route.snapshot.data)
-    const receivedCases: any[] = this.route.snapshot.data.linkedCase && this.route.snapshot.data.linkedCase.serviceLinkedCases || [];
-    const linkedCaseIds: string[] = [''];
     const hearingServices = [];
-    linkedCaseIds.forEach(id => {
-      const query = this.searchService.searchCases('Benefit_SCSS', {}, {}, SearchService.VIEW_WORKBASKET);
+    const caseTypeId = this.route.snapshot.data.case.case_type.id;
+    const linkedCaseIds = this.groupByCaseType(this.caseField.value, 'caseType');
+    Object.keys(linkedCaseIds).map(key => {
+      const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100)
+      const query = this.searchService.searchCases('Benefit_SCSS', {}, {reference: linkedCaseIds[key].join(',')}, SearchService.VIEW_WORKBASKET);
       hearingServices.push(query);
-    });
+    })
     this.sub = forkJoin(hearingServices).subscribe((hearingsList: any) => {
       hearingsList.forEach(response => response.results.map((result: any) => this.linkedCasesFromResponse.push(result)))
       this.isLoaded = true;
     });
   }
 
-  constructElasticSearchQuery(caseIds: any[], page: number, size: number) {
+  constructElasticSearchQuery(caseIds: any[], size: number) {
     return {
       native_es_query: {
         query: {
