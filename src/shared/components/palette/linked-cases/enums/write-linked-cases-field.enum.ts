@@ -10,6 +10,7 @@ export enum LinkedCaseProposalEnum {
   ReasonSelectionError = 'Select a reason why these cases should be linked',
   SomethingWrong = 'Something went wrong, please try again later',
   CaseCheckAgainError = 'Check the case number and try again',
+  CaseSelectionError = 'You need to propose at least one case',
 }
 
 export enum LinkedCasesEventTriggers {
