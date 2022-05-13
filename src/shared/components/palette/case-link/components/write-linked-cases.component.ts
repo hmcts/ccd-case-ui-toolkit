@@ -10,7 +10,7 @@ import { LinkedCasesEventTriggers, LinkedCasesPages } from '../enums';
   selector: 'ccd-write-linked-cases',
   templateUrl: './write-linked-cases.component.html'
 })
-export class WriteLinkedCasesComponent implements OnInit {
+export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent implements OnInit {
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
@@ -23,19 +23,19 @@ export class WriteLinkedCasesComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
 
   constructor() {
-    // super();
+    super();
   }
 
   public ngOnInit(): void {
-    // this.formGroup = this.registerControl(new FormGroup({}, {
-    //   validators: (_: AbstractControl): {[key: string]: boolean} | null => {
-    //     if (!this.isAtFinalState()) {
-    //       // Return an error to mark the FormGroup as invalid if not at the final state
-    //       return {notAtFinalState: true};
-    //     }
-    //     return null;
-    //   }
-    // }), true) as FormGroup;
+    this.formGroup = this.registerControl(new FormGroup({}, {
+      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+        if (!this.isAtFinalState()) {
+          // Return an error to mark the FormGroup as invalid if not at the final state
+          return {notAtFinalState: true};
+        }
+        return null;
+      }
+    }), true) as FormGroup;
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
     this.eventTriggerId = this.caseEditPageComponent.eventTrigger.id;

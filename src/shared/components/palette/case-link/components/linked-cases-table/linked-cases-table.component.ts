@@ -42,7 +42,7 @@ export class LinkedCasesTableComponent implements OnInit {
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
   constructor(
-    private organisationService: OrganisationService, 
+    private organisationService: OrganisationService,
     private organisationConverter: OrganisationConverter,
     private route: ActivatedRoute,
     private readonly http: HttpClient,
@@ -95,8 +95,8 @@ export class LinkedCasesTableComponent implements OnInit {
         sort: [
           // does not seem to allow sorting by case name (attempted both pre and post v6.8 syntax)
           // this is either because case name not present for all cases or because nested data cannot be sorted in this instance
-          //{ "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
-          { id: {order: "asc"} },
+          // { "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
+          { id: {order: 'asc'} },
         ],
         size,
       },
