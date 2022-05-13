@@ -21,9 +21,9 @@ import {
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
-import { LinkCaseReason } from '../../palette/linked-cases/domain/linked-cases.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
