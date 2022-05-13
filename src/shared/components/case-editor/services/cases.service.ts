@@ -372,7 +372,7 @@ export class CasesService {
       userId: payload.requestedRoles[0].actorId
     }
     return this.http.post(
-      `${this.appConfig.getCamRoleAssignmentsApiUrl()}`,
+      `/api/specific-access-request`,
       payload
     );
   }
