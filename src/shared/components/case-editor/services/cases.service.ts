@@ -21,9 +21,9 @@ import {
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
-import { LinkCaseReason } from '../../palette/linked-cases/domain/linked-case.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -101,10 +101,10 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     const loadingToken = this.loadingService.register();
-    //return Observable.of(mockGetCase)
+    // return Observable.of(mockGetCase)
     return this.http
       .get('assets/getCase.json', {headers, observe: 'body'})
-      //.get(url, {headers, observe: 'body'})
+      // .get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

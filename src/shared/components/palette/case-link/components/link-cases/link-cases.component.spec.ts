@@ -1,25 +1,25 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LinkedCasesPages } from '../../enums';
-import { LinkCaseProposalComponent } from './link-case-proposal.component'
+import { LinkCasesComponent } from './link-cases.component'
 
-describe('LinkCaseProposalComponent', () => {
-  let component: LinkCaseProposalComponent;
-  let fixture: ComponentFixture<LinkCaseProposalComponent>;
+describe('LinkCasesComponent', () => {
+  let component: LinkCasesComponent;
+  let fixture: ComponentFixture<LinkCasesComponent>;
   let nextButton: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [LinkCaseProposalComponent],
+      declarations: [LinkCasesComponent],
       providers: []
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LinkCaseProposalComponent);
+    fixture = TestBed.createComponent(LinkCasesComponent);
     component = fixture.componentInstance;
     spyOn(component.linkedCasesStateEmitter, 'emit');
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');

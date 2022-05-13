@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
@@ -11,8 +12,15 @@ import { WriteComplexFieldComponent } from '../complex/write-complex-field.compo
 })
 export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
+  @Input()
+  public caseEditPageComponent: CaseEditPageComponent;
+
   caseReferenceControl: AbstractControl;
   caseLinkGroup: FormGroup;
+  containsCaseLinkCollection: boolean;
+
+  @ViewChild('writeComplexFieldComponent')
+  writeComplexFieldComponent: WriteComplexFieldComponent;
 
   constructor(
     private router: Router,
@@ -20,9 +28,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   ) {
     super();
   }
-
-  @ViewChild('writeComplexFieldComponent')
-  writeComplexFieldComponent: WriteComplexFieldComponent;
 
   public ngOnInit(): void {
     if (this.caseField.value) {
@@ -44,6 +49,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
         caseLinkSubField.retain_hidden_value = this.caseField.retain_hidden_value;
       }
     }
+    this.containsCaseLinkCollection = this.hasCaseLinkCollection();
   }
 
   private caseReferenceValidator(): ValidatorFn {
@@ -68,9 +74,9 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     }
     return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());
   }
-  
+
   public hasCaseLinkCollection(): boolean {
-    return this.caseField.field_type && this.caseField.field_type.collection_field_type.id === "CaseLink";
+    return this.caseField.field_type && this.caseField.field_type.collection_field_type.id === 'CaseLink';
   }
 
   public linkedCasesEvent() {
