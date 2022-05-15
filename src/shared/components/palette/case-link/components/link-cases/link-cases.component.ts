@@ -19,11 +19,10 @@ export class LinkCasesComponent implements OnInit {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  errorMessages: ErrorMessage[];
+  public errorMessages: ErrorMessage[];
   public linkCaseForm: FormGroup;
   public linkCaseReasons: LinkCaseReason[];
   public selectedCases: LinkedCase[] = [];
-  public validationErrors: { id: string, message: string }[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
   public noSelectedCaseError: string;
@@ -67,7 +66,7 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public submitCaseInfo() {
-    this.validationErrors = [];
+    this.errorMessages = [];
     this.caseReasonError = null;
     this.caseNumberError = null;
     if (this.linkCaseForm.valid) {
@@ -87,18 +86,47 @@ export class LinkCasesComponent implements OnInit {
         })
         .catch((error: HttpError) => {
           this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
-          this.validationErrors.push({ id: 'caseNumber', message: LinkedCaseProposalEnum.CaseCheckAgainError });
+          this.errorMessages.push({
+            title: 'dummy-case-number',
+            description: LinkedCaseProposalEnum.CaseCheckAgainError,
+            fieldId: 'caseNumber'
+          });
+          // Return linked cases state and error messages to the parent
+          this.linkedCasesStateEmitter.emit({
+            currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+            errorMessages: this.errorMessages,
+            navigateToNextPage: false
+          });
           return throwError(error);
         });
     } else {
       if (this.linkCaseForm.controls.caseNumber.invalid) {
         this.caseNumberError = LinkedCaseProposalEnum.CaseNumberError;
-        this.validationErrors.push({ id: 'caseNumber', message: LinkedCaseProposalEnum.CaseNumberError });
+        this.errorMessages.push({
+          title: 'dummy-case-number',
+          description: LinkedCaseProposalEnum.CaseNumberError,
+          fieldId: 'caseNumber'
+        });
+        this.linkedCasesStateEmitter.emit({
+          currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+          errorMessages: this.errorMessages,
+          navigateToNextPage: false
+        });
       }
       if (this.linkCaseForm.controls.reasonType.invalid) {
         this.caseReasonError = LinkedCaseProposalEnum.ReasonSelectionError;
-        this.validationErrors.push({ id: 'caseReason', message: LinkedCaseProposalEnum.ReasonSelectionError });
+        this.errorMessages.push({
+          title: 'dummy-case-reason',
+          description: LinkedCaseProposalEnum.ReasonSelectionError,
+          fieldId: 'caseReason'
+        });
       }
+      // Return linked cases state and error messages to the parent
+      this.linkedCasesStateEmitter.emit({
+        currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+        errorMessages: this.errorMessages,
+        navigateToNextPage: false
+      });
     }
   }
 
@@ -114,14 +142,23 @@ export class LinkCasesComponent implements OnInit {
 
   public onNext(): void {
     this.noSelectedCaseError = null;
+    let navigateToNextPage = true;
     if (this.selectedCases.length) {
       this.linkedCasesService.linkedCases = this.selectedCases;
-      // Return linked cases state and error messages to the parent
-      this.linkedCasesService.linkedCases = this.selectedCases;
-      this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.LINK_CASE, errorMessages: this.errorMessages });
     } else {
       this.noSelectedCaseError = LinkedCaseProposalEnum.CaseSelectionError;
-      this.validationErrors.push({ id: 'caseReason', message: LinkedCaseProposalEnum.CaseSelectionError });
+      this.errorMessages.push({
+        title: 'dummy-case-selection',
+        description: LinkedCaseProposalEnum.CaseSelectionError,
+        fieldId: 'caseReason'
+      });
+      navigateToNextPage = false;
     }
+    // Return linked cases state and error messages to the parent
+    this.linkedCasesStateEmitter.emit({
+      currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+      errorMessages: this.errorMessages,
+      navigateToNextPage: navigateToNextPage
+    });
   }
 }

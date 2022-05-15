@@ -20,6 +20,10 @@ export class BeforeYouStartComponent  {
 
   public onNext(): void {
     // Return linked cases state and error messages to the parent
-    this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: this.errorMessages });
+    this.linkedCasesStateEmitter.emit({
+      currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
+      errorMessages: this.errorMessages,
+      navigateToNextPage: true
+    });
   }
 }

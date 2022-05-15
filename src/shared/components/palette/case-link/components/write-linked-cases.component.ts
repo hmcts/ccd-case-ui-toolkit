@@ -42,14 +42,15 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
-    this.linkedCasesPage = this.getNextPage(linkedCasesState);
-
-    // Clear validation errors from the parent CaseEditPageComponent
-    // (given the "Next" button in a child component has been clicked)
+    this.errorMessages = [];
     this.caseEditPageComponent.validationErrors = [];
-    this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
-    if (this.errorMessages.length === 0) {
+    if (linkedCasesState.navigateToNextPage) {
+      this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.proceedToNextState();
+    } else {
+      linkedCasesState.errorMessages.forEach(errorMessage => {
+        this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
+      });
     }
   }
 
