@@ -72,7 +72,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   }
 
   private goToSubmit(route: ActivatedRouteSnapshot): Promise<boolean> {
-    return this.router.navigate([...this.parentUrlSegments(route), 'submit']);
+    return this.router.navigate([...this.parentUrlSegments(route), 'submit'], {queryParams: route.queryParams});
   }
 
   private buildState(caseFields: CaseField[]): any {
