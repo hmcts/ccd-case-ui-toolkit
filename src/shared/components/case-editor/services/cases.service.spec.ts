@@ -50,6 +50,20 @@ describe('CasesService', () => {
     triggers: [],
     events: []
   };
+  const CASE_REASONS = [{
+    key: 'progressed',
+    value_en: 'Progressed as part of this lead case',
+    value_cy: '',
+    hint_text_en: 'Progressed as part of this lead case',
+    hint_text_cy: '',
+    lov_order: 1,
+    parent_key: null,
+    category_key: 'caseLinkReason',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+    from: 'exui-default'
+  }]
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
@@ -76,7 +90,7 @@ describe('CasesService', () => {
       'wizardPageFieldToCaseFieldMapper', ['mapAll']);
 
     orderService = {
-      sort: function() {}
+      sort: function () { }
     };
     spyOn(orderService, 'sort').and.callFake((caseFields: CaseField[]) => {
       return caseFields;
@@ -144,6 +158,30 @@ describe('CasesService', () => {
         });
     });
   });
+
+
+  describe('getCaseLinkResponses()', () => {
+    it('should call getCaseLinkResponses', () => {
+      httpService.get.and.returnValue(Observable.of(CASE_REASONS));
+      casesService
+        .getCaseLinkResponses()
+        .subscribe(
+          caseData => expect(caseData).toEqual(CASE_REASONS)
+        );
+    });
+    it('should call getCaseLinkResponses', () => {
+      httpService.get.and.returnValue(throwError(ERROR));
+      casesService
+        .getCaseLinkResponses()
+        .subscribe(data => {
+          expect(data).toEqual(CASE_REASONS);
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+        });
+    });
+
+  })
 
   describe('getCaseViewV2()', () => {
 
@@ -222,7 +260,7 @@ describe('CasesService', () => {
         .set('experimental', 'true')
         .set('Content-Type', 'application/json')
         .set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, {headers, observe: 'body'});
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, { headers, observe: 'body' });
     });
 
     it('should use HttpService::get with correct url for create event', () => {
@@ -234,7 +272,7 @@ describe('CasesService', () => {
         .set('experimental', 'true')
         .set('Content-Type', 'application/json')
         .set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, {headers, observe: 'body'});
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, { headers, observe: 'body' });
     });
 
     it('should use HttpService::get with correct url for DRAFTS', () => {
@@ -243,10 +281,10 @@ describe('CasesService', () => {
         .subscribe();
 
       const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Content-Type', 'application/json')
-      .set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, {headers, observe: 'body'});
+        .set('experimental', 'true')
+        .set('Content-Type', 'application/json')
+        .set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, { headers, observe: 'body' });
     });
 
     it('should retrieve event trigger from server by case id', () => {
@@ -327,11 +365,11 @@ describe('CasesService', () => {
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
         .subscribe();
       const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
-      .set('Content-Type', 'application/json');
+        .set('experimental', 'true')
+        .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
+        .set('Content-Type', 'application/json');
 
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_EVENT_URL, CASE_EVENT_DATA, {headers, observe: 'body'});
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_EVENT_URL, CASE_EVENT_DATA, { headers, observe: 'body' });
     });
 
     it('should create event on server', () => {
@@ -399,11 +437,11 @@ describe('CasesService', () => {
         .subscribe();
 
       const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
-      .set('Content-Type', 'application/json');
+        .set('experimental', 'true')
+        .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
+        .set('Content-Type', 'application/json');
 
-      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, {headers, observe: 'body'});
+      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'body' });
     });
 
     it('should validate case on server', () => {
@@ -457,11 +495,11 @@ describe('CasesService', () => {
         .subscribe();
 
       const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
-      .set('Content-Type', 'application/json');
+        .set('experimental', 'true')
+        .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
+        .set('Content-Type', 'application/json');
 
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, {headers, observe: 'body'});
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'body' });
     });
 
     it('should create case on server', () => {
@@ -507,15 +545,15 @@ describe('CasesService', () => {
 
     it('should use HttpService::get with correct url', () => {
       const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
-      .set('Content-Type', 'application/json');
+        .set('experimental', 'true')
+        .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
+        .set('Content-Type', 'application/json');
 
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, {headers, observe: 'body'});
+      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, { headers, observe: 'body' });
     });
 
     it('should retrieve document list from server', () => {
