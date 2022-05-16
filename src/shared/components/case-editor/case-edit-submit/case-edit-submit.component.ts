@@ -85,7 +85,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
-    console.log('EVENT TRIGGER', this.eventTrigger);
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
@@ -373,12 +372,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
 
     for (const page of this.wizard.pages) {
-      console.log('WIZARD PAGE', page);
       if (this.isShown(page)) {
         for (const field of page.case_fields) {
           if (this.canShowFieldInCYA(field)) {
             // at least one field needs showing
-            console.log('checkYourAnswerFieldsToDisplayExists', 'YES');
             return true;
           }
         }
@@ -422,12 +419,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     const fields = this.fieldsUtils
       .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
     const shown = page.parsedShowCondition.match(fields);
-    // console.log('IS SHOWN', this.isShown);
     return shown;
   }
 
   public canShowFieldInCYA(field: CaseField): boolean {
-    console.log('CAN SHOW FIELD IN CYA', field.show_summary_change_option);
     return field.show_summary_change_option;
   }
 
@@ -464,8 +459,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseEdit.caseDetails) {
       return FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
     }
-
-    console.log('EVENT TRIGGER CASE FIELDS', this.eventTrigger.case_fields);
     return this.eventTrigger.case_fields;
   }
 

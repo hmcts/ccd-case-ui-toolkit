@@ -69,8 +69,6 @@ export class LinkedCasesTableComponent implements OnInit {
   }
 
   public getAllCaseInformation() {
-    console.log('this.route.snapshot.data')
-    console.log(this.route.snapshot.data)
     const receivedCases: any[] = this.route.snapshot.data.linkedCase && this.route.snapshot.data.linkedCase.serviceLinkedCases || [];
     const linkedCaseIds: string[] = [''];
     const hearingServices = [];
