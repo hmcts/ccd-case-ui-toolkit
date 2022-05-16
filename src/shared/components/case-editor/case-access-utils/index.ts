@@ -86,7 +86,7 @@ export class CaseAccessUtils {
             roleRequest: {
                 assignerId: assignerId,
                 process: 'challenged-access',
-                reference: assignerId,
+                reference:  `${caseId}/${roleName}/${actorId}`,
                 replaceExisting: true
             },
             requestedRoles: [{
