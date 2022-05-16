@@ -159,7 +159,6 @@ describe('CasesService', () => {
     });
   });
 
-
   describe('getCaseLinkResponses()', () => {
     it('should call getCaseLinkResponses', () => {
       httpService.get.and.returnValue(Observable.of(CASE_REASONS));
