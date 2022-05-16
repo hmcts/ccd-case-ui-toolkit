@@ -76,10 +76,17 @@ export class LinkCasesComponent implements OnInit {
           createdDateTime: new Date().toISOString(),
           caseType: caseView.case_type.name,
           caseState: caseView.state.name,
-          caseService: '',
-          caseName: '',
+          caseService: caseView.case_type.jurisdiction.name,
+          caseName: caseView.case_type.name,
         }
         this.selectedCases.push(caseInfo);
+        this.initForm();
+        // Return linked cases state and error messages to the parent
+        this.linkedCasesStateEmitter.emit({
+          currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+          errorMessages: this.errorMessages,
+          navigateToNextPage: false
+        });
       }, (error: HttpError) => {
         this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
         this.errorMessages.push({
