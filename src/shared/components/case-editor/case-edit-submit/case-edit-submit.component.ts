@@ -418,8 +418,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public isShown(page: WizardPage): boolean {
     const fields = this.fieldsUtils
       .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
-    const shown = page.parsedShowCondition.match(fields);
-    return shown;
+    return page.parsedShowCondition.match(fields);
   }
 
   public canShowFieldInCYA(field: CaseField): boolean {
