@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.16.0
+### Version 4.16.1
 Add linked cases functionality
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
