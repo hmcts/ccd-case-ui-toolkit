@@ -63,7 +63,7 @@ export class CaseAccessUtils {
                 roleName = `${accessType}-access-${CaseAccessUtils.ADMIN_ROLE_NAME}`;
                 break;
             default:
-                roleName = `${accessType}-access-${CaseAccessUtils.LEGAL_OPERATIONS_ROLE_NAME}`;
+                roleName = `${accessType}-access-legal-ops`;
                 break;
         }
 
@@ -85,15 +85,15 @@ export class CaseAccessUtils {
         const payload: RoleRequestPayload = {
             roleRequest: {
                 assignerId: assignerId,
-                process: 'specific-access',
+                process: 'challenged-access',
                 reference: assignerId,
-                replaceExisting: false
+                replaceExisting: true
             },
             requestedRoles: [{
                 actorIdType: 'IDAM',
                 actorId: actorId,
                 roleType: 'CASE',
-                roleName: roleName,
+                roleName,
                 classification: 'PUBLIC',
                 roleCategory: roleCategory,
                 grantType: grantType,
