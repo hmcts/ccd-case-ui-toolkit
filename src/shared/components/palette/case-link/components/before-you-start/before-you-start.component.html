@@ -1,10 +1,10 @@
-<div *ngIf="eventTriggerId">
+<div>
   <h1 class="govuk-heading-xl">Before you start</h1>
-	<div *ngIf="eventTriggerId === linkedCasesEventTriggers.LINK_CASES">
+	<div *ngIf="isLinkCasesJourney">
   	<p class="govuk-body">If a group of linked cases has a lead case, you must start from the lead case.</p>
   	<p class="govuk-body">If the cases to be linked has no lead, you can start the linking journey from any of those cases.</p>
 	</div>
-	<div *ngIf="eventTriggerId === linkedCasesEventTriggers.MANAGE_CASE_LINKS">
+	<div *ngIf="!isLinkCasesJourney">
 		<p class="govuk-body">If there are linked hearings for the case you need to un-link then you must unlink the hearing first.</p>
 	</div>
 </div>

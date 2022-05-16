@@ -1,8 +1,7 @@
-<div class="form-group" [formGroup]="formGroup" *ngIf="eventTriggerId">
+<div class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="linkedCasesPage">
     <ng-container *ngSwitchCase="linkedCasesPages.BEFORE_YOU_START">
       <ccd-linked-cases-before-you-start
-        [eventTriggerId]="eventTriggerId"
         (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-before-you-start>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.LINK_CASE">

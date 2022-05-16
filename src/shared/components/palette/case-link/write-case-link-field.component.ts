@@ -1,8 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
-
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 
@@ -52,7 +51,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   private caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       if (control.value) {
-        if ( this.validCaseReference(control.value) ) {
+        if (this.validCaseReference(control.value)) {
           return null;
         }
         return {'error': 'Please use a valid 16 Digit Case Reference'};
@@ -65,7 +64,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     };
   }
 
-  validCaseReference(valueString: string): boolean {
+  public validCaseReference(valueString: string): boolean {
     if (!valueString )  {
       return false;
     }
@@ -75,13 +74,4 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   public hasCaseLinkCollection(): boolean {
     return this.caseField.field_type && this.caseField.field_type.collection_field_type.id === 'CaseLink';
   }
-
-  public linkedCasesEvent() {
-    return this.router && this.router.url && this.router.url.includes('linkCases')
-  }
-
-  public manageCaseLinksEvent() {
-    return this.router && this.router.url && this.router.url.includes('manageCaseLinks')
-  }
-
 }
