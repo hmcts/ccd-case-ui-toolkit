@@ -6,6 +6,7 @@ import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.c
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
+import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
@@ -87,7 +88,7 @@ export class PaletteService {
           case 'CaseLink':
               return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           default:
-            return UnsupportedFieldComponent;
+            return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
       case 'Collection':
         switch (caseField.field_type.collection_field_type.id) {

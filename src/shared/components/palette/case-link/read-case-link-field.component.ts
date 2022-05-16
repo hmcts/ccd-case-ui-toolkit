@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { CaseField } from '../../../domain';
+import { Component } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 
