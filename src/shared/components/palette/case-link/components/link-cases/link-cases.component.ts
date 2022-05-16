@@ -68,69 +68,71 @@ export class LinkCasesComponent implements OnInit {
     this.caseReasonError = null;
     this.caseNumberError = null;
     if (this.linkCaseForm.valid) {
-      this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).subscribe((caseView: CaseView) => {
-        let caseInfo: LinkedCase = {} as LinkedCase;
-        caseInfo.caseLink = {
-          caseReference: caseView.case_id,
-          linkReason: this.getSelectedCaseReasons(),
-          createdDateTime: new Date().toISOString(),
-          caseType: caseView.case_type.name,
-          caseState: caseView.state.name,
-          caseService: caseView.case_type.jurisdiction.name,
-          caseName: caseView.case_type.name,
-        }
-        this.selectedCases.push(caseInfo);
-        this.initForm();
-        // Return linked cases state and error messages to the parent
-        this.linkedCasesStateEmitter.emit({
-          currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
-          errorMessages: this.errorMessages,
-          navigateToNextPage: false
-        });
-      }, (error: HttpError) => {
-        this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
-        this.errorMessages.push({
-          title: 'dummy-case-number',
-          description: LinkedCaseProposalEnum.CaseCheckAgainError,
-          fieldId: 'caseNumber'
-        });
-        // Return linked cases state and error messages to the parent
-        this.linkedCasesStateEmitter.emit({
-          currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
-          errorMessages: this.errorMessages,
-          navigateToNextPage: false
-        });
-        return throwError(error);
-      });
+      this.getCaseInfo();
     } else {
-      if (this.linkCaseForm.controls.caseNumber.invalid) {
-        this.caseNumberError = LinkedCaseProposalEnum.CaseNumberError;
-        this.errorMessages.push({
-          title: 'dummy-case-number',
-          description: LinkedCaseProposalEnum.CaseNumberError,
-          fieldId: 'caseNumber'
-        });
-        this.linkedCasesStateEmitter.emit({
-          currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
-          errorMessages: this.errorMessages,
-          navigateToNextPage: false
-        });
-      }
-      if (this.linkCaseForm.controls.reasonType.invalid) {
-        this.caseReasonError = LinkedCaseProposalEnum.ReasonSelectionError;
-        this.errorMessages.push({
-          title: 'dummy-case-reason',
-          description: LinkedCaseProposalEnum.ReasonSelectionError,
-          fieldId: 'caseReason'
-        });
-      }
-      // Return linked cases state and error messages to the parent
+      this.showErrorInfo();
+    }
+  }
+
+  showErrorInfo() {
+    if (this.linkCaseForm.controls.caseNumber.invalid) {
+      this.caseNumberError = LinkedCaseProposalEnum.CaseNumberError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CaseNumberError,
+        fieldId: 'caseNumber'
+      });
       this.linkedCasesStateEmitter.emit({
         currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
         errorMessages: this.errorMessages,
         navigateToNextPage: false
       });
     }
+    if (this.linkCaseForm.controls.reasonType.invalid) {
+      this.caseReasonError = LinkedCaseProposalEnum.ReasonSelectionError;
+      this.errorMessages.push({
+        title: 'dummy-case-reason',
+        description: LinkedCaseProposalEnum.ReasonSelectionError,
+        fieldId: 'caseReason'
+      });
+    }
+    this.emitLinkedCasesState(false);
+  }
+
+  getCaseInfo() {
+    this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).subscribe((caseView: CaseView) => {
+      let caseInfo: LinkedCase = {} as LinkedCase;
+      caseInfo.caseLink = {
+        caseReference: caseView.case_id,
+        linkReason: this.getSelectedCaseReasons(),
+        createdDateTime: new Date().toISOString(),
+        caseType: caseView.case_type.name,
+        caseState: caseView.state.name,
+        caseService: caseView.case_type.jurisdiction.name,
+        caseName: caseView.case_type.name,
+      }
+      this.selectedCases.push(caseInfo);
+      this.initForm();
+      this.emitLinkedCasesState(false);
+    }, (error: HttpError) => {
+      this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CaseCheckAgainError,
+        fieldId: 'caseNumber'
+      });
+      this.emitLinkedCasesState(false);
+      return throwError(error);
+    });
+  }
+
+  // Return linked cases state and error messages to the parent
+  emitLinkedCasesState(isNavigateToNextPage: boolean) {
+    this.linkedCasesStateEmitter.emit({
+      currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+      errorMessages: this.errorMessages,
+      navigateToNextPage: isNavigateToNextPage
+    });
   }
 
   getSelectedCaseReasons(): LinkReason[] {
@@ -157,11 +159,6 @@ export class LinkCasesComponent implements OnInit {
       });
       navigateToNextPage = false;
     }
-    // Return linked cases state and error messages to the parent
-    this.linkedCasesStateEmitter.emit({
-      currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
-      errorMessages: this.errorMessages,
-      navigateToNextPage: navigateToNextPage
-    });
+    this.emitLinkedCasesState(navigateToNextPage);
   }
 }
