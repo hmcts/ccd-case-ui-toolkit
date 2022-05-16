@@ -13,7 +13,7 @@ export class CaseAccessUtils {
     public static readonly PROFESSIONAL_ROLE_NAME = 'professional';
     public static readonly LEGAL_OPERATIONS_ROLE = 'caseworker';
     public static readonly LEGAL_OPERATIONS_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
-    public static readonly LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
+    public static readonly LEGAL_OPERATIONS_ROLE_NAME = 'legal-ops';
     public static readonly CITIZEN_ROLE = 'citizen';
     public static readonly CITIZEN_ROLE_CATEGORY = 'CITIZEN';
     public static readonly CITIZEN_ROLE_NAME = 'citizen';
@@ -82,18 +82,19 @@ export class CaseAccessUtils {
         beginTime: Date = null,
         endTime: Date = null
     ): RoleRequestPayload {
+        const process =  (<ChallengedAccessRequest>details).caseReference !== undefined ? 'challenged-access' : 'specific-access';
         const payload: RoleRequestPayload = {
             roleRequest: {
                 assignerId: assignerId,
-                process: 'specific-access',
-                reference: assignerId,
-                replaceExisting: false
+                process,
+                reference:  `${caseId}/${roleName}/${actorId}`,
+                replaceExisting: true
             },
             requestedRoles: [{
                 actorIdType: 'IDAM',
                 actorId: actorId,
                 roleType: 'CASE',
-                roleName: roleName,
+                roleName,
                 classification: 'PUBLIC',
                 roleCategory: roleCategory,
                 grantType: grantType,
