@@ -19,7 +19,7 @@ export class LinkCasesComponent implements OnInit {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  public errorMessages: ErrorMessage[];
+  public errorMessages: ErrorMessage[] = [];
   public linkCaseForm: FormGroup;
   public linkCaseReasons: LinkCaseReason[];
   public selectedCases: LinkedCase[] = [];
@@ -81,11 +81,6 @@ export class LinkCasesComponent implements OnInit {
         title: 'dummy-case-number',
         description: LinkedCaseProposalEnum.CaseNumberError,
         fieldId: 'caseNumber'
-      });
-      this.linkedCasesStateEmitter.emit({
-        currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
-        errorMessages: this.errorMessages,
-        navigateToNextPage: false
       });
     }
     if (this.linkCaseForm.controls.reasonType.invalid) {
