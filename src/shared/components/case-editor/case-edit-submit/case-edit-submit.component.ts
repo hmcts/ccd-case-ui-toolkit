@@ -458,6 +458,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseEdit.caseDetails) {
       return FieldsUtils.getCaseFields(this.caseEdit.caseDetails);
     }
+
     return this.eventTrigger.case_fields;
   }
 
