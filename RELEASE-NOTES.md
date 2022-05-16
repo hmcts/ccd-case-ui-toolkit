@@ -18,6 +18,9 @@ Add refunds functionality
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality
 
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
 ### Version 4.12.16-task-event-completion"
 **Task event completion and state machine** Task event completion and state machine
 
