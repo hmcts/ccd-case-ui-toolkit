@@ -18,7 +18,8 @@ export class MarkdownComponent implements OnInit {
   }
 
   public onMarkdownClick() {
-    if (this.markdownUseHrefAsRouterLink === true) {
+    // if (this.markdownUseHrefAsRouterLink === true) {
+    if (this.markdownUseHrefAsRouterLink === true && this.content.indexOf('href') < 0 && this.content.indexOf('http') < 0) {
       this.convertHrefToRouterService.updateHrefLink(this.content);
       return false;
     }

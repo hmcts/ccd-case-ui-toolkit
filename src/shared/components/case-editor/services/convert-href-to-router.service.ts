@@ -18,13 +18,14 @@ export class ConvertHrefToRouterService {
   }
 
   callAngularRouter(hrefMarkdownLinkContent): void {
-  const url = hrefMarkdownLinkContent.substring(hrefMarkdownLinkContent.indexOf('(') + 1, hrefMarkdownLinkContent.indexOf(')'));
-      const urls = url.split('?');
 
-      this.router.navigate([urls[0]], {
-        queryParams: {
-          tid: urls[1] ? urls[1].split('=')[1] : ''
-        }
-      });
-    }
+    const url = hrefMarkdownLinkContent.substring(hrefMarkdownLinkContent.indexOf('(') + 1, hrefMarkdownLinkContent.indexOf(')'));
+    const urls = url.split('?');
+
+    this.router.navigate([urls[0]], {
+      queryParams: {
+        tid: urls[1] ? urls[1].split('=')[1] : ''
+      }
+    });
+  }
 }
