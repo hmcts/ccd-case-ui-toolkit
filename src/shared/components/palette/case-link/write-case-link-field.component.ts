@@ -22,10 +22,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {
+  constructor(private router: Router) {
     super();
   }
 

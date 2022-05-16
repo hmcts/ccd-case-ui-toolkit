@@ -95,6 +95,6 @@ describe('CheckYourAnswersComponent', () => {
     changeLinkElement.click();
     fixture.detectChanges();
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, navigateToPreviousPage: true });
+      { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, navigateToPreviousPage: true, navigateToNextPage: true });
   });
 });

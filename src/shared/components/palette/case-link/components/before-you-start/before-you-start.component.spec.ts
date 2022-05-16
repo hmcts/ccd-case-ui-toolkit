@@ -37,6 +37,6 @@ describe('BeforeYouStartComponent', () => {
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: component.errorMessages });
+      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: component.errorMessages, navigateToNextPage: true });
   });
 });
