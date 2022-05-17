@@ -93,7 +93,7 @@ describe('CaseAccessUtils', () => {
 
         it('should return legal-operations role name', () => {
             const response = camUtils.getAMRoleName('dummy', 'LEGAL_OPERATIONS');
-            expect(response).toEqual('dummy-access-legal-operations');
+            expect(response).toEqual('dummy-access-legal-ops');
         });
 
         it('should return admin role name', () => {
