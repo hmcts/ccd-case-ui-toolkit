@@ -78,6 +78,13 @@ export class FieldsUtils {
     return pageFormFields[0]['value'] !== undefined;
   }
 
+  public static isLinkedCasesCaseField(caseField: CaseField): boolean {
+    if (!caseField) {
+      return false;
+    }
+    return caseField.field_type.collection_field_type.id === 'CaseLink';
+  }
+
   public static cloneObject(obj: any): any {
     return Object.assign({}, obj);
   }
@@ -113,6 +120,9 @@ export class FieldsUtils {
   };
 
   private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
+    if (!result) {
+      result = {}
+    }
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }

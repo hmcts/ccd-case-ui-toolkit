@@ -168,13 +168,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             if (casefield.isComplex()) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
-              const fieldArray = fieldElement as FormArray;
-              if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
-                id = `${fieldArray['component']['collItems'][0].prefix}`
+              if (FieldsUtils.isLinkedCasesCaseField(casefield)) {
+                this.validationErrors.push({ id, message: 'Please select Next to go to the next page' });
+              } else {
+                const fieldArray = fieldElement as FormArray;
+                if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
+                  id = `${fieldArray['component']['collItems'][0].prefix}`
+                }
+                fieldArray.controls.forEach((c: AbstractControl) => {
+                  this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+                });
               }
-              fieldArray.controls.forEach((c: AbstractControl) => {
-                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
-              });
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();

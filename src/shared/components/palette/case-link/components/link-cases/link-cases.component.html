@@ -1,0 +1,88 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <div>
+      <span class="govuk-caption-l">Link cases to Smith vs Peterson 1234-5678-9012-3456</span>
+      <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
+      <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
+        <h3 class="govuk-heading-s">Enter case number</h3>
+        <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!caseNumberError}">
+          <span class="govuk-error-message" *ngIf="caseNumberError">
+            <span class="govuk-visually-hidden">Error:</span> {{caseNumberError}}
+          </span>
+          <input class="govuk-input govuk-input--width-20" formControlName="caseNumber" id="width-20" name="width-20"
+            type="text">
+        </div>
+        <h3 class="govuk-heading-s">Why should these cases be linked?</h3>
+        <div id="waste-hint" class="govuk-hint">
+          Select all that apply.
+        </div>
+        <span class="govuk-error-message" *ngIf="caseReasonError">
+          <span class="govuk-visually-hidden">Error:</span> {{caseReasonError}}
+        </span>
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes" formArrayName="reasonType" id="caseReason"
+          [ngClass]="{'govuk-form-group--error': !!caseReasonError}">
+          <div class="govuk-checkboxes__item" *ngFor="let reason of linkCaseReasons;index as pos" [formGroupName]="pos">
+            <input class="govuk-checkboxes__input" id="{{reason.key}}" formControlName="selected" name="pos"
+              type="checkbox" [value]="reason.value_en">
+            <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}">{{reason.value_en}}</label>
+          </div>
+        </div>
+
+        <br><br>
+
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+          (click)="submitCaseInfo()">Propose case link</button>
+      </div>
+      <br><br>
+
+      <hr>
+      <br><br>
+      <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!noSelectedCaseError}">
+        <span class="govuk-error-message" *ngIf="noSelectedCaseError">
+          <span class="govuk-visually-hidden">Error:</span> {{noSelectedCaseError}}
+        </span>
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m">Proposed case links </caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header" width="300">Case name and number</th>
+              <th scope="col" class="govuk-table__header" width="150">Case type </th>
+              <th scope="col" class="govuk-table__header" width="200">Service</th>
+              <th scope="col" class="govuk-table__header" width="200">State</th>
+              <th scope="col" class="govuk-table__header" width="400">Reasons for case link</th>
+              <th scope="col" class="govuk-table__header" width="50"></th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row" *ngFor="let case of selectedCases; let pos = index">
+              <td class="govuk-table__cell">
+                {{case.caseLink.caseName}} <br>{{case.caseLink.caseReference}}
+              </td>
+              <td class="govuk-table__cell">{{case.caseLink.caseType}}</td>
+              <td class="govuk-table__cell">{{case.caseLink.caseService}}</td>
+              <td class="govuk-table__cell">{{case.caseLink.caseState}}</td>
+              <td class="govuk-table__cell"><span
+                  *ngFor="let reasonInfo of case.caseLink.linkReason">{{reasonInfo.reason}}<br></span></td>
+              <td class="govuk-table__cell"><a (click)="selectedCases.splice(pos, 1);"
+                  class="govuk-link no-visited-state">Remove</a></td>
+            </tr>
+            <tr class="govuk-table__row" *ngIf="!selectedCases.length">
+              <td>None</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="govuk-button-group">
+        <button class="button button-primary" type="button" (click)="onNext()">Next</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>

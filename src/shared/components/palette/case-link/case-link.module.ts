@@ -1,10 +1,18 @@
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { ReadCaseLinkFieldComponent } from './read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '../../../pipes';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
+import { LinkedCasesService } from './services/linked-cases.service';
+import { BeforeYouStartComponent } from './components/before-you-start/before-you-start.component';
+import { LinkCasesComponent } from './components/link-cases/link-cases.component';
+import { CheckYourAnswersComponent } from './components/check-your-answers/check-your-answers.component';
+import { LinkedCasesTableComponent } from './components/linked-cases-table/linked-cases-table.component';
+import { WriteLinkedCasesComponent } from './components/write-linked-cases.component';
 
 @NgModule({
   imports: [
@@ -13,13 +21,26 @@ import { PaletteUtilsModule } from '../utils/utils.module';
     PipesModule,
     PaletteUtilsModule,
   ],
+  providers: [
+    CaseEditComponent,
+    CaseEditPageComponent,
+    ChangeDetectorRef as Provider,
+    LinkedCasesService
+  ],
   declarations: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
+    LinkedCasesTableComponent,
+    BeforeYouStartComponent,
+    LinkCasesComponent,
+    CheckYourAnswersComponent,
+    WriteLinkedCasesComponent
   ],
   exports: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
+    LinkedCasesTableComponent,
+    WriteLinkedCasesComponent
   ]
 })
 export class CaseLinkModule {}

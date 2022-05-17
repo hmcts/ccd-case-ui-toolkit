@@ -25,4 +25,4 @@ export type FieldTypeEnum =
   | 'CaseHistoryViewer'
   | 'Organisation'
   | 'WaysToPay'
-  | 'LinkedCases';
+  | 'CaseLink';
