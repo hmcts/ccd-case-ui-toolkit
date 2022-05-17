@@ -4,8 +4,8 @@ export interface FlagDetail {
   subTypeKey?: string;
   otherDescription?: string;
   flagComment?: string;
-  dateTimeModified?: Date,
-  dateTimeCreated: Date,
+  dateTimeModified?: Date;
+  dateTimeCreated: Date;
   path: string[];
   hearingRelevant: boolean;
   flagCode: string;
@@ -16,4 +16,9 @@ export interface Flags {
   partyName?: string;
   roleOnCase?: string;
   details?: FlagDetail[];
+}
+
+export interface FlagDetailDisplay {
+  partyName: string;
+  flagDetail: FlagDetail;
 }

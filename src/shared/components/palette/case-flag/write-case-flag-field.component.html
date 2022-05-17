@@ -11,7 +11,7 @@
     </ul>
   </div>
 </div>
-<div class="form-group" [formGroup]="formGroup">
+<div *ngIf="!isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
     <div id="create-flag-caption" class="govuk-caption-l" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       {{createFlagCaption}}
@@ -37,6 +37,18 @@
       <p>
         This is the flag summary (and final) step
       </p>
+    </ng-container>
+  </div>
+</div>
+<div *ngIf="isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngSwitch]="fieldState">
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS">
+      <ccd-manage-case-flags [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-manage-case-flags>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE">
+      <ccd-update-flag [formGroup]="caseFlagParentFormGroup" [selectedFlagDetail]="selectedFlagDetail"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
     </ng-container>
   </div>
 </div>

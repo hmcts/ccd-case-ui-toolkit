@@ -25,9 +25,10 @@ describe('AddCommentsComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
-    // 100-character text input
+    // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
-      '7777777777' + '8888888888' + '9999999999';
+      '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
+      '5555555555' + '6666666666' + '7777777777' + '8888888888' + '9999999999';
     fixture.detectChanges();
   });
 
@@ -71,7 +72,7 @@ describe('AddCommentsComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should show an error message on clicking "Next" if comments exceed a 100-character limit, regardless of optionality', () => {
+  it('should show an error message on clicking "Next" if comments exceed a 200-character limit, regardless of optionality', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = textareaInput + '0';
     textarea.dispatchEvent(new Event('input'));
@@ -100,7 +101,7 @@ describe('AddCommentsComponent', () => {
     expect(errorMessageElement.textContent).toContain(AddCommentsErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
   });
 
-  it('should not show an error message on clicking "Next" if comments equal a 100-character limit, regardless of optionality', () => {
+  it('should not show an error message on clicking "Next" if comments equal a 200-character limit, regardless of optionality', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
