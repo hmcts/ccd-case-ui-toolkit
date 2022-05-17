@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, FlagDetail, Flags } from '../../domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplay, Flags } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
 import { SelectManageCaseFlagErrorMessage } from '../../enums/manage-case-flag-type.enum';
 
@@ -18,69 +18,61 @@ export class ManageCaseFlagsComponent implements OnInit {
   public manageCaseFlagTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
   public manageCaseFlagSelectedErrorMessage: SelectManageCaseFlagErrorMessage = null;
-  public filteredFlagsData: { partyName: string, association: string, comment: string, flagCode: string } [] = [];
+  public flagsDisplayData: FlagDetailDisplay[];
   public caseFlagsConfigError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
 
-    // Filter out any flags instances that don't have a party name
+    // Map flags instances to objects for display
     if (this.flagsData) {
-      this.filteredFlagsData = this.flagsData.reduce((flagsData, flagData) => {
-        const result = flagData.details ? flagData.details.map(detail =>  this.flagDetailDisplay(detail, flagData.partyName)) : [];
-        if (result.length) {
-          return result;
+      this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
+        if (flagsInstance.details && flagsInstance.details.length > 0) {
+          displayData = [
+            ...displayData,
+            ...flagsInstance.details.map(detail => this.mapFlagDetailForDisplay(detail, flagsInstance.partyName))
+          ];
         }
-        return flagsData;
-      }, []) as { partyName: string, association: string, comment: string, flagCode: string }[];
+        return displayData;
+      }, []) as FlagDetailDisplay[];
     }
 
-    // Add a FormControl for the selected case flag if there is at least one flags instance remaining after filtering
-    if (this.filteredFlagsData && this.filteredFlagsData.length > 0) {
+    // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
+    if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
       this.formGroup.addControl(this.selectedControlName, new FormControl(null));
     } else {
-      // No filtered flags instances mean there are no parties to select from. The case has not been configured properly
-      // for case flags and the user cannot proceed with flag creation. (Will need to be extended to check for case-level
-      // flags in future)
+      // No flags display data means there are no parties with flags to select from. The user cannot proceed with a
+      // flag update. (Will need to be extended to check for case-level flags in future)
       this.onCaseFlagsConfigError();
     }
   }
 
-  public flagDetailDisplay(flagDetail: FlagDetail, partyName):
-  { partyName: string, association: string, comment: string, flagCode: string } {
+  public mapFlagDetailForDisplay(flagDetail: FlagDetail, partyName: string): FlagDetailDisplay {
     return {
       partyName,
-      association: flagDetail.name ? flagDetail.name : '',
-      comment: flagDetail.flagComment ? flagDetail.flagComment : '',
-      flagCode: flagDetail.flagCode ?  flagDetail.flagCode : '',
+      flagDetail
     };
   }
 
-  public processLabel(flagDetail: { partyName: string, association: string, comment: string, flagCode }): string {
-    const name = flagDetail.partyName ? flagDetail.partyName : '';
-    const association = flagDetail.association ? flagDetail.association : '';
-    const comment = flagDetail.comment ? flagDetail.comment : '';
-    return `${name} - ${association}, ${comment}`;
+  public processLabel(flagDisplay: FlagDetailDisplay): string {
+    const partyName = flagDisplay.partyName ? flagDisplay.partyName : '';
+    const flagName = flagDisplay.flagDetail.name ? flagDisplay.flagDetail.name : '';
+    const comment = flagDisplay.flagDetail.flagComment ? flagDisplay.flagDetail.flagComment : '';
+    return `${partyName} - ${flagName}${comment ? ` (${comment})` : ''}`;
   }
 
   public onNext(): void {
-    // Validate flag location selection
+    // Validate flag selection
     this.validateSelection();
-    if (this.formGroup.controls.selectedManageCaseLocation && this.formGroup.controls.selectedManageCaseLocation.value) {
-      const selectedFlagDetail = this.flagsData.reduce((flags, flag) => {
-        const resultDetails = flag.details.filter(detail => detail.flagCode === this.formGroup.controls.selectedManageCaseLocation.value);
-        if (resultDetails.length) {
-          return resultDetails[0];
-        }
-        return flags;
-      }, []) as FlagDetail;
-      this.caseFlagStateEmitter.emit({
-        currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
-        errorMessages: this.errorMessages,
-        selectedFlagDetail
-      });
-    }
+    // Return case flag field state, error messages, and flag selection to the parent
+    this.caseFlagStateEmitter.emit({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
+      errorMessages: this.errorMessages,
+      selectedFlagDetail: this.formGroup.get(this.selectedControlName).value
+        ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagDetail
+        : null
+    });
   }
 
   private validateSelection(): void {
