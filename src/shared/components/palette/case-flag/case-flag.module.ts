@@ -10,9 +10,11 @@ import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.compone
 import {
   AddCommentsComponent,
   CaseFlagTableComponent,
+  ManageCaseFlagsComponent,
   SearchLanguageInterpreterComponent,
   SelectFlagLocationComponent,
-  SelectFlagTypeComponent
+  SelectFlagTypeComponent,
+  UpdateFlagComponent
 } from './components';
 
 @NgModule({
@@ -35,7 +37,9 @@ import {
     SelectFlagTypeComponent,
     SearchLanguageInterpreterComponent,
     SelectFlagLocationComponent,
-    AddCommentsComponent
+    ManageCaseFlagsComponent,
+    AddCommentsComponent,
+    UpdateFlagComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,
