@@ -31,6 +31,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public listOfValues: {key: string, value: string}[] = null;
   public flagCode: string;
   public isDisplayContextParameterUpdate: boolean;
+  private readonly updateMode = '#ARGUMENT(UPDATE)';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -89,12 +90,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         }, []) as Flags[];
 
       this.isDisplayContextParameterUpdate = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-        .reduce((flags, caseField) => {
-          if (FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.display_context_parameter === '#ARGUMENT(UPDATE)') {
-            return true;
-          }
-          return flags;
-        }, []) as boolean;
+        .some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)
+          && caseField.display_context_parameter === this.updateMode);
+
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
     }

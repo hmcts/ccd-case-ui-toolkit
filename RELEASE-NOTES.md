@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.2-manage-case-flags-defect-fixes
+**EUI-5816/EUI-5808** Various defect fixes for the "Select case flag" page (EUI-4895) and "Update flag" page (EUI-5125)
+
 ### Version 4.13.1-case-flags-search-for-sign-language-interpreter
 **EUI-5772** Display page title and hint text variation when selected language flag type is sign language
 

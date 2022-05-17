@@ -25,21 +25,32 @@ export class UpdateFlagComponent implements OnInit {
   private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
-    if ( this.selectedFlagDetail && this.selectedFlagDetail.name ) {
-    this.updateFlagTitle = (this.selectedFlagDetail && this.selectedFlagDetail.subTypeValue) ?
-    `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.selectedFlagDetail.name}, ${this.selectedFlagDetail.subTypeValue}"`
-    : `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.selectedFlagDetail.name}"`;
-    }
     this.updateFlagHint = UpdateFlagStep.HINT_TEXT ;
     this.updateFlagCharLimitInfo = UpdateFlagStep.CHARACTER_LIMIT_INFO;
     this.formGroup.addControl(this.updateFlagControlName, new FormControl(''));
+
+    if (this.selectedFlagDetail) {
+      // Populate flag comments text area with existing comments
+      this.formGroup.get(this.updateFlagControlName).setValue(this.selectedFlagDetail.flagComment);
+      if (this.selectedFlagDetail.name) {
+        this.updateFlagTitle =
+          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.selectedFlagDetail.name}${this.selectedFlagDetail.subTypeValue
+            ? `, ${this.selectedFlagDetail.subTypeValue}"`
+            : '"'}`;
+      }
+    }
   }
 
   public onNext(): void {
     // Validate flag comments entry
     this.validateTextEntry();
-    // Return case flag field state and error messages to the parent
-    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE, errorMessages: this.errorMessages });
+    // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
+    // re-emitted because the parent component repopulates this on handling this EventEmitter
+    this.caseFlagStateEmitter.emit({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: this.errorMessages,
+      selectedFlagDetail: this.selectedFlagDetail
+    });
   }
 
   public onChangeStatus(): void {

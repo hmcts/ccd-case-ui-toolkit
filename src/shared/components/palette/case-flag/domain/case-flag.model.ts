@@ -17,3 +17,8 @@ export interface Flags {
   roleOnCase?: string;
   details?: FlagDetail[];
 }
+
+export interface FlagDetailDisplay {
+  partyName: string;
+  flagDetail: FlagDetail;
+}
