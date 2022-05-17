@@ -2,8 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
+import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkCaseReason } from '../../domain';
+import { LinkCaseReason, LinkedCase } from '../../domain';
 import { LinkedCaseProposalEnum } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkCasesComponent } from './link-cases.component';
@@ -14,6 +15,30 @@ describe('LinkCasesComponent', () => {
   let fixture: ComponentFixture<LinkCasesComponent>;
   let nextButton: any;
   let casesService: any;
+  let searchService: any;
+  let caseLinkedResults: any = [
+    {
+      results: [{
+        case_id: '16934389402343',
+        '[CASE_TYPE]': 'SSCS',
+        '[CREATED_DATE]': '12-12-2022',
+        '[STATE]': 'state',
+        '[JURISDICTION]': 'Tribunal'
+      }]
+    }
+  ];
+
+  const selectedCasesInfo: LinkedCase[] = [{
+    caseLink: {
+      caseReference: '1682374819203471',
+      linkReason: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    }
+  }];
   const linkCaseReasons: LinkCaseReason[] = [
     {
       key: 'progressed',
@@ -61,6 +86,7 @@ describe('LinkCasesComponent', () => {
   ];
   beforeEach(async(() => {
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
+    searchService = createSpyObj('searchService', ['searchCases']);
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
@@ -69,6 +95,7 @@ describe('LinkCasesComponent', () => {
       providers: [
         LinkedCasesService,
         { provide: CasesService, useValue: casesService },
+        { provide: SearchService, useValue: searchService }
       ],
       declarations: [LinkCasesComponent],
     })
@@ -76,10 +103,18 @@ describe('LinkCasesComponent', () => {
   }));
 
   beforeEach(() => {
+    const caseInfo = {
+      case_id: '1682374819203471',
+      case_type: {
+        name: 'SSCS type',
+        jurisdiction: { name: '' }
+      }, state: { name: 'With FTA' }
+    }
     fixture = TestBed.createComponent(LinkCasesComponent);
     component = fixture.componentInstance;
     casesService.getCaseLinkResponses.and.returnValue(of(linkCaseReasons));
     spyOn(component.linkedCasesStateEmitter, 'emit');
+    spyOn(component, 'getAllLinkedCaseInformation').and.returnValue([caseInfo]);
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     fixture.detectChanges();
   });
@@ -119,6 +154,9 @@ describe('LinkCasesComponent', () => {
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
     component.onNext();
     expect(component.noSelectedCaseError).toBe(null);
+    searchService.searchCases.and.returnValue(of(caseLinkedResults));
+    component.getAllLinkedCaseInformation();
+    expect((component as any).linkedCasesService.preLinkedCases.length).toBe(0);
   });
 
   it('should check getCaseInfo error', () => {
@@ -135,5 +173,21 @@ describe('LinkCasesComponent', () => {
   it('should check onNext', () => {
     component.onNext();
     expect(component.noSelectedCaseError).toBe(LinkedCaseProposalEnum.CaseSelectionError);
+  });
+
+  it('should check isCaseSelected', () => {
+    expect(component.isCaseSelected(selectedCasesInfo)).toBe(false);
+    component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
+    expect(component.isCaseSelected(selectedCasesInfo)).toBe(true);
+  });
+
+  it('should check showErrorInfo', () => {
+    component.selectedCases = selectedCasesInfo;
+    component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
+    component.showErrorInfo();
+    expect(component.caseSelectionError).toBe(LinkedCaseProposalEnum.CaseProposedError);
+    (component as any).linkedCasesService.preLinkedCases = selectedCasesInfo;
+    component.showErrorInfo();
+    expect(component.caseSelectionError).toBe(LinkedCaseProposalEnum.CasesLinkedError);
   });
 });

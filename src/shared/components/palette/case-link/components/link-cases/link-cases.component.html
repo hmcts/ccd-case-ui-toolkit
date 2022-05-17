@@ -29,6 +29,9 @@
         </div>
 
         <br><br>
+        <span class="govuk-error-message" *ngIf="caseSelectionError">
+          <span class="govuk-visually-hidden">Error:</span> {{caseSelectionError}}
+        </span>
 
         <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="submitCaseInfo()">Propose case link</button>
