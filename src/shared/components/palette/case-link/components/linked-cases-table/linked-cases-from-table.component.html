@@ -1,0 +1,37 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <table *ngIf="getLinkedCasesResponse">
+      <caption *ngIf="tableHeading">
+        <h1 class="heading-h1">{{tableHeading}}</h1>
+      </caption>
+      <caption *ngIf="tableSubHeading">
+        <h2 class="heading-h2">{{tableSubHeading}}</h2>
+      </caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Case name and number</th>
+          <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Case type </th>
+          <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Service</th>
+          <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">State</th>
+          <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Reasons for case link</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse.linkedCases">
+          <td class="govuk-table__cell case-table-column">
+            <p class="govuk-body"><a href="cases/case-details/{{ case.caseReference }}"><span
+                  class="text-16">{{case.caseReference | ccdCaseReference}} <br>
+                  {{case.caseNameHmctsInternal}}</span></a></p>
+          </td>
+          <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.ccdCaseType}}</span></td>
+          <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.ccdJurisdiction}}</span></td>
+          <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.state}}</span></td>
+          <td class="govuk-table__cell case-table-column" *ngFor="let details of case.linkDetails">
+            <span *ngFor="let reason of details.reasons; let i = index; let isLast = last" class="text-16">
+              {{reason.OtherDescription}} <br>
+            </span>
+          </td>
+        </tr>
+    </table>
+  </div>
+</div>

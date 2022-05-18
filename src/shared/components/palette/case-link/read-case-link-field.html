@@ -3,5 +3,8 @@
     ''}}</span>
 </a>
 <ng-container *ngIf="hasCaseLinkCollection()">
-  <ccd-linked-cases-table [caseField]="caseField"></ccd-linked-cases-table>
+  <ccd-linked-cases-to-table [caseField]="caseField"></ccd-linked-cases-to-table>
+  <br>
+  <br>
+  <ccd-linked-cases-from-table [caseField]="caseField"></ccd-linked-cases-from-table>
 </ng-container>

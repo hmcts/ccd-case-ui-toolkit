@@ -32,3 +32,20 @@ export class LinkReason {
   reason: string;
   otherDescription?: string;
 }
+
+export class GetLinkedCases {
+  linkedCases: []
+}
+export class GetLinkedCasesCaseLinkResponse {       
+  caseNameHmctsInternal: string
+  caseReference: string
+  ccdCaseTyp: string
+  ccdJurisdiction: string
+  state:string
+  linkDetails: [LinkDetails]
+}
+
+export class LinkDetails {
+    createdDateTime: Date
+    reasons: [LinkReason]
+}
