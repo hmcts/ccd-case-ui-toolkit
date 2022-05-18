@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { ErrorMessage } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 
@@ -13,7 +12,6 @@ export class BeforeYouStartComponent implements OnInit {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  public errorMessages: ErrorMessage[];
   public isLinkCasesJourney: boolean;
 
   constructor(private router: Router) {
@@ -27,7 +25,6 @@ export class BeforeYouStartComponent implements OnInit {
     // Return linked cases state and error messages to the parent
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
-      errorMessages: this.errorMessages,
       navigateToNextPage: true
     });
   }

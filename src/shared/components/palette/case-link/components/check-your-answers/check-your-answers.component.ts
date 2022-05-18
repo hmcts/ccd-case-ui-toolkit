@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { LinkedCase, LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -14,10 +15,16 @@ export class CheckYourAnswersComponent implements OnInit {
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
   public linkedCases: LinkedCase[];
+  public isLinkCasesJourney: boolean;
+  public linkedCasesTableCaption: string;
 
-  constructor(private linkedCasesService: LinkedCasesService) {}
+  constructor(private router: Router,
+    private linkedCasesService: LinkedCasesService) {
+  }
 
   public ngOnInit(): void {
+    this.isLinkCasesJourney = this.router && this.router.url && this.router.url.includes('linkCases');
+    this.linkedCasesTableCaption = this.isLinkCasesJourney ? 'Proposed case links' : 'Linked cases';
     this.linkedCases = this.linkedCasesService.linkedCases;
   }
 
