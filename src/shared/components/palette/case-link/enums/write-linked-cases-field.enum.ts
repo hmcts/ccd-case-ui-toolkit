@@ -11,6 +11,8 @@ export enum LinkedCaseProposalEnum {
   SomethingWrong = 'Something went wrong, please try again later',
   CaseCheckAgainError = 'Check the case number and try again',
   CaseSelectionError = 'You need to propose at least one case',
+  CaseProposedError = 'This case has already been proposed',
+  CasesLinkedError = 'These cases are already linked',
 }
 
 export enum LinkedCasesEventTriggers {

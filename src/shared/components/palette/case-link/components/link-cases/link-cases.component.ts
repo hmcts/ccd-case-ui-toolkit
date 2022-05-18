@@ -1,7 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { throwError } from 'rxjs';
+import { forkJoin, throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
@@ -25,15 +26,22 @@ export class LinkCasesComponent implements OnInit {
   public selectedCases: LinkedCase[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
+  public caseSelectionError: string;
   public noSelectedCaseError: string;
 
   constructor(private casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly linkedCasesService: LinkedCasesService) { }
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly searchService: SearchService) { }
 
   ngOnInit(): void {
     this.selectedCases = this.linkedCasesService.linkedCases;
+    this.getCaseReasons();
+    this.getAllLinkedCaseInformation();
+  }
+
+  getCaseReasons() {
     this.casesService.getCaseLinkResponses().subscribe(reasons => {
       this.linkCaseReasons = reasons;
       this.initForm();
@@ -67,11 +75,21 @@ export class LinkCasesComponent implements OnInit {
     this.errorMessages = [];
     this.caseReasonError = null;
     this.caseNumberError = null;
-    if (this.linkCaseForm.valid) {
+    this.caseSelectionError = null;
+    if (this.linkCaseForm.valid && !this.isCaseSelected(this.selectedCases)
+      && !this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
       this.getCaseInfo();
     } else {
       this.showErrorInfo();
     }
+  }
+
+  isCaseSelected(linkedCases: LinkedCase[]): boolean {
+    if (linkedCases.length === 0) {
+      return false;
+    }
+    const caseNumber = this.linkCaseForm.value.caseNumber;
+    return !!linkedCases.find(caseInfo => caseInfo.caseLink && caseInfo.caseLink.caseReference === caseNumber);
   }
 
   showErrorInfo() {
@@ -90,6 +108,23 @@ export class LinkCasesComponent implements OnInit {
         description: LinkedCaseProposalEnum.ReasonSelectionError,
         fieldId: 'caseReason'
       });
+    }
+    if (this.isCaseSelected(this.selectedCases)) {
+      this.caseSelectionError = LinkedCaseProposalEnum.CaseProposedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CaseProposedError,
+        fieldId: 'caseNumber'
+      });
+    }
+    if (this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
+      this.caseSelectionError = LinkedCaseProposalEnum.CasesLinkedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CasesLinkedError,
+        fieldId: 'caseNumber'
+      });
+
     }
     this.emitLinkedCasesState(false);
   }
@@ -118,6 +153,34 @@ export class LinkCasesComponent implements OnInit {
       });
       this.emitLinkedCasesState(false);
       return throwError(error);
+    });
+  }
+
+  /**
+   * TODO: Get all Linked cases information
+   * Gets all case information
+   */
+  public getAllLinkedCaseInformation() {
+    const linkedCaseIds: string[] = [''];
+    const hearingServices = [];
+    linkedCaseIds.forEach(id => {
+      const query = this.searchService.searchCases('Benefit_SCSS', {}, {}, SearchService.VIEW_WORKBASKET);
+      hearingServices.push(query);
+    });
+    forkJoin(hearingServices).subscribe((hearingsList: any) => {
+      hearingsList.forEach(response => response.results.map((caseResult: any) => {
+        let caseInfo: LinkedCase = {} as LinkedCase;
+        caseInfo.caseLink = {
+          caseReference: caseResult.case_id,
+          linkReason: [],
+          createdDateTime: caseResult['[CREATED_DATE]'],
+          caseType: caseResult['[CASE_TYPE]'],
+          caseState: caseResult['[STATE]'],
+          caseService: caseResult['[JURISDICTION]'],
+          caseName: caseResult['[CASE_TYPE]'],
+        }
+        this.linkedCasesService.preLinkedCases.push(caseInfo);
+      }));
     });
   }
 
