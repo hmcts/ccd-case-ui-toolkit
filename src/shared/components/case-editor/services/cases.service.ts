@@ -103,7 +103,7 @@ export class CasesService {
     const loadingToken = this.loadingService.register();
     // return Observable.of(mockGetCase)
     return this.http
-      .get('assets/getCase.json', {headers, observe: 'body'})
+      .get('assets/getCase.json', { headers, observe: 'body' })
       // .get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
@@ -114,52 +114,28 @@ export class CasesService {
       );
   }
 
+  /**
+   * TODO: Gets case link responses
+   * @returns case link responses
+   */
   getCaseLinkResponses(): Observable<LinkCaseReason[]> {
-    const linkCaseReasons: LinkCaseReason[] = [
-      {
-        key: 'progressed',
-        value_en: 'Progressed as part of this lead case',
-        value_cy: '',
-        hint_text_en: 'Progressed as part of this lead case',
-        hint_text_cy: '',
-        lov_order: 1,
-        parent_key: null,
-        category_key: 'caseLinkReason',
-        parent_category: '',
-        active_flag: 'Y',
-        child_nodes: null,
-        from: 'exui-default',
-      },
-      {
-        key: 'bail',
-        value_en: 'Bail',
-        value_cy: '',
-        hint_text_en: 'Bail',
-        hint_text_cy: '',
-        lov_order: 2,
-        parent_key: null,
-        category_key: 'caseLinkReason',
-        parent_category: '',
-        active_flag: 'Y',
-        child_nodes: null,
-        from: 'exui-default',
-      },
-      {
-        key: 'other',
-        value_en: 'Other',
-        value_cy: '',
-        hint_text_en: 'Other',
-        hint_text_cy: '',
-        lov_order: 3,
-        parent_key: null,
-        category_key: 'caseLinkReason',
-        parent_category: '',
-        active_flag: 'Y',
-        child_nodes: null,
-        from: 'exui-default',
-      },
-    ];
-    return of(linkCaseReasons.sort((reasonA, reasonB) => reasonA.value_en > reasonB.value_en ? 1 : -1));
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
+      .set('Content-Type', 'application/json');
+    const loadingToken = this.loadingService.register();
+    return this.http
+      .get('assets/getCaseReasons.json', { headers, observe: 'body' })
+      .pipe(
+        map((reasons) => {
+          return reasons.sort((reasonA, reasonB) => reasonA.value_en > reasonB.value_en ? 1 : -1);
+        }),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
+      );
   }
 
   getEventTrigger(caseTypeId: string,

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ErrorMessage } from '../../../../domain';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../../base-field';
@@ -15,14 +16,13 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
-  public eventTriggerId: string;
   public formGroup: FormGroup;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public errorMessages: ErrorMessage[] = [];
 
-  constructor() {
+  constructor(private router: Router) {
     super();
   }
 
@@ -38,18 +38,18 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     }), true) as FormGroup;
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
-    this.eventTriggerId = this.caseEditPageComponent.eventTrigger.id;
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
-    this.linkedCasesPage = this.getNextPage(linkedCasesState);
-
-    // Clear validation errors from the parent CaseEditPageComponent
-    // (given the "Next" button in a child component has been clicked)
+    this.errorMessages = [];
     this.caseEditPageComponent.validationErrors = [];
-    this.errorMessages = linkedCasesState.errorMessages ? linkedCasesState.errorMessages : [];
-    if (this.errorMessages.length === 0) {
+    if (linkedCasesState.navigateToNextPage) {
+      this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.proceedToNextState();
+    } else {
+      linkedCasesState.errorMessages.forEach(errorMessage => {
+        this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
+      });
     }
   }
 
@@ -67,7 +67,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public getNextPage(linkedCasesState: LinkedCasesState): number {
     if ((this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) ||
         (linkedCasesState.currentLinkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS && linkedCasesState.navigateToPreviousPage)) {
-          return this.eventTriggerId === LinkedCasesEventTriggers.LINK_CASES
+          return this.router && this.router.url && this.router.url.includes('linkCases')
           ? LinkedCasesPages.LINK_CASE
           : LinkedCasesPages.UNLINK_CASE;
     }

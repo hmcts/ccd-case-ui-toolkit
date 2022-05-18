@@ -8,20 +8,7 @@ import { GetLinkedCases, LinkedCase } from '../domain';
 export class LinkedCasesService {
 
   public linkedCases: LinkedCase[] = [];
-
-  constructor(
-    private http: HttpService,
-  ) {
-  }
-
-  getLinkedCases(caseId: string): Observable<GetLinkedCases> { 
-    return this.http
-    .get('assets/getLinkedCases.json')
-    .pipe(
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+  public preLinkedCases: LinkedCase[] = [];
 }
 }
 

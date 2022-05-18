@@ -1,7 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { throwError } from 'rxjs';
+import { forkJoin, throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
@@ -19,30 +20,35 @@ export class LinkCasesComponent implements OnInit {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  errorMessages: ErrorMessage[];
+  public errorMessages: ErrorMessage[] = [];
   public linkCaseForm: FormGroup;
   public linkCaseReasons: LinkCaseReason[];
   public selectedCases: LinkedCase[] = [];
-  public validationErrors: { id: string, message: string }[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
+  public caseSelectionError: string;
   public noSelectedCaseError: string;
 
   constructor(private casesService: CasesService,
-              private readonly fb: FormBuilder,
-              private readonly validatorsUtils: ValidatorsUtils,
-              private readonly linkedCasesService: LinkedCasesService) {}
+    private readonly fb: FormBuilder,
+    private readonly validatorsUtils: ValidatorsUtils,
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly searchService: SearchService) { }
 
   ngOnInit(): void {
-    this.casesService.getCaseLinkResponses().toPromise()
-      .then(reasons => {
-        this.linkCaseReasons = reasons;
-        this.initForm();
-      })
-      .catch((error: HttpError) => {
-        this.linkCaseReasons = [];
-        this.initForm();
-      });
+    this.selectedCases = this.linkedCasesService.linkedCases;
+    this.getCaseReasons();
+    this.getAllLinkedCaseInformation();
+  }
+
+  getCaseReasons() {
+    this.casesService.getCaseLinkResponses().subscribe(reasons => {
+      this.linkCaseReasons = reasons;
+      this.initForm();
+    }, (error: HttpError) => {
+      this.linkCaseReasons = [];
+      this.initForm();
+    });
   }
 
   public initForm() {
@@ -66,39 +72,125 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public submitCaseInfo() {
-    this.validationErrors = [];
+    this.errorMessages = [];
     this.caseReasonError = null;
     this.caseNumberError = null;
-    if (this.linkCaseForm.valid) {
-      this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).toPromise()
-        .then((caseView: CaseView) => {
-          let caseInfo: LinkedCase = {} as LinkedCase;
-          caseInfo.caseLink = {
-            caseReference: caseView.case_id,
-            linkReason: this.getSelectedCaseReasons(),
-            createdDateTime: new Date().toISOString(),
-            caseType: caseView.case_type.name,
-            caseState: caseView.state.name,
-            caseService: '',
-            caseName: '',
-          }
-          this.selectedCases.push(caseInfo);
-        })
-        .catch((error: HttpError) => {
-          this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
-          this.validationErrors.push({ id: 'caseNumber', message: LinkedCaseProposalEnum.CaseCheckAgainError });
-          return throwError(error);
-        });
+    this.caseSelectionError = null;
+    if (this.linkCaseForm.valid && !this.isCaseSelected(this.selectedCases)
+      && !this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
+      this.getCaseInfo();
     } else {
-      if (this.linkCaseForm.controls.caseNumber.invalid) {
-        this.caseNumberError = LinkedCaseProposalEnum.CaseNumberError;
-        this.validationErrors.push({ id: 'caseNumber', message: LinkedCaseProposalEnum.CaseNumberError });
-      }
-      if (this.linkCaseForm.controls.reasonType.invalid) {
-        this.caseReasonError = LinkedCaseProposalEnum.ReasonSelectionError;
-        this.validationErrors.push({ id: 'caseReason', message: LinkedCaseProposalEnum.ReasonSelectionError });
-      }
+      this.showErrorInfo();
     }
+  }
+
+  isCaseSelected(linkedCases: LinkedCase[]): boolean {
+    if (linkedCases.length === 0) {
+      return false;
+    }
+    const caseNumber = this.linkCaseForm.value.caseNumber;
+    return !!linkedCases.find(caseInfo => caseInfo.caseLink && caseInfo.caseLink.caseReference === caseNumber);
+  }
+
+  showErrorInfo() {
+    if (this.linkCaseForm.controls.caseNumber.invalid) {
+      this.caseNumberError = LinkedCaseProposalEnum.CaseNumberError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CaseNumberError,
+        fieldId: 'caseNumber'
+      });
+    }
+    if (this.linkCaseForm.controls.reasonType.invalid) {
+      this.caseReasonError = LinkedCaseProposalEnum.ReasonSelectionError;
+      this.errorMessages.push({
+        title: 'dummy-case-reason',
+        description: LinkedCaseProposalEnum.ReasonSelectionError,
+        fieldId: 'caseReason'
+      });
+    }
+    if (this.isCaseSelected(this.selectedCases)) {
+      this.caseSelectionError = LinkedCaseProposalEnum.CaseProposedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CaseProposedError,
+        fieldId: 'caseNumber'
+      });
+    }
+    if (this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
+      this.caseSelectionError = LinkedCaseProposalEnum.CasesLinkedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CasesLinkedError,
+        fieldId: 'caseNumber'
+      });
+
+    }
+    this.emitLinkedCasesState(false);
+  }
+
+  getCaseInfo() {
+    this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).subscribe((caseView: CaseView) => {
+      let caseInfo: LinkedCase = {} as LinkedCase;
+      caseInfo.caseLink = {
+        caseReference: caseView.case_id,
+        linkReason: this.getSelectedCaseReasons(),
+        createdDateTime: new Date().toISOString(),
+        caseType: caseView.case_type.name,
+        caseState: caseView.state.name,
+        caseService: caseView.case_type.jurisdiction.name,
+        caseName: caseView.case_type.name,
+      }
+      this.selectedCases.push(caseInfo);
+      this.initForm();
+      this.emitLinkedCasesState(false);
+    }, (error: HttpError) => {
+      this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCaseProposalEnum.CaseCheckAgainError,
+        fieldId: 'caseNumber'
+      });
+      this.emitLinkedCasesState(false);
+      return throwError(error);
+    });
+  }
+
+  /**
+   * TODO: Get all Linked cases information
+   * Gets all case information
+   */
+  public getAllLinkedCaseInformation() {
+    const linkedCaseIds: string[] = [''];
+    const hearingServices = [];
+    linkedCaseIds.forEach(id => {
+      const query = this.searchService.searchCases('Benefit_SCSS', {}, {}, SearchService.VIEW_WORKBASKET);
+      hearingServices.push(query);
+    });
+    forkJoin(hearingServices).subscribe((hearingsList: any) => {
+      hearingsList.forEach(response => response.results.map((caseResult: any) => {
+        let caseInfo: LinkedCase = {} as LinkedCase;
+        caseInfo.caseLink = {
+          caseReference: caseResult.case_id,
+          linkReason: [],
+          createdDateTime: caseResult['[CREATED_DATE]'],
+          caseType: caseResult['[CASE_TYPE]'],
+          caseState: caseResult['[STATE]'],
+          caseService: caseResult['[JURISDICTION]'],
+          caseName: caseResult['[CASE_TYPE]'],
+        }
+        this.linkedCasesService.preLinkedCases.push(caseInfo);
+      }));
+    });
+  }
+
+  // Return linked cases state and error messages to the parent
+  emitLinkedCasesState(isNavigateToNextPage: boolean) {
+    this.linkedCasesStateEmitter.emit({
+      currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
+      errorMessages: this.errorMessages,
+      navigateToNextPage: isNavigateToNextPage
+    });
   }
 
   getSelectedCaseReasons(): LinkReason[] {
@@ -113,13 +205,18 @@ export class LinkCasesComponent implements OnInit {
 
   public onNext(): void {
     this.noSelectedCaseError = null;
+    let navigateToNextPage = true;
     if (this.selectedCases.length) {
       this.linkedCasesService.linkedCases = this.selectedCases;
-      // Return linked cases state and error messages to the parent
-      this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.LINK_CASE, errorMessages: this.errorMessages });
     } else {
       this.noSelectedCaseError = LinkedCaseProposalEnum.CaseSelectionError;
-      this.validationErrors.push({ id: 'caseReason', message: LinkedCaseProposalEnum.CaseSelectionError });
+      this.errorMessages.push({
+        title: 'dummy-case-selection',
+        description: LinkedCaseProposalEnum.CaseSelectionError,
+        fieldId: 'caseReason'
+      });
+      navigateToNextPage = false;
     }
+    this.emitLinkedCasesState(navigateToNextPage);
   }
 }

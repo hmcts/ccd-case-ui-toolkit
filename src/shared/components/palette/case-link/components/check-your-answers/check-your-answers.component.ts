@@ -22,6 +22,10 @@ export class CheckYourAnswersComponent implements OnInit {
   }
 
   public onChange(): void {
-    this.linkedCasesStateEmitter.emit({ currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, navigateToPreviousPage: true });
+    this.linkedCasesStateEmitter.emit({
+      currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS,
+      navigateToPreviousPage: true,
+      navigateToNextPage: true
+    });
   }
 }

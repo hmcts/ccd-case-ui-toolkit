@@ -1,20 +1,4 @@
-<!-- Error message summary -->
-<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-  tabindex="-1" data-module="govuk-error-summary">
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
-    There is a problem
-  </h2>
-  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li>
-        <a class="validation-error">{{validationError.message}}</a>
-      </li>
-    </ul>
-  </div>
-</div>
-
 <div class="govuk-grid-row">
-
   <div class="govuk-grid-column-full">
     <div>
       <span class="govuk-caption-l">Link cases to Smith vs Peterson 1234-5678-9012-3456</span>
@@ -45,6 +29,9 @@
         </div>
 
         <br><br>
+        <span class="govuk-error-message" *ngIf="caseSelectionError">
+          <span class="govuk-visually-hidden">Error:</span> {{caseSelectionError}}
+        </span>
 
         <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="submitCaseInfo()">Propose case link</button>
@@ -72,7 +59,7 @@
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row" *ngFor="let case of selectedCases; let pos = index">
               <td class="govuk-table__cell">
-                Smith vs Peterson <br>{{case.caseLink.caseReference}}
+                {{case.caseLink.caseName}} <br>{{case.caseLink.caseReference}}
               </td>
               <td class="govuk-table__cell">{{case.caseLink.caseType}}</td>
               <td class="govuk-table__cell">{{case.caseLink.caseService}}</td>

@@ -1,9 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
-import { DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PaletteUtilsModule } from '../utils';
+import { RouterTestingModule } from '@angular/router/testing';
 
 const VALUE = {
   CaseReference: '1234-5678-1234-5678'
@@ -25,6 +26,7 @@ const CASE_FIELD: CaseField = <CaseField>({
   display_context: 'OPTIONAL',
   field_type: {
     ...FIELD_TYPE,
+    collection_field_type: FIELD_TYPE,
     complex_fields: [CASE_REFERENCE]
   },
   value: VALUE,
@@ -40,8 +42,10 @@ describe('WriteCaseLinkFieldComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        PaletteUtilsModule
+        PaletteUtilsModule,
+        RouterTestingModule
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         WriteCaseLinkFieldComponent,
       ],

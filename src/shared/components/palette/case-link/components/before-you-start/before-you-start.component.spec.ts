@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { LinkedCasesPages } from '../../enums';
 import { BeforeYouStartComponent } from './before-you-start.component';
 
@@ -10,7 +11,7 @@ describe('BeforeYouStartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [],
+      imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [BeforeYouStartComponent],
       providers: []
@@ -37,6 +38,6 @@ describe('BeforeYouStartComponent', () => {
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: component.errorMessages });
+      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: component.errorMessages, navigateToNextPage: true });
   });
 });
