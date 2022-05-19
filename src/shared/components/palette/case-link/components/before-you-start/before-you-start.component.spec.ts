@@ -34,10 +34,27 @@ describe('BeforeYouStartComponent', () => {
   it('should next event emit linked cases state with no error', () => {
     nextButton.click();
     fixture.detectChanges();
-    expect(component.errorMessages).toBeUndefined();
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: component.errorMessages, navigateToNextPage: true });
+      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, navigateToNextPage: true });
+  });
+
+  it('should display correct text content for link cases journey', () => {
+    component.isLinkCasesJourney = true;
+    fixture.detectChanges();
+    const linkCasesJourneyElement = fixture.debugElement.nativeElement.querySelector('#link-cases-journey');
+    expect(linkCasesJourneyElement.textContent).toBe(
+      'If a group of linked cases has a lead case, you must start from the lead case.If the cases to be linked has no lead, you can start the linking journey from any of those cases.');
+  });
+
+  it('should display correct text content for manage link cases journey', () => {
+    component.isLinkCasesJourney = false;
+    fixture.detectChanges();
+    const manageLinkCasesJourneyElement = fixture.debugElement.nativeElement.querySelector('#manage-link-cases-journey');
+    console.log(manageLinkCasesJourneyElement.textContent);
+    expect(manageLinkCasesJourneyElement.textContent).toBe(
+      'If there are linked hearings for the case you need to un-link then you must unlink the hearing first.'
+    );
   });
 });

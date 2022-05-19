@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { LinkedCasesState } from '../../domain';
-import { LinkedCasesPages } from '../../enums';
+import { LinkedCasesEventTriggers, LinkedCasesPages } from '../../enums';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
@@ -18,11 +18,11 @@ export class BeforeYouStartComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.isLinkCasesJourney = this.router && this.router.url && this.router.url.includes('linkCases');
+    this.isLinkCasesJourney = this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES);
   }
 
   public onNext(): void {
-    // Return linked cases state and error messages to the parent
+    // Return linked cases state to the parent
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
       navigateToNextPage: true

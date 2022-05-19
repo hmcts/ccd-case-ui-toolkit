@@ -5,4 +5,5 @@ import { LinkedCase } from '../domain';
 export class LinkedCasesService {
 
   public linkedCases: LinkedCase[] = [];
+  public preLinkedCases: LinkedCase[] = [];
 }
