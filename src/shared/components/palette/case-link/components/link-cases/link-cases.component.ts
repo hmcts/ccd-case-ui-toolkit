@@ -76,6 +76,7 @@ export class LinkCasesComponent implements OnInit {
     this.caseReasonError = null;
     this.caseNumberError = null;
     this.caseSelectionError = null;
+    this.noSelectedCaseError = null;
     if (this.linkCaseForm.valid && !this.isCaseSelected(this.selectedCases)
       && !this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
       this.getCaseInfo();
@@ -204,6 +205,10 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public onNext(): void {
+    this.errorMessages = [];
+    this.caseReasonError = null;
+    this.caseNumberError = null;
+    this.caseSelectionError = null;
     this.noSelectedCaseError = null;
     let navigateToNextPage = true;
     if (this.selectedCases.length) {
