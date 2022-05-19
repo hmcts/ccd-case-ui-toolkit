@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.16.3-linked-cases-duplicate-check",
+  "version": "4.16.4-linked-cases-unlink-journey-before-you-start",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
