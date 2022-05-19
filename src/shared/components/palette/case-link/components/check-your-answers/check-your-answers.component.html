@@ -1,7 +1,8 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-xl">Check your answers</h1>
-		<table class="govuk-table" *ngIf="!isLinkCasesJourney">
+    <!-- Top table for manage link cases journey -->
+    <table id="cases-to-unlink-table" class="govuk-table" *ngIf="!isLinkCasesJourney">
       <caption class="govuk-table__caption govuk-table__caption--m">Cases to unlink</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
@@ -20,7 +21,8 @@
         </tr>
       </tbody>
     </table>
-    <table class="govuk-table">
+    <!-- Table for both linke case and manage link case journeys -->
+    <table id="linked-cases-table" class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--m">{{linkedCasesTableCaption}}</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">

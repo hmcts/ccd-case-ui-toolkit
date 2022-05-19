@@ -15,7 +15,6 @@ export class UnLinkCasesComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
 
   public ngOnInit(): void {
-    console.log('hello I am here');
   }
 
   public onNext(): void {

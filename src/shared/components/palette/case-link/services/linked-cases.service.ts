@@ -6,4 +6,5 @@ export class LinkedCasesService {
 
   public linkedCases: LinkedCase[] = [];
   public preLinkedCases: LinkedCase[] = [];
+  public casesToUnlink: LinkedCase[] = [];
 }
