@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.15.0-hearings
+**EUI-5912** Hearing tab is not loading
+
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
