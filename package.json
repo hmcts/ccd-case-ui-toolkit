@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.8-EUI-5635-avoid-profile-call-multiple-time",
+  "version": "4.12.1-EUI-5877-repeating-label",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
