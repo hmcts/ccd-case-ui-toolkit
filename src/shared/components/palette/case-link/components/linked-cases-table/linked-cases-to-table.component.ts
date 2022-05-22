@@ -10,6 +10,7 @@ import { DefinitionsService } from '../../../../../services/definitions';
 import { READ_ACCESS } from '../../../../../domain/case-view/access-types.model';
 import { CasesService } from '../../../../case-editor/services';
 import { LinkCaseReason } from '../../domain/linked-cases.model';
+import { LinkedCasesService } from '../../services';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -48,12 +49,14 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
 
   jurisdictions: Jurisdiction[];
   linkCaseReasons: LinkCaseReason[];
+  public caseId: string;
 
   constructor(
     private casesService: CasesService,
     private definitionsService: DefinitionsService,
     private appConfig: AbstractAppConfig,
     private route: ActivatedRoute,
+    private linkedCasesService: LinkedCasesService,
     private readonly searchService: SearchService) {
       super();
     }
@@ -65,41 +68,62 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
   }
 
   ngOnInit(): void {
+    this.caseId = this.route.snapshot.data.case.case_id;
+    const linkedCasesPromise  = [];
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });
-    this.definitionsService.getJurisdictions(READ_ACCESS)
-    .subscribe(jurisdictions => {
-      this.casesService.getCaseLinkResponses().toPromise()
-      .then(reasons => {
-        this.linkCaseReasons = reasons;
-      })
-      .catch((error: HttpError) => {
-        this.linkCaseReasons = [];
-      });
-      this.getAllCaseInformation(); // make sure we have a jurisdictions response before we map cases info
-      this.jurisdictions = jurisdictions;
-    });
+    linkedCasesPromise.push(this.definitionsService.getJurisdictions(READ_ACCESS));
+    linkedCasesPromise.push(this.casesService.getCaseLinkResponses());
+
+    forkJoin(linkedCasesPromise).subscribe((linkedCasesResponse: any) => {
+        //this.linkCaseReasons = reasons;
+        console.log(JSON.stringify(linkedCasesResponse))
+    })
+    this.getAllLinkedCaseInformation();
   }
 
   groupByCaseType = (arrObj, key) => {
-    return arrObj.reduce((rv, x) => {
+    return arrObj.reduce((rv, x) =>   {
       (rv[x[key]] = rv[x[key]] || []).push(x['caseReference']);
       return rv;
     }, {});
   };
 
-  public getAllCaseInformation() {
+  getCaseRefereneLink(caseRef) {
+    return caseRef.slice(this.caseId.length - 4);
+  }
+
+  sortByReasonCode() {
+    const topLevelresultArray = [];
+    let secondLevelresultArray = [];
+    const data = this.caseField.value as []
+    data.forEach((item: any) => {
+      const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'Progressed as part of this lead case')
+      const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'Case consolidated')
+      if (progressedStateReason) {
+        topLevelresultArray.push(item)
+      } else if (consolidatedStateReason) {
+        secondLevelresultArray = [item, ...secondLevelresultArray ]
+      } else {
+        secondLevelresultArray.push(item)
+      }
+    })
+    return topLevelresultArray.concat(secondLevelresultArray)
+  }
+
+  public getAllLinkedCaseInformation() {
     const searchCasesResponse = [];
     const caseTypeId = this.route.snapshot.data.case.case_type.id;
-    const linkedCaseIds = this.groupByCaseType(this.caseField.value, 'caseType');
+    const sortedCases = this.sortByReasonCode()
+    const linkedCaseIds = this.groupByCaseType(sortedCases, 'caseType');
     Object.keys(linkedCaseIds).map(key => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100)
       const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${SearchService.VIEW_WORKBASKET}`
       const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
     })
-    if (searchCasesResponse.length) 
+    if (searchCasesResponse.length)
     {
       this.sub = forkJoin(searchCasesResponse).subscribe((searchCases: any) => {
         searchCases.forEach(response => {
@@ -111,19 +135,23 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
     }
   }
 
+  hasLeadCaseOrConsolidated(reasonCode: string) {
+    return reasonCode === 'Progressed as part of this lead case' || reasonCode === 'Case consolidated'
+  }
+
   mapResponse(esSearchCasesResponse, jurisdictionsResponse) {
-    const filteredCaseType = this.jurisdictions.filter(jurisdiction => {
-      return jurisdiction.caseTypes.find(caseType => {
-        if (caseType.id === esSearchCasesResponse.case_fields["[CASE_TYPE]"]) {
-          return true;
-        };
-      });
-    });
-  const states = filteredCaseType[0].caseTypes[0].states
-  const filteredstates = states.filter(obj => obj.id === esSearchCasesResponse.case_fields["[STATE]"])
+  // it may be needed to uncommented after later disc on how to get the transfor lookup code to value
+  //   const filteredCaseType = this.jurisdictions.filter(jurisdiction => {
+  //     return jurisdiction.caseTypes.find(caseType => {
+  //       if (caseType.id === esSearchCasesResponse.case_fields["[CASE_TYPE]"]) {
+  //         return true;
+  //       };
+  //     });
+  //   });
+  // const states = filteredCaseType[0].caseTypes[0].states
+  // const filteredstates = states.filter(obj => obj.id === esSearchCasesResponse.case_fields["[STATE]"])
   const linkedCaseReasons = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id).reasons
 
-    //const state = jurisdiction.map(caseType => caseType.)
     return {
       case_id: esSearchCasesResponse.case_id,
       caseName: '',
