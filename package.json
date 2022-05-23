@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.2-manage-case-flags-defect-fixes",
+  "version": "4.13.2-manage-case-flags-selection-page-validation",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
