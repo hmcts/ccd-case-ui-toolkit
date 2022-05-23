@@ -3,10 +3,10 @@
     <h1 class="govuk-heading-xl">Select the cases you want to unlink from this case</h1>
     <div class="govuk-form-group form-group" [formGroup]="unlinkCaseForm" *ngIf="unlinkCaseForm">
       <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item" *ngFor="let case of casesToUnlink">
-          <input class="govuk-checkboxes__input" id="{{case.caseReference}}" formArrayName="linkedCases" name="linkedCases"
-            type="checkbox" [value]="case.caseReference">
-          <label class="govuk-label govuk-checkboxes__label" for="{{case.caseReference}}">{{case.caseName}} {{case.caseReference}}</label>
+        <div class="govuk-checkboxes__item" *ngFor="let caseReference of casesToUnlink">
+          <input class="govuk-checkboxes__input" id="{{caseReference}}" formArrayName="linkedCases" name="linkedCases"
+            type="checkbox" [value]="caseReference">
+          <label class="govuk-label govuk-checkboxes__label" for="{{caseReference}}">{{caseReference}}</label>
         </div>
       </div>
     </div>
