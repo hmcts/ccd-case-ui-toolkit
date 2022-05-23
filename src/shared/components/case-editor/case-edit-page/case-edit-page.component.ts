@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -18,6 +18,7 @@ import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { initDialog } from '../../helpers';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -49,7 +50,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   formValuesChanged = false;
   pageChangeSubject: Subject<boolean> = new Subject();
   caseFields: CaseField[];
-  validationErrors: {id: string, message: string}[] = [];
+  validationErrors: { id: string, message: string }[] = [];
+  showSpinner: boolean;
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -73,10 +75,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly pageValidationService: PageValidationService,
     private readonly dialog: MatDialog,
     private readonly caseFieldService: CaseFieldService
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
-    this.initDialog();
+    initDialog(this.dialogConfig);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
@@ -134,38 +136,63 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[]): void {
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
+    const group: AbstractControl = container || this.editForm.controls['data'];
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-          .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
-          .forEach(casefield => {
-            const fieldElement = this.editForm.controls['data'].get(casefield.id);
-            if (fieldElement) {
-              if (fieldElement.hasError('pattern') || fieldElement.hasError('matDatetimePickerParse')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is not valid`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('required')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is required`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('minlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} required minimum length`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('maxlength')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} exceeds maximum length`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('matDatetimePickerMin')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is below the set minimum date threshold`});
-                fieldElement.markAsTouched();
-              } else if (fieldElement.hasError('matDatetimePickerMax')) {
-                this.validationErrors.push({id: casefield.id, message: `${casefield.label} is above the set maximum date threshold`});
-                fieldElement.markAsTouched();
-              }
+      .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
+      .forEach(casefield => {
+        const fieldElement = group.get(casefield.id);
+        if (fieldElement) {
+          const label = casefield.label || 'Field';
+          let id = casefield.id;
+          if (fieldElement['component'] && fieldElement['component'].parent) {
+            if (fieldElement['component'].idPrefix.indexOf('_' + id + '_') === -1) {
+              id = `${fieldElement['component'].idPrefix}${id}`;
+            } else {
+              id = `${fieldElement['component'].idPrefix}`;
             }
-          })
+          }
+          if (fieldElement.hasError('required')) {
+            this.validationErrors.push({ id, message: `${label} is required` });
+            fieldElement.markAsDirty();
+          } else if (fieldElement.hasError('pattern')) {
+            this.validationErrors.push({ id, message: `${label} is not valid` });
+            fieldElement.markAsDirty();
+          } else if (fieldElement.hasError('minlength')) {
+            this.validationErrors.push({ id, message: `${label} is below the minimum length` });
+            fieldElement.markAsDirty();
+          } else if (fieldElement.hasError('maxlength')) {
+            this.validationErrors.push({ id, message: `${label} exceeds the maximum length` });
+            fieldElement.markAsDirty();
+          } else if (fieldElement.invalid) {
+            if (casefield.isComplex()) {
+              this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
+            } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
+              const fieldArray = fieldElement as FormArray;
+              if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
+                id = `${fieldArray['component']['collItems'][0].prefix}`
+              }
+              fieldArray.controls.forEach((c: AbstractControl) => {
+                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+              });
+            } else {
+              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
+              fieldElement.markAsDirty();
+            }
+          }
+        }
+      });
     CaseEditPageComponent.scrollToTop();
   }
 
   public navigateToErrorElement(elementId: string): void {
-    document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'center'});
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
   }
 
   public submit(): void {
@@ -173,19 +200,23 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
     }
-
     if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
       this.error = null;
       let caseEventData: CaseEventData = this.buildCaseEventData();
+      this.showSpinner = true;
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
           if (jsonData) {
             this.updateFormData(jsonData as CaseEventData);
           }
           this.saveDraft();
+          this.showSpinner = false;
           this.next();
-        }, error => this.handleError(error));
+        }, error => {
+          this.showSpinner = false;
+          this.handleError(error);
+        });
       CaseEditPageComponent.scrollToTop();
     }
     CaseEditPageComponent.setFocusToTop();
@@ -201,7 +232,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // we do the check, becasue the data comes from the external source
-  pageWithFieldExists(caseFieldId) {
+  pageWithFieldExists(caseFieldId: string) {
     return this.wizard.findWizardPage(caseFieldId);
   }
 
@@ -214,10 +245,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
-    let theControl = formGroup.controls['data'].get(caseFieldId) as FormControl;
-
-    if (theControl) {
-      theControl.patchValue(value);
+    let theControl = formGroup.controls['data'].get(caseFieldId);
+    if (theControl && theControl['status'] !== 'DISABLED') {
+      if (Array.isArray(theControl.value) && Array.isArray(value)
+              && theControl.value.length > value.length && theControl['caseField']
+              && theControl['caseField']['display_context'] && theControl['caseField']['display_context'] === 'OPTIONAL'
+              && theControl['caseField']['field_type'] && theControl['caseField']['field_type']['type'] === 'Collection') {
+        // do nothing
+      } else {
+        theControl.patchValue(value);
+      }
     }
   }
 
@@ -256,9 +293,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (result === 'Save') {
             const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData });
             } else {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData });
             }
           }
         });
@@ -270,44 +307,34 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  submitting(): boolean {
+  public submitting(): boolean {
     return this.isSubmitting;
   }
 
-  getCaseId(): string {
+  public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 
-  getCancelText(): string {
+  public getCaseTitle(): string {
+    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
+      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+  }
+
+  public getCancelText(): string {
     return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
 
-  getTriggerText(): string {
+  private getTriggerText(): string {
     return this.eventTrigger && this.eventTrigger.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START
   }
 
-  private initDialog() {
-    this.dialogConfig = new MatDialogConfig();
-    this.dialogConfig.disableClose = true;
-    this.dialogConfig.autoFocus = true;
-    this.dialogConfig.ariaLabel = 'Label';
-    this.dialogConfig.height = '245px';
-    this.dialogConfig.width = '550px';
-    this.dialogConfig.panelClass = 'dialog';
-
-    this.dialogConfig.closeOnNavigation = false;
-    this.dialogConfig.position = {
-      top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
-  }
-
   private discard(): void {
     if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-      this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
     } else {
-      this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
     }
   }
 

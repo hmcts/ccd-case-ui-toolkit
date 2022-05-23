@@ -13,6 +13,7 @@ export type FieldTypeEnum =
   | 'DynamicList'
   | 'DynamicMultiSelectList'
   | 'FixedRadioList'
+  | 'DynamicRadioList'
   | 'Complex'
   | 'Collection'
   | 'MultiSelectList'
@@ -23,4 +24,5 @@ export type FieldTypeEnum =
   | 'AddressUK'
   | 'CasePaymentHistoryViewer'
   | 'CaseHistoryViewer'
-  | 'Organisation';
+  | 'Organisation'
+  | 'WaysToPay';

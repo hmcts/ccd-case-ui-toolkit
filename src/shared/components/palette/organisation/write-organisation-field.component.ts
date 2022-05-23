@@ -68,6 +68,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         this.preSelectEmptyOrg();
       }
     }
+
+    // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an
+    // Organisation field uses the Complex type, it is meant to be treated as one field
+    if (this.caseField && this.caseField.field_type.type === 'Complex') {
+      for (const organisationSubField of this.caseField.field_type.complex_fields) {
+        organisationSubField.retain_hidden_value = this.caseField.retain_hidden_value;
+      }
+    }
   }
 
   private preSelectDefaultOrg(): void {
@@ -117,12 +125,32 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
+  // The way the search works divide into two phases
+  // 1. go through collection of org items one by one by doing the comparsion of search string using includes to all the address fields
+  // 2. split the search string into arrays and apply the each array item into the address fields
+  // 3. both step 1, 2 will go until max count result reaches, and finally combine both result sets into final collection
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
-    return organisations.filter(organisation => {
-      return this.searchCriteria(organisation, lowerOrgSearchText) || this.searchWithSpace(organisation, lowerOrgSearchText);
-    })
-      .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
-      .slice(0, WriteOrganisationFieldComponent.MAX_RESULT_COUNT);
+    const partMatchingResultSet = [], withSpaceMatchingResultSet = [];
+    const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT
+    organisations.forEach((organisation) => {
+      if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
+        partMatchingResultSet.push(organisation);
+      }
+    });
+
+    organisations.forEach((org) => {
+      const resultSet = [...partMatchingResultSet, ...withSpaceMatchingResultSet];
+      const hasMatchingOrganisation = resultSet.find(item => item.organisationIdentifier === org.organisationIdentifier);
+      const searchHasSpace = this.searchWithSpace(org, lowerOrgSearchText);
+      const hasResultSetBelowMaxCount = resultSet.length < MAX_RESULT_COUNT;
+
+      if (!hasMatchingOrganisation && partMatchingResultSet.length === 0 && hasResultSetBelowMaxCount && searchHasSpace) {
+        withSpaceMatchingResultSet.push(org);
+      }
+    });
+    return [...partMatchingResultSet, ...withSpaceMatchingResultSet].map((organisation) =>
+      this.organisationConverter.toSimpleOrganisationModel(organisation)
+    );
   }
 
   private searchCriteria(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
@@ -160,7 +188,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     return false;
   }
 
-  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string) {
+  private searchWithSpace(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
     const searchTextArray: string[] = lowerOrgSearchText.split(/\s+/g);
     for (const singleSearchText of searchTextArray) {
       if (singleSearchText && this.searchCriteria(organisation, singleSearchText)) {
@@ -173,7 +201,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     return oldText.replace(/\s+/g, '');
   }
 
-  public selectOrg(selectedOrg: SimpleOrganisationModel) {
+  public selectOrg(selectedOrg: SimpleOrganisationModel): void {
     this.organisationIDFormControl.setValue(selectedOrg.organisationIdentifier);
     this.organisationNameFormControl.setValue(selectedOrg.name);
     this.selectedOrg$ = of(selectedOrg);
@@ -187,7 +215,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 
-  public deSelectOrg(selectedOrg) {
+  public deSelectOrg(): void {
     this.organisationIDFormControl.reset();
     this.organisationNameFormControl.reset();
     this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);

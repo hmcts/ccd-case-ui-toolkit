@@ -1,14 +1,29 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
-import { CaseEventData, CaseEventTrigger, CaseField, CasePrintDocument, CaseView, Draft, FieldType, FieldTypeEnum } from '../../../domain';
+import {
+  CaseEventData,
+  CaseEventTrigger,
+  CaseField,
+  CasePrintDocument,
+  CaseView,
+  ChallengedAccessRequest,
+  SpecificAccessRequest,
+  Draft,
+  FieldType,
+  FieldTypeEnum,
+  RoleAssignmentResponse,
+  RoleCategory,
+  RoleRequestPayload
+} from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -102,29 +117,6 @@ export class CasesService {
       );
   }
 
-  /**
-   * handleNestedDynamicLists()
-   * Reassigns list_item and value data to DynamicList children
-   * down the tree. Server response returns data only in
-   * the `value` object of parent complex type
-   *
-   * EUI-2530 Dynamic Lists for Elements in a Complex Type
-   *
-   * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
-   */
-  private handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
-
-    if (jsonBody.case_fields) {
-      jsonBody.case_fields.forEach(caseField => {
-        if (caseField.field_type) {
-          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
-        }
-      });
-    }
-
-    return jsonBody;
-  }
-
   private setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {
     if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
 
@@ -199,7 +191,7 @@ export class CasesService {
       .get(url, {headers, observe: 'body'})
       .pipe(
         map(body => {
-          return this.handleNestedDynamicLists(body);
+          return FieldsUtils.handleNestedDynamicLists(body);
         }),
         catchError(error => {
           this.errorService.setError(error);
@@ -337,9 +329,11 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // This is used a feature toggle to
-    // control the work allocation
-    if (this.appConfig.getWorkAllocationApiUrl() && !this.isPuiCaseManager()) {
+    // The following code is work allocation 1 related
+    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
+      // This is used a feature toggle to
+      // control the work allocation
+      if (!this.isPuiCaseManager()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
@@ -347,6 +341,7 @@ export class CasesService {
             // Show an appropriate warning about something that went wrong.
             console.warn('Could not process tasks for this case event', error);
           });
+      }
     }
   }
 
@@ -361,4 +356,87 @@ export class CasesService {
     }
     return false;
   }
+
+  public getCourtOrHearingCentreName(locationId: number): Observable<any> {
+    return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`);
+  }
+
+  public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
+    // Assignment API endpoint
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
+    const camUtils = new CaseAccessUtils();
+    let userInfo: UserInfo;
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+
+    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+    const beginTime = new Date();
+    const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const payload: RoleRequestPayload = camUtils.getAMPayload(id,
+                                                              id,
+                                                              roleName,
+                                                              roleCategory,
+                                                              'CHALLENGED',
+                                                              caseId,
+                                                              request,
+                                                              beginTime,
+                                                              endTime);
+
+    return this.http.post(`/api/challenged-access-request`, payload);
+  }
+
+  public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
+    // Assignment API endpoint
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
+    const camUtils = new CaseAccessUtils();
+    let userInfo: UserInfo;
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+
+    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = camUtils.getAMRoleName('specific', roleCategory);
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
+                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+
+    payload.roleRequest = {
+      ...payload.roleRequest,
+      process: 'specific-access',
+      replaceExisting: true,
+      assignerId: payload.requestedRoles[0].actorId,
+      reference: `${caseId}/${roleName}/${payload.requestedRoles[0].actorId}`
+    }
+
+    payload.requestedRoles[0] = {
+      ...payload.requestedRoles[0],
+      roleName: 'specific-access-requested',
+      roleCategory: roleCategory,
+      classification: 'PRIVATE',
+      endTime: new Date(new Date().setDate(new Date().getDate() + 30)),
+      beginTime: null,
+      grantType: 'BASIC',
+      readOnly: true
+    };
+
+    payload.requestedRoles[0].attributes = {
+      ...payload.requestedRoles[0].attributes,
+      requestedRole: roleName
+    }
+
+    payload.requestedRoles[0].notes[0] = {
+      ...payload.requestedRoles[0].notes[0],
+      userId: payload.requestedRoles[0].actorId
+    }
+    return this.http.post(
+      `/api/specific-access-request`,
+      payload
+    );
+  }
+
 }

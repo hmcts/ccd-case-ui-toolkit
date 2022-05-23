@@ -6,12 +6,9 @@ import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
-import { IsReadOnlyPipe } from '../utils';
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { PaletteUtilsModule } from '../utils/utils.module';
+import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 
@@ -29,18 +26,18 @@ describe('WriteComplexFieldComponent', () => {
   const $COMPLEX_PANEL_TITLE = By.css('h2');
   const $COMPLEX_PANEL_VALUES = By.css('ccd-field-write');
 
-  let FieldWriteComponent = MockComponent({
+  const FieldWriteComponent = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
+    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
   });
 
-  let FieldReadComponent = MockComponent({
+  const FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
-  @Pipe({name: 'ccdIsReadOnlyAndNotCollection'})
-  class MockIsReadOnlyAndNotCollectionPipe implements PipeTransform {
+  @Pipe({name: 'ccdIsReadOnly'})
+  class MockIsReadOnlyPipe implements PipeTransform {
     transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
         return false;
@@ -52,9 +49,9 @@ describe('WriteComplexFieldComponent', () => {
   let fixture: ComponentFixture<WriteComplexFieldComponent>;
   let component: WriteComplexFieldComponent;
   let de: DebugElement;
-  let formValidatorService: any;
+  let formValidatorService: jasmine.SpyObj<FormValidatorsService>;
 
-  function prepareTestBed() {
+  function prepareTestBed(): void {
     TestBed
       .configureTestingModule({
         imports: [
@@ -68,7 +65,7 @@ describe('WriteComplexFieldComponent', () => {
           // Mock
           FieldWriteComponent,
           FieldReadComponent,
-          MockIsReadOnlyAndNotCollectionPipe
+          MockIsReadOnlyPipe
         ],
         providers: [
           IsCompoundPipe,
@@ -166,7 +163,7 @@ describe('WriteComplexFieldComponent', () => {
     };
 
     const FIELD_ID = 'AComplexField';
-    const CASE_FIELD: CaseField =  <CaseField>({
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
@@ -196,7 +193,7 @@ describe('WriteComplexFieldComponent', () => {
     }));
 
     it('should render a form group with a header for the complex type', () => {
-      let panelTitle = de
+      const panelTitle = de
         .query($COMPLEX_PANEL)
         .query($COMPLEX_PANEL_TITLE);
 
@@ -205,7 +202,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render a field write component for each field in the complex type', () => {
-      let simpleRowsHeaders = de
+      const simpleRowsHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_VALUES);
 
@@ -225,7 +222,7 @@ describe('WriteComplexFieldComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      let labels = de.queryAll($COMPLEX_PANEL_VALUES);
+      const labels = de.queryAll($COMPLEX_PANEL_VALUES);
 
       expect(labels.length).toEqual(2);
 
@@ -333,7 +330,7 @@ describe('WriteComplexFieldComponent', () => {
     };
 
     const FIELD_ID = 'SomeFieldId';
-    const CASE_FIELD: CaseField =  <CaseField>({
+    const CASE_FIELD: CaseField = <CaseField>({
       id: FIELD_ID,
       label: 'Complex Field',
       field_type: FIELD_TYPE,
@@ -370,13 +367,13 @@ describe('WriteComplexFieldComponent', () => {
     }));
 
     it('should render a table with a row containing 2 columns for each simple type', () => {
-      let values = de
+      const values = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_VALUES);
 
       expect(values.length).toBe(3);
 
-      let line1 = FIELD_TYPE.complex_fields[LINE_1];
+      const line1 = FIELD_TYPE.complex_fields[LINE_1];
       expect(values[LINE_1].componentInstance.caseField).toEqual(plainToClassFromExist(new CaseField(), {
         id: line1.id,
         label: line1.label,
@@ -385,7 +382,7 @@ describe('WriteComplexFieldComponent', () => {
         value: CASE_FIELD.value['AddressLine1']
       }));
 
-      let line2 = FIELD_TYPE.complex_fields[LINE_2];
+      const line2 = FIELD_TYPE.complex_fields[LINE_2];
       expect(values[LINE_2].componentInstance.caseField).toEqual(plainToClassFromExist(new CaseField(), {
         id: line2.id,
         label: line2.label,
@@ -394,7 +391,7 @@ describe('WriteComplexFieldComponent', () => {
         value: CASE_FIELD.value['AddressLine2']
       }));
 
-      let postcode = FIELD_TYPE.complex_fields[POSTCODE];
+      const postcode = FIELD_TYPE.complex_fields[POSTCODE];
       expect(values[POSTCODE].componentInstance.caseField).toEqual(plainToClassFromExist(new CaseField(), {
         id: postcode.id,
         label: postcode.label,
@@ -405,7 +402,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render fields with empty value', () => {
-      component.caseField =  <CaseField>( <CaseField>({
+      component.caseField = <CaseField>( <CaseField>({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
@@ -416,7 +413,7 @@ describe('WriteComplexFieldComponent', () => {
       }));
       fixture.detectChanges();
 
-      let labels = de.queryAll($COMPLEX_PANEL_VALUES);
+      const labels = de.queryAll($COMPLEX_PANEL_VALUES);
 
       expect(labels.length).toEqual(3);
 
@@ -425,7 +422,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render label if set to true', () => {
-      component.caseField =  <CaseField>({
+      component.caseField = <CaseField>({
         id: 'renderLabelId',
         label: 'Test Label',
         display_context: 'OPTIONAL',
@@ -489,7 +486,7 @@ describe('WriteComplexFieldComponent', () => {
       component = fixture.componentInstance;
 
       component.caseField = CASE_FIELD_M;
-      component.formGroup = new FormGroup({}); // FORM_GROUP;
+      component.formGroup = FORM_GROUP;
       component.ignoreMandatory = true;
 
       de = fixture.debugElement;
@@ -498,7 +495,7 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should not add validators when case field is not AddressLine1 and TextMax150', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField =  <CaseField>({
+      component.caseField = <CaseField>({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
@@ -518,7 +515,7 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should add validators when case field is AddressLine1 and TextMax150', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField =  <CaseField>({
+      component.caseField = <CaseField>({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
@@ -539,7 +536,7 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should not add validators when case field is AddressLine1 but NOT TextMax150', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField =  <CaseField>({
+      component.caseField = <CaseField>({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
@@ -567,7 +564,7 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should not add validators when case field is NOT AddressLine1', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField =  <CaseField>({
+      component.caseField = <CaseField>({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
@@ -594,4 +591,225 @@ describe('WriteComplexFieldComponent', () => {
     });
   });
 
+  describe('inheritance of "retain_hidden_value" value from Address parent type', () => {
+    const ADDRESS_LINE_1: CaseField = <CaseField>({
+      id: 'AddressLine1',
+      label: 'Line 1',
+      field_type: {id: 'TextMax150', type: 'Text'},
+      value: ''
+    });
+    const ADDRESS_LINE_2: CaseField = <CaseField>({
+      id: 'AddressLine2',
+      label: 'Line 2',
+      field_type: {id: 'Text', type: 'Text'},
+      value: '111 East India road'
+    });
+    const ADDRESS_TYPE: FieldType = {
+      id: 'AddressUK',
+      type: 'Complex'
+    }
+
+    const FIELD_ID = 'AnAddressField';
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'Address Field',
+      field_type: {
+        ...ADDRESS_TYPE,
+        complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
+      },
+      retain_hidden_value: true
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should set retain_hidden_value to true for all sub-fields that are part of an Address-type field', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      expect(component.caseField.field_type.complex_fields.length).toEqual(2);
+      expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
+      expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toEqual(true);
+    });
+  });
+
+  describe('inheritance of "retain_hidden_value" value from Complex parent type', () => {
+    const ADDRESS_LINE_1: CaseField = <CaseField>({
+      id: 'AddressLine1',
+      label: 'Line 1',
+      field_type: {id: 'TextMax150', type: 'Text'},
+      value: ''
+    });
+    const ADDRESS_LINE_2: CaseField = <CaseField>({
+      id: 'AddressLine2',
+      label: 'Line 2',
+      field_type: {id: 'Text', type: 'Text'},
+      value: '111 East India road'
+    });
+    const COMPLEX_TYPE: FieldType = {
+      id: 'OtherAddress',
+      type: 'Complex'
+    }
+
+    const FIELD_ID = 'AnAddressField';
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'Address Field',
+      field_type: {
+        ...COMPLEX_TYPE,
+        complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
+      },
+      retain_hidden_value: true
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should NOT set retain_hidden_value for all sub-fields that are part of a Complex field', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      expect(component.caseField.field_type.complex_fields.length).toEqual(2);
+      expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toBeUndefined();
+      expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toBeUndefined();
+    });
+  });
+
+  describe('Editable Complex type containing a read-only Collection field', () => {
+    const COLLECTION_TYPE: FieldType = {
+      id: 'CollectionFieldType',
+      type: 'Collection',
+      collection_field_type: {
+        id: 'Text',
+        type: 'Text'
+      }
+    };
+    const COLLECTION_FIELD: CaseField = <CaseField>({
+      id: 'ACollection',
+      label: 'Collection of text fields',
+      field_type: COLLECTION_TYPE,
+      display_context: 'READONLY'
+    });
+    const COMPLEX_TYPE: FieldType = {
+      id: 'ComplexFieldWithCollection',
+      type: 'Complex'
+    };
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'AComplexField',
+      label: 'Complex field containing a Collection field',
+      field_type: {
+        ...COMPLEX_TYPE,
+        complex_fields: [COLLECTION_FIELD]
+      },
+      display_context: 'COMPLEX'
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should render the Collection field as read-only', () => {
+      const readOnlyCollectionField = de.query(By.css('ccd-field-read'));
+      expect(readOnlyCollectionField).toBeTruthy();
+      // Confirm that the field is the expected Collection type and is read-only
+      const field = readOnlyCollectionField.componentInstance;
+      expect(field.caseField.field_type instanceof FieldType).toBeTruthy();
+      expect(field.caseField.field_type.id).toEqual(COLLECTION_TYPE.id);
+      expect(field.caseField.field_type.type).toEqual(COLLECTION_TYPE.type);
+      expect(field.caseField.display_context).toEqual('READONLY');
+    });
+  });
+
+  describe('Editable Complex type containing a writable Collection field', () => {
+    const COLLECTION_TYPE: FieldType = {
+      id: 'CollectionFieldType',
+      type: 'Collection',
+      collection_field_type: {
+        id: 'Text',
+        type: 'Text'
+      }
+    };
+    const COLLECTION_FIELD: CaseField = <CaseField>({
+      id: 'ACollection',
+      label: 'Collection of text fields',
+      field_type: COLLECTION_TYPE
+    });
+    const COMPLEX_TYPE: FieldType = {
+      id: 'ComplexFieldWithCollection',
+      type: 'Complex'
+    };
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'AComplexField',
+      label: 'Complex field containing a Collection field',
+      field_type: {
+        ...COMPLEX_TYPE,
+        complex_fields: [COLLECTION_FIELD]
+      },
+      display_context: 'COMPLEX'
+    });
+
+    const FORM_GROUP: FormGroup = new FormGroup({});
+
+    beforeEach(async(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should render the Collection field as writable', () => {
+      const writableCollectionField = de.query(By.css('ccd-field-write'));
+      expect(writableCollectionField).toBeTruthy();
+      // Confirm that the field is the expected Collection type
+      const field = writableCollectionField.componentInstance;
+      expect(field.caseField.field_type instanceof FieldType).toBeTruthy();
+      expect(field.caseField.field_type.id).toEqual(COLLECTION_TYPE.id);
+      expect(field.caseField.field_type.type).toEqual(COLLECTION_TYPE.type);
+    });
+  });
 });

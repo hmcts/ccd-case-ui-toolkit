@@ -1,32 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseEditPageComponent } from './case-edit-page.component';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { PageValidationService } from '../services/page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+
+import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { Draft } from '../../../domain/draft.model';
-import { CaseEventData } from '../../../domain/case-event-data.model';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
 import { text } from '../../../test/helpers';
+import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
+import { CallbackErrorsContext } from '../../error/domain/error-context';
+import { CcdPageFieldsPipe, FieldsFilterPipe } from '../../palette/complex';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Wizard, WizardPage } from '../domain';
+import { PageValidationService } from '../services';
+import { CaseEditPageComponent } from './case-edit-page.component';
+import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import createSpyObj = jasmine.createSpyObj;
-import { FieldsFilterPipe } from '../../palette/complex';
-import { CcdPageFieldsPipe } from '../../palette/complex/cdd-page-fields.pipe';
+import { CcdCaseTitlePipe } from '../../../pipes/case-title';
+import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 describe('CaseEditPageComponent', () => {
 
@@ -119,7 +115,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -128,7 +124,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -383,7 +381,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -392,7 +390,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -460,12 +460,26 @@ describe('CaseEditPageComponent', () => {
         'cancelled': cancelled,
         'validate': (caseEventData: CaseEventData) => of(caseEventData),
         'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678'},
+        'caseDetails': {
+          'case_id': '1234567812345678',
+          'tabs': [],
+          'metadataFields': [],
+          'state': {
+            'id': 'incompleteApplication',
+            'name': 'Incomplete Application',
+            'title_display': '# 1234567812345678: test'
+          }
+        },
+      };
+
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
       };
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -474,7 +488,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -499,10 +515,18 @@ describe('CaseEditPageComponent', () => {
         'event_token': '',
         'ignore_warning': true
       };
-
+      comp.currentPage = wizardPage;
       comp.updateFormData(jsonData);
 
       expect(eventTrigger.case_fields.filter(element => element.id === id).pop().value).toBe(updatedValue);
+    });
+
+    it('should show valid title on the page', () => {
+      wizardPage.isMultiColumn = () => true;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      const title = comp.getCaseTitle();
+      expect(title).toEqual('# 1234567812345678: test');
     });
   });
 
@@ -559,7 +583,9 @@ describe('CaseEditPageComponent', () => {
           CaseEditPageComponent,
           FieldsFilterPipe,
           CcdPageFieldsPipe,
-          CaseReferencePipe
+          CcdCYAPageLabelFilterPipe,
+          CaseReferencePipe,
+          CcdCaseTitlePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -569,7 +595,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -591,6 +619,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
+      expect(comp.showSpinner).toBeFalsy();
 
       comp.submit();
 
@@ -605,6 +634,7 @@ describe('CaseEditPageComponent', () => {
         expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
+        expect(comp.showSpinner).toBeFalsy();
       });
     });
 
@@ -627,6 +657,7 @@ describe('CaseEditPageComponent', () => {
 
         const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
         expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+        expect(comp.showSpinner).toBeFalsy();
       });
     });
 
@@ -666,6 +697,7 @@ describe('CaseEditPageComponent', () => {
         expect(text(firstFieldError)).toBe('First field error');
         const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
         expect(text(secondFieldError)).toBe('Second field error');
+        expect(comp.showSpinner).toBeFalsy();
       });
     });
 
@@ -758,7 +790,7 @@ describe('CaseEditPageComponent', () => {
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -767,7 +799,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -802,7 +836,33 @@ describe('CaseEditPageComponent', () => {
     const F_GROUP = new FormGroup({
       'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
                               , 'Invalidfield2': new FormControl(null, Validators.required)
+                              , 'OrganisationField': new FormControl(null, Validators.required)
+                              , 'complexField1': new FormControl(null, Validators.required)
                             })
+    });
+
+    const FIELD_TYPE_WITH_VALUES: FieldType = {
+      id: 'Organisation',
+      type: 'Complex',
+      complex_fields: [
+        {
+          id: 'OrganisationName',
+          label: 'Organisation Name',
+          display_context: 'MANDATORY',
+          field_type: {
+            id: 'Text',
+            type: 'Text'
+          }
+        } as CaseField
+      ]
+    };
+
+    const CASE_FIELD: CaseField = <CaseField>({
+      id: 'OrganisationField',
+      label: 'OrganisationField',
+      display_context: 'MANDATORY',
+      field_type: FIELD_TYPE_WITH_VALUES,
+      value: ''
     });
 
     beforeEach(async(() => {
@@ -842,7 +902,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe],
+          CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -851,7 +911,9 @@ describe('CaseEditPageComponent', () => {
           {provide: PageValidationService, useValue: pageValidationService},
           {provide: ActivatedRoute, useValue: route},
           {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService}
+          {provide: CaseFieldService, useValue: caseFieldService},
+          FieldsUtils,
+          PlaceholderService,
         ]
       }).compileComponents();
     }));
@@ -865,21 +927,38 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should validate Mandatory Fields and log error message ', () => {
-        wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
-        wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
-        wizardPage.isMultiColumn = () => false;
+      wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
+      wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
+      wizardPage.case_fields.push(CASE_FIELD);
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-        comp.editForm = F_GROUP;
-        comp.currentPage = wizardPage;
-        fixture.detectChanges();
-        expect(comp.currentPageIsNotValid()).toBeTruthy();
-
-        comp.generateErrorMessage(wizardPage.case_fields);
-        comp.validationErrors.forEach(error => {
-          expect(error.message).toEqual(`${error.id} is required`)
-        });
-
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is required`)
       });
+    });
+
+    it('should validate mandatory complex type fields and log error message', () => {
+      const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'MANDATORY', 1, null, true, true);
+      const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'MANDATORY', 2, null, false, true);
+      wizardPage.case_fields.push(aCaseField('complexField1', 'complexField1', 'Complex', 'MANDATORY', 1,
+        [complexSubField1, complexSubField2], true, true));
+
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is required`)
+      });
+    })
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {

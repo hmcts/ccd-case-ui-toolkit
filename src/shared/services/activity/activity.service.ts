@@ -1,10 +1,12 @@
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Activity } from '../../domain/activity';
 import { Observable } from 'rxjs';
+
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService, OptionsType } from '../../services/http';
-import { HttpHeaders } from '@angular/common/http';
-import { SessionStorageService } from '../session/session-storage.service';
+import { Activity } from '../../domain/activity';
+import { HttpError } from '../../domain/http';
+import { HttpErrorService, HttpService, OptionsType } from '../http';
+import { SessionStorageService } from '../session';
 
 // @dynamic
 @Injectable()
@@ -13,11 +15,25 @@ export class ActivityService {
   static get ACTIVITY_VIEW() { return 'view'; }
   static get ACTIVITY_EDIT() { return 'edit'; }
 
-  private userAuthorised;
+  private userAuthorised: boolean = undefined;
 
-  constructor(private readonly http: HttpService,
-              private readonly appConfig: AbstractAppConfig,
-              private readonly sessionStorageService: SessionStorageService) {}
+  public get isEnabled(): boolean {
+    return this.activityUrl() && this.userAuthorised;
+  }
+
+  private static handleHttpError(response: HttpErrorResponse): HttpError {
+    const error: HttpError = HttpErrorService.convertToHttpError(response);
+    if (response.status && response.status !== error.status) {
+      error.status = response.status;
+    }
+    return error;
+  }
+
+  constructor(
+    private readonly http: HttpService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
@@ -30,33 +46,44 @@ export class ActivityService {
     return options;
   }
 
-  getActivities(...caseId: string[]): Observable<Activity[]> {
-    const options = this.getOptions();
-    const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
-    return this.http
-      .get(url, options, false)
-      .map(response => response);
+  public getActivities(...caseId: string[]): Observable<Activity[]> {
+    try {
+      const options = this.getOptions();
+      const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
+      return this.http
+        .get(url, options, false, ActivityService.handleHttpError)
+        .map(response => response);
+    } catch (error) {
+      console.log('user may not be authenticated.' + error);
+    }
   }
 
-  postActivity(caseId: string, activityType: String): Observable<Activity[]> {
-    const options = this.getOptions();
-    const url = this.activityUrl() + `/cases/${caseId}/activity`;
-    let body = { activity: activityType};
-    return this.http
-      .post(url, body, options, false)
-      .map(response => response);
+  public postActivity(caseId: string, activity: string): Observable<Activity[]> {
+    try {
+      const options = this.getOptions();
+      const url = this.activityUrl() + `/cases/${caseId}/activity`;
+      let body = { activity };
+      return this.http
+        .post(url, body, options, false)
+        .map(response => response);
+    } catch (error) {
+      console.log('user may not be authenticated.' + error);
+    }
   }
 
-  verifyUserIsAuthorized(): void {
+  public verifyUserIsAuthorized(): void {
+    if (this.sessionStorageService.getItem('userDetails') === undefined) {
+      return;
+    }
     if (this.activityUrl() && this.userAuthorised === undefined) {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
-        data => this.userAuthorised = true,
+        () => this.userAuthorised = true,
         error => {
-            if (error.status === 403) {
-              this.userAuthorised = false;
-            } else {
-              this.userAuthorised = true
-            }
+          if ([401, 403].indexOf(error.status) > -1) {
+            this.userAuthorised = false;
+          } else {
+            this.userAuthorised = true
+          }
         }
       );
     }
@@ -64,10 +91,6 @@ export class ActivityService {
 
   private activityUrl(): string {
     return this.appConfig.getActivityUrl();
-  }
-
-  get isEnabled(): boolean {
-    return this.activityUrl() && this.userAuthorised;
   }
 
 }

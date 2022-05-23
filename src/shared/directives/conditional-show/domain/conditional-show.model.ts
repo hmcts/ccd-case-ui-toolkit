@@ -129,7 +129,28 @@ export class ShowCondition {
     if (!this.condition) {
       return true;
     }
-    return this.matchAndConditions(fields, path);
+    return this.matchAndConditions(fields, this.updatePathName(path));
+  }
+  /**
+   * Path Name gets updated for complex sub fields
+   * @param path Path name.
+   */
+   private updatePathName(path: string): string {
+    if (path && path.split(/[_]+/g).length > 0) {
+      let [pathName, ...pathTail] = path.split(/[_]+/g);
+      const pathFinalIndex = pathTail.pop();
+      const pathTailString = pathTail.toString();
+
+      pathTail = pathTail.map((value) => {
+        return Number(pathFinalIndex) === Number(value) ? pathName : value;
+      });
+
+      return pathTailString !== pathTail.toString()
+        ? `${pathName}_${pathTail.join('_')}_${pathFinalIndex}`
+        : path;
+    } else {
+      return path;
+    }
   }
 
   public matchByContextFields(contextFields: CaseField[]): boolean {
@@ -243,7 +264,7 @@ export class ShowCondition {
 
   private findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
     // use the path to resolve which array element we refer to
-    if (path.startsWith(head)) {
+    if (path && path.startsWith(head)) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {

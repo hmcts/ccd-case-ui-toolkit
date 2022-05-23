@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-
 import { AbstractAppConfig } from '../../../../app.config';
-import { TaskSearchParameter, TaskSearchParameters } from '../../../domain';
+import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
+import { Task } from '../../../domain/work-allocation/Task';
+import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
@@ -30,7 +32,7 @@ export class WorkAllocationService {
   public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
-      .post(url, { searchRequest }, null, false)
+      .post(url, {searchRequest}, null, false)
       .pipe(
         map(response => response),
         catchError(error => {
@@ -47,6 +49,23 @@ export class WorkAllocationService {
   }
 
   /**
+   * Call the API to assign a task.
+   * @param taskId specifies which task should be assigned.
+   * @param userId specifies the user the task should be assigned to.
+   */
+  public assignTask(taskId: string, userId: string): Observable<any> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/assign`;
+    return this.http
+      .post(url, {userId})
+      .pipe(
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        })
+      );
+  }
+
+  /**
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
    */
@@ -54,6 +73,30 @@ export class WorkAllocationService {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
+      .pipe(
+        catchError(error => {
+          this.errorService.setError(error);
+          // this will subscribe to get the user details and decide whether to display an error message
+          this.http.get(this.appConfig.getUserInfoApiUrl()).map(response => response).subscribe((response) => {
+            this.handleTaskCompletionError(response);
+          });
+          return throwError(error);
+        })
+      );
+  }
+
+  /**
+   * Call the API to assign and complete a task.
+   * @param taskId specifies which task should be completed.
+   */
+  public assignAndCompleteTask(taskId: string): Observable<any> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
+    return this.http
+      .post(url, {
+        'completion_options': {
+          'assign_and_complete': true
+        }
+      })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -87,7 +130,7 @@ export class WorkAllocationService {
     const lowerCaseRoles = roles.map(role => role.toLowerCase());
     // When/if lib & target permanently change to es2016, replace indexOf with includes
     return (lowerCaseRoles.indexOf(WorkAllocationService.IACCaseOfficer) !== -1)
-     || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
+      || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
   }
 
   /**
@@ -127,4 +170,23 @@ export class WorkAllocationService {
         })
       );
   }
+
+  /**
+   * Return tasks for case and event.
+   *
+   * @param eventId The ID of the event to find tasks for.
+   * @param caseId The ID of the case to find tasks for.
+   */
+  public getTasksByCaseIdAndEventId(eventId: string, caseId: string, caseType: string, jurisdiction: string): Observable<TaskPayload> {
+    return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`);
+  }
+
+ /**
+  * Call the API to get a task
+  *
+  * @param {string} taskId
+  */
+ public getTask(taskId: string): Observable<TaskRespone> {
+  return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}`);
+ }
 }

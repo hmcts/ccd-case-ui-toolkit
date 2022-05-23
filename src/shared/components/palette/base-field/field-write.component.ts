@@ -57,6 +57,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
       component.instance['ignoreMandatory'] = true;
     }
     component.instance['isExpanded'] = this.isExpanded;
+    component.instance['isInSearchBlock'] = this.isInSearchBlock;
     this.fieldContainer.insert(component.hostView);
 
     // EUI-3267.

@@ -8,7 +8,7 @@ export class FieldTypeSanitiser {
   public static readonly FIELD_TYPE_COLLECTION: FieldTypeEnum = 'Collection';
   public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
   public static readonly FIELD_TYPE_DYNAMIC_MULTISELECT_LIST: FieldTypeEnum = 'DynamicMultiSelectList';
-  
+  public static readonly FIELD_TYPE_DYNAMIC_RADIO_LIST: FieldTypeEnum = 'DynamicRadioList';
 
   /**
    * This method finds dynamiclists in a form and replaces their string
@@ -35,6 +35,7 @@ export class FieldTypeSanitiser {
           this.convertArrayToDynamicListOutput(caseField, data);
           break;
 
+        case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_RADIO_LIST:
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
           this.convertStringToDynamicListOutput(caseField, data);
           break;

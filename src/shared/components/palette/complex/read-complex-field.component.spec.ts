@@ -211,7 +211,7 @@ describe('ReadComplexFieldComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9',
-          isDynamic: function () {}
+          isDynamic: () => false
         }),
         <CaseField>({
           id: 'AddressLine2',
@@ -222,8 +222,7 @@ describe('ReadComplexFieldComponent', () => {
             type: 'Text'
           },
           value: '111 East India road',
-
-          isDynamic: function () {}
+          isDynamic: () => false
         })
       ]
     };

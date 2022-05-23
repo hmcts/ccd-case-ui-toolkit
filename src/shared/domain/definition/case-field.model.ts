@@ -2,7 +2,7 @@ import { Orderable } from '../order';
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
 import { Expose, Type } from 'class-transformer';
 import { AccessControlList } from './access-control-list.model';
-import * as _  from 'underscore';
+import * as _ from 'underscore';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
 
@@ -28,6 +28,7 @@ export class CaseField implements Orderable {
   acls?: AccessControlList[];
   metadata?: boolean;
   formatted_value?: any;
+  retain_hidden_value: boolean;
 
   @Type(() => WizardPageField)
   wizardProps?: WizardPageField;
@@ -145,7 +146,7 @@ export class CaseField implements Orderable {
   isDynamic(): boolean {
     if (!this.field_type) return false;
 
-    const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicMultiSelectList'];
+    const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicMultiSelectList', 'DynamicMultiSelectList'];
 
     return dynamicFieldTypes.indexOf(this.field_type.type) !== -1;
   }

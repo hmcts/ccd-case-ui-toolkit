@@ -53,11 +53,11 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    if (this.activityPollingService.isEnabled) {
+  public ngOnDestroy(): void {
+    if (this.activitySubscription && this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
-    if (!this.route.snapshot.data.case) {
+    if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
   }

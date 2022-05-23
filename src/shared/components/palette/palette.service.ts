@@ -36,11 +36,16 @@ import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summa
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
-import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
-import { CaseHistoryViewerFieldComponent } from './history';
+import { WriteFixedRadioListFieldComponent } from './fixed-radio-list/write-fixed-radio-list-field.component';
+import { ReadFixedRadioListFieldComponent } from './fixed-radio-list/read-fixed-radio-list-field.component';
+import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-field.component';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
-import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
+import { ReadDynamicMultiSelectListFieldComponent  } from './dynamic-multi-select-list/read-dynamic-multi-select-list-field.component';
+import { WriteDynamicMultiSelectListFieldComponent  } from './dynamic-multi-select-list/write-dynamic-multi-select-list-field.component';
+import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
+import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
+import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
 
 @Injectable()
 export class PaletteService {
@@ -71,6 +76,8 @@ export class PaletteService {
         return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
       case 'FixedList':
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
+      case 'DynamicRadioList':
+        return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
       case 'FixedRadioList':
         return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':
@@ -99,6 +106,8 @@ export class PaletteService {
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
+      case 'WaysToPay':
+        return WaysToPayFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
