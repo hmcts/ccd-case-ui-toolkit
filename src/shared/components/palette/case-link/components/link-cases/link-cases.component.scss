@@ -27,3 +27,12 @@
     }
   }
 }
+.govuk-table__row{
+  position: relative;
+  .table-group-error{
+    position: absolute;
+    height: calc(100% - 20px);
+    margin-left: -15px;
+  }
+}
+
