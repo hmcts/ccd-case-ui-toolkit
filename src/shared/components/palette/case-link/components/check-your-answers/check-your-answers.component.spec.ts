@@ -84,9 +84,12 @@ describe('CheckYourAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display table if any data available', () => {
+  it('should display table if any data available for link cases', () => {
+    component.linkedCases = linkedCases;
+    component.isLinkCasesJourney = true;
+    fixture.detectChanges();
     const tableElement = nativeElement.querySelector('.govuk-table');
-    expect(tableElement.textContent).toContain('Proposed case links');
+    expect(tableElement.textContent).toContain('Linked cases');
     const errorMessageElement = nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
   });

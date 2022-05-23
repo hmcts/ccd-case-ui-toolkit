@@ -6,6 +6,7 @@ import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-
 import { AbstractFieldWriteComponent } from '../../base-field';
 import { LinkedCasesState } from '../domain';
 import { LinkedCasesEventTriggers, LinkedCasesPages } from '../enums';
+import { LinkedCasesService } from '../services';
 
 @Component({
   selector: 'ccd-write-linked-cases',
@@ -22,7 +23,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public errorMessages: ErrorMessage[] = [];
 
-  constructor(private router: Router) {
+  constructor(private readonly router: Router,
+    private readonly linkedCasesService: LinkedCasesService) {
     super();
   }
 
@@ -38,6 +40,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     }), true) as FormGroup;
     // Initialise the first page to display
     this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
+    this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
