@@ -59,6 +59,9 @@
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row" *ngFor="let case of selectedCases; let pos = index">
               <td class="govuk-table__cell">
+                <div class="govuk-form-group--error"
+                  [ngClass]="{'table-group-error':caseSelectionError && case.caseLink.caseReference === linkCaseForm.value.caseNumber}">
+                </div>
                 {{case.caseLink.caseName}} <br>{{case.caseLink.caseReference}}
               </td>
               <td class="govuk-table__cell">{{case.caseLink.caseType}}</td>
