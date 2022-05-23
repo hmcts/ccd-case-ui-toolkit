@@ -1,5 +1,15 @@
-<div class="govuk-grid-row">
+<div class="govuk-grid-row" *ngIf="casesToUnlink.length > 0">
   <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Select the cases you want to unlink from this case</h1>
+    <div class="govuk-form-group form-group" [formGroup]="unlinkCaseForm" *ngIf="unlinkCaseForm">
+      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+        <div class="govuk-checkboxes__item" *ngFor="let case of casesToUnlink">
+          <input class="govuk-checkboxes__input" id="{{case.caseReference}}" formArrayName="linkedCases" name="linkedCases"
+            type="checkbox" [value]="case.caseReference">
+          <label class="govuk-label govuk-checkboxes__label" for="{{case.caseReference}}">{{case.caseName}} {{case.caseReference}}</label>
+        </div>
+      </div>
+    </div>
     <div class="govuk-button-group">
       <button class="button button-primary" type="button" (click)="onNext()">Next</button>
     </div>
