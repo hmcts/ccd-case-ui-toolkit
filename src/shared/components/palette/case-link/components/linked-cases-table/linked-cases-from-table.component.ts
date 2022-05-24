@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { AbstractFieldReadComponent } from '../../../base-field/abstract-field-read.component';
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
 import { Subscription, throwError } from 'rxjs';
 import { CaseView, HttpError } from '../../../../../domain';
-import { CasesService } from '../../../../case-editor';
+import { CasesService } from '../../../../case-editor/services/cases.service';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -15,7 +14,7 @@ export enum PageType {
   templateUrl: './linked-cases-from-table.component.html'
 })
 
-export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent implements OnInit, AfterViewInit {
+export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
   @Input()
@@ -32,8 +31,7 @@ export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent im
   jurisdictions: Jurisdiction[];
 
   constructor(
-    private readonly casesService: CasesService    ) {
-      super();
+    private readonly casesService: CasesService) {
     }
   ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');

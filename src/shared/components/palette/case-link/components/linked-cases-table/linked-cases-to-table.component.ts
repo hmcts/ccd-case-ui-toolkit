@@ -1,12 +1,11 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { AbstractFieldReadComponent } from '../../../base-field/abstract-field-read.component';
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
 import { LinkCaseReason } from '../../domain/linked-cases.model';
-import { CasesService } from '../../../../case-editor';
+import { CasesService } from '../../../../case-editor/services/cases.service';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -22,7 +21,7 @@ interface LinkedCasesResponse {
   templateUrl: './linked-cases-to-table.component.html'
 })
 
-export class LinkedCasesToTableComponent extends AbstractFieldReadComponent implements OnInit, AfterViewInit {
+export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
 
@@ -40,9 +39,7 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
   constructor(
     private casesService: CasesService,
     private route: ActivatedRoute,
-    private readonly searchService: SearchService) {
-      super();
-    }
+    private readonly searchService: SearchService) {}
 
   ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');
