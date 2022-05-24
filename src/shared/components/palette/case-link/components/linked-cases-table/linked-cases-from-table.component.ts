@@ -3,11 +3,8 @@ import { AbstractFieldReadComponent } from '../../../base-field/abstract-field-r
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
 import { Subscription, throwError } from 'rxjs';
 import { CaseView, HttpError } from '../../../../../domain';
-import { ActivatedRoute } from '@angular/router';
-import { AbstractAppConfig } from '../../../../../../app.config';
 import { LinkedCasesService } from '../../services/linked-cases.service';
-import { DefinitionsService } from '../../../../../services/definitions';
-import { READ_ACCESS } from '../../../../../domain/case-view/access-types.model';
+import { CasesService } from '../../../../case-editor';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -36,10 +33,7 @@ export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent im
   jurisdictions: Jurisdiction[];
 
   constructor(
-    private definitionsService: DefinitionsService,
-    private appConfig: AbstractAppConfig,
-    private route: ActivatedRoute,
-    private readonly linkedCasesService: LinkedCasesService    ) {
+    private readonly casesService: CasesService    ) {
       super();
     }
   ngAfterViewInit(): void {
@@ -50,16 +44,11 @@ export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent im
   }
 
   ngOnInit(): void {
-    this.linkedCasesService.getLinkedCases('').toPromise()
+    this.casesService.getLinkedCases('').toPromise()
       .then(response => this.getLinkedCasesResponse = response)
       .catch((error: HttpError) => {
         return throwError(error);
       });
-
-    this.definitionsService.getJurisdictions(READ_ACCESS)
-    .subscribe(jurisdictions => {
-      this.jurisdictions = jurisdictions;
-    });
   }
 
 }

@@ -8,18 +8,16 @@ import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkCaseReason } from '../../domain';
-import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkedCasesToTableComponent } from './linked-cases-to-table.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../../../../../domain';
 
-describe('LinkCasesComponent', () => {
+describe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
   let fixture: ComponentFixture<LinkedCasesToTableComponent>;
   let casesService: any;
   let searchService: any;
-  let linkedCasesService: any;  
 
   let mockCaseLinkResponse = [
     {
@@ -106,7 +104,6 @@ describe('LinkCasesComponent', () => {
     },
   ];
   beforeEach(async(() => {
-    linkedCasesService = createSpyObj('linkedCasesService', ['getLinkedCases', 'getCaseLinkReasons']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases', 'searchCasesByIds']);
     TestBed.configureTestingModule({
@@ -121,7 +118,6 @@ describe('LinkCasesComponent', () => {
           provide: ActivatedRoute,
           useValue: {snapshot: {data: {case: {case_id: '123'}}}}
         },
-        LinkedCasesService,
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService }
       ],
