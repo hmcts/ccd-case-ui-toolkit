@@ -1,44 +1,65 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
+import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkCaseReason, LinkedCase } from '../../domain';
-import { LinkedCaseProposalEnum } from '../../enums';
+import { LinkCaseReason } from '../../domain';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkedCasesToTableComponent } from './linked-cases-to-table.component';
+
 import createSpyObj = jasmine.createSpyObj;
+import { CaseField } from '../../../../../domain';
 
 describe('LinkCasesComponent', () => {
   let component: LinkedCasesToTableComponent;
   let fixture: ComponentFixture<LinkedCasesToTableComponent>;
-  let nextButton: any;
   let casesService: any;
   let searchService: any;
-  let caseLinkedResults: any = [
+  let linkedCasesService: any;  
+
+  let mockCaseLinkResponse = [
     {
-      results: [{
-        case_id: '16934389402343',
-        '[CASE_TYPE]': 'SSCS',
-        '[CREATED_DATE]': '12-12-2022',
-        '[STATE]': 'state',
-        '[JURISDICTION]': 'Tribunal'
-      }]
+      "caseReference": "1652112127295261",
+      "modified_date_time": "2022-05-10",
+      "caseType": "Benefit_SCSS",
+      "reasons": [
+        {
+          "reasonCode": "Same Party",
+          "OtherDescription": ""
+        }
+      ]
+    },
+    {
+      "caseReference": "1652111610080172",
+      "modified_date_time": "2022-05-10",
+      "caseType": "Benefit_SCSS",
+      "reasons": [
+        {
+          "reasonCode": "Case consolidated",
+          "OtherDescription": ""
+        }
+      ]
+    },
+    {
+      "caseReference": "1652111179220086",
+      "modified_date_time": "2022-05-10",
+      "caseType": "Benefit_SCSS",
+      "reasons": [
+        {
+          "reasonCode": "Progressed as part of this lead case",
+          "OtherDescription": ""
+        },
+        {
+          "reasonCode": "Familial",
+          "OtherDescription": ""
+        }
+      ]
     }
   ];
-
-  const selectedCasesInfo: LinkedCase[] = [{
-    caseLink: {
-      caseReference: '1682374819203471',
-      linkReason: [],
-      createdDateTime: '',
-      caseType: 'SSCS',
-      caseState: 'state',
-      caseService: 'Tribunal',
-      caseName: 'SSCS 2.1'
-    }
-  }];
   const linkCaseReasons: LinkCaseReason[] = [
     {
       key: 'progressed',
@@ -85,14 +106,21 @@ describe('LinkCasesComponent', () => {
     },
   ];
   beforeEach(async(() => {
+    linkedCasesService = createSpyObj('linkedCasesService', ['getLinkedCases', 'getCaseLinkReasons']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
-    searchService = createSpyObj('searchService', ['searchCases']);
+    searchService = createSpyObj('searchService', ['searchCases', 'searchCasesByIds']);
     TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
+        PipesModule,
         FormsModule,
         ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {snapshot: {data: {case: {case_id: '123'}}}}
+        },
         LinkedCasesService,
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService }
@@ -103,27 +131,65 @@ describe('LinkCasesComponent', () => {
   }));
 
   beforeEach(() => {
-    const caseInfo = {
-      case_id: '1682374819203471',
-      case_type: {
-        name: 'SSCS type',
-        jurisdiction: { name: '' }
-      }, state: { name: 'With FTA' }
-    }
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
-    component = fixture.componentInstance;
+    component = fixture.componentInstance
+    spyOn(component, 'searchCasesByCaseIds').and.returnValue(of([{results: [{
+      "case_id": "1652111179220086",
+      "supplementary_data": {
+          "HMCTSServiceId": "BBA3"
+      },
+      "case_fields": {
+          "[JURISDICTION]": "SSCS",
+          "dwpDueDate": "2022-06-13",
+          "[LAST_STATE_MODIFIED_DATE]": "2022-05-09T15:46:31.153",
+          "caseReference": "22",
+          "[CREATED_DATE]": "2022-05-09T15:46:19.243",
+          "dateSentToDwp": "2022-05-09",
+          "[CASE_REFERENCE]": "1652111179220086",
+          "[STATE]": "withDwp",
+          "[ACCESS_GRANTED]": "STANDARD",
+          "[SECURITY_CLASSIFICATION]": "PUBLIC",
+          "[ACCESS_PROCESS]": "NONE",
+          "[CASE_TYPE]": "Benefit_SCSS",
+          "appeal.appellant.name.lastName": "Torres",
+          "region": "Quo nostrum vitae re",
+          "[LAST_MODIFIED_DATE]": "2022-05-09T15:46:31.153"
+      }
+  }] }]));
+    component.caseField = <CaseField>({
+      id: 'caseLink',
+      field_type: {
+      id: 'Text',
+      type: 'Text',
+      complex_fields:[]
+      },
+      display_context: 'OPTIONAL',
+      label: 'First name',
+      show_summary_content_option: {},
+      retain_hidden_value:  false,
+      hidden: false,
+      });
     casesService.getCaseLinkResponses.and.returnValue(of(linkCaseReasons));
-    spyOn(component, 'getAllLinkedCaseInformation').and.returnValue([caseInfo]);
+    component.caseField.value = mockCaseLinkResponse;
   });
 
-  it('should create component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should check getCaseLinkResponses error', () => {
-    casesService.getCaseLinkResponses.and.returnValue(throwError({}));
+  it('should create component/headers', () => {
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.linkCaseReasons).toEqual([]);
+    const tableHeading = document.getElementsByTagName('h1');
+    expect(component).toBeTruthy();
+    expect(tableHeading).not.toBeNull();
+  });
+
+  it('should call searchCasesByCaseIds by casetype', () => {
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.searchCasesByCaseIds).toHaveBeenCalledTimes(2);
+  });
+
+  it('should render linkedcases top table', () => {
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.linkedCasesFromResponse.length).toEqual(2);
   });
 });
