@@ -60,6 +60,41 @@ describe('CheckYourAnswersComponent', () => {
       }
     }
   ];
+  const casesToUnlink: LinkedCase[] = [
+    {
+      caseLink: {
+        caseReference: '5238-8916-7452-6482',
+        caseName: '',
+        caseService: '',
+        caseState: '',
+        caseType: '',
+        createdDateTime: '10/03/2022',
+        linkReason: [
+          {
+            reason: 'This case is to be unlinked'
+          },
+          {
+            reason: 'Case has been marked for unlinking'
+          }
+        ]
+      }
+    },
+    {
+      caseLink: {
+        caseReference: '8245-9520-7332-4716',
+        caseName: '',
+        caseService: '',
+        caseState: '',
+        caseType: '',
+        createdDateTime: '10/03/2022',
+        linkReason: [
+          {
+            reason: 'Case has been marked for unlinking'
+          }
+        ]
+      }
+    }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -96,6 +131,7 @@ describe('CheckYourAnswersComponent', () => {
 
   it('should emit linked cases state when change clicked', () => {
     component.linkedCases = linkedCases;
+    component.casesToUnlink = casesToUnlink;
     fixture.detectChanges();
     const changeLinkElement = nativeElement.querySelector('.govuk-link');
     changeLinkElement.click();

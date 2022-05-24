@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkedCasesState, UnlinkedCase } from '../../domain';
+import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 
@@ -19,7 +19,7 @@ export class UnLinkCasesComponent implements OnInit {
 
   public unlinkCaseForm: FormGroup;
   public caseId: string;
-  public casesToUnlink: UnlinkedCase[] = [];
+  public casesToUnlink: string[] = [];
   public errorMessages: ErrorMessage[] = [];
 
   constructor(private readonly fb: FormBuilder,
@@ -31,7 +31,6 @@ export class UnLinkCasesComponent implements OnInit {
     this.getLinkedCases();
   }
 
-  // TODO Display case name instead of case type
   public getLinkedCases(): void {
     this.caseId = this.linkedCasesService.caseId;
     this.casesService.getCaseViewV2(this.caseId).subscribe((caseView: CaseView) => {
@@ -39,10 +38,7 @@ export class UnLinkCasesComponent implements OnInit {
       if (linkedCasesTab) {
         const linkedCases = linkedCasesTab.fields[0].value;
         linkedCases.forEach(linkedCase => {
-          this.casesToUnlink.push({
-            caseReference: linkedCase.caseReference,
-            caseName: linkedCase.caseType,
-          });
+          this.casesToUnlink.push(linkedCase.caseReference);
         });
         this.initForm();
       }
@@ -57,8 +53,7 @@ export class UnLinkCasesComponent implements OnInit {
 
   public get getLinkedCasesFormArray(): FormArray {
     return this.fb.array(this.casesToUnlink.map(val => this.fb.group({
-      caseReference: val.caseReference,
-      caseName: val.caseName
+      caseReference: val
     })));
   }
 

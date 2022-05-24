@@ -32,8 +32,3 @@ export class LinkReason {
   reason: string;
   otherDescription?: string;
 }
-
-export class UnlinkedCase {
-  caseReference: string;
-  caseName: string;
-}
