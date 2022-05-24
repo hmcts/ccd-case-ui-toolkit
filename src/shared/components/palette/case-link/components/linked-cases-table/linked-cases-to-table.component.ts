@@ -89,7 +89,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     const searchCasesResponse = [];
     const sortedCases = this.sortByReasonCode()
     const linkedCaseIds = this.groupByCaseType(sortedCases, 'caseType');
-    Object.keys(linkedCaseIds).map(key => {
+    Object.keys(linkedCaseIds).forEach(key => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100)
       const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
