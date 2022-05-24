@@ -62,7 +62,7 @@ export class SearchService {
       finalize(() => this.loadingService.unregister(loadingToken))
     );
   }
-  
+
   public searchCases(caseTypeId: string,
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;

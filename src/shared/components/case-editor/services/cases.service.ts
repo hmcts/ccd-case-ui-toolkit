@@ -138,7 +138,7 @@ export class CasesService {
       );
   }
 
-  getLinkedCases(caseId: string): Observable<GetLinkedCases> { 
+  getLinkedCases(caseId: string): Observable<GetLinkedCases> {
     return this.http
     .get('assets/getLinkedCases.json')
     .pipe(
