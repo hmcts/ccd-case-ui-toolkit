@@ -5,7 +5,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
@@ -1306,6 +1306,10 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
       }
     ];
     d = f.debugElement;
+    // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
+    // ngAfterViewInit() before each unit test
+    const router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     f.detectChanges();
   }));
 
@@ -1431,6 +1435,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
       }
     ];
     d = f.debugElement;
+    // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
+    // ngAfterViewInit() before each unit test
+    const router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     f.detectChanges();
   }));
 
@@ -1594,6 +1602,10 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
     comp = compFixture.componentInstance;
     comp.caseDetails = CASE_VIEW;
     debugElement = compFixture.debugElement;
+    // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
+    // ngAfterViewInit() before each unit test
+    const router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     compFixture.detectChanges();
   }));
 
