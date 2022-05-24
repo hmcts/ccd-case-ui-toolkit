@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BrowserService } from '../../services';
+import { PaginationMetadata }from '../../domain';
 
 export class DateTimeFormatUtils {
   public static formatDateAtTime(date: Date, is24Hour: boolean): string {
@@ -17,7 +18,7 @@ export class DateTimeFormatUtils {
   templateUrl: './case-list.component.html',
   styleUrls: ['./case-list.component.scss']
 })
-export class CaseListComponent {
+export class CaseListComponent implements OnInit {
 
   @Input() public classes = '';
 
@@ -40,7 +41,21 @@ export class CaseListComponent {
 
   @Input() public selectedCases: any[] = [];
 
+  public paginationMetadata: PaginationMetadata;
+
+  @Input() public totalResultsCount?: number;
+
+  @Input() public totalPagesCount?: any;
+
+  @Output() public pageChange = new EventEmitter();
+
+  public selectPageNo: number = 1;
+
   constructor(private browserService: BrowserService) { }
+
+  public ngOnInit() {
+    //this.paginationMetadata = { total_results_count: this.totalResultsCount, total_pages_count: this.totalPagesCount};
+  }
 
   public formatDate(date: Date): string {
     return date ? formatDate(date, 'dd MMM yyyy', 'en-GB') : '-';
@@ -108,6 +123,11 @@ export class CaseListComponent {
         this.changeSelection(aCase);
       }
     }
+  }
+
+  public goToPage(pageNumber: any) {
+    this.selectPageNo = pageNumber;
+    this.pageChange.emit(pageNumber);
   }
 }
 
