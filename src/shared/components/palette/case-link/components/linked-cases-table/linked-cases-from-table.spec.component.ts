@@ -7,7 +7,7 @@ import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('LinkCasesFromTableComponent', () => {
+describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
@@ -81,11 +81,11 @@ fdescribe('LinkCasesFromTableComponent', () => {
     casesService.getLinkedCases.and.returnValue(of(linkedCasesMock));
   });
 
-  fit('should create component', () => {
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  fit('should render linkedCases from table', () => {
+  it('should render linkedCases from table', () => {
     casesService.getCaseLinkResponses.and.returnValue(throwError({}));
     component.ngOnInit();
     fixture.detectChanges();
