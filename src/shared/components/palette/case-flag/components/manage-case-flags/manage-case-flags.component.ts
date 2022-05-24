@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplay, Flags } from '../../domain';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
-import { SelectManageCaseFlagErrorMessage } from '../../enums/manage-case-flag-type.enum';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -17,9 +16,9 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   public manageCaseFlagTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
-  public manageCaseFlagSelectedErrorMessage: SelectManageCaseFlagErrorMessage = null;
+  public manageCaseFlagSelectedErrorMessage: SelectFlagErrorMessage = null;
   public flagsDisplayData: FlagDetailDisplay[];
-  public caseFlagsConfigError = false;
+  public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
@@ -42,9 +41,9 @@ export class ManageCaseFlagsComponent implements OnInit {
     if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
       this.formGroup.addControl(this.selectedControlName, new FormControl(null));
     } else {
-      // No flags display data means there are no parties with flags to select from. The user cannot proceed with a
-      // flag update. (Will need to be extended to check for case-level flags in future)
-      this.onCaseFlagsConfigError();
+      // No flags display data means there are no flags to select from. The user cannot proceed with a flag update.
+      // (Will need to be extended to check for case-level flags in future)
+      this.onNoFlagsError();
     }
   }
 
@@ -79,22 +78,24 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
     if (!this.formGroup.get(this.selectedControlName).value) {
-      this.manageCaseFlagSelectedErrorMessage = SelectManageCaseFlagErrorMessage.MANAGE_CASE_FLAG_NOT_SELECTED;
+      this.manageCaseFlagSelectedErrorMessage = SelectFlagErrorMessage.FLAG_NOT_SELECTED;
       this.errorMessages.push({
         title: '',
-        description: SelectManageCaseFlagErrorMessage.MANAGE_CASE_FLAG_NOT_SELECTED,
+        description: SelectFlagErrorMessage.FLAG_NOT_SELECTED,
         fieldId: 'conditional-radios-list'
       });
     }
   }
 
-  private onCaseFlagsConfigError(): void {
+  private onNoFlagsError(): void {
     // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
-    this.caseFlagsConfigError = true;
+    this.noFlagsError = true;
     this.errorMessages = [];
-    this.errorMessages.push(
-      { title: '', description: SelectManageCaseFlagErrorMessage.MANAGE_CASE_FLAG_NOT_CONFIGURED, fieldId: 'conditional-radios-list'});
+    this.errorMessages.push({title: '', description: SelectFlagErrorMessage.NO_FLAGS, fieldId: 'conditional-radios-list'});
     // Return case flag field state and error messages to the parent
-    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+    this.caseFlagStateEmitter.emit({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
+      errorMessages: this.errorMessages
+    });
   }
 }
