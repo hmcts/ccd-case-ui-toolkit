@@ -4,6 +4,8 @@ import { of, throwError } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
+import { PipesModule } from '../../../../../pipes/pipes.module';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('LinkCasesFromTableComponent', () => {
@@ -16,6 +18,9 @@ describe('LinkCasesFromTableComponent', () => {
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases']);
     TestBed.configureTestingModule({
+      imports: [
+        PipesModule
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: CasesService, useValue: casesService },
