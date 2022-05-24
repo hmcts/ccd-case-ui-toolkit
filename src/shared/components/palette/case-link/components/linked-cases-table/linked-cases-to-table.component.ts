@@ -70,8 +70,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   sortByReasonCode() {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
-    const data = this.caseField.value as [];
-    data && data.forEach((item: any) => {
+    const data = this.caseField.value || [];
+    data.forEach((item: any) => {
       const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'Progressed')
       const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'Case consolidated')
       if (progressedStateReason) {
@@ -94,11 +94,11 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
     })
-    if (searchCasesResponse.length)
-    {
+    if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
-        searchCases && searchCases.forEach(response => {
-          response && response.results && response.results.forEach((result: any) => this.linkedCasesFromResponse.push(this.mapResponse(result)));
+          searchCases.forEach(response => {
+          response.results.forEach((result: any) =>
+            this.linkedCasesFromResponse.push(this.mapResponse(result)));
         });
         this.isLoaded = true;
       });
@@ -116,7 +116,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   mapResponse(esSearchCasesResponse) {
     const reasonDescriptons = []
     const caseReasonCode = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id);
-    caseReasonCode && caseReasonCode.reasons.forEach(code => {
+    caseReasonCode.reasons.forEach(code => {
       const foundReasonMapping = this.linkedCaseReasons.find(reason => reason.key === code.reasonCode);
       if (foundReasonMapping) {
         reasonDescriptons.push(foundReasonMapping.value_en);

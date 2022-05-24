@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { CaseField, Jurisdiction } from '../../../../../domain/definition';
-import { Subscription, throwError } from 'rxjs';
-import { CaseView, HttpError } from '../../../../../domain';
+import { CaseField } from '../../../../../domain/definition';
+import { Subscription } from 'rxjs';
+import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
+import { GetLinkedCases } from '../../domain/linked-cases.model';
+import { ActivatedRoute } from '@angular/router';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -26,11 +28,12 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   caseDetails: CaseView;
   parentUrl: string;
   isLoaded: boolean;
-  getLinkedCasesResponse: any;
+  getLinkedCasesResponse: GetLinkedCases;
 
-  jurisdictions: Jurisdiction[];
+  public caseId: string;
 
   constructor(
+    private route: ActivatedRoute,
     private readonly casesService: CasesService) {
     }
   ngAfterViewInit(): void {
@@ -41,10 +44,9 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.casesService.getLinkedCases('').toPromise()
-      .then(response => this.getLinkedCasesResponse = response)
-      .catch((error: HttpError) => {
-        return throwError(error);
+    this.caseId = this.route.snapshot.data.case.case_id;
+    this.casesService.getLinkedCases(this.caseId).subscribe(response => {
+        this.getLinkedCasesResponse = response
       });
   }
 }

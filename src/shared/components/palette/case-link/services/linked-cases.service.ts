@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { HttpService } from '../../../../services/http/http.service';
-import { GetLinkedCases, LinkCaseReason, LinkedCase, LinkReason } from '../domain';
+import { LinkedCase } from '../domain';
 @Injectable()
 export class LinkedCasesService {
 
@@ -11,4 +8,3 @@ export class LinkedCasesService {
   public preLinkedCases: LinkedCase[] = [];
   public casesToUnlink: LinkedCase[] = [];
 }
-

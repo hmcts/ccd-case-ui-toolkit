@@ -36,12 +36,12 @@ export class LinkReason {
 export class GetLinkedCases {
   linkedCases: []
 }
-export class GetLinkedCasesCaseLinkResponse {       
+export class GetLinkedCasesCaseLinkResponse {
   caseNameHmctsInternal: string
   caseReference: string
   ccdCaseTyp: string
   ccdJurisdiction: string
-  state:string
+  state: string
   linkDetails: [LinkDetails]
 }
 
