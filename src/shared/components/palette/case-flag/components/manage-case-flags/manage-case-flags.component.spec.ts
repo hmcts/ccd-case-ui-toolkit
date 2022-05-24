@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail, FlagDetailDisplay, Flags } from '../../domain';
-import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
+import { CaseFlagFieldState, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
 
 describe('ManageCaseFlagsComponent', () => {
@@ -76,16 +76,17 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.flagsDisplayData).toEqual([]);
     expect(component.errorMessages[0]).toEqual({
       title: '',
-      description: SelectFlagLocationErrorMessage.FLAGS_NOT_CONFIGURED,
+      description: SelectFlagErrorMessage.NO_FLAGS,
       fieldId: 'conditional-radios-list'
     });
-    expect(component.caseFlagsConfigError).toBe(true);
-    expect(component.caseFlagStateEmitter.emit)
-      .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: component.errorMessages });
+    expect(component.noFlagsError).toBe(true);
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
+      errorMessages: component.errorMessages
+    });
     fixture.detectChanges();
-    const nativeElement = fixture.debugElement.nativeElement;
-    const nextButtonElement = nativeElement.querySelector('.button');
     // The "Next" button should not be present if the error condition has been set
+    const nextButtonElement = fixture.debugElement.nativeElement.querySelector('.button');
     expect(nextButtonElement).toBeNull();
   });
 
@@ -153,14 +154,40 @@ describe('ManageCaseFlagsComponent', () => {
   });
 
   it('should emit to parent with the selected party and flag details if the validation succeeds', () => {
+    spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-selection-2').click();
     nativeElement.querySelector('.button').click();
+    expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
-      errorMessages: [],
+      errorMessages: component.errorMessages,
       selectedFlagDetail: flagsData[1].details[0]
     });
+    expect(component.errorMessages.length).toBe(0);
+  });
+
+  it('should fail validation and emit to parent if no flag is selected', () => {
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    expect(component.flagsDisplayData.length).toBe(3);
+    expect(component.noFlagsError).toBe(false);
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('.button').click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
+      errorMessages: component.errorMessages,
+      selectedFlagDetail: null
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SelectFlagErrorMessage.FLAG_NOT_SELECTED,
+      fieldId: 'conditional-radios-list'
+    });
+    const flagNotSelectedErrorMessageElement = nativeElement.querySelector('#manage-case-flag-not-selected-error-message');
+    expect(flagNotSelectedErrorMessageElement.textContent).toContain(SelectFlagErrorMessage.FLAG_NOT_SELECTED);
   });
 });

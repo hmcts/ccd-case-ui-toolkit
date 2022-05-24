@@ -943,6 +943,7 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(3);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`)
       });
@@ -961,13 +962,20 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`)
       });
     });
 
     it('should validate FlagLauncher type field and log error message', () => {
-      const flagLauncherField: CaseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'MANDATORY', 1, null, false, true);
+      const flagLauncherField: CaseField = aCaseField(
+        'FlagLauncherField', 'flagLauncher', 'FlagLauncher', 'MANDATORY', 1, null, false, true);
+      // Add dummy functions for isComplex() and isCollection()
+      flagLauncherField.isComplex = () => false;
+      flagLauncherField.isCollection = () => false;
+      // Set DisplayContextParameter to signal "create" mode
+      flagLauncherField.display_context_parameter = '#ARGUMENT(CREATE)';
       wizardPage.case_fields.push(flagLauncherField);
 
       wizardPage.isMultiColumn = () => false;
@@ -977,8 +985,18 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual('Please select Next to complete the creation of the case flag');
+      });
+
+      // Change DisplayContextParameter to signal "update" mode
+      flagLauncherField.display_context_parameter = '#ARGUMENT(UPDATE)';
+      comp.validationErrors = [];
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual('Please select Next to complete the update of the selected case flag');
       });
     });
   });

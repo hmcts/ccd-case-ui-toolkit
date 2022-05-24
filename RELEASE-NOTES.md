@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.2-manage-case-flags-selection-page-validation
+**EUI-5190** Add validation to "Select case flag" page
+
 ### Version 4.13.2-manage-case-flags-defect-fixes
 **EUI-5816/EUI-5808** Various defect fixes for the "Select case flag" page (EUI-4895) and "Update flag" page (EUI-5125)
 
