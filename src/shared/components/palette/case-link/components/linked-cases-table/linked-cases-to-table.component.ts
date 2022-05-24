@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
@@ -25,6 +25,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
 
+  @Output()
+  public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
+
   tableHeading = 'Linked cases';
   tableSubHeading = 'This case is linked to';
 
@@ -50,9 +53,10 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.casesService.getCaseLinkResponses().subscribe(reasons => {
-      this.linkedCaseReasons = reasons;
-    })
+    this.casesService.getCaseLinkResponses().subscribe(
+      reasons => this.linkedCaseReasons = reasons,
+      err => this.notifyAPIFailure.emit(true)
+    )
     this.getAllLinkedCaseInformation();
   }
 
@@ -101,7 +105,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
         });
         this.isLoaded = true;
-      });
+      },
+      err => this.notifyAPIFailure.emit(true)
+      );
     }
   }
 

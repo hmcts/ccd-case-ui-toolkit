@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseField } from '../../../../../domain/definition';
 import { Subscription } from 'rxjs';
 import { CaseView } from '../../../../../domain';
@@ -21,6 +21,9 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   caseField: CaseField;
   @Input()
   public type: PageType = PageType.LINKEDCASESTABLBEVIEW;
+  @Output()
+  public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
+
   pageType = PageType;
   tableSubHeading = 'This case is linked from';
 
@@ -45,8 +48,11 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.casesService.getLinkedCases(this.caseId).subscribe(response => {
+    this.casesService.getLinkedCases(this.caseId).subscribe(
+      response => {
         this.getLinkedCasesResponse = response
-      });
+      },
+      err => this.notifyAPIFailure.emit(true)
+      );
   }
 }
