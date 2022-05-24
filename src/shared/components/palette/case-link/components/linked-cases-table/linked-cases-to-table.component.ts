@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../../../base-field/abstract-field-read.component';
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
@@ -26,11 +26,9 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
   @Input()
   caseField: CaseField;
 
-  tableHeading= "Linked cases";
-  tableSubHeading= "This case is linked to";
-  caseNameHmctsInternal="Smith vs Peterson";
-  
-  public sub: Subscription;
+  tableHeading = 'Linked cases';
+  tableSubHeading = 'This case is linked to';
+
   caseDetails: CaseView;
   isLoaded: boolean;
   linkedCasesFromResponse: any = []
@@ -45,10 +43,10 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
     private readonly searchService: SearchService) {
       super();
     }
-  
+
   ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');
-    if(labelField && labelField.length) {
+    if (labelField && labelField.length) {
       labelField[0].replaceWith('')
     }
   }
@@ -75,7 +73,7 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
   sortByReasonCode() {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
-    const data = this.caseField.value as []
+    const data = this.caseField.value as [];
     data && data.forEach((item: any) => {
       const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'Progressed')
       const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'Case consolidated')
@@ -103,10 +101,10 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
     {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
         searchCases && searchCases.forEach(response => {
-          response.results.forEach((result: any) => this.linkedCasesFromResponse.push(this.mapResponse(result)));
+          response && response.results && response.results.forEach((result: any) => this.linkedCasesFromResponse.push(this.mapResponse(result)));
         });
         this.isLoaded = true;
-      });;
+      });
     }
   }
 
@@ -124,15 +122,15 @@ export class LinkedCasesToTableComponent extends AbstractFieldReadComponent impl
     caseReasonCode && caseReasonCode.reasons.forEach(code => {
       const foundReasonMapping = this.linkedCaseReasons.find(reason => reason.key === code.reasonCode);
       if (foundReasonMapping) {
-        reasonDescriptons.push(foundReasonMapping.value_en)
+        reasonDescriptons.push(foundReasonMapping.value_en);
       }
-    })
+    });
     return {
       case_id: esSearchCasesResponse.case_id,
       caseName: '',
-      caseType: esSearchCasesResponse.case_fields["[CASE_TYPE]"],
-      service: esSearchCasesResponse.case_fields["[JURISDICTION]"],
-      state: esSearchCasesResponse.case_fields["[STATE]"],
+      caseType: esSearchCasesResponse.case_fields['[CASE_TYPE]'],
+      service: esSearchCasesResponse.case_fields['[JURISDICTION]'],
+      state: esSearchCasesResponse.case_fields['[STATE]'],
       reasons: reasonDescriptons,
     } as unknown as LinkedCasesResponse
   }

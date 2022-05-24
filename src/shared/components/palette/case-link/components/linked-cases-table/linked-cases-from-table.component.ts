@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../../../base-field/abstract-field-read.component';
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
-import { Subscription, throwError } from 'rxjs';
-import { CaseView, HttpError } from '../../../../../domain';
-import { LinkedCasesService } from '../../services/linked-cases.service';
+import { Subscription } from 'rxjs';
+import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor';
 
 export enum PageType {
@@ -22,7 +21,7 @@ export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent im
   @Input()
   public type: PageType = PageType.LINKEDCASESTABLBEVIEW;
   pageType = PageType;
-  tableSubHeading= "This case is linked from";
+  tableSubHeading = 'This case is linked from';
 
   public sub: Subscription;
   caseDetails: CaseView;
@@ -38,8 +37,8 @@ export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent im
     }
   ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');
-    if(labelField && labelField.length) {
-      labelField[0].replaceWith('')
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('');
     }
   }
 
@@ -50,5 +49,4 @@ export class LinkedCasesFromTableComponent extends AbstractFieldReadComponent im
         return throwError(error);
       });
   }
-
 }

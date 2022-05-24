@@ -2,7 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
@@ -21,39 +20,39 @@ describe('LinkCasesToTableComponent', () => {
 
   let mockCaseLinkResponse = [
     {
-      "caseReference": "1652112127295261",
-      "modified_date_time": "2022-05-10",
-      "caseType": "Benefit_SCSS",
-      "reasons": [
+      'caseReference': '1652112127295261',
+      'modified_date_time': '2022-05-10',
+      'caseType': 'Benefit_SCSS',
+      'reasons': [
         {
-          "reasonCode": "Same Party",
-          "OtherDescription": ""
+          'reasonCode': 'Same Party',
+          'OtherDescription': ''
         }
       ]
     },
     {
-      "caseReference": "1652111610080172",
-      "modified_date_time": "2022-05-10",
-      "caseType": "Benefit_SCSS",
-      "reasons": [
+      'caseReference': '1652111610080172',
+      'modified_date_time': '2022-05-10',
+      'caseType': 'Benefit_SCSS',
+      'reasons': [
         {
-          "reasonCode": "Case consolidated",
-          "OtherDescription": ""
+          'reasonCode': 'Case consolidated',
+          'OtherDescription': ''
         }
       ]
     },
     {
-      "caseReference": "1652111179220086",
-      "modified_date_time": "2022-05-10",
-      "caseType": "Benefit_SCSS",
-      "reasons": [
+      'caseReference': '1652111179220086',
+      'modified_date_time': '2022-05-10',
+      'caseType': 'Benefit_SCSS',
+      'reasons': [
         {
-          "reasonCode": "Progressed as part of this lead case",
-          "OtherDescription": ""
+          'reasonCode': 'Progressed as part of this lead case',
+          'OtherDescription': ''
         },
         {
-          "reasonCode": "Familial",
-          "OtherDescription": ""
+          'reasonCode': 'Familial',
+          'OtherDescription': ''
         }
       ]
     }
@@ -109,9 +108,8 @@ describe('LinkCasesToTableComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        PipesModule,
-        FormsModule,
-        ReactiveFormsModule],
+        PipesModule
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -130,26 +128,26 @@ describe('LinkCasesToTableComponent', () => {
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
     component = fixture.componentInstance
     spyOn(component, 'searchCasesByCaseIds').and.returnValue(of([{results: [{
-      "case_id": "1652111179220086",
-      "supplementary_data": {
-          "HMCTSServiceId": "BBA3"
+      'case_id': '1652111179220086',
+      'supplementary_data': {
+          'HMCTSServiceId': 'BBA3'
       },
-      "case_fields": {
-          "[JURISDICTION]": "SSCS",
-          "dwpDueDate": "2022-06-13",
-          "[LAST_STATE_MODIFIED_DATE]": "2022-05-09T15:46:31.153",
-          "caseReference": "22",
-          "[CREATED_DATE]": "2022-05-09T15:46:19.243",
-          "dateSentToDwp": "2022-05-09",
-          "[CASE_REFERENCE]": "1652111179220086",
-          "[STATE]": "withDwp",
-          "[ACCESS_GRANTED]": "STANDARD",
-          "[SECURITY_CLASSIFICATION]": "PUBLIC",
-          "[ACCESS_PROCESS]": "NONE",
-          "[CASE_TYPE]": "Benefit_SCSS",
-          "appeal.appellant.name.lastName": "Torres",
-          "region": "Quo nostrum vitae re",
-          "[LAST_MODIFIED_DATE]": "2022-05-09T15:46:31.153"
+      'case_fields': {
+          '[JURISDICTION]': 'SSCS',
+          'dwpDueDate': '2022-06-13',
+          '[LAST_STATE_MODIFIED_DATE]': '2022-05-09T15:46:31.153',
+          'caseReference': '22',
+          '[CREATED_DATE]': '2022-05-09T15:46:19.243',
+          'dateSentToDwp': '2022-05-09',
+          '[CASE_REFERENCE]': '1652111179220086',
+          '[STATE]': 'withDwp',
+          '[ACCESS_GRANTED]': 'STANDARD',
+          '[SECURITY_CLASSIFICATION]': 'PUBLIC',
+          '[ACCESS_PROCESS]': 'NONE',
+          '[CASE_TYPE]': 'Benefit_SCSS',
+          'appeal.appellant.name.lastName': 'Torres',
+          'region': 'Quo nostrum vitae re',
+          '[LAST_MODIFIED_DATE]': '2022-05-09T15:46:31.153'
       }
   }] }]));
     component.caseField = <CaseField>({
@@ -157,7 +155,7 @@ describe('LinkCasesToTableComponent', () => {
       field_type: {
       id: 'Text',
       type: 'Text',
-      complex_fields:[]
+      complex_fields: []
       },
       display_context: 'OPTIONAL',
       label: 'First name',

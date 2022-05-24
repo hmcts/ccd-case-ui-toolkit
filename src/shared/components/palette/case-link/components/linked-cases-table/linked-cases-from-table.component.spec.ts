@@ -1,6 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -17,9 +16,6 @@ describe('LinkCasesFromTableComponent', () => {
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases']);
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: CasesService, useValue: casesService },
