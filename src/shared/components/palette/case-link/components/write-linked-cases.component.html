@@ -9,7 +9,8 @@
         (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-link-cases>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.UNLINK_CASE">
-      <!-- Unlink cases component goes here -->
+      <ccd-unlink-cases
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-unlink-cases>
     </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.CHECK_YOUR_ANSWERS">
       <ccd-linked-cases-check-your-answers

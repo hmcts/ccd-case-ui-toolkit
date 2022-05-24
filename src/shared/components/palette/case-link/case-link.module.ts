@@ -13,6 +13,7 @@ import { LinkCasesComponent } from './components/link-cases/link-cases.component
 import { CheckYourAnswersComponent } from './components/check-your-answers/check-your-answers.component';
 import { LinkedCasesTableComponent } from './components/linked-cases-table/linked-cases-table.component';
 import { WriteLinkedCasesComponent } from './components/write-linked-cases.component';
+import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { WriteLinkedCasesComponent } from './components/write-linked-cases.compo
     BeforeYouStartComponent,
     LinkCasesComponent,
     CheckYourAnswersComponent,
-    WriteLinkedCasesComponent
+    WriteLinkedCasesComponent,
+    UnLinkCasesComponent
   ],
   exports: [
     ReadCaseLinkFieldComponent,

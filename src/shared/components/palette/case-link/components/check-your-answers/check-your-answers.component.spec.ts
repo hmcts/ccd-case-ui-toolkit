@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { LinkedCase } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -8,6 +9,7 @@ import { CheckYourAnswersComponent } from './check-your-answers.component';
 describe('CheckYourAnswersComponent', () => {
   let component: CheckYourAnswersComponent;
   let fixture: ComponentFixture<CheckYourAnswersComponent>;
+  let nativeElement: any;
   const linkedCases: LinkedCase[] = [
     {
       caseLink: {
@@ -58,10 +60,45 @@ describe('CheckYourAnswersComponent', () => {
       }
     }
   ];
+  const casesToUnlink: LinkedCase[] = [
+    {
+      caseLink: {
+        caseReference: '5238-8916-7452-6482',
+        caseName: '',
+        caseService: '',
+        caseState: '',
+        caseType: '',
+        createdDateTime: '10/03/2022',
+        linkReason: [
+          {
+            reason: 'This case is to be unlinked'
+          },
+          {
+            reason: 'Case has been marked for unlinking'
+          }
+        ]
+      }
+    },
+    {
+      caseLink: {
+        caseReference: '8245-9520-7332-4716',
+        caseName: '',
+        caseService: '',
+        caseState: '',
+        caseType: '',
+        createdDateTime: '10/03/2022',
+        linkReason: [
+          {
+            reason: 'Case has been marked for unlinking'
+          }
+        ]
+      }
+    }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [],
+      imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CheckYourAnswersComponent],
       providers: [LinkedCasesService]
@@ -74,6 +111,7 @@ describe('CheckYourAnswersComponent', () => {
     component = fixture.componentInstance;
     spyOn(component.linkedCasesStateEmitter, 'emit');
     component.linkedCases = linkedCases;
+    nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
 
@@ -81,20 +119,41 @@ describe('CheckYourAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display table if any data available', () => {
-    const tableElement = fixture.debugElement.nativeElement.querySelector('.govuk-table');
-    expect(tableElement.textContent).toContain('Proposed case links');
-    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+  it('should display table if any data available for link cases', () => {
+    component.linkedCases = linkedCases;
+    component.isLinkCasesJourney = true;
+    fixture.detectChanges();
+    const tableElement = nativeElement.querySelector('.govuk-table');
+    expect(tableElement.textContent).toContain('Linked cases');
+    const errorMessageElement = nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
   });
 
   it('should emit linked cases state when change clicked', () => {
     component.linkedCases = linkedCases;
+    component.casesToUnlink = casesToUnlink;
     fixture.detectChanges();
-    const changeLinkElement = fixture.debugElement.nativeElement.querySelector('.govuk-link');
+    const changeLinkElement = nativeElement.querySelector('.govuk-link');
     changeLinkElement.click();
     fixture.detectChanges();
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
       { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, navigateToPreviousPage: true, navigateToNextPage: true });
+  });
+
+  it('should display change link for link cases', () => {
+    component.linkedCases = linkedCases;
+    component.isLinkCasesJourney = true;
+    fixture.detectChanges();
+    const changeLinkElement = nativeElement.querySelector('.govuk-link');
+    expect(changeLinkElement).toBeDefined();
+  });
+
+  it('should change link not be visible for manage case links', () => {
+    component.linkedCases = linkedCases;
+    component.isLinkCasesJourney = false;
+    fixture.detectChanges();
+    const linkedCasesTableElement = nativeElement.querySelector('#linked-cases-table');
+    const changeLinkElement = linkedCasesTableElement.querySelector('.govuk-link');
+    expect(changeLinkElement).toBeNull();
   });
 });
