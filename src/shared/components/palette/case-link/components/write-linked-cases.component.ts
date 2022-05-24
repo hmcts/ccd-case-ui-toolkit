@@ -67,9 +67,9 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public getNextPage(linkedCasesState: LinkedCasesState): number {
     if ((this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) ||
         (linkedCasesState.currentLinkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS && linkedCasesState.navigateToPreviousPage)) {
-          return this.router && this.router.url && this.router.url.includes('linkCases')
-          ? LinkedCasesPages.LINK_CASE
-          : LinkedCasesPages.UNLINK_CASE;
+          return this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES)
+            ? LinkedCasesPages.LINK_CASE
+            : LinkedCasesPages.UNLINK_CASE;
     }
     return LinkedCasesPages.CHECK_YOUR_ANSWERS;
   }
