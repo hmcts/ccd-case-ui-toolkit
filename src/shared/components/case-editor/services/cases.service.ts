@@ -306,7 +306,7 @@ export class CasesService {
     return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`);
   }
 
-  public createChallengedAccessRequest(caseId: string, car: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
+  public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
@@ -320,11 +320,18 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('challenged', roleCategory);
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const payload: RoleRequestPayload = camUtils.getAMPayload(id,
+                                                              id,
+                                                              roleName,
+                                                              roleCategory,
+                                                              'CHALLENGED',
+                                                              caseId,
+                                                              request,
+                                                              beginTime,
+                                                              endTime);
 
-    const payload: RoleRequestPayload = camUtils.getAMPayload(userInfo.id, userInfo.id, roleName, roleCategory,
-                                                                    'CHALLENGED', caseId, car, beginTime, endTime);
-
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
+    return this.http.post(`/api/challenged-access-request`, payload);
   }
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
