@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { CaseField } from '../../../../../domain/definition';
-import { Subscription } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { GetLinkedCases } from '../../domain/linked-cases.model';
+import { LinkedCasesResponse } from '../../domain/linked-cases.model';
 import { ActivatedRoute } from '@angular/router';
 
 export enum PageType {
@@ -21,32 +20,29 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   caseField: CaseField;
   @Input()
   public type: PageType = PageType.LINKEDCASESTABLBEVIEW;
-  pageType = PageType;
-  tableSubHeading = 'This case is linked from';
+  public tableSubHeading = 'This case is linked from';
 
-  public sub: Subscription;
-  caseDetails: CaseView;
-  parentUrl: string;
-  isLoaded: boolean;
-  getLinkedCasesResponse: GetLinkedCases;
+  public caseDetails: CaseView;
+  public parentUrl: string;
+  public isLoaded: boolean;
+  public getLinkedCasesResponse: LinkedCasesResponse;
 
   public caseId: string;
 
   constructor(
     private route: ActivatedRoute,
-    private readonly casesService: CasesService) {
+    private readonly casesService: CasesService) {}
+    public ngAfterViewInit(): void {
+      const labelField = document.getElementsByClassName('case-viewer-label');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('');
+      }
     }
-  ngAfterViewInit(): void {
-    const labelField = document.getElementsByClassName('case-viewer-label');
-    if (labelField && labelField.length) {
-      labelField[0].replaceWith('');
-    }
-  }
 
-  ngOnInit(): void {
-    this.caseId = this.route.snapshot.data.case.case_id;
-    this.casesService.getLinkedCases(this.caseId).subscribe(response => {
-        this.getLinkedCasesResponse = response
-      });
-  }
+    public ngOnInit(): void {
+      this.caseId = this.route.snapshot.data.case.case_id;
+      this.casesService.getLinkedCases(this.caseId).subscribe(response => {
+          this.getLinkedCasesResponse = response
+        });
+    }
 }

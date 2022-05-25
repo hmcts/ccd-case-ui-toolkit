@@ -14,36 +14,48 @@ export class LinkCaseReason {
   selected?: boolean;
 }
 
-export class LinkReason {
-  reasonCode: string;
-  otherDescription?: string;
+export class LinkedCase {
+  caseLink: CaseLink;
 }
 
 export class CaseLink {
   caseReference: string;
-  reasons: LinkReason[];
+  linkReason: LinkReason[];
   createdDateTime: string;
   caseType: string;
   caseState: string;
   caseService: string;
   caseName: string;
-  unlink?: boolean;
 }
 
-export class GetLinkedCases {
-  linkedCases: GetLinkedCasesCaseLinkResponse[];
+export class LinkReason {
+  reason: string;
+  otherDescription?: string;
 }
 
-export class GetLinkedCasesCaseLinkResponse {
+export class LinkedCasesResponse {
+  linkedCases: [];
+}
+export class CaseLinkResponse {
   caseNameHmctsInternal: string;
   caseReference: string;
-  ccdCaseType: string;
+  ccdCaseTyp: string;
   ccdJurisdiction: string;
   state: string;
-  linkDetails: LinkDetails[];
+  linkDetails: [LinkDetails];
 }
 
 export class LinkDetails {
-  createdDateTime: Date;
-  reasons: LinkReason[];
+    createdDateTime: Date;
+    reasons: [LinkReason];
+}
+export class Terms {
+  terms: {
+    reference: any[];
+  }
+}
+
+export class ESQueryType {
+  query: Terms
+  size: number
 }

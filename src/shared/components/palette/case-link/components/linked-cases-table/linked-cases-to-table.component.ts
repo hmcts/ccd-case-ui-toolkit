@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { CaseField, Jurisdiction } from '../../../../../domain/definition';
+import { CaseField } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
-import { LinkCaseReason } from '../../domain/linked-cases.model';
-import { CasesService } from '../../../../case-editor/services/cases.service';
+import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
+import { ESQueryType } from '../../domain/linked-cases.model';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -25,19 +25,18 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
 
-  tableHeading = 'Linked cases';
-  tableSubHeading = 'This case is linked to';
+  public tableHeading = 'Linked cases';
+  public tableSubHeading = 'This case is linked to';
 
-  caseDetails: CaseView;
-  isLoaded: boolean;
-  linkedCasesFromResponse: any = []
+  public caseDetails: CaseView;
+  public isLoaded: boolean;
+  public linkedCasesFromResponse: any = []
 
-  jurisdictions: Jurisdiction[];
-  linkedCaseReasons: LinkCaseReason[];
+  public linkedCaseReasons: LovRefDataModel[];
   public caseId: string;
 
   constructor(
-    private casesService: CasesService,
+    private commonDataService: CommonDataService,
     private route: ActivatedRoute,
     private readonly searchService: SearchService) {}
 
@@ -50,13 +49,13 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.casesService.getCaseLinkResponses().subscribe(reasons => {
+    this.commonDataService.getRefData().subscribe(reasons => {
       this.linkedCaseReasons = reasons;
     })
     this.getAllLinkedCaseInformation();
   }
 
-  groupByCaseType = (arrObj, key) => {
+  public groupByCaseType = (arrObj, key) => {
     return arrObj.reduce((rv, x) =>   {
       (rv[x[key]] = rv[x[key]] || []).push(x['caseReference']);
       return rv;
@@ -67,7 +66,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     return caseRef.slice(this.caseId.length - 4);
   }
 
-  sortByReasonCode() {
+  public sortByReasonCode() {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
     const data = this.caseField.value || [];
@@ -109,11 +108,11 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     return forkJoin(searchCasesResponse);
   }
 
-  hasLeadCaseOrConsolidated(reasonCode: string) {
+  public hasLeadCaseOrConsolidated(reasonCode: string) {
     return reasonCode === 'Progressed as part of this lead case' || reasonCode === 'Case consolidated'
   }
 
-  mapResponse(esSearchCasesResponse) {
+  public mapResponse(esSearchCasesResponse) {
     const reasonDescriptons = []
     const caseReasonCode = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id);
     caseReasonCode.reasons.forEach(code => {
@@ -124,7 +123,6 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     });
     return {
       case_id: esSearchCasesResponse.case_id,
-      caseName: '',
       caseType: esSearchCasesResponse.case_fields['[CASE_TYPE]'],
       service: esSearchCasesResponse.case_fields['[JURISDICTION]'],
       state: esSearchCasesResponse.case_fields['[STATE]'],
@@ -132,7 +130,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     } as unknown as LinkedCasesResponse
   }
 
-  constructElasticSearchQuery(caseIds: any[], size: number) {
+  public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
     return {
         query: {
           terms: {
