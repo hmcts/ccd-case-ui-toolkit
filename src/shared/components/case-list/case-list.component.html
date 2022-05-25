@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <ng-container *ngFor="let c of cases | paginate: { itemsPerPage: 50, currentPage: selectPageNo, totalItems: 100 }"></ng-container>
+    <ng-container *ngFor="let c of cases | paginate: { itemsPerPage: pageSize, currentPage: currentPageNo, totalItems: totalResultsCount }">
       <tr data-selector="table-row" class="govuk-table__row">
         <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="selectionEnabled">
           <div class="govuk-checkboxes__item">
@@ -47,6 +47,6 @@
     </ng-container>
   </tbody>
 </table>
-<ccd-pagination 
+<ccd-pagination *ngIf="totalResultsCount > pageSize"
   (pageChange)="goToPage($event)" 
 ></ccd-pagination>

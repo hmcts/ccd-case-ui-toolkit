@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { BrowserService } from '../../services';
 import { CaseListComponent, TableConfig } from './case-list.component';
+import { PaginatePipe, PaginationService } from 'ngx-pagination';
 
 describe('CaseListComponent', () => {
   const cases: any[] = [
@@ -53,8 +54,8 @@ describe('CaseListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ RouterModule ],
-      declarations: [ CaseListComponent ],
-      providers: [ BrowserService ]
+      declarations: [ CaseListComponent, PaginatePipe ],
+      providers: [ PaginationService, BrowserService ]
     })
     .compileComponents();
   }));
