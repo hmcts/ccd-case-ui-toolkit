@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { PipesModule } from '../../../../../pipes';
 import { CasesService } from '../../../../case-editor';
 import { CaseLink } from '../../domain/linked-cases.model';
 import { LinkedCasesService } from '../../services';
@@ -76,7 +77,7 @@ describe('UnLinkCasesComponent', () => {
   const linkedCases: CaseLink[] = [
     {
       caseReference: '1682374819203471',
-      linkReason: [],
+      reasons: [],
       createdDateTime: '',
       caseType: 'SSCS',
       caseState: 'state',
@@ -85,7 +86,7 @@ describe('UnLinkCasesComponent', () => {
     },
     {
       caseReference: '1682897456391875',
-      linkReason: [],
+      reasons: [],
       createdDateTime: '',
       caseType: 'SSCS',
       caseState: 'state',
@@ -105,7 +106,8 @@ describe('UnLinkCasesComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        RouterTestingModule
+        RouterTestingModule,
+        PipesModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [UnLinkCasesComponent],

@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { PipesModule } from '../../../../../pipes';
 import { CaseLink } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -18,12 +19,12 @@ describe('CheckYourAnswersComponent', () => {
       caseState: '',
       caseType: '',
       createdDateTime: '11/05/2022',
-      linkReason: [
+      reasons: [
         {
-          reason: 'Progressed as part of this lead case'
+          reasonCode: 'Progressed as part of this lead case'
         },
         {
-          reason: 'Linked for a hearing'
+          reasonCode: 'Linked for a hearing'
         }
       ]
     },
@@ -34,9 +35,9 @@ describe('CheckYourAnswersComponent', () => {
       caseState: '',
       caseType: '',
       createdDateTime: '11/05/2022',
-      linkReason: [
+      reasons: [
         {
-          reason: 'Case consolidated Familial Guardian Linked for a hearing'
+          reasonCode: 'Case consolidated Familial Guardian Linked for a hearing'
         }
       ]
     },
@@ -47,9 +48,9 @@ describe('CheckYourAnswersComponent', () => {
       caseState: '',
       caseType: '',
       createdDateTime: '11/05/2022',
-      linkReason: [
+      reasons: [
         {
-          reason: 'Familial'
+          reasonCode: 'Familial'
         }
       ]
     }
@@ -62,12 +63,12 @@ describe('CheckYourAnswersComponent', () => {
       caseState: '',
       caseType: '',
       createdDateTime: '10/03/2022',
-      linkReason: [
+      reasons: [
         {
-          reason: 'This case is to be unlinked'
+          reasonCode: 'This case is to be unlinked'
         },
         {
-          reason: 'Case has been marked for unlinking'
+          reasonCode: 'Case has been marked for unlinking'
         }
       ]
     },
@@ -78,9 +79,9 @@ describe('CheckYourAnswersComponent', () => {
       caseState: '',
       caseType: '',
       createdDateTime: '10/03/2022',
-      linkReason: [
+      reasons: [
         {
-          reason: 'Case has been marked for unlinking'
+          reasonCode: 'Case has been marked for unlinking'
         }
       ]
     }
@@ -88,7 +89,10 @@ describe('CheckYourAnswersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        PipesModule
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CheckYourAnswersComponent],
       providers: [LinkedCasesService]

@@ -15,13 +15,13 @@ export class LinkCaseReason {
 }
 
 export class LinkReason {
-  reason: string;
+  reasonCode: string;
   otherDescription?: string;
 }
 
 export class CaseLink {
   caseReference: string;
-  linkReason: LinkReason[];
+  reasons: LinkReason[];
   createdDateTime: string;
   caseType: string;
   caseState: string;

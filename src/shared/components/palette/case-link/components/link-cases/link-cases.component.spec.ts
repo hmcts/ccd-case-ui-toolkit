@@ -30,7 +30,7 @@ describe('LinkCasesComponent', () => {
 
   const selectedCasesInfo: CaseLink[] = [{
       caseReference: '1682374819203471',
-      linkReason: [],
+      reasons: [],
       createdDateTime: '',
       caseType: 'SSCS',
       caseState: 'state',

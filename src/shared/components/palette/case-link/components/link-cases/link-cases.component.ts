@@ -134,7 +134,7 @@ export class LinkCasesComponent implements OnInit {
     this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).subscribe((caseView: CaseView) => {
       const caseLink: CaseLink = {
         caseReference: caseView.case_id,
-        linkReason: this.getSelectedCaseReasons(),
+        reasons: this.getSelectedCaseReasons(),
         createdDateTime: new Date().toISOString(),
         caseType: caseView.case_type.name,
         caseState: caseView.state.name,
@@ -171,7 +171,7 @@ export class LinkCasesComponent implements OnInit {
       hearingsList.forEach(response => response.results.map((caseResult: any) => {
         const caseLink: CaseLink = {
           caseReference: caseResult.case_id,
-          linkReason: [],
+          reasons: [],
           createdDateTime: caseResult['[CREATED_DATE]'],
           caseType: caseResult['[CASE_TYPE]'],
           caseState: caseResult['[STATE]'],
@@ -196,7 +196,7 @@ export class LinkCasesComponent implements OnInit {
     let selectedReasons: LinkReason[] = [];
     this.linkCaseForm.controls.reasonType.value.forEach((selectedReason: LinkCaseReason) => {
       if (selectedReason.selected) {
-        selectedReasons.push({ reason: selectedReason.value_en });
+        selectedReasons.push({ reasonCode: selectedReason.value_en });
       }
     })
     return selectedReasons;
