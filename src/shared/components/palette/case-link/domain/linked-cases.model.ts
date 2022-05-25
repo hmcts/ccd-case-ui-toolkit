@@ -32,3 +32,30 @@ export class LinkReason {
   reason: string;
   otherDescription?: string;
 }
+
+export class LinkedCasesResponse {
+  linkedCases: [];
+}
+export class CaseLinkResponse {
+  caseNameHmctsInternal: string;
+  caseReference: string;
+  ccdCaseTyp: string;
+  ccdJurisdiction: string;
+  state: string;
+  linkDetails: [LinkDetails];
+}
+
+export class LinkDetails {
+    createdDateTime: Date;
+    reasons: [LinkReason];
+}
+export class Terms {
+  terms: {
+    reference: any[];
+  }
+}
+
+export class ESQueryType {
+  query: Terms
+  size: number
+}

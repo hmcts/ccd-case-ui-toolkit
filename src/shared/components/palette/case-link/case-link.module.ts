@@ -11,9 +11,11 @@ import { LinkedCasesService } from './services/linked-cases.service';
 import { BeforeYouStartComponent } from './components/before-you-start/before-you-start.component';
 import { LinkCasesComponent } from './components/link-cases/link-cases.component';
 import { CheckYourAnswersComponent } from './components/check-your-answers/check-your-answers.component';
-import { LinkedCasesTableComponent } from './components/linked-cases-table/linked-cases-table.component';
 import { WriteLinkedCasesComponent } from './components/write-linked-cases.component';
+import { LinkedCasesToTableComponent } from './components/linked-cases-table/linked-cases-to-table.component';
+import { LinkedCasesFromTableComponent } from './components/linked-cases-table/linked-cases-from-table.component';
 import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.component';
+import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 
 @NgModule({
   imports: [
@@ -26,12 +28,14 @@ import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.com
     CaseEditComponent,
     CaseEditPageComponent,
     ChangeDetectorRef as Provider,
-    LinkedCasesService
+    LinkedCasesService,
+    CommonDataService
   ],
   declarations: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
-    LinkedCasesTableComponent,
+    LinkedCasesToTableComponent,
+    LinkedCasesFromTableComponent,
     BeforeYouStartComponent,
     LinkCasesComponent,
     CheckYourAnswersComponent,
@@ -41,7 +45,8 @@ import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.com
   exports: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
-    LinkedCasesTableComponent,
+    LinkedCasesToTableComponent,
+    LinkedCasesFromTableComponent,
     WriteLinkedCasesComponent
   ]
 })
