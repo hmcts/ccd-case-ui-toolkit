@@ -25,7 +25,7 @@ export class CommonDataService {
                 private readonly appconfig: AbstractAppConfig) {}
 
     public getRefData(): Observable<LovRefDataModel[]> {
-            const url = "/assets/getCaseReasons.json";
+            const url = '/assets/getCaseReasons.json';
             return this.http.get<LovRefDataModel[]>(url)
     }
 }
