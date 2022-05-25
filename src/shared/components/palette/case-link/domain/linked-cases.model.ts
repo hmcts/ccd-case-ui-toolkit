@@ -14,28 +14,26 @@ export class LinkCaseReason {
   selected?: boolean;
 }
 
-export class LinkedCase {
-  caseLink: CaseLink;
-}
-
 export class CaseLink {
   caseReference: string;
-  linkReason: LinkReason[];
+  reasons: LinkReason[];
   createdDateTime: string;
   caseType: string;
   caseState: string;
   caseService: string;
   caseName: string;
+  unlink?: boolean;
 }
 
 export class LinkReason {
-  reason: string;
+  reasonCode: string;
   otherDescription?: string;
 }
 
 export class LinkedCasesResponse {
   linkedCases: [];
 }
+
 export class CaseLinkResponse {
   caseNameHmctsInternal: string;
   caseReference: string;
@@ -46,9 +44,10 @@ export class CaseLinkResponse {
 }
 
 export class LinkDetails {
-    createdDateTime: Date;
-    reasons: [LinkReason];
+  createdDateTime: Date;
+  reasons: [LinkReason];
 }
+
 export class Terms {
   terms: {
     reference: any[];

@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 4.17.2-Link cases- Linked case tab Display
-**EUI-5888** Link cases- Linked case tab Display
+### Version 4.16.9-linked-cases-unlink-journey-cya
+**EUI-5565** Add unlink cases journey to linked cases
 
 ### Version 4.16.8-linked-cases-unlink-journey-unlink-cases
 **EUI-5565** Add unlink cases journey to linked cases
