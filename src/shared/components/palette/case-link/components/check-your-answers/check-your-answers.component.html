@@ -11,9 +11,9 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body">
-        <tr class="govuk-table__row" *ngFor="let caseReference of casesToUnlink">
+        <tr class="govuk-table__row" *ngFor="let case of casesToUnlink">
           <td class="govuk-table__cell">
-            {{caseReference}}
+            {{case.caseReference}}
           </td>
           <td class="govuk-table__cell">
             <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
@@ -21,7 +21,7 @@
         </tr>
       </tbody>
     </table>
-    <!-- Table for both linke case and manage link case journeys -->
+    <!-- Table for both link case and manage link case journeys -->
     <table id="linked-cases-table" class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--m">{{linkedCasesTableCaption}}</caption>
       <thead class="govuk-table__head">
@@ -35,10 +35,10 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCases">
           <td class="govuk-table__cell">
-            {{case.caseLink.caseName}}<br>{{case.caseLink.caseReference}}
+            {{case.caseName}}<br>{{case.caseReference}}
           </td>
           <td class="govuk-table__cell">
-            <span *ngFor="let reason of case.caseLink.linkReason; last as isLast">
+            <span *ngFor="let reason of case.linkReason; last as isLast">
               {{reason.reason}}<br *ngIf="!isLast">
             </span>
           </td>

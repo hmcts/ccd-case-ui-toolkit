@@ -5,7 +5,7 @@ import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
-import { LinkCaseReason, LinkedCase, LinkReason } from '../../domain/linked-cases.model';
+import { CaseLink, LinkCaseReason, LinkReason } from '../../domain/linked-cases.model';
 import { LinkedCaseProposalEnum, LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
@@ -23,7 +23,7 @@ export class LinkCasesComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public linkCaseForm: FormGroup;
   public linkCaseReasons: LinkCaseReason[];
-  public selectedCases: LinkedCase[] = [];
+  public selectedCases: CaseLink[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
   public caseSelectionError: string;
@@ -85,12 +85,12 @@ export class LinkCasesComponent implements OnInit {
     }
   }
 
-  isCaseSelected(linkedCases: LinkedCase[]): boolean {
+  isCaseSelected(linkedCases: CaseLink[]): boolean {
     if (linkedCases.length === 0) {
       return false;
     }
     const caseNumber = this.linkCaseForm.value.caseNumber;
-    return !!linkedCases.find(caseInfo => caseInfo.caseLink && caseInfo.caseLink.caseReference === caseNumber);
+    return !!linkedCases.find(caseLink => caseLink.caseReference === caseNumber);
   }
 
   showErrorInfo() {
@@ -132,8 +132,7 @@ export class LinkCasesComponent implements OnInit {
 
   getCaseInfo() {
     this.casesService.getCaseViewV2(this.linkCaseForm.value.caseNumber).subscribe((caseView: CaseView) => {
-      let caseInfo: LinkedCase = {} as LinkedCase;
-      caseInfo.caseLink = {
+      const caseLink: CaseLink = {
         caseReference: caseView.case_id,
         linkReason: this.getSelectedCaseReasons(),
         createdDateTime: new Date().toISOString(),
@@ -142,7 +141,7 @@ export class LinkCasesComponent implements OnInit {
         caseService: caseView.case_type.jurisdiction.name,
         caseName: caseView.case_type.name,
       }
-      this.selectedCases.push(caseInfo);
+      this.selectedCases.push(caseLink);
       this.initForm();
       this.emitLinkedCasesState(false);
     }, (error: HttpError) => {
@@ -170,8 +169,7 @@ export class LinkCasesComponent implements OnInit {
     });
     forkJoin(hearingServices).subscribe((hearingsList: any) => {
       hearingsList.forEach(response => response.results.map((caseResult: any) => {
-        let caseInfo: LinkedCase = {} as LinkedCase;
-        caseInfo.caseLink = {
+        const caseLink: CaseLink = {
           caseReference: caseResult.case_id,
           linkReason: [],
           createdDateTime: caseResult['[CREATED_DATE]'],
@@ -180,7 +178,7 @@ export class LinkCasesComponent implements OnInit {
           caseService: caseResult['[JURISDICTION]'],
           caseName: caseResult['[CASE_TYPE]'],
         }
-        this.linkedCasesService.preLinkedCases.push(caseInfo);
+        this.linkedCasesService.preLinkedCases.push(caseLink);
       }));
     });
   }
