@@ -13,7 +13,7 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of casesToUnlink">
           <td class="govuk-table__cell">
-            {{case.caseReference}}
+            {{case.caseReference | ccdCaseReference}}
           </td>
           <td class="govuk-table__cell">
             <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
@@ -35,7 +35,7 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCases">
           <td class="govuk-table__cell">
-            {{case.caseName}}<br>{{case.caseReference}}
+            {{case.caseName}}<br>{{case.caseReference | ccdCaseReference}}
           </td>
           <td class="govuk-table__cell">
             <span *ngFor="let reason of case.linkReason; last as isLast">

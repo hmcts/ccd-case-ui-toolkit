@@ -69,9 +69,9 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public onChange(caseSelected: any): void {
-    const linkedCase = this.linkedCases.find(linkedCase => linkedCase.caseReference === caseSelected.value);
-    if (linkedCase) {
-      linkedCase.unlink = caseSelected.checked ? true : false;
+    const selectedCase = this.linkedCases.find(linkedCase => linkedCase.caseReference === caseSelected.value);
+    if (selectedCase) {
+      selectedCase.unlink = caseSelected.checked ? true : false;
     }
   }
 
