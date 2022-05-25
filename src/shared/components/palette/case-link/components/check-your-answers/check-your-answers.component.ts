@@ -15,7 +15,7 @@ export class CheckYourAnswersComponent implements OnInit {
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
   public linkedCases: LinkedCase[];
-  public casesToUnlink: LinkedCase[];
+  public casesToUnlink: string[];
   public isLinkCasesJourney: boolean;
   public linkedCasesTableCaption: string;
 
@@ -28,6 +28,8 @@ export class CheckYourAnswersComponent implements OnInit {
     this.linkedCasesTableCaption = this.isLinkCasesJourney ? 'Proposed case links' : 'Linked cases';
     this.linkedCases = this.linkedCasesService.linkedCases;
     this.casesToUnlink = this.linkedCasesService.casesToUnlink;
+		console.log('SERVICE LINKED CASES', this.linkedCases);
+		console.log('SERVICE CASES TO UNLINK', this.casesToUnlink);
   }
 
   public onChange(): void {

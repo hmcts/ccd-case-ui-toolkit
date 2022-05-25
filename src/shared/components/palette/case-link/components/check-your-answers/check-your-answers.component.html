@@ -11,9 +11,9 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body">
-        <tr class="govuk-table__row" *ngFor="let case of casesToUnlink">
+        <tr class="govuk-table__row" *ngFor="let caseReference of casesToUnlink">
           <td class="govuk-table__cell">
-            {{case.caseLink.caseName}}<br>{{case.caseLink.caseReference}}
+            {{caseReference}}
           </td>
           <td class="govuk-table__cell">
             <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
