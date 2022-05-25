@@ -23,7 +23,7 @@ import {
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
+import { GetLinkedCases, LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -136,6 +136,16 @@ export class CasesService {
         }),
         finalize(() => this.loadingService.unregister(loadingToken))
       );
+  }
+
+  getLinkedCases(caseId: string): Observable<GetLinkedCases> {
+    return this.http
+    .get('assets/getLinkedCases.json')
+    .pipe(
+      catchError(error => {
+        return throwError(error);
+      })
+    );
   }
 
   getEventTrigger(caseTypeId: string,
