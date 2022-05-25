@@ -52,7 +52,6 @@ describe('BeforeYouStartComponent', () => {
     component.isLinkCasesJourney = false;
     fixture.detectChanges();
     const manageLinkCasesJourneyElement = fixture.debugElement.nativeElement.querySelector('#manage-link-cases-journey');
-    console.log(manageLinkCasesJourneyElement.textContent);
     expect(manageLinkCasesJourneyElement.textContent).toBe(
       'If there are linked hearings for the case you need to un-link then you must unlink the hearing first.'
     );

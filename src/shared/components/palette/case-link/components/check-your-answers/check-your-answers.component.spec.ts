@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LinkedCase } from '../../domain';
+import { CaseLink } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { CheckYourAnswersComponent } from './check-your-answers.component';
@@ -10,89 +10,79 @@ describe('CheckYourAnswersComponent', () => {
   let component: CheckYourAnswersComponent;
   let fixture: ComponentFixture<CheckYourAnswersComponent>;
   let nativeElement: any;
-  const linkedCases: LinkedCase[] = [
+  const linkedCases: CaseLink[] = [
     {
-      caseLink: {
-        caseReference: '5283-8196-7254-2864',
-        caseName: '',
-        caseService: '',
-        caseState: '',
-        caseType: '',
-        createdDateTime: '11/05/2022',
-        linkReason: [
-          {
-            reason: 'Progressed as part of this lead case'
-          },
-          {
-            reason: 'Linked for a hearing'
-          }
-        ]
-      }
+      caseReference: '5283-8196-7254-2864',
+      caseName: '',
+      caseService: '',
+      caseState: '',
+      caseType: '',
+      createdDateTime: '11/05/2022',
+      linkReason: [
+        {
+          reason: 'Progressed as part of this lead case'
+        },
+        {
+          reason: 'Linked for a hearing'
+        }
+      ]
     },
     {
-      caseLink: {
-        caseReference: '8254-9025-7233-6147',
-        caseName: '',
-        caseService: '',
-        caseState: '',
-        caseType: '',
-        createdDateTime: '11/05/2022',
-        linkReason: [
-          {
-            reason: 'Case consolidated Familial Guardian Linked for a hearing'
-          }
-        ]
-      }
+      caseReference: '8254-9025-7233-6147',
+      caseName: '',
+      caseService: '',
+      caseState: '',
+      caseType: '',
+      createdDateTime: '11/05/2022',
+      linkReason: [
+        {
+          reason: 'Case consolidated Familial Guardian Linked for a hearing'
+        }
+      ]
     },
     {
-      caseLink: {
-        caseReference: '4652-7249-0269-6213',
-        caseName: '',
-        caseService: '',
-        caseState: '',
-        caseType: '',
-        createdDateTime: '11/05/2022',
-        linkReason: [
-          {
-            reason: 'Familial'
-          }
-        ]
-      }
+      caseReference: '4652-7249-0269-6213',
+      caseName: '',
+      caseService: '',
+      caseState: '',
+      caseType: '',
+      createdDateTime: '11/05/2022',
+      linkReason: [
+        {
+          reason: 'Familial'
+        }
+      ]
     }
   ];
-  const casesToUnlink: LinkedCase[] = [
+  const casesToUnlink: CaseLink[] = [
     {
-      caseLink: {
-        caseReference: '5238-8916-7452-6482',
-        caseName: '',
-        caseService: '',
-        caseState: '',
-        caseType: '',
-        createdDateTime: '10/03/2022',
-        linkReason: [
-          {
-            reason: 'This case is to be unlinked'
-          },
-          {
-            reason: 'Case has been marked for unlinking'
-          }
-        ]
-      }
+      caseReference: '5238-8916-7452-6482',
+      caseName: '',
+      caseService: '',
+      caseState: '',
+      caseType: '',
+      createdDateTime: '10/03/2022',
+      linkReason: [
+        {
+          reason: 'This case is to be unlinked'
+        },
+        {
+          reason: 'Case has been marked for unlinking'
+        }
+      ]
     },
     {
-      caseLink: {
-        caseReference: '8245-9520-7332-4716',
-        caseName: '',
-        caseService: '',
-        caseState: '',
-        caseType: '',
-        createdDateTime: '10/03/2022',
-        linkReason: [
-          {
-            reason: 'Case has been marked for unlinking'
-          }
-        ]
-      }
+      caseReference: '8245-9520-7332-4716',
+      caseName: '',
+      caseService: '',
+      caseState: '',
+      caseType: '',
+      createdDateTime: '10/03/2022',
+      linkReason: [
+        {
+          reason: 'Case has been marked for unlinking'
+        }
+      ]
     }
   ];
 
