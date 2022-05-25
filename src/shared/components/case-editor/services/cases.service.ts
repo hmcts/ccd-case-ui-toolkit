@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -9,21 +9,18 @@ import { ShowCondition } from '../../../directives';
 import {
   CaseEventData,
   CaseEventTrigger,
-  CaseField,
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest,
   SpecificAccessRequest,
   Draft,
-  FieldType,
-  FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { GetLinkedCases, LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
+import { LinkedCasesResponse, LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -118,7 +115,7 @@ export class CasesService {
    * TODO: Gets case link responses
    * @returns case link responses
    */
-  getCaseLinkResponses(): Observable<LinkCaseReason[]> {
+   public getCaseLinkResponses(): Observable<LinkCaseReason[]> {
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
@@ -138,7 +135,7 @@ export class CasesService {
       );
   }
 
-  getLinkedCases(caseId: string): Observable<GetLinkedCases> {
+  public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
     return this.http
     .get('assets/getLinkedCases.json')
     .pipe(

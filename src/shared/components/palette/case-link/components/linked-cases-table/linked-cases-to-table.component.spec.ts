@@ -11,12 +11,14 @@ import { LinkedCasesToTableComponent } from './linked-cases-to-table.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../../../../../domain';
+import { CommonDataService } from '../../../../../services/common-data-service/common-data-service';
 
-describe('LinkCasesToTableComponent', () => {
+fdescribe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
   let fixture: ComponentFixture<LinkedCasesToTableComponent>;
   let casesService: any;
   let searchService: any;
+  let commonDataService: any;
 
   let mockCaseLinkResponse = [
     {
@@ -103,6 +105,7 @@ describe('LinkCasesToTableComponent', () => {
     },
   ];
   beforeEach(async(() => {
+    commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases', 'searchCasesByIds']);
     TestBed.configureTestingModule({
@@ -117,7 +120,8 @@ describe('LinkCasesToTableComponent', () => {
           useValue: {snapshot: {data: {case: {case_id: '123'}}}}
         },
         { provide: CasesService, useValue: casesService },
-        { provide: SearchService, useValue: searchService }
+        { provide: SearchService, useValue: searchService },
+        { provide: CommonDataService, useValue: commonDataService }
       ],
       declarations: [LinkedCasesToTableComponent],
     })
@@ -163,7 +167,7 @@ describe('LinkCasesToTableComponent', () => {
       retain_hidden_value:  false,
       hidden: false,
       });
-    casesService.getCaseLinkResponses.and.returnValue(of(linkCaseReasons));
+    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
     component.caseField.value = mockCaseLinkResponse;
   });
 

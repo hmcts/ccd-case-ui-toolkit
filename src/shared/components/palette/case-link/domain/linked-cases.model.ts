@@ -33,19 +33,29 @@ export class LinkReason {
   otherDescription?: string;
 }
 
-export class GetLinkedCases {
-  linkedCases: []
+export class LinkedCasesResponse {
+  linkedCases: [];
 }
-export class GetLinkedCasesCaseLinkResponse {
-  caseNameHmctsInternal: string
-  caseReference: string
-  ccdCaseTyp: string
-  ccdJurisdiction: string
-  state: string
-  linkDetails: [LinkDetails]
+export class CaseLinkResponse {
+  caseNameHmctsInternal: string;
+  caseReference: string;
+  ccdCaseTyp: string;
+  ccdJurisdiction: string;
+  state: string;
+  linkDetails: [LinkDetails];
 }
 
 export class LinkDetails {
-    createdDateTime: Date
-    reasons: [LinkReason]
+    createdDateTime: Date;
+    reasons: [LinkReason];
+}
+export class Terms {
+  terms: {
+    reference: any[];
+  }
+}
+
+export class ESQueryType {
+  query: Terms
+  size: number
 }
