@@ -1,14 +1,14 @@
 <div *ngIf="!serverError">
-    <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)" ></ccd-linked-cases-to-table>
+    <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)" reloadPage="reload"></ccd-linked-cases-to-table>
     <br>
     <br>
-    <ccd-linked-cases-from-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)"></ccd-linked-cases-from-table>
+    <ccd-linked-cases-from-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)" reloadPage="reload"></ccd-linked-cases-from-table>
 </div>
 <div class="govuk-width-container" *ngIf="serverError">
     <div class="govuk-main-wrapper">
       <p class="govuk-body">{{serverError.message}}</p>
       <span class="govuk-body align-left">
-          <a href="javascript:void(0)" (click)="reloadCurrentRoute()"
+          <a [href]="reloadCurrentRoute()"
              id="reload-linked-cases-tab"
              class="govuk-link">Reload the Linked cases tab</a>
         </span>
