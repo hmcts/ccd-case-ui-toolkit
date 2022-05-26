@@ -3,7 +3,7 @@ import { CaseField } from '../../../../../domain/definition';
 import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesResponse } from '../../domain/linked-cases.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -34,6 +34,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private readonly casesService: CasesService) {}
     
     public ngAfterViewInit(): void {
@@ -45,6 +46,10 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     
     public ngOnInit(): void {
       this.fetchPageData();
+          // TODO: to be removed once tested the ticket 5640
+      if (this.router.url.indexOf('?error') > -1) {
+        this.notifyAPIFailure.emit(true);
+      }
     }
 
     public fetchPageData() {

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { CaseField } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
 import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
@@ -41,16 +41,21 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   constructor(
     private commonDataService: CommonDataService,
     private route: ActivatedRoute,
+    private router: Router,
     private readonly searchService: SearchService) {}
 
-  ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');
     if (labelField && labelField.length) {
       labelField[0].replaceWith('')
     }
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    // TODO: to be removed once tested the ticket 5640
+    if (this.router.url.indexOf('?error') > -1) {
+      this.notifyAPIFailure.emit(true);
+    }
     this.caseId = this.route.snapshot.data.case.case_id;
     this.commonDataService.getRefData().subscribe({
       next: reasons => this.linkedCaseReasons = reasons,
