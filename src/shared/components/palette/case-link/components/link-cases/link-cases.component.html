@@ -68,7 +68,7 @@
               <td class="govuk-table__cell">{{case.caseService}}</td>
               <td class="govuk-table__cell">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
-                  *ngFor="let reasonInfo of case.linkReason">{{reasonInfo.reason}}<br></span></td>
+                  *ngFor="let reasonInfo of case.reasons">{{reasonInfo.reasonCode}}<br></span></td>
               <td class="govuk-table__cell"><a (click)="selectedCases.splice(pos, 1);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>

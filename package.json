@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.16.9-linked-cases-unlink-journey-cya",
+  "version": "4.16.10-linked-cases-unlink-journey-cya",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
