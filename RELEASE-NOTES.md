@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
+
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
