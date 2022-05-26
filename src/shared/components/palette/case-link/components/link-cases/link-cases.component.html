@@ -60,15 +60,15 @@
             <tr class="govuk-table__row" *ngFor="let case of selectedCases; let pos = index">
               <td class="govuk-table__cell">
                 <div class="govuk-form-group--error"
-                  [ngClass]="{'table-group-error':caseSelectionError && case.caseLink.caseReference === linkCaseForm.value.caseNumber}">
+                  [ngClass]="{'table-group-error':caseSelectionError && case.caseReference === linkCaseForm.value.caseNumber}">
                 </div>
-                {{case.caseLink.caseName}} <br>{{case.caseLink.caseReference}}
+                {{case.caseName}} <br>{{case.caseReference}}
               </td>
-              <td class="govuk-table__cell">{{case.caseLink.caseType}}</td>
-              <td class="govuk-table__cell">{{case.caseLink.caseService}}</td>
-              <td class="govuk-table__cell">{{case.caseLink.caseState}}</td>
+              <td class="govuk-table__cell">{{case.caseType}}</td>
+              <td class="govuk-table__cell">{{case.caseService}}</td>
+              <td class="govuk-table__cell">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
-                  *ngFor="let reasonInfo of case.caseLink.linkReason">{{reasonInfo.reason}}<br></span></td>
+                  *ngFor="let reasonInfo of case.reasons">{{reasonInfo.reasonCode}}<br></span></td>
               <td class="govuk-table__cell"><a (click)="selectedCases.splice(pos, 1);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>
