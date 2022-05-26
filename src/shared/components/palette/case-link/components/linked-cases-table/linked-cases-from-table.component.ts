@@ -18,8 +18,7 @@ export enum PageType {
 export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
-  @Input()
-  public type: PageType = PageType.LINKEDCASESTABLBEVIEW;
+
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
 
@@ -36,29 +35,25 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private readonly casesService: CasesService) {}
+    
     public ngAfterViewInit(): void {
       const labelField = document.getElementsByClassName('case-viewer-label');
       if (labelField && labelField.length) {
         labelField[0].replaceWith('');
       }
     }
-
-<<<<<<< HEAD
-  ngOnInit(): void {
-    this.caseId = this.route.snapshot.data.case.case_id;
-    this.casesService.getLinkedCases(this.caseId).subscribe(
-      response => {
-        this.getLinkedCasesResponse = response
-      },
-      err => this.notifyAPIFailure.emit(true)
-      );
-  }
-=======
+    
     public ngOnInit(): void {
-      this.caseId = this.route.snapshot.data.case.case_id;
-      this.casesService.getLinkedCases(this.caseId).subscribe(response => {
-          this.getLinkedCasesResponse = response
-        });
+      this.fetchPageData();
     }
->>>>>>> feature/linked-cases
+
+    public fetchPageData() {
+      this.caseId = this.route.snapshot.data.case.case_id;
+      this.casesService.getLinkedCases(this.caseId).subscribe(
+        response => {
+          this.getLinkedCasesResponse = response
+        },
+        err => this.notifyAPIFailure.emit(true)
+        );
+    }
 }

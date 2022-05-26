@@ -52,9 +52,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.commonDataService.getRefData().subscribe(reasons => {
-      this.linkedCaseReasons = reasons,
-      err => this.notifyAPIFailure.emit(true)
+    this.commonDataService.getRefData().subscribe({
+      next: reasons => this.linkedCaseReasons = reasons,
+      error: error => this.notifyAPIFailure.emit(true)
     })
     this.getAllLinkedCaseInformation();
   }
