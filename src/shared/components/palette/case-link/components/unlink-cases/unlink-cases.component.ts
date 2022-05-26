@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkedCasesState } from '../../domain';
+import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 
@@ -19,7 +19,7 @@ export class UnLinkCasesComponent implements OnInit {
 
   public unlinkCaseForm: FormGroup;
   public caseId: string;
-  public casesToUnlink: string[] = [];
+  public linkedCases: CaseLink[] = [];
   public errorMessages: ErrorMessage[] = [];
 
   constructor(private readonly fb: FormBuilder,
@@ -33,16 +33,20 @@ export class UnLinkCasesComponent implements OnInit {
 
   public getLinkedCases(): void {
     this.caseId = this.linkedCasesService.caseId;
-    this.casesService.getCaseViewV2(this.caseId).subscribe((caseView: CaseView) => {
-      const linkedCasesTab = caseView.tabs.find(tab => tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID);
-      if (linkedCasesTab) {
-        const linkedCases = linkedCasesTab.fields[0].value;
-        linkedCases.forEach(linkedCase => {
-          this.casesToUnlink.push(linkedCase.caseReference);
-        });
-        this.initForm();
-      }
-    });
+    if (this.linkedCasesService.linkedCases.length > 0) {
+      this.linkedCases = this.linkedCasesService.linkedCases;
+      this.initForm();
+    } else {
+      this.casesService.getCaseViewV2(this.caseId).subscribe((caseView: CaseView) => {
+        const linkedCasesTab = caseView.tabs.find(tab => tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID);
+        if (linkedCasesTab) {
+          const linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
+          this.linkedCases = linkedCases;
+          this.linkedCasesService.linkedCases = linkedCases;
+          this.initForm();
+        }
+      });
+    }
   }
 
   public initForm(): void {
@@ -52,9 +56,23 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public get getLinkedCasesFormArray(): FormArray {
-    return this.fb.array(this.casesToUnlink.map(val => this.fb.group({
-      caseReference: val
+    return this.fb.array(this.linkedCases.map(val => this.fb.group({
+      caseReference: val.caseReference,
+      reasons: val.reasons,
+      createdDateTime: val.createdDateTime,
+      caseType: val.caseType,
+      caseState: val.caseState,
+      caseService: val.caseService,
+      caseName: val.caseName,
+      unlink: val.unlink
     })));
+  }
+
+  public onChange(caseSelected: any): void {
+    const selectedCase = this.linkedCases.find(linkedCase => linkedCase.caseReference === caseSelected.value);
+    if (selectedCase) {
+      selectedCase.unlink = caseSelected.checked ? true : false;
+    }
   }
 
   public onNext(): void {

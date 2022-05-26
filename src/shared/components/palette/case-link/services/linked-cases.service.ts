@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LinkedCase } from '../domain';
+import { CaseLink } from '../domain';
+
 @Injectable()
 export class LinkedCasesService {
-
   public caseId: string;
-  public linkedCases: LinkedCase[] = [];
-  public preLinkedCases: LinkedCase[] = [];
-  public casesToUnlink: LinkedCase[] = [];
+  public linkedCases: CaseLink[] = [];
+  public preLinkedCases: CaseLink[] = [];
 }

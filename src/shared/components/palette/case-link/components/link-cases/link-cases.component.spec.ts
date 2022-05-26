@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkCaseReason, LinkedCase } from '../../domain';
+import { CaseLink, LinkCaseReason } from '../../domain';
 import { LinkedCaseProposalEnum } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkCasesComponent } from './link-cases.component';
@@ -28,16 +28,14 @@ describe('LinkCasesComponent', () => {
     }
   ];
 
-  const selectedCasesInfo: LinkedCase[] = [{
-    caseLink: {
+  const selectedCasesInfo: CaseLink[] = [{
       caseReference: '1682374819203471',
-      linkReason: [],
+      reasons: [],
       createdDateTime: '',
       caseType: 'SSCS',
       caseState: 'state',
       caseService: 'Tribunal',
       caseName: 'SSCS 2.1'
-    }
   }];
   const linkCaseReasons: LinkCaseReason[] = [
     {
