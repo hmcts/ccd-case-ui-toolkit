@@ -16,6 +16,7 @@ import { LinkedCasesToTableComponent } from './components/linked-cases-table/lin
 import { LinkedCasesFromTableComponent } from './components/linked-cases-table/linked-cases-from-table.component';
 import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.component';
 import { ReadLinkedCasesComponent } from './components/read-linked-cases.component';
+import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { ReadLinkedCasesComponent } from './components/read-linked-cases.compone
     CaseEditComponent,
     CaseEditPageComponent,
     ChangeDetectorRef as Provider,
-    LinkedCasesService
+    LinkedCasesService,
+    CommonDataService
   ],
   declarations: [
     ReadCaseLinkFieldComponent,
