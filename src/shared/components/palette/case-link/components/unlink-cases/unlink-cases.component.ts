@@ -3,8 +3,9 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
-import { LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
+import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
+import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
   selector: 'ccd-unlink-cases',
@@ -24,7 +25,8 @@ export class UnLinkCasesComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder,
     private readonly casesService: CasesService,
-    private readonly linkedCasesService: LinkedCasesService) {
+    private readonly linkedCasesService: LinkedCasesService,
+		private readonly validatorsUtils: ValidatorsUtils) {
   }
 
   public ngOnInit(): void {
@@ -65,7 +67,7 @@ export class UnLinkCasesComponent implements OnInit {
       caseService: val.caseService,
       caseName: val.caseName,
       unlink: val.unlink
-    })));
+    })), this.validatorsUtils.formArraySelectedValidator());
   }
 
   public onChange(caseSelected: any): void {
@@ -76,11 +78,20 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public onNext(): void {
+		let navigateToNextPage = true;
+		if (this.unlinkCaseForm.invalid) {
+			this.errorMessages.push({
+				title: 'case-selection',
+				description: LinkedCasesErrorMessages.UnlinkCaseSelectionError,
+				fieldId: `case-reference-${this.linkedCases[0].caseReference}`
+			});
+			navigateToNextPage = false;
+		}
     // Return linked cases state and error messages to the parent
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,
       errorMessages: this.errorMessages,
-      navigateToNextPage: true
+      navigateToNextPage: navigateToNextPage
     });
   }
 }

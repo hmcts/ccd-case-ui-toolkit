@@ -6,7 +6,7 @@ import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import { CaseLink, LinkCaseReason, LinkReason } from '../../domain/linked-cases.model';
-import { LinkedCaseProposalEnum, LinkedCasesPages } from '../../enums';
+import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
 
@@ -95,34 +95,34 @@ export class LinkCasesComponent implements OnInit {
 
   showErrorInfo() {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
-      this.caseNumberError = LinkedCaseProposalEnum.CaseNumberError;
+      this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
       this.errorMessages.push({
         title: 'dummy-case-number',
-        description: LinkedCaseProposalEnum.CaseNumberError,
+        description: LinkedCasesErrorMessages.CaseNumberError,
         fieldId: 'caseNumber'
       });
     }
     if (this.linkCaseForm.controls.reasonType.invalid) {
-      this.caseReasonError = LinkedCaseProposalEnum.ReasonSelectionError;
+      this.caseReasonError = LinkedCasesErrorMessages.ReasonSelectionError;
       this.errorMessages.push({
         title: 'dummy-case-reason',
-        description: LinkedCaseProposalEnum.ReasonSelectionError,
+        description: LinkedCasesErrorMessages.ReasonSelectionError,
         fieldId: 'caseReason'
       });
     }
     if (this.isCaseSelected(this.selectedCases)) {
-      this.caseSelectionError = LinkedCaseProposalEnum.CaseProposedError;
+      this.caseSelectionError = LinkedCasesErrorMessages.CaseProposedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
-        description: LinkedCaseProposalEnum.CaseProposedError,
+        description: LinkedCasesErrorMessages.CaseProposedError,
         fieldId: 'caseNumber'
       });
     }
     if (this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
-      this.caseSelectionError = LinkedCaseProposalEnum.CasesLinkedError;
+      this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
-        description: LinkedCaseProposalEnum.CasesLinkedError,
+        description: LinkedCasesErrorMessages.CasesLinkedError,
         fieldId: 'caseNumber'
       });
 
@@ -145,10 +145,10 @@ export class LinkCasesComponent implements OnInit {
       this.initForm();
       this.emitLinkedCasesState(false);
     }, (error: HttpError) => {
-      this.caseNumberError = LinkedCaseProposalEnum.CaseCheckAgainError;
+      this.caseNumberError = LinkedCasesErrorMessages.CaseCheckAgainError;
       this.errorMessages.push({
         title: 'dummy-case-number',
-        description: LinkedCaseProposalEnum.CaseCheckAgainError,
+        description: LinkedCasesErrorMessages.CaseCheckAgainError,
         fieldId: 'caseNumber'
       });
       this.emitLinkedCasesState(false);
@@ -212,10 +212,10 @@ export class LinkCasesComponent implements OnInit {
     if (this.selectedCases.length) {
       this.linkedCasesService.linkedCases = this.selectedCases;
     } else {
-      this.noSelectedCaseError = LinkedCaseProposalEnum.CaseSelectionError;
+      this.noSelectedCaseError = LinkedCasesErrorMessages.CaseSelectionError;
       this.errorMessages.push({
         title: 'dummy-case-selection',
-        description: LinkedCaseProposalEnum.CaseSelectionError,
+        description: LinkedCasesErrorMessages.CaseSelectionError,
         fieldId: 'caseReason'
       });
       navigateToNextPage = false;

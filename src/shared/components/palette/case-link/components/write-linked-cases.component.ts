@@ -21,7 +21,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
-  public errorMessages: ErrorMessage[] = [];
 
   constructor(private readonly router: Router,
     private readonly linkedCasesService: LinkedCasesService) {
@@ -44,7 +43,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
-    this.errorMessages = [];
     this.caseEditPageComponent.validationErrors = [];
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);

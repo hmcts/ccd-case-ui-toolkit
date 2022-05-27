@@ -169,7 +169,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
               if (FieldsUtils.isLinkedCasesCaseField(casefield)) {
-                this.validationErrors.push({ id, message: 'Please select Next to go to the next page' });
+                this.validationErrors.push({ id:'next-button', message: 'Please select Next to go to the next page' });
               } else {
                 const fieldArray = fieldElement as FormArray;
                 if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
