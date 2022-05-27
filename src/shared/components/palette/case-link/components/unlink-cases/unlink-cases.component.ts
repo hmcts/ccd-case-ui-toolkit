@@ -22,11 +22,12 @@ export class UnLinkCasesComponent implements OnInit {
   public caseId: string;
   public linkedCases: CaseLink[] = [];
   public errorMessages: ErrorMessage[] = [];
+  public unlinkErrorMessage: string;
 
   constructor(private readonly fb: FormBuilder,
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService,
-		private readonly validatorsUtils: ValidatorsUtils) {
+    private readonly validatorsUtils: ValidatorsUtils) {
   }
 
   public ngOnInit(): void {
@@ -67,7 +68,7 @@ export class UnLinkCasesComponent implements OnInit {
       caseService: val.caseService,
       caseName: val.caseName,
       unlink: val.unlink
-    })), this.validatorsUtils.formArraySelectedValidator());
+    })));
   }
 
   public onChange(caseSelected: any): void {
@@ -78,15 +79,17 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public onNext(): void {
-		let navigateToNextPage = true;
-		if (this.unlinkCaseForm.invalid) {
-			this.errorMessages.push({
-				title: 'case-selection',
-				description: LinkedCasesErrorMessages.UnlinkCaseSelectionError,
-				fieldId: `case-reference-${this.linkedCases[0].caseReference}`
-			});
-			navigateToNextPage = false;
-		}
+    let navigateToNextPage = true;
+    const casesMarkedToUnlink = this.linkedCases.find(linkedCase => linkedCase.unlink && linkedCase.unlink === true);
+    if (!casesMarkedToUnlink) {
+      this.errorMessages.push({
+        title: 'case-selection',
+        description: LinkedCasesErrorMessages.UnlinkCaseSelectionError,
+        fieldId: `case-reference-${this.linkedCases[0].caseReference}`
+      });
+      this.unlinkErrorMessage = LinkedCasesErrorMessages.UnlinkCaseSelectionError;
+      navigateToNextPage = false;
+    }
     // Return linked cases state and error messages to the parent
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,

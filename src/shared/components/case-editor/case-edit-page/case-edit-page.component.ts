@@ -19,6 +19,7 @@ import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { initDialog } from '../../helpers';
+import { LinkedCasesError } from '../../palette';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -52,7 +53,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   caseFields: CaseField[];
   validationErrors: { id: string, message: string }[] = [];
   showSpinner: boolean;
-
+  caseLinkError: LinkedCasesError;
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private static scrollToTop(): void {
@@ -168,8 +169,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             if (casefield.isComplex()) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
-              if (FieldsUtils.isLinkedCasesCaseField(casefield)) {
-                this.validationErrors.push({ id:'next-button', message: 'Please select Next to go to the next page' });
+              if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
+                this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
               } else {
                 const fieldArray = fieldElement as FormArray;
                 if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
