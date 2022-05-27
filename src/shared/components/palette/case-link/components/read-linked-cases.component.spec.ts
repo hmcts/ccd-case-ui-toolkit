@@ -48,5 +48,4 @@ describe('ReadLinkedCases', () => {
     reloadHyperlink.click();
     expect(component.reloadCurrentRoute).toHaveBeenCalled();
   });
-  
 });

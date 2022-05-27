@@ -203,10 +203,10 @@ fdescribe('LinkCasesToTableComponent', () => {
       navigate: jasmine.createSpy('navigate'),
       url: '?error'
     };
-    mockRouter.url = "?error";
+    mockRouter.url = '?error';
     const injector = getTestBed();
     const router = injector.get(Router);
-    router.url = "=?error";
+    router.url = '=?error';
     TestBed.overrideProvider(Router, {useValue: mockRouter})
     TestBed.compileComponents();
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
@@ -216,5 +216,4 @@ fdescribe('LinkCasesToTableComponent', () => {
     fixture.detectChanges();
     expect(component.notifyAPIFailure.emit).toHaveBeenCalledWith(true);
   });
-  
 });

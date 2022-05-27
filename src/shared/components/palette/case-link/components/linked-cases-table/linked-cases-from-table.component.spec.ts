@@ -118,10 +118,10 @@ fdescribe('LinkCasesFromTableComponent', () => {
       navigate: jasmine.createSpy('navigate'),
       url: '?error'
     };
-    mockRouter.url = "?error";
+    mockRouter.url = '?error';
     const injector = getTestBed();
     const router = injector.get(Router);
-    router.url = "=?error";
+    router.url = '=?error';
     TestBed.overrideProvider(Router, {useValue: mockRouter})
     TestBed.compileComponents();
     fixture = TestBed.createComponent(LinkedCasesFromTableComponent);
