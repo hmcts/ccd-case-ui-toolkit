@@ -15,6 +15,7 @@ import { WriteLinkedCasesComponent } from './components/write-linked-cases.compo
 import { LinkedCasesToTableComponent } from './components/linked-cases-table/linked-cases-to-table.component';
 import { LinkedCasesFromTableComponent } from './components/linked-cases-table/linked-cases-from-table.component';
 import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.component';
+import { ReadLinkedCasesComponent } from './components/read-linked-cases.component';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 
 @NgModule({
@@ -39,12 +40,14 @@ import { CommonDataService } from '../../../services/common-data-service/common-
     BeforeYouStartComponent,
     LinkCasesComponent,
     CheckYourAnswersComponent,
+    ReadLinkedCasesComponent,
     WriteLinkedCasesComponent,
     UnLinkCasesComponent
   ],
   exports: [
     ReadCaseLinkFieldComponent,
     WriteCaseLinkFieldComponent,
+    ReadLinkedCasesComponent,
     LinkedCasesToTableComponent,
     LinkedCasesFromTableComponent,
     WriteLinkedCasesComponent
