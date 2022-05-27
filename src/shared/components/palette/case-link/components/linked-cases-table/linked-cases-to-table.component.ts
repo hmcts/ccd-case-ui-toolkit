@@ -52,9 +52,10 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    // TODO: to be removed once tested the ticket 5640
+    // TODO: to be removed once tested the ticket 5640 and same on the test scope as well
     if (this.router.url.indexOf('?error') > -1) {
       this.notifyAPIFailure.emit(true);
+      return;
     }
     this.caseId = this.route.snapshot.data.case.case_id;
     this.commonDataService.getRefData().subscribe({

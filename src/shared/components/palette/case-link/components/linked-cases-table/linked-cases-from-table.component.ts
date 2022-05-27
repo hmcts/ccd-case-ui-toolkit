@@ -36,14 +36,14 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private readonly casesService: CasesService) {}
-    
+
     public ngAfterViewInit(): void {
       const labelField = document.getElementsByClassName('case-viewer-label');
       if (labelField && labelField.length) {
         labelField[0].replaceWith('');
       }
     }
-    
+
     public ngOnInit(): void {
       this.fetchPageData();
           // TODO: to be removed once tested the ticket 5640

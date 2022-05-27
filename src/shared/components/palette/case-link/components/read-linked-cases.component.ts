@@ -26,7 +26,7 @@ export class ReadLinkedCasesComponent {
   }
 
   getFailureNotification(evt) {
-    const errorMessage = "There has been a system error and your request could not be processed."
+    const errorMessage = 'There has been a system error and your request could not be processed.';
     this.serverError = {
       id: 'backendError', message: errorMessage
     };
