@@ -9,7 +9,7 @@ import { PipesModule } from '../../../../../pipes/pipes.module';
 import createSpyObj = jasmine.createSpyObj;
 import { ActivatedRoute, Router } from '@angular/router';
 
-fdescribe('LinkCasesFromTableComponent', () => {
+describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
