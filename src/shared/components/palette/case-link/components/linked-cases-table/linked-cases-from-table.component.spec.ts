@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, getTestBed, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -7,13 +7,19 @@ import { LinkedCasesFromTableComponent } from './linked-cases-from-table.compone
 import { PipesModule } from '../../../../../pipes/pipes.module';
 
 import createSpyObj = jasmine.createSpyObj;
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
   let searchService: any;
+
+  let mockRouter: any;
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate'),
+    url: ''
+  };
 
   beforeEach(async(() => {
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses', 'getLinkedCases']);
@@ -28,6 +34,7 @@ describe('LinkCasesFromTableComponent', () => {
           provide: ActivatedRoute,
           useValue: {snapshot: {data: {case: {case_id: '123'}}}}
         },
+        { provide: Router, useValue: mockRouter },
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService }
       ],
@@ -104,5 +111,24 @@ describe('LinkCasesFromTableComponent', () => {
     expect(component.getLinkedCasesResponse.linkedCases).not.toBeNull();
     const tableRows = document.getElementsByName('tr');
     expect(tableRows.length).not.toBeNull();
+  });
+
+  it('should render the failure panel when api returns non 200', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate'),
+      url: '?error'
+    };
+    mockRouter.url = '?error';
+    const injector = getTestBed();
+    const router = injector.get(Router);
+    router.url = '=?error';
+    TestBed.overrideProvider(Router, {useValue: mockRouter})
+    TestBed.compileComponents();
+    fixture = TestBed.createComponent(LinkedCasesFromTableComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+    spyOn(component.notifyAPIFailure, 'emit');
+    fixture.detectChanges();
+    expect(component.notifyAPIFailure.emit).toHaveBeenCalledWith(true);
   });
 });

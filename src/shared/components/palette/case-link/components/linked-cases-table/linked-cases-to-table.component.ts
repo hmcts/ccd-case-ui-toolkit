@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseField } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
 import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
@@ -25,6 +25,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   @Input()
   caseField: CaseField;
 
+  @Output()
+  public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
+
   public tableHeading = 'Linked cases';
   public tableSubHeading = 'This case is linked to';
 
@@ -38,19 +41,26 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   constructor(
     private commonDataService: CommonDataService,
     private route: ActivatedRoute,
+    private router: Router,
     private readonly searchService: SearchService) {}
 
-  ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');
     if (labelField && labelField.length) {
       labelField[0].replaceWith('')
     }
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    // TODO: to be removed once tested the ticket 5640 and same on the test scope as well
+    if (this.router.url.indexOf('?error') > -1) {
+      this.notifyAPIFailure.emit(true);
+      return;
+    }
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.commonDataService.getRefData().subscribe(reasons => {
-      this.linkedCaseReasons = reasons;
+    this.commonDataService.getRefData().subscribe({
+      next: reasons => this.linkedCaseReasons = reasons,
+      error: error => this.notifyAPIFailure.emit(true)
     })
     this.getAllLinkedCaseInformation();
   }
@@ -100,7 +110,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
         });
         this.isLoaded = true;
-      });
+      },
+      err => this.notifyAPIFailure.emit(true)
+      );
     }
   }
 
