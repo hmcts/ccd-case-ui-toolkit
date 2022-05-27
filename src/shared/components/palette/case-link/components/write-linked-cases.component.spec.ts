@@ -110,33 +110,33 @@ describe('WriteLinkedCasesComponent', () => {
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
     expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
-    expect(component.isAtFinalState()).toBe(false);
+    expect(component.isAtFinalPage()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
   });
 
   it('should isAtFinalState return correct state', () => {
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
-    expect(component.isAtFinalState()).toEqual(true);
+    expect(component.isAtFinalPage()).toEqual(true);
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
-    expect(component.isAtFinalState()).toEqual(false);
+    expect(component.isAtFinalPage()).toEqual(false);
   });
 
   it('should proceedToNextState navigate to correct page', () => {
     spyOn(component.formGroup, 'updateValueAndValidity');
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
-    component.proceedToNextState();
+    component.proceedToNextPage();
     expect(component.formGroup.updateValueAndValidity).not.toHaveBeenCalled();
     // expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
-    component.proceedToNextState();
+    component.proceedToNextPage();
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
   });
 
   it('should isAtFinalState return correct value', () => {
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
-    expect(component.isAtFinalState()).toBe(false);
+    expect(component.isAtFinalPage()).toBe(false);
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
-    expect(component.isAtFinalState()).toBe(true);
+    expect(component.isAtFinalPage()).toBe(true);
   });
 
   it('should getNextPage return correct page', () => {
