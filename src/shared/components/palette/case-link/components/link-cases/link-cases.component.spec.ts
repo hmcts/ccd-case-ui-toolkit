@@ -5,7 +5,7 @@ import { of, throwError } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkCaseReason } from '../../domain';
-import { LinkedCaseProposalEnum } from '../../enums';
+import { LinkedCasesErrorMessages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkCasesComponent } from './link-cases.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -131,7 +131,7 @@ describe('LinkCasesComponent', () => {
   it('should check submitCaseInfo', () => {
     casesService.getCaseViewV2.and.returnValue(throwError({}));
     component.submitCaseInfo();
-    expect(component.caseNumberError).toBe(LinkedCaseProposalEnum.CaseNumberError);
+    expect(component.caseNumberError).toBe(LinkedCasesErrorMessages.CaseNumberError);
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     component.submitCaseInfo();
@@ -161,7 +161,7 @@ describe('LinkCasesComponent', () => {
     casesService.getCaseViewV2.and.returnValue(throwError({}));
     component.getCaseInfo();
     expect(casesService.getCaseViewV2).toHaveBeenCalled();
-    expect(component.caseNumberError).toBe(LinkedCaseProposalEnum.CaseCheckAgainError);
+    expect(component.caseNumberError).toBe(LinkedCasesErrorMessages.CaseCheckAgainError);
   });
 
   it('should check getSelectedCaseReasons', () => {
@@ -170,7 +170,7 @@ describe('LinkCasesComponent', () => {
 
   it('should check onNext', () => {
     component.onNext();
-    expect(component.noSelectedCaseError).toBe(LinkedCaseProposalEnum.CaseSelectionError);
+    expect(component.noSelectedCaseError).toBe(LinkedCasesErrorMessages.CaseSelectionError);
   });
 
   it('should check isCaseSelected', () => {
@@ -183,9 +183,9 @@ describe('LinkCasesComponent', () => {
     component.selectedCases = selectedCasesInfo;
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     component.showErrorInfo();
-    expect(component.caseSelectionError).toBe(LinkedCaseProposalEnum.CaseProposedError);
+    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
     (component as any).linkedCasesService.preLinkedCases = selectedCasesInfo;
     component.showErrorInfo();
-    expect(component.caseSelectionError).toBe(LinkedCaseProposalEnum.CasesLinkedError);
+    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CasesLinkedError);
   });
 });
