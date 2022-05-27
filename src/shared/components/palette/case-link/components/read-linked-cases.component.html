@@ -8,7 +8,7 @@
     <div class="govuk-main-wrapper">
       <p class="govuk-body">{{serverError.message}}</p>
       <span class="govuk-body align-left">
-          <a [href]="reloadCurrentRoute()"
+          <a href="javascript:void(0)" (click)="reloadCurrentRoute()"
              id="reload-linked-cases-tab"
              class="govuk-link">Reload the Linked cases tab</a>
         </span>

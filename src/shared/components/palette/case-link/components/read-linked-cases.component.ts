@@ -17,12 +17,12 @@ export class ReadLinkedCasesComponent {
   constructor(private router: Router) {}
 
   reloadCurrentRoute() {
-    this.reload = true;
     const currentUrl = this.router.url;
-    // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    // this.router.onSameUrlNavigation = 'reload';
-    // this.router.navigate([currentUrl]);
-    return currentUrl;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl], {
+      queryParams: {refresh: new Date().getTime()}
+   });
   }
 
   getFailureNotification(evt) {
