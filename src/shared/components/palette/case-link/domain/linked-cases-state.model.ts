@@ -9,5 +9,5 @@ export interface LinkedCasesState {
 
 export interface LinkedCasesError {
   componentId: string;
-  errorMessage: string
+  errorMessage: string;
 }

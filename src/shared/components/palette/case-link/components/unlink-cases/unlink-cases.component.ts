@@ -26,8 +26,7 @@ export class UnLinkCasesComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder,
     private readonly casesService: CasesService,
-    private readonly linkedCasesService: LinkedCasesService,
-    private readonly validatorsUtils: ValidatorsUtils) {
+    private readonly linkedCasesService: LinkedCasesService) {
   }
 
   public ngOnInit(): void {
@@ -72,6 +71,7 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public onChange(caseSelected: any): void {
+    this.resetErrorMessages();
     const selectedCase = this.linkedCases.find(linkedCase => linkedCase.caseReference === caseSelected.value);
     if (selectedCase) {
       selectedCase.unlink = caseSelected.checked ? true : false;
@@ -79,6 +79,7 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public onNext(): void {
+    this.resetErrorMessages();
     let navigateToNextPage = true;
     const casesMarkedToUnlink = this.linkedCases.find(linkedCase => linkedCase.unlink && linkedCase.unlink === true);
     if (!casesMarkedToUnlink) {
@@ -96,5 +97,10 @@ export class UnLinkCasesComponent implements OnInit {
       errorMessages: this.errorMessages,
       navigateToNextPage: navigateToNextPage
     });
+  }
+
+  public resetErrorMessages(): void {
+    this.errorMessages = [];
+    this.unlinkErrorMessage = null;
   }
 }
