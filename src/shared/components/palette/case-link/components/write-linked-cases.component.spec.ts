@@ -199,7 +199,7 @@ describe('WriteLinkedCasesComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
-    expect(component.linkedCasesPage).toBe(LinkedCasesPages.NO_LINKED_CASES);
+    expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
     expect(component.isAtFinalPage()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
   });

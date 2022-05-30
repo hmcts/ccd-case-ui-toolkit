@@ -103,7 +103,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         let linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
         // Store linked cases in linked cases service
         this.linkedCasesService.linkedCases = linkedCases;
-        linkedCases = [];
         // Initialise the first page to display
         this.linkedCasesPage = linkedCases && linkedCases.length > 0
           ? LinkedCasesPages.BEFORE_YOU_START
