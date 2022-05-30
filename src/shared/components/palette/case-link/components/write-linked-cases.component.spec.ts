@@ -14,20 +14,24 @@ import { FormValueService } from '../../../../services/form/form-value.service';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
 import { WizardPage } from '../../../case-editor/domain/wizard-page.model';
 import { Wizard } from '../../../case-editor/domain/wizard.model';
+import { CasesService } from '../../../case-editor/services/cases.service';
 import { PageValidationService } from '../../../case-editor/services/page-validation.service';
-import { LinkedCasesState } from '../domain';
+import { CaseLink, LinkedCasesState } from '../domain';
 import { LinkedCasesPages } from '../enums';
 import { LinkedCasesService } from '../services';
 import { WriteLinkedCasesComponent } from './write-linked-cases.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('WriteLinkedCasesComponent', () => {
+fdescribe('WriteLinkedCasesComponent', () => {
   let component: WriteLinkedCasesComponent;
   let fixture: ComponentFixture<WriteLinkedCasesComponent>;
   let caseEditPageComponent: CaseEditPageComponent;
   let caseEditComponentStub: any;
+  let casesService: any;
+  let linkedCasesService: any;
   let dialog: any;
   let route: any;
+
   let router = {
     url: 'linkCases'
   }
@@ -74,6 +78,89 @@ describe('WriteLinkedCasesComponent', () => {
   caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
     route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService);
 
+  const caseInfo = {
+    case_id: '1682374819203471',
+    case_type: {
+      name: 'SSCS type',
+      jurisdiction: { name: '' }
+    },
+    state: { name: 'With FTA' },
+    tabs: [
+      {
+        id: 'linked_cases_sscs',
+        fields: [
+          {
+            value: [
+              {
+                caseReference: '1652112127295261',
+                modified_date_time: '2022-05-10',
+                caseType: 'Benefit_SCSS',
+                reasons: [
+                  {
+                    reasonCode: 'bail',
+                    OtherDescription: ''
+                  }
+                ]
+              },
+              {
+                caseReference: '1652111610080172',
+                modified_date_time: '2022-05-10',
+                caseType: 'Benefit_SCSS',
+                reasons: [
+                  {
+                    reasonCode: 'consolidated',
+                    OtherDescription: ''
+                  }
+                ]
+              },
+              {
+                caseReference: '1652111179220086',
+                modified_date_time: '2022-05-10',
+                caseType: 'Benefit_SCSS',
+                reasons: [
+                  {
+                    reasonCode: 'progressed',
+                    OtherDescription: ''
+                  },
+                  {
+                    reasonCode: 'familial',
+                    OtherDescription: ''
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  const linkedCases: CaseLink[] = [
+    {
+      caseReference: '1682374819203471',
+      reasons: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    },
+    {
+      caseReference: '1682897456391875',
+      reasons: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    }
+  ];
+
+  linkedCasesService = {
+    caseId: '1682374819203471',
+    linkedCases: linkedCases
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -87,7 +174,8 @@ describe('WriteLinkedCasesComponent', () => {
       providers: [
         { provide: Router, useValue: router },
         { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
-        LinkedCasesService
+        { provide: CasesService, useValue: casesService },
+        { provide: LinkedCasesService, useValue: linkedCasesService }
       ]
     })
     .compileComponents();
@@ -95,6 +183,7 @@ describe('WriteLinkedCasesComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteLinkedCasesComponent);
+    casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     component = fixture.componentInstance;
     spyOn(caseEditPageComponent, 'getCaseId').and.returnValue(of('1111222233334444'));
     component.caseEditPageComponent = caseEditPageComponent;

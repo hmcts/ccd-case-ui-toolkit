@@ -5,7 +5,6 @@ import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
-import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
   selector: 'ccd-unlink-cases',
