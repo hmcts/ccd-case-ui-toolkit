@@ -237,7 +237,9 @@ describe('ReadComplexFieldComponent', () => {
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
-      value: VALUE
+      value: VALUE,
+
+      isDynamic: function() {}
     });
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;
