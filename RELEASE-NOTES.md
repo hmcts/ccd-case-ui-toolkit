@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.12.1-EUI-2831-multi-select
+**EUI-281** Multiselect dynamic list feature
+
 ### Version 4.12.1-EUI-5682-complex-table-collection-1
 **EUI-5682** Bug fix for the complex collection table view
 
