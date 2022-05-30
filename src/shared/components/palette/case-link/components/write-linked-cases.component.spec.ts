@@ -22,7 +22,7 @@ import { LinkedCasesService } from '../services';
 import { WriteLinkedCasesComponent } from './write-linked-cases.component';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('WriteLinkedCasesComponent', () => {
+describe('WriteLinkedCasesComponent', () => {
   let component: WriteLinkedCasesComponent;
   let fixture: ComponentFixture<WriteLinkedCasesComponent>;
   let caseEditPageComponent: CaseEditPageComponent;
@@ -162,6 +162,7 @@ fdescribe('WriteLinkedCasesComponent', () => {
   };
 
   beforeEach(async(() => {
+    casesService = createSpyObj('CasesService', ['getCaseViewV2']);
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -198,7 +199,7 @@ fdescribe('WriteLinkedCasesComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
-    expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
+    expect(component.linkedCasesPage).toBe(LinkedCasesPages.NO_LINKED_CASES);
     expect(component.isAtFinalPage()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
   });

@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.17.10-linked-cases-unlink-journey-unlink-cases
+### Version 4.17.11-linked-cases-unlink-journey-error-page
 **EUI-5565** Add unlink cases journey to linked cases
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
