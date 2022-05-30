@@ -10,7 +10,7 @@ export class ConvertHrefToRouterService {
   constructor(private readonly router: Router) {}
 
   updateHrefLink(content: string): void {
-    this.hrefMarkdownLinkContent.next(content)
+    this.hrefMarkdownLinkContent.next(content);
   }
 
   getHrefMarkdownLinkContent(): Observable<string> {
@@ -18,9 +18,7 @@ export class ConvertHrefToRouterService {
   }
 
   callAngularRouter(hrefMarkdownLinkContent): void {
-
-    const url = hrefMarkdownLinkContent.substring(hrefMarkdownLinkContent.indexOf('(') + 1, hrefMarkdownLinkContent.indexOf(')'));
-    const urls = url.split('?');
+    const urls = hrefMarkdownLinkContent.split('?');
 
     this.router.navigate([urls[0]], {
       queryParams: {

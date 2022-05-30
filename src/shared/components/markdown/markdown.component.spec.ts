@@ -74,9 +74,11 @@ describe('MarkdownComponent', () => {
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
 
-  it('should call updateHrefLink', () => {
+  it('should not call updateHrefLink', () => {
     component.markdownUseHrefAsRouterLink = true;
-    component.onMarkdownClick();
-    expect(convertHrefToRouterService.updateHrefLink).toHaveBeenCalled();
+    const event = new MouseEvent('mousedown', {clientX: 50, clientY: 150});
+    component.onMarkdownClick(event);
+    fixture.detectChanges();
+    expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
   });
 });

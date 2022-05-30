@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ConvertHrefToRouterService } from '../case-editor/services';
 
 @Component({
@@ -17,11 +17,18 @@ export class MarkdownComponent implements OnInit {
     this.content = this.content.replace(/  \n/g, '<br>');
   }
 
-  public onMarkdownClick() {
-    // if (this.markdownUseHrefAsRouterLink === true) {
-    if (this.markdownUseHrefAsRouterLink === true && this.content.indexOf('href') < 0 && this.content.indexOf('http') < 0) {
-      this.convertHrefToRouterService.updateHrefLink(this.content);
-      return false;
+  @HostListener('click', ['$event'])
+  onMarkdownClick(event: MouseEvent) {
+    // If we don't have an anchor tag, we don't need to do anything.
+    if (event.target instanceof HTMLAnchorElement === false) {
+      return;
+    }
+
+    const targetPath = (<HTMLAnchorElement>event.target).pathname;
+    if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
+      // Prevent page from reloading
+      event.preventDefault();
+      this.convertHrefToRouterService.updateHrefLink(targetPath);
     }
   }
 }
