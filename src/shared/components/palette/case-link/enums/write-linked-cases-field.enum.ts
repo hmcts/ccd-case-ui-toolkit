@@ -1,5 +1,6 @@
 export enum LinkedCasesPages {
   BEFORE_YOU_START,
+  NO_LINKED_CASES,
   LINK_CASE,
   UNLINK_CASE,
   CHECK_YOUR_ANSWERS

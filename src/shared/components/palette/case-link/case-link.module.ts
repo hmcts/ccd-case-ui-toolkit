@@ -17,6 +17,7 @@ import { LinkedCasesFromTableComponent } from './components/linked-cases-table/l
 import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.component';
 import { ReadLinkedCasesComponent } from './components/read-linked-cases.component';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
+import { NoLinkedCasesComponent } from './components/no-linked-cases/no-linked-cases.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { CommonDataService } from '../../../services/common-data-service/common-
     CheckYourAnswersComponent,
     ReadLinkedCasesComponent,
     WriteLinkedCasesComponent,
-    UnLinkCasesComponent
+    UnLinkCasesComponent,
+    NoLinkedCasesComponent
   ],
   exports: [
     ReadCaseLinkFieldComponent,

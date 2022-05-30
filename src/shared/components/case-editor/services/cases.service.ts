@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
-
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import {
@@ -11,20 +10,19 @@ import {
   CaseEventTrigger,
   CasePrintDocument,
   CaseView,
-  ChallengedAccessRequest,
-  SpecificAccessRequest,
-  Draft,
+  ChallengedAccessRequest, Draft,
   RoleAssignmentResponse,
   RoleCategory,
-  RoleRequestPayload
+  RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { LinkedCasesResponse, LinkCaseReason } from '../../palette/case-link/domain/linked-cases.model';
+import { LinkCaseReason, LinkedCasesResponse } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
+
 @Injectable()
 export class CasesService {
   // Internal (UI) API
@@ -91,16 +89,23 @@ export class CasesService {
   }
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
-    const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
+    let url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
       .set('Content-Type', 'application/json');
 
     const loadingToken = this.loadingService.register();
+
+    if (caseId === '1652161372854637') {
+      url = 'assets/getCaseNoLinkedCases.json';
+    } else {
+      url = 'assets/getCase.json';
+    }
+
     // return Observable.of(mockGetCase)
     return this.http
-      .get('assets/getCase.json', { headers, observe: 'body' })
+      .get(url, { headers, observe: 'body' })
       // .get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
