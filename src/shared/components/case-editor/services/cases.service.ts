@@ -78,8 +78,8 @@ export class CasesService {
   }
 
   getCaseView(jurisdictionId: string,
-              caseTypeId: string,
-              caseId: string): Observable<CaseView> {
+    caseTypeId: string,
+    caseId: string): Observable<CaseView> {
     const url = this.appConfig.getApiUrl()
       + `/caseworkers/:uid`
       + `/jurisdictions/${jurisdictionId}`
@@ -107,7 +107,7 @@ export class CasesService {
 
     const loadingToken = this.loadingService.register();
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -156,7 +156,7 @@ export class CasesService {
 
     if (jsonBlock[key]) {
       return jsonBlock[key];
-    } else  {
+    } else {
       for (const elementKey in jsonBlock) {
         if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
           return this.getDynamicListValue(jsonBlock[elementKey], key);
@@ -167,11 +167,10 @@ export class CasesService {
     return null;
   }
 
-
   getEventTrigger(caseTypeId: string,
-                  eventTriggerId: string,
-                  caseId?: string,
-                  ignoreWarning?: string): Observable<CaseEventTrigger> {
+    eventTriggerId: string,
+    caseId?: string,
+    ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
     const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
@@ -189,7 +188,7 @@ export class CasesService {
     }
 
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(body => {
           return FieldsUtils.handleNestedDynamicLists(body);
@@ -213,7 +212,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
@@ -234,7 +233,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -258,7 +257,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
@@ -279,7 +278,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(body => body.documentResources),
         catchError(error => {
@@ -290,9 +289,9 @@ export class CasesService {
   }
 
   private buildEventTriggerUrl(caseTypeId: string,
-                               eventTriggerId: string,
-                               caseId?: string,
-                               ignoreWarning?: string): string {
+    eventTriggerId: string,
+    caseId?: string,
+    ignoreWarning?: string): string {
     let url = this.appConfig.getCaseDataUrl() + `/internal`;
 
     if (Draft.isDraft(caseId)) {
@@ -378,14 +377,14 @@ export class CasesService {
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
-                                                              id,
-                                                              roleName,
-                                                              roleCategory,
-                                                              'CHALLENGED',
-                                                              caseId,
-                                                              request,
-                                                              beginTime,
-                                                              endTime);
+      id,
+      roleName,
+      roleCategory,
+      'CHALLENGED',
+      caseId,
+      request,
+      beginTime,
+      endTime);
 
     return this.http.post(`/api/challenged-access-request`, payload);
   }
@@ -404,7 +403,7 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
-                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+      roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
     payload.roleRequest = {
       ...payload.roleRequest,
