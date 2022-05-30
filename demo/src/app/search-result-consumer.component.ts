@@ -112,7 +112,6 @@ export class SearchResultConsumerComponent implements OnInit {
                     'label': 'Text Field',
                     'order': 1,
                     'case_field_id': 'TextField',
-                    'display_context_parameter': '',
                     'case_field_type': {
                         'id': 'Text',
                         'type': 'Text',
@@ -127,7 +126,6 @@ export class SearchResultConsumerComponent implements OnInit {
                         'label': 'Date ',
                         'order': 1,
                         'case_field_id': 'DateField',
-                        'display_context_parameter': '#DATETIMEDISPLAY(YYYY-MM)',
                         'case_field_type': {
                             'id': 'dateField',
                             'type': 'Date',
@@ -165,7 +163,6 @@ export class SearchResultConsumerComponent implements OnInit {
                 'label': 'Text Field',
                 'order': 1,
                 'case_field_id': 'TextField',
-                'display_context_parameter': '',
                 'case_field_type': {
                     'id': 'Text',
                     'type': 'Text',
