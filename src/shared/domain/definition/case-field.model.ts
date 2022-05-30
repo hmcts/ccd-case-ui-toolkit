@@ -55,10 +55,8 @@ export class CaseField implements Orderable {
     if (this.isDynamic()) {
       if (value && value instanceof Object && value.list_items) {
         this._list_items = value.list_items;
-      }
-      
-      else if (!this._list_items || this._list_items.length === 0) {
-        //Extract the list items from the current value if that's the only place they exist.
+      } else if (!this._list_items || this._list_items.length === 0) {
+        // Extract the list items from the current value if that's the only place they exist.
         this._list_items = this.list_items;
         if (!value || !value.value) {
           value = null;
@@ -144,7 +142,9 @@ export class CaseField implements Orderable {
 
   @Expose()
   isDynamic(): boolean {
-    if (!this.field_type) return false;
+    if (!this.field_type) {
+      return false;
+    }
 
     const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicMultiSelectList', 'DynamicMultiSelectList'];
 

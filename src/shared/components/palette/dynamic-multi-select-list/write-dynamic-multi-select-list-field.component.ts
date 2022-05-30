@@ -45,7 +45,9 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
   onCheckChange(event: Event) {
     const target = event.target as HTMLInputElement;
 
-    if (!target || !target.value) return;
+    if (!target || !target.value) {
+      return;
+    };
 
     const selectedListItem: object = this.getValueListItem(target.value);
 

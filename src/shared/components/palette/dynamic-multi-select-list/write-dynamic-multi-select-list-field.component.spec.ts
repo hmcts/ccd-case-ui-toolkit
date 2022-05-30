@@ -86,9 +86,9 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     describe('buildElementId()', () => {
       it('should produce a composite id string', () => {
         const name = 'str';
-  
+
         const result = component.buildElementId(name);
-  
+
         expect(result).toEqual('DynamicMultiSelectList-str');
       });
     });
@@ -121,17 +121,6 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       VALUES.forEach(value => {
         expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value.code)).toBeTruthy();
       });
-    });
-
-    it('should remove option from values when unselected', () => {
-      const option1 = de.query($OPTION_1).nativeElement;
-      option1.checked ? option1.click() : option1.checked;
-
-      fixture.detectChanges();
-
-      expect(option1.checked).toBeFalsy();
-      expect(component.checkboxes.controls.length).toEqual(1);
-      expect(component.checkboxes.controls[0].value).not.toEqual(LIST_ITEMS[0].code);
     });
   });
 

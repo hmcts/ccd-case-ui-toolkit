@@ -7,7 +7,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   styleUrls: ['./read-dynamic-multi-select-list-field.component.scss']
 })
 export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadComponent implements OnInit {
-  
+
   ngOnInit() {
     /**
      *

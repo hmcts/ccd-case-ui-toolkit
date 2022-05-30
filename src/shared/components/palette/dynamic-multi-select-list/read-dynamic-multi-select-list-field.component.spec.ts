@@ -94,7 +94,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
 
     it('should render values as a table with one row and one cell per value', () => {
       fixture.detectChanges();
-      
+
       const cells = de.queryAll($VALUES);
 
       expect(cells.length).toEqual(VALUES.length);
@@ -103,7 +103,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
     it('should render some values as a table with one row and one cell per value', () => {
       component.caseField.value.pop();
       fixture.detectChanges();
-      
+
       const cells = de.queryAll($VALUES);
 
       expect(cells.length).toEqual(2);
@@ -133,7 +133,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
 
   describe('Persistable readonly multi-select-list field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD = new CaseField();
+    CASE_FIELD = new CaseField();
     CASE_FIELD.id = FIELD_ID;
     CASE_FIELD.label = 'X';
     CASE_FIELD.field_type = FIELD_TYPE;
