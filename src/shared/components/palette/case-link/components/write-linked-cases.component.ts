@@ -25,6 +25,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
+  public isLinkedCasesJourney: boolean;
 
   constructor(private readonly router: Router,
     private readonly casesService: CasesService,
@@ -42,6 +43,9 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         return null;
       }
     }), true) as FormGroup;
+
+    // Figure out the journey, linked cases or manage linked cases
+    this.isLinkedCasesJourney = this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES);
     // Store caseId in LinkedCasesService, to be used by child components
     this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
     // Get linked cases
@@ -64,7 +68,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public setContinueButtonValidationErrorMessage(): void {
-    const errorMessage = this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES)
+    const errorMessage = this.isLinkedCasesJourney
       ? LinkedCasesErrorMessages.LinkeCasesNavigationError
       : LinkedCasesErrorMessages.UnlinkCasesNavigationError;
     this.caseEditPageComponent.caseLinkError = {
@@ -89,7 +93,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public getNextPage(linkedCasesState: LinkedCasesState): number {
     if ((this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) ||
         (linkedCasesState.currentLinkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS && linkedCasesState.navigateToPreviousPage)) {
-          return this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES)
+          return this.isLinkedCasesJourney
             ? LinkedCasesPages.LINK_CASE
             : LinkedCasesPages.UNLINK_CASE;
     }
@@ -104,7 +108,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         // Store linked cases in linked cases service
         this.linkedCasesService.linkedCases = linkedCases;
         // Initialise the first page to display
-        this.linkedCasesPage = linkedCases && linkedCases.length > 0
+        this.linkedCasesPage = this.isLinkedCasesJourney || (linkedCases && linkedCases.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
           : LinkedCasesPages.NO_LINKED_CASES;
       }

@@ -15,9 +15,9 @@
     <tbody class="govuk-table__body">
       <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse.linkedCases">
         <td class="govuk-table__cell case-table-column">
-          <p class="govuk-body"><a href="cases/case-details/{{ case.caseReference }}"><span
-                class="text-16">{{case.caseReference | ccdCaseReference}} <br>
-                {{case.caseNameHmctsInternal}}</span></a></p>
+          <p class="govuk-body"><a target="_blank" href="cases/case-details/{{case.caseReference}}"><span
+            class="text-16">{{case.caseReference | ccdCaseReference}} <br>
+            {{case.caseNameHmctsInternal}}</span></a></p>
         </td>
         <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.ccdCaseType}}</span></td>
         <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.ccdJurisdiction}}</span></td>
