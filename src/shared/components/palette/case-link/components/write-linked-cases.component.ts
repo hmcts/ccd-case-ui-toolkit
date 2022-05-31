@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CaseView } from '../../../../domain/case-view';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
+import { CasesService } from '../../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../../base-field';
-import { LinkedCasesState } from '../domain';
+import { CaseLink, LinkedCasesState } from '../domain';
 import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from '../enums';
 import { LinkedCasesService } from '../services';
 
@@ -13,6 +15,8 @@ import { LinkedCasesService } from '../services';
 })
 export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent implements OnInit {
 
+  private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
+
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
@@ -20,8 +24,10 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
+  public linkedCases: CaseLink[] = [];
 
   constructor(private readonly router: Router,
+    private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService) {
     super();
   }
@@ -36,10 +42,10 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         return null;
       }
     }), true) as FormGroup;
-    // Initialise the first page to display
-    this.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     // Store caseId in LinkedCasesService, to be used by child components
     this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
+    // Get linked cases
+    this.getLinkedCases();
     // Initialise the error to be displayed when clicked on Continue button
     this.setContinueButtonValidationErrorMessage();
   }
@@ -88,6 +94,21 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
             : LinkedCasesPages.UNLINK_CASE;
     }
     return LinkedCasesPages.CHECK_YOUR_ANSWERS;
+  }
+
+  public getLinkedCases(): void {
+    this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
+      const linkedCasesTab = caseView.tabs.find(tab => tab.id === WriteLinkedCasesComponent.LINKED_CASES_TAB_ID);
+      if (linkedCasesTab) {
+        let linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
+        // Store linked cases in linked cases service
+        this.linkedCasesService.linkedCases = linkedCases;
+        // Initialise the first page to display
+        this.linkedCasesPage = linkedCases && linkedCases.length > 0
+          ? LinkedCasesPages.BEFORE_YOU_START
+          : LinkedCasesPages.NO_LINKED_CASES;
+      }
+    });
   }
 
   public navigateToErrorElement(elementId: string): void {

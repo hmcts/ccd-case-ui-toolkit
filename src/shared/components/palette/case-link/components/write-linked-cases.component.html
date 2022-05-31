@@ -4,6 +4,10 @@
       <ccd-linked-cases-before-you-start
         (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-before-you-start>
     </ng-container>
+    <ng-container *ngSwitchCase="linkedCasesPages.NO_LINKED_CASES">
+      <ccd-no-linked-cases
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-no-linked-cases>
+    </ng-container>
     <ng-container *ngSwitchCase="linkedCasesPages.LINK_CASE">
       <ccd-link-cases
         (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-link-cases>
