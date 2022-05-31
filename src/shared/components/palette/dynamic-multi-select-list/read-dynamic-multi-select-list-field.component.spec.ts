@@ -92,23 +92,6 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('should render values as a table with one row and one cell per value', () => {
-      fixture.detectChanges();
-
-      const cells = de.queryAll($VALUES);
-
-      expect(cells.length).toEqual(VALUES.length);
-    });
-
-    it('should render some values as a table with one row and one cell per value', () => {
-      component.caseField.value.pop();
-      fixture.detectChanges();
-
-      const cells = de.queryAll($VALUES);
-
-      expect(cells.length).toEqual(2);
-    });
-
     it('should NOT render anything when value is undefined', () => {
       component.caseField.value = undefined;
       fixture.detectChanges();
