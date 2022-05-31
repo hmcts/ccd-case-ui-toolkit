@@ -19,11 +19,19 @@ export class ConvertHrefToRouterService {
 
   callAngularRouter(hrefMarkdownLinkContent): void {
     const urls = hrefMarkdownLinkContent.split('?');
+    const queryParams = urls[1];
+    let queryParamObj = {};
+
+    if (urls[1]) {
+      const queryParam = queryParams.split('&');
+      for (let i = 0; i < queryParam.length; i++) {
+        let param = queryParam[i].split('=');
+        queryParamObj[param[0]] = param[1]
+      }
+    }
 
     this.router.navigate([urls[0]], {
-      queryParams: {
-        tid: urls[1] ? urls[1].split('=')[1] : ''
-      }
+      queryParams: queryParamObj ? queryParamObj : ''
     });
   }
 }

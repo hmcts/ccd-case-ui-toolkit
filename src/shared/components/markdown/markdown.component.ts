@@ -25,10 +25,12 @@ export class MarkdownComponent implements OnInit {
     }
 
     const targetPath = (<HTMLAnchorElement>event.target).pathname;
+    const search = (<HTMLAnchorElement>event.target).search;
+
     if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
       // Prevent page from reloading
       event.preventDefault();
-      this.convertHrefToRouterService.updateHrefLink(targetPath);
+      this.convertHrefToRouterService.updateHrefLink(targetPath + search);
     }
   }
 }
