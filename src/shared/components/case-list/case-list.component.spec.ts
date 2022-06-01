@@ -1,10 +1,11 @@
 import { formatDate } from '@angular/common';
-import { DebugElement } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { BrowserService } from '../../services';
 import { CaseListComponent, TableConfig } from './case-list.component';
+import { PaginatePipe, PaginationService } from 'ngx-pagination';
 
 describe('CaseListComponent', () => {
   const cases: any[] = [
@@ -53,8 +54,9 @@ describe('CaseListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ RouterModule ],
-      declarations: [ CaseListComponent ],
-      providers: [ BrowserService ]
+      declarations: [ CaseListComponent, PaginatePipe ],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [ PaginationService, BrowserService ]
     })
     .compileComponents();
   }));
@@ -264,6 +266,11 @@ describe('CaseListComponent', () => {
       expect(firstRow.children.length).toBe(tableConfig.columnConfigs.length);
       // Expecting first child to be a <td> element (as opposed to a <th> if it had been a checkbox selection)
       expect(firstRow.children[0].nativeElement.tagName).toBe('TD');
+    });
+
+    it('should emit correct page if go to page triggered', () => {
+      component.goToPage(2);
+      expect(component.currentPageNo).toBe(2);
     });
   });
 });
