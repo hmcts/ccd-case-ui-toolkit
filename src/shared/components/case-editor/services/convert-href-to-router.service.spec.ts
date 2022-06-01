@@ -35,15 +35,15 @@ describe('ConvertHrefToRouterService', () => {
   it('should call callAngularRouter() with multiple queryParams', async(() => {
     const hrefMarkdownLinkContent = '/role-access/allocate-role/allocate?caseId=1652-7000-9981-7227&roleCategory=JUDICIAL&jurisdiction=IA&tid=d8f01ae1-d51b-11ec-bd5d-2aeb959399b9';
     store.callAngularRouter(hrefMarkdownLinkContent);
-    expect(router.navigate).toHaveBeenCalledWith(['/role-access/allocate-role/allocate'], {queryParams: {caseId: "1652-7000-9981-7227",
-    roleCategory: "JUDICIAL",
-    jurisdiction: "IA",
-    tid: "d8f01ae1-d51b-11ec-bd5d-2aeb959399b9"}});
+    expect(router.navigate).toHaveBeenCalledWith(['/role-access/allocate-role/allocate'], {queryParams: {caseId: '1652-7000-9981-7227',
+    roleCategory: 'JUDICIAL',
+    jurisdiction: 'IA',
+    tid: 'd8f01ae1-d51b-11ec-bd5d-2aeb959399b9'}});
   }));
 
   it('should call callAngularRouter() with single queryParams', async(() => {
     const hrefMarkdownLinkContent = '/role-access/allocate-role/allocate?caseId=1652-7000-9981-7227';
     store.callAngularRouter(hrefMarkdownLinkContent);
-    expect(router.navigate).toHaveBeenCalledWith(['/role-access/allocate-role/allocate'], {queryParams: {caseId: "1652-7000-9981-7227"}});
+    expect(router.navigate).toHaveBeenCalledWith(['/role-access/allocate-role/allocate'], {queryParams: {caseId: '1652-7000-9981-7227'}});
   }));
 });

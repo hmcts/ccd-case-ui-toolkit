@@ -24,7 +24,7 @@ export class ConvertHrefToRouterService {
 
     if (queryParams) {
       const queryParam = queryParams.split('&');
-      if(queryParam.length > 0) {
+      if (queryParam.length > 0) {
         for (let i = 0; i < queryParam.length; i++) {
           let param = queryParam[i].split('=');
           queryParamObj[param[0]] = param[1]
