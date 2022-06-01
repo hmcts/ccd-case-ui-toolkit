@@ -553,6 +553,22 @@ describe('FieldsUtils', () => {
     });
   });
 
+  describe('isFlagsCaseField() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isFlagsCaseField(null)).toBe(false);
+    });
+
+    it('should return false if case field is not of type Flags', () => {
+      const caseField = aCaseField('flags', 'flags', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if case field is of type Flags', () => {
+      const caseField = aCaseField('flags', 'flags', 'Flags', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(true);
+    });
+  });
+
   describe('isFlagLauncherCaseField() function test', () => {
     it('should return false if case field is null', () => {
       expect(FieldsUtils.isFlagLauncherCaseField(null)).toBe(false);

@@ -5,7 +5,7 @@ import { AddCommentsErrorMessage, CaseFlagFieldState } from '../../enums';
 
 import { AddCommentsComponent } from './add-comments.component';
 
-describe('AddCommentsComponent', () => {
+xdescribe('AddCommentsComponent', () => {
   let component: AddCommentsComponent;
   let fixture: ComponentFixture<AddCommentsComponent>;
   let nextButton: any;

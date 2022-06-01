@@ -13,7 +13,7 @@
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagsInstance of filteredFlagsData; index as i">
           <input class="govuk-radios__input" id="flag-location-{{i}}" [name]="selectedLocationControlName"
-            type="radio" [value]="flagsInstance.partyName" [formControlName]="selectedLocationControlName"/>
+            type="radio" [value]="flagsInstance" [formControlName]="selectedLocationControlName"/>
           <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">{{flagsInstance.partyName}}</label>
         </div>
       </div>
