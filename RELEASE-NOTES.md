@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.2-create-case-flag-integration-with-check-your-answers
+**EUI-4852** First pass at integration with "Check your answers" stage of the main Case Event flow, and persisting a case flag
+
 ### Version 4.13.2-manage-case-flags-selection-page-validation
 **EUI-5190** Add validation to "Select case flag" page
 

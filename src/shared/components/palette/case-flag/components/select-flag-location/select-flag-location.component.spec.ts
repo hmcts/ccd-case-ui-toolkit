@@ -10,6 +10,7 @@ describe('SelectFlagLocationComponent', () => {
   let fixture: ComponentFixture<SelectFlagLocationComponent>;
   const flagsData = [
     {
+      flagsCaseFieldId: 'Party1Flags',
       partyName: 'Rose Bank',
       details: [
         {
@@ -33,6 +34,7 @@ describe('SelectFlagLocationComponent', () => {
       ] as FlagDetail[]
     },
     {
+      flagsCaseFieldId: 'Party2Flags',
       partyName: 'Tom Atin',
       details: [
         {
@@ -98,9 +100,9 @@ describe('SelectFlagLocationComponent', () => {
     // Cannot check a radio button input element's value directly (it is just "on"), so check it via the associated
     // FormControl when the button is clicked
     radioButtonElements[0].click();
-    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[0].partyName);
+    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[0]);
     radioButtonElements[1].click();
-    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[1].partyName);
+    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[1]);
     const radioButtonLabelElements = nativeElement.querySelectorAll('.govuk-radios__label');
     expect(radioButtonLabelElements.length).toBe(2);
     expect(radioButtonLabelElements[0].textContent).toEqual(flagsData[0].partyName);
@@ -116,7 +118,8 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
-      errorMessages: component.errorMessages
+      errorMessages: component.errorMessages,
+      selectedFlagsLocation: flagsData[0]
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -132,7 +135,8 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
-      errorMessages: component.errorMessages
+      errorMessages: component.errorMessages,
+      selectedFlagsLocation: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',

@@ -89,17 +89,20 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public onNext(): void {
     // Validate form
     this.validateForm();
-    // Return case flag field state, whether the selected flag type (if any) is a parent or not, error messages to the
-    // parent, "list of values" (if any), and flag code
+    // Return case flag field state, whether the selected flag type (if any) is a parent or not, error messages,
+    // flag name, path, hearing relevant indicator, code, and "list of values" (if any) to the parent
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: this.selectedFlagType ? this.selectedFlagType.isParent : null,
       errorMessages: this.errorMessages,
+      flagName: this.selectedFlagType ? this.selectedFlagType.name : null,
+      flagPath: this.selectedFlagType ? this.selectedFlagType.Path : null,
+      hearingRelevantFlag: this.selectedFlagType ? this.selectedFlagType.hearingRelevant : null,
+      flagCode: this.selectedFlagType ? this.selectedFlagType.flagCode : null,
       // Include the "list of values" (if any); currently applicable to language flag types
       listOfValues: this.selectedFlagType && this.selectedFlagType.listOfValues && this.selectedFlagType.listOfValues.length > 0
         ? this.selectedFlagType.listOfValues
-        : null,
-      flagCode: this.selectedFlagType.flagCode
+        : null
     });
     // Emit "flag comments optional" event if the user selects a flag type where comments are not mandatory
     if (this.selectedFlagType && !this.selectedFlagType.flagComment) {

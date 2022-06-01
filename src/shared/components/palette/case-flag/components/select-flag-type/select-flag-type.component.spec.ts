@@ -20,7 +20,7 @@ describe('SelectFlagTypeComponent', () => {
       flagComment: false,
       flagCode: 'CATGRY',
       isParent: true,
-      path: [''],
+      Path: [''],
       childFlags: [
         {
           name: 'Reasonable adjustment',
@@ -28,7 +28,7 @@ describe('SelectFlagTypeComponent', () => {
           flagComment: false,
           flagCode: 'CATGRY',
           isParent: true,
-          path: ['Party'],
+          Path: ['Party'],
           childFlags: [
             {
               name: 'I need help with forms',
@@ -36,7 +36,7 @@ describe('SelectFlagTypeComponent', () => {
               flagComment: false,
               flagCode: 'CATGRY',
               isParent: true,
-              path: ['Party', 'Reasonable adjustment'],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Guidance on how to complete forms',
@@ -44,7 +44,7 @@ describe('SelectFlagTypeComponent', () => {
                   flagComment: false,
                   flagCode: 'RA0017',
                   isParent: false,
-                  path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
                   childFlags: []
                 },
                 {
@@ -53,7 +53,7 @@ describe('SelectFlagTypeComponent', () => {
                   flagComment: false,
                   flagCode: 'RA0018',
                   isParent: false,
-                  path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
                   childFlags: []
                 },
                 {
@@ -62,7 +62,7 @@ describe('SelectFlagTypeComponent', () => {
                   flagComment: true,
                   flagCode: 'OT0001',
                   isParent: false,
-                  path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
                   childFlags: []
                 }
               ]
@@ -128,7 +128,7 @@ describe('SelectFlagTypeComponent', () => {
           flagComment: false,
           flagCode: 'PF0003',
           isParent: false,
-          path: ['Party'],
+          Path: ['Party'],
           childFlags: []
         },
         {
@@ -137,7 +137,7 @@ describe('SelectFlagTypeComponent', () => {
           flagComment: true,
           flagCode: 'OT0001',
           isParent: false,
-          path: ['Party'],
+          Path: ['Party'],
           childFlags: []
         }
       ]
@@ -209,10 +209,14 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: true,
-      errorMessages: [],
-      listOfValues: null,
-      flagCode: flagTypes[0].childFlags[0].flagCode
+      errorMessages: component.errorMessages,
+      flagName: flagTypes[0].childFlags[0].name,
+      flagPath: flagTypes[0].childFlags[0].Path,
+      hearingRelevantFlag: flagTypes[0].childFlags[0].hearingRelevant,
+      flagCode: flagTypes[0].childFlags[0].flagCode,
+      listOfValues: null
     });
+    expect(component.errorMessages.length).toBe(0);
   });
 
   it('should emit to parent if the validation succeeds and a non-parent flag type is selected', () => {
@@ -225,10 +229,14 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
-      errorMessages: [],
-      listOfValues: null,
-      flagCode: flagTypes[0].childFlags[1].flagCode
+      errorMessages: component.errorMessages,
+      flagName: flagTypes[0].childFlags[1].name,
+      flagPath: flagTypes[0].childFlags[1].Path,
+      hearingRelevantFlag: flagTypes[0].childFlags[1].hearingRelevant,
+      flagCode: flagTypes[0].childFlags[1].flagCode,
+      listOfValues: null
     });
+    expect(component.errorMessages.length).toBe(0);
   });
 
   it('should emit to parent with a list of values if a flag type that has a list of values is selected', () => {
@@ -250,10 +258,14 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
-      errorMessages: [],
-      listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues,
-      flagCode: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].flagCode
+      errorMessages: component.errorMessages,
+      flagName: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].name,
+      flagPath: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].Path,
+      hearingRelevantFlag: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].hearingRelevant,
+      flagCode: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].flagCode,
+      listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues
     });
+    expect(component.errorMessages.length).toBe(0);
   });
 
   it('should emit "flag comments optional" event to parent if comments for the selected flag type are optional', () => {
@@ -267,9 +279,25 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should fail validation if no flag type is selected', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('.button').click();
     fixture.detectChanges();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      isParentFlagType: null,
+      errorMessages: component.errorMessages,
+      flagName: null,
+      flagPath: null,
+      hearingRelevantFlag: null,
+      flagCode: null,
+      listOfValues: null
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED,
+      fieldId: 'conditional-radios-list'
+    });
     const errorMessageElement = nativeElement.querySelector('#flag-type-not-selected-error-message');
     expect(errorMessageElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED);
   });

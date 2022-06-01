@@ -4,15 +4,16 @@ export interface FlagDetail {
   subTypeKey?: string;
   otherDescription?: string;
   flagComment?: string;
-  dateTimeModified?: Date;
-  dateTimeCreated: Date;
+  dateTimeModified?: Date | string;
+  dateTimeCreated: Date | string;
   path: string[];
-  hearingRelevant: boolean;
+  hearingRelevant: boolean | string;
   flagCode: string;
   status: string;
 }
 
 export interface Flags {
+  flagsCaseFieldId?: string;
   partyName?: string;
   roleOnCase?: string;
   details?: FlagDetail[];

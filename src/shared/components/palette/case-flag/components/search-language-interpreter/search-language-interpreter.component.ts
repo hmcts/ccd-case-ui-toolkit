@@ -76,14 +76,10 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public onNext(): void {
     // Validate language interpreter entry
     this.validateLanguageEntry();
-    // Return case flag field state, error messages, "list of values" (i.e. languages), and flag code to the parent.
-    // The "list of values" and flag code must be re-emitted because the parent component repopulates them on handling
-    // this EventEmitter
+    // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: this.errorMessages,
-      listOfValues: this.languages,
-      flagCode: this.flagCode
+      errorMessages: this.errorMessages
     });
   }
 

@@ -44,8 +44,14 @@ export class SelectFlagLocationComponent implements OnInit {
   public onNext(): void {
     // Validate flag location selection
     this.validateSelection();
-    // Return case flag field state and error messages to the parent
-    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION, errorMessages: this.errorMessages });
+    // Return case flag field state, error messages, and selected Flags instance (i.e. flag location) to the parent
+    this.caseFlagStateEmitter.emit({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
+      errorMessages: this.errorMessages,
+      selectedFlagsLocation: this.formGroup.get(this.selectedLocationControlName).value
+        ? this.formGroup.get(this.selectedLocationControlName).value as Flags
+        : null
+    });
   }
 
   private validateSelection(): void {

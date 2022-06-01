@@ -168,6 +168,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
     // these will fail validation
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
+    // If a FlagLauncher field is present in the event trigger, the flag details data needs populating for each Flags
+    // field, then the FlagLauncher field needs removing
+    if (this.eventTrigger.case_fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField))) {
+      this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
+      this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
+    }
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     if (this.caseEdit.confirmation) {
