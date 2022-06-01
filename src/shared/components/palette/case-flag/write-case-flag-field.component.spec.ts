@@ -17,6 +17,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       type: flaglauncher_id
     }
   } as CaseField;
+  const caseFlag1FieldId = 'CaseFlag1';
   const caseFlag1PartyName = 'John Smith';
   const caseFlag1RoleOnCase = 'Claimant';
   const caseFlag1DetailsValue1 = {
@@ -45,6 +46,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     flagCode: 'BSL',
     status: CaseFlagStatus.INACTIVE
   };
+  const caseFlag2FieldId = 'CaseFlag2';
   const caseFlag2PartyName = 'Ann Peterson';
   const caseFlag2RoleOnCase = 'Defendant';
   const caseFlag2DetailsValue1 = {
@@ -90,7 +92,7 @@ describe('WriteCaseFlagFieldComponent', () => {
           case_fields: [
             flagLauncherCaseField,
             {
-              id: 'CaseFlag1',
+              id: caseFlag1FieldId,
               field_type: {
                 // TODO: Temporary field type; needs to be changed to "Flags" once the implementation has been changed over
                 id: 'CaseFlag',
@@ -112,7 +114,7 @@ describe('WriteCaseFlagFieldComponent', () => {
               }
             },
             {
-              id: 'CaseFlag2',
+              id: caseFlag2FieldId,
               field_type: {
                 // TODO: Temporary field type; needs to be changed to "Flags" once the implementation has been changed over
                 id: 'CaseFlag',
@@ -185,14 +187,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.formGroup.valid).toBe(false);
     nextButton.click();
     fixture.detectChanges();
-    // Field is expected to move to next state (flag comments) but not the final one yet
-    // expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
-    // expect(component.isAtFinalState()).toBe(false);
-    // expect(component.formGroup.valid).toBe(false);
-    // nextButton.click();
-    // fixture.detectChanges();
-    // Field is expected to move to final state and the form to become valid
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_SUMMARY);
+    // Field is expected to move to final state (flag comments) and the form to become valid
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
     expect(component.isAtFinalState()).toBe(true);
     // Form validation should not be called until reaching the final state, hence expecting only one call
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalledTimes(1);
@@ -205,6 +201,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagsData).toBeTruthy();
     expect(component.flagsData.length).toBe(2);
+    expect(component.flagsData[0].flagsCaseFieldId).toEqual(caseFlag1FieldId);
     expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
     expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
     expect(component.flagsData[0].details.length).toBe(2);
@@ -212,6 +209,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
     expect(component.flagsData[0].details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[0].details[0].hearingRelevant).toBe(false);
+    expect(component.flagsData[1].flagsCaseFieldId).toEqual(caseFlag2FieldId);
     expect(component.flagsData[1].partyName).toEqual(caseFlag2PartyName);
     expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
     expect(component.flagsData[1].details.length).toBe(2);

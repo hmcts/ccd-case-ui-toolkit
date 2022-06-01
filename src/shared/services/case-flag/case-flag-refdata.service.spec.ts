@@ -21,7 +21,7 @@ describe('Case Flag Refdata Service', () => {
             flagComment: false,
             flagCode: 'CATGRY',
             isParent: true,
-            path: [''],
+            Path: [''],
             childFlags: [
               {
                 name: 'Potentially suicidal',
@@ -29,7 +29,7 @@ describe('Case Flag Refdata Service', () => {
                 flagComment: false,
                 flagCode: 'PF0003',
                 isParent: false,
-                path: ['Party'],
+                Path: ['Party'],
                 childFlags: []
               },
               {
@@ -38,7 +38,7 @@ describe('Case Flag Refdata Service', () => {
                 flagComment: true,
                 flagCode: 'OT0001',
                 isParent: false,
-                path: ['Party'],
+                Path: ['Party'],
                 childFlags: []
               }
             ]

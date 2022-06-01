@@ -133,9 +133,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: component.errorMessages,
-      listOfValues: component.languages,
-      flagCode: component.flagCode
+      errorMessages: component.errorMessages
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -157,9 +155,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: component.errorMessages,
-      listOfValues: component.languages,
-      flagCode: component.flagCode
+      errorMessages: component.errorMessages
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -188,9 +184,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: component.errorMessages,
-      listOfValues: component.languages,
-      flagCode: component.flagCode
+      errorMessages: component.errorMessages
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -219,9 +213,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: component.errorMessages,
-      listOfValues: component.languages,
-      flagCode: component.flagCode
+      errorMessages: component.errorMessages
     });
     expect(component.errorMessages.length).toBe(0);
     const selectedLanguageErrorMessageElement = nativeElement.querySelector('#language-not-selected-error-message');
@@ -251,9 +243,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: component.errorMessages,
-      listOfValues: component.languages,
-      flagCode: component.flagCode
+      errorMessages: component.errorMessages
     });
     expect(component.errorMessages.length).toBe(1);
     const errorMessageElement = nativeElement.querySelector('#language-entered-in-both-fields-error-message');

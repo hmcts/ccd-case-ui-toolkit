@@ -6,7 +6,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, Flags } from './domain';
-import { CaseFlagFieldState, CaseFlagText } from './enums';
+import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -28,10 +28,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
-  public listOfValues: {key: string, value: string}[] = null;
+  public flagName: string;
+  public flagPath: string[];
+  public hearingRelevantFlag: boolean;
   public flagCode: string;
+  public listOfValues: {key: string, value: string}[] = null;
   public isDisplayContextParameterUpdate: boolean;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
+  // Code for "Other" flag type as defined in Reference Data
+  private readonly otherFlagTypeCode = 'OT0001';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -64,6 +69,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
             flags.push(
               {
+                flagsCaseFieldId: caseField.id,
                 partyName: caseField.value.partyName,
                 roleOnCase: caseField.value.roleOnCase,
                 details: caseField.value.details
@@ -96,19 +102,29 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
     }
-
-    // Set the parent Case Flag FormGroup for this component's children
-    // TODO This needs to happen after the user has made the initial selection on flag location (first screen)
-    // this.setCaseFlagParentFormGroup();
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
+    // If the current state is CaseFlagFieldState.FLAG_LOCATION and a flag location (a Flags instance) has been selected,
+    // set the parent Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_LOCATION
+      && caseFlagState.selectedFlagsLocation
+      && caseFlagState.selectedFlagsLocation.flagsCaseFieldId) {
+      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlagsLocation.flagsCaseFieldId);
+    }
+    // If the current state is CaseFlagFieldState.FLAG_TYPE, cache the flag name, path, hearing relevant indicator, code,
+    // and "list of values" (currently applicable to language flag types)
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_TYPE) {
+      this.flagName = caseFlagState.flagName;
+      this.flagPath = caseFlagState.flagPath;
+      this.hearingRelevantFlag = caseFlagState.hearingRelevantFlag;
+      this.flagCode = caseFlagState.flagCode;
+      this.listOfValues = caseFlagState.listOfValues;
+    }
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
-    this.listOfValues = caseFlagState.listOfValues;
-    this.flagCode = caseFlagState.flagCode;
     this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
     // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
     // means the user needs to select from the next set of flag types before they can move on
@@ -134,14 +150,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // the form is at the final state
     if (this.isAtFinalState()) {
       // Trigger validation to clear the "notAtFinalState" error if now at the final state
+      // TODO Should probably move this to happen when a child component emits to the parent... maybe
       this.formGroup.updateValueAndValidity();
+      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
+      const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
     }
   }
 
   public isAtFinalState(): boolean {
-    // The filter removes the non-numeric keys emitted due to how TypeScript enums are transpiled (see
-    // https://www.crojach.com/blog/2019/2/6/getting-enum-keys-in-typescript for an explanation)
-    return this.fieldState === Object.keys(CaseFlagFieldState).filter(key => parseInt(key, 10) >= 0).length - 1;
+    return this.isDisplayContextParameterUpdate
+      ? this.fieldState === CaseFlagFieldState.FLAG_UPDATE
+      : this.fieldState === CaseFlagFieldState.FLAG_COMMENTS;
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -157,18 +177,42 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public onFlagCommentsOptionalEmitted(_: any): void {
     this.flagCommentsOptional = true;
   }
+
   /**
    * Set the parent {@link FormGroup} for this component's children, depending on the `Flags` {@link CaseField} instance
    * to which data should be attached. **Note:** The parent is not _this_ component's `FormGroup` (as might otherwise be
    * expected) because this component is not expected to have a value, given it is used for the empty `FlagLauncher` base
    * field type.
-  */
-  public setCaseFlagParentFormGroup(): void {
-    // Dummy implementation for now, which uses the FormGroup of the first of this CaseField's siblings of type `Flags`
-    // as the parent. The real one needs to use the FormGroup of the Flags object corresponding to the user's selection
-    // of flag location
-    const caseFlagFormGroupKey = Object.keys(this.formGroup.parent.controls).filter(
-      key => FieldsUtils.isFlagsCaseField(this.formGroup.parent.controls[key].caseField))[0];
-    this.caseFlagParentFormGroup = this.formGroup.parent.controls[caseFlagFormGroupKey];
+   *
+   * @param flagsCaseFieldId ID of the CaseField instance that contains `Flags` data for a given party or case
+   */
+  public setCaseFlagParentFormGroup(flagsCaseFieldId: string): void {
+    this.caseFlagParentFormGroup = this.formGroup.parent.controls[flagsCaseFieldId];
+  }
+
+  public populateNewFlagDetailInstance(): FlagDetail {
+    return {
+      name: this.flagName,
+      // Currently, subTypeValue and subTypeKey are applicable only to language flag types
+      subTypeValue: this.caseFlagParentFormGroup.value.languageSearchTerm
+        ? this.caseFlagParentFormGroup.value.languageSearchTerm.value
+        : this.caseFlagParentFormGroup.value.manualLanguageEntry
+          ? this.caseFlagParentFormGroup.value.manualLanguageEntry
+          : null,
+      // For user-entered (i.e. non-Reference Data) languages, there is no key
+      subTypeKey: this.caseFlagParentFormGroup.value.languageSearchTerm
+        ? this.caseFlagParentFormGroup.value.languageSearchTerm.key
+        : null,
+      otherDescription: this.flagCode === this.otherFlagTypeCode && this.caseFlagParentFormGroup.value.otherFlagTypeDescription
+        ? this.caseFlagParentFormGroup.value.otherFlagTypeDescription
+        : null,
+      // TODO populate flagComment properly
+      flagComment: '',
+      dateTimeCreated: new Date().toISOString(),
+      path: this.flagPath,
+      hearingRelevant: this.hearingRelevantFlag ? 'Yes' : 'No',
+      flagCode: this.flagCode,
+      status: CaseFlagStatus.ACTIVE
+    } as FlagDetail;
   }
 }
