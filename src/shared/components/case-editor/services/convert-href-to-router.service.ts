@@ -22,16 +22,18 @@ export class ConvertHrefToRouterService {
     const queryParams = urls[1];
     let queryParamObj = {};
 
-    if (urls[1]) {
+    if (queryParams) {
       const queryParam = queryParams.split('&');
-      for (let i = 0; i < queryParam.length; i++) {
-        let param = queryParam[i].split('=');
-        queryParamObj[param[0]] = param[1]
+      if(queryParam.length > 0) {
+        for (let i = 0; i < queryParam.length; i++) {
+          let param = queryParam[i].split('=');
+          queryParamObj[param[0]] = param[1]
+        }
       }
     }
 
     this.router.navigate([urls[0]], {
-      queryParams: queryParamObj ? queryParamObj : ''
+      queryParams: (queryParamObj && Object.keys(queryParamObj).length) ? queryParamObj : ''
     });
   }
 }
