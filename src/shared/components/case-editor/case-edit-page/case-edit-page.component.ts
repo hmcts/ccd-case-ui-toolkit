@@ -172,7 +172,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
                 fieldArray['component']['collItems'].forEach(element => {
                   id = `${element.prefix}`;
-                  fieldArray.controls.forEach((control: AbstractControl,index) => {
+                  fieldArray.controls.forEach((control: AbstractControl, index) => {
                     if (id.charAt(id.indexOf(index.toString())) === index.toString()) {
                       this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, control.get('value'), id);
                     }
