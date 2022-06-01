@@ -50,8 +50,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
     // Get linked cases
     this.getLinkedCases();
-    // Initialise the error to be displayed when clicked on Continue button
-    this.setContinueButtonValidationErrorMessage();
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
@@ -59,6 +57,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
+      this.setContinueButtonValidationErrorMessage();
       this.proceedToNextPage();
     } else {
       linkedCasesState.errorMessages.forEach(errorMessage => {
@@ -68,11 +67,18 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public setContinueButtonValidationErrorMessage(): void {
-    const errorMessage = this.isLinkedCasesJourney
-      ? LinkedCasesErrorMessages.LinkeCasesNavigationError
-      : LinkedCasesErrorMessages.UnlinkCasesNavigationError;
+    const errorMessage = this.linkedCasesService.linkedCases.length === 0
+      ? LinkedCasesErrorMessages.BackNavigationError
+      : this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES)
+        ? LinkedCasesErrorMessages.LinkCasesNavigationError
+        : LinkedCasesErrorMessages.UnlinkCasesNavigationError;
+
+    const buttonId = this.linkedCasesService.linkedCases.length === 0
+      ? 'back-button'
+      : 'next-button';
+
     this.caseEditPageComponent.caseLinkError = {
-      componentId: 'next-button',
+      componentId: buttonId,
       errorMessage: errorMessage
     };
   }
@@ -104,13 +110,15 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       const linkedCasesTab = caseView.tabs.find(tab => tab.id === WriteLinkedCasesComponent.LINKED_CASES_TAB_ID);
       if (linkedCasesTab) {
-        let linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
+        const linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
         // Store linked cases in linked cases service
-        this.linkedCasesService.linkedCases = linkedCases;
+        this.linkedCasesService.linkedCases = linkedCases || [];
         // Initialise the first page to display
         this.linkedCasesPage = this.isLinkedCasesJourney || (linkedCases && linkedCases.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
           : LinkedCasesPages.NO_LINKED_CASES;
+        // Initialise the error to be displayed when clicked on Continue button
+        this.setContinueButtonValidationErrorMessage();
       }
     });
   }
