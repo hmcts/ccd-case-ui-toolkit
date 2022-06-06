@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.17.14-linked-cases-unlink-journey-show-hide-table
+### Version 4.17.15-linked-cases-unlink-journey-show-hide-table
 **EUI-5565** Add unlink cases journey to linked cases
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
