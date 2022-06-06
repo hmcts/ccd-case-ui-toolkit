@@ -156,4 +156,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getPaymentReturnUrl(): string {
       return '';
   }
+
+  getRDCommonDataAPIUrl(): string {
+    return '';
+  }
 }

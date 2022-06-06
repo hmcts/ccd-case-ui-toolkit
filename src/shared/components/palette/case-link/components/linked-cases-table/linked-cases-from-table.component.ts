@@ -60,8 +60,8 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     this.casesService.getLinkedCases(this.caseId).subscribe(
       response => {
         this.getLinkedCasesResponse = response
-        // TODO: if condition below to be removed once tested the ticket EUI-5550
-        if (this.router && this.router.url && this.router.url.includes('1652334576090841')) {
+        // TODO: if condition below to be removed once tested the ticket EUI-5639
+        if (this.router && this.router.url && this.router.url.includes('no-linked-cases')) {
           this.getLinkedCasesResponse.linkedCases = [];
         }
       },
