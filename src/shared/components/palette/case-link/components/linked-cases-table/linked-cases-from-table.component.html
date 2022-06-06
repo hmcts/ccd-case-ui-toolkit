@@ -2,7 +2,7 @@
   <div class="govuk-grid-column-full">
   <h2 class="heading-h2">{{tableSubHeading}}</h2>
   <a id="show-hide-link" class="govuk-link" href="javascript:void(0)" (click)="onClick()">{{showHideLinkText}}</a>
-  <table *ngIf="getLinkedCasesResponse && showHideLinkText === 'Hide'">
+  <table *ngIf="getLinkedCasesResponse && showHideLinkText === 'Hide'" aria-describedby="table to display cases linked from">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Case name and number</th>
