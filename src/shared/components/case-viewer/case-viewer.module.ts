@@ -17,7 +17,7 @@ import {
   OrderService
 } from '../../services';
 import { ActivityModule } from '../activity';
-import { CaseEditorModule, CaseNotifier } from '../case-editor';
+import { ConvertHrefToRouterService, CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
@@ -83,6 +83,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   providers: [
     CaseNotifier,
+    ConvertHrefToRouterService,
     NavigationNotifierService,
     CaseReferencePipe,
     EventTriggerResolver,
