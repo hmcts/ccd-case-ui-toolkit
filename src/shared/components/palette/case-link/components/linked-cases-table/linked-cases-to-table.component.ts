@@ -18,7 +18,8 @@ interface LinkedCasesResponse {
 
 @Component({
   selector: 'ccd-linked-cases-to-table',
-  templateUrl: './linked-cases-to-table.component.html'
+  templateUrl: './linked-cases-to-table.component.html',
+  styleUrls: ['./linked-cases-to-table.component.scss']
 })
 
 export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
@@ -108,6 +109,10 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
           searchCases.forEach(response => {
           response.results.forEach((result: any) =>
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
+          // TODO: to be removed after testing the ticket 5550
+          if (this.router && this.router.url && this.router.url.includes('1652334576090841')) {
+            this.linkedCasesFromResponse = [];
+          }
         });
         this.isLoaded = true;
       },

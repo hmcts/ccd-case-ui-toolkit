@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.17.12-linked-cases-unlink-journey-error-page",
+  "version": "4.17.15-linked-cases-unlink-journey-show-hide-table",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

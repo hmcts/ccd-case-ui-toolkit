@@ -15,8 +15,9 @@ export enum LinkedCasesErrorMessages {
   CaseProposedError = 'This case has already been proposed',
   CasesLinkedError = 'These cases are already linked',
   UnlinkCaseSelectionError = 'Select a case to unlink before continue',
-  LinkeCasesNavigationError = 'Please select Next to link case(s)',
-  UnlinkCasesNavigationError = 'Please select Next to unlink case(s)'
+  LinkCasesNavigationError = 'Please select Next to link case(s)',
+  UnlinkCasesNavigationError = 'Please select Next to unlink case(s)',
+  BackNavigationError = 'Please select Back to go to the previous page'
 }
 
 export enum LinkedCasesEventTriggers {
