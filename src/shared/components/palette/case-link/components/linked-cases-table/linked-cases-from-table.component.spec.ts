@@ -14,7 +14,7 @@ describe('LinkCasesFromTableComponent', () => {
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
   let searchService: any;
-
+  let nativeElement: any;
   let mockRouter: any;
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -91,6 +91,7 @@ describe('LinkCasesFromTableComponent', () => {
     }
     fixture = TestBed.createComponent(LinkedCasesFromTableComponent);
     component = fixture.componentInstance;
+    nativeElement = fixture.debugElement.nativeElement;
     casesService.getLinkedCases.and.returnValue(of(linkedCasesMock));
   });
 
@@ -130,5 +131,15 @@ describe('LinkCasesFromTableComponent', () => {
     spyOn(component.notifyAPIFailure, 'emit');
     fixture.detectChanges();
     expect(component.notifyAPIFailure.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('should verify show and hide working correctly', () => {
+    const showHideLink = nativeElement.querySelector('#show-hide-link');
+    component.onClick();
+    fixture.detectChanges();
+    expect(showHideLink.textContent).toEqual('Hide');
+    component.onClick();
+    fixture.detectChanges();
+    expect(showHideLink.textContent).toEqual('Show');
   });
 });

@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
   <h2 class="heading-h2">{{tableSubHeading}}</h2>
-  <a href="javascript:void(0)" (click)="onClick()">{{showHideLinkText}}</a>
+  <a id="show-hide-link" class="govuk-link" href="javascript:void(0)" (click)="onClick()">{{showHideLinkText}}</a>
   <table *ngIf="getLinkedCasesResponse && showHideLinkText === 'Hide'">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
