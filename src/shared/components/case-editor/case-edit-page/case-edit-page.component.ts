@@ -19,6 +19,7 @@ import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { initDialog } from '../../helpers';
+import { WriteCaseFlagFieldComponent } from '../../palette';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -52,7 +53,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   caseFields: CaseField[];
   validationErrors: { id: string, message: string }[] = [];
   showSpinner: boolean;
-
+  writeCaseFlagFieldComponent: WriteCaseFlagFieldComponent;
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private static scrollToTop(): void {
@@ -210,6 +211,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   public submit(): void {
     this.validationErrors = [];
+    if (this.writeCaseFlagFieldComponent) {
+      this.writeCaseFlagFieldComponent.setFlagsCaseFieldValue();
+    }
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
     }
