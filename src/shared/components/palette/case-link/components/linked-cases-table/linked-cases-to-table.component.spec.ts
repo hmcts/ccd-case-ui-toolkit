@@ -217,7 +217,7 @@ describe('LinkCasesToTableComponent', () => {
     expect(component.notifyAPIFailure.emit).toHaveBeenCalledWith(true);
   });
 
-  fit('should render the none as table row when no linked cases to be displayed', () => {
+  it('should render the none as table row when no linked cases to be displayed', () => {
     const injector = getTestBed();
     const router = injector.get(Router);
     router.url = '?no-linked-cases';
