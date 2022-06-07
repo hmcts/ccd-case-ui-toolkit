@@ -134,6 +134,8 @@ describe('LinkCasesFromTableComponent', () => {
   });
 
   it('should verify show and hide working correctly', () => {
+    component.ngOnInit();
+    fixture.detectChanges();
     const showHideLink = nativeElement.querySelector('#show-hide-link');
     component.onClick();
     fixture.detectChanges();
@@ -141,5 +143,18 @@ describe('LinkCasesFromTableComponent', () => {
     component.onClick();
     fixture.detectChanges();
     expect(showHideLink.textContent).toEqual('Show');
+  });
+
+  it('should render the none as table row when no linked cases to be displayed', () => {
+    const injector = getTestBed();
+    const router = injector.get(Router);
+    router.url = '?no-linked-cases';
+    TestBed.overrideProvider(Router, {useValue: mockRouter})
+    TestBed.compileComponents();
+    fixture = TestBed.createComponent(LinkedCasesFromTableComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()).toEqual('None');
   });
 });
