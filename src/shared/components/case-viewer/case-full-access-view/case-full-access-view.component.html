@@ -67,6 +67,8 @@
                           </ccd-field-read>
                         </span>
                       </td>
+                    </tr>
+                    <tr *ngSwitchCase="false" class="compound-field">
                       <th>
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
