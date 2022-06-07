@@ -4,6 +4,7 @@ import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component'
 import { NgxMdModule, NgxMdComponent } from 'ngx-md';
 import { By } from '@angular/platform-browser';
 import { PipesModule } from '../../pipes';
+import { ConvertHrefToRouterService } from '../case-editor/services';
 
 describe('MarkdownComponent', () => {
 
@@ -42,8 +43,11 @@ describe('MarkdownComponent', () => {
   let fixture: ComponentFixture<CCDMarkDownComponent>;
   let component: CCDMarkDownComponent;
   let de: DebugElement;
+  let convertHrefToRouterService: ConvertHrefToRouterService;
 
   beforeEach(async(() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -54,7 +58,8 @@ describe('MarkdownComponent', () => {
           CCDMarkDownComponent,
         ],
         providers: [
-          NgxMdComponent
+          NgxMdComponent,
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
         ]
       })
       .compileComponents();
@@ -70,4 +75,11 @@ describe('MarkdownComponent', () => {
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
 
+  it('should not call updateHrefLink', () => {
+    component.markdownUseHrefAsRouterLink = true;
+    const event = new MouseEvent('mousedown', {clientX: 50, clientY: 150});
+    component.onMarkdownClick(event);
+    fixture.detectChanges();
+    expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
+  });
 });
