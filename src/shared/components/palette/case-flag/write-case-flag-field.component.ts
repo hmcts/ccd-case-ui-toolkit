@@ -25,7 +25,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
   public createFlagCaption: CaseFlagText;
-  public errorMessage: ErrorMessage;
   public flagsData: Flags[];
   public selectedFlagDetail: FlagDetail;
   public caseFlagParentFormGroup = new FormGroup({});
@@ -160,15 +159,22 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setFlagsCaseFieldValue(): void {
-    debugger;
-    // Validation
     if (this.fieldState = CaseFlagFieldState.FLAG_COMMENTS) {
+      // Validate comments field
       this.addCommentsComponent.validateFlagComments();
+      if (this.addCommentsComponent.errorMessages.length > 0) {
+        // Error found, Set form group error and display error message
+        this.errorMessages = this.addCommentsComponent.errorMessages;
+        this.formGroup.setErrors(this.addCommentsComponent.errorMessages);
+      } else {
+        // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
+        const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+        flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+        console.log('flagsCaseFieldValue', flagsCaseFieldValue);
+        // There is no error, update form group value and validity
+        this.formGroup.updateValueAndValidity();
+      }
     }
-    // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-    flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
-    console.log('flagsCaseFieldValue', flagsCaseFieldValue);
   }
 
   public isAtFinalState(): boolean {
