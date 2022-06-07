@@ -24,19 +24,14 @@
       <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
         (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
-		</ng-container>
+    </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
       <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup" [languages]="listOfValues" [flagCode]="flagCode"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
-      <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
+      <ccd-add-comments #addComments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-add-comments>
-    </ng-container>
-    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_SUMMARY">
-      <p>
-        This is the flag summary (and final) step
-      </p>
     </ng-container>
   </div>
 </div>
