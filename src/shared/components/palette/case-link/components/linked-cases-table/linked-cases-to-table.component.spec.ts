@@ -216,4 +216,17 @@ describe('LinkCasesToTableComponent', () => {
     fixture.detectChanges();
     expect(component.notifyAPIFailure.emit).toHaveBeenCalledWith(true);
   });
+
+  it('should render the none as table row when no linked cases to be displayed', () => {
+    const injector = getTestBed();
+    const router = injector.get(Router);
+    router.url = '?no-linked-cases';
+    TestBed.overrideProvider(Router, {useValue: mockRouter})
+    TestBed.compileComponents();
+    fixture = TestBed.createComponent(LinkedCasesToTableComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()).toEqual('None');
+  });
 });

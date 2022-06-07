@@ -80,7 +80,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public sortByReasonCode() {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
-    const data = this.caseField.value || [];
+    const data = this.caseField && this.caseField.value || [];
     data.forEach((item: any) => {
       const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'Progressed')
       const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'Case consolidated')
@@ -109,8 +109,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
           searchCases.forEach(response => {
           response.results.forEach((result: any) =>
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
-          // TODO: to be removed after testing the ticket 5550
-          if (this.router && this.router.url && this.router.url.includes('1652334576090841')) {
+          // TODO: to be removed after testing the ticket 5550/5639
+          if (this.router && this.router.url && this.router.url.includes('no-linked-cases')) {
             this.linkedCasesFromResponse = [];
           }
         });

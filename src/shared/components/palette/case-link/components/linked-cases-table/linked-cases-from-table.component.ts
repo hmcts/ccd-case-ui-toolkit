@@ -33,6 +33,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public caseId: string;
   public showHideLinkText = 'Show';
+  public noLinkedCases = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,11 +60,12 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     this.caseId = this.route.snapshot.data.case.case_id;
     this.casesService.getLinkedCases(this.caseId).subscribe(
       response => {
-        this.getLinkedCasesResponse = response
-        // TODO: if condition below to be removed once tested the ticket EUI-5550
-        if (this.router && this.router.url && this.router.url.includes('1652334576090841')) {
+        this.getLinkedCasesResponse = response;
+        // TODO: condition below to be removed once tested the ticket EUI-5639
+        if (this.router && this.router.url && this.router.url.includes('no-linked-cases')) {
           this.getLinkedCasesResponse.linkedCases = [];
         }
+        this.noLinkedCases = !this.getLinkedCasesResponse.linkedCases || !this.getLinkedCasesResponse.linkedCases.length;
       },
       err => this.notifyAPIFailure.emit(true)
       );
