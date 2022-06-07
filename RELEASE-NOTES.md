@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.17.17-Linked-case-tab Display-(no linked cases)
+### Version 4.17.18-Linked-case-tab Display-(no linked cases)
 **EUI-5639** Link cases- Linked case tab Display (no linked cases)
 
 ### Version 4.17.15-linked-cases-unlink-journey-show-hide-table
