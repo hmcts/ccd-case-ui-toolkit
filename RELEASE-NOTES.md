@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.3-create-case-flag-review-flag-details-page-part3
+**EUI-5973** Review flag details page part 3
+
 ### Version 4.13.2-create-case-flag-integration-with-check-your-answers
 **EUI-4852** First pass at integration with "Check your answers" stage of the main Case Event flow, and persisting a case flag
 
