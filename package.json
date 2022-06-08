@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.2-create-case-flag-integration-with-check-your-answers",
+  "version": "4.13.3-create-case-flag-review-flag-details-page-part3",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
