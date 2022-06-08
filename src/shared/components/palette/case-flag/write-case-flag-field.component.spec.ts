@@ -142,7 +142,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       }
     }
   };
-  
+
   addCommentsComponent = new AddCommentsComponent();
 
   beforeEach(async(() => {
