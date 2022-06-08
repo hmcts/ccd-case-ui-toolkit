@@ -23,6 +23,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { CaseFlagFieldState, WriteCaseFlagFieldComponent } from '../../palette';
 
 describe('CaseEditPageComponent', () => {
 
@@ -832,6 +833,7 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('Check for Validation Error', () => {
+    let writeCaseFlagFieldComponent: WriteCaseFlagFieldComponent;
 
     const F_GROUP = new FormGroup({
       'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
@@ -898,7 +900,7 @@ describe('CaseEditPageComponent', () => {
         params: of({id: 123}),
         snapshot: snapshot
       };
-
+      writeCaseFlagFieldComponent = new WriteCaseFlagFieldComponent(new ActivatedRoute());
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
       dialog = createSpyObj<MatDialog>('dialog', ['open']);
       dialog.open.and.returnValue(matDialogRef);
@@ -929,6 +931,7 @@ describe('CaseEditPageComponent', () => {
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);
+      comp.writeCaseFlagFieldComponent = writeCaseFlagFieldComponent;
       comp.currentPage = wizardPage;
     });
 
@@ -981,6 +984,7 @@ describe('CaseEditPageComponent', () => {
       wizardPage.isMultiColumn = () => false;
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
+      comp.writeCaseFlagFieldComponent.fieldState = CaseFlagFieldState.FLAG_LOCATION;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 

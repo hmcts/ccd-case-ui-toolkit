@@ -18,7 +18,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   @Input() public caseEditPageComponent: CaseEditPageComponent;
 
-  @ViewChild('addComments') addCommentsComponent: AddCommentsComponent;
+  @ViewChild(AddCommentsComponent) addCommentsComponent: AddCommentsComponent;
 
   public formGroup: FormGroup;
   public fieldState: number;
@@ -158,7 +158,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  public setFlagsCaseFieldValue(): void {
+  public validateAndSetFlagsCaseFieldValue(): void {
     if (this.fieldState = CaseFlagFieldState.FLAG_COMMENTS) {
       // Validate comments field
       this.addCommentsComponent.validateFlagComments();
@@ -170,7 +170,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
         const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
         flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
-        console.log('flagsCaseFieldValue', flagsCaseFieldValue);
         // There is no error, update form group value and validity
         this.formGroup.updateValueAndValidity();
       }

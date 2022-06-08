@@ -212,7 +212,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public submit(): void {
     this.validationErrors = [];
     if (this.writeCaseFlagFieldComponent) {
-      this.writeCaseFlagFieldComponent.setFlagsCaseFieldValue();
+      this.writeCaseFlagFieldComponent.validateAndSetFlagsCaseFieldValue();
     }
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
