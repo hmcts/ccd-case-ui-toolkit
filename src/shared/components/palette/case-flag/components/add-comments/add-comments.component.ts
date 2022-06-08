@@ -13,8 +13,6 @@ export class AddCommentsComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
 
-  @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
-
   public addCommentsTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
   public flagCommentsNotEnteredErrorMessage: AddCommentsErrorMessage = null;

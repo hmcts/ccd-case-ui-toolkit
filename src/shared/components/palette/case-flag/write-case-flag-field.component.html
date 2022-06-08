@@ -30,7 +30,7 @@
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
-      <ccd-add-comments #addComments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
+      <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-add-comments>
     </ng-container>
   </div>
