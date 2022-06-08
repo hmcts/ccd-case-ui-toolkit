@@ -7,7 +7,6 @@ import { AddCommentsComponent } from './add-comments.component';
 describe('AddCommentsComponent', () => {
   let component: AddCommentsComponent;
   let fixture: ComponentFixture<AddCommentsComponent>;
-  let continueButton: any;
   let textareaInput: string;
 
   beforeEach(async(() => {
@@ -23,7 +22,6 @@ describe('AddCommentsComponent', () => {
     fixture = TestBed.createComponent(AddCommentsComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
-    continueButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +

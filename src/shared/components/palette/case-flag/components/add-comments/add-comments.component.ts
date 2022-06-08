@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState } from '../../domain';
 import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagWizardStepTitle } from '../../enums';
 
 @Component({
