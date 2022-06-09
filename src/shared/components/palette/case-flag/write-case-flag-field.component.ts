@@ -172,13 +172,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.formGroup.setErrors(component.errorMessages);
       } else {
         // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-        const flagsCaseFieldValue = this.fieldState === CaseFlagFieldState.FLAG_COMMENTS
-          ? this.caseFlagParentFormGroup['caseField'].value
-          : this.caseFlagParentFormGroup.value;
-        flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+        if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
+          const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+          flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+        }
+        if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
+          // TODO: EUI-5342
+        }
         // There is no error, update form group value and validity
         this.formGroup.updateValueAndValidity();
-
       }
     }
   }

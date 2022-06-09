@@ -178,7 +178,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               });
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
                 if (this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_COMMENTS &&
-									this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_UPDATE) {
+                  this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_UPDATE) {
                   let action = '';
                   if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
                     action = 'creation';
