@@ -5,6 +5,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PaletteUtilsModule } from '../utils';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LinkedCasesService } from './services';
 
 const VALUE = {
   CaseReference: '1234-5678-1234-5678'
@@ -49,7 +50,7 @@ describe('WriteCaseLinkFieldComponent', () => {
       declarations: [
         WriteCaseLinkFieldComponent,
       ],
-      providers: []
+      providers: [LinkedCasesService]
     })
     .compileComponents();
 
