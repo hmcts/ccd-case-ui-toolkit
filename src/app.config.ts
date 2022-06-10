@@ -83,7 +83,7 @@ export abstract class AbstractAppConfig {
   }
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
-  abstract getRDCommonDataAPIUrl(): string;
+  abstract getCaseLinkingReasonCommonDataAPIUrl(): string;
 }
 
 export class CaseEditorConfig {

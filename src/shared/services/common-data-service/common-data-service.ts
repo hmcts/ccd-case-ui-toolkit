@@ -29,7 +29,7 @@ export class CommonDataService {
                 private readonly appconfig: AbstractAppConfig) {}
 
     public getRefData(): Observable<LovRefDataByServiceModel> {
-            const url = this.appconfig.getRDCommonDataAPIUrl();
+            const url = this.appconfig.getCaseLinkingReasonCommonDataAPIUrl();
             if (url) {
               return this.http.get<LovRefDataByServiceModel>(url, {observe: 'body'});
             }

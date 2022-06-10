@@ -172,7 +172,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.payment_return_url;
   }
   
-  public getRDCommonDataAPIUrl(): string {
+  public getCaseLinkingReasonCommonDataAPIUrl(): string {
     return this.config.case_linking_reason_code_refdata_api_url;
   }
 }
