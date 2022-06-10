@@ -5,6 +5,8 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PaletteUtilsModule } from '../utils';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LinkedCasesService } from './services';
+import { CaseLink } from './domain';
 
 const VALUE = {
   CaseReference: '1234-5678-1234-5678'
@@ -33,6 +35,31 @@ const CASE_FIELD: CaseField = <CaseField>({
   retain_hidden_value: true
 });
 
+const linkedCases: CaseLink[] = [
+  {
+    caseReference: '1682374819203471',
+    reasons: [],
+    createdDateTime: '',
+    caseType: 'SSCS',
+    caseState: 'state',
+    caseService: 'Tribunal',
+    caseName: 'SSCS 2.1'
+  },
+  {
+    caseReference: '1682897456391875',
+    reasons: [],
+    createdDateTime: '',
+    caseType: 'SSCS',
+    caseState: 'state',
+    caseService: 'Tribunal',
+    caseName: 'SSCS 2.1'
+  }
+];
+const linkedCasesService = {
+  caseId: '1682374819203471',
+  linkedCases: linkedCases
+};
+
 describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
   let fixture: ComponentFixture<WriteCaseLinkFieldComponent>;
@@ -49,7 +76,8 @@ describe('WriteCaseLinkFieldComponent', () => {
       declarations: [
         WriteCaseLinkFieldComponent,
       ],
-      providers: []
+      providers: [
+        { provide: LinkedCasesService, useValue: linkedCasesService }]
     })
     .compileComponents();
 
