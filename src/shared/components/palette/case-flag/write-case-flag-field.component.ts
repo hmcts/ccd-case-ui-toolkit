@@ -5,7 +5,6 @@ import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { UpdateFlagComponent } from './components';
 import { AddCommentsComponent } from './components/add-comments/add-comments.component';
 import { CaseFlagState, FlagDetail, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
@@ -20,7 +19,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   @Input() public caseEditPageComponent: CaseEditPageComponent;
 
   @ViewChild(AddCommentsComponent) addCommentsComponent: AddCommentsComponent;
-  @ViewChild(UpdateFlagComponent) updateFlagComponent: UpdateFlagComponent;
 
   public formGroup: FormGroup;
   public fieldState: number;
@@ -161,24 +159,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public validateAndSetFlagsCaseFieldValue(): void {
-    if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS || this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
-      const component = this.fieldState === CaseFlagFieldState.FLAG_COMMENTS
-        ? this.addCommentsComponent
-        : this.updateFlagComponent;
-      component.validateFlagComments();
-      if (component.errorMessages.length > 0) {
+    if (this.fieldState = CaseFlagFieldState.FLAG_COMMENTS) {
+      // Validate comments field
+      this.addCommentsComponent.validateFlagComments();
+      if (this.addCommentsComponent.errorMessages.length > 0) {
         // Error found, Set form group error and display error message
-        this.errorMessages = component.errorMessages;
-        this.formGroup.setErrors(component.errorMessages);
+        this.errorMessages = this.addCommentsComponent.errorMessages;
+        this.formGroup.setErrors(this.addCommentsComponent.errorMessages);
       } else {
         // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-        if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
-          const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-          flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
-        }
-        if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
-          // TODO: EUI-5342
-        }
+        const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+        flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
         // There is no error, update form group value and validity
         this.formGroup.updateValueAndValidity();
       }
