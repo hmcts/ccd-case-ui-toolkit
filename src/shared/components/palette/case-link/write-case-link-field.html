@@ -11,6 +11,6 @@
     <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
   </div>
 	<div class="form-group" *ngIf="containsCaseLinkCollection">
-		<ccd-write-linked-cases [caseEditPageComponent]="caseEditPageComponent"></ccd-write-linked-cases>
+		<ccd-write-linked-cases [caseEditPageComponent]="caseEditPageComponent" (onLinkedCasesSelected)="submitLinkedCasses();"></ccd-write-linked-cases>
 	</div>
 </ng-container>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CaseView } from '../../../../domain/case-view';
@@ -19,6 +19,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
+  @Output()
+  public onLinkedCasesSelected = new EventEmitter<any>();
 
   public formGroup: FormGroup;
   public linkedCasesPage: number;
@@ -89,6 +91,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       this.caseEditPageComponent.caseLinkError = null;
       // Trigger validation to clear the "notAtFinalPage" error if now at the final state
       this.formGroup.updateValueAndValidity();
+      // update form value
+      this.onLinkedCasesSelected.emit();
     }
   }
 
