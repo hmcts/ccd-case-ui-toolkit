@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 4.15.0-hearings
+### Version 4.17.7-hearings
 **EUI-5912** Hearing tab is not loading
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links

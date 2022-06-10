@@ -4,12 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CaseListComponent } from './case-list.component';
 import { BrowserService } from '../../services';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { PaginationModule } from '../pagination/pagination.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    NgxPaginationModule,
+    PaginationModule
   ],
   declarations: [CaseListComponent],
   exports: [CaseListComponent],
