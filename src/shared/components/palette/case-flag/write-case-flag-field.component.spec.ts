@@ -1,14 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
+import { AddCommentsComponent } from './components';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
   let fixture: ComponentFixture<WriteCaseFlagFieldComponent>;
+  let addCommentsComponent: AddCommentsComponent;
   const flaglauncher_id = 'FlagLauncher';
   const flagLauncherCaseField: CaseField = {
     id: 'FlagLauncher1',
@@ -141,13 +143,16 @@ describe('WriteCaseFlagFieldComponent', () => {
     }
   };
 
+  addCommentsComponent = new AddCommentsComponent();
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: AddCommentsComponent, useValue: addCommentsComponent }
       ]
     })
     .compileComponents();
@@ -156,6 +161,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
+    component.addCommentsComponent = addCommentsComponent;
     fixture.detectChanges();
   });
 
@@ -217,6 +223,30 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
     expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
+  });
+
+  // TODO: The below test will be looked at during the future sprint work for case flags
+  // Setting it to non-runnable for now
+  xit('should succeed validate and set flags case field value', () => {
+    spyOn(component.addCommentsComponent, 'validateFlagComments');
+    spyOn(component, 'populateNewFlagDetailInstance').and.returnValue({});
+    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+    component.caseFlagParentFormGroup = new FormGroup({'caseField': new FormControl('')});
+    component.caseFlagParentFormGroup.get('caseField').setValue('sdffsf');
+    component.validateAndSetFlagsCaseFieldValue();
+    expect(component.addCommentsComponent.validateFlagComments).toHaveBeenCalled();
+    expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
+  });
+
+  it('should fail validate and set flags case field value', () => {
+    component.addCommentsComponent.errorMessages = [{
+      fieldId: 'flagComments', title: '', description: 'Please enter comments for this flag'
+    }];
+    spyOn(component.addCommentsComponent, 'validateFlagComments');
+    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+    component.validateAndSetFlagsCaseFieldValue();
+    expect(component.errorMessages).toEqual(component.addCommentsComponent.errorMessages);
+    expect(component.addCommentsComponent.validateFlagComments).toHaveBeenCalled();
   });
 
   // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null

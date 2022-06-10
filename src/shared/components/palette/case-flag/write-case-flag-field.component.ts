@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { AddCommentsComponent } from './components/add-comments/add-comments.component';
 import { CaseFlagState, FlagDetail, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
@@ -17,12 +18,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   @Input() public caseEditPageComponent: CaseEditPageComponent;
 
+  @ViewChild(AddCommentsComponent) addCommentsComponent: AddCommentsComponent;
+
   public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
   public createFlagCaption: CaseFlagText;
-  public errorMessage: ErrorMessage;
   public flagsData: Flags[];
   public selectedFlagDetail: FlagDetail;
   public caseFlagParentFormGroup = new FormGroup({});
@@ -144,6 +146,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       } else {
         this.fieldState++;
       }
+      this.caseEditPageComponent.writeCaseFlagFieldComponent = this;
     }
 
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
@@ -152,9 +155,24 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Trigger validation to clear the "notAtFinalState" error if now at the final state
       // TODO Should probably move this to happen when a child component emits to the parent... maybe
       this.formGroup.updateValueAndValidity();
-      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-      const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+    }
+  }
+
+  public validateAndSetFlagsCaseFieldValue(): void {
+    if (this.fieldState = CaseFlagFieldState.FLAG_COMMENTS) {
+      // Validate comments field
+      this.addCommentsComponent.validateFlagComments();
+      if (this.addCommentsComponent.errorMessages.length > 0) {
+        // Error found, Set form group error and display error message
+        this.errorMessages = this.addCommentsComponent.errorMessages;
+        this.formGroup.setErrors(this.addCommentsComponent.errorMessages);
+      } else {
+        // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
+        const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+        flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+        // There is no error, update form group value and validity
+        this.formGroup.updateValueAndValidity();
+      }
     }
   }
 
@@ -206,8 +224,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       otherDescription: this.flagCode === this.otherFlagTypeCode && this.caseFlagParentFormGroup.value.otherFlagTypeDescription
         ? this.caseFlagParentFormGroup.value.otherFlagTypeDescription
         : null,
-      // TODO populate flagComment properly
-      flagComment: '',
+      flagComment: this.caseFlagParentFormGroup.value.flagComments ? this.caseFlagParentFormGroup.value.flagComments : null,
       dateTimeCreated: new Date().toISOString(),
       path: this.flagPath,
       hearingRelevant: this.hearingRelevantFlag ? 'Yes' : 'No',
