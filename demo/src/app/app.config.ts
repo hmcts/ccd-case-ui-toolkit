@@ -33,7 +33,8 @@ export class AppConfig extends AbstractAppConfig {
     'document_management_secure_enabled':true,
     'access_management_mode':true,
     'refunds_url': '/api/refunds',
-    'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/'
+    'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
+    'case_linking_reason_code_refdata_api_url': '/refdata/commondata/lov/categories/CaseLinkingReasonCode'
   };
 
   constructor(private http: HttpClient) {
@@ -169,5 +170,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getPaymentReturnUrl(): string {
     return this.config.payment_return_url;
+  }
+  
+  public getRDCommonDataAPIUrl(): string {
+    return this.config.case_linking_reason_code_refdata_api_url;
   }
 }

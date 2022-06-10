@@ -4,6 +4,7 @@ import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesResponse } from '../../domain/linked-cases.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -30,6 +31,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   public parentUrl: string;
   public isLoaded: boolean;
   public getLinkedCasesResponse: LinkedCasesResponse;
+  public linkedCaseReasons: LovRefDataModel[];
 
   public caseId: string;
   public showHideLinkText = 'Show';
@@ -38,7 +40,9 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private readonly casesService: CasesService) {
+    private readonly casesService: CasesService,
+    private commonDataService: CommonDataService,
+    ) {
   }
 
   public ngAfterViewInit(): void {
@@ -58,6 +62,10 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public fetchPageData() {
     this.caseId = this.route.snapshot.data.case.case_id;
+    this.commonDataService.getRefData().subscribe({
+      next: reasons => this.linkedCaseReasons = reasons.list_of_values,
+      error: error => this.notifyAPIFailure.emit(true)
+    })
     this.casesService.getLinkedCases(this.caseId).subscribe(
       response => {
         this.getLinkedCasesResponse = response;
@@ -75,5 +83,13 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     this.showHideLinkText = this.showHideLinkText === 'Show'
       ? 'Hide'
       : 'Show';
+  }
+
+  public getReasonValueMappingFromKey(key: string) {
+    if (!this.linkedCaseReasons) {
+      return;
+    }
+    const mappedReason = this.linkedCaseReasons.find(x => x.key === key)
+    return mappedReason && mappedReason.value_en;
   }
 }

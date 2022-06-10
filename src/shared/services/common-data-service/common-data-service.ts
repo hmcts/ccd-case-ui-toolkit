@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 
 export interface LovRefDataModel {
@@ -18,14 +18,21 @@ export interface LovRefDataModel {
     from?: string;
   }
 
+  export interface LovRefDataByServiceModel {
+    list_of_values: LovRefDataModel[];
+  }
+
 @Injectable()
 export class CommonDataService {
 
     constructor(private readonly http: HttpClient,
                 private readonly appconfig: AbstractAppConfig) {}
 
-    public getRefData(): Observable<LovRefDataModel[]> {
-            const url = '/assets/getCaseReasons.json';
-            return this.http.get<LovRefDataModel[]>(url)
+    public getRefData(): Observable<LovRefDataByServiceModel> {
+            const url = this.appconfig.getRDCommonDataAPIUrl();
+            if (url) {
+              return this.http.get<LovRefDataByServiceModel>(url, {observe: 'body'});
+            }
+            return of(null);
     }
 }

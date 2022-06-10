@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, getTestBed, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
@@ -8,20 +8,70 @@ import { PipesModule } from '../../../../../pipes/pipes.module';
 
 import createSpyObj = jasmine.createSpyObj;
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 
-describe('LinkCasesFromTableComponent', () => {
+fdescribe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
   let searchService: any;
   let nativeElement: any;
   let mockRouter: any;
+  let commonDataService: any;
+
+  const linkCaseReasons: LovRefDataByServiceModel = {
+    list_of_values: [
+    {
+      key: 'progressed',
+      value_en: 'Progressed as part of this lead case',
+      value_cy: '',
+      hint_text_en: 'Progressed as part of this lead case',
+      hint_text_cy: '',
+      lov_order: 1,
+      parent_key: null,
+      category_key: 'caseLinkReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'bail',
+      value_en: 'Bail',
+      value_cy: '',
+      hint_text_en: 'Bail',
+      hint_text_cy: '',
+      lov_order: 2,
+      parent_key: null,
+      category_key: 'caseLinkReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'other',
+      value_en: 'Other',
+      value_cy: '',
+      hint_text_en: 'Other',
+      hint_text_cy: '',
+      lov_order: 3,
+      parent_key: null,
+      category_key: 'caseLinkReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+  ]};
+
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
     url: ''
   };
 
   beforeEach(async(() => {
+    commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses', 'getLinkedCases']);
     searchService = createSpyObj('searchService', ['searchCases']);
     TestBed.configureTestingModule({
@@ -36,7 +86,8 @@ describe('LinkCasesFromTableComponent', () => {
         },
         { provide: Router, useValue: mockRouter },
         { provide: CasesService, useValue: casesService },
-        { provide: SearchService, useValue: searchService }
+        { provide: SearchService, useValue: searchService },
+        { provide: CommonDataService, useValue: commonDataService }
       ],
       declarations: [LinkedCasesFromTableComponent],
     })
@@ -93,6 +144,7 @@ describe('LinkCasesFromTableComponent', () => {
     component = fixture.componentInstance;
     nativeElement = fixture.debugElement.nativeElement;
     casesService.getLinkedCases.and.returnValue(of(linkedCasesMock));
+    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
   });
 
   it('should create component', () => {

@@ -60,7 +60,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     }
     this.caseId = this.route.snapshot.data.case.case_id;
     this.commonDataService.getRefData().subscribe({
-      next: reasons => this.linkedCaseReasons = reasons,
+      next: reasons => this.linkedCaseReasons = reasons.list_of_values,
       error: error => this.notifyAPIFailure.emit(true)
     })
     this.getAllLinkedCaseInformation();
@@ -82,8 +82,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     let secondLevelresultArray = [];
     const data = this.caseField && this.caseField.value || [];
     data.forEach((item: any) => {
-      const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'Progressed')
-      const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'Case consolidated')
+      const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'CLRCO16') // PROGRESSED AS A LEAD CASE
+      const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'CLRCO15') // CASE CONSOLIDATED
       if (progressedStateReason) {
         topLevelresultArray.push(item)
       } else if (consolidatedStateReason) {
