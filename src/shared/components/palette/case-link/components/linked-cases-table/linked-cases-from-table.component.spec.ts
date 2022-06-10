@@ -10,7 +10,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 
-fdescribe('LinkCasesFromTableComponent', () => {
+describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;

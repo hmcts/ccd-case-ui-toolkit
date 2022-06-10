@@ -12,7 +12,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../../../../../domain';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 
-fdescribe('LinkCasesToTableComponent', () => {
+describe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
   let fixture: ComponentFixture<LinkedCasesToTableComponent>;
   let casesService: any;
