@@ -225,6 +225,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
   });
 
+  // TODO: The below test will be looked at during the future sprint work for case flags
+  // Setting it to non-runnable for now
   xit('should succeed validate and set flags case field value', () => {
     spyOn(component.addCommentsComponent, 'validateFlagComments');
     spyOn(component, 'populateNewFlagDetailInstance').and.returnValue({});

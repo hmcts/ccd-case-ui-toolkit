@@ -179,6 +179,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
                 if (this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_COMMENTS &&
                   this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_UPDATE) {
+                  // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
+                  // (expected always to be one of the two), to set the correct error message
                   let action = '';
                   if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
                     action = 'creation';
