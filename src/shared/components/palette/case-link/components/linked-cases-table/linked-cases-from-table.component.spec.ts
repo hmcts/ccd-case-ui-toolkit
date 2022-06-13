@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 import { AbstractAppConfig } from '../../../../../../app.config';
 
-fdescribe('LinkCasesFromTableComponent', () => {
+describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
