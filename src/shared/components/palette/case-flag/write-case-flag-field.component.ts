@@ -6,6 +6,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AddCommentsComponent } from './components/add-comments/add-comments.component';
+import { UpdateFlagComponent } from './components/update-flag/update-flag.component';
 import { CaseFlagState, FlagDetail, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
