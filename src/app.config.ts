@@ -83,7 +83,7 @@ export abstract class AbstractAppConfig {
   }
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
-  abstract getCaseLinkingReasonCommonDataAPIUrl(): string;
+  abstract getRDCommonDataApiUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -143,5 +143,5 @@ export class CaseEditorConfig {
   cam_role_assignments_api_url?: string;
   refunds_url: string;
   payment_return_url: string;
-  case_linking_reason_code_refdata_api_url: string;
+  rd_common_data_api_url: string;
 }

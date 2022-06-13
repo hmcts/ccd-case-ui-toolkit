@@ -5,6 +5,7 @@ import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesResponse } from '../../domain/linked-cases.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
+import { AbstractAppConfig } from '../../../../../../app.config';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -42,6 +43,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     private router: Router,
     private readonly casesService: CasesService,
     private commonDataService: CommonDataService,
+    private readonly appConfig: AbstractAppConfig,
     ) {
   }
 
@@ -62,7 +64,9 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public fetchPageData() {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.commonDataService.getRefData().subscribe({
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+
+    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => this.linkedCaseReasons = reasons.list_of_values,
       error: error => this.notifyAPIFailure.emit(true)
     })

@@ -157,7 +157,7 @@ export class AppMockConfig implements AbstractAppConfig {
       return '';
   }
 
-  getCaseLinkingReasonCommonDataAPIUrl(): string {
+  getRDCommonDataApiUrl(): string {
     return '';
   }
 }

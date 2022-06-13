@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
 import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
+import { AbstractAppConfig } from '../../../../../../app.config';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -40,6 +41,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public caseId: string;
 
   constructor(
+    private readonly appConfig: AbstractAppConfig,
     private commonDataService: CommonDataService,
     private route: ActivatedRoute,
     private router: Router,
@@ -58,8 +60,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       this.notifyAPIFailure.emit(true);
       return;
     }
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.commonDataService.getRefData().subscribe({
+    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => this.linkedCaseReasons = reasons.list_of_values,
       error: error => this.notifyAPIFailure.emit(true)
     })

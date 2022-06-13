@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { AbstractAppConfig } from '../../../app.config';
 
 export interface LovRefDataModel {
     category_key: string;
@@ -25,11 +24,9 @@ export interface LovRefDataModel {
 @Injectable()
 export class CommonDataService {
 
-    constructor(private readonly http: HttpClient,
-                private readonly appconfig: AbstractAppConfig) {}
+    constructor(private readonly http: HttpClient) {}
 
-    public getRefData(): Observable<LovRefDataByServiceModel> {
-            const url = this.appconfig.getCaseLinkingReasonCommonDataAPIUrl();
+    public getRefData(url: string): Observable<LovRefDataByServiceModel> {
             if (url) {
               return this.http.get<LovRefDataByServiceModel>(url, {observe: 'body'});
             }

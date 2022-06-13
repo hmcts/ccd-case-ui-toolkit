@@ -9,8 +9,9 @@ import { PipesModule } from '../../../../../pipes/pipes.module';
 import createSpyObj = jasmine.createSpyObj;
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
+import { AbstractAppConfig } from '../../../../../../app.config';
 
-describe('LinkCasesFromTableComponent', () => {
+fdescribe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
   let fixture: ComponentFixture<LinkedCasesFromTableComponent>;
   let casesService: any;
@@ -18,6 +19,7 @@ describe('LinkCasesFromTableComponent', () => {
   let nativeElement: any;
   let mockRouter: any;
   let commonDataService: any;
+  let appConfig: any;
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
@@ -71,6 +73,7 @@ describe('LinkCasesFromTableComponent', () => {
   };
 
   beforeEach(async(() => {
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
     commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses', 'getLinkedCases']);
     searchService = createSpyObj('searchService', ['searchCases']);
@@ -87,7 +90,8 @@ describe('LinkCasesFromTableComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService },
-        { provide: CommonDataService, useValue: commonDataService }
+        { provide: CommonDataService, useValue: commonDataService },
+        { provide: AbstractAppConfig, useValue: appConfig }
       ],
       declarations: [LinkedCasesFromTableComponent],
     })

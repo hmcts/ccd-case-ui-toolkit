@@ -34,7 +34,7 @@ export class AppConfig extends AbstractAppConfig {
     'access_management_mode':true,
     'refunds_url': '/api/refunds',
     'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
-    'case_linking_reason_code_refdata_api_url': '/refdata/commondata/lov/categories/CaseLinkingReasonCode'
+    'rd_common_data_api_url': '/refdata/commondata'
   };
 
   constructor(private http: HttpClient) {
@@ -172,7 +172,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.payment_return_url;
   }
   
-  public getCaseLinkingReasonCommonDataAPIUrl(): string {
-    return this.config.case_linking_reason_code_refdata_api_url;
+  public getRDCommonDataApiUrl(): string {
+    return this.config.rd_common_data_api_url;
   }
 }
