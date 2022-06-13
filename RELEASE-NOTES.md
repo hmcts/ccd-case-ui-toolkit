@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.17.22-CaseLinkingReasonCode-api-integration
+**EUI-5930** Link/Unlink cases- call LoV api to retrieve category CaseLinkingReasonCode from toolkit
+
 ### Version 4.17.18-Linked-case-tab Display-(no linked cases)
 **EUI-5639** Link cases- Linked case tab Display (no linked cases)
 

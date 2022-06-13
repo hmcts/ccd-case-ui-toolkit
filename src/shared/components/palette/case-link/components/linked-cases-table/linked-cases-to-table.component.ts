@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
 import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
+import { AbstractAppConfig } from '../../../../../../app.config';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -40,6 +41,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public caseId: string;
 
   constructor(
+    private readonly appConfig: AbstractAppConfig,
     private commonDataService: CommonDataService,
     private route: ActivatedRoute,
     private router: Router,
@@ -58,9 +60,10 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       this.notifyAPIFailure.emit(true);
       return;
     }
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.commonDataService.getRefData().subscribe({
-      next: reasons => this.linkedCaseReasons = reasons,
+    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+      next: reasons => this.linkedCaseReasons = reasons.list_of_values,
       error: error => this.notifyAPIFailure.emit(true)
     })
     this.getAllLinkedCaseInformation();
@@ -82,8 +85,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     let secondLevelresultArray = [];
     const data = this.caseField && this.caseField.value || [];
     data.forEach((item: any) => {
-      const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'Progressed')
-      const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'Case consolidated')
+      const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'CLRCO16') // PROGRESSED AS A LEAD CASE
+      const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'CLRCO15') // CASE CONSOLIDATED
       if (progressedStateReason) {
         topLevelresultArray.push(item)
       } else if (consolidatedStateReason) {

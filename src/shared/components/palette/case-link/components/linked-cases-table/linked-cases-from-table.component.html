@@ -12,7 +12,7 @@
         <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Reasons for case link</th>
       </tr>
     </thead>
-    <tbody class="govuk-table__body">
+    <tbody class="govuk-table__body" *ngIf="getLinkedCasesResponse">
       <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse.linkedCases">
         <td class="govuk-table__cell case-table-column">
           <p class="govuk-body"><a target="_blank" href="cases/case-details/{{case.caseReference}}" rel="noopener"><span
@@ -24,7 +24,7 @@
         <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.state}}</span></td>
         <td class="govuk-table__cell case-table-column" *ngFor="let details of case.linkDetails">
           <span *ngFor="let reason of details.reasons; let i = index; let isLast = last" class="text-16">
-            {{reason.OtherDescription}} <br>
+            {{getReasonValueMappingFromKey(reason.reasonCode)}} <br>
           </span>
         </td>
       </tr>

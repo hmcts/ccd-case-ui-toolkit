@@ -6,12 +6,12 @@ import { of } from 'rxjs';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkCaseReason } from '../../domain';
 import { LinkedCasesToTableComponent } from './linked-cases-to-table.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../../../../../domain';
-import { CommonDataService } from '../../../../../services/common-data-service/common-data-service';
+import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
+import { AbstractAppConfig } from '../../../../../../app.config';
 
 describe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
@@ -19,6 +19,7 @@ describe('LinkCasesToTableComponent', () => {
   let casesService: any;
   let searchService: any;
   let commonDataService: any;
+  let appConfig: any;
 
   let mockRouter: any;
   mockRouter = {
@@ -65,7 +66,8 @@ describe('LinkCasesToTableComponent', () => {
       ]
     }
   ];
-  const linkCaseReasons: LinkCaseReason[] = [
+  const linkCaseReasons: LovRefDataByServiceModel = {
+    list_of_values: [
     {
       key: 'progressed',
       value_en: 'Progressed as part of this lead case',
@@ -79,7 +81,6 @@ describe('LinkCasesToTableComponent', () => {
       active_flag: 'Y',
       child_nodes: null,
       from: 'exui-default',
-      selected: true,
     },
     {
       key: 'bail',
@@ -109,8 +110,10 @@ describe('LinkCasesToTableComponent', () => {
       child_nodes: null,
       from: 'exui-default',
     },
-  ];
+  ]};
+
   beforeEach(async(() => {
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
     commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases', 'searchCasesByIds']);
@@ -128,7 +131,8 @@ describe('LinkCasesToTableComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService },
-        { provide: CommonDataService, useValue: commonDataService }
+        { provide: CommonDataService, useValue: commonDataService },
+        { provide: AbstractAppConfig, useValue: appConfig }
       ],
       declarations: [LinkedCasesToTableComponent],
     })

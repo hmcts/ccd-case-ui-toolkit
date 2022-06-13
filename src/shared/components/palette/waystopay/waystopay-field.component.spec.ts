@@ -64,6 +64,8 @@ const APP_CONFIG: AbstractAppConfig = {
     getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
     getLocationRefApiUrl: () => 'locationRefApiUrl',
     getPaymentReturnUrl: () => 'paymentReturnUrl',
+    getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
+
   };
 
   let PaymentWebComponent;

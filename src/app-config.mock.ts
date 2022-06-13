@@ -157,7 +157,7 @@ export class AppMockConfig implements AbstractAppConfig {
       return '';
   }
 
-  getRDCommonDataAPIUrl(): string {
+  getRDCommonDataApiUrl(): string {
     return '';
   }
 }
