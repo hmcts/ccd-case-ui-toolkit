@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState } from '../../domain';
-import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagWizardStepTitle } from '../../enums';
 
 @Component({
   selector: 'ccd-add-comments',
@@ -12,8 +11,6 @@ export class AddCommentsComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
-
-  @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public addCommentsTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
@@ -31,14 +28,7 @@ export class AddCommentsComponent implements OnInit {
     this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));
   }
 
-  public onNext(): void {
-    // Validate flag comments entry
-    this.validateTextEntry();
-    // Return case flag field state and error messages to the parent
-    this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS, errorMessages: this.errorMessages });
-  }
-
-  private validateTextEntry(): void {
+  public validateFlagComments(): void {
     this.flagCommentsNotEnteredErrorMessage = null;
     this.flagCommentsCharLimitErrorMessage = null;
     this.errorMessages = [];
