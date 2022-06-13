@@ -11,4 +11,7 @@ export class LabelFieldComponent {
 
   @Input()
   caseFields: CaseField[] = [];
+
+  @Input()
+  markdownUseHrefAsRouterLink?: boolean;
 }
