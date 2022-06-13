@@ -9,6 +9,7 @@ import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edi
 import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
 import {
   AddCommentsComponent,
+  CaseFlagSummaryListComponent,
   CaseFlagTableComponent,
   ManageCaseFlagsComponent,
   SearchLanguageInterpreterComponent,
@@ -39,7 +40,8 @@ import {
     SelectFlagLocationComponent,
     ManageCaseFlagsComponent,
     AddCommentsComponent,
-    UpdateFlagComponent
+    UpdateFlagComponent,
+    CaseFlagSummaryListComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,

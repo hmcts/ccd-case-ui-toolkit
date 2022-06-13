@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.6-review-flag-details-content-and-layout
+**EUI-5968** Display alternate version of ReadCaseFlagField component, with a summary list when display context is "Check your answers"
+
 ### Version 4.13.2-create-case-flag-integration-with-check-your-answers
 **EUI-4852** First pass at integration with "Check your answers" stage of the main Case Event flow, and persisting a case flag
 

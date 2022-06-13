@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
+import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
@@ -80,7 +80,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       if (this.caseDetails.tabs) {
         for (const tab of this.caseDetails.tabs) {
           if (tab.fields) {
-            flagLauncherCaseField = tab.fields.find(caseField => caseField.field_type.type === 'FlagLauncher');
+            flagLauncherCaseField = tab.fields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
             // Stop searching for a FlagLauncher field as soon as it is found
             if (flagLauncherCaseField) {
               break;
