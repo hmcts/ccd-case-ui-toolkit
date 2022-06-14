@@ -12,6 +12,9 @@
 ### Version 4.12.0
 Add refunds functionality
 
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
 ### Version 4.9.16-wcag20-exui-4"
 **FPLA: Accessibility Issues Found in ExUI** FPLA: Accessibility Issues Found in ExUI
 
