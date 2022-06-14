@@ -173,6 +173,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseEdit.confirmation) {
       caseEventData.data = {};
     }
+
     return caseEventData;
   }
 
