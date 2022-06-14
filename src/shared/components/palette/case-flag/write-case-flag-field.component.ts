@@ -125,11 +125,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.flagCode = caseFlagState.flagCode;
       this.listOfValues = caseFlagState.listOfValues;
     }
+
+		if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
+			this.setCaseFlagParentFormGroup('CaseFlag2');
+		}
+
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
+
     // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
     // means the user needs to select from the next set of flag types before they can move on
     if (this.errorMessages.length === 0 && !caseFlagState.isParentFlagType) {
@@ -174,10 +180,22 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
         if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
           const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+					console.log('caseFlagParentFormGroup CREATE', this.caseFlagParentFormGroup);
           flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
         }
         if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
           // TODO: EUI-5342
+					debugger;
+					const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+					const flagDetailToUpdate = flagsCaseFieldValue.details.filter(detail => detail.value.name === this.selectedFlagDetail.name
+						&& detail.value.flagCode === this.selectedFlagDetail.flagCode);
+					if (flagDetailToUpdate) {
+						flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
+							? this.caseFlagParentFormGroup.value.flagComments
+							: null;
+					}
+					console.log('caseFlagParentFormGroup UPDATE', this.caseFlagParentFormGroup);
+					console.log('flagsCaseFieldValue', flagsCaseFieldValue);
         }
         // There is no error, update form group value and validity
         this.formGroup.updateValueAndValidity();
@@ -218,6 +236,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {
+		console.log('CASE FLAG PARENT FORM GROUP COMMENTS', this.caseFlagParentFormGroup.value.flagComments);
     return {
       name: this.flagName,
       // Currently, subTypeValue and subTypeKey are applicable only to language flag types
