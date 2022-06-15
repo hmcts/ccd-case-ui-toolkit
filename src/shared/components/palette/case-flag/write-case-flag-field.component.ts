@@ -1,7 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { throwError } from 'rxjs';
 import { CaseField, ErrorMessage } from '../../../domain';
+import { AlertService } from '../../../services/alert/alert.service';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -44,6 +46,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   constructor(
     private readonly route: ActivatedRoute,
+    private readonly alertService: AlertService,
   ) {
     super();
   }
@@ -77,7 +80,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                 partyName: caseField.value.partyName,
                 roleOnCase: caseField.value.roleOnCase,
                 details: caseField.value.details
-                  ? ((caseField.value.details) as any[]).map((detail) => {
+                  ? ((caseField.value.details) as any[]).map(detail => {
                     return Object.assign({}, ...Object.keys(detail.value).map(k => {
                       switch (k) {
                         // These two fields are date-time fields
@@ -125,7 +128,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.flagCode = caseFlagState.flagCode;
       this.listOfValues = caseFlagState.listOfValues;
     }
-
+    // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
+    // set the parent Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
       this.setCaseFlagParentFormGroup(caseFlagState.flagsCaseFieldId);
     }
@@ -192,15 +196,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  private addFlagToCollection(): void {
+  public addFlagToCollection(): void {
     const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-    console.log('caseFlagParentFormGroup CREATE', this.caseFlagParentFormGroup);
-    flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
-    // There is no error, update form group value and validity
-    this.formGroup.updateValueAndValidity();
+    if (flagsCaseFieldValue) {
+      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+      // There is no error, update form group value and validity
+      this.formGroup.updateValueAndValidity();
+    } else {
+      console.log('Case field value not found, flag cannot be added:', flagsCaseFieldValue);
+    }
   }
 
-  private updateFlagInCollection(): void {
+  public updateFlagInCollection(): void {
     const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
     const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlagDetail.id);
     if (flagDetailToUpdate) {
