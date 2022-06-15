@@ -30,7 +30,9 @@ export class ManageCaseFlagsComponent implements OnInit {
         if (flagsInstance.details && flagsInstance.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.details.map(detail => this.mapFlagDetailForDisplay(detail, flagsInstance.partyName))
+            ...flagsInstance.details.map(detail =>
+              this.mapFlagDetailForDisplay(detail, flagsInstance.partyName, flagsInstance.flagsCaseFieldId)
+            )
           ];
         }
         return displayData;
@@ -47,10 +49,11 @@ export class ManageCaseFlagsComponent implements OnInit {
     }
   }
 
-  public mapFlagDetailForDisplay(flagDetail: FlagDetail, partyName: string): FlagDetailDisplay {
+  public mapFlagDetailForDisplay(flagDetail: FlagDetail, partyName: string, flagsCaseFieldId: string): FlagDetailDisplay {
     return {
       partyName,
-      flagDetail
+      flagDetail,
+      flagsCaseFieldId
     };
   }
 
@@ -70,6 +73,9 @@ export class ManageCaseFlagsComponent implements OnInit {
       errorMessages: this.errorMessages,
       selectedFlagDetail: this.formGroup.get(this.selectedControlName).value
         ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagDetail
+        : null,
+      flagsCaseFieldId: this.formGroup.get(this.selectedControlName).value
+        ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagsCaseFieldId
         : null
     });
   }
