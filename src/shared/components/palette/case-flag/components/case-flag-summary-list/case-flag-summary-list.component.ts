@@ -11,6 +11,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
 
   public flagDescription: string;
   public flagComments: string;
+  public readonly caseLevelLocation = 'Case level';
 
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {

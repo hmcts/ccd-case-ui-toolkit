@@ -5,6 +5,10 @@
 ### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
 **EUI-5848** Manage case flags comments mandatory or optional
 
+### Version 4.13.6-review-flag-details-change-link-bugfix
+**EUI-6043** Fix bug that results in more than one new case flag being added at the same time, which gives the appearance of
+caching previous data when the user elects to change the case flag being created
+
 ### Version 4.13.6-review-flag-details-content-and-layout
 **EUI-5968** Display alternate version of ReadCaseFlagField component, with a summary list when display context is "Check your answers"
 

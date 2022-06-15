@@ -105,6 +105,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
+
+      // Set reference to this component in parent CaseEditPageComponent (needed for controlling error message setting in
+      // the parent, and for parent to invoke validation and value setting in the child, on a submit event)
+      this.caseEditPageComponent.writeCaseFlagFieldComponent = this;
     }
   }
 
@@ -148,14 +152,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       } else {
         this.fieldState++;
       }
-      this.caseEditPageComponent.writeCaseFlagFieldComponent = this;
     }
 
     // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
     // the form is at the final state
     if (this.isAtFinalState()) {
       // Trigger validation to clear the "notAtFinalState" error if now at the final state
-      // TODO Should probably move this to happen when a child component emits to the parent... maybe
       this.formGroup.updateValueAndValidity();
     }
   }
@@ -177,6 +179,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           // Create a details array if one does not exist
           if (!flagsCaseFieldValue.hasOwnProperty('details')) {
             flagsCaseFieldValue.details = [];
+          }
+          // Ensure no more than one new flag is being added at a time, by removing any previous entry from the details
+          // array where that entry has no id (hence it is new - and there should be only one such entry). (This scenario
+          // occurs if the user repeats the Case Flag creation journey by using the "Change" link.)
+          const indexOfNewFlagDetail = flagsCaseFieldValue.details.findIndex(element => !element.hasOwnProperty('id'));
+          if (indexOfNewFlagDetail > -1) {
+            flagsCaseFieldValue.details.splice(indexOfNewFlagDetail, 1);
           }
           flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
         }

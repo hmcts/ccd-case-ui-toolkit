@@ -44,6 +44,13 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           return flags;
         }, []) as Flags[];
       }
+
+      // Separate the party-level and case-level flags
+      this.partyLevelCaseFlagData = this.flagsData.filter(
+        flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
+      // There will be only one case-level flags instance containing all case-level flag details
+      this.caseLevelCaseFlagData = this.flagsData.find(
+        flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
     } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
       // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
       // Determine which Flags instance to display on the summary page by looking for a child FormGroup whose controls
@@ -57,13 +64,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           this.formGroup.controls[keyOfFormGroupWithNewFlag[0]] as FormGroup);
       }
     }
-
-    // Separate the party-level and case-level flags
-    this.partyLevelCaseFlagData = this.flagsData.filter(
-      flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
-    // There will be only one case-level flags instance containing all case-level flag details
-    this.caseLevelCaseFlagData = this.flagsData.find(
-      flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
   }
 
   private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
