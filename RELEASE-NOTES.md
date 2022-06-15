@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.7-create-case-level-case-flag
+**EUI-5849** Create and display case-level flags
+
 ### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
 **EUI-5848** Manage case flags comments mandatory or optional
 

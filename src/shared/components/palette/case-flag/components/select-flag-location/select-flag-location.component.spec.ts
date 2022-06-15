@@ -47,6 +47,21 @@ describe('SelectFlagLocationComponent', () => {
           status: 'Active'
         }
       ] as FlagDetail[]
+    },
+    {
+      flagsCaseFieldId: 'caseFlags',
+      partyName: null,
+      details: [
+        {
+          name: 'Flag 4',
+          flagComment: 'Case-level flag',
+          dateTimeCreated: new Date(),
+          path: ['Reasonable adjustment'],
+          hearingRelevant: false,
+          flagCode: 'FL1',
+          status: 'Active'
+        }
+      ] as FlagDetail[]
     }
   ] as Flags[];
 
@@ -91,22 +106,25 @@ describe('SelectFlagLocationComponent', () => {
     expect(nextButtonElement).toBeNull();
   });
 
-  it('should display a radio button for each party', () => {
+  it('should display a radio button for each party and one for case level', () => {
     component.ngOnInit();
-    expect(component.filteredFlagsData.length).toBe(2);
+    expect(component.filteredFlagsData.length).toBe(3);
     const nativeElement = fixture.debugElement.nativeElement;
     const radioButtonElements = nativeElement.querySelectorAll('.govuk-radios__input');
-    expect(radioButtonElements.length).toBe(2);
+    expect(radioButtonElements.length).toBe(3);
     // Cannot check a radio button input element's value directly (it is just "on"), so check it via the associated
     // FormControl when the button is clicked
     radioButtonElements[0].click();
     expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[0]);
     radioButtonElements[1].click();
     expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[1]);
+    radioButtonElements[2].click();
+    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[2]);
     const radioButtonLabelElements = nativeElement.querySelectorAll('.govuk-radios__label');
-    expect(radioButtonLabelElements.length).toBe(2);
+    expect(radioButtonLabelElements.length).toBe(3);
     expect(radioButtonLabelElements[0].textContent).toEqual(flagsData[0].partyName);
     expect(radioButtonLabelElements[1].textContent).toEqual(flagsData[1].partyName);
+    expect(radioButtonLabelElements[2].textContent).toEqual(component.caseLevelFlagLabel);
   });
 
   it('should emit to parent if the validation succeeds', () => {
@@ -127,7 +145,7 @@ describe('SelectFlagLocationComponent', () => {
   it('should fail validation and emit to parent if no flag location is selected', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
-    expect(component.filteredFlagsData.length).toBe(2);
+    expect(component.filteredFlagsData.length).toBe(3);
     expect(component.caseFlagsConfigError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('.button').click();
