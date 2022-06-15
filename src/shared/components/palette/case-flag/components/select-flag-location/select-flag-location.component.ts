@@ -21,13 +21,17 @@ export class SelectFlagLocationComponent implements OnInit {
   public filteredFlagsData: Flags[];
   public caseFlagsConfigError = false;
   public readonly selectedLocationControlName = 'selectedLocation';
+  public readonly caseLevelFlagLabel = 'Case level';
+  private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public ngOnInit(): void {
     this.flagLocationTitle = CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
 
-    // Filter out any flags instances that don't have a party name
+    // Filter out any flags instances that don't have a party name, unless the instance is for case-level flags (this
+    // is expected not to have a party name)
     if (this.flagsData) {
-      this.filteredFlagsData = this.flagsData.filter(f => f.partyName != null);
+      this.filteredFlagsData =
+        this.flagsData.filter(f => f.partyName != null || f.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
     }
 
     // Add a FormControl for the selected flag location if there is at least one flags instance remaining after filtering

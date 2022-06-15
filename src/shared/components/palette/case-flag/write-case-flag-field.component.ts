@@ -76,7 +76,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                 flagsCaseFieldId: caseField.id,
                 partyName: caseField.value.partyName,
                 roleOnCase: caseField.value.roleOnCase,
-                details: caseField.value.details
+                details: caseField.value.details && caseField.value.details.length > 0
                   ? ((caseField.value.details) as any[]).map(detail => {
                     return Object.assign({}, ...Object.keys(detail.value).map(k => {
                       switch (k) {
@@ -180,7 +180,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
         if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
           const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-					console.log('caseFlagParentFormGroup CREATE', this.caseFlagParentFormGroup);
+          // Create a details array if one does not exist
+          if (!flagsCaseFieldValue.hasOwnProperty('details')) {
+            flagsCaseFieldValue.details = [];
+          }
           flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
         }
         if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {

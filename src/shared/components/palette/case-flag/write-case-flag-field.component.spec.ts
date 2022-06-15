@@ -76,6 +76,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     flagCode: 'WCA',
     status: CaseFlagStatus.INACTIVE
   };
+  const caseFlagsFieldId = 'caseFlags';
   const mockRoute = {
     snapshot: {
       data: {
@@ -96,8 +97,7 @@ describe('WriteCaseFlagFieldComponent', () => {
             {
               id: caseFlag1FieldId,
               field_type: {
-                // TODO: Temporary field type; needs to be changed to "Flags" once the implementation has been changed over
-                id: 'CaseFlag',
+                id: 'Flags',
                 type: 'Complex'
               },
               value: {
@@ -118,8 +118,7 @@ describe('WriteCaseFlagFieldComponent', () => {
             {
               id: caseFlag2FieldId,
               field_type: {
-                // TODO: Temporary field type; needs to be changed to "Flags" once the implementation has been changed over
-                id: 'CaseFlag',
+                id: 'Flags',
                 type: 'Complex'
               },
               value: {
@@ -136,6 +135,14 @@ describe('WriteCaseFlagFieldComponent', () => {
                   }
                 ]
               }
+            },
+            {
+              id: caseFlagsFieldId,
+              field_type: {
+                id: 'Flags',
+                type: 'Complex'
+              },
+              value: {}
             }
           ]
         }
@@ -206,7 +213,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.caseField = flagLauncherCaseField;
     component.ngOnInit();
     expect(component.flagsData).toBeTruthy();
-    expect(component.flagsData.length).toBe(2);
+    expect(component.flagsData.length).toBe(3);
     expect(component.flagsData[0].flagsCaseFieldId).toEqual(caseFlag1FieldId);
     expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
     expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
@@ -223,6 +230,10 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
     expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
+    expect(component.flagsData[2].flagsCaseFieldId).toEqual(caseFlagsFieldId);
+    expect(component.flagsData[2].partyName).toBeUndefined();
+    expect(component.flagsData[2].roleOnCase).toBeUndefined();
+    expect(component.flagsData[2].details).toBeNull();
   });
 
   // TODO: The below test will be looked at during the future sprint work for case flags

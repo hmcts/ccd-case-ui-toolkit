@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.7-manage-case-flags-comments-mandatory-or-optional",
+  "version": "4.13.7-create-case-level-case-flag",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
