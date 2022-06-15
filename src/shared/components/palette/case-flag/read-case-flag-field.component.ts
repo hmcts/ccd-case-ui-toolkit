@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CaseTab } from '../../../domain';
+import { CaseField, CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
@@ -16,9 +16,10 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
 
   public flagsData: Flags[];
   public partyLevelCaseFlagData: Flags[];
-  public caseLevelCaseFlagData: Flags[];
+  public caseLevelCaseFlagData: Flags;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
+  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   constructor(
     private readonly route: ActivatedRoute
@@ -38,7 +39,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           .some(caseField => caseField.field_type.type === 'FlagLauncher'))
         [0].fields.reduce((flags, caseField) => {
           if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
-            flags.push(this.mapValueToFlagsObject(caseField.value));
+            flags.push(this.mapCaseFieldToFlagsObject(caseField));
           }
           return flags;
         }, []) as Flags[];
@@ -57,22 +58,21 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       }
     }
 
-    // TODO: In future, this needs to separate party-level and case-level flags
-    this.generateCaseFlagData();
+    // Separate the party-level and case-level flags
+    this.partyLevelCaseFlagData = this.flagsData.filter(
+      flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
+    // There will be only one case-level flags instance containing all case-level flag details
+    this.caseLevelCaseFlagData = this.flagsData.find(
+      flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
   }
 
-  public generateCaseFlagData(): void {
-    // Temporary assignment of all flags data to party level until it is known how party-level and case-level will be
-    // distinguished
-    this.partyLevelCaseFlagData = this.flagsData;
-  }
-
-  private mapValueToFlagsObject(value: object): Flags {
+  private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
     return {
-      partyName: value['partyName'],
-      roleOnCase: value['roleOnCase'],
-      details: value['details']
-        ? ((value['details']) as any[]).map(detail => {
+      flagsCaseFieldId: caseField.id,
+      partyName: caseField.value['partyName'],
+      roleOnCase: caseField.value['roleOnCase'],
+      details: caseField.value['details'] && caseField.value['details'].length > 0
+        ? ((caseField.value['details']) as any[]).map(detail => {
           return Object.assign({}, ...Object.keys(detail.value).map(k => {
             switch (k) {
               // These two fields are date-time fields

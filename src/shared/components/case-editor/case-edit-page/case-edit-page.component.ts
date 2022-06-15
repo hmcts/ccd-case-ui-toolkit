@@ -177,7 +177,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                 this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
-                if (this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_COMMENTS) {
+                if (this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_COMMENTS &&
+                  this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_UPDATE) {
                   // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
                   // (expected always to be one of the two), to set the correct error message
                   let action = '';
