@@ -415,14 +415,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const allCaseFields = this.getCaseFieldsFromCurrentAndPreviousPages();
     const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true);
 
-		console.log('EDIT FORM', this.editForm.value);
-		console.log('PAGE FIELDS', pageFields);
-		console.log('PAGE EVENT DATA', pageEventData);
-		console.log('ALL CASE FIELDS', allCaseFields);
-		console.log('FORM EVENT DATA', formEventData);
-
-		debugger;
-
     // Now here's the key thing - the pageEventData has a property called `event_data` and
     // we need THAT to be the value of the entire form: `formEventData.data`.
     pageEventData.event_data = formEventData.data;
