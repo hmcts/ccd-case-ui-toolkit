@@ -7,6 +7,8 @@ import { AddCommentsComponent } from './components';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
+import createSpyObj = jasmine.createSpyObj;
+
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
   let fixture: ComponentFixture<WriteCaseFlagFieldComponent>;
@@ -169,6 +171,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
     component.addCommentsComponent = addCommentsComponent;
+    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['ngOnInit']);
     fixture.detectChanges();
   });
 

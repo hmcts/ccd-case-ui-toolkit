@@ -256,15 +256,15 @@ describe('ReadCaseFlagFieldComponent', () => {
   });
 
   it('should not map a Flags case field to a Flags object when the case field value is falsy', () => {
-    // Clear caseField.value for both case flags
+    // Clear caseField.value for both party-level case flags
     TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value = null;
     TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value = undefined;
     component.ngOnInit();
-    expect(component.flagsData.length).toBe(0);
+    expect(component.flagsData.length).toBe(1);
   });
 
   it('should map a Flags case field to a Flags object even if it has no flag details', () => {
-    // Clear caseField.value.details for both case flags
+    // Clear caseField.value.details for both party-level case flags
     TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value.details = null;
     TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value.details = undefined;
     component.ngOnInit();
