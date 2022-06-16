@@ -45,8 +45,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   private readonly otherFlagTypeCode = 'OT0001';
 
   constructor(
-    private readonly route: ActivatedRoute,
-    private readonly alertService: AlertService,
+    private readonly route: ActivatedRoute
   ) {
     super();
   }
@@ -254,7 +253,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {
-    console.log('CASE FLAG PARENT FORM GROUP COMMENTS', this.caseFlagParentFormGroup.value.flagComments);
     return {
       name: this.flagName,
       // Currently, subTypeValue and subTypeKey are applicable only to language flag types

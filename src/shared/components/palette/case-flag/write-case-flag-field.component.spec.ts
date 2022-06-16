@@ -23,6 +23,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag1PartyName = 'John Smith';
   const caseFlag1RoleOnCase = 'Claimant';
   const caseFlag1DetailsValue1 = {
+    id: '1234234134214123',
     name: 'Wheelchair access',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -36,6 +37,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     status: CaseFlagStatus.ACTIVE
   };
   const caseFlag1DetailsValue2 = {
+    id: '5678678578568567',
     name: 'Sign language',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -52,6 +54,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag2PartyName = 'Ann Peterson';
   const caseFlag2RoleOnCase = 'Defendant';
   const caseFlag2DetailsValue1 = {
+    id: '0987987687657654',
     name: 'Foreign national offender',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -64,6 +67,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     status: CaseFlagStatus.ACTIVE
   };
   const caseFlag2DetailsValue2 = {
+    id: '7890654385678342',
     name: 'Sign language',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -149,7 +153,22 @@ describe('WriteCaseFlagFieldComponent', () => {
       }
     }
   };
-
+  const flagDetail = {
+    id: '1234234134214123',
+    value: {
+      name: 'Wheelchair access',
+      dateTimeModified: '2022-02-13T00:00:00.000',
+      dateTimeCreated: '2022-02-11T00:00:00.000',
+      path: [
+        'Party',
+        'Reasonable adjustment',
+        'Mobility support'
+      ],
+      hearingRelevant: 'No',
+      flagCode: 'WCA',
+      status: CaseFlagStatus.ACTIVE
+    }
+  };
   addCommentsComponent = new AddCommentsComponent();
 
   beforeEach(async(() => {
@@ -236,17 +255,24 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].details).toBeNull();
   });
 
-  // TODO: The below test will be looked at during the future sprint work for case flags
-  // Setting it to non-runnable for now
-  xit('should succeed validate and set flags case field value', () => {
+  it('should succeed validate and set flags case field value', () => {
     spyOn(component.addCommentsComponent, 'validateFlagComments');
-    spyOn(component, 'populateNewFlagDetailInstance').and.returnValue({});
+    spyOn(component, 'addFlagToCollection');
     component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
-    component.caseFlagParentFormGroup = new FormGroup({'caseField': new FormControl('')});
-    component.caseFlagParentFormGroup.get('caseField').setValue('sdffsf');
+    const caseField = {
+      value: {
+        flagComments: 'test comment',
+        details: [flagDetail]
+      }
+    };
+    component.caseFlagParentFormGroup = new FormGroup({});
+    component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.addCommentsComponent.formGroup = new FormGroup({
+      flagComments: new FormControl('test comment')
+    });
     component.validateAndSetFlagsCaseFieldValue();
     expect(component.addCommentsComponent.validateFlagComments).toHaveBeenCalled();
-    expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
+    expect(component.addFlagToCollection).toHaveBeenCalled();
   });
 
   it('should fail validate and set flags case field value', () => {
@@ -254,10 +280,45 @@ describe('WriteCaseFlagFieldComponent', () => {
       fieldId: 'flagComments', title: '', description: 'Please enter comments for this flag'
     }];
     spyOn(component.addCommentsComponent, 'validateFlagComments');
+    spyOn(component, 'addFlagToCollection');
+    spyOn(component, 'updateFlagInCollection');
     component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
     component.validateAndSetFlagsCaseFieldValue();
     expect(component.errorMessages).toEqual(component.addCommentsComponent.errorMessages);
     expect(component.addCommentsComponent.validateFlagComments).toHaveBeenCalled();
+    expect(component.addFlagToCollection).not.toHaveBeenCalled();
+    expect(component.updateFlagInCollection).not.toHaveBeenCalled();
+  });
+
+  it('should add flag to collection when creating a flag', () => {
+    spyOn(component, 'populateNewFlagDetailInstance');
+    spyOn(component.formGroup, 'updateValueAndValidity');
+    const caseField = {
+      value: {
+        flagComments: 'test comment',
+        details: [flagDetail]
+      }
+    };
+    component.caseFlagParentFormGroup = new FormGroup({});
+    component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.addFlagToCollection();
+    expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
+    expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
+  });
+
+  it('should update flag in collection when updating a case flag', () => {
+    spyOn(component.formGroup, 'updateValueAndValidity');
+    component.selectedFlagDetail = caseFlag1DetailsValue1;
+    const caseField = {
+      value: {
+        flagComments: 'test comment',
+        details: [flagDetail]
+      }
+    };
+    component.caseFlagParentFormGroup = new FormGroup({});
+    component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.updateFlagInCollection();
+    expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
   });
 
   // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
