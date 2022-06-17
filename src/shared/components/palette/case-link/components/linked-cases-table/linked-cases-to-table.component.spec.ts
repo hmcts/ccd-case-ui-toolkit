@@ -196,6 +196,18 @@ describe('LinkCasesToTableComponent', () => {
     expect(component.searchCasesByCaseIds).toHaveBeenCalledTimes(2);
   });
 
+  it('should find atleast one casename missing a tag in the table', () => {
+    let caseNameMissingEle = 0;
+    component.ngOnInit();
+    fixture.detectChanges();
+    document.querySelectorAll('a').forEach(item => {
+      if (item.textContent.includes('Case name missing')) {
+        caseNameMissingEle += 1;
+      }
+    });
+    expect(caseNameMissingEle).toBeGreaterThan(0);
+  });
+
   it('should render linkedcases top table', () => {
     component.ngOnInit();
     fixture.detectChanges();

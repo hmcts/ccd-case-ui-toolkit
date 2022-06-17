@@ -14,7 +14,7 @@ interface LinkedCasesResponse {
   caseType: string;
   service: string;
   state: string;
-  Reasons: []
+  reasons: []
 }
 
 @Component({
@@ -35,7 +35,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public caseDetails: CaseView;
   public isLoaded: boolean;
-  public linkedCasesFromResponse: any = []
+  public linkedCasesFromResponse: LinkedCasesResponse[] = []
 
   public linkedCaseReasons: LovRefDataModel[];
   public caseId: string;
@@ -136,18 +136,19 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     const reasonDescriptons = []
     const caseReasonCode = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id);
     caseReasonCode.reasons.forEach(code => {
-      const foundReasonMapping = this.linkedCaseReasons.find(reason => reason.key === code.reasonCode);
+      const foundReasonMapping = this.linkedCaseReasons && this.linkedCaseReasons.find(reason => reason.key === code.reasonCode);
       if (foundReasonMapping) {
         reasonDescriptons.push(foundReasonMapping.value_en);
       }
     });
     return {
-      case_id: esSearchCasesResponse.case_id,
+      caseReference: esSearchCasesResponse.case_id,
+      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseType: esSearchCasesResponse.case_fields['[CASE_TYPE]'],
       service: esSearchCasesResponse.case_fields['[JURISDICTION]'],
       state: esSearchCasesResponse.case_fields['[STATE]'],
       reasons: reasonDescriptons,
-    } as unknown as LinkedCasesResponse
+    } as LinkedCasesResponse
   }
 
   public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
