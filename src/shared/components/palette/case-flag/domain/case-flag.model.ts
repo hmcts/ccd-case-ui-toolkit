@@ -1,4 +1,5 @@
 export interface FlagDetail {
+  id?: string;
   name: string;
   subTypeValue?: string;
   subTypeKey?: string;
@@ -22,4 +23,5 @@ export interface Flags {
 export interface FlagDetailDisplay {
   partyName: string;
   flagDetail: FlagDetail;
+  flagsCaseFieldId?: string;
 }

@@ -12,4 +12,5 @@ export interface CaseFlagState {
   flagCode?: string;
   listOfValues?: { key: string, value: string }[];
   selectedFlagDetail?: FlagDetail;
+  flagsCaseFieldId?: string;
 }

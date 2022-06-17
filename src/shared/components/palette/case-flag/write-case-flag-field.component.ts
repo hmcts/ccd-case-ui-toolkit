@@ -1,7 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { throwError } from 'rxjs';
 import { CaseField, ErrorMessage } from '../../../domain';
+import { AlertService } from '../../../services/alert/alert.service';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -43,7 +45,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   private readonly otherFlagTypeCode = 'OT0001';
 
   constructor(
-    private readonly route: ActivatedRoute,
+    private readonly route: ActivatedRoute
   ) {
     super();
   }
@@ -79,16 +81,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                 details: caseField.value.details
                   ? ((caseField.value.details) as any[]).map(detail => {
                     return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                      // The id property set below will be null for new case flag
+                      // and will be unique id returned from CCD for update existing flag
                       switch (k) {
                         // These two fields are date-time fields
                         case 'dateTimeModified':
                         case 'dateTimeCreated':
-                          return {[k]: new Date(detail.value[k])};
+                          return {[k]: new Date(detail.value[k]), 'id': detail.id};
                         // This field is a "yes/no" field
                         case 'hearingRelevant':
-                          return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
+                          return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, 'id': detail.id} : {[k]: false, 'id': detail.id};
                         default:
-                          return {[k]: detail.value[k]};
+                          return {[k]: detail.value[k], 'id': detail.id};
                       }
                     }));
                   }) as FlagDetail[]
@@ -125,11 +129,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.flagCode = caseFlagState.flagCode;
       this.listOfValues = caseFlagState.listOfValues;
     }
+    // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
+    // set the parent Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
+      this.setCaseFlagParentFormGroup(caseFlagState.flagsCaseFieldId);
+    }
+
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
+
     // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
     // means the user needs to select from the next set of flag types before they can move on
     if (this.errorMessages.length === 0 && !caseFlagState.isParentFlagType) {
@@ -171,17 +182,36 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.errorMessages = component.errorMessages;
         this.formGroup.setErrors(component.errorMessages);
       } else {
-        // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-        if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
-          const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-          flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+        switch (this.fieldState) {
+          case CaseFlagFieldState.FLAG_COMMENTS:
+            this.addFlagToCollection();
+            break;
+          case CaseFlagFieldState.FLAG_UPDATE:
+            this.updateFlagInCollection();
+            break;
         }
-        if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
-          // TODO: EUI-5342
-        }
-        // There is no error, update form group value and validity
-        this.formGroup.updateValueAndValidity();
       }
+    }
+  }
+
+  public addFlagToCollection(): void {
+    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+    if (flagsCaseFieldValue) {
+      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+      // There is no error, update form group value and validity
+      this.formGroup.updateValueAndValidity();
+    }
+  }
+
+  public updateFlagInCollection(): void {
+    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlagDetail.id);
+    if (flagDetailToUpdate) {
+      flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
+        ? this.caseFlagParentFormGroup.value.flagComments
+        : null;
+      // There is no error, update form group value and validity
+      this.formGroup.updateValueAndValidity();
     }
   }
 

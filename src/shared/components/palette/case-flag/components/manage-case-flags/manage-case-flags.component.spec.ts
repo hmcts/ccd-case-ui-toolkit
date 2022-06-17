@@ -13,6 +13,7 @@ describe('ManageCaseFlagsComponent', () => {
       partyName: 'Rose Bank',
       details: [
         {
+          id: '1234',
           name: 'Flag 1',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
@@ -22,6 +23,7 @@ describe('ManageCaseFlagsComponent', () => {
           status: 'Active'
         },
         {
+          id: '2345',
           name: 'Flag 2',
           flagComment: 'Rose\'s second flag',
           dateTimeCreated: new Date(),
@@ -30,12 +32,14 @@ describe('ManageCaseFlagsComponent', () => {
           flagCode: 'FL2',
           status: 'Inactive'
         }
-      ] as FlagDetail[]
+      ] as FlagDetail[],
+      flagsCaseFieldId: 'CaseFlag1'
     },
     {
       partyName: 'Tom Atin',
       details: [
         {
+          id: '3456',
           name: 'Flag 3',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
@@ -44,7 +48,8 @@ describe('ManageCaseFlagsComponent', () => {
           flagCode: 'FL1',
           status: 'Active'
         }
-      ] as FlagDetail[]
+      ] as FlagDetail[],
+      flagsCaseFieldId: 'CaseFlag2'
     }
   ] as Flags[];
 
@@ -125,9 +130,9 @@ describe('ManageCaseFlagsComponent', () => {
       flagCode: '123',
       status: 'active'
     } as FlagDetail;
-
+    const flagsCaseFieldId = 'CaseFlag2';
     const partyName = 'Wayne Sleep';
-    const displayResult = component.mapFlagDetailForDisplay(flagDetail, partyName);
+    const displayResult = component.mapFlagDetailForDisplay(flagDetail, partyName, flagsCaseFieldId);
     expect(displayResult.partyName).toEqual(partyName);
     expect(displayResult.flagDetail.name).toEqual(flagDetail.name);
     expect(displayResult.flagDetail.flagComment).toEqual(flagDetail.flagComment);
@@ -163,7 +168,8 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: flagsData[1].details[0]
+      selectedFlagDetail: flagsData[1].details[0],
+      flagsCaseFieldId: flagsData[1].flagsCaseFieldId
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -180,7 +186,8 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: null
+      selectedFlagDetail: null,
+      flagsCaseFieldId: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
