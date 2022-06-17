@@ -81,6 +81,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                 details: caseField.value.details
                   ? ((caseField.value.details) as any[]).map(detail => {
                     return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                      // The id property set below will be null for new case flag
+                      // and will be unique id returned from CCD for update existing flag
                       switch (k) {
                         // These two fields are date-time fields
                         case 'dateTimeModified':
@@ -187,9 +189,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           case CaseFlagFieldState.FLAG_UPDATE:
             this.updateFlagInCollection();
             break;
-          default:
-            console.log('Invalid CaseFlagFieldState:', this.fieldState);
-            break;
         }
       }
     }
@@ -201,8 +200,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
       // There is no error, update form group value and validity
       this.formGroup.updateValueAndValidity();
-    } else {
-      console.log('Case field value not found, flag cannot be added:', flagsCaseFieldValue);
     }
   }
 
@@ -215,8 +212,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         : null;
       // There is no error, update form group value and validity
       this.formGroup.updateValueAndValidity();
-    } else {
-      console.log('Flag not found, update cannot be performed:', flagsCaseFieldValue);
     }
   }
 
