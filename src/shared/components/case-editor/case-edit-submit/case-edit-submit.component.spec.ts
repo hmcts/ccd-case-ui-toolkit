@@ -34,6 +34,7 @@ import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
 import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { CaseNotifier } from '../services';
+import { CallbackErrorsContext } from '../../error';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -1719,7 +1720,7 @@ describe('CaseEditSubmitComponent', () => {
       });
     });
 
-    it('should submit CaseEventData and makes the cachedCaseView property of CaeNotifier to null', () => {
+    it('should submit CaseEventData and makes the cachedCaseView property of CaseNotifier to null', () => {
       // Trigger the clearing of hidden fields by invoking next()
       caseEditComponent.next();
       // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
@@ -1742,6 +1743,21 @@ describe('CaseEditSubmitComponent', () => {
         ignore_warning: false
       });
       expect(mockCaseNotifier.cachedCaseView).toBe(null);
+    });
+
+    it('should check for callback error context', () => {
+      const callbackErrorsContext = new CallbackErrorsContext();
+      callbackErrorsContext.ignore_warning = true;
+      callbackErrorsContext.trigger_text = 'test';
+      comp.callbackErrorsNotify(callbackErrorsContext)
+      expect(comp.ignoreWarning).toBe(true);
+      expect(comp.triggerText).toBe('test');
+    });
+
+    it('should check for isLabel', () => {
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Label', 'OPTIONAL', 4);
+      comp.isLabel(caseField)
+      expect(comp.isLabel(caseField)).toBe(true);
     });
   });
 
