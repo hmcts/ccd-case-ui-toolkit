@@ -24,9 +24,14 @@ export class MarkdownComponent implements OnInit {
       return;
     }
 
-    const targetPath = (<HTMLAnchorElement>event.target).pathname;
-    const search = (<HTMLAnchorElement>event.target).search;
+    const eventTarget = (<HTMLAnchorElement>event.target);
+    const targetPath = eventTarget.pathname;
+    const hash = eventTarget.hash;
+    const search = eventTarget.search;
 
+    if(hash) {
+      return true;
+    }
     if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
       // Prevent page from reloading
       event.preventDefault();
