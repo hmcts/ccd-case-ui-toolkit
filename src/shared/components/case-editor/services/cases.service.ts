@@ -15,8 +15,6 @@ import {
   ChallengedAccessRequest,
   SpecificAccessRequest,
   Draft,
-  FieldType,
-  FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload
@@ -308,6 +306,18 @@ export class CasesService {
 
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
+    const payload: RoleRequestPayload = this.getChallegedAccessPayload(caseId, request);
+    return this.http.post(`/api/challenged-access-request`, payload);
+  }
+
+  public getChallegedAccessPayload(caseReference: string, request?: ChallengedAccessRequest, isNewRole = true) {
+    if (!request) {
+      request = {
+        reason: 1,
+        caseReference: caseReference,
+        otherReason: ''
+      } as ChallengedAccessRequest;
+    }
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
     const camUtils = new CaseAccessUtils();
@@ -322,19 +332,19 @@ export class CasesService {
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
-                                                              id,
-                                                              roleName,
-                                                              roleCategory,
-                                                              'CHALLENGED',
-                                                              caseId,
-                                                              request,
-                                                              beginTime,
-                                                              endTime);
-
-    return this.http.post(`/api/challenged-access-request`, payload);
+      id,
+      roleName,
+      roleCategory,
+      'CHALLENGED',
+      caseReference,
+      request,
+      beginTime,
+      endTime,
+      isNewRole);
+    return payload;
   }
 
-  public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
+  public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest, isNewRole = true): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
@@ -348,7 +358,8 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
-                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+                                      roleName, roleCategory, 'SPECIFIC',
+                                      caseId, sar, null, null, isNewRole);
 
     payload.roleRequest = {
       ...payload.roleRequest,
