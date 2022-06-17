@@ -222,6 +222,18 @@ describe('CaseResolver', () => {
       expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION});
 
     });
+
+    it('should avoid making sevice call and return cached case view when cached view exists', () => {
+      CASE.case_id = '42';
+      caseNotifier.cachedCaseView = CASE;
+      caseResolver
+        .resolve(route)
+        .then(caseData => {
+          expect(caseData).toEqual(CASE);
+        });
+      expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
+      expect(caseNotifier.cachedCaseView).toBe(CASE);
+    });
   });
 
   describe('resolve()', () => {
@@ -282,6 +294,18 @@ describe('CaseResolver', () => {
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
       // allows to access private cachedCaseView field
       expect(caseNotifier.cachedCaseView).toEqual(DRAFT);
+    });
+
+    it('should avoid making sevice call and return cached case view when cached view exists', () => {
+      DRAFT.case_id = 'DRAFT42';
+      caseNotifier.cachedCaseView = DRAFT;
+      caseResolver
+        .resolve(route)
+        .then(caseData => {
+          expect(caseData).toEqual(DRAFT);
+        });
+      expect(draftService.getDraft).not.toHaveBeenCalled();
+      expect(caseNotifier.cachedCaseView).toBe(DRAFT);
     });
   });
 });
