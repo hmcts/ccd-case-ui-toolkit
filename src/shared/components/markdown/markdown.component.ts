@@ -29,7 +29,7 @@ export class MarkdownComponent implements OnInit {
     const hash = eventTarget.hash;
     const search = eventTarget.search;
 
-    if(hash) {
+    if (hash) {
       return true;
     }
     if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
