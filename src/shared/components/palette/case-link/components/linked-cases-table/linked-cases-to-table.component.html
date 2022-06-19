@@ -25,16 +25,16 @@
         <tr class="govuk-table__row" *ngFor="let case of linkedCasesFromResponse">
           <td class="govuk-table__cell case-table-column">
             <p class="govuk-body"><a target="_blank" href="cases/case-details/{{case.caseReference}}" rel="noopener"><span
-              class="govuk-link text-16">{{case.caseReference | ccdCaseReference}} <br>
+              class="govuk-link">{{case.caseReference | ccdCaseReference}} <br>
               {{case.caseName}}</span></a></p>
           </td>
-          <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.caseType}}</span></td>
-          <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.service}}</span></td>
-          <td class="govuk-table__cell case-table-column"><span class="text-16">{{case.state}}</span>
+          <td class="govuk-table__cell case-table-column"><span>{{case.caseType}}</span></td>
+          <td class="govuk-table__cell case-table-column"><span>{{case.service}}</span></td>
+          <td class="govuk-table__cell case-table-column"><span>{{case.state}}</span>
           </td>
           <td class="govuk-table__cell case-table-column">
-            <span class="text-16" *ngFor="let reason of case.reasons; let i = index; let isLast = last">
-              {{reason}}<span><a class="text-16 govuk-!-padding-left-1" href="cases/case-details/{{ case.case_id }}"
+            <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">
+              {{reason}}<span><a class="govuk-!-padding-left-1" href="cases/case-details/{{ case.case_id }}"
                   *ngIf="hasLeadCaseOrConsolidated(reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
               <br *ngIf="!isLast" />
             </span>

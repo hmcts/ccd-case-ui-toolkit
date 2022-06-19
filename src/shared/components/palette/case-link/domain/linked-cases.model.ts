@@ -27,6 +27,7 @@ export class CaseLink {
 
 export class LinkReason {
   reasonCode: string;
+  reasonDescription?: string;
   otherDescription?: string;
 }
 

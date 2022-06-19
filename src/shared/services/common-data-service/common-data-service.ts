@@ -15,6 +15,7 @@ export interface LovRefDataModel {
     active_flag: string;
     child_nodes?: LovRefDataModel[];
     from?: string;
+    selected?: boolean;
   }
 
   export interface LovRefDataByServiceModel {
