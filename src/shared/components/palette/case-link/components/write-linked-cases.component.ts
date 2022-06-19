@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseView } from '../../../../domain/case-view';
+import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
 import { CasesService } from '../../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../../base-field';
@@ -30,6 +32,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public isLinkedCasesJourney: boolean;
 
   constructor(private readonly router: Router,
+    private readonly appConfig: AbstractAppConfig,
+    private commonDataService: CommonDataService,
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService) {
     super();
@@ -50,6 +54,12 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     this.isLinkedCasesJourney = this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES);
     // Store caseId in LinkedCasesService, to be used by child components
     this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+      next: reasons => {
+        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+      }
+    })
     // Get linked cases
     this.getLinkedCases();
   }

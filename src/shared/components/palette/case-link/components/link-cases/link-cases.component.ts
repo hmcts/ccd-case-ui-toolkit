@@ -1,13 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin, throwError } from 'rxjs';
-import { AbstractAppConfig } from '../../../../../../app.config';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
 import { SearchService } from '../../../../../services';
-import {
-  CommonDataService,
-  LovRefDataModel,
-} from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
@@ -38,9 +33,7 @@ export class LinkCasesComponent implements OnInit {
   public noSelectedCaseError: string;
 
   constructor(
-    private readonly appConfig: AbstractAppConfig,
     private casesService: CasesService,
-    private commonDataService: CommonDataService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
     private readonly linkedCasesService: LinkedCasesService,
@@ -48,25 +41,9 @@ export class LinkCasesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getCaseReasons();
-  }
-
-  getCaseReasons() {
-    const reasonCodeAPIurl =
-      this.appConfig.getRDCommonDataApiUrl() +
-      '/lov/categories/CaseLinkingReasonCode';
-    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-      next: (reasons) => {
-        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
-        this.selectedCases = this.linkedCasesService.linkedCases;
-        this.getAllLinkedCaseInformation();
-        this.initForm();
-      },
-      error: (error) => {
-        this.linkedCasesService.linkCaseReasons = [];
-        this.initForm();
-      },
-    });
+    this.selectedCases = this.linkedCasesService.linkedCases;
+    this.getAllLinkedCaseInformation();
+    this.initForm();  
   }
 
   public initForm() {
