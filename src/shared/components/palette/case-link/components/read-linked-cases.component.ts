@@ -1,12 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseField } from '../../../../domain';
+import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
+import { LinkedCasesService } from '../services';
 
 @Component({
   selector: 'ccd-read-linked-cases',
   templateUrl: './read-linked-cases.component.html'
 })
-export class ReadLinkedCasesComponent {
+export class ReadLinkedCasesComponent implements OnInit {
 
   @Input()
   caseField: CaseField;
@@ -14,7 +17,22 @@ export class ReadLinkedCasesComponent {
   reload = false
   public serverError: { id: string, message: string } = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly appConfig: AbstractAppConfig,
+    private commonDataService: CommonDataService,
+
+    ) {}
+
+  public ngOnInit(): void {
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+      next: reasons => {
+        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a,b) => (a.value_en > b.value_en) ? 1 : -1);
+      },
+      error: error => this.getFailureNotification(error)
+    })
+  }
 
   reloadCurrentRoute() {
     const currentUrl = this.router.url;

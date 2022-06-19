@@ -88,12 +88,4 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
       ? 'Hide'
       : 'Show';
   }
-
-  public getReasonValueMappingFromKey(key: string) {
-    if (!this.linkedCaseReasons) {
-      return;
-    }
-    const mappedReason = this.linkedCaseReasons.find(x => x.key === key)
-    return mappedReason && mappedReason.value_en;
-  }
 }
