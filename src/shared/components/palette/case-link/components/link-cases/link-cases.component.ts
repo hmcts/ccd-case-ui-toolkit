@@ -1,29 +1,29 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
-import { forkJoin, throwError } from "rxjs";
-import { AbstractAppConfig } from "../../../../../../app.config";
-import { CaseView, ErrorMessage, HttpError } from "../../../../../domain";
-import { SearchService } from "../../../../../services";
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { forkJoin, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../../app.config';
+import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { SearchService } from '../../../../../services';
 import {
   CommonDataService,
   LovRefDataModel,
-} from "../../../../../services/common-data-service/common-data-service";
-import { CasesService } from "../../../../case-editor/services/cases.service";
-import { LinkedCasesState } from "../../domain";
+} from '../../../../../services/common-data-service/common-data-service';
+import { CasesService } from '../../../../case-editor/services/cases.service';
+import { LinkedCasesState } from '../../domain';
 import {
   CaseLink,
   ESQueryType,
   LinkCaseReason,
   LinkReason,
-} from "../../domain/linked-cases.model";
-import { LinkedCasesErrorMessages, LinkedCasesPages } from "../../enums";
-import { LinkedCasesService } from "../../services/linked-cases.service";
-import { ValidatorsUtils } from "../../utils/validators.utils";
+} from '../../domain/linked-cases.model';
+import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums';
+import { LinkedCasesService } from '../../services/linked-cases.service';
+import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
-  selector: "ccd-link-cases",
-  styleUrls: ["./link-cases.component.scss"],
-  templateUrl: "./link-cases.component.html",
+  selector: 'ccd-link-cases',
+  styleUrls: ['./link-cases.component.scss'],
+  templateUrl: './link-cases.component.html',
 })
 export class LinkCasesComponent implements OnInit {
   @Output()
@@ -54,10 +54,10 @@ export class LinkCasesComponent implements OnInit {
   getCaseReasons() {
     const reasonCodeAPIurl =
       this.appConfig.getRDCommonDataApiUrl() +
-      "/lov/categories/CaseLinkingReasonCode";
+      '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: (reasons) => {
-        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a,b) => (a.value_en > b.value_en) ? 1 : -1);
+        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         this.selectedCases = this.linkedCasesService.linkedCases;
         this.getAllLinkedCaseInformation();
         this.initForm();
@@ -71,7 +71,7 @@ export class LinkCasesComponent implements OnInit {
 
   public initForm() {
     this.linkCaseForm = this.fb.group({
-      caseNumber: ["", this.validatorsUtils.numberLengthValidator(16)],
+      caseNumber: ['', this.validatorsUtils.numberLengthValidator(16)],
       reasonType: this.getReasonTypeFormArray,
     });
   }
@@ -125,33 +125,33 @@ export class LinkCasesComponent implements OnInit {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
       this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
       this.errorMessages.push({
-        title: "dummy-case-number",
+        title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.CaseNumberError,
-        fieldId: "caseNumber",
+        fieldId: 'caseNumber',
       });
     }
     if (this.linkCaseForm.controls.reasonType.invalid) {
       this.caseReasonError = LinkedCasesErrorMessages.ReasonSelectionError;
       this.errorMessages.push({
-        title: "dummy-case-reason",
+        title: 'dummy-case-reason',
         description: LinkedCasesErrorMessages.ReasonSelectionError,
-        fieldId: "caseReason",
+        fieldId: 'caseReason',
       });
     }
     if (this.isCaseSelected(this.selectedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CaseProposedError;
       this.errorMessages.push({
-        title: "dummy-case-number",
+        title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.CaseProposedError,
-        fieldId: "caseNumber",
+        fieldId: 'caseNumber',
       });
     }
     if (this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
       this.errorMessages.push({
-        title: "dummy-case-number",
+        title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.CasesLinkedError,
-        fieldId: "caseNumber",
+        fieldId: 'caseNumber',
       });
     }
     this.emitLinkedCasesState(false);
@@ -169,7 +169,7 @@ export class LinkCasesComponent implements OnInit {
             caseType: caseView.case_type.name,
             caseState: caseView.state.name,
             caseService: caseView.case_type.jurisdiction.name,
-            caseName: caseView.metadataFields["caseNameHmctsInternal"] ||  'Case name missing',
+            caseName: caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
           this.selectedCases.push(caseLink);
           this.initForm();
@@ -178,9 +178,9 @@ export class LinkCasesComponent implements OnInit {
         (error: HttpError) => {
           this.caseNumberError = LinkedCasesErrorMessages.CaseCheckAgainError;
           this.errorMessages.push({
-            title: "dummy-case-number",
+            title: 'dummy-case-number',
             description: LinkedCasesErrorMessages.CaseCheckAgainError,
-            fieldId: "caseNumber",
+            fieldId: 'caseNumber',
           });
           this.emitLinkedCasesState(false);
           return throwError(error);
@@ -190,7 +190,7 @@ export class LinkCasesComponent implements OnInit {
 
   public groupByCaseType = (arrObj, key) => {
     return arrObj.reduce((rv, x) => {
-      (rv[x[key]] = rv[x[key]] || []).push(x["caseReference"]);
+      (rv[x[key]] = rv[x[key]] || []).push(x['caseReference']);
       return rv;
     }, {});
   };
@@ -199,9 +199,9 @@ export class LinkCasesComponent implements OnInit {
     return {...selectedCase,
       caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseReference : esSearchCasesResponse.case_id,
-      caseType : esSearchCasesResponse.case_fields["[CASE_TYPE]"],
-      caseService : esSearchCasesResponse.case_fields["[JURISDICTION]"],
-      caseState : esSearchCasesResponse.case_fields["[STATE]"],
+      caseType : esSearchCasesResponse.case_fields['[CASE_TYPE]'],
+      caseService : esSearchCasesResponse.case_fields['[JURISDICTION]'],
+      caseState : esSearchCasesResponse.case_fields['[STATE]'],
     }
   }
 
@@ -213,7 +213,7 @@ export class LinkCasesComponent implements OnInit {
    * Gets all case information
    */
   public getAllLinkedCaseInformation() {
-    const linkedCaseIds = this.groupByCaseType(this.selectedCases, "caseType");
+    const linkedCaseIds = this.groupByCaseType(this.selectedCases, 'caseType');
     const searchCasesResponse = [];
     Object.keys(linkedCaseIds).forEach((id) => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[id], 100);
@@ -291,9 +291,9 @@ export class LinkCasesComponent implements OnInit {
     } else {
       this.noSelectedCaseError = LinkedCasesErrorMessages.CaseSelectionError;
       this.errorMessages.push({
-        title: "dummy-case-selection",
+        title: 'dummy-case-selection',
         description: LinkedCasesErrorMessages.CaseSelectionError,
-        fieldId: "caseReason",
+        fieldId: 'caseReason',
       });
       navigateToNextPage = false;
     }

@@ -28,7 +28,7 @@ export class ReadLinkedCasesComponent implements OnInit {
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => {
-        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a,b) => (a.value_en > b.value_en) ? 1 : -1);
+        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
       },
       error: error => this.getFailureNotification(error)
     })
