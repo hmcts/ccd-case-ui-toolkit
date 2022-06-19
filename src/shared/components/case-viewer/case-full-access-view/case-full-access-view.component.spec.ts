@@ -1609,4 +1609,11 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
     expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
   });
+
+  it('should not call callAngularRouter() on initial (default) value', () => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
+    componentFixture.detectChanges();
+    expect(convertHrefToRouterService.callAngularRouter).not.toHaveBeenCalled();
+  });
 });

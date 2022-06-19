@@ -249,15 +249,15 @@ describe('MarkdownComponent - Anchor', () => {
 //   })
 
   it('should invoke onMarkdownClick() on markdown click', (done) => {
-    const spyAnchorClick = spyOn(component, 'onMarkdownClick').and.callThrough();
-    const anchor = de.query(By.css('markdown')).nativeElement;
-    console.log(anchor);
-    // let hello = anchor.querySelector('a');
-    anchor.click();
+    const spyMarkdownClick = spyOn(component, 'onMarkdownClick').and.callThrough();
+    const markdown = de.query(By.css('markdown')).nativeElement;
+    console.log(markdown);
+    // const anchor = markdown.querySelector('a');
+    markdown.click();
 
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-      expect(spyAnchorClick).toHaveBeenCalled();
+      expect(spyMarkdownClick).toHaveBeenCalled();
       done();
     });
   });

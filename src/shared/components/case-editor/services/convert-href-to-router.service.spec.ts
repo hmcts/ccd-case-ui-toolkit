@@ -46,4 +46,10 @@ describe('ConvertHrefToRouterService', () => {
     store.callAngularRouter(hrefMarkdownLinkContent);
     expect(router.navigate).toHaveBeenCalledWith(['/role-access/allocate-role/allocate'], {queryParams: {caseId: '1652-7000-9981-7227'}});
   }));
+
+  it('should call callAngularRouter() with no queryParams', async(() => {
+    const hrefMarkdownLinkContent = '/role-access/allocate-role/allocate?';
+    store.callAngularRouter(hrefMarkdownLinkContent);
+    expect(router.navigate).toHaveBeenCalledWith(['/role-access/allocate-role/allocate'], {queryParams: ''});
+  }));
 });
