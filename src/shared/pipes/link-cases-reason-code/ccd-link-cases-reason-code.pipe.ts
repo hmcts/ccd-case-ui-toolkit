@@ -4,6 +4,7 @@ import { LinkedCasesService } from '../../components/palette/case-link/services'
 @Pipe({
   name: 'ccdLinkCasesReasonValue'
 })
+
 export class LinkCasesReasonValuePipe implements PipeTransform {
   constructor(private linkedCasesService: LinkedCasesService) {}
   transform(reasonCode: string): any {

@@ -146,7 +146,7 @@ export class LinkCasesComponent implements OnInit {
             caseType: caseView.case_type.name,
             caseState: caseView.state.name,
             caseService: caseView.case_type.jurisdiction.name,
-            caseName: caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
+            caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
           this.selectedCases.push(caseLink);
           this.initForm();
@@ -174,7 +174,7 @@ export class LinkCasesComponent implements OnInit {
 
   public mapResponse(esSearchCasesResponse, selectedCase) {
     return {...selectedCase,
-      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
+      caseName: esSearchCasesResponse.case_fields && esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseReference : esSearchCasesResponse.case_id,
       caseType : esSearchCasesResponse.case_fields['[CASE_TYPE]'],
       caseService : esSearchCasesResponse.case_fields['[JURISDICTION]'],

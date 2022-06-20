@@ -1,15 +1,17 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, getTestBed, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 
 import createSpyObj = jasmine.createSpyObj;
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 import { AbstractAppConfig } from '../../../../../../app.config';
+import { LinkedCasesService } from '../../services';
+import { CaseLink } from '../../domain/linked-cases.model';
 
 describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
@@ -17,9 +19,10 @@ describe('LinkCasesFromTableComponent', () => {
   let casesService: any;
   let searchService: any;
   let nativeElement: any;
-  let mockRouter: any;
   let commonDataService: any;
   let appConfig: any;
+  let linkedCasesService: any;
+
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
@@ -67,9 +70,30 @@ describe('LinkCasesFromTableComponent', () => {
     },
   ]};
 
-  mockRouter = {
-    navigate: jasmine.createSpy('navigate'),
-    url: ''
+  const linkedCases: CaseLink[] = [
+    {
+      caseReference: '1682374819203471',
+      reasons: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    },
+    {
+      caseReference: '1682897456391875',
+      reasons: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    }
+  ];
+  
+  linkedCasesService = {
+    caseId: '1682374819203471',
+    linkedCases: linkedCases
   };
 
   beforeEach(async(() => {
@@ -77,6 +101,7 @@ describe('LinkCasesFromTableComponent', () => {
     commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses', 'getLinkedCases']);
     searchService = createSpyObj('searchService', ['searchCases']);
+    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
     TestBed.configureTestingModule({
       imports: [
         PipesModule
@@ -87,11 +112,11 @@ describe('LinkCasesFromTableComponent', () => {
           provide: ActivatedRoute,
           useValue: {snapshot: {data: {case: {case_id: '123'}}}}
         },
-        { provide: Router, useValue: mockRouter },
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService },
         { provide: CommonDataService, useValue: commonDataService },
-        { provide: AbstractAppConfig, useValue: appConfig }
+        { provide: AbstractAppConfig, useValue: appConfig },
+        { provide: LinkedCasesService, useValue: linkedCasesService },
       ],
       declarations: [LinkedCasesFromTableComponent],
     })
@@ -171,18 +196,7 @@ describe('LinkCasesFromTableComponent', () => {
   });
 
   it('should render the failure panel when api returns non 200', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate'),
-      url: '?error'
-    };
-    mockRouter.url = '?error';
-    const injector = getTestBed();
-    const router = injector.get(Router);
-    router.url = '=?error';
-    TestBed.overrideProvider(Router, {useValue: mockRouter})
-    TestBed.compileComponents();
-    fixture = TestBed.createComponent(LinkedCasesFromTableComponent);
-    component = fixture.componentInstance;
+    component.getLinkedCases = jasmine.createSpy().and.returnValue(throwError({}));
     component.ngOnInit();
     spyOn(component.notifyAPIFailure, 'emit');
     fixture.detectChanges();
@@ -202,13 +216,7 @@ describe('LinkCasesFromTableComponent', () => {
   });
 
   it('should render the none as table row when no linked cases to be displayed', () => {
-    const injector = getTestBed();
-    const router = injector.get(Router);
-    router.url = '?no-linked-cases';
-    TestBed.overrideProvider(Router, {useValue: mockRouter})
-    TestBed.compileComponents();
-    fixture = TestBed.createComponent(LinkedCasesFromTableComponent);
-    component = fixture.componentInstance;
+    casesService.getLinkedCases.and.returnValue(of([]));
     component.ngOnInit();
     fixture.detectChanges();
     expect(document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()).toEqual('None');

@@ -4,10 +4,12 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseEventData } from '../../../../domain/case-event-data.model';
 import { CaseField } from '../../../../domain/definition/case-field.model';
 import { Draft } from '../../../../domain/draft.model';
 import { CaseFieldService } from '../../../../services/case-fields/case-field.service';
+import { CommonDataService, LovRefDataByServiceModel } from '../../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../../services/form/field-type-sanitiser';
 import { FormErrorService } from '../../../../services/form/form-error.service';
 import { FormValueService } from '../../../../services/form/form-value.service';
@@ -31,6 +33,8 @@ describe('WriteLinkedCasesComponent', () => {
   let linkedCasesService: any;
   let dialog: any;
   let route: any;
+  let commonDataService: any;
+  let appConfig: any;
 
   let router = {
     url: 'linkCases'
@@ -161,7 +165,55 @@ describe('WriteLinkedCasesComponent', () => {
     linkedCases: linkedCases
   };
 
+  const linkCaseReasons: LovRefDataByServiceModel = {
+    list_of_values: [
+    {
+      key: 'progressed',
+      value_en: 'Progressed as part of this lead case',
+      value_cy: '',
+      hint_text_en: 'Progressed as part of this lead case',
+      hint_text_cy: '',
+      lov_order: 1,
+      parent_key: null,
+      category_key: 'caseLinkReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'bail',
+      value_en: 'Bail',
+      value_cy: '',
+      hint_text_en: 'Bail',
+      hint_text_cy: '',
+      lov_order: 2,
+      parent_key: null,
+      category_key: 'caseLinkReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'other',
+      value_en: 'Other',
+      value_cy: '',
+      hint_text_en: 'Other',
+      hint_text_cy: '',
+      lov_order: 3,
+      parent_key: null,
+      category_key: 'caseLinkReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+  ]};
+
   beforeEach(async(() => {
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
+    commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('CasesService', ['getCaseViewV2']);
     TestBed.configureTestingModule({
       imports: [
@@ -176,10 +228,13 @@ describe('WriteLinkedCasesComponent', () => {
         { provide: Router, useValue: router },
         { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
         { provide: CasesService, useValue: casesService },
-        { provide: LinkedCasesService, useValue: linkedCasesService }
+        { provide: LinkedCasesService, useValue: linkedCasesService },
+        { provide: CommonDataService, useValue: commonDataService },
+        { provide: AbstractAppConfig, useValue: appConfig }
       ]
     })
     .compileComponents();
+    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
   }));
 
   beforeEach(() => {

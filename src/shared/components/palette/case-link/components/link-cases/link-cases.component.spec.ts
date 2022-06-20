@@ -8,6 +8,8 @@ import { CaseLink, LinkCaseReason } from '../../domain';
 import { LinkedCasesErrorMessages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkCasesComponent } from './link-cases.component';
+import { PipesModule } from '../../../../../pipes/pipes.module';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('LinkCasesComponent', () => {
@@ -88,6 +90,7 @@ describe('LinkCasesComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
+        PipesModule,
         ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -106,7 +109,10 @@ describe('LinkCasesComponent', () => {
       case_type: {
         name: 'SSCS type',
         jurisdiction: { name: '' }
-      }, state: { name: 'With FTA' }
+      }, state: { name: 'With FTA' },
+      metadataFields: {
+        caseNameHmctsInternal: ''
+      }
     }
     fixture = TestBed.createComponent(LinkCasesComponent);
     component = fixture.componentInstance;
@@ -121,13 +127,6 @@ describe('LinkCasesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check getCaseLinkResponses error', () => {
-    casesService.getCaseLinkResponses.and.returnValue(throwError({}));
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.linkCaseReasons).toEqual([]);
-  });
-
   it('should check submitCaseInfo', () => {
     casesService.getCaseViewV2.and.returnValue(throwError({}));
     component.submitCaseInfo();
@@ -135,7 +134,7 @@ describe('LinkCasesComponent', () => {
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     component.submitCaseInfo();
-    expect(casesService.getCaseViewV2).toHaveBeenCalled();
+    expect(component.caseNumberError).toBeNull();
   });
 
   it('should check getCaseInfo', () => {
@@ -149,23 +148,10 @@ describe('LinkCasesComponent', () => {
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     component.getCaseInfo();
     expect(component.caseNumberError).toBe(undefined);
-    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
-    component.onNext();
-    expect(component.noSelectedCaseError).toBe(null);
     searchService.searchCases.and.returnValue(of(caseLinkedResults));
+    component.onNext();
     component.getAllLinkedCaseInformation();
     expect((component as any).linkedCasesService.preLinkedCases.length).toBe(0);
-  });
-
-  it('should check getCaseInfo error', () => {
-    casesService.getCaseViewV2.and.returnValue(throwError({}));
-    component.getCaseInfo();
-    expect(casesService.getCaseViewV2).toHaveBeenCalled();
-    expect(component.caseNumberError).toBe(LinkedCasesErrorMessages.CaseCheckAgainError);
-  });
-
-  it('should check getSelectedCaseReasons', () => {
-    expect(component.getSelectedCaseReasons().length).toBe(1);
   });
 
   it('should check onNext', () => {

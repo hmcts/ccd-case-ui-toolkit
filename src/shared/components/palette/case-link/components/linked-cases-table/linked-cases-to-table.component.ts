@@ -2,12 +2,10 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { CaseField } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
-import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
+import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
-import { AbstractAppConfig } from '../../../../../../app.config';
-import { LinkedCasesService } from '../../services';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -42,11 +40,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public caseId: string;
 
   constructor(
-    private readonly linkedCasesService: LinkedCasesService,
-    private readonly appConfig: AbstractAppConfig,
-    private commonDataService: CommonDataService,
     private route: ActivatedRoute,
-    private router: Router,
     private readonly searchService: SearchService) {}
 
     public ngAfterViewInit(): void {
@@ -104,10 +98,6 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
           searchCases.forEach(response => {
           response.results.forEach((result: any) =>
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
-          // TODO: to be removed after testing the ticket 5550/5639
-          if (this.router && this.router.url && this.router.url.includes('no-linked-cases')) {
-            this.linkedCasesFromResponse = [];
-          }
         });
         this.isLoaded = true;
       },

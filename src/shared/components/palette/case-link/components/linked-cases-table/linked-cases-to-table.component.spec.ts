@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { async, ComponentFixture, getTestBed, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -12,6 +12,8 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseField } from '../../../../../domain';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 import { AbstractAppConfig } from '../../../../../../app.config';
+import { CaseLink } from '../../domain';
+import { LinkedCasesService } from '../../services';
 
 describe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
@@ -20,6 +22,33 @@ describe('LinkCasesToTableComponent', () => {
   let searchService: any;
   let commonDataService: any;
   let appConfig: any;
+  let linkedCasesService: any;
+
+  const linkedCases: CaseLink[] = [
+    {
+      caseReference: '1682374819203471',
+      reasons: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    },
+    {
+      caseReference: '1682897456391875',
+      reasons: [],
+      createdDateTime: '',
+      caseType: 'SSCS',
+      caseState: 'state',
+      caseService: 'Tribunal',
+      caseName: 'SSCS 2.1'
+    }
+  ];
+
+  linkedCasesService = {
+    caseId: '1682374819203471',
+    linkedCases: linkedCases
+  };
 
   let mockRouter: any;
   mockRouter = {
@@ -132,7 +161,8 @@ describe('LinkCasesToTableComponent', () => {
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService },
         { provide: CommonDataService, useValue: commonDataService },
-        { provide: AbstractAppConfig, useValue: appConfig }
+        { provide: AbstractAppConfig, useValue: appConfig },
+        { provide: LinkedCasesService, useValue: linkedCasesService },
       ],
       declarations: [LinkedCasesToTableComponent],
     })
@@ -215,18 +245,7 @@ describe('LinkCasesToTableComponent', () => {
   });
 
   it('should render the failure panel when api returns non 200', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate'),
-      url: '?error'
-    };
-    mockRouter.url = '?error';
-    const injector = getTestBed();
-    const router = injector.get(Router);
-    router.url = '=?error';
-    TestBed.overrideProvider(Router, {useValue: mockRouter})
-    TestBed.compileComponents();
-    fixture = TestBed.createComponent(LinkedCasesToTableComponent);
-    component = fixture.componentInstance;
+    component.searchCasesByCaseIds = jasmine.createSpy().and.returnValue(throwError({}));
     component.ngOnInit();
     spyOn(component.notifyAPIFailure, 'emit');
     fixture.detectChanges();
@@ -234,13 +253,9 @@ describe('LinkCasesToTableComponent', () => {
   });
 
   it('should render the none as table row when no linked cases to be displayed', () => {
-    const injector = getTestBed();
-    const router = injector.get(Router);
-    router.url = '?no-linked-cases';
-    TestBed.overrideProvider(Router, {useValue: mockRouter})
-    TestBed.compileComponents();
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
     component = fixture.componentInstance;
+    component.linkedCasesFromResponse= [];
     component.ngOnInit();
     fixture.detectChanges();
     expect(document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()).toEqual('None');

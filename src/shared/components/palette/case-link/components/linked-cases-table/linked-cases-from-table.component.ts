@@ -3,7 +3,7 @@ import { CaseField } from '../../../../../domain/definition';
 import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesResponse } from '../../domain/linked-cases.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { AbstractAppConfig } from '../../../../../../app.config';
 
@@ -40,7 +40,6 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private readonly casesService: CasesService,
     private commonDataService: CommonDataService,
     private readonly appConfig: AbstractAppConfig,
@@ -56,10 +55,6 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.fetchPageData();
-        // TODO: to be removed once tested the ticket 5640
-    if (this.router.url.indexOf('?error') > -1) {
-      this.notifyAPIFailure.emit(true);
-    }
   }
 
   public fetchPageData() {
@@ -70,17 +65,17 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
       next: reasons => this.linkedCaseReasons = reasons.list_of_values,
       error: error => this.notifyAPIFailure.emit(true)
     })
-    this.casesService.getLinkedCases(this.caseId).subscribe(
+    this.getLinkedCases().subscribe(
       response => {
         this.getLinkedCasesResponse = response;
-        // TODO: condition below to be removed once tested the ticket EUI-5639
-        if (this.router && this.router.url && this.router.url.includes('no-linked-cases')) {
-          this.getLinkedCasesResponse.linkedCases = [];
-        }
         this.noLinkedCases = !this.getLinkedCasesResponse.linkedCases || !this.getLinkedCasesResponse.linkedCases.length;
       },
       err => this.notifyAPIFailure.emit(true)
       );
+  }
+
+  public getLinkedCases() {
+    return this.casesService.getLinkedCases(this.caseId);
   }
 
   public onClick(): void {
