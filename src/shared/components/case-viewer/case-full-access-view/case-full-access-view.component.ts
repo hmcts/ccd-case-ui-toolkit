@@ -92,6 +92,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.callbackErrorsSubject.next(this.error);
       }
     });
+
     this.markdownUseHrefAsRouterLink = true;
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {

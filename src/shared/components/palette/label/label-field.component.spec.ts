@@ -47,6 +47,7 @@ describe('LabelFieldComponent', () => {
     selector: 'ccd-markdown',
     inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
+
   let fixture: ComponentFixture<LabelFieldComponent>;
   let component: LabelFieldComponent;
   let de: DebugElement;

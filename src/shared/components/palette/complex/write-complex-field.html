@@ -1,7 +1,8 @@
 <div class="form-group" [id]="id()">
-  <fieldset>
-    <legend><h2 *ngIf="renderLabel" class="heading-h2">{{caseField | ccdFieldLabel}}</h2></legend>
-    <ng-container [ngSwitch]="field | ccdIsReadOnly" *ngFor="let field of complexFields">
+
+  <h2 *ngIf="renderLabel" class="heading-h2">{{caseField | ccdFieldLabel}}</h2>
+  <ng-container *ngFor="let field of complexFields">
+    <ng-container [ngSwitch]="field | ccdIsReadOnly">
       <ccd-field-read *ngSwitchCase="true"
                       ccdLabelSubstitutor
                       [caseField]="buildField(field)"
@@ -21,5 +22,5 @@
                        [isInSearchBlock]="isInSearchBlock">
       </ccd-field-write>
     </ng-container>
-  </fieldset>
+  </ng-container>
 </div>

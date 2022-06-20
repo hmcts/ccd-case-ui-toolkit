@@ -2,7 +2,7 @@ import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { CaseResolver } from './case.resolver';
-import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
+import { CaseEventTrigger, HttpError, CaseView, Profile } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { HttpService, ProfileNotifier, ProfileService } from '../../../services';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
@@ -67,7 +67,6 @@ describe('EventTriggerResolver', () => {
   };
 
   let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
-  const PROFILE_CACHED: Profile = PROFILE;
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
@@ -204,36 +203,4 @@ describe('EventTriggerResolver', () => {
       });
     expect(profileService.get).toHaveBeenCalledWith();
   });
-
-  it('should return cached profile without making API call', () => {
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    eventTriggerResolver['cachedProfile'] = PROFILE_CACHED;
-    profileService.get.and.returnValue(PROFILE_OBS);
-
-    eventTriggerResolver
-      .resolve(route)
-      .then(caseData => {
-        expect(caseData).toEqual(EVENT_TRIGGER);
-      });
-
-    expect(profileService.get).not.toHaveBeenCalledWith();
-    expect(casesService.getEventTrigger).toHaveBeenCalled();
-    expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
-  });
-
-  it('should make Profile API call and cached profile', () => {
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    profileService.get.and.returnValue(PROFILE_OBS);
-
-    eventTriggerResolver
-      .resolve(route)
-      .then(caseData => {
-        expect(caseData).toEqual(EVENT_TRIGGER);
-      });
-
-    expect(profileService.get).toHaveBeenCalledWith();
-    expect(casesService.getEventTrigger).toHaveBeenCalled();
-    expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
-  });
-
 });

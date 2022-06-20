@@ -170,15 +170,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
               const fieldArray = fieldElement as FormArray;
               if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
-                fieldArray['component']['collItems'].forEach(element => {
-                  id = `${element.prefix}`;
-                  fieldArray.controls.forEach((control: AbstractControl, index) => {
-                    if (id.charAt(id.indexOf(index.toString())) === index.toString()) {
-                      this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, control.get('value'), id);
-                    }
-                  })
-                });
+                id = `${fieldArray['component']['collItems'][0].prefix}`
               }
+              fieldArray.controls.forEach((c: AbstractControl) => {
+                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+              });
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();

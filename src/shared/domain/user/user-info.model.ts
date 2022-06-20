@@ -1,5 +1,4 @@
 export interface UserInfo {
-  uid?: string ,
   id: string,
   forename: string,
   surname: string,

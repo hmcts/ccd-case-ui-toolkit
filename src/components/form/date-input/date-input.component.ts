@@ -47,7 +47,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   // 2018-04-09T08:02:27.542Z
   // 2018-04-09T08:02:27.542+01:00
   private readonly DATE_FORMAT =
-    /^(19|20)\d{2}-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?|Z)?$/;
+    /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?|Z)?$/;
   //    year - month -  day     T   HH     :   MM      :  SS       .000        Z or +     01 :   00
   private propagateChange: (_: any) => {};
   private rawValue = '';

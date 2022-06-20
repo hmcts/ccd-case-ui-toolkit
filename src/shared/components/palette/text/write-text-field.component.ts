@@ -13,8 +13,4 @@ export class WriteTextFieldComponent extends AbstractFieldWriteComponent impleme
   ngOnInit() {
     this.textControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
-
-  public onBlur($event) {
-     $event.target.value = $event.target.value.trim();
-  }
 }

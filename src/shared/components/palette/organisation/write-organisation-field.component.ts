@@ -125,32 +125,12 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
-  // The way the search works divide into two phases
-  // 1. go through collection of org items one by one by doing the comparsion of search string using includes to all the address fields
-  // 2. split the search string into arrays and apply the each array item into the address fields
-  // 3. both step 1, 2 will go until max count result reaches, and finally combine both result sets into final collection
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
-    const partMatchingResultSet = [], withSpaceMatchingResultSet = [];
-    const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT
-    organisations.forEach((organisation) => {
-      if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
-        partMatchingResultSet.push(organisation);
-      }
-    });
-
-    organisations.forEach((org) => {
-      const resultSet = [...partMatchingResultSet, ...withSpaceMatchingResultSet];
-      const hasMatchingOrganisation = resultSet.find(item => item.organisationIdentifier === org.organisationIdentifier);
-      const searchHasSpace = this.searchWithSpace(org, lowerOrgSearchText);
-      const hasResultSetBelowMaxCount = resultSet.length < MAX_RESULT_COUNT;
-
-      if (!hasMatchingOrganisation && partMatchingResultSet.length === 0 && hasResultSetBelowMaxCount && searchHasSpace) {
-        withSpaceMatchingResultSet.push(org);
-      }
-    });
-    return [...partMatchingResultSet, ...withSpaceMatchingResultSet].map((organisation) =>
-      this.organisationConverter.toSimpleOrganisationModel(organisation)
-    );
+    return organisations.filter(organisation => {
+      return this.searchCriteria(organisation, lowerOrgSearchText) || this.searchWithSpace(organisation, lowerOrgSearchText);
+    })
+      .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))
+      .slice(0, WriteOrganisationFieldComponent.MAX_RESULT_COUNT);
   }
 
   private searchCriteria(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {

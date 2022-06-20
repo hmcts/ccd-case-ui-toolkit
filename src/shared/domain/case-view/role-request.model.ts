@@ -20,10 +20,7 @@ export interface RequestedRole {
 }
 
 export interface RoleRequest {
-  assignerId: string,
-  process: string,
-  replaceExisting: boolean,
-  reference: string
+  assignerId: string
 }
 
 export interface RequestedRoleNote {

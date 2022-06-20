@@ -1,11 +1,11 @@
-<div class="form-group" [ngClass]="{'form-group-error': !!textControl && !textControl.valid && (textControl.dirty || textControl.touched)}">
+<div class="form-group" [ngClass]="{'form-group-error': !textControl.valid && (textControl.dirty || textControl.touched)}">
 
   <label [for]="id()">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-  <span class="error-message" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">{{textControl.errors | ccdFirstError:caseField.label}}</span>
-  <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
-  [id]="id()" type="text" [formControl]="textControl" (blur)="onBlur($event)">
+  <span class="error-message" *ngIf="textControl.errors && (textControl.dirty || textControl.touched)">{{textControl.errors | ccdFirstError:caseField.label}}</span>
+  <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl.errors && (textControl.dirty || textControl.touched)}"
+  [id]="id()" type="text" [formControl]="textControl">
 
 </div>

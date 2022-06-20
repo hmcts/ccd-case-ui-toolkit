@@ -19,6 +19,7 @@ import {
   FormValueService,
   OrderService,
   ProfileNotifier,
+  ProfileService,
   SessionStorageService,
 } from '../../../services';
 import { text } from '../../../test/helpers';
@@ -265,6 +266,7 @@ describe('CaseEditSubmitComponent', () => {
 
   let caseEditComponent: any;
   let orderService: OrderService;
+  let profileService: jasmine.SpyObj<ProfileService>;
   let profileNotifier: ProfileNotifier;
   let profileNotifierSpy: jasmine.Spy;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
@@ -385,6 +387,7 @@ describe('CaseEditSubmitComponent', () => {
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -413,6 +416,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRoute},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -684,6 +688,8 @@ describe('CaseEditSubmitComponent', () => {
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -712,6 +718,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -824,6 +831,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -852,6 +861,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1065,6 +1075,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1092,6 +1104,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1206,6 +1219,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1233,6 +1248,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1350,6 +1366,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1377,6 +1395,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1493,6 +1512,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1520,6 +1541,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1639,6 +1661,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1666,6 +1690,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1790,6 +1815,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1817,6 +1844,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -1926,6 +1954,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -1953,6 +1983,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2061,6 +2092,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2088,6 +2121,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2204,6 +2238,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2231,6 +2267,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2359,6 +2396,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2386,6 +2425,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2520,6 +2560,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2547,6 +2589,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2662,6 +2705,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2689,6 +2734,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2807,6 +2853,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2834,6 +2882,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -2952,6 +3001,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -2979,6 +3030,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -3096,6 +3148,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -3123,6 +3177,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -3245,6 +3300,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -3272,6 +3329,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -3396,6 +3454,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -3423,6 +3483,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -3547,6 +3608,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -3574,6 +3637,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -3709,6 +3773,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -3736,6 +3802,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -3870,6 +3937,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -3897,6 +3966,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -4025,6 +4095,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -4052,6 +4124,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
@@ -4184,6 +4257,8 @@ describe('CaseEditSubmitComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       const formValueServiceReal = new FormValueService(null);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
@@ -4210,6 +4285,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseReferencePipe, useValue: casesReferencePipe},
           {provide: ActivatedRoute, useValue: mockRouteNoProfile},
           {provide: OrderService, useValue: orderService},
+          {provide: ProfileService, useValue: profileService},
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},

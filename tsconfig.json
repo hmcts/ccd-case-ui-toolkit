@@ -16,6 +16,5 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
-  "javascript.implicitProjectConfig.experimentalDecorators": true
+  ]
 }

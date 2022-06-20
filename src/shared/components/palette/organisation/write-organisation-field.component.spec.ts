@@ -245,10 +245,13 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should search organisation using post code with/without space', () => {
     const searchedOrg = component.searchOrg(ORGANISATIONS, 'rg1 1eb');
-    expect(searchedOrg.length).toEqual(1);
+    expect(searchedOrg.length).toEqual(2);
     expect(searchedOrg[0].organisationIdentifier).toEqual('O333333');
     expect(searchedOrg[0].name).toEqual('The Ethical solicitor');
     expect(searchedOrg[0].address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
+    expect(searchedOrg[1].organisationIdentifier).toEqual('O444444');
+    expect(searchedOrg[1].name).toEqual('The SN1 solicitor');
+    expect(searchedOrg[1].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
   });
 
   it('should search organisation using post code and org name', () => {
@@ -409,11 +412,6 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(searchedOrg[0].organisationIdentifier).toEqual('O555555');
     expect(searchedOrg[0].name).toEqual('Smith LLP');
     expect(searchedOrg[0].address).toEqual('Davidson House<br>55<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EY<br>');
-  });
-
-  it('should bring the exact match in the top order when there are other partial matches of org exist', () => {
-    const searchedOrg = component.searchOrg(ORGANISATIONS, 'the sn1 solicitor');
-    expect(searchedOrg[0].name).toEqual('The SN1 solicitor');
   });
 
   it('should return organisation if nothing match', () => {

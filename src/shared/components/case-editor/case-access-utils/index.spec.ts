@@ -91,9 +91,9 @@ describe('CaseAccessUtils', () => {
             expect(response).toEqual('dummy-access-professional');
         });
 
-        it('should return legal-ops role name', () => {
+        it('should return legal-operations role name', () => {
             const response = camUtils.getAMRoleName('dummy', 'LEGAL_OPERATIONS');
-            expect(response).toEqual('dummy-access-legal-ops');
+            expect(response).toEqual('dummy-access-legal-operations');
         });
 
         it('should return admin role name', () => {
@@ -113,7 +113,7 @@ describe('CaseAccessUtils', () => {
                 'ADMIN',
                 'BASIC',
                 'dummy',
-                {reason: 3435, caseReference: '234', 'otherReason': ''},
+                null,
                 dateValue,
                 null
             );

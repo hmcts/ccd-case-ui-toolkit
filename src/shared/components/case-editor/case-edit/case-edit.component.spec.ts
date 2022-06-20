@@ -6,7 +6,7 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { FieldsPurger, FieldsUtils } from '../../../services';
+import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
@@ -209,6 +209,9 @@ describe('CaseEditComponent', () => {
   const fieldsPurger = new FieldsPurger(fieldsUtils);
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
+  let profileService: jasmine.SpyObj<ProfileService>;
+  let profileNotifier: ProfileNotifier;
+  let profileNotifierSpy: jasmine.Spy;
 
   describe('profile available in route', () => {
     routerStub = {
@@ -255,6 +258,10 @@ describe('CaseEditComponent', () => {
 
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileNotifier = new ProfileNotifier();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
       route = {
         queryParams: of({Origin: 'viewDraft'}),
         snapshot: {
@@ -297,7 +304,9 @@ describe('CaseEditComponent', () => {
             {provide: FieldsPurger, useValue: fieldsPurger},
             {provide: ConditionalShowRegistrarService, useValue: registrarService},
             {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: route}
+            {provide: ActivatedRoute, useValue: route},
+            {provide: ProfileService, useValue: profileService},
+            {provide: ProfileNotifier, useValue: profileNotifier}
           ]
         })
         .compileComponents();
@@ -1051,6 +1060,11 @@ describe('CaseEditComponent', () => {
 
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
 
+      profileService = createSpyObj<ProfileService>('profileService', ['get']);
+      profileService.get.and.returnValue(PROFILE_OBS);
+      profileNotifier = new ProfileNotifier();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
       const snapshotNoProfile = {
         pathFromRoot: [
           {},
@@ -1102,7 +1116,9 @@ describe('CaseEditComponent', () => {
             {provide: FieldsPurger, useValue: fieldsPurger},
             {provide: ConditionalShowRegistrarService, useValue: registrarService},
             {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: mockRouteNoProfile}
+            {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+            {provide: ProfileService, useValue: profileService},
+            {provide: ProfileNotifier, useValue: profileNotifier}
           ]
         })
         .compileComponents();

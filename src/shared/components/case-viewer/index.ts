@@ -9,4 +9,3 @@ export * from './case-viewer.module';
 export * from './viewer.routing';
 export * from './case-challenged-access-request';
 export * from './case-challenged-access-success';
-export * from './case-specific-access-success';
