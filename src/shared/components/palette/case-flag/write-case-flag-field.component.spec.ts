@@ -27,7 +27,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     name: 'Wheelchair access',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
-    paths: [
+    path: [
       { id: null, value: 'Party' },
       { id: null, value: 'Reasonable adjustment' },
       { id: null, value: 'Mobility support' }
@@ -41,7 +41,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     name: 'Sign language',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
-    paths: [
+    path: [
       { id: null, value: 'Party' },
       { id: null, value: 'Reasonable adjustment' },
       { id: null, value: 'Language support' }
@@ -58,7 +58,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     name: 'Foreign national offender',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
-    paths: [
+    path: [
       { id: null, value: 'Party' },
       { id: null, value: 'Security adjustment' }
     ],

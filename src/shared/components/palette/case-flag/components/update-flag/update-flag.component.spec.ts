@@ -14,7 +14,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 1',
     flagComment: 'First flag',
     dateTimeCreated: new Date(),
-    paths: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active'
@@ -23,7 +23,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 2',
     flagComment: 'Rose\'s second flag',
     dateTimeCreated: new Date(),
-    paths: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'

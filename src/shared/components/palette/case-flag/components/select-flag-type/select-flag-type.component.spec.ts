@@ -216,7 +216,7 @@ describe('SelectFlagTypeComponent', () => {
       isParentFlagType: true,
       errorMessages: component.errorMessages,
       flagName: flagTypes[0].childFlags[0].name,
-      flagPaths: flagPaths,
+      flagPath: flagPaths,
       hearingRelevantFlag: flagTypes[0].childFlags[0].hearingRelevant,
       flagCode: flagTypes[0].childFlags[0].flagCode,
       listOfValues: null
@@ -240,7 +240,7 @@ describe('SelectFlagTypeComponent', () => {
       isParentFlagType: false,
       errorMessages: component.errorMessages,
       flagName: flagTypes[0].childFlags[1].name,
-      flagPaths: flagPaths,
+      flagPath: flagPaths,
       hearingRelevantFlag: flagTypes[0].childFlags[1].hearingRelevant,
       flagCode: flagTypes[0].childFlags[1].flagCode,
       listOfValues: null
@@ -273,7 +273,7 @@ describe('SelectFlagTypeComponent', () => {
       isParentFlagType: false,
       errorMessages: component.errorMessages,
       flagName: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].name,
-      flagPaths: flagPaths,
+      flagPath: flagPaths,
       hearingRelevantFlag: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].hearingRelevant,
       flagCode: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].flagCode,
       listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues
@@ -301,7 +301,7 @@ describe('SelectFlagTypeComponent', () => {
       isParentFlagType: null,
       errorMessages: component.errorMessages,
       flagName: null,
-      flagPaths: null,
+      flagPath: null,
       hearingRelevantFlag: null,
       flagCode: null,
       listOfValues: null

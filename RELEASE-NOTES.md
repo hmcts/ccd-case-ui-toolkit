@@ -1,6 +1,6 @@
 ## RELEASE NOTES
-### Version 4.13.9-manage-case-flags-update-flag-page
-**EUI-5342** Manage case flags comments update flag page
+### Version 4.13.10-manage-case-flags-display-formatted-flag-details
+**EUI-5810** Manage case flags display formatted flag details
 
 ### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
 **EUI-5848** Manage case flags comments mandatory or optional

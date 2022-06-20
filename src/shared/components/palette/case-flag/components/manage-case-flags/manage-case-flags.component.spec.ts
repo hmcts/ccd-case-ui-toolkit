@@ -17,7 +17,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 1',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          paths: [{id: null, value: 'Reasonable adjustment'}],
+          path: [{ id: null, value: 'Reasonable adjustment' }],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -27,7 +27,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 2',
           flagComment: 'Rose\'s second flag',
           dateTimeCreated: new Date(),
-          paths: [{id: null, value: 'Reasonable adjustment'}],
+          path: [{ id: null, value: 'Reasonable adjustment' }],
           hearingRelevant: false,
           flagCode: 'FL2',
           status: 'Inactive'
@@ -43,7 +43,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 3',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          paths: [{id: null, value: 'Reasonable adjustment'}],
+          path: [{ id: null, value: 'Reasonable adjustment' }],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -120,11 +120,46 @@ describe('ManageCaseFlagsComponent', () => {
     expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.name}`);
   });
 
+  it('should format the flag details with child flags (with comment) for display', () => {
+    const flagDisplay = {
+      partyName: 'Ann Peterson',
+      flagDetail: {
+        name: 'Sign Language interpreter',
+        flagCode: '333',
+        path: [
+          { id: null, value: 'party' },
+          { id: null, value: 'Reasonable adjustment' },
+          { id: null, value: 'I need help communicating and understanding' }
+        ],
+        flagComment: 'Test comment'
+      }
+    } as FlagDetailDisplay;
+    const displayLabel = component.processLabel(flagDisplay);
+    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.path[flagDisplay.flagDetail.path.length - 1].value}${flagDisplay.flagDetail.flagComment ? ` (${flagDisplay.flagDetail.flagComment})` : ''}`);
+  });
+
+  it('should format the flag details with child flags (without comment) for display', () => {
+    const flagDisplay = {
+      partyName: 'Ann Peterson',
+      flagDetail: {
+        name: 'Sign Language interpreter',
+        flagCode: '333',
+        path: [
+          { id: null, value: 'party' },
+          { id: null, value: 'Reasonable adjustment' },
+          { id: null, value: 'I need help communicating and understanding' }
+        ]
+      }
+    } as FlagDetailDisplay;
+    const displayLabel = component.processLabel(flagDisplay);
+    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.path[flagDisplay.flagDetail.path.length - 1].value}`);
+  });
+
   it('should map flag details to display model', () => {
     const flagDetail = {
       name: 'Interpreter',
       dateTimeCreated: new Date(),
-      paths: [{id: null, value: 'path'}],
+      path: [{ id: null, value: 'path' }],
       flagComment: 'comment',
       hearingRelevant: true,
       flagCode: '123',
