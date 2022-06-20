@@ -130,7 +130,6 @@ describe('MarkdownComponent - Anchor', () => {
     });
   });
 
-
   it('should invoke callUpdateHrefLink() and call updateHrefLink', (done) => {
     const anchor = { pathname: '/case/IA/Asylum/1632395877596617/trigger/addCaseNote'} as HTMLAnchorElement;
     component.callUpdateHrefLink(anchor, anchor.pathname );
