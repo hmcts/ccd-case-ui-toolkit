@@ -12,7 +12,7 @@ export interface FlagDetail {
   flagComment?: string;
   dateTimeModified?: Date | string;
   dateTimeCreated: Date | string;
-  paths: FlagPath[];
+  path: FlagPath[];
   hearingRelevant: boolean | string;
   flagCode: string;
   status: string;
