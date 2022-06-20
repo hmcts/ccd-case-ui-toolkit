@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement, ViewChild } from '@angular/core';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 import { NgxMdModule, NgxMdComponent } from 'ngx-md';
 import { By } from '@angular/platform-browser';
@@ -114,20 +114,9 @@ describe('MarkdownComponent - Anchor', () => {
     fixture.detectChanges();
   }));
 
-  // it('Should render an anchor and paragraph elements', () => {
-  //   // fixture = TestBed.createComponent(CCDMarkDownComponent);
-  //   // component = fixture.componentInstance;
-  //   // CONTENT = '[Add case note](/case/IA/Asylum/1632395877596617/trigger/addCaseNote)';
-  //   // EXPECTED_CONTENT = '<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>';
-  //   // component.content = CONTENT;
-  //   // de = fixture.debugElement;
-  //   // fixture.detectChanges();
-
-  //   console.log("**markdown**");
-  //   console.log(de.query($MARKDOWN).nativeElement.innerHTML);
-
-  //   expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
-  // });
+  it('Should render an anchor and paragraph elements', () => {
+    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
+  });
 
   // it('should not call updateHrefLink', () => {
   //   // component.markdownUseHrefAsRouterLink = true;
@@ -262,3 +251,53 @@ describe('MarkdownComponent - Anchor', () => {
     });
   });
 });
+
+
+
+
+
+
+// @Component({
+//   template: `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`
+// })
+// class DummyMarkdownComponent {
+
+// }
+
+// describe('ChildComponent', () => {
+//   let component: DummyMarkdownComponent;
+//   let host: MarkdownComponent;
+//   let fixture: ComponentFixture<MarkdownComponent>;
+//   let convertHrefToRouterService: ConvertHrefToRouterService;
+
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [DummyMarkdownComponent, MarkdownComponent],
+//       providers: [
+//         NgxMdComponent,
+//         { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
+//       ]
+//     }).compileComponents();
+//   }));
+
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(MarkdownComponent);
+//     // loader = TestbedHarnessEnvironment.loader(fixture);
+//     fixture.detectChanges();
+
+//     host = fixture.componentInstance;
+//     component = host.component;
+//     fixture.detectChanges();
+//   });
+
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+
+//   it('should be able to present a contact', () => {
+//     host.contact = new Contact('otherValue');
+//     expect(SomeQuery.value).toBe('otherValue')
+//   });
+
+// });
+
