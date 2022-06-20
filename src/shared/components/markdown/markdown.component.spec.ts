@@ -132,7 +132,8 @@ describe('MarkdownComponent - Anchor', () => {
 
   it('should invoke callUpdateHrefLink() and call updateHrefLink', (done) => {
     const anchor = { pathname: '/case/IA/Asylum/1632395877596617/trigger/addCaseNote'} as HTMLAnchorElement;
-    component.callUpdateHrefLink(anchor, anchor.pathname );
+    const event = new MouseEvent('click');
+    component.callUpdateHrefLink(anchor, event);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(convertHrefToRouterService.updateHrefLink).toHaveBeenCalled();
@@ -142,11 +143,37 @@ describe('MarkdownComponent - Anchor', () => {
 
   it('should not invoke callUpdateHrefLink() on URL with hash', (done) => {
     const anchor = { pathname: '/case/IA/Asylum/1599830705879596', hash: 'Hearing%20and%20appointment'} as HTMLAnchorElement;
-    const returnValue = component.callUpdateHrefLink(anchor, anchor.pathname );
+    const event = new MouseEvent('click');
+    const returnValue = component.callUpdateHrefLink(anchor, event );
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
       expect(returnValue).toBeTruthy();
+      done();
+    });
+  });
+
+  it('should not invoke callUpdateHrefLink() on markdownUseHrefAsRouterLink false', (done) => {
+    component.markdownUseHrefAsRouterLink = false;
+    const anchor = { pathname: '/case/IA/Asylum/1599830705879596', hash: 'Hearing%20and%20appointment'} as HTMLAnchorElement;
+    const event = new MouseEvent('click');
+    const returnValue = component.callUpdateHrefLink(anchor, event );
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
+      expect(returnValue).toBeTruthy();
+      done();
+    });
+  });
+
+  it('should not invoke callUpdateHrefLink() on markdownUseHrefAsRouterLink false and external link click', (done) => {
+    component.markdownUseHrefAsRouterLink = false;
+    const anchor = { pathname: 'https://www.bbc.co.uk/news'} as HTMLAnchorElement;
+    const event = new MouseEvent('click');
+    component.callUpdateHrefLink(anchor, event );
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
       done();
     });
   });
