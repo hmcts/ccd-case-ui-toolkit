@@ -59,7 +59,11 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   public processLabel(flagDisplay: FlagDetailDisplay): string {
     const partyName = flagDisplay.partyName ? flagDisplay.partyName : '';
-    const flagName = flagDisplay.flagDetail.name ? flagDisplay.flagDetail.name : '';
+    const flagName = flagDisplay.flagDetail.paths.length > 1
+      ? `${flagDisplay.flagDetail.paths[1].value}, ${flagDisplay.flagDetail.paths[flagDisplay.flagDetail.paths.length - 1].value}`
+      : flagDisplay.flagDetail.name
+        ? flagDisplay.flagDetail.name
+        : '';
     const comment = flagDisplay.flagDetail.flagComment ? flagDisplay.flagDetail.flagComment : '';
     return `${partyName} - ${flagName}${comment ? ` (${comment})` : ''}`;
   }
