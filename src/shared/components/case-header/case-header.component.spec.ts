@@ -47,7 +47,6 @@ describe('CaseHeaderComponent', () => {
         fixture = TestBed.createComponent(CaseHeaderComponent);
         component = fixture.componentInstance;
         component.caseDetails = CASE_DETAILS;
-
         de = fixture.debugElement;
         fixture.detectChanges();
       });

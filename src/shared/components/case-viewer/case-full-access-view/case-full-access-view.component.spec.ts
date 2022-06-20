@@ -1151,7 +1151,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
-
     TestBed
       .configureTestingModule({
         imports: [
@@ -1396,7 +1395,6 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
-
     TestBed
       .configureTestingModule({
         imports: [

@@ -47,7 +47,6 @@ describe('MarkdownComponent - Table', () => {
 
   beforeEach(async(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
-
     TestBed
       .configureTestingModule({
         imports: [

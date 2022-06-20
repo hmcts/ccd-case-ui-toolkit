@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { CaseEventTrigger, CaseView } from '../../../domain';
+import { CaseEventTrigger, Profile } from '../../../domain';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CasesService } from '../../case-editor';
@@ -13,6 +13,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
   public static readonly IGNORE_WARNING = 'ignoreWarning';
   private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
   private cachedEventTrigger: CaseEventTrigger;
+  private cachedProfile: Profile;
   constructor(
     private casesService: CasesService,
     private alertService: AlertService,
@@ -40,7 +41,14 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
       ignoreWarning = 'false';
     }
 
-    this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
+    if (this.cachedProfile) {
+      this.profileNotifier.announceProfile(this.cachedProfile);
+    } else {
+      this.profileService.get().subscribe(profile => {
+        this.cachedProfile = profile;
+        this.profileNotifier.announceProfile(profile);
+      });
+    }
 
     return this.casesService
       .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
