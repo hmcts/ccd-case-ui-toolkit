@@ -1,6 +1,6 @@
 export interface FlagPath {
-	id?: string;
-	value: string;
+  id?: string;
+  value: string;
 }
 
 export interface FlagDetail {
@@ -12,7 +12,7 @@ export interface FlagDetail {
   flagComment?: string;
   dateTimeModified?: Date | string;
   dateTimeCreated: Date | string;
-  path: FlagPath[];
+  paths: FlagPath[];
   hearingRelevant: boolean | string;
   flagCode: string;
   status: string;

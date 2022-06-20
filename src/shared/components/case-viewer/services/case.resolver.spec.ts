@@ -26,7 +26,7 @@ describe('CaseResolver', () => {
           flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
           dateTimeModified: new Date('2021-09-09 00:00:00'),
           dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
+          paths: [],
           hearingRelevant: false,
           flagCode: '',
           status: CaseFlagStatus.ACTIVE
@@ -39,7 +39,7 @@ describe('CaseResolver', () => {
           flagComment: 'Requires senior case worker',
           dateTimeModified: new Date('2021-09-09 00:00:00'),
           dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
+          paths: [],
           hearingRelevant: false,
           flagCode: '',
           status: CaseFlagStatus.INACTIVE

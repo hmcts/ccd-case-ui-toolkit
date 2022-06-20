@@ -17,7 +17,7 @@ describe('SelectFlagLocationComponent', () => {
           name: 'Flag 1',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          paths: [{id: null, value: 'Reasonable adjustment'}],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -26,7 +26,7 @@ describe('SelectFlagLocationComponent', () => {
           name: 'Flag 2',
           flagComment: 'Rose\'s second flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          paths: [{id: null, value: 'Reasonable adjustment'}],
           hearingRelevant: false,
           flagCode: 'FL2',
           status: 'Inactive'
@@ -41,7 +41,7 @@ describe('SelectFlagLocationComponent', () => {
           name: 'Flag 3',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          paths: [{id: null, value: 'Reasonable adjustment'}],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'

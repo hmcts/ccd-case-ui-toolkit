@@ -37,7 +37,7 @@ describe('CaseFlagTableComponent', () => {
         flagComment: '',
         dateTimeModified: new Date('2021-09-09 00:00:00'),
         dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
+        paths: [],
         hearingRelevant: false,
         flagCode: '',
         status: CaseFlagStatus.ACTIVE
@@ -50,7 +50,7 @@ describe('CaseFlagTableComponent', () => {
         flagComment: '',
         dateTimeModified: new Date('2021-09-09 00:00:00'),
         dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
+        paths: [],
         hearingRelevant: false,
         flagCode: '',
         status: CaseFlagStatus.ACTIVE

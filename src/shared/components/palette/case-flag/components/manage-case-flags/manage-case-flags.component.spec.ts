@@ -17,7 +17,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 1',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          paths: [{id: null, value: 'Reasonable adjustment'}],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -27,7 +27,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 2',
           flagComment: 'Rose\'s second flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          paths: [{id: null, value: 'Reasonable adjustment'}],
           hearingRelevant: false,
           flagCode: 'FL2',
           status: 'Inactive'
@@ -43,7 +43,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 3',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          paths: [{id: null, value: 'Reasonable adjustment'}],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -124,7 +124,7 @@ describe('ManageCaseFlagsComponent', () => {
     const flagDetail = {
       name: 'Interpreter',
       dateTimeCreated: new Date(),
-      path: ['path'],
+      paths: [{id: null, value: 'path'}],
       flagComment: 'comment',
       hearingRelevant: true,
       flagCode: '123',

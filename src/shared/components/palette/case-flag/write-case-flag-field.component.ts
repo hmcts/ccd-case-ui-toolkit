@@ -33,7 +33,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public flagName: string;
-  public flagPath: FlagPath[];
+  public flagPaths: FlagPath[];
   public hearingRelevantFlag: boolean;
   public flagCode: string;
   public listOfValues: {key: string, value: string}[] = null;
@@ -122,7 +122,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // and "list of values" (currently applicable to language flag types)
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_TYPE) {
       this.flagName = caseFlagState.flagName;
-      this.flagPath = caseFlagState.flagPath;
+      this.flagPaths = caseFlagState.flagPaths;
       this.hearingRelevantFlag = caseFlagState.hearingRelevantFlag;
       this.flagCode = caseFlagState.flagCode;
       this.listOfValues = caseFlagState.listOfValues;
@@ -263,7 +263,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         : null,
       flagComment: this.caseFlagParentFormGroup.value.flagComments ? this.caseFlagParentFormGroup.value.flagComments : null,
       dateTimeCreated: new Date().toISOString(),
-      path: this.flagPath,
+      paths: this.flagPaths,
       hearingRelevant: this.hearingRelevantFlag ? 'Yes' : 'No',
       flagCode: this.flagCode,
       status: CaseFlagStatus.ACTIVE

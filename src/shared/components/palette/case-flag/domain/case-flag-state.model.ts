@@ -7,7 +7,7 @@ export interface CaseFlagState {
   isParentFlagType?: boolean;
   errorMessages: ErrorMessage[];
   flagName?: string;
-  flagPath?: FlagPath[];
+  flagPaths?: FlagPath[];
   hearingRelevantFlag?: boolean;
   flagCode?: string;
   listOfValues?: { key: string, value: string }[];
