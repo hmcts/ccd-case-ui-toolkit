@@ -252,11 +252,6 @@ describe('MarkdownComponent - Anchor', () => {
   });
 });
 
-
-
-
-
-
 // @Component({
 //   template: `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`
 // })
@@ -300,4 +295,3 @@ describe('MarkdownComponent - Anchor', () => {
 //   });
 
 // });
-
