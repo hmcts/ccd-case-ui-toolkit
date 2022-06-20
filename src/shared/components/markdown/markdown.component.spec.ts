@@ -110,6 +110,7 @@ describe('MarkdownComponent - Anchor', () => {
     fixture = TestBed.createComponent(CCDMarkDownComponent);
     component = fixture.componentInstance;
     component.content = CONTENT;
+    component.markdownUseHrefAsRouterLink = true;
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
@@ -118,180 +119,36 @@ describe('MarkdownComponent - Anchor', () => {
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
 
-  // it('should not call updateHrefLink', () => {
-  //   // component.markdownUseHrefAsRouterLink = true;
-  //   // const anchor = document.createElement('a');
-  //   // anchor.href = '/hgh/jhgjhgj';
-  //   // anchor.click();
-  //   // expect(component.onMarkdownClick).toHaveBeenCalled();
-
-  //   // const event = new MouseEvent('mousedown', {clientX: 50, clientY: 150});
-  //   // component.onMarkdownClick(event);
-  //   // fixture.detectChanges();
-  //   // expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
-  //   // component.content = '/click/sds/ere#hello'
-  //   const spyAnchorClick = spyOn(component, 'onMarkdownClick').and.callThrough();
-
-  //       fixture.detectChanges();
-
-  //       const anchor = document.createElement('a');
-  //       anchor.href = '/sdfs/sds#hash';
-  //       expect(anchor).not.toEqual(null); // ok
-
-  //       const event = new MouseEvent('click',
-  //           {
-  //               view: window,
-  //               bubbles: true,
-  //               cancelable: true,
-  //               relatedTarget: document
-  //           });
-
-  //           console.log("**Event**");
-
-  //           console.log(event);
-
-  //           anchor.dispatchEvent(event);
-
-  //           const input = fixture.debugElement.query(By.css('a'));
-  // input.triggerEventHandler('click', {});
-  // fixture.detectChanges();
-
-  //           const markdownClick = component.onMarkdownClick(event);
-  //           tick();
-  //       fixture.detectChanges();
-  //       expect(spyAnchorClick).toHaveBeenCalled(); // ok
-  //       expect(markdownClick).toBeTruthy();
-  //       // expect(component.).toBe('ok'); //ok
-  // });
-
-  // it('something', () => {
-  //   // component.content = '## Current progress of the case\n\n![Progress map showing that the appeal
-  // is now at stage 7 of 11 stages - the Listing stage]
-  // (https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/caseOfficer_listing.svg)
-  // \n\n## Do this next\nYou can view the hearing requirements and any requests for additional adjustments in the
-  // [hearing and appointment tab](/case/IA/Asylum/1599830705879596#Hearing%20and%20appointment).<br><br>You should
-  // contact the appellant if you need more information.<br><br>You should then
-  // [review and submit](/case/IA/Asylum/1599830705879596/trigger/reviewHearingRequirements)
-  // the hearing requirements and any additional adjustments.';
-  //   const anchor = document.createElement('a');
-  //       anchor.href = '/case/IA/Asylum/1599830705879596/trigger/reviewHearingRequirements';
-  //   // const event = new MouseEvent('click',
-  //   // {
-  //   //     view: window,
-  //   //     bubbles: true,
-  //   //     cancelable: true,
-  //   //     relatedTarget: document,
-  //   // });
-    // anchor.dispatchEvent()
-    // let event = {
-    //   target: {
-    //     pathname: '/case/IA/Asylum/1599830705879596/trigger/reviewHearingRequirements',
-    //     hash: null,
-    //     search: null
-    //   }
-    // };
-
-  //   console.log("**Event**");
-
-  //   console.log(event);
-
-  //   console.log("**anchor**");
-  //   console.log(anchor);
-  //   fixture.detectChanges();
-
-  //   const markdownClick = component.onMarkdownClick(event);
-
-  // })
-
-//   it('hrllo', () => {
-//     function myFunction() {
-//       alert('It was clicked');
-//   }
-
-//   const Anchor = <HTMLAnchorElement>document.createElement('a');
-//   Anchor.href = '/hgh/jhgjhgj';
-
-//   Anchor.addEventListener('click', component.onMarkdownClick, false);
-
-// let event = new MouseEvent('click',
-//              {
-//                  view: window,
-//                  bubbles: true,
-//                  cancelable: true,
-//                  relatedTarget: document,
-//              });
-
-//            console.log("**Event**");
-
-// Anchor.dispatchEvent(event);
-
-// expect(component.onMarkdownClick).toHaveBeenCalled();
-//  const anchorEvent = {
-//    target: <HTMLAnchorElement> {
-//       pathname: '/case/IA/Asylum/1599830705879596/trigger/reviewHearingRequirements',
-//       hash: null,
-//       search: null
-//     }
-//   };
-
-//   component.onMarkdownClick(anchorEvent);
-//   })
-
   it('should invoke onMarkdownClick() on markdown click', (done) => {
     const spyMarkdownClick = spyOn(component, 'onMarkdownClick').and.callThrough();
     const markdown = de.query(By.css('markdown')).nativeElement;
-    console.log(markdown);
-    // const anchor = markdown.querySelector('a');
     markdown.click();
-
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(spyMarkdownClick).toHaveBeenCalled();
       done();
     });
   });
+
+
+  it('should invoke callUpdateHrefLink() and call updateHrefLink', (done) => {
+    const anchor = { pathname: '/case/IA/Asylum/1632395877596617/trigger/addCaseNote'} as HTMLAnchorElement;
+    component.callUpdateHrefLink(anchor, anchor.pathname );
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(convertHrefToRouterService.updateHrefLink).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('should not invoke callUpdateHrefLink() on URL with hash', (done) => {
+    const anchor = { pathname: '/case/IA/Asylum/1599830705879596', hash: 'Hearing%20and%20appointment'} as HTMLAnchorElement;
+    const returnValue = component.callUpdateHrefLink(anchor, anchor.pathname );
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
+      expect(returnValue).toBeTruthy();
+      done();
+    });
+  });
 });
-
-// @Component({
-//   template: `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`
-// })
-// class DummyMarkdownComponent {
-
-// }
-
-// describe('ChildComponent', () => {
-//   let component: DummyMarkdownComponent;
-//   let host: MarkdownComponent;
-//   let fixture: ComponentFixture<MarkdownComponent>;
-//   let convertHrefToRouterService: ConvertHrefToRouterService;
-
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [DummyMarkdownComponent, MarkdownComponent],
-//       providers: [
-//         NgxMdComponent,
-//         { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
-//       ]
-//     }).compileComponents();
-//   }));
-
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(MarkdownComponent);
-//     // loader = TestbedHarnessEnvironment.loader(fixture);
-//     fixture.detectChanges();
-
-//     host = fixture.componentInstance;
-//     component = host.component;
-//     fixture.detectChanges();
-//   });
-
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-
-//   it('should be able to present a contact', () => {
-//     host.contact = new Contact('otherValue');
-//     expect(SomeQuery.value).toBe('otherValue')
-//   });
-
-// });

@@ -23,19 +23,23 @@ export class MarkdownComponent implements OnInit {
     if (event.target instanceof HTMLAnchorElement === false) {
       return;
     }
-
     const eventTarget = (<HTMLAnchorElement>event.target);
     const targetPath = eventTarget.pathname;
+    if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
+      // Prevent page from reloading
+      event.preventDefault();
+    }
+    return this.callUpdateHrefLink(eventTarget, targetPath);
+  }
+
+  callUpdateHrefLink(eventTarget, targetPath) {
     const hash = eventTarget.hash;
     const search = eventTarget.search;
 
     if (hash) {
       return true;
     }
-    if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
-      // Prevent page from reloading
-      event.preventDefault();
-      this.convertHrefToRouterService.updateHrefLink(targetPath + search);
-    }
+
+    this.convertHrefToRouterService.updateHrefLink(targetPath + search);
   }
 }
