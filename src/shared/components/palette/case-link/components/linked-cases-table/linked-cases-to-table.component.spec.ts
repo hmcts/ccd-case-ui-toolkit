@@ -255,7 +255,7 @@ describe('LinkCasesToTableComponent', () => {
   it('should render the none as table row when no linked cases to be displayed', () => {
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
     component = fixture.componentInstance;
-    component.linkedCasesFromResponse= [];
+    component.linkedCasesFromResponse = [];
     component.ngOnInit();
     fixture.detectChanges();
     expect(document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()).toEqual('None');

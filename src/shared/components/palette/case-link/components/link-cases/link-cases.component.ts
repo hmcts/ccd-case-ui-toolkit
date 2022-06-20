@@ -43,7 +43,7 @@ export class LinkCasesComponent implements OnInit {
   ngOnInit(): void {
     this.selectedCases = this.linkedCasesService.linkedCases;
     this.getAllLinkedCaseInformation();
-    this.initForm();  
+    this.initForm();
   }
 
   public initForm() {

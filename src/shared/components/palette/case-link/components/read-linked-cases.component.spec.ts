@@ -44,7 +44,7 @@ describe('ReadLinkedCases', () => {
       caseName: 'SSCS 2.1'
     }
   ];
-  
+
   linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: linkedCases
@@ -114,7 +114,7 @@ describe('ReadLinkedCases', () => {
       from: 'exui-default',
     },
   ]};
-  
+
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadLinkedCasesComponent);
     component = fixture.componentInstance;

@@ -23,7 +23,6 @@ describe('LinkCasesFromTableComponent', () => {
   let appConfig: any;
   let linkedCasesService: any;
 
-
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
     {
@@ -90,10 +89,10 @@ describe('LinkCasesFromTableComponent', () => {
       caseName: 'SSCS 2.1'
     }
   ];
-  
+
   linkedCasesService = {
     caseId: '1682374819203471',
-    linkedCases: linkedCases
+    linkedCases: linkedCases,
   };
 
   beforeEach(async(() => {
