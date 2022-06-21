@@ -68,4 +68,11 @@ describe('CaseFlagTableComponent', () => {
     const tableElement = fixture.debugElement.nativeElement.querySelector('govuk-table');
     expect(tableElement).toBeNull();
   });
+
+  it('should not display the blank column when displaying case flags', () => {
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const caseViewerFieldLabelElement = fixture.debugElement.nativeElement.querySelector('#case-viewer-field-label');
+    expect(caseViewerFieldLabelElement).toBeNull();
+  });
 });
