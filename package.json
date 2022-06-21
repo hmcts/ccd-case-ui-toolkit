@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.12-case-flags-tab-and-comments",
+  "version": "4.13.13-case-flags-tab-and-comments",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

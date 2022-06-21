@@ -66,7 +66,7 @@
                       <th id="case-viewer-field-label" *ngIf="!isCaseFlagSubmission">
                         <div class="case-viewer-label text-16">{{field.label}}</div>
                       </th>
-                      <th>
+                      <th scope="col">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                             [caseField]="field" [caseReference]="caseDetails.case_id">
@@ -75,7 +75,7 @@
                       </th>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <th>
+                      <th scope="col">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                             [caseField]="field" [caseReference]="caseDetails.case_id">
