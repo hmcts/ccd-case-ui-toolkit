@@ -518,7 +518,11 @@ export class FormValueService {
   public populateFlagDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
       caseFields.filter(caseField => FieldsUtils.isFlagsCaseField(caseField))
-        .forEach(flagsField => data[flagsField.id].details = flagsField.value.details);
+        .forEach(flagsField => {
+          if (data[flagsField.id]) {
+            data[flagsField.id].details = flagsField.value.details;
+          }
+        });
     }
   }
 }

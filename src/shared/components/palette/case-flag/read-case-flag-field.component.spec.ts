@@ -16,6 +16,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       type: flaglauncher_id
     }
   } as CaseField;
+  const caseFlag1FieldId = 'CaseFlag1';
   const caseFlag1PartyName = 'John Smith';
   const caseFlag1RoleOnCase = 'Claimant';
   const caseFlag1DetailsValue1 = {
@@ -44,6 +45,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     flagCode: 'BSL',
     status: CaseFlagStatus.INACTIVE
   };
+  const caseFlag2FieldId = 'CaseFlag2';
   const caseFlag2PartyName = 'Ann Peterson';
   const caseFlag2RoleOnCase = 'Defendant';
   const caseFlag2DetailsValue1 = {
@@ -71,6 +73,16 @@ describe('ReadCaseFlagFieldComponent', () => {
     flagCode: 'WCA',
     status: CaseFlagStatus.INACTIVE
   };
+  const caseFlagsFieldId = 'caseFlags';
+  const caseLevelFlagDetailsValue = {
+    name: 'Other',
+    dateTimeModified: '2022-06-14T01:00:00.000',
+    dateTimeCreated: '2022-06-14T00:00:00.000',
+    path: [ 'Party' ],
+    hearingRelevant: 'Yes',
+    flagCode: 'OT0001',
+    status: CaseFlagStatus.ACTIVE
+  }
   const mockRoute = {
     snapshot: {
       data: {
@@ -89,10 +101,9 @@ describe('ReadCaseFlagFieldComponent', () => {
               fields: [
                 flagLauncherCaseField,
                 {
-                  id: 'CaseFlag1',
+                  id: caseFlag1FieldId,
                   field_type: {
-                    // TODO: Temporary field type; needs to be changed to "Flags" once the implementation has been changed over
-                    id: 'CaseFlag',
+                    id: 'Flags',
                     type: 'Complex'
                   },
                   value: {
@@ -111,10 +122,9 @@ describe('ReadCaseFlagFieldComponent', () => {
                   }
                 },
                 {
-                  id: 'CaseFlag2',
+                  id: caseFlag2FieldId,
                   field_type: {
-                    // TODO: Temporary field type; needs to be changed to "Flags" once the implementation has been changed over
-                    id: 'CaseFlag',
+                    id: 'Flags',
                     type: 'Complex'
                   },
                   value: {
@@ -128,6 +138,21 @@ describe('ReadCaseFlagFieldComponent', () => {
                       {
                         id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
                         value: caseFlag2DetailsValue2
+                      }
+                    ]
+                  }
+                },
+                {
+                  id: caseFlagsFieldId,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    details: [
+                      {
+                        id: 'ab4cab59-dec2-4869-8a9c-afa27a6e9be8',
+                        value: caseLevelFlagDetailsValue
                       }
                     ]
                   }
@@ -165,7 +190,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.caseField = flagLauncherCaseField;
     component.ngOnInit();
     expect(component.flagsData).toBeTruthy();
-    expect(component.flagsData.length).toBe(2);
+    expect(component.flagsData.length).toBe(3);
+    expect(component.flagsData[0].flagsCaseFieldId).toEqual(caseFlag1FieldId);
     expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
     expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
     expect(component.flagsData[0].details.length).toBe(2);
@@ -173,6 +199,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
     expect(component.flagsData[0].details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[0].details[0].hearingRelevant).toBe(false);
+    expect(component.flagsData[1].flagsCaseFieldId).toEqual(caseFlag2FieldId);
     expect(component.flagsData[1].partyName).toEqual(caseFlag2PartyName);
     expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
     expect(component.flagsData[1].details.length).toBe(2);
@@ -180,6 +207,14 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
     expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
+    expect(component.flagsData[2].flagsCaseFieldId).toEqual(caseFlagsFieldId);
+    expect(component.flagsData[2].partyName).toBeUndefined();
+    expect(component.flagsData[2].roleOnCase).toBeUndefined();
+    expect(component.flagsData[2].details.length).toBe(1);
+    expect(component.flagsData[2].details[0].name).toEqual(caseLevelFlagDetailsValue.name);
+    expect(component.flagsData[2].details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
+    expect(component.flagsData[2].details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
+    expect(component.flagsData[2].details[0].hearingRelevant).toBe(true);
   });
 
   // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null

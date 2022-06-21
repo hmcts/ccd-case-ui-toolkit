@@ -78,7 +78,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                 flagsCaseFieldId: caseField.id,
                 partyName: caseField.value.partyName,
                 roleOnCase: caseField.value.roleOnCase,
-                details: caseField.value.details
+                details: caseField.value.details && caseField.value.details.length > 0
                   ? ((caseField.value.details) as any[]).map(detail => {
                     return Object.assign({}, ...Object.keys(detail.value).map(k => {
                       // The id property set below will be null for new case flag
@@ -197,6 +197,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public addFlagToCollection(): void {
     const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
     if (flagsCaseFieldValue) {
+			// Create a details array if one does not exist
+			if (!flagsCaseFieldValue.hasOwnProperty('details')) {
+				flagsCaseFieldValue.details = [];
+			}
       flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
       // There is no error, update form group value and validity
       this.formGroup.updateValueAndValidity();
