@@ -67,6 +67,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
+  public isCaseFlagSubmission = false;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -291,6 +292,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       : null;
 
     if (caseFlagsTab) {
+      // Hide the field label column as it pushes the case flags table to the right
+      this.isCaseFlagSubmission = true;
+
+      // Get the active case flags count
       const activeCaseFlags = caseFlagsTab.fields
         .filter(caseField => FieldsUtils.isFlagsCaseField(caseField) && caseField.value && caseField.value.details)
         .reduce((active, caseFlag) => {

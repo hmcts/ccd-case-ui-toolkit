@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
-import { PaletteContext } from '../base-field/palette-context.enum';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
+import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetail, Flags } from './domain';
 
 @Component({
