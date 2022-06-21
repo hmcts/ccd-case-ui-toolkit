@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.9-manage-case-flags-update-flag-page",
+  "version": "4.13.11-case-flags-tab-and-comments",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
