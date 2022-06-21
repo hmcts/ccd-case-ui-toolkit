@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+### Version 4.13.11-case-flags-tab-and-comments
+**EUI-6070** Update case flag comments always mandatory
+**EUI-5294** Case flags tab blank space on left side
+
 ### Version 4.13.10-manage-case-flags-display-formatted-flag-details
 **EUI-5810** Manage case flags display formatted flag details
 
