@@ -13,6 +13,7 @@ import { PlaceholderService } from '../../../directives/substitutor/services';
 import { CaseField } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { PipesModule } from '../../../pipes';
+import { ConvertHrefToRouterService } from '../services';
 
 describe('CaseEditConfirmComponent', () => {
   let fixture: ComponentFixture<CaseEditConfirmComponent>;
@@ -35,8 +36,10 @@ describe('CaseEditConfirmComponent', () => {
   const caseField1: CaseField = aCaseField('TetsField1', 'TetsField1', 'Text', 'OPTIONAL', 1);
   const caseField2: CaseField = aCaseField('TetsField2', 'TetsField2', 'Text', 'OPTIONAL', 2);
   const caseField3: CaseField = aCaseField('TetsField3', 'TetsField3', 'Text', 'OPTIONAL', 3);
+  let convertHrefToRouterService;
 
   beforeEach(async(() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
     firstPage.id = 'first page';
     caseEditComponentStub = {
       'form': FORM_GROUP,
@@ -66,8 +69,9 @@ describe('CaseEditConfirmComponent', () => {
           CaseEditConfirmComponent
         ],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: Router, useValue: routerStub},
+          { provide: CaseEditComponent, useValue: caseEditComponentStub },
+          { provide: Router, useValue: routerStub },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           FieldsUtils,
           PlaceholderService
         ]
