@@ -140,10 +140,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
           caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
         this.moveToFinalReviewStage();
-      }
-      // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
-      // means the user needs to select from the next set of flag types before they can move on
-      else if (!caseFlagState.isParentFlagType) {
+        // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
+        // means the user needs to select from the next set of flag types before they can move on
+      } else if (!caseFlagState.isParentFlagType) {
         // Proceed to next state
         this.proceedToNextState();
       }
