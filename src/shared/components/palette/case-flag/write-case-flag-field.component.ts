@@ -1,12 +1,10 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { AddCommentsComponent } from './components/add-comments/add-comments.component';
-import { UpdateFlagComponent } from './components/update-flag/update-flag.component';
 import { CaseFlagState, FlagDetail, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
@@ -18,9 +16,6 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   @Input() public caseEditPageComponent: CaseEditPageComponent;
-
-  @ViewChild(AddCommentsComponent) addCommentsComponent: AddCommentsComponent;
-  @ViewChild(UpdateFlagComponent) updateFlagComponent: UpdateFlagComponent;
 
   public formGroup: FormGroup;
   public fieldState: number;
@@ -38,6 +33,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCode: string;
   public listOfValues: {key: string, value: string}[] = null;
   public isDisplayContextParameterUpdate: boolean;
+  private allCaseFlagStagesCompleted = false;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
@@ -49,11 +45,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnInit(): void {
+    // Check for existing FlagLauncher control in parent and remove it - this is the only way to ensure its invalidity
+    // is set correctly at the start, when the component is reloaded and the control is re-registered. Otherwise, the
+    // validator state gets carried over
+    if (this.formGroup && this.formGroup.get(this.caseField.id)) {
+      this.formGroup.removeControl(this.caseField.id);
+    }
+    // From this point, this.formGroup refers to the FormGroup for the FlagLauncher field, not the parent FormGroup
     this.formGroup = this.registerControl(new FormGroup({}, {
       validators: (_: AbstractControl): {[key: string]: boolean} | null => {
-        if (!this.isAtFinalState()) {
-          // Return an error to mark the FormGroup as invalid if not at the final state
-          return {notAtFinalState: true};
+        if (!this.allCaseFlagStagesCompleted) {
+          // Return an error to mark the FormGroup as invalid if not all Case Flag stages have been completed
+          return {notAllCaseFlagStagesCompleted: true};
         }
         return null;
       }
@@ -105,10 +108,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
-
-      // Set reference to this component in parent CaseEditPageComponent (needed for controlling error message setting in
-      // the parent, and for parent to invoke validation and value setting in the child, on a submit event)
-      this.caseEditPageComponent.writeCaseFlagFieldComponent = this;
     }
   }
 
@@ -134,11 +133,20 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
-    // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
-    // means the user needs to select from the next set of flag types before they can move on
-    if (this.errorMessages.length === 0 && !caseFlagState.isParentFlagType) {
-      // Validation succeeded, can proceed to next state
-      this.proceedToNextState();
+    // Validation succeeded; proceed to next state or final review stage ("Check your answers")
+    if (this.errorMessages.length === 0) {
+      // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
+      // review stage
+      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
+          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
+        this.moveToFinalReviewStage();
+      }
+      // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
+      // means the user needs to select from the next set of flag types before they can move on
+      else if (!caseFlagState.isParentFlagType) {
+        // Proceed to next state
+        this.proceedToNextState();
+      }
     }
   }
 
@@ -153,48 +161,27 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.fieldState++;
       }
     }
-
-    // Deliberately not part of an if...else statement with the above because validation needs to be triggered as soon as
-    // the form is at the final state
-    if (this.isAtFinalState()) {
-      // Trigger validation to clear the "notAtFinalState" error if now at the final state
-      this.formGroup.updateValueAndValidity();
-    }
   }
 
-  public validateAndSetFlagsCaseFieldValue(): void {
-    if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS || this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
-      const component = this.fieldState === CaseFlagFieldState.FLAG_COMMENTS
-        ? this.addCommentsComponent
-        : this.updateFlagComponent;
-      component.validateFlagComments();
-      if (component.errorMessages.length > 0) {
-        // Error found, Set form group error and display error message
-        this.errorMessages = component.errorMessages;
-        this.formGroup.setErrors(component.errorMessages);
-      } else {
-        // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-        if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
-          const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-          // Create a details array if one does not exist
-          if (!flagsCaseFieldValue.hasOwnProperty('details')) {
-            flagsCaseFieldValue.details = [];
-          }
-          // Ensure no more than one new flag is being added at a time, by removing any previous entry from the details
-          // array where that entry has no id (hence it is new - and there should be only one such entry). (This scenario
-          // occurs if the user repeats the Case Flag creation journey by using the "Change" link.)
-          const indexOfNewFlagDetail = flagsCaseFieldValue.details.findIndex(element => !element.hasOwnProperty('id'));
-          if (indexOfNewFlagDetail > -1) {
-            flagsCaseFieldValue.details.splice(indexOfNewFlagDetail, 1);
-          }
-          flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
-        }
-        if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
-          // TODO: EUI-5342
-        }
-        // There is no error, update form group value and validity
-        this.formGroup.updateValueAndValidity();
+  public setFlagsCaseFieldValue(): void {
+    // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
+    if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
+      const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+      // Create a details array if one does not exist
+      if (!flagsCaseFieldValue.hasOwnProperty('details')) {
+        flagsCaseFieldValue.details = [];
       }
+      // Ensure no more than one new flag is being added at a time, by removing any previous entry from the details
+      // array where that entry has no id (hence it is new - and there should be only one such entry). (This scenario
+      // occurs if the user repeats the Case Flag creation journey by using the "Change" link.)
+      const indexOfNewFlagDetail = flagsCaseFieldValue.details.findIndex(element => !element.hasOwnProperty('id'));
+      if (indexOfNewFlagDetail > -1) {
+        flagsCaseFieldValue.details.splice(indexOfNewFlagDetail, 1);
+      }
+      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+    }
+    if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
+      // TODO: EUI-5342
     }
   }
 
@@ -253,5 +240,14 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       flagCode: this.flagCode,
       status: CaseFlagStatus.ACTIVE
     } as FlagDetail;
+  }
+
+  public moveToFinalReviewStage(): void {
+    this.setFlagsCaseFieldValue();
+    // Clear the "notAllCaseFlagStagesCompleted" error
+    this.allCaseFlagStagesCompleted = true;
+    this.formGroup.updateValueAndValidity();
+    // Perform a submit manually (as if the user had clicked "Continue")
+    this.caseEditPageComponent.submit();
   }
 }

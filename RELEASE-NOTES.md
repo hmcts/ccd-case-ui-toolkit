@@ -5,6 +5,9 @@
 ### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
 **EUI-5848** Manage case flags comments mandatory or optional
 
+### Version 4.13.6-review-flag-details-change-link-and-continue-bugfix
+**EUI-6043** Fix bug where error state of the FlagLauncher component is not being reset correctly to "invalid" when the component is reloaded after clicking "Change" from the "Review Flag Details" page
+
 ### Version 4.13.6-review-flag-details-change-link-bugfix
 **EUI-6043** Fix bug that results in more than one new case flag being added at the same time, which gives the appearance of
 caching previous data when the user elects to change the case flag being created
