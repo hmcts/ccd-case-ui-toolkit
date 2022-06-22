@@ -19,6 +19,7 @@ import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.componen
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
+import { CaseNotifier } from '../services';
 
 // @dynamic
 @Component({
@@ -76,7 +77,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly orderService: OrderService,
     private readonly profileNotifier: ProfileNotifier,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier,
   ) {
   }
 
@@ -186,6 +188,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
+          this.caseNotifier.cachedCaseView = null;
           const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);
