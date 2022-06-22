@@ -1,8 +1,21 @@
 ## RELEASE NOTES
+### Version 4.13.7-create-case-level-case-flag
+**EUI-5849** Create and display case-level flags
+
+### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
+**EUI-5848** Manage case flags comments mandatory or optional
+
+### Version 4.13.6-review-flag-details-change-link-and-continue-bugfix
+**EUI-6043** Fix bug where error state of the FlagLauncher component is not being reset correctly to "invalid" when the component is reloaded after clicking "Change" from the "Review Flag Details" page
+
+### Version 4.13.6-review-flag-details-change-link-bugfix
+**EUI-6043** Fix bug that results in more than one new case flag being added at the same time, which gives the appearance of
+caching previous data when the user elects to change the case flag being created
+
 ### Version 4.13.6-review-flag-details-content-and-layout
 **EUI-5968** Display alternate version of ReadCaseFlagField component, with a summary list when display context is "Check your answers"
 
-### Version 4.13.4-create-case-flag-review-flag-details-page-part3
+### Version 4.13.3-create-case-flag-review-flag-details-page-part3
 **EUI-5973** Review flag details page part 3
 
 ### Version 4.13.2-create-case-flag-integration-with-check-your-answers

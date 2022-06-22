@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail } from '../../domain';
 import { CaseFlagFieldState, UpdateFlagErrorMessage } from '../../enums';
-
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {

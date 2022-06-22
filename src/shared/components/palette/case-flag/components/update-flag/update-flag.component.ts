@@ -61,7 +61,8 @@ export class UpdateFlagComponent implements OnInit {
     this.updateFlagNotEnteredErrorMessage = null;
     this.updateFlagCharLimitErrorMessage = null;
     this.errorMessages = [];
-    if (!this.formGroup.get(this.updateFlagControlName).value) {
+    const comment = this.formGroup.get(this.updateFlagControlName).value;
+    if (this.selectedFlagDetail.flagComment && !comment) {
       this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
@@ -69,8 +70,7 @@ export class UpdateFlagComponent implements OnInit {
         fieldId: this.updateFlagControlName
       });
     }
-    if (this.formGroup.get(this.updateFlagControlName).value &&
-      this.formGroup.get(this.updateFlagControlName).value.length > this.commentsMaxCharLimit) {
+    if (comment && comment.length > this.commentsMaxCharLimit) {
       this.updateFlagCharLimitErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED;
       this.errorMessages.push({
         title: '',

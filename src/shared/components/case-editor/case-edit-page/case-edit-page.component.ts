@@ -53,7 +53,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   caseFields: CaseField[];
   validationErrors: { id: string, message: string }[] = [];
   showSpinner: boolean;
-  writeCaseFlagFieldComponent: WriteCaseFlagFieldComponent;
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private static scrollToTop(): void {
@@ -177,20 +176,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                 this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
-                if (this.writeCaseFlagFieldComponent.fieldState !== this.writeCaseFlagFieldComponent.caseFlagFieldState.FLAG_COMMENTS) {
-                  // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
-                  // (expected always to be one of the two), to set the correct error message
-                  let action = '';
-                  if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
-                    action = 'creation';
-                  } else if (casefield.display_context_parameter === '#ARGUMENT(UPDATE)') {
-                    action = 'update';
-                  }
-                  this.validationErrors.push({
-                    id,
-                    message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
-                  });
+                // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
+                // (expected always to be one of the two), to set the correct error message
+                let action = '';
+                if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
+                  action = 'creation';
+                } else if (casefield.display_context_parameter === '#ARGUMENT(UPDATE)') {
+                  action = 'update';
                 }
+                this.validationErrors.push({
+                  id,
+                  message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
+                });
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();
@@ -213,9 +210,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   public submit(): void {
     this.validationErrors = [];
-    if (this.writeCaseFlagFieldComponent) {
-      this.writeCaseFlagFieldComponent.validateAndSetFlagsCaseFieldValue();
-    }
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
     }
