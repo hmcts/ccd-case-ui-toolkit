@@ -24,7 +24,7 @@ export class ConvertHrefToRouterService {
 
     if (queryParams) {
       const queryParam = queryParams.split('&');
-      if (queryParam.length > 0) {
+      if (queryParam[0]) {
         for (let i = 0; i < queryParam.length; i++) {
           let param = queryParam[i].split('=');
           queryParamObj[param[0]] = param[1]
@@ -33,7 +33,7 @@ export class ConvertHrefToRouterService {
     }
 
     this.router.navigate([urls[0]], {
-      queryParams: (queryParamObj && Object.keys(queryParamObj).length) ? queryParamObj : ''
+      queryParams: queryParamObj && (Object.keys(queryParamObj).length) ? queryParamObj : ''
     });
   }
 }
