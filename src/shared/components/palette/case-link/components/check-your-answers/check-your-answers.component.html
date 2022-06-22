@@ -35,11 +35,11 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCases">
           <td class="govuk-table__cell">
-            {{case.caseReference | ccdCaseReference}}
+            <span>{{case.caseReference | ccdCaseReference}} <br> {{case.caseName}}</span>
           </td>
           <td class="govuk-table__cell">
             <span *ngFor="let reason of case.reasons; last as isLast">
-              {{reason.reasonCode}}<br *ngIf="!isLast">
+              {{reason.reasonCode | ccdLinkCasesReasonValue}}<br *ngIf="!isLast">
             </span>
           </td>
           <td class="govuk-table__cell"></td>

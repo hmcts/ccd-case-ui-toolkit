@@ -2,11 +2,10 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { CaseField } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
-import { CommonDataService, LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
+import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
-import { AbstractAppConfig } from '../../../../../../app.config';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -41,10 +40,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public caseId: string;
 
   constructor(
-    private readonly appConfig: AbstractAppConfig,
-    private commonDataService: CommonDataService,
     private route: ActivatedRoute,
-    private router: Router,
     private readonly searchService: SearchService) {}
 
     public ngAfterViewInit(): void {
@@ -55,18 +51,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    // TODO: to be removed once tested the ticket 5640 and same on the test scope as well
-    if (this.router.url.indexOf('?error') > -1) {
-      this.notifyAPIFailure.emit(true);
-      return;
-    }
-    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-      next: reasons => this.linkedCaseReasons = reasons.list_of_values,
-      error: error => this.notifyAPIFailure.emit(true)
-    })
-    this.getAllLinkedCaseInformation();
+    this.getAllLinkedCaseInformation()
   }
 
   public groupByCaseType = (arrObj, key) => {
@@ -112,10 +98,6 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
           searchCases.forEach(response => {
           response.results.forEach((result: any) =>
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
-          // TODO: to be removed after testing the ticket 5550/5639
-          if (this.router && this.router.url && this.router.url.includes('no-linked-cases')) {
-            this.linkedCasesFromResponse = [];
-          }
         });
         this.isLoaded = true;
       },
@@ -133,21 +115,14 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   }
 
   public mapResponse(esSearchCasesResponse) {
-    const reasonDescriptons = []
-    const caseReasonCode = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id);
-    caseReasonCode.reasons.forEach(code => {
-      const foundReasonMapping = this.linkedCaseReasons && this.linkedCaseReasons.find(reason => reason.key === code.reasonCode);
-      if (foundReasonMapping) {
-        reasonDescriptons.push(foundReasonMapping.value_en);
-      }
-    });
+    const caseInfo = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id)
     return {
       caseReference: esSearchCasesResponse.case_id,
       caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseType: esSearchCasesResponse.case_fields['[CASE_TYPE]'],
       service: esSearchCasesResponse.case_fields['[JURISDICTION]'],
       state: esSearchCasesResponse.case_fields['[STATE]'],
-      reasons: reasonDescriptons,
+      reasons: caseInfo.reasons && caseInfo.reasons.map(reason => reason.reasonCode),
     } as LinkedCasesResponse
   }
 

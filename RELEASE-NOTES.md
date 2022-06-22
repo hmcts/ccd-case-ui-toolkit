@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.17.31-link-cases-reason-code
+**EUI-6025** CaseLinking reason code mapping
+
 ### Version 4.17.29-link-case-reasoncode-api-integration
 **EUI-5931** Display the dummy Case_name
 
