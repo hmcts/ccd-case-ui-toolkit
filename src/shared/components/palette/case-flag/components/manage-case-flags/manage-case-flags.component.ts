@@ -58,14 +58,27 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public processLabel(flagDisplay: FlagDetailDisplay): string {
-    const partyName = flagDisplay.partyName ? flagDisplay.partyName : '';
-    const flagName = flagDisplay.flagDetail && flagDisplay.flagDetail.path && flagDisplay.flagDetail.path.length > 1
-      ? `${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.path[flagDisplay.flagDetail.path.length - 1].value}`
-      : flagDisplay.flagDetail.name
-        ? flagDisplay.flagDetail.name
-        : '';
-    const comment = flagDisplay.flagDetail.flagComment ? flagDisplay.flagDetail.flagComment : '';
-    return `${partyName} - ${flagName}${comment ? ` (${comment})` : ''}`;
+    const partyName = flagDisplay.partyName
+      ? flagDisplay.partyName
+      : '';
+
+    const flagPathOrName = flagDisplay.flagDetail && flagDisplay.flagDetail.path && flagDisplay.flagDetail.path.length > 1
+      ? flagDisplay.flagDetail.path[1].value
+      : flagDisplay.flagDetail.name;
+
+    const flagOtherDescriptionOrName = flagDisplay.flagDetail && flagDisplay.flagDetail.name
+      ? flagDisplay.flagDetail.name === 'Other'
+        ? flagDisplay.flagDetail.otherDescription
+        : flagDisplay.flagDetail.name
+      : '';
+
+    const comment = flagDisplay.flagDetail.flagComment
+      ? ` (${flagDisplay.flagDetail.flagComment})`
+      : '';
+
+    return flagPathOrName === flagOtherDescriptionOrName
+      ? `${partyName} - ${flagOtherDescriptionOrName}${comment}`
+      : `${partyName} - ${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
   }
 
   public onNext(): void {

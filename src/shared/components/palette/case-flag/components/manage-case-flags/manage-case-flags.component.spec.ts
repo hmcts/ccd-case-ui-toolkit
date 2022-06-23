@@ -135,7 +135,7 @@ describe('ManageCaseFlagsComponent', () => {
       }
     } as FlagDetailDisplay;
     const displayLabel = component.processLabel(flagDisplay);
-    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.path[flagDisplay.flagDetail.path.length - 1].value}${flagDisplay.flagDetail.flagComment ? ` (${flagDisplay.flagDetail.flagComment})` : ''}`);
+    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.name} (${flagDisplay.flagDetail.flagComment})`);
   });
 
   it('should format the flag details with child flags (without comment) for display', () => {
@@ -152,7 +152,7 @@ describe('ManageCaseFlagsComponent', () => {
       }
     } as FlagDetailDisplay;
     const displayLabel = component.processLabel(flagDisplay);
-    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.path[flagDisplay.flagDetail.path.length - 1].value}`);
+    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.name}`);
   });
 
   it('should map flag details to display model', () => {
