@@ -558,13 +558,19 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.isFlagsCaseField(null)).toBe(false);
     });
 
-    it('should return false if case field is not of type Flags', () => {
+    it('should return false if field type ID is not "Flags"', () => {
       const caseField = aCaseField('flags', 'flags', 'Complex', 'OPTIONAL', null, [], false, true);
       expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(false);
     });
 
-    it('should return true if case field is of type Flags', () => {
+    it('should return false if field type ID is "Flags" but field type is not Complex', () => {
       const caseField = aCaseField('flags', 'flags', 'Flags', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if field type ID is "Flags" and field type is Complex', () => {
+      const caseField = aCaseField('flags', 'flags', 'Complex', 'OPTIONAL', null, [], false, true);
+      caseField.field_type.id = 'Flags';
       expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(true);
     });
   });

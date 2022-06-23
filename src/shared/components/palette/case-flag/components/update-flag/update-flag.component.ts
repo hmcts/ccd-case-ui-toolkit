@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { FlagDetail } from '../../domain';
-import { CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
+import { CaseFlagState, FlagDetail } from '../../domain';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 
 @Component({
   selector: 'ccd-update-flag',
@@ -12,6 +12,8 @@ export class UpdateFlagComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public selectedFlagDetail: FlagDetail;
+
+  @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public updateFlagTitle = '';
   public errorMessages: ErrorMessage[] = [];
@@ -39,11 +41,23 @@ export class UpdateFlagComponent implements OnInit {
     }
   }
 
+  public onNext(): void {
+    // Validate flag comments entry
+    this.validateTextEntry();
+    // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
+    // re-emitted because the parent component repopulates this on handling this EventEmitter
+    this.caseFlagStateEmitter.emit({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: this.errorMessages,
+      selectedFlagDetail: this.selectedFlagDetail
+    });
+  }
+
   public onChangeStatus(): void {
     this.selectedFlagDetail = {...this.selectedFlagDetail, status: this.selectedFlagDetail.status === 'Active' ? 'Inactive' : 'Active'}
   }
 
-  public validateFlagComments(): void {
+  private validateTextEntry(): void {
     this.updateFlagNotEnteredErrorMessage = null;
     this.updateFlagCharLimitErrorMessage = null;
     this.errorMessages = [];
