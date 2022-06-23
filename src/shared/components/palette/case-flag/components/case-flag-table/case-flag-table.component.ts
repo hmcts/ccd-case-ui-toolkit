@@ -9,6 +9,7 @@ import { CaseFlagStatus } from '../../enums';
 })
 export class CaseFlagTableComponent {
 
+  @Input() public caseTitle: string;
   @Input() public flagData: Flags;
   @Input() public firstColumnHeader: string;
 

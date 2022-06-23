@@ -5,10 +5,10 @@
   <ng-container *ngSwitchDefault>
     <h2 class="govuk-heading-l">Case flags</h2>
     <div *ngFor="let flagData of partyLevelCaseFlagData">
-      <ccd-case-flag-table *ngIf="flagData.partyName" [flagData]="flagData" [firstColumnHeader]="'Party level flags'"></ccd-case-flag-table>
+      <ccd-case-flag-table *ngIf="flagData.partyName" [caseTitle]="caseTitle" [flagData]="flagData" [firstColumnHeader]="'Party level flags'"></ccd-case-flag-table>
     </div>
     <div *ngIf="caseLevelCaseFlagData">
-      <ccd-case-flag-table [flagData]="caseLevelCaseFlagData" [firstColumnHeader]="'Case level flags'"></ccd-case-flag-table>
+      <ccd-case-flag-table [caseTitle]="caseTitle" [flagData]="caseLevelCaseFlagData" [firstColumnHeader]="'Case level flags'"></ccd-case-flag-table>
     </div>
   </ng-container>
 </ng-container>
