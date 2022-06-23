@@ -5,3 +5,4 @@ export * from './select-flag-location/select-flag-location.component';
 export * from './add-comments/add-comments.component';
 export * from './manage-case-flags/manage-case-flags.component';
 export * from './update-flag/update-flag.component';
+export * from './case-flag-summary-list/case-flag-summary-list.component';
