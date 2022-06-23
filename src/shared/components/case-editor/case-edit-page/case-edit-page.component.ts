@@ -15,7 +15,6 @@ import { FormValueService } from '../../../services/form/form-value.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
-import { WriteCaseFlagFieldComponent } from '../../palette';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
@@ -176,18 +175,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                 this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
-                // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
-                // (expected always to be one of the two), to set the correct error message
-                let action = '';
-                if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
-                  action = 'creation';
-                } else if (casefield.display_context_parameter === '#ARGUMENT(UPDATE)') {
-                  action = 'update';
-                }
-                this.validationErrors.push({
-                  id,
-                  message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
-                });
+              // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
+              // (expected always to be one of the two), to set the correct error message
+              let action = '';
+              if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
+                action = 'creation';
+              } else if (casefield.display_context_parameter === '#ARGUMENT(UPDATE)') {
+                action = 'update';
+              }
+              this.validationErrors.push({
+                id,
+                message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
+              });
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();

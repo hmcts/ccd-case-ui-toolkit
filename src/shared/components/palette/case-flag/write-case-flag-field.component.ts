@@ -39,7 +39,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   private readonly otherFlagTypeCode = 'OT0001';
 
   constructor(
-    private readonly route: ActivatedRoute,
+    private readonly route: ActivatedRoute
   ) {
     super();
   }
@@ -82,16 +82,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                 details: caseField.value.details && caseField.value.details.length > 0
                   ? ((caseField.value.details) as any[]).map(detail => {
                     return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                      // The id property set below will be null for new case flag
+                      // and will be unique id returned from CCD for update existing flag
                       switch (k) {
                         // These two fields are date-time fields
                         case 'dateTimeModified':
                         case 'dateTimeCreated':
-                          return {[k]: new Date(detail.value[k])};
+                          return {[k]: new Date(detail.value[k]), 'id': detail.id};
                         // This field is a "yes/no" field
                         case 'hearingRelevant':
-                          return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
+                          return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, 'id': detail.id} : {[k]: false, 'id': detail.id};
                         default:
-                          return {[k]: detail.value[k]};
+                          return {[k]: detail.value[k], 'id': detail.id};
                       }
                     }));
                   }) as FlagDetail[]
@@ -128,6 +130,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.flagCode = caseFlagState.flagCode;
       this.listOfValues = caseFlagState.listOfValues;
     }
+    // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
+    // set the parent Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
+      this.setCaseFlagParentFormGroup(caseFlagState.flagsCaseFieldId);
+    }
+
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
@@ -163,9 +171,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setFlagsCaseFieldValue(): void {
-    // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
-    if (this.fieldState === CaseFlagFieldState.FLAG_COMMENTS) {
-      const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+    switch (this.fieldState) {
+      case CaseFlagFieldState.FLAG_COMMENTS:
+        this.addFlagToCollection();
+        break;
+      case CaseFlagFieldState.FLAG_UPDATE:
+        this.updateFlagInCollection();
+        break;
+    }
+  }
+
+  public addFlagToCollection(): void {
+    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+    if (flagsCaseFieldValue) {
       // Create a details array if one does not exist
       if (!flagsCaseFieldValue.hasOwnProperty('details')) {
         flagsCaseFieldValue.details = [];
@@ -177,10 +195,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       if (indexOfNewFlagDetail > -1) {
         flagsCaseFieldValue.details.splice(indexOfNewFlagDetail, 1);
       }
+      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
       flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
     }
-    if (this.fieldState === CaseFlagFieldState.FLAG_UPDATE) {
-      // TODO: EUI-5342
+  }
+
+  public updateFlagInCollection(): void {
+    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlagDetail.id);
+    if (flagDetailToUpdate) {
+      flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
+        ? this.caseFlagParentFormGroup.value.flagComments
+        : null;
     }
   }
 

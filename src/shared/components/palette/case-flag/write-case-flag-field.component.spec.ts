@@ -1,8 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
+import { FlagDetail } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
@@ -23,6 +24,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag1PartyName = 'John Smith';
   const caseFlag1RoleOnCase = 'Claimant';
   const caseFlag1DetailsValue1 = {
+    id: '1234234134214123',
     name: 'Wheelchair access',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -36,6 +38,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     status: CaseFlagStatus.ACTIVE
   };
   const caseFlag1DetailsValue2 = {
+    id: '5678678578568567',
     name: 'Sign language',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -52,6 +55,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag2PartyName = 'Ann Peterson';
   const caseFlag2RoleOnCase = 'Defendant';
   const caseFlag2DetailsValue1 = {
+    id: '0987987687657654',
     name: 'Foreign national offender',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -64,6 +68,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     status: CaseFlagStatus.ACTIVE
   };
   const caseFlag2DetailsValue2 = {
+    id: '7890654385678342',
     name: 'Sign language',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
@@ -150,6 +155,22 @@ describe('WriteCaseFlagFieldComponent', () => {
     }
   };
   const parentFormGroup = new FormGroup({});
+  const flagDetail = {
+    id: '1234234134214123',
+    value: {
+      name: 'Wheelchair access',
+      dateTimeModified: '2022-02-13T00:00:00.000',
+      dateTimeCreated: '2022-02-11T00:00:00.000',
+      path: [
+        'Party',
+        'Reasonable adjustment',
+        'Mobility support'
+      ],
+      hearingRelevant: 'No',
+      flagCode: 'WCA',
+      status: CaseFlagStatus.ACTIVE
+    } as FlagDetail
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -257,5 +278,36 @@ describe('WriteCaseFlagFieldComponent', () => {
     // Reload the component
     component.ngOnInit();
     expect(parentFormGroup.removeControl).toHaveBeenCalledTimes(1);
+  });
+
+  it('should add flag to collection when creating a flag', () => {
+    spyOn(component, 'populateNewFlagDetailInstance');
+    const caseField = {
+      value: {
+        flagComments: 'test comment',
+        details: [flagDetail]
+      }
+    };
+    component.caseFlagParentFormGroup = new FormGroup({});
+    component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.addFlagToCollection();
+    expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
+  });
+
+  it('should update flag in collection when updating a case flag', () => {
+    component.selectedFlagDetail = caseFlag1DetailsValue1;
+    const caseField = {
+      value: {
+        flagComments: 'test comment',
+        details: [flagDetail]
+      }
+    };
+    component.caseFlagParentFormGroup = new FormGroup({
+      flagComments: new FormControl('An updated comment')
+    });
+    component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.updateFlagInCollection();
+    // Check the comments have been applied
+    expect(caseField.value.details[0].value.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
   });
 });
