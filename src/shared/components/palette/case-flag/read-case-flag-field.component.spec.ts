@@ -1,7 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
+import { PaletteContext } from '../base-field';
+import { FlagDetail } from './domain';
 import { CaseFlagStatus } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 
@@ -164,6 +167,41 @@ describe('ReadCaseFlagFieldComponent', () => {
       }
     }
   };
+  const formGroup = {
+    controls: {
+      caseFlag1: {
+        controls: {
+          partyName: null,
+          roleOnCase: null
+        }
+      },
+      caseFlag2: {
+        controls: {
+          partyName: null,
+          roleOnCase: null,
+          flagType: null
+        },
+        caseField: {
+          value: {
+            partyName: 'Party 2',
+            details: [
+              {
+                id: '0000',
+                value: {
+                  name: 'Existing flag'
+                }
+              },
+              {
+                value: {
+                  name: 'New flag'
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  } as unknown as FormGroup;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -217,5 +255,33 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].details[0].hearingRelevant).toBe(true);
   });
 
-  // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
+  it('should not map a Flags case field to a Flags object when the case field value is falsy', () => {
+    // Clear caseField.value for both party-level case flags
+    TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value = null;
+    TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value = undefined;
+    component.ngOnInit();
+    expect(component.flagsData.length).toBe(1);
+  });
+
+  it('should map a Flags case field to a Flags object even if it has no flag details', () => {
+    // Clear caseField.value.details for both party-level case flags
+    TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value.details = null;
+    TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value.details = undefined;
+    component.ngOnInit();
+    expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].details).toBeNull();
+    expect(component.flagsData[1].partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
+    expect(component.flagsData[1].details).toBeNull();
+  });
+
+  it('should select the correct (i.e. new) flag to display on the summary page', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    component.formGroup = formGroup;
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual('Party 2');
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+  });
 });

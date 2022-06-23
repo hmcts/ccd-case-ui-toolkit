@@ -62,6 +62,21 @@ describe('SelectFlagLocationComponent', () => {
           status: 'Active'
         }
       ] as FlagDetail[]
+    },
+    {
+      flagsCaseFieldId: 'caseFlags',
+      partyName: null,
+      details: [
+        {
+          name: 'Flag 4',
+          flagComment: 'Case-level flag',
+          dateTimeCreated: new Date(),
+          path: ['Reasonable adjustment'],
+          hearingRelevant: false,
+          flagCode: 'FL1',
+          status: 'Active'
+        }
+      ] as FlagDetail[]
     }
   ] as Flags[];
 

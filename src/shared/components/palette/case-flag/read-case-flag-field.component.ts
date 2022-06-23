@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { FlagDetail, Flags } from './domain';
+import { FlagDetail, FlagDetailDisplay, Flags } from './domain';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -16,6 +17,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public flagsData: Flags[];
   public partyLevelCaseFlagData: Flags[];
   public caseLevelCaseFlagData: Flags;
+  public paletteContext = PaletteContext;
+  public flagForSummaryDisplay: FlagDetailDisplay;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   constructor(
@@ -41,25 +44,26 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           return flags;
         }, []) as Flags[];
       }
-    } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
-      // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup
-      // (via the caseField property value for each control representing a Flags field)
-      this.flagsData = [];
-      Object.keys(this.formGroup.controls).filter(
-        controlName => FieldsUtils.isFlagsCaseField(this.formGroup.controls[controlName]['caseField']))
-          .forEach(key => {
-            if (this.formGroup.controls[key]['caseField'].value) {
-              this.flagsData.push(this.mapCaseFieldToFlagsObject(this.formGroup.controls[key]['caseField']));
-            }
-          });
-    }
 
-    // Separate the party-level and case-level flags
-    this.partyLevelCaseFlagData = this.flagsData.filter(
-      flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
-    // There will be only one case-level flags instance containing all case-level flag details
-    this.caseLevelCaseFlagData = this.flagsData.find(
-      flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
+      // Separate the party-level and case-level flags
+      this.partyLevelCaseFlagData = this.flagsData.filter(
+        flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
+      // There will be only one case-level flags instance containing all case-level flag details
+      this.caseLevelCaseFlagData = this.flagsData.find(
+        flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
+    } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
+      // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
+      // Determine which Flags instance to display on the summary page by looking for a child FormGroup whose controls
+      // include one called "flagType", which will have been added during the Create Case Flag journey (hence denoting
+      // a new flag) - there should be only one such child FormGroup because only one flag can be created at a time
+      const keyOfFormGroupWithNewFlag = Object.keys(this.formGroup.controls).filter(
+        controlName => Object.keys(
+          (this.formGroup.controls[controlName] as FormGroup).controls).indexOf('flagType') > -1);
+      if (keyOfFormGroupWithNewFlag.length > 0) {
+        this.flagForSummaryDisplay = this.mapNewFlagFormGroupToFlagDetailDisplayObject(
+          this.formGroup.controls[keyOfFormGroupWithNewFlag[0]] as FormGroup);
+      }
+    }
   }
 
   private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
@@ -85,5 +89,17 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         }) as FlagDetail[]
         : null
     }
+  }
+
+  private mapNewFlagFormGroupToFlagDetailDisplayObject(formGroup: FormGroup): FlagDetailDisplay {
+    if (formGroup && formGroup['caseField']) {
+      return {
+        partyName: formGroup['caseField'].value.partyName,
+        // Look in the details array for the object that does *not* have an id - this indicates it is the new flag
+        flagDetail: formGroup['caseField'].value.details.find(element => !element.hasOwnProperty('id')).value
+      } as FlagDetailDisplay;
+    }
+
+    return null;
   }
 }
