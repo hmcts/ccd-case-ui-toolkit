@@ -328,9 +328,10 @@ export class FieldsUtils {
       return false;
     }
 
-    // TODO: Temporary implementation; will need to be changed over to check for "Flags" field type
-    return (caseField.field_type.type === 'Complex' && caseField.field_type.id === 'CaseFlag') ||
-      caseField.field_type.type === 'Flags';
+    // Note: This implementation supports the dummy field type ID of "CaseFlag" for testing and the real field type
+    // ID of "Flags"
+    return (caseField.field_type.type === 'Complex' &&
+      (caseField.field_type.id === 'CaseFlag' || caseField.field_type.id === 'Flags'));
   }
 
   public static isFlagLauncherCaseField(caseField: CaseField): boolean {
