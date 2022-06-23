@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.10-manage-case-flags-display-formatted-flag-details",
+  "version": "4.13.14-manage-case-flags-display-formatted-flag-details",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

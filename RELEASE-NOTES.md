@@ -1,6 +1,7 @@
 ## RELEASE NOTES
-### Version 4.13.10-manage-case-flags-display-formatted-flag-details
+### Version 4.13.14-manage-case-flags-display-formatted-flag-details
 **EUI-5810** Manage case flags display formatted flag details
+**EUI-6125** Reasonable adjustment display case flag not showing the correct information
 
 ### Version 4.13.7-create-case-level-case-flag
 **EUI-5849** Create and display case-level flags
