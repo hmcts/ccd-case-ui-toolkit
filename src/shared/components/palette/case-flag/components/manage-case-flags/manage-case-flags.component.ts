@@ -12,6 +12,7 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: Flags[];
+  @Input() public caseTitle: string;
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public manageCaseFlagTitle: CaseFlagWizardStepTitle;
@@ -20,6 +21,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flagsDisplayData: FlagDetailDisplay[];
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
+  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
@@ -58,9 +60,11 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public processLabel(flagDisplay: FlagDetailDisplay): string {
-    const partyName = flagDisplay.partyName
-      ? flagDisplay.partyName
-      : '';
+    const partyName = flagDisplay.flagsCaseFieldId && flagDisplay.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId
+      ? `${this.caseTitle} - `
+      : flagDisplay.partyName
+        ? `${flagDisplay.partyName} - `
+        :  '';
 
     const flagPathOrName = flagDisplay.flagDetail && flagDisplay.flagDetail.path && flagDisplay.flagDetail.path.length > 1
       ? flagDisplay.flagDetail.path[1].value
@@ -77,8 +81,8 @@ export class ManageCaseFlagsComponent implements OnInit {
       : '';
 
     return flagPathOrName === flagOtherDescriptionOrName
-      ? `${partyName} - ${flagOtherDescriptionOrName}${comment}`
-      : `${partyName} - ${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
+      ? `${partyName}${flagOtherDescriptionOrName}${comment}`
+      : `${partyName}${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
   }
 
   public onNext(): void {
