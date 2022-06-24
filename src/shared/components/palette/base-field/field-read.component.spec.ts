@@ -39,8 +39,6 @@ const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
 
 const CLASS = 'text-cls';
 
-const FORM_GROUP: FormGroup = new FormGroup({});
-
 @Component({
   template: `
     <span class="${CLASS}"></span>
