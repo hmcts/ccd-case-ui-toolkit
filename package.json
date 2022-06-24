@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.16-case-flags-tabular-display-ammendments",
+  "version": "4.13.17-case-flags-tabular-display-ammendments",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
