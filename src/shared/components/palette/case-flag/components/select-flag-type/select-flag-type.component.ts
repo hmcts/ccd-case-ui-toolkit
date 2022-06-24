@@ -101,7 +101,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       isParentFlagType: this.selectedFlagType ? this.selectedFlagType.isParent : null,
       errorMessages: this.errorMessages,
       flagName: this.selectedFlagType ? this.selectedFlagType.name : null,
-      flagPath: this.selectedFlagType ? this.selectedFlagType.Path : null,
+      flagPath: this.selectedFlagType ? this.selectedFlagType.Path.map(pathValue => Object.assign({ id: null, value: pathValue })) : null,
       hearingRelevantFlag: this.selectedFlagType ? this.selectedFlagType.hearingRelevant : null,
       flagCode: this.selectedFlagType ? this.selectedFlagType.flagCode : null,
       // Include the "list of values" (if any); currently applicable to language flag types

@@ -29,9 +29,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Reasonable adjustment',
-      'Mobility support'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Mobility support' }
     ],
     hearingRelevant: 'No',
     flagCode: 'WCA',
@@ -43,9 +43,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Reasonable adjustment',
-      'Language support'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Language support' }
     ],
     hearingRelevant: 'No',
     flagCode: 'BSL',
@@ -60,8 +60,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Security adjustment'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Security adjustment' }
     ],
     hearingRelevant: 'Yes',
     flagCode: 'FNO',
@@ -73,9 +73,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Reasonable adjustment',
-      'Language support'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Language support' }
     ],
     hearingRelevant: 'Yes',
     flagCode: 'WCA',
@@ -162,9 +162,9 @@ describe('WriteCaseFlagFieldComponent', () => {
       dateTimeModified: '2022-02-13T00:00:00.000',
       dateTimeCreated: '2022-02-11T00:00:00.000',
       path: [
-        'Party',
-        'Reasonable adjustment',
-        'Mobility support'
+        { id: null, value: 'Party' },
+        { id: null, value: 'Reasonable adjustment' },
+        { id: null, value: 'Mobility support' }
       ],
       hearingRelevant: 'No',
       flagCode: 'WCA',
