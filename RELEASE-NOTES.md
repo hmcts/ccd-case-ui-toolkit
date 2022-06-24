@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 4.13.15-case-flags-tabular-display-ammendments
+### Version 4.13.16-case-flags-tabular-display-ammendments
 **EUI-6080** Case flags tabular display ammendments
 
 ### Version 4.13.9-manage-case-flags-update-flag-page
