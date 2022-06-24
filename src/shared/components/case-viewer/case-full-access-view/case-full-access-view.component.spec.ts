@@ -25,12 +25,19 @@ import { CaseReferencePipe } from '../../../pipes/case-reference';
 import {
   ActivityService,
   AuthService,
+  CaseFieldService,
   ErrorNotifierService,
+  FieldsPurger,
   FieldsUtils,
+  FieldTypeSanitiser,
+  FormErrorService,
+  FormValueService,
   HttpErrorService,
   HttpService,
   NavigationNotifierService,
   NavigationOrigin,
+  ProfileNotifier,
+  ProfileService,
   SessionStorageService
 } from '../../../services/';
 import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
@@ -38,7 +45,7 @@ import { AlertService } from '../../../services/alert';
 import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
-import { CaseNotifier } from '../../case-editor';
+import { CaseNotifier, PageValidationService, WizardFactoryService } from '../../case-editor';
 import { CaseFlagStatus, ComplexModule, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 
@@ -1593,7 +1600,16 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          FieldsPurger,
+          WizardFactoryService,
+          ProfileService,
+          ProfileNotifier,
+          FormValueService,
+          FormErrorService,
+          FieldTypeSanitiser,
+          PageValidationService,
+          CaseFieldService
         ]
       })
       .compileComponents();

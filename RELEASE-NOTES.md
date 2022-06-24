@@ -1,7 +1,13 @@
 ## RELEASE NOTES
-### Version 4.13.14-manage-case-flags-display-formatted-flag-details
-**EUI-5810** Manage case flags display formatted flag details
-**EUI-6125** Reasonable adjustment display case flag not showing the correct information
+### Version 4.13.17-case-flags-tabular-display-ammendments
+**EUI-6080** Case flags tabular display ammendments
+
+### Version 4.13.9-manage-case-flags-update-flag-page
+**EUI-5342** Manage case flags comments update flag page
+
+### Version 4.13.13-case-flags-tab-and-comments
+**EUI-6070** Update case flag comments always mandatory
+**EUI-5294** Case flags tab blank space on left side
 
 ### Version 4.13.7-create-case-level-case-flag
 **EUI-5849** Create and display case-level flags
