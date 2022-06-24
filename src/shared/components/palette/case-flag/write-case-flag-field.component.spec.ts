@@ -3,14 +3,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
-import { AddCommentsComponent } from './components';
+import { FlagDetail } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
+
+import createSpyObj = jasmine.createSpyObj;
 
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
   let fixture: ComponentFixture<WriteCaseFlagFieldComponent>;
-  let addCommentsComponent: AddCommentsComponent;
   const flaglauncher_id = 'FlagLauncher';
   const flagLauncherCaseField: CaseField = {
     id: 'FlagLauncher1',
@@ -153,6 +154,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       }
     }
   };
+  const parentFormGroup = new FormGroup({});
   const flagDetail = {
     id: '1234234134214123',
     value: {
@@ -167,9 +169,8 @@ describe('WriteCaseFlagFieldComponent', () => {
       hearingRelevant: 'No',
       flagCode: 'WCA',
       status: CaseFlagStatus.ACTIVE
-    }
+    } as FlagDetail
   };
-  addCommentsComponent = new AddCommentsComponent();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -177,8 +178,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: AddCommentsComponent, useValue: addCommentsComponent }
+        { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
     .compileComponents();
@@ -187,7 +187,9 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
-    component.addCommentsComponent = addCommentsComponent;
+    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['submit']);
+    component.formGroup = parentFormGroup;
+    component.caseField = flagLauncherCaseField;
     fixture.detectChanges();
   });
 
@@ -205,6 +207,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     // Initial validity of the form is expected to be false because it is at the starting state (only valid at the final state)
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
+    expect(component.formGroup.errors).not.toBeNull();
   });
 
   // TODO: Need to re-visit later as the next button has been moved to the child components
@@ -255,44 +258,30 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].details).toBeNull();
   });
 
-  it('should succeed validate and set flags case field value', () => {
-    spyOn(component.addCommentsComponent, 'validateFlagComments');
-    spyOn(component, 'addFlagToCollection');
-    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
-    const caseField = {
-      value: {
-        flagComments: 'test comment',
-        details: [flagDetail]
-      }
-    };
-    component.caseFlagParentFormGroup = new FormGroup({});
-    component.caseFlagParentFormGroup['caseField'] = caseField;
-    component.addCommentsComponent.formGroup = new FormGroup({
-      flagComments: new FormControl('test comment')
-    });
-    component.validateAndSetFlagsCaseFieldValue();
-    expect(component.addCommentsComponent.validateFlagComments).toHaveBeenCalled();
-    expect(component.addFlagToCollection).toHaveBeenCalled();
-  });
+  // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
 
-  it('should fail validate and set flags case field value', () => {
-    component.addCommentsComponent.errorMessages = [{
-      fieldId: 'flagComments', title: '', description: 'Please enter comments for this flag'
-    }];
-    spyOn(component.addCommentsComponent, 'validateFlagComments');
-    spyOn(component, 'addFlagToCollection');
-    spyOn(component, 'updateFlagInCollection');
-    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
-    component.validateAndSetFlagsCaseFieldValue();
-    expect(component.errorMessages).toEqual(component.addCommentsComponent.errorMessages);
-    expect(component.addCommentsComponent.validateFlagComments).toHaveBeenCalled();
-    expect(component.addFlagToCollection).not.toHaveBeenCalled();
-    expect(component.updateFlagInCollection).not.toHaveBeenCalled();
+  it('should remove the existing FlagLauncher control from the parent before re-registering', () => {
+    spyOn(parentFormGroup, 'removeControl').and.callThrough();
+    spyOn(component, 'setFlagsCaseFieldValue');
+    // Check the FlagLauncher component control has been registered to the parent FormGroup, and that it is in an invalid
+    // state (intentionally)
+    const flagLauncherFormGroup = parentFormGroup.get(flagLauncherCaseField.id);
+    expect(flagLauncherFormGroup).toBeTruthy();
+    expect(flagLauncherFormGroup.invalid).toBe(true);
+    expect(flagLauncherFormGroup.errors).not.toBeNull();
+    // Move to the final Case Flags stage to make the FlagLauncher control valid
+    component.moveToFinalReviewStage();
+    expect(flagLauncherFormGroup.invalid).toBe(false);
+    expect(flagLauncherFormGroup.errors).toBeNull();
+    // Set the component's formGroup reference back to the parent FormGroup (it gets reassigned in ngOnInit())
+    component.formGroup = parentFormGroup;
+    // Reload the component
+    component.ngOnInit();
+    expect(parentFormGroup.removeControl).toHaveBeenCalledTimes(1);
   });
 
   it('should add flag to collection when creating a flag', () => {
     spyOn(component, 'populateNewFlagDetailInstance');
-    spyOn(component.formGroup, 'updateValueAndValidity');
     const caseField = {
       value: {
         flagComments: 'test comment',
@@ -303,11 +292,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.caseFlagParentFormGroup['caseField'] = caseField;
     component.addFlagToCollection();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
-    expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
   });
 
   it('should update flag in collection when updating a case flag', () => {
-    spyOn(component.formGroup, 'updateValueAndValidity');
     component.selectedFlagDetail = caseFlag1DetailsValue1;
     const caseField = {
       value: {
@@ -315,11 +302,12 @@ describe('WriteCaseFlagFieldComponent', () => {
         details: [flagDetail]
       }
     };
-    component.caseFlagParentFormGroup = new FormGroup({});
+    component.caseFlagParentFormGroup = new FormGroup({
+      flagComments: new FormControl('An updated comment')
+    });
     component.caseFlagParentFormGroup['caseField'] = caseField;
     component.updateFlagInCollection();
-    expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
+    // Check the comments have been applied
+    expect(caseField.value.details[0].value.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
   });
-
-  // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
 });
