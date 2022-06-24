@@ -42,6 +42,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
+  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle
@@ -54,13 +55,17 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
     this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
 
+    const flagType = this.formGroup['caseField'] && this.formGroup['caseField'].id && this.formGroup['caseField'].id === this.caseLevelCaseFlagsFieldId
+      ? RefdataCaseFlagType.CASE
+      : RefdataCaseFlagType.PARTY;
+
     // HMCTS service code for a given jurisdiction is required to retrieve the relevant list of flag types
     this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetails(this.jurisdiction)
       .pipe(
         // Use switchMap to return an inner Observable of the flag types data, having received the service details
         // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
         switchMap(serviceDetails => {
-          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType);
         })
       )
       .subscribe({
