@@ -22,7 +22,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public caseLevelCaseFlagData: Flags;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
-  public caseTitle: string;
+  public caseLevelFirstColumnHeader: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   constructor(
@@ -69,7 +69,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       }
     }
 
-    this.caseTitle = this.caseEditPageComponent.getCaseTitle();
+    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle();
   }
 
   private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
