@@ -24,6 +24,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public flagForSummaryDisplay: FlagDetailDisplay;
   public caseLevelFirstColumnHeader: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+  public readonly caseNameMissing = 'Case name missing';
 
   constructor(
     private readonly route: ActivatedRoute
@@ -69,7 +70,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       }
     }
 
-    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle();
+    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle()
+      ? this.caseEditPageComponent.getCaseTitle()
+      : this.caseNameMissing;
   }
 
   private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
