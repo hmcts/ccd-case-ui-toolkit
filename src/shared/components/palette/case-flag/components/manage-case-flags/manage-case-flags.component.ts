@@ -66,18 +66,24 @@ export class ManageCaseFlagsComponent implements OnInit {
         ? `${flagDisplay.partyName} - `
         :  '';
 
-    const flagPathOrName = flagDisplay.flagDetail && flagDisplay.flagDetail.path && flagDisplay.flagDetail.path.length > 1
-      ? flagDisplay.flagDetail.path[1].value
-      : flagDisplay.flagDetail.name;
+    const flagDetail = flagDisplay.flagDetail;
 
-    const flagOtherDescriptionOrName = flagDisplay.flagDetail && flagDisplay.flagDetail.name
-      ? flagDisplay.flagDetail.name === 'Other'
-        ? flagDisplay.flagDetail.otherDescription
-        : flagDisplay.flagDetail.name
+    const flagPathOrName = flagDetail && flagDetail.path && flagDetail.path.length > 1
+      ? flagDetail.path[1].value
+      : flagDetail.subTypeKey && flagDetail.subTypeValue
+        ? flagDetail.subTypeValue
+        : flagDetail.name;
+
+    const flagOtherDescriptionOrName = flagDetail && flagDetail.name
+      ? flagDetail.name === 'Other'
+        ? flagDetail.otherDescription
+        : flagDetail.subTypeKey && flagDetail.subTypeValue
+          ? flagDetail.subTypeValue
+          : flagDetail.name
       : '';
 
-    const comment = flagDisplay.flagDetail.flagComment
-      ? ` (${flagDisplay.flagDetail.flagComment})`
+    const comment = flagDetail.flagComment
+      ? ` (${flagDetail.flagComment})`
       : '';
 
     return flagPathOrName === flagOtherDescriptionOrName
