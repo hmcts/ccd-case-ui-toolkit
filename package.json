@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.13.9-case-flag-details-persistence-fixes",
+  "version": "4.13.20-case-flags-tabular-display-ammendments",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
