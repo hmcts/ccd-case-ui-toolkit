@@ -12,13 +12,11 @@
       ></ccd-case-flag-table>
     </div>
     <div *ngIf="caseLevelCaseFlagData">
-      <div *ngIf="caseLevelCaseFlagData">
-        <ccd-case-flag-table
-          [tableCaption]="'Case level flags'"
-          [flagData]="caseLevelCaseFlagData"
-          [firstColumnHeader]="caseLevelFirstColumnHeader"
-        ></ccd-case-flag-table>
-      </div>
+      <ccd-case-flag-table
+        [tableCaption]="'Case level flags'"
+        [flagData]="caseLevelCaseFlagData"
+        [firstColumnHeader]="caseLevelFirstColumnHeader"
+      ></ccd-case-flag-table>
     </div>
   </ng-container>
 </ng-container>
