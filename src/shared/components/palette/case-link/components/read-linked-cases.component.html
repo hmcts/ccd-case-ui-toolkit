@@ -1,4 +1,4 @@
-<div *ngIf="!serverError">
+<div *ngIf="!serverError && reasonListLoaded">
     <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)" reloadPage="reload"></ccd-linked-cases-to-table>
     <br>
     <br>

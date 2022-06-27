@@ -89,7 +89,7 @@ export class CasesService {
   }
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
-    let url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
+    let url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
@@ -97,16 +97,8 @@ export class CasesService {
 
     const loadingToken = this.loadingService.register();
 
-    if (caseId === '1652161372854637') {
-      url = 'assets/getCaseNoLinkedCases.json';
-    } else {
-      url = 'assets/getCase.json';
-    }
-
-    // return Observable.of(mockGetCase)
     return this.http
       .get(url, { headers, observe: 'body' })
-      // .get(url, {headers, observe: 'body'})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

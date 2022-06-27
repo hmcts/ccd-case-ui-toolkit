@@ -4,7 +4,6 @@ import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
-import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { ESQueryType } from '../../domain/linked-cases.model';
 
 interface LinkedCasesResponse {
@@ -34,9 +33,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public caseDetails: CaseView;
   public isLoaded: boolean;
-  public linkedCasesFromResponse: LinkedCasesResponse[] = []
-
-  public linkedCaseReasons: LovRefDataModel[];
+  public linkedCasesFromResponse: LinkedCasesResponse[] = [];
   public caseId: string;
 
   constructor(
@@ -44,20 +41,20 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     private readonly searchService: SearchService) {}
 
     public ngAfterViewInit(): void {
-    const labelField = document.getElementsByClassName('case-viewer-label');
-    if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
-    }
+      const labelField = document.getElementsByClassName('case-viewer-label');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
   }
 
   public ngOnInit(): void {
-    this.caseId = this.route.snapshot.data.case.case_id;
+    this.caseId = this.route.snapshot && this.route.snapshot.data && this.route.snapshot.data.case.case_id;
     this.getAllLinkedCaseInformation()
   }
 
-  public groupByCaseType = (arrObj, key) => {
+  public groupLinkedCasesByCaseType = (arrObj, key) => {
     return arrObj.reduce((rv, x) =>   {
-      (rv[x[key]] = rv[x[key]] || []).push(x['caseReference']);
+      (rv[x[key]] = rv[x[key]] || []).push(x['CaseReference']);
       return rv;
     }, {});
   };
@@ -66,19 +63,24 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     return caseRef.slice(this.caseId.length - 4);
   }
 
-  public sortByReasonCode() {
+  public sortLinkedCasesByReasonCode() {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
     const data = this.caseField && this.caseField.value || [];
     data.forEach((item: any) => {
-      const progressedStateReason = item.reasons.find(reason => reason.reasonCode === 'CLRCO16') // PROGRESSED AS A LEAD CASE
-      const consolidatedStateReason = item.reasons.find(reason => reason.reasonCode === 'CLRCO15') // CASE CONSOLIDATED
+      const reasons = item && item.value && item.value.ReasonForLink || [];
+      const progressedStateReason = reasons.find(reason => reason.value.Reason === 'CLRCO16') // PROGRESSED AS A LEAD CASE
+      const consolidatedStateReason = reasons.find(reason => reason.value.Reason === 'CLRCO15') // CASE CONSOLIDATED
+      let arrayItem;
       if (progressedStateReason) {
-        topLevelresultArray.push(item)
+        arrayItem = {...item.value};
+        topLevelresultArray.push(arrayItem)
       } else if (consolidatedStateReason) {
-        secondLevelresultArray = [item, ...secondLevelresultArray ]
+        arrayItem = {...item.value};
+        secondLevelresultArray = [{...item.value}, ...secondLevelresultArray ]
       } else {
-        secondLevelresultArray.push(item)
+        arrayItem = {...item.value};
+        secondLevelresultArray.push({...item.value})
       }
     })
     return topLevelresultArray.concat(secondLevelresultArray)
@@ -86,13 +88,13 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public getAllLinkedCaseInformation() {
     const searchCasesResponse = [];
-    const sortedCases = this.sortByReasonCode()
-    const linkedCaseIds = this.groupByCaseType(sortedCases, 'caseType');
+    const sortedCasesList = this.sortLinkedCasesByReasonCode();
+    const linkedCaseIds = this.groupLinkedCasesByCaseType(sortedCasesList, 'CaseType');
     Object.keys(linkedCaseIds).forEach(key => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100)
       const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
-    })
+    });
     if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
           searchCases.forEach(response => {
@@ -111,18 +113,19 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   }
 
   public hasLeadCaseOrConsolidated(reasonCode: string) {
-    return reasonCode === 'Progressed as part of this lead case' || reasonCode === 'Case consolidated'
+    return reasonCode === 'CLRC016' || reasonCode === 'CLRC015';
   }
 
   public mapResponse(esSearchCasesResponse) {
-    const caseInfo = this.caseField.value.find(item => item.caseReference === esSearchCasesResponse.case_id)
-    return {
+    const caseInfo = this.caseField.value.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
+    return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
       caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseType: esSearchCasesResponse.case_fields['[CASE_TYPE]'],
       service: esSearchCasesResponse.case_fields['[JURISDICTION]'],
       state: esSearchCasesResponse.case_fields['[STATE]'],
-      reasons: caseInfo.reasons && caseInfo.reasons.map(reason => reason.reasonCode),
+      reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
+              caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
     } as LinkedCasesResponse
   }
 

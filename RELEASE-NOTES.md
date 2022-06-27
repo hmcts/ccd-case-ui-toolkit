@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.17.32-linked-cases-top-table-integration
+**EUI-5884** ### Version 4.17.32-linked-cases-top-table-integration
+
 ### Version 4.17.31-link-cases-reason-code
 **EUI-6025** CaseLinking reason code mapping
 

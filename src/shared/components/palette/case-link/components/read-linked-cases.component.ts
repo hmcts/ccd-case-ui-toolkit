@@ -14,7 +14,8 @@ export class ReadLinkedCasesComponent implements OnInit {
   @Input()
   caseField: CaseField;
 
-  reload = false
+  private reasonListLoaded = false;
+  private reload = false
   public serverError: { id: string, message: string } = null;
 
   constructor(private router: Router,
@@ -24,15 +25,16 @@ export class ReadLinkedCasesComponent implements OnInit {
 
     ) {}
 
-  public ngOnInit(): void {
-    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
-    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-      next: reasons => {
-        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
-      },
-      error: error => this.getFailureNotification(error)
-    })
-  }
+    public ngOnInit(): void {
+      const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+      this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+        next: reasons => {
+          this.reasonListLoaded = true;
+          this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+        },
+        error: error => this.getFailureNotification(error)
+      })
+    }
 
   reloadCurrentRoute() {
     const currentUrl = this.router.url;
