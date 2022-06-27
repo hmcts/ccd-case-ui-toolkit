@@ -1,13 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FieldReadComponent } from './field-read.component';
-import { PaletteService } from '../palette.service';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { CaseField } from '../../../domain/definition';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { PaletteContext } from './palette-context.enum';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
+import { of } from 'rxjs';
+import { CaseEventData } from '../../../domain/case-event-data.model';
+import { CaseField } from '../../../domain/definition';
+import { Draft } from '../../../domain/draft.model';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { FormErrorService } from '../../../services/form/form-error.service';
+import { FormValueService } from '../../../services/form/form-value.service';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
+import { WizardPage } from '../../case-editor/domain/wizard-page.model';
+import { Wizard } from '../../case-editor/domain/wizard.model';
+import { PageValidationService } from '../../case-editor/services/page-validation.service';
+import { PaletteService } from '../palette.service';
+import { FieldReadComponent } from './field-read.component';
+import { PaletteContext } from './palette-context.enum';
+
 import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
@@ -26,8 +38,6 @@ const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
 });
 
 const CLASS = 'text-cls';
-
-const FORM_GROUP: FormGroup = new FormGroup({});
 
 @Component({
   template: `
@@ -63,12 +73,59 @@ describe('FieldReadComponent', () => {
 
   let formGroup: FormGroup = new FormGroup({});
   let caseFields: CaseField[] = [CASE_FIELD];
+  let caseEditComponentStub: any;
+  const FORM_GROUP = new FormGroup({
+    'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
+  });
+  const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
+  const WIZARD = new Wizard([wizardPage]);
+  const caseField1 = new CaseField();
+  const firstPage = new WizardPage();
+  let cancelled: any;
+  const someObservable = {
+    'subscribe': () => new Draft()
+  };
+  const caseField2 = new CaseField();
+  let route: any;
+  const fieldTypeSanitiser = new FieldTypeSanitiser();
+  const formValueService = new FormValueService(fieldTypeSanitiser);
+  const formErrorService = new FormErrorService();
+  const caseFieldService = new CaseFieldService();
+  const pageValidationService = new PageValidationService(caseFieldService);
+  let dialog: any;
+  let caseEditPageComponent: CaseEditPageComponent;
 
   beforeEach(async(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
     ]);
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
+
+    cancelled = createSpyObj('cancelled', ['emit']);
+    caseEditComponentStub = {
+      'form': FORM_GROUP,
+      'wizard': WIZARD,
+      'data': '',
+      'eventTrigger': {'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true},
+      'hasPrevious': () => true,
+      'getPage': () => firstPage,
+      'first': () => true,
+      'next': () => true,
+      'previous': () => true,
+      'cancel': () => undefined,
+      'cancelled': cancelled,
+      'validate': (caseEventData: CaseEventData) => of(caseEventData),
+      'saveDraft': (_: CaseEventData) => of(someObservable),
+      'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+    };
+    route = {
+      params: of({id: 123}),
+      snapshot: {
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
+      }
+    };
+    caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
+      route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService);
 
     TestBed
       .configureTestingModule({
@@ -84,7 +141,8 @@ describe('FieldReadComponent', () => {
           FieldReadLabelComponent,
         ],
         providers: [
-          { provide: PaletteService, useValue: paletteService }
+          { provide: PaletteService, useValue: paletteService },
+          { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
         ]
       })
       .compileComponents();
@@ -152,4 +210,23 @@ describe('FieldReadComponent', () => {
     let fieldReadLabel = fieldReadLabelComponent.componentInstance;
     expect(fieldReadLabel.withLabel).toBe(true);
   });
+
+  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+    const cf = new CaseField();
+    cf.id = id;
+    cf.value = value;
+    cf.display_context = display_context;
+    return cf;
+  }
+
+  function createWizardPage(fields: CaseField[], isMultiColumn = false, order = 0): WizardPage {
+    const wp: WizardPage = new WizardPage();
+    wp.case_fields = fields;
+    wp.label = 'Test Label';
+    wp.getCol1Fields = () => fields;
+    wp.getCol2Fields = () => fields;
+    wp.isMultiColumn = () => isMultiColumn;
+    wp.order = order;
+    return wp;
+  }
 });

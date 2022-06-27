@@ -8,6 +8,8 @@ import { FlagDetail } from './domain';
 import { CaseFlagStatus } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 
+import createSpyObj = jasmine.createSpyObj;
+
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
   let fixture: ComponentFixture<ReadCaseFlagFieldComponent>;
@@ -217,6 +219,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
+    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['getCaseTitle']);
     fixture.detectChanges();
   });
 
@@ -253,6 +256,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
     expect(component.flagsData[2].details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
     expect(component.flagsData[2].details[0].hearingRelevant).toBe(true);
+    expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
   });
 
   it('should not map a Flags case field to a Flags object when the case field value is falsy', () => {
