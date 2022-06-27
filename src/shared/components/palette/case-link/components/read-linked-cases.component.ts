@@ -14,8 +14,8 @@ export class ReadLinkedCasesComponent implements OnInit {
   @Input()
   caseField: CaseField;
 
-  private reasonListLoaded = false;
-  private reload = false
+  public reasonListLoaded = false;
+  public reload = false
   public serverError: { id: string, message: string } = null;
 
   constructor(private router: Router,
