@@ -68,7 +68,7 @@ export const mockCaseLinkResponse = [
     {
       id: '52837798-42c6-43cc-98f6-0895fdba4962',
       value: {
-        CaseType: 'FT_MasterCaseType',
+        CaseType: 'BENEFIT_SCSS',
         CaseReference: '1682897456391875',
         ReasonForLink: [
           {
@@ -81,75 +81,7 @@ export const mockCaseLinkResponse = [
         ],
         CreatedDateTime: '2022-04-28T13:26:53.947877',
       },
-    },
-    {
-      id: '52837798-42c6-43cc-98f6-0895fdba4963',
-      value: {
-        CaseType: 'FT_MasterCaseType',
-        CaseReference: '1655736173180808',
-        ReasonForLink: [
-          {
-            id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239ac',
-            value: {
-              Reason: 'CLRC003',
-              OtherDescription: 'testing',
-            },
-          },
-        ],
-        CreatedDateTime: '2022-04-28T13:26:53.947877',
-      },
-    },
-    {
-      id: '52837798-42c6-43cc-98f6-0895fdba4964',
-      value: {
-        CaseType: 'FT_MasterCaseType',
-        CaseReference: '1655965399602440',
-        ReasonForLink: [
-          {
-            id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239ad',
-            value: {
-              Reason: 'CLRC001',
-              OtherDescription: 'testing',
-            },
-          },
-        ],
-        CreatedDateTime: '2022-04-28T13:26:53.947877',
-      },
-    },
-    {
-      id: '52837798-42c6-43cc-98f6-0895fdba4965',
-      value: {
-        CaseType: 'FT_MasterCaseType',
-        CaseReference: '1655965556867190',
-        ReasonForLink: [
-          {
-            id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239ae',
-            value: {
-              Reason: 'CLRC001',
-              OtherDescription: 'testing',
-            },
-          },
-        ],
-        CreatedDateTime: '2022-04-28T13:26:53.947877',
-      },
-    },
-    {
-      id: '52837798-42c6-43cc-98f6-0895fdba4966',
-      value: {
-        CaseType: 'FT_MasterCaseType',
-        CaseReference: '1655965654097609',
-        ReasonForLink: [
-          {
-            id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239ag',
-            value: {
-              Reason: 'CLRC006',
-              OtherDescription: 'testing',
-            },
-          },
-        ],
-        CreatedDateTime: '2022-04-28T13:26:53.947877',
-      },
-    },
+    }
   ];
 
 export const mockCaseLinkingReasonCode: LovRefDataByServiceModel = {
