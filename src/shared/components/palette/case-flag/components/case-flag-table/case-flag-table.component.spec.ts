@@ -6,6 +6,36 @@ import { CaseFlagTableComponent } from './case-flag-table.component';
 describe('CaseFlagTableComponent', () => {
   let component: CaseFlagTableComponent;
   let fixture: ComponentFixture<CaseFlagTableComponent>;
+  const flagData = {
+    partyName: 'John Smith',
+    roleOnCase: '',
+    details: [{
+      name: 'Wheel chair access',
+      subTypeValue: '',
+      subTypeKey: '',
+      otherDescription: '',
+      flagComment: '',
+      dateTimeModified: new Date('2021-09-09 00:00:00'),
+      dateTimeCreated: new Date('2021-09-09 00:00:00'),
+      path: [],
+      hearingRelevant: false,
+      flagCode: '',
+      status: CaseFlagStatus.ACTIVE
+    },
+    {
+      name: 'Sign language',
+      subTypeValue: 'British Sign Language (BSL)',
+      subTypeKey: '',
+      otherDescription: '',
+      flagComment: '',
+      dateTimeModified: new Date('2021-09-09 00:00:00'),
+      dateTimeCreated: new Date('2021-09-09 00:00:00'),
+      path: [],
+      hearingRelevant: false,
+      flagCode: '',
+      status: CaseFlagStatus.ACTIVE
+    }]
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,36 +56,7 @@ describe('CaseFlagTableComponent', () => {
   });
 
   it('should display case flag table if there is case flag data', () => {
-    component.flagData = {
-      partyName: 'John Smith',
-      roleOnCase: '',
-      details: [{
-        name: 'Wheel chair access',
-        subTypeValue: '',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.ACTIVE
-      },
-      {
-        name: 'Sign language',
-        subTypeValue: 'British Sign Language (BSL)',
-        subTypeKey: '',
-        otherDescription: '',
-        flagComment: '',
-        dateTimeModified: new Date('2021-09-09 00:00:00'),
-        dateTimeCreated: new Date('2021-09-09 00:00:00'),
-        path: [],
-        hearingRelevant: false,
-        flagCode: '',
-        status: CaseFlagStatus.ACTIVE
-      }]
-    };
+    component.flagData = flagData;
     fixture.detectChanges();
     const tableElement = fixture.debugElement.nativeElement.querySelector('govuk-table');
     expect(tableElement).toBeDefined();
@@ -66,5 +67,12 @@ describe('CaseFlagTableComponent', () => {
     fixture.detectChanges();
     const tableElement = fixture.debugElement.nativeElement.querySelector('govuk-table');
     expect(tableElement).toBeNull();
+  });
+
+  it('should not display the blank column when displaying case flags', () => {
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const caseViewerFieldLabelElement = fixture.debugElement.nativeElement.querySelector('#case-viewer-field-label');
+    expect(caseViewerFieldLabelElement).toBeNull();
   });
 });

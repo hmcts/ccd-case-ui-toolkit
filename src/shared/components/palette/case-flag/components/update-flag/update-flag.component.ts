@@ -62,7 +62,7 @@ export class UpdateFlagComponent implements OnInit {
     this.updateFlagCharLimitErrorMessage = null;
     this.errorMessages = [];
     const comment = this.formGroup.get(this.updateFlagControlName).value;
-    if (this.selectedFlagDetail.flagComment && !comment) {
+    if (!comment) {
       this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',

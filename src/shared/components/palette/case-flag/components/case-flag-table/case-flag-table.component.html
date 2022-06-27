@@ -9,10 +9,12 @@
       <th scope="col" class="govuk-table__header col-flag-status">Flag status</th>
     </tr>
   </thead>
-  <tbody class="govuk-table__body">
-    <tr *ngIf="flagData && flagData.details && flagData.details.length === 0">
-      <td colspan="5" class="no-data-row">None</td>
+  <tbody class="govuk-table__body" *ngIf="!flagData.details || (flagData.details && flagData.details.length === 0)">
+    <tr>
+      <td colspan="5">None</td>
     </tr>
+  </tbody>
+  <tbody class="govuk-table__body" *ngIf="flagData.details && flagData.details.length > 0">
     <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.details">
       <td class="govuk-table__cell">
         <div>{{flagDetail.name}}</div>
