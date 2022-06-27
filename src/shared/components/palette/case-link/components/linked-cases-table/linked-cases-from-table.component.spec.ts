@@ -8,7 +8,6 @@ import { PipesModule } from '../../../../../pipes/pipes.module';
 
 import createSpyObj = jasmine.createSpyObj;
 import { ActivatedRoute } from '@angular/router';
-import { CommonDataService, LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { LinkedCasesService } from '../../services';
 import { CaseLink } from '../../domain/linked-cases.model';
@@ -19,55 +18,8 @@ describe('LinkCasesFromTableComponent', () => {
   let casesService: any;
   let searchService: any;
   let nativeElement: any;
-  let commonDataService: any;
   let appConfig: any;
   let linkedCasesService: any;
-
-  const linkCaseReasons: LovRefDataByServiceModel = {
-    list_of_values: [
-    {
-      key: 'progressed',
-      value_en: 'Progressed as part of this lead case',
-      value_cy: '',
-      hint_text_en: 'Progressed as part of this lead case',
-      hint_text_cy: '',
-      lov_order: 1,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'bail',
-      value_en: 'Bail',
-      value_cy: '',
-      hint_text_en: 'Bail',
-      hint_text_cy: '',
-      lov_order: 2,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'other',
-      value_en: 'Other',
-      value_cy: '',
-      hint_text_en: 'Other',
-      hint_text_cy: '',
-      lov_order: 3,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-  ]};
 
   const linkedCases: CaseLink[] = [
     {
@@ -97,10 +49,8 @@ describe('LinkCasesFromTableComponent', () => {
 
   beforeEach(async(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
-    commonDataService = createSpyObj('commonDataService', ['getRefData']);
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses', 'getLinkedCases']);
     searchService = createSpyObj('searchService', ['searchCases']);
-    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
     TestBed.configureTestingModule({
       imports: [
         PipesModule
@@ -113,7 +63,6 @@ describe('LinkCasesFromTableComponent', () => {
         },
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService },
-        { provide: CommonDataService, useValue: commonDataService },
         { provide: AbstractAppConfig, useValue: appConfig },
         { provide: LinkedCasesService, useValue: linkedCasesService },
       ],
@@ -172,7 +121,6 @@ describe('LinkCasesFromTableComponent', () => {
     component = fixture.componentInstance;
     nativeElement = fixture.debugElement.nativeElement;
     casesService.getLinkedCases.and.returnValue(of(linkedCasesMock));
-    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
   });
 
   it('should create component', () => {
