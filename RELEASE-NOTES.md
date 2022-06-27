@@ -1,10 +1,10 @@
 ## RELEASE NOTES
+### Version 4.13.20-case-flags-tabular-display-ammendments
+**EUI-6080** Case flags tabular display ammendments
+
 ### Version 4.13.19-manage-case-flags-display-formatted-flag-details
 **EUI-5810** Manage case flags display formatted flag details
 **EUI-6164** Reasonable adjustment display for sign language interpreter
-
-### Version 4.13.17-case-flags-tabular-display-ammendments
-**EUI-6080** Case flags tabular display ammendments
 
 ### Version 4.13.13-case-flags-tab-and-comments
 **EUI-6070** Update case flag comments always mandatory
