@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 4.13.18-manage-case-flags-display-formatted-flag-details
+### Version 4.13.19-manage-case-flags-display-formatted-flag-details
 **EUI-5810** Manage case flags display formatted flag details
 **EUI-6164** Reasonable adjustment display for sign language interpreter
 
