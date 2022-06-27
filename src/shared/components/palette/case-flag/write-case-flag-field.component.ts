@@ -146,7 +146,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
-    this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
+    this.selectedFlagDetail = caseFlagState.selectedFlagDetail
+      ? caseFlagState.selectedFlagDetail
+      : null;
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
       // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
