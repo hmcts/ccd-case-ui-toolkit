@@ -5,7 +5,7 @@ import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseFlagState, FlagDetail, Flags } from './domain';
+import { CaseFlagState, FlagDetail, FlagPath, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
@@ -28,7 +28,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public flagName: string;
-  public flagPath: string[];
+  public flagPath: FlagPath[];
   public hearingRelevantFlag: boolean;
   public flagCode: string;
   public listOfValues: {key: string, value: string}[] = null;
