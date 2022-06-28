@@ -8,10 +8,8 @@ import { LinkedCasesService } from '../../components/palette/case-link/services'
 export class LinkCasesReasonValuePipe implements PipeTransform {
   constructor(private linkedCasesService: LinkedCasesService) {}
   transform(reasonCode: string): any {
-    if (!this.linkedCasesService.linkCaseReasons || !reasonCode) {
-      return;
-    }
-    const reasonCodeMapping = this.linkedCasesService.linkCaseReasons.find(reason => reason.key === reasonCode);
+    const reasonCodeMapping = this.linkedCasesService.linkCaseReasons &&
+                              this.linkedCasesService.linkCaseReasons.find(reason => reason.key === reasonCode);
     return reasonCodeMapping && reasonCodeMapping.value_en;
   }
 }

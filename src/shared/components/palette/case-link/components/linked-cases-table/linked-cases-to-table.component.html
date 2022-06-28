@@ -32,9 +32,9 @@
           <td class="govuk-table__cell case-table-column"><span>{{case.service}}</span></td>
           <td class="govuk-table__cell case-table-column"><span>{{case.state}}</span>
           </td>
-          <td class="govuk-table__cell case-table-column">
+          <td class="govuk-table__cell case-table-column" *ngIf="case && case.reasons">
             <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">
-              {{reason | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1" href="cases/case-details/{{ case.case_id }}"
+              {{reason | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1" href="cases/case-details/{{ case.caseReference }}"
                   *ngIf="hasLeadCaseOrConsolidated(reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
               <br *ngIf="!isLast" />
             </span>
