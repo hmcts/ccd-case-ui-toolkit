@@ -55,7 +55,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
     this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
 
-    const flagType = this.formGroup['caseField'] && this.formGroup['caseField'].id && this.formGroup['caseField'].id === this.caseLevelCaseFlagsFieldId
+    const flagType = this.formGroup['caseField']
+      && this.formGroup['caseField'].id
+      && this.formGroup['caseField'].id === this.caseLevelCaseFlagsFieldId
       ? RefdataCaseFlagType.CASE
       : RefdataCaseFlagType.PARTY;
 
