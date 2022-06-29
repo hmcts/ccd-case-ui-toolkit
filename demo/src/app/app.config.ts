@@ -34,7 +34,8 @@ export class AppConfig extends AbstractAppConfig {
     'access_management_mode':true,
     'refunds_url': '/api/refunds',
     'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
-    'rd_common_data_api_url': '/refdata/commondata'
+    'rd_common_data_api_url': '/refdata/commondata',
+    'case_data_store_api_url': 'https://ccd-data-store-api-demo.service.core-compute-demo.internal',
   };
 
   constructor(private http: HttpClient) {
@@ -174,5 +175,9 @@ export class AppConfig extends AbstractAppConfig {
   
   public getRDCommonDataApiUrl(): string {
     return this.config.rd_common_data_api_url;
+  }
+
+  public getCaseDataStoreApiUrl(): string {
+    return this.config.case_data_store_api_url;
   }
 }

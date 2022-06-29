@@ -65,7 +65,7 @@ const APP_CONFIG: AbstractAppConfig = {
     getLocationRefApiUrl: () => 'locationRefApiUrl',
     getPaymentReturnUrl: () => 'paymentReturnUrl',
     getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
-
+    getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
   };
 
   let PaymentWebComponent;
