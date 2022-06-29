@@ -13,6 +13,7 @@ import { OrganisationService } from '../../../services/organisation';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { of } from 'rxjs';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
+import { ConvertHrefToRouterService } from '../../case-editor/services';
 
 describe('ReadOrganisationFieldRawComponent', () => {
   let component: ReadOrganisationFieldRawComponent;
@@ -95,8 +96,10 @@ describe('ReadOrganisationFieldRawComponent', () => {
     country: 'UK',
     postCode: 'RG11EX'
   }];
+  let convertHrefToRouterService: ConvertHrefToRouterService;
 
   beforeEach(async(() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
     TestBed.configureTestingModule({
       imports: [
         ConditionalShowModule,
@@ -113,6 +116,7 @@ describe('ReadOrganisationFieldRawComponent', () => {
       providers: [
         PaletteService,
         { provide: OrganisationService, useValue: mockOrganisationService },
+        { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
         OrganisationConverter
       ]
     })
