@@ -5,7 +5,7 @@ import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseFlagState, FlagDetail, FlagPath, Flags } from './domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplay, FlagPath, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
@@ -23,7 +23,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public errorMessages: ErrorMessage[] = [];
   public createFlagCaption: CaseFlagText;
   public flagsData: Flags[];
-  public selectedFlagDetail: FlagDetail;
+  public selectedFlag: FlagDetailDisplay;
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
@@ -130,17 +130,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.flagCode = caseFlagState.flagCode;
       this.listOfValues = caseFlagState.listOfValues;
     }
-    // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
-    // set the parent Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
-    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
-      this.setCaseFlagParentFormGroup(caseFlagState.flagsCaseFieldId);
+    // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS and a flag has been selected, set the parent
+    // Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
+      && caseFlagState.selectedFlag
+      && caseFlagState.selectedFlag.flagsCaseFieldId) {
+      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlag.flagsCaseFieldId);
     }
 
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
-    this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
+    this.selectedFlag = caseFlagState.selectedFlag;
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
       // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
@@ -202,11 +204,38 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public updateFlagInCollection(): void {
     const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlagDetail.id);
+    if (flagsCaseFieldValue) {
+      // Ensure no more than one flag is being updated at a time, by iterating through each Flags case field and resetting
+      // the comments, status, and date/time modified (if present) for each entry in the details array, with original values
+      // from the corresponding caseField object. (This scenario occurs if the user repeats the Manage Case Flag journey by
+      // using the "Change" link and selects a different flag to update.)
+      Object.keys(this.caseFlagParentFormGroup.parent.controls).filter(
+        controlName => FieldsUtils.isFlagsCaseField(this.caseFlagParentFormGroup.parent.controls[controlName]['caseField']))
+        .forEach(flagsFieldControlName => {
+          const caseField = this.caseFlagParentFormGroup.parent.controls[flagsFieldControlName]['caseField'];
+          if (caseField && caseField.value && caseField.value.details && caseField.value.details.length > 0) {
+            caseField.value.details.forEach(flagDetail => {
+              const originalFlagDetail = caseField.formatted_value.details.find(detail => detail.id === flagDetail.id);
+              if (originalFlagDetail) {
+                flagDetail.value.flagComment = originalFlagDetail.value.flagComment
+                  ? originalFlagDetail.value.flagComment
+                  : null;
+                flagDetail.value.status = originalFlagDetail.value.status;
+                flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
+                  ? originalFlagDetail.value.dateTimeModified
+                  : null;
+              }
+            });
+          }
+        });
+    }
+    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlag.flagDetail.id);
     if (flagDetailToUpdate) {
       flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
         ? this.caseFlagParentFormGroup.value.flagComments
         : null;
+      flagDetailToUpdate.value.status = this.selectedFlag.flagDetail.status;
+      flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
     }
   }
 

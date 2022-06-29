@@ -1,7 +1,7 @@
 <dl class="govuk-summary-list" *ngIf="flagForSummaryDisplay">
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
-      Add flag to
+      {{addUpdateFlagHeaderText}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagForSummaryDisplay.partyName || caseLevelLocation}}
@@ -21,6 +21,14 @@
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagComments}}
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row" *ngIf="summaryListDisplayMode === displayMode.MANAGE">
+    <dt class="govuk-summary-list__key">
+      Status
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagStatus}}
     </dd>
   </div>
 </dl>
