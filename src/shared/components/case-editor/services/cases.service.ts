@@ -133,8 +133,9 @@ export class CasesService {
   }
 
   public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
+    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
     return this.http
-    .get('assets/getLinkedCases.json')
+    .get(url)
     .pipe(
       catchError(error => {
         return throwError(error);
