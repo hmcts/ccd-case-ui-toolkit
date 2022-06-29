@@ -1,3 +1,4 @@
+export * from './convert-href-to-router.service';
 export * from './case-edit-wizard.guard';
 export * from './case-worker.service';
 export * from './case.notifier';
