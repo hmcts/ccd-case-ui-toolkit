@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../../../../domain';
-import { FlagDetail, FlagDetailDisplay, FlagPath, Flags } from './case-flag.model';
+import { FlagDetailDisplay, FlagPath, Flags } from './case-flag.model';
 
 export interface CaseFlagState {
   currentCaseFlagFieldState: number;
