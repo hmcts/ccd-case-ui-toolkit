@@ -1,6 +1,7 @@
 <ng-container [ngSwitch]="context">
   <ng-container *ngSwitchCase="paletteContext.CHECK_YOUR_ANSWER">
-    <ccd-case-flag-summary-list [flagForSummaryDisplay]="flagForSummaryDisplay"></ccd-case-flag-summary-list>
+    <ccd-case-flag-summary-list [flagForSummaryDisplay]="flagForSummaryDisplay"
+      [summaryListDisplayMode]="summaryListDisplayMode"></ccd-case-flag-summary-list>
   </ng-container>
   <ng-container *ngSwitchDefault>
     <h2 class="govuk-heading-l">Case flags</h2>

@@ -1,5 +1,5 @@
 import { ErrorMessage } from '../../../../domain';
-import { FlagDetail, Flags, FlagPath } from './case-flag.model';
+import { FlagDetail, FlagDetailDisplay, FlagPath, Flags } from './case-flag.model';
 
 export interface CaseFlagState {
   currentCaseFlagFieldState: number;
@@ -11,6 +11,5 @@ export interface CaseFlagState {
   hearingRelevantFlag?: boolean;
   flagCode?: string;
   listOfValues?: { key: string, value: string }[];
-  selectedFlagDetail?: FlagDetail;
-  flagsCaseFieldId?: string;
+  selectedFlag?: FlagDetailDisplay;
 }

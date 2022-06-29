@@ -203,8 +203,11 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: flagsData[1].details[0],
-      flagsCaseFieldId: flagsData[1].flagsCaseFieldId
+      selectedFlag: {
+        partyName: flagsData[1].partyName,
+        flagDetail: flagsData[1].details[0],
+        flagsCaseFieldId: flagsData[1].flagsCaseFieldId
+      } as FlagDetailDisplay
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -221,8 +224,7 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: null,
-      flagsCaseFieldId: null
+      selectedFlag: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',

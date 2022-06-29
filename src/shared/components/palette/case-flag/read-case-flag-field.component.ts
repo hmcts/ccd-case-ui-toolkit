@@ -7,6 +7,7 @@ import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edi
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetail, FlagDetailDisplay, Flags } from './domain';
+import { CaseFlagSummaryListDisplayMode } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -23,6 +24,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public caseLevelFirstColumnHeader: string;
+  public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
 
@@ -61,12 +63,27 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // Determine which Flags instance to display on the summary page by looking for a child FormGroup whose controls
       // include one called "flagType", which will have been added during the Create Case Flag journey (hence denoting
       // a new flag) - there should be only one such child FormGroup because only one flag can be created at a time
-      const keyOfFormGroupWithNewFlag = Object.keys(this.formGroup.controls).filter(
-        controlName => Object.keys(
-          (this.formGroup.controls[controlName] as FormGroup).controls).indexOf('flagType') > -1);
-      if (keyOfFormGroupWithNewFlag.length > 0) {
-        this.flagForSummaryDisplay = this.mapNewFlagFormGroupToFlagDetailDisplayObject(
-          this.formGroup.controls[keyOfFormGroupWithNewFlag[0]] as FormGroup);
+
+      // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to the currently selected flag
+      // (selectedFlag) if one exists. If it does, this means the component is in "update" mode; if not, then the
+      // component is in "create" mode
+      const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
+        controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.controls[controlName]['caseField']));
+      if (flagLauncherControlName && this.formGroup.controls[flagLauncherControlName]['component'] &&
+          this.formGroup.controls[flagLauncherControlName]['component'].selectedFlag) {
+        this.flagForSummaryDisplay = this.formGroup.controls[flagLauncherControlName]['component'].selectedFlag;
+        // Set the display mode for the "Review flag details" summary page
+        this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+      } else {
+        const keyOfFormGroupWithNewFlag = Object.keys(this.formGroup.controls).filter(
+          controlName => Object.keys(
+            (this.formGroup.controls[controlName] as FormGroup).controls).indexOf('flagType') > -1);
+        if (keyOfFormGroupWithNewFlag.length > 0) {
+          this.flagForSummaryDisplay = this.mapNewFlagFormGroupToFlagDetailDisplayObject(
+            this.formGroup.controls[keyOfFormGroupWithNewFlag[0]] as FormGroup);
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+        }
       }
     }
 
