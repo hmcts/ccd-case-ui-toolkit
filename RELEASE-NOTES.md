@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.13.19-manage-case-flags-review-flag-details-page
+**EUI-6168** Fix "Review flag details" page to work when updating a flag (Manage Case Flags journey)
+
 ### Version 4.13.19-manage-case-flags-display-formatted-flag-details
 **EUI-5810** Manage case flags display formatted flag details
 **EUI-6164** Reasonable adjustment display for sign language interpreter

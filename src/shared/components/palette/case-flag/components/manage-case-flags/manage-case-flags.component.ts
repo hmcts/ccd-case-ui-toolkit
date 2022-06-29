@@ -98,11 +98,8 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages,
-      selectedFlagDetail: this.formGroup.get(this.selectedControlName).value
-        ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagDetail
-        : null,
-      flagsCaseFieldId: this.formGroup.get(this.selectedControlName).value
-        ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagsCaseFieldId
+      selectedFlag: this.formGroup.get(this.selectedControlName).value
+        ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay
         : null
     });
   }

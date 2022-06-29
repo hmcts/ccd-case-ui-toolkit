@@ -4,9 +4,10 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
 import { PaletteContext } from '../base-field';
-import { FlagDetail } from './domain';
-import { CaseFlagStatus } from './enums';
+import { FlagDetail, FlagDetailDisplay } from './domain';
+import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -29,9 +30,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Reasonable adjustment',
-      'Mobility support'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Mobility support' }
     ],
     hearingRelevant: 'No',
     flagCode: 'WCA',
@@ -42,9 +43,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Reasonable adjustment',
-      'Language support'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Language support' }
     ],
     hearingRelevant: 'No',
     flagCode: 'BSL',
@@ -58,8 +59,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Security adjustment'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Security adjustment' }
     ],
     hearingRelevant: 'Yes',
     flagCode: 'FNO',
@@ -70,9 +71,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
-      'Party',
-      'Reasonable adjustment',
-      'Language support'
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Language support' }
     ],
     hearingRelevant: 'Yes',
     flagCode: 'WCA',
@@ -83,7 +84,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     name: 'Other',
     dateTimeModified: '2022-06-14T01:00:00.000',
     dateTimeCreated: '2022-06-14T00:00:00.000',
-    path: [ 'Party' ],
+    path: [{ id: null, value: 'Party' }],
     hearingRelevant: 'Yes',
     flagCode: 'OT0001',
     status: CaseFlagStatus.ACTIVE
@@ -171,21 +172,33 @@ describe('ReadCaseFlagFieldComponent', () => {
   };
   const formGroup = {
     controls: {
-      caseFlag1: {
+      [caseFlag1FieldId]: {
         controls: {
           partyName: null,
           roleOnCase: null
+        },
+        caseField: {
+          id: caseFlag1FieldId,
+          field_type: {
+            id: 'Flags',
+            type: 'Complex'
+          }
         }
       },
-      caseFlag2: {
+      [caseFlag2FieldId]: {
         controls: {
           partyName: null,
           roleOnCase: null,
           flagType: null
         },
         caseField: {
+          id: caseFlag2FieldId,
+          field_type: {
+            id: 'Flags',
+            type: 'Complex'
+          },
           value: {
-            partyName: 'Party 2',
+            partyName: caseFlag2PartyName,
             details: [
               {
                 id: '0000',
@@ -201,6 +214,11 @@ describe('ReadCaseFlagFieldComponent', () => {
             ]
           }
         }
+      },
+      [flagLauncherCaseField.id]: {
+        controls: {},
+        caseField: flagLauncherCaseField,
+        component: new WriteCaseFlagFieldComponent(null)
       }
     }
   } as unknown as FormGroup;
@@ -280,12 +298,32 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].details).toBeNull();
   });
 
-  it('should select the correct (i.e. new) flag to display on the summary page', () => {
+  it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
-    expect(component.flagForSummaryDisplay.partyName).toEqual('Party 2');
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    // Check the correct display mode for the "Review flag details" summary page has been set
+    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+  });
+
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    component.formGroup = formGroup;
+    // Simulate presence of selected flag
+    formGroup.controls[flagLauncherCaseField.id]['component'].selectedFlag = {
+      partyName: caseFlag2PartyName,
+      flagDetail: caseFlag2DetailsValue1,
+      flagsCaseFieldId: caseFlag2FieldId
+    } as FlagDetailDisplay;
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    // Check the correct display mode for the "Review flag details" summary page has been set
+    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
   });
 });
