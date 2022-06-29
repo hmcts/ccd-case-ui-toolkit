@@ -58,10 +58,33 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public processLabel(flagDisplay: FlagDetailDisplay): string {
-    const partyName = flagDisplay.partyName ? flagDisplay.partyName : '';
-    const flagName = flagDisplay.flagDetail.name ? flagDisplay.flagDetail.name : '';
-    const comment = flagDisplay.flagDetail.flagComment ? flagDisplay.flagDetail.flagComment : '';
-    return `${partyName} - ${flagName}${comment ? ` (${comment})` : ''}`;
+    const partyName = flagDisplay.partyName
+      ? flagDisplay.partyName
+      : '';
+
+    const flagDetail = flagDisplay.flagDetail;
+
+    const flagPathOrName = flagDetail && flagDetail.path && flagDetail.path.length > 1
+      ? flagDetail.path[1].value
+      : flagDetail.subTypeKey && flagDetail.subTypeValue
+        ? flagDetail.subTypeValue
+        : flagDetail.name;
+
+    const flagOtherDescriptionOrName = flagDetail && flagDetail.name
+      ? flagDetail.name === 'Other'
+        ? flagDetail.otherDescription
+        : flagDetail.subTypeKey && flagDetail.subTypeValue
+          ? flagDetail.subTypeValue
+          : flagDetail.name
+      : '';
+
+    const comment = flagDetail.flagComment
+      ? ` (${flagDetail.flagComment})`
+      : '';
+
+    return flagPathOrName === flagOtherDescriptionOrName
+      ? `${partyName} - ${flagOtherDescriptionOrName}${comment}`
+      : `${partyName} - ${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
   }
 
   public onNext(): void {
@@ -71,11 +94,8 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages,
-      selectedFlagDetail: this.formGroup.get(this.selectedControlName).value
-        ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagDetail
-        : null,
-      flagsCaseFieldId: this.formGroup.get(this.selectedControlName).value
-        ? (this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay).flagsCaseFieldId
+      selectedFlag: this.formGroup.get(this.selectedControlName).value
+        ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay
         : null
     });
   }

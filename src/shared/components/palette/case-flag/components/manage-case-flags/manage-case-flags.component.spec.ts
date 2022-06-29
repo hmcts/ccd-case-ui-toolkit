@@ -17,7 +17,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 1',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          path: [{ id: null, value: 'Reasonable adjustment' }],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -27,7 +27,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 2',
           flagComment: 'Rose\'s second flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          path: [{ id: null, value: 'Reasonable adjustment' }],
           hearingRelevant: false,
           flagCode: 'FL2',
           status: 'Inactive'
@@ -43,7 +43,7 @@ describe('ManageCaseFlagsComponent', () => {
           name: 'Flag 3',
           flagComment: 'First flag',
           dateTimeCreated: new Date(),
-          path: ['Reasonable adjustment'],
+          path: [{ id: null, value: 'Reasonable adjustment' }],
           hearingRelevant: false,
           flagCode: 'FL1',
           status: 'Active'
@@ -120,11 +120,46 @@ describe('ManageCaseFlagsComponent', () => {
     expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.name}`);
   });
 
+  it('should format the flag details with child flags (with comment) for display', () => {
+    const flagDisplay = {
+      partyName: 'Ann Peterson',
+      flagDetail: {
+        name: 'Sign Language interpreter',
+        flagCode: '333',
+        path: [
+          { id: null, value: 'party' },
+          { id: null, value: 'Reasonable adjustment' },
+          { id: null, value: 'I need help communicating and understanding' }
+        ],
+        flagComment: 'Test comment'
+      }
+    } as FlagDetailDisplay;
+    const displayLabel = component.processLabel(flagDisplay);
+    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.name} (${flagDisplay.flagDetail.flagComment})`);
+  });
+
+  it('should format the flag details with child flags (without comment) for display', () => {
+    const flagDisplay = {
+      partyName: 'Ann Peterson',
+      flagDetail: {
+        name: 'Sign Language interpreter',
+        flagCode: '333',
+        path: [
+          { id: null, value: 'party' },
+          { id: null, value: 'Reasonable adjustment' },
+          { id: null, value: 'I need help communicating and understanding' }
+        ]
+      }
+    } as FlagDetailDisplay;
+    const displayLabel = component.processLabel(flagDisplay);
+    expect(displayLabel).toEqual(`${flagDisplay.partyName} - ${flagDisplay.flagDetail.path[1].value}, ${flagDisplay.flagDetail.name}`);
+  });
+
   it('should map flag details to display model', () => {
     const flagDetail = {
       name: 'Interpreter',
       dateTimeCreated: new Date(),
-      path: ['path'],
+      path: [{ id: null, value: 'path' }],
       flagComment: 'comment',
       hearingRelevant: true,
       flagCode: '123',
@@ -168,8 +203,11 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: flagsData[1].details[0],
-      flagsCaseFieldId: flagsData[1].flagsCaseFieldId
+      selectedFlag: {
+        partyName: flagsData[1].partyName,
+        flagDetail: flagsData[1].details[0],
+        flagsCaseFieldId: flagsData[1].flagsCaseFieldId
+      } as FlagDetailDisplay
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -186,8 +224,7 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: null,
-      flagsCaseFieldId: null
+      selectedFlag: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',

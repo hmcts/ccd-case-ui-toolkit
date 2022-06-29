@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FlagDetail } from '../../domain';
-import { CaseFlagFieldState, UpdateFlagErrorMessage } from '../../enums';
+import { FlagDetail, FlagDetailDisplay } from '../../domain';
+import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {
@@ -15,7 +15,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 1',
     flagComment: 'First flag',
     dateTimeCreated: new Date(),
-    path: ['Reasonable adjustment'],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active'
@@ -24,11 +24,19 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 2',
     flagComment: 'Rose\'s second flag',
     dateTimeCreated: new Date(),
-    path: ['Reasonable adjustment'],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'
-  } as FlagDetail
+  } as FlagDetail;
+  const selectedFlag1 = {
+    partyName: 'Rose Bank',
+    flagDetail: activeFlag,
+  } as FlagDetailDisplay;
+  const selectedFlag2 = {
+    partyName: 'Rose Bank',
+    flagDetail: inactiveFlag
+  } as FlagDetailDisplay;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -43,7 +51,7 @@ describe('UpdateFlagComponent', () => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
-    component.selectedFlagDetail = activeFlag;
+    component.selectedFlag = selectedFlag1;
     nextButton = fixture.debugElement.nativeElement.querySelector('.button-primary');
     textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     // 200-character text input
@@ -55,6 +63,11 @@ describe('UpdateFlagComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should populate the flag comments textarea with existing comments', () => {
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    expect(textarea.value).toEqual(activeFlag.flagComment);
   });
 
   it('should show an error message on clicking "Next" if comments are mandatory but none have been entered', () => {
@@ -69,7 +82,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
       errorMessages: component.errorMessages,
-      selectedFlagDetail: component.selectedFlagDetail
+      selectedFlag: component.selectedFlag
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -104,20 +117,37 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should populate the flag comments textarea with existing comments', () => {
-    // Check the textarea value property, rather than textContent, because this input element has no child nodes
-    expect(textarea.value).toEqual(activeFlag.flagComment);
-  });
-
   it('should render the "Active" flag status correctly', () => {
     const statusElement = fixture.debugElement.nativeElement.querySelector('.govuk-tag');
     expect(statusElement.getAttribute('class')).not.toContain('govuk-tag--grey');
   });
 
   it('should render the "Inactive" flag status correctly', () => {
-    component.selectedFlagDetail = inactiveFlag;
+    component.selectedFlag = selectedFlag2;
     fixture.detectChanges();
     const statusElement = fixture.debugElement.nativeElement.querySelector('.govuk-tag');
     expect(statusElement.getAttribute('class')).toContain('govuk-tag--grey');
+  });
+
+  it('should update the flag comments and status', () => {
+    spyOn(component, 'onChangeStatus').and.callThrough();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Edit existing flag comments
+    textarea.value = 'Edited comment';
+    textarea.dispatchEvent(new Event('input'));
+    // Click the "Make inactive" button to change the flag status
+    fixture.debugElement.nativeElement.querySelector('.button-secondary').click();
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onChangeStatus).toHaveBeenCalled();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.selectedFlag.flagDetail.flagComment).toEqual(textarea.value);
+    expect(component.selectedFlag.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
   });
 });

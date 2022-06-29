@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
+import { FlagPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
@@ -206,12 +207,16 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-0').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
+    const flagPaths: FlagPath[] = [];
+    flagTypes[0].childFlags[0].Path.forEach(flagPath => {
+      flagPaths.push({ id: null, value: flagPath })
+    });
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: true,
       errorMessages: component.errorMessages,
       flagName: flagTypes[0].childFlags[0].name,
-      flagPath: flagTypes[0].childFlags[0].Path,
+      flagPath: flagPaths,
       hearingRelevantFlag: flagTypes[0].childFlags[0].hearingRelevant,
       flagCode: flagTypes[0].childFlags[0].flagCode,
       listOfValues: null
@@ -226,12 +231,16 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-1').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
+    const flagPaths: FlagPath[] = [];
+    flagTypes[0].childFlags[1].Path.forEach(flagPath => {
+      flagPaths.push({ id: null, value: flagPath })
+    });
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
       errorMessages: component.errorMessages,
       flagName: flagTypes[0].childFlags[1].name,
-      flagPath: flagTypes[0].childFlags[1].Path,
+      flagPath: flagPaths,
       hearingRelevantFlag: flagTypes[0].childFlags[1].hearingRelevant,
       flagCode: flagTypes[0].childFlags[1].flagCode,
       listOfValues: null
@@ -255,12 +264,16 @@ describe('SelectFlagTypeComponent', () => {
     // with list of values
     nativeElement.querySelector('#flag-type-0').click();
     nextButtonElement.click();
+    const flagPaths: FlagPath[] = [];
+    flagTypes[0].childFlags[0].childFlags[1].childFlags[0].Path.forEach(flagPath => {
+      flagPaths.push({ id: null, value: flagPath })
+    });
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
       errorMessages: component.errorMessages,
       flagName: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].name,
-      flagPath: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].Path,
+      flagPath: flagPaths,
       hearingRelevantFlag: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].hearingRelevant,
       flagCode: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].flagCode,
       listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues

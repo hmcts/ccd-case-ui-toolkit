@@ -5,7 +5,7 @@ import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseFlagState, FlagDetail, Flags } from './domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplay, FlagPath, Flags } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
@@ -23,12 +23,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public errorMessages: ErrorMessage[] = [];
   public createFlagCaption: CaseFlagText;
   public flagsData: Flags[];
-  public selectedFlagDetail: FlagDetail;
+  public selectedFlag: FlagDetailDisplay;
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public flagName: string;
-  public flagPath: string[];
+  public flagPath: FlagPath[];
   public hearingRelevantFlag: boolean;
   public flagCode: string;
   public listOfValues: {key: string, value: string}[] = null;
@@ -133,16 +133,16 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS and a flag has been selected, set the parent
     // Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
-      && caseFlagState.selectedFlagDetail
-      && caseFlagState.flagsCaseFieldId) {
-      this.setCaseFlagParentFormGroup(caseFlagState.flagsCaseFieldId);
+      && caseFlagState.selectedFlag
+      && caseFlagState.selectedFlag.flagsCaseFieldId) {
+      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlag.flagsCaseFieldId);
     }
 
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
     // been clicked)
     this.caseEditPageComponent.validationErrors = [];
     this.errorMessages = caseFlagState.errorMessages;
-    this.selectedFlagDetail = caseFlagState.selectedFlagDetail;
+    this.selectedFlag = caseFlagState.selectedFlag;
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
       // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
@@ -238,12 +238,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           }
         });
     }
-    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlagDetail.id);
+    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlag.flagDetail.id);
     if (flagDetailToUpdate) {
       flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
         ? this.caseFlagParentFormGroup.value.flagComments
         : null;
-      flagDetailToUpdate.value.status = this.selectedFlagDetail.status;
+      flagDetailToUpdate.value.status = this.selectedFlag.flagDetail.status;
       flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
     }
   }
