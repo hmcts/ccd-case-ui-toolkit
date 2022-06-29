@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 4.13.22-manage-case-flags-display-case-level-case-flags
+### Version 4.13.23-manage-case-flags-display-case-level-case-flags
 **EUI-5872** Manage case flags dispay case level case flags
 
 ### Version 4.13.19-manage-case-flags-review-flag-details-page
