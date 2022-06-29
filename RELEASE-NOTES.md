@@ -9,6 +9,14 @@
 **EUI-5810** Manage case flags display formatted flag details
 **EUI-6164** Reasonable adjustment display for sign language interpreter
 
+### Version 4.13.9-case-flag-details-persistence-fixes
+**EUI-6148** Fix bug where discarded Case Flag details are persisted when restarting the Create Case Flag or Manage Case Flags journeys by clicking "Change" from the "Review Flag Details" page
+**EUI-6155** Fix bug where change to case flag status is not being reflected
+**EUI-6156** Fix bug where last modified date is not being updated when a case flag is updated
+
+### Version 4.13.9-manage-case-flags-update-flag-page
+**EUI-5342** Manage case flags comments update flag page
+
 ### Version 4.13.7-create-case-level-case-flag
 **EUI-5849** Create and display case-level flags
 
