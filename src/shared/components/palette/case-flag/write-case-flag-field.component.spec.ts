@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
-import { FlagDetail } from './domain';
+import { FlagDetail, FlagDetailDisplay } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
@@ -171,6 +171,11 @@ describe('WriteCaseFlagFieldComponent', () => {
       status: CaseFlagStatus.ACTIVE
     } as FlagDetail
   };
+  const selectedFlag = {
+    partyName: caseFlag1PartyName,
+    flagDetail: caseFlag1DetailsValue1,
+    flagsCaseFieldId: caseFlag1FieldId
+  } as FlagDetailDisplay;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -295,7 +300,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should update flag in collection when updating a case flag', () => {
-    component.selectedFlagDetail = caseFlag1DetailsValue1;
+    component.selectedFlag = selectedFlag;
     const caseField = {
       value: {
         flagComments: 'test comment',
@@ -306,6 +311,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       flagComments: new FormControl('An updated comment')
     });
     component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
     // Check the comments have been applied
     expect(caseField.value.details[0].value.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
