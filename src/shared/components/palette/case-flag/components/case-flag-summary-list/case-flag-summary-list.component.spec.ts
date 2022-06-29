@@ -38,7 +38,7 @@ describe('CaseFlagSummaryListComponent', () => {
         name: 'Flag 1',
         flagComment: 'First flag',
         dateTimeCreated: new Date(),
-        path: [{ id: null, value: 'Reasonable adjustment' }],
+        path: [{ id: '', value: 'Reasonable adjustment' }],
         hearingRelevant: false,
         flagCode: 'FL1',
         status: 'Active'
@@ -64,7 +64,7 @@ describe('CaseFlagSummaryListComponent', () => {
         name: 'Flag 1',
         flagComment: '',
         dateTimeCreated: new Date(),
-        path: [{ id: null, value: 'Reasonable adjustment' }],
+        path: [{ id: '', value: 'Reasonable adjustment' }],
         hearingRelevant: false,
         flagCode: 'FL1',
         status: 'Active'
@@ -91,7 +91,7 @@ describe('CaseFlagSummaryListComponent', () => {
         otherDescription: 'A different flag',
         flagComment: 'First flag',
         dateTimeCreated: new Date(),
-        path: [{ id: null, value: 'Reasonable adjustment' }],
+        path: [{ id: '', value: 'Reasonable adjustment' }],
         hearingRelevant: false,
         flagCode: 'FL1',
         status: 'Active'
@@ -118,7 +118,7 @@ describe('CaseFlagSummaryListComponent', () => {
         subTypeValue: 'British Sign Language (BSL)',
         flagComment: 'First flag',
         dateTimeCreated: new Date(),
-        path: [{ id: null, value: 'Reasonable adjustment' }],
+        path: [{ id: '', value: 'Reasonable adjustment' }],
         hearingRelevant: false,
         flagCode: 'FL1',
         status: 'Active'
@@ -144,7 +144,7 @@ describe('CaseFlagSummaryListComponent', () => {
         name: 'Flag 1',
         flagComment: 'First flag',
         dateTimeCreated: new Date(),
-        path: ['Reasonable adjustment'],
+        path: [{ id: '', value: 'Reasonable adjustment'}],
         hearingRelevant: false,
         flagCode: 'FL1',
         status: 'Active'
