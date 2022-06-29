@@ -88,7 +88,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
                         // These two fields are date-time fields
                         case 'dateTimeModified':
                         case 'dateTimeCreated':
-                          return {[k]: new Date(detail.value[k]), 'id': detail.id};
+                          return {[k]: detail.value[k] ? new Date(detail.value[k]) : null, 'id': detail.id};
                         // This field is a "yes/no" field
                         case 'hearingRelevant':
                           return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, 'id': detail.id} : {[k]: false, 'id': detail.id};
@@ -186,16 +186,25 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public addFlagToCollection(): void {
     const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
     if (flagsCaseFieldValue) {
+      // Ensure no more than one new flag is being added at a time, by iterating through each Flags case field and removing
+      // any previous entry from the details array where that entry has no id (hence it is new - and there should be only
+      // one such entry). (This scenario occurs if the user repeats the Case Flag creation journey by using the "Change"
+      // link and selects either the same flag location as before or a different one.)
+      Object.keys(this.caseFlagParentFormGroup.parent.controls).filter(
+        controlName => FieldsUtils.isFlagsCaseField(this.caseFlagParentFormGroup.parent.controls[controlName]['caseField']))
+        .forEach(flagsFieldControlName => {
+          const caseFieldValue = this.caseFlagParentFormGroup.parent.controls[flagsFieldControlName]['caseField'].value;
+          if (caseFieldValue && caseFieldValue.details && caseFieldValue.details.length > 0) {
+            const indexOfNewFlagDetail = caseFieldValue.details.findIndex(element => !element.hasOwnProperty('id'));
+            if (indexOfNewFlagDetail > -1) {
+              caseFieldValue.details.splice(indexOfNewFlagDetail, 1);
+            }
+          }
+        });
+
       // Create a details array if one does not exist
       if (!flagsCaseFieldValue.hasOwnProperty('details')) {
         flagsCaseFieldValue.details = [];
-      }
-      // Ensure no more than one new flag is being added at a time, by removing any previous entry from the details
-      // array where that entry has no id (hence it is new - and there should be only one such entry). (This scenario
-      // occurs if the user repeats the Case Flag creation journey by using the "Change" link.)
-      const indexOfNewFlagDetail = flagsCaseFieldValue.details.findIndex(element => !element.hasOwnProperty('id'));
-      if (indexOfNewFlagDetail > -1) {
-        flagsCaseFieldValue.details.splice(indexOfNewFlagDetail, 1);
       }
       // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
       flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});

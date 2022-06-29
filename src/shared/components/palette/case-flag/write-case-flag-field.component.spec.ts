@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { FlagDetail, FlagDetailDisplay } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
@@ -26,6 +26,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag1DetailsValue1 = {
     id: '1234234134214123',
     name: 'Wheelchair access',
+    comment: 'A new comment for first party',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
@@ -40,6 +41,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag1DetailsValue2 = {
     id: '5678678578568567',
     name: 'Sign language',
+    comment: 'Another new comment for first party',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
@@ -51,12 +53,23 @@ describe('WriteCaseFlagFieldComponent', () => {
     flagCode: 'BSL',
     status: CaseFlagStatus.INACTIVE
   };
+  const caseFlag1DetailsNewValue = {
+    id: '0000111122223333',
+    name: 'Other',
+    dateTimeModified: '2022-06-27T10:15:00.000',
+    dateTimeCreated: '2022-06-27T10:00:00.000',
+    path: ['Party'],
+    hearingRelevant: 'No',
+    flagCode: 'OT0001',
+    status: CaseFlagStatus.ACTIVE
+  };
   const caseFlag2FieldId = 'CaseFlag2';
   const caseFlag2PartyName = 'Ann Peterson';
   const caseFlag2RoleOnCase = 'Defendant';
   const caseFlag2DetailsValue1 = {
     id: '0987987687657654',
     name: 'Foreign national offender',
+    comment: 'A new comment for second party',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
@@ -70,6 +83,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlag2DetailsValue2 = {
     id: '7890654385678342',
     name: 'Sign language',
+    comment: 'Another new comment for second party',
     dateTimeModified: '2022-02-13T00:00:00.000',
     dateTimeCreated: '2022-02-11T00:00:00.000',
     path: [
@@ -104,7 +118,7 @@ describe('WriteCaseFlagFieldComponent', () => {
               field_type: {
                 id: 'Flags',
                 type: 'Complex'
-              },
+              } as FieldType,
               value: {
                 partyName: caseFlag1PartyName,
                 roleOnCase: caseFlag1RoleOnCase,
@@ -125,7 +139,7 @@ describe('WriteCaseFlagFieldComponent', () => {
               field_type: {
                 id: 'Flags',
                 type: 'Complex'
-              },
+              } as FieldType,
               value: {
                 partyName: caseFlag2PartyName,
                 roleOnCase: caseFlag2RoleOnCase,
@@ -146,7 +160,7 @@ describe('WriteCaseFlagFieldComponent', () => {
               field_type: {
                 id: 'Flags',
                 type: 'Complex'
-              },
+              } as FieldType,
               value: {}
             }
           ]
@@ -154,7 +168,102 @@ describe('WriteCaseFlagFieldComponent', () => {
       }
     }
   };
-  const parentFormGroup = new FormGroup({});
+  const parentFormGroup = new FormGroup({
+    [caseFlag1FieldId]: new FormGroup({}),
+    [caseFlag2FieldId]: new FormGroup({})
+  });
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'] = {
+    field_type: {
+      id: 'Flags',
+      type: 'Complex'
+    } as FieldType,
+    formatted_value: {
+      partyName: caseFlag1PartyName,
+      roleOnCase: caseFlag1RoleOnCase,
+      details: [
+        {
+          id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
+          value: caseFlag1DetailsValue1
+        },
+        {
+          id: '9a179b7c-50a8-479f-a99b-b191ec8ec192',
+          value: caseFlag1DetailsValue2
+        }
+      ]
+    },
+    value: {
+      partyName: caseFlag1PartyName,
+      roleOnCase: caseFlag1RoleOnCase,
+      details: [
+        {
+          id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
+          value: caseFlag1DetailsValue1
+        },
+        {
+          id: '9a179b7c-50a8-479f-a99b-b191ec8ec192',
+          value: caseFlag1DetailsValue2
+        },
+        {
+          // New value, hence the id is omitted (the test will check this value is removed)
+          value: caseFlag1DetailsNewValue
+        }
+      ]
+    },
+  };
+  // Set different comments, date/time modified, and status values in formatted_value to check they are restored
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.comment = null;
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.dateTimeModified = null;
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.comment = 'Original new comment 1';
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified =
+    '2022-02-14T00:00:00.000';
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'] = {
+    field_type: {
+      id: 'Flags',
+      type: 'Complex'
+    } as FieldType,
+    formatted_value: {
+      partyName: caseFlag2PartyName,
+      roleOnCase: caseFlag2RoleOnCase,
+      details: [
+        {
+          id: '61160453-647b-4065-a786-9443556055f1',
+          value: caseFlag2DetailsValue1
+        },
+        {
+          id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
+          value: caseFlag2DetailsValue2
+        }
+      ]
+    },
+    value: {
+      partyName: caseFlag2PartyName,
+      roleOnCase: caseFlag2RoleOnCase,
+      details: [
+        {
+          id: '61160453-647b-4065-a786-9443556055f1',
+          value: caseFlag2DetailsValue1
+        },
+        {
+          id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
+          value: caseFlag2DetailsValue2
+        },
+        {
+          // New value, hence the id is omitted (the test will check this value is removed)
+          value: caseFlag1DetailsNewValue
+        }
+      ]
+    },
+  };
+  // Set different comments, date/time modified, and status values in formatted_value to check they are restored
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.comment = null;
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.dateTimeModified = null;
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.comment = 'Original new comment 2';
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified =
+    '2022-02-15T00:00:00.000';
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
   const flagDetail = {
     id: '1234234134214123',
     value: {
@@ -246,7 +355,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
     expect(component.flagsData[0].details.length).toBe(2);
     expect(component.flagsData[0].details[0].name).toEqual(caseFlag1DetailsValue1.name);
-    expect(component.flagsData[0].details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[0].details[0].dateTimeModified).toEqual(null);
     expect(component.flagsData[0].details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[0].details[0].hearingRelevant).toBe(false);
     expect(component.flagsData[1].flagsCaseFieldId).toEqual(caseFlag2FieldId);
@@ -254,7 +363,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
     expect(component.flagsData[1].details.length).toBe(2);
     expect(component.flagsData[1].details[1].name).toEqual(caseFlag2DetailsValue2.name);
-    expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(
+      parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified));
     expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
     expect(component.flagsData[2].flagsCaseFieldId).toEqual(caseFlagsFieldId);
@@ -286,6 +396,14 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should add flag to collection when creating a flag', () => {
+    // Check there are three case flag values in the caseField object for caseFlag1 and caseFlag2 - two with an id,
+    // one without
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details.length).toBe(3);
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[2].id).toBeUndefined();
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[2].value).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details.length).toBe(3);
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[2].id).toBeUndefined();
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[2].value).toBeTruthy();
     spyOn(component, 'populateNewFlagDetailInstance');
     const caseField = {
       value: {
@@ -294,9 +412,22 @@ describe('WriteCaseFlagFieldComponent', () => {
       }
     };
     component.caseFlagParentFormGroup = new FormGroup({});
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.caseFlagParentFormGroup['caseField'] = caseField;
     component.addFlagToCollection();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
+    // Check there are now two case flag values in the caseField object for caseFlag1 and caseFlag2 - all with an id
+    // (the ones without should have been removed, as they are previous "new" case flag values)
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details.length).toBe(2);
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[0].id).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[0].value).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[1].id).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[1].value).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details.length).toBe(2);
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[0].id).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[0].value).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[1].id).toBeTruthy();
+    expect(parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[1].value).toBeTruthy();
   });
 
   it('should update flag in collection when updating a case flag', () => {
@@ -310,10 +441,24 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.caseFlagParentFormGroup = new FormGroup({
       flagComments: new FormControl('An updated comment')
     });
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.caseFlagParentFormGroup['caseField'] = caseField;
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
     // Check the comments have been applied
     expect(caseField.value.details[0].value.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
+    // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
+    parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[0].value.comment = null;
+    parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[0].value.dateTimeModified = null;
+    parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[1].value.comment = 'Original new comment 1';
+    parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[1].value.dateTimeModified =
+      '2022-02-14T00:00:00.000';
+    parentFormGroup.controls[caseFlag1FieldId]['caseField'].value.details[1].value.status = CaseFlagStatus.ACTIVE;
+    parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[0].value.comment = null;
+    parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[0].value.dateTimeModified = null;
+    parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[1].value.comment = 'Original new comment 2';
+    parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[1].value.dateTimeModified =
+      '2022-02-15T00:00:00.000';
+    parentFormGroup.controls[caseFlag2FieldId]['caseField'].value.details[1].value.status = CaseFlagStatus.ACTIVE;
   });
 });
