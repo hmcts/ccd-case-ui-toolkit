@@ -144,7 +144,7 @@ describe('CaseFlagSummaryListComponent', () => {
         name: 'Flag 1',
         flagComment: 'First flag',
         dateTimeCreated: new Date(),
-        path: [{ id: '', value: 'Reasonable adjustment'}],
+        path: [{ id: '', value: 'Reasonable adjustment' }],
         hearingRelevant: false,
         flagCode: 'FL1',
         status: 'Active'
