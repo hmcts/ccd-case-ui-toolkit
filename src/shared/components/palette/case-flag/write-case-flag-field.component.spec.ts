@@ -444,6 +444,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.caseFlagParentFormGroup['caseField'] = caseField;
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
     // Check the comments have been applied
     expect(caseField.value.details[0].value.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
