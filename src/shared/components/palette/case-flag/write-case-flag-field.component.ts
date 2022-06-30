@@ -33,10 +33,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCode: string;
   public listOfValues: {key: string, value: string}[] = null;
   public isDisplayContextParameterUpdate: boolean;
+  public caseTitle: string;
   private allCaseFlagStagesCompleted = false;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
+  public readonly caseNameMissing = 'Case name missing';
 
   constructor(
     private readonly route: ActivatedRoute
@@ -110,6 +112,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
+      // Get case title, to be used by child components
+      this.caseTitle = this.caseEditPageComponent.getCaseTitle()
+        ? this.caseEditPageComponent.getCaseTitle()
+        : this.caseNameMissing;
     }
   }
 

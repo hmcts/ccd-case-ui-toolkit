@@ -301,7 +301,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
-    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['submit']);
+    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['submit', 'getCaseTitle']);
     component.formGroup = parentFormGroup;
     component.caseField = flagLauncherCaseField;
     fixture.detectChanges();
@@ -322,6 +322,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
     expect(component.formGroup.errors).not.toBeNull();
+    expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
   });
 
   // TODO: Need to re-visit later as the next button has been moved to the child components
