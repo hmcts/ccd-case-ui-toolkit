@@ -35,13 +35,14 @@ export class MarkdownComponent implements OnInit {
       return true;
     }
 
-    if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
+    /* if (this.markdownUseHrefAsRouterLink === true && targetPath.indexOf('http') < 0) {
       // Prevent page from reloading
-      // event.preventDefault();
-      // this.convertHrefToRouterService.updateHrefLink(targetPath + search);
+      event.preventDefault();
+      this.convertHrefToRouterService.updateHrefLink(targetPath + search);
       return true;
     } else {
       return true;
-    }
+    } */
+    return true;
   }
 }
