@@ -130,16 +130,16 @@ describe('MarkdownComponent - Anchor', () => {
     });
   });
 
-  it('should invoke callUpdateHrefLink() and call updateHrefLink', (done) => {
-    const anchor = { pathname: '/case/IA/Asylum/1632395877596617/trigger/addCaseNote'} as HTMLAnchorElement;
-    const event = new MouseEvent('click');
-    component.callUpdateHrefLink(anchor, event);
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(convertHrefToRouterService.updateHrefLink).toHaveBeenCalled();
-      done();
-    });
-  });
+  // it('should invoke callUpdateHrefLink() and call updateHrefLink', (done) => {
+  //   const anchor = { pathname: '/case/IA/Asylum/1632395877596617/trigger/addCaseNote'} as HTMLAnchorElement;
+  //   const event = new MouseEvent('click');
+  //   component.callUpdateHrefLink(anchor, event);
+  //   fixture.detectChanges();
+  //   fixture.whenStable().then(() => {
+  //     expect(convertHrefToRouterService.updateHrefLink).toHaveBeenCalled();
+  //     done();
+  //   });
+  // });
 
   it('should not invoke callUpdateHrefLink() on URL with hash', (done) => {
     const anchor = { pathname: '/case/IA/Asylum/1599830705879596', hash: 'Hearing%20and%20appointment'} as HTMLAnchorElement;
