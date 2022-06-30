@@ -60,9 +60,11 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public processLabel(flagDisplay: FlagDetailDisplay): string {
-    const partyName = flagDisplay.partyName
-      ? flagDisplay.partyName
-      : '';
+    const partyName = flagDisplay.flagsCaseFieldId && flagDisplay.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId
+      ? `${this.caseTitle} - `
+      : flagDisplay.partyName
+        ? `${flagDisplay.partyName} - `
+        :  '';
 
     const flagDetail = flagDisplay.flagDetail;
 
@@ -85,8 +87,8 @@ export class ManageCaseFlagsComponent implements OnInit {
       : '';
 
     return flagPathOrName === flagOtherDescriptionOrName
-      ? `${partyName} - ${flagOtherDescriptionOrName}${comment}`
-      : `${partyName} - ${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
+      ? `${partyName}${flagOtherDescriptionOrName}${comment}`
+      : `${partyName}${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
   }
 
   public onNext(): void {

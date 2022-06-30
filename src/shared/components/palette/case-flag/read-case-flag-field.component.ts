@@ -87,7 +87,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       }
     }
 
-    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle();
+    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle()
+      ? this.caseEditPageComponent.getCaseTitle()
+      : this.caseNameMissing;
   }
 
   private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
