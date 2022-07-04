@@ -63,6 +63,9 @@ export class EventStartGuard implements CanActivate {
   }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
+    if (!payload || !payload.tasks) {
+      return true;
+    }
     const taskNumber = payload.tasks.length;
     if (taskNumber === 0) {
       // if there are no tasks just carry on
