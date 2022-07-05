@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
+import { LinkedCasesEventTriggers } from './enums';
 import { LinkedCasesService } from './services';
 
 @Component({
@@ -78,7 +79,14 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public hasCaseLinkCollection(): boolean {
-    return this.caseField.field_type && this.caseField.field_type.type === 'Collection' &&
-            this.caseField.field_type.collection_field_type.id === 'CaseLink'
+    return (
+      this.caseField.field_type &&
+      this.caseField.field_type.type === 'Collection' &&
+      this.caseField.field_type.collection_field_type.id === 'CaseLink'
+    );
+  }
+
+  public isLinkedCasesEventTrigger(): boolean {
+    return this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
 }

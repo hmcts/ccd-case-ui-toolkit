@@ -21,6 +21,6 @@ export enum LinkedCasesErrorMessages {
 }
 
 export enum LinkedCasesEventTriggers {
-  LINK_CASES = 'linkCases',
-  MANAGE_CASE_LINKS = 'manageCaseLinks'
+  LINK_CASES = 'Link cases',
+  MANAGE_CASE_LINKS = 'Manage case links'
 }

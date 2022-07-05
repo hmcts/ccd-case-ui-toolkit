@@ -23,14 +23,14 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public caseEditPageComponent: CaseEditPageComponent;
   @Output()
   public onLinkedCasesSelected = new EventEmitter<any>();
+  @Input()
+  public isLinkedCasesJourney = false;
 
   public formGroup: FormGroup;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
-  public isLinkedCasesJourney: boolean;
-
   constructor(private readonly router: Router,
     private readonly appConfig: AbstractAppConfig,
     private commonDataService: CommonDataService,
@@ -50,9 +50,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       }
     }), true) as FormGroup;
 
-    // Figure out the journey, linked cases or manage linked cases
-    this.isLinkedCasesJourney = this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES);
-    // Store caseId in LinkedCasesService, to be used by child components
     this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
