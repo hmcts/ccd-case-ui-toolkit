@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.18.4-upload-error-fix
+**EUI-5696** Upload error fix
+
 ### Version 4.17.6-EUI-5736-unassigned-cases-pagination
 **EUI-5736** unassigned cases pagination
 
