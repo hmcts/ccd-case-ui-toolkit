@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.18.0-EUI-5696-upload-error-fix
+**EUI-5696** upload error fix
+
 ### Version 4.17.12-EUI-5743-Mandatory-field-validation-in-collection
 **EUI-5743** Bug fix for the Mandatory field validation in collection
 
