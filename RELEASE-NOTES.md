@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.17.7-hearings
+### Version 4.18.7-hearings
 **EUI-5912** Hearing tab is not loading
 
 ### Version 4.17.6-EUI-5736-unassigned-cases-pagination
