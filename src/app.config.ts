@@ -84,6 +84,7 @@ export abstract class AbstractAppConfig {
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
   abstract getRDCommonDataApiUrl(): string;
+  abstract getCaseDataStoreApiUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -144,4 +145,5 @@ export class CaseEditorConfig {
   refunds_url: string;
   payment_return_url: string;
   rd_common_data_api_url: string;
+  case_data_store_api_url: string;
 }

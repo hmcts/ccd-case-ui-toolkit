@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.17.36-linked-cases-bottom-table-api-integration
+**EUI-5886** ### Version 4.17.36-linked-cases-bottom-table-api-integration
+
 ### Version 4.17.32-linked-cases-top-table-integration
 **EUI-5884** ### Version 4.17.32-linked-cases-top-table-integration
 
