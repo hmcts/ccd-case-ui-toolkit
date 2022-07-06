@@ -1,6 +1,6 @@
 import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
@@ -20,7 +20,6 @@ export class CaseResolver implements Resolve<CaseView> {
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
-  public cachedCaseView: CaseView;
   previousUrl: string;
   constructor(private caseNotifier: CaseNotifier,
               private casesService: CasesService,
@@ -44,7 +43,7 @@ export class CaseResolver implements Resolve<CaseView> {
       this.navigateToCaseList();
     } else {
       return this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
-        : this.cachedCaseView ? Promise.resolve(this.cachedCaseView)
+        : this.caseNotifier.cachedCaseView ? Promise.resolve(this.caseNotifier.cachedCaseView)
         : this.getAndCacheCaseView(cid);
     }
   }
@@ -64,33 +63,43 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
-    if (Draft.isDraft(cid)) {
-      return this.getAndCacheDraft(cid);
+    if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
+      this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
+      return of(this.caseNotifier.cachedCaseView).toPromise();
     } else {
-      return this.casesService
-        .getCaseViewV2(cid)
-        .pipe(
-          map(caseView => {
-            this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-            this.caseNotifier.announceCase(this.cachedCaseView);
-            return this.cachedCaseView;
-          }),
-          catchError(error => this.checkAuthorizationError(error))
-        ).toPromise();
+      if (Draft.isDraft(cid)) {
+        return this.getAndCacheDraft(cid);
+      } else {
+        return this.casesService
+          .getCaseViewV2(cid)
+          .pipe(
+            map(caseView => {
+              this.caseNotifier.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
+              this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
+              return this.caseNotifier.cachedCaseView;
+            }),
+            catchError(error => this.checkAuthorizationError(error))
+          ).toPromise();
+      }
     }
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {
-    return this.draftService
+    if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
+      this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
+      return of(this.caseNotifier.cachedCaseView).toPromise();
+    } else {
+      return this.draftService
       .getDraft(cid)
       .pipe(
         map(caseView => {
-          this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-          this.caseNotifier.announceCase(this.cachedCaseView);
-          return this.cachedCaseView;
+          this.caseNotifier.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
+          this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
+          return this.caseNotifier.cachedCaseView;
         }),
         catchError(error => this.checkAuthorizationError(error))
       ).toPromise();
+    }
   }
 
   private checkAuthorizationError(error: any) {

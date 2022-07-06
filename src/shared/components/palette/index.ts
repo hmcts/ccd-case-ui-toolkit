@@ -23,3 +23,4 @@ export * from './text';
 export * from './text-area';
 export * from './utils';
 export * from './yes-no';
+export * from './waystopay';

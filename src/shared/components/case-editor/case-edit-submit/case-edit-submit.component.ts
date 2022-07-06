@@ -11,7 +11,6 @@ import {
   FormValueService,
   OrderService,
   ProfileNotifier,
-  ProfileService,
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
@@ -20,6 +19,7 @@ import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.componen
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
+import { CaseNotifier } from '../services';
 
 // @dynamic
 @Component({
@@ -78,9 +78,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly orderService: OrderService,
-    private readonly profileService: ProfileService,
     private readonly profileNotifier: ProfileNotifier,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier,
   ) {
   }
 
@@ -115,16 +115,19 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
 
     // We have to run the event completion checks if task in session storage
+    // and if the task is in session storage, then is it associated to the case
+    let taskInSessionStorage: Task;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
-      // Task is in session storage
-      const task = JSON.parse(taskStr);
-      this.task = task;
+      taskInSessionStorage = JSON.parse(taskStr);
+    }
+
+    if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId()) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = {
         caseId: this.getCaseId(),
         eventId: this.getEventId(),
-        task: task
+        task: taskInSessionStorage
       };
       this.eventCompletionChecksRequired = true;
     } else {
@@ -183,6 +186,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseEdit.confirmation) {
       caseEventData.data = {};
     }
+
     return caseEventData;
   }
 
@@ -197,6 +201,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
+          this.caseNotifier.cachedCaseView = null;
           const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);
@@ -436,12 +441,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isSolicitor(): boolean {
     return this.profile.isSolicitor();
-  }
-
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: object): Confirmation {

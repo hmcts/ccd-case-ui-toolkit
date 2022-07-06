@@ -23,6 +23,9 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   @Input()
   caseFields: CaseField[] = [];
 
+  @Input()
+  markdownUseHrefAsRouterLink?: boolean;
+
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
 
@@ -57,6 +60,8 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       // Add a reference to the parent CaseEditPageComponent to this component (needed for access to the parent
       // CaseEditPageComponent's getCaseTitle method)
       component.instance['caseEditPageComponent'] = component.injector.get(CaseEditPageComponent);
+      component.instance['markdownUseHrefAsRouterLink'] = this.markdownUseHrefAsRouterLink;
+
       this.fieldContainer.insert(component.hostView);
     });
   }

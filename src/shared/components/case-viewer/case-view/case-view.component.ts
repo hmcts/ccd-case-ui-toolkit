@@ -64,8 +64,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     if (Draft.isDraft(cid)) {
       return this.getDraft(cid);
     } else {
-    return this.casesService
-          .getCaseViewV2(cid);
+      return this.casesService.getCaseViewV2(cid);
     }
   }
 

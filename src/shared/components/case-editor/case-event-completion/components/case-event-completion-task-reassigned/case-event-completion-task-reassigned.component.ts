@@ -32,7 +32,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public ngOnInit(): void {
     // Get case id and task from the parent component
     this.caseId = this.parentComponent.context.caseId;
-    const task = this.parentComponent.context.task;
+    const task = this.parentComponent.context.reassignedTask;
 
     // Current user is a caseworker?
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(task.jurisdiction).subscribe(result => {

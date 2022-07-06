@@ -156,4 +156,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getCaseFlagsRefdataApiUrl(): string {
     return '';
   }
+
+  getPaymentReturnUrl(): string {
+    return '';
+  }
 }

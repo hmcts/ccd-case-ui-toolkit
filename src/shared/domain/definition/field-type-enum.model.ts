@@ -27,4 +27,5 @@ export type FieldTypeEnum =
   | 'Flags'
   | 'FlagDetail'
   | 'FlagLauncher'
-  | 'CaseFlag'; // Temporary field type for faking Flags field type; to be removed
+  | 'CaseFlag' // Deprecated field type for faking Flags field type; to be removed in future
+  | 'WaysToPay';

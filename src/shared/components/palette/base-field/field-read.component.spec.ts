@@ -61,6 +61,9 @@ class FieldReadLabelComponent {
 
   @Input()
   topLevelFormGroup: FormGroup;
+
+  @Input()
+  markdownUseHrefAsRouterLink?: boolean;
 }
 
 describe('FieldReadComponent', () => {

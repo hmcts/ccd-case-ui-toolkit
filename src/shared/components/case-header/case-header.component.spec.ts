@@ -14,7 +14,7 @@ describe('CaseHeaderComponent', () => {
 
   const MarkdownComponent: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content']
+    inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
 
   const $HEADING = By.css('h1');
@@ -47,7 +47,6 @@ describe('CaseHeaderComponent', () => {
         fixture = TestBed.createComponent(CaseHeaderComponent);
         component = fixture.componentInstance;
         component.caseDetails = CASE_DETAILS;
-
         de = fixture.debugElement;
         fixture.detectChanges();
       });

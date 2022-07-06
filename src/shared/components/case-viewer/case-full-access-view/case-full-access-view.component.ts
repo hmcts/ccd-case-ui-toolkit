@@ -24,6 +24,7 @@ import {
   NavigationOrigin,
   OrderService
 } from '../../../services';
+import { ConvertHrefToRouterService } from '../../case-editor/services';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
@@ -64,6 +65,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
   public isCaseFlagSubmission = false;
+  public markdownUseHrefAsRouterLink: boolean;
+  public message: string;
+  public subscription: Subscription;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -79,6 +83,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
+    private convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location
   ) {
   }
@@ -100,6 +105,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
+
+    this.markdownUseHrefAsRouterLink = true;
+
+    this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
+      // do not convert router with initial default value; convert to router only on updated link content
+      if (hrefMarkdownLinkContent !== 'Default') {
+        this.convertHrefToRouterService.callAngularRouter(hrefMarkdownLinkContent);
+      }
+    });
   }
 
   public isPrintEnabled(): boolean {
@@ -119,6 +133,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }
+    this.subscription.unsubscribe();
   }
 
   public postViewActivity(): Observable<Activity[]> {

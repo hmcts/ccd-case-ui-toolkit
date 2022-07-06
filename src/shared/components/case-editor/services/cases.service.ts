@@ -274,9 +274,11 @@ export class CasesService {
   }
 
   private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // This is used a feature toggle to
-    // control the work allocation
-    if (this.appConfig.getWorkAllocationApiUrl() && !this.isPuiCaseManager()) {
+    // The following code is work allocation 1 related
+    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
+      // This is used a feature toggle to
+      // control the work allocation
+      if (!this.isPuiCaseManager()) {
         this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
           .subscribe(() => {
             // Success. Do nothing.
@@ -284,6 +286,7 @@ export class CasesService {
             // Show an appropriate warning about something that went wrong.
             console.warn('Could not process tasks for this case event', error);
           });
+      }
     }
   }
 
@@ -303,7 +306,7 @@ export class CasesService {
     return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`);
   }
 
-  public createChallengedAccessRequest(caseId: string, car: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
+  public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
@@ -317,11 +320,18 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('challenged', roleCategory);
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const payload: RoleRequestPayload = camUtils.getAMPayload(id,
+                                                              id,
+                                                              roleName,
+                                                              roleCategory,
+                                                              'CHALLENGED',
+                                                              caseId,
+                                                              request,
+                                                              beginTime,
+                                                              endTime);
 
-    const payload: RoleRequestPayload = camUtils.getAMPayload(userInfo.id, userInfo.id, roleName, roleCategory,
-                                                                    'CHALLENGED', caseId, car, beginTime, endTime);
-
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/challenged`, payload);
+    return this.http.post(`/api/challenged-access-request`, payload);
   }
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
@@ -336,11 +346,42 @@ export class CasesService {
 
     const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
-
-    const payload: RoleRequestPayload = camUtils.getAMPayload(null, userInfo.id,
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
                                       roleName, roleCategory, 'SPECIFIC', caseId, sar);
 
-    return this.http.post(`${this.appConfig.getCamRoleAssignmentsApiUrl()}/specific`, payload);
+    payload.roleRequest = {
+      ...payload.roleRequest,
+      process: 'specific-access',
+      replaceExisting: true,
+      assignerId: payload.requestedRoles[0].actorId,
+      reference: `${caseId}/${roleName}/${payload.requestedRoles[0].actorId}`
+    }
+
+    payload.requestedRoles[0] = {
+      ...payload.requestedRoles[0],
+      roleName: 'specific-access-requested',
+      roleCategory: roleCategory,
+      classification: 'PRIVATE',
+      endTime: new Date(new Date().setDate(new Date().getDate() + 30)),
+      beginTime: null,
+      grantType: 'BASIC',
+      readOnly: true
+    };
+
+    payload.requestedRoles[0].attributes = {
+      ...payload.requestedRoles[0].attributes,
+      requestedRole: roleName
+    }
+
+    payload.requestedRoles[0].notes[0] = {
+      ...payload.requestedRoles[0].notes[0],
+      userId: payload.requestedRoles[0].actorId
+    }
+    return this.http.post(
+      `/api/specific-access-request`,
+      payload
+    );
   }
 
 }

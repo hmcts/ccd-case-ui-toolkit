@@ -94,7 +94,7 @@ describe('TaskReassignedComponent', () => {
 
   parentComponent = {
     context: {
-      task: {
+      reassignedTask: {
         assignee: '1234-1234-1234-1234'
       }
     },
