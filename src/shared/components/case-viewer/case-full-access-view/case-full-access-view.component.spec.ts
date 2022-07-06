@@ -1822,6 +1822,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
             }
           ])
         ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           TasksContainerComponent,
           CaseFullAccessViewComponent,
