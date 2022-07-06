@@ -1,4 +1,7 @@
 .govuk-table {
+  .govuk-table__caption {
+    margin-top: 10px;
+  }
   .govuk-table__head {
     .govuk-table__row {
       .col-party-name {
@@ -16,11 +19,6 @@
       .col-flag-status {
         width: 10%;
       }
-    }
-  }
-  .govuk-table__body {
-    .no-data-row {
-      text-align: center;
     }
   }
 }

@@ -18,7 +18,7 @@ import {
   OrderService
 } from '../../services';
 import { ActivityModule } from '../activity';
-import { CaseEditorModule, CaseNotifier } from '../case-editor';
+import { ConvertHrefToRouterService, CaseEditorModule, CaseNotifier } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
@@ -34,6 +34,7 @@ import { CaseFullAccessViewComponent } from './case-full-access-view/case-full-a
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request/case-review-specific-access-request.component';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request/case-specific-access-request.component';
+import { CaseSpecificAccessSuccessComponent } from './case-specific-access-success/case-specific-access-success.component';
 import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
@@ -75,6 +76,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseReviewSpecificAccessRequestComponent,
     ErrorMessageComponent,
     CaseChallengedAccessSuccessComponent,
+    CaseSpecificAccessSuccessComponent,
     CaseReviewSpecificAccessRejectComponent
   ],
   exports: [
@@ -83,6 +85,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   providers: [
     CaseNotifier,
+    ConvertHrefToRouterService,
     NavigationNotifierService,
     CaseReferencePipe,
     EventTriggerResolver,

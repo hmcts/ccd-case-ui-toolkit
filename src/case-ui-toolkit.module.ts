@@ -22,7 +22,6 @@ import {
   CaseReferencePipe,
   CaseViewComponent,
   CaseViewerComponent,
-  ConditionalShowDirective,
   ConditionalShowModule,
   FocusElementDirective,
   FocusElementModule,
@@ -137,8 +136,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       WriteNumberFieldComponent,
       WriteEmailFieldComponent,
       WriteDateFieldComponent,
-
-      ConditionalShowDirective,
       LabelSubstitutorDirective,
       FocusElementDirective,
       PaginatePipe

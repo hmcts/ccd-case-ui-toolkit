@@ -82,6 +82,8 @@ export abstract class AbstractAppConfig {
     return undefined;
   }
   abstract getRefundsUrl(): string;
+  abstract getCaseFlagsRefdataApiUrl(): string;
+  abstract getPaymentReturnUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -140,4 +142,6 @@ export class CaseEditorConfig {
   location_ref_api_url?: string;
   cam_role_assignments_api_url?: string;
   refunds_url: string;
+  case_flags_refdata_api_url: string;
+  payment_return_url: string;
 }

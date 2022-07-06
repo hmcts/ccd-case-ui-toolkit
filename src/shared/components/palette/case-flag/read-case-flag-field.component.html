@@ -1,7 +1,23 @@
-<h2 class="govuk-heading-l">Case flags</h2>
-<h3 class="govuk-heading-m">Party level flags</h3>
-<div *ngFor="let flagData of partyLevelCaseFlagData">
-  <ccd-case-flag-table [flagData]="flagData"></ccd-case-flag-table>
-</div>
-<h3 class="govuk-heading-m">Case level flags</h3>
-<ccd-case-flag-table [flagData]="caseLevelCaseFlagData"></ccd-case-flag-table>
+<ng-container [ngSwitch]="context">
+  <ng-container *ngSwitchCase="paletteContext.CHECK_YOUR_ANSWER">
+    <ccd-case-flag-summary-list [flagForSummaryDisplay]="flagForSummaryDisplay"
+      [summaryListDisplayMode]="summaryListDisplayMode"></ccd-case-flag-summary-list>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <h2 class="govuk-heading-l">Case flags</h2>
+    <div *ngFor="let flagData of partyLevelCaseFlagData">
+      <ccd-case-flag-table *ngIf="flagData.partyName"
+        [tableCaption]="flagData.partyName"
+        [flagData]="flagData"
+        [firstColumnHeader]="'Party level flags'"
+      ></ccd-case-flag-table>
+    </div>
+    <div *ngIf="caseLevelCaseFlagData">
+      <ccd-case-flag-table
+        [tableCaption]="'Case level flags'"
+        [flagData]="caseLevelCaseFlagData"
+        [firstColumnHeader]="caseLevelFirstColumnHeader"
+      ></ccd-case-flag-table>
+    </div>
+  </ng-container>
+</ng-container>

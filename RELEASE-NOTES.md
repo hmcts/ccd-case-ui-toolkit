@@ -1,11 +1,132 @@
 ## RELEASE NOTES
+### Version 4.13.24-manage-case-flags-display-case-level-case-flags
+**EUI-5872** Manage case flags display case level case flags
+
+### Version 4.13.19-manage-case-flags-review-flag-details-page
+**EUI-6168** Fix "Review flag details" page to work when updating a flag (Manage Case Flags journey)
+
+### Version 4.13.19-manage-case-flags-display-formatted-flag-details
+**EUI-5810** Manage case flags display formatted flag details
+**EUI-6164** Reasonable adjustment display for sign language interpreter
+
+### Version 4.13.9-case-flag-details-persistence-fixes
+**EUI-6148** Fix bug where discarded Case Flag details are persisted when restarting the Create Case Flag or Manage Case Flags journeys by clicking "Change" from the "Review Flag Details" page
+**EUI-6155** Fix bug where change to case flag status is not being reflected
+**EUI-6156** Fix bug where last modified date is not being updated when a case flag is updated
+
+### Version 4.13.9-manage-case-flags-update-flag-page
+**EUI-5342** Manage case flags comments update flag page
+
+### Version 4.13.7-create-case-level-case-flag
+**EUI-5849** Create and display case-level flags
+
+### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
+**EUI-5848** Manage case flags comments mandatory or optional
+
+### Version 4.13.6-review-flag-details-change-link-and-continue-bugfix
+**EUI-6043** Fix bug where error state of the FlagLauncher component is not being reset correctly to "invalid" when the component is reloaded after clicking "Change" from the "Review Flag Details" page
+
+### Version 4.13.6-review-flag-details-change-link-bugfix
+**EUI-6043** Fix bug that results in more than one new case flag being added at the same time, which gives the appearance of
+caching previous data when the user elects to change the case flag being created
+
+### Version 4.13.6-review-flag-details-content-and-layout
+**EUI-5968** Display alternate version of ReadCaseFlagField component, with a summary list when display context is "Check your answers"
+
+### Version 4.13.3-create-case-flag-review-flag-details-page-part3
+**EUI-5973** Review flag details page part 3
+
+### Version 4.13.2-create-case-flag-integration-with-check-your-answers
+**EUI-4852** First pass at integration with "Check your answers" stage of the main Case Event flow, and persisting a case flag
+
+### Version 4.13.2-manage-case-flags-selection-page-validation
+**EUI-5190** Add validation to "Select case flag" page
+
+### Version 4.13.2-manage-case-flags-defect-fixes
+**EUI-5816/EUI-5808** Various defect fixes for the "Select case flag" page (EUI-4895) and "Update flag" page (EUI-5125)
+
+### Version 4.13.1-case-flags-search-for-sign-language-interpreter
+**EUI-5772** Display page title and hint text variation when selected language flag type is sign language
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error-2
+**EUI-5657** Fix error styling and HTML structure for page title and hint text
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error
+**EUI-5657** Additional validation for "Search for a language interpreter" step, covering dual language entry error scenario
+
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-validation
+**EUI-4849** Add validation to language search and manual language inputs of the "Search for a language interpreter" step
+
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-integration
+**EUI-5654** Integrate "Search for a language interpreter" step with Reference Data list of values for selected flag types
+
+### Version 4.13.1-case-flags-error-handling-no-party-data
+**EUI-5385** Error handling for Create Case Flag when case has not been configured for flags
+
+### Version 4.13.1-case-flags-multi-level-flag-types
+**EUI-5351** Support for display and selection of multi-level flag types at "Select flag type" step
+
+### Version 4.13.1-case-flags-ref-data-integration
+**EUI-5495/EUI-4845** Integrate "Select flag type" stage with Reference Data Common API for case flags
+
+### Version 4.13.1-case-flags-add-comments-step
+**EUI-4851** Add "add comments" step of Create Case Flag journey
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes-2
+**EUI-5374** Revision to error message text
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes
+**EUI-5374** Fix error message text on clicking "Continue" when creating a Case Flag
+**EUI-5372** Fix incorrect handling of display of Case Event flow error message
+
+### Version 4.13.1-case-flags-banner-message-fix-active-count
+**EUI-4897** Fix count of active case flags in message banner
+
+### Version 4.13.1-case-flags-tab-navigation
+**EUI-4897** Fix case flags tab navigation from message banner
+
+### Version 4.13.1-case-flags-select-location-step-rc.2
+**EUI-4838** Add "select location" step of Create Case Flag journey
 
 ### Version 4.13.1-case-flags-tab-and-banner-message
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
+### Version 4.17.12-EUI-5743-Mandatory-field-validation-in-collection
+**EUI-5743** Bug fix for the Mandatory field validation in collection
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
+
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
+
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.12.6-date-year-validation
+**EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
+
+### Version 4.14.1-EUI-5305-change-link-accessibility-update
+**EUI-5305** Accessibility improvement for 'Change' links
+
 ### Version 4.12.0
 Add refunds functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+### Version 4.12.16-task-event-completion"
+**Task event completion and state machine** Task event completion and state machine
+
+### Version 4.12.6-limit-search-results-10k-400-5"
+**Limit search results to 10k / 400 pages** Limit search results to 10k / 400 pages
 
 ### Version 4.9.15-state-machine"
 **Task event completion and state machine** Task event completion and state machine
@@ -23,6 +144,7 @@ Add refunds functionality
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
 ### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details 
 **EUI-4441** Add hearings tab in case details
 
 ### Version 4.7.6-hearings-tab

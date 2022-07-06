@@ -32,7 +32,9 @@ export class AppConfig extends AbstractAppConfig {
     'document_management_url_v2': '/v2/health',
     'document_management_secure_enabled':true,
     'access_management_mode':true,
-    'refunds_url': '/api/refunds'
+    'refunds_url': '/api/refunds',
+    'case_flags_refdata_api_url': '/refdata/commondata/caseflags/service-id=:sid',
+    'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/'
   };
 
   constructor(private http: HttpClient) {
@@ -164,5 +166,13 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRefundsUrl(): string {
     return this.config.refunds_url;
+  }
+
+  public getCaseFlagsRefdataApiUrl(): string {
+    return this.config.case_flags_refdata_api_url;
+  }
+
+  public getPaymentReturnUrl(): string {
+    return this.config.payment_return_url;
   }
 }

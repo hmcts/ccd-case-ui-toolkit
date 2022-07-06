@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CaseTab } from '../../../domain';
+import { CaseField, CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
-import { FlagDetail, Flags } from './domain';
-import { CaseFlagStatus } from './enums';
+import { PaletteContext } from '../base-field/palette-context.enum';
+import { FlagDetail, FlagDetailDisplay, Flags } from './domain';
+import { CaseFlagSummaryListDisplayMode } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -13,9 +16,17 @@ import { CaseFlagStatus } from './enums';
 })
 export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
+  @Input() public caseEditPageComponent: CaseEditPageComponent;
+
   public flagsData: Flags[];
   public partyLevelCaseFlagData: Flags[];
   public caseLevelCaseFlagData: Flags;
+  public paletteContext = PaletteContext;
+  public flagForSummaryDisplay: FlagDetailDisplay;
+  public caseLevelFirstColumnHeader: string;
+  public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
+  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+  public readonly caseNameMissing = 'Case name missing';
 
   constructor(
     private readonly route: ActivatedRoute
@@ -24,157 +35,97 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public ngOnInit(): void {
-    // Determine the tab this CaseField belongs to (should be only one), from the CaseView object in the snapshot data,
-    // and extract all flags-related data from its Flags fields
-    if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
-      this.flagsData = ((this.route.snapshot.data.case.tabs as CaseTab[])
-      .filter(tab => tab.fields && tab.fields
-        .some(caseField => caseField.field_type.id === 'FlagLauncher' && caseField.field_type.type === 'FlagLauncher'))
-      )[0].fields.reduce((flags, caseField) => {
-        if (FieldsUtils.isFlagsCaseField(caseField)) {
-          flags.push(
-            {
-              partyName: caseField.value.partyName,
-              roleOnCase: caseField.value.roleOnCase,
-              details: ((caseField.value.details) as any[]).map(detail => {
-                return Object.assign({}, ...Object.keys(detail.value).map(k => {
-                  switch (k) {
-                    // These two fields are date-time fields
-                    case 'dateTimeModified':
-                    case 'dateTimeCreated':
-                      return {[k]: new Date(detail.value[k])};
-                    // This field is a "yes/no" field
-                    case 'hearingRelevant':
-                      return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
-                    default:
-                      return {[k]: detail.value[k]};
-                  }
-                }))
-              }) as FlagDetail[]
-            }
-          );
+    // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
+    // in the FormGroup - only the FlagLauncher field is present)
+    if (this.context === PaletteContext.DEFAULT) {
+      // Determine the tab this CaseField belongs to (should be only one), from the CaseView object in the snapshot
+      // data, and extract all flags-related data from its Flags fields
+      if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
+        this.flagsData = (this.route.snapshot.data.case.tabs as CaseTab[])
+        .filter(tab => tab.fields && tab.fields
+          .some(caseField => caseField.field_type.type === 'FlagLauncher'))
+        [0].fields.reduce((flags, caseField) => {
+          if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
+            flags.push(this.mapCaseFieldToFlagsObject(caseField));
+          }
+          return flags;
+        }, []) as Flags[];
+      }
+
+      // Separate the party-level and case-level flags
+      this.partyLevelCaseFlagData = this.flagsData.filter(
+        flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
+      // There will be only one case-level flags instance containing all case-level flag details
+      this.caseLevelCaseFlagData = this.flagsData.find(
+        flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
+    } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
+      // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
+      // Determine which Flags instance to display on the summary page by looking for a child FormGroup whose controls
+      // include one called "flagType", which will have been added during the Create Case Flag journey (hence denoting
+      // a new flag) - there should be only one such child FormGroup because only one flag can be created at a time
+
+      // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to the currently selected flag
+      // (selectedFlag) if one exists. If it does, this means the component is in "update" mode; if not, then the
+      // component is in "create" mode
+      const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
+        controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.controls[controlName]['caseField']));
+      if (flagLauncherControlName && this.formGroup.controls[flagLauncherControlName]['component'] &&
+          this.formGroup.controls[flagLauncherControlName]['component'].selectedFlag) {
+        this.flagForSummaryDisplay = this.formGroup.controls[flagLauncherControlName]['component'].selectedFlag;
+        // Set the display mode for the "Review flag details" summary page
+        this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+      } else {
+        const keyOfFormGroupWithNewFlag = Object.keys(this.formGroup.controls).filter(
+          controlName => Object.keys(
+            (this.formGroup.controls[controlName] as FormGroup).controls).indexOf('flagType') > -1);
+        if (keyOfFormGroupWithNewFlag.length > 0) {
+          this.flagForSummaryDisplay = this.mapNewFlagFormGroupToFlagDetailDisplayObject(
+            this.formGroup.controls[keyOfFormGroupWithNewFlag[0]] as FormGroup);
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
         }
-        return flags;
-      }, []) as Flags[];
+      }
     }
 
-    // TODO: Remove hard-coding
-    // The development of this component is in-progress state
-    // Added temporarily until case flags are available as part of case details
-    console.log('CASE FIELD - CASE FLAG', this.caseField);
-
-    this.generateCaseFlagData();
-    // this.categoriseCaseFlagData();
+    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle()
+      ? this.caseEditPageComponent.getCaseTitle()
+      : this.caseNameMissing;
   }
 
-  public generateCaseFlagData(): void {
-    // TODO: Remove hard-coding
-    // The development of this component is in-progress state
-    // Added temporarily until case flags are available as part of case details
-    this.partyLevelCaseFlagData = [
-      {
-        partyName: 'John Smith',
-        roleOnCase: '',
-        details: []
-        // details: [
-        //   {
-        //     name: 'Wheel chair access',
-        //     subTypeValue: '',
-        //     subTypeKey: '',
-        //     otherDescription: '',
-        //     flagComment: '',
-        //     dateTimeModified: new Date('2021-08-19 00:00:00'),
-        //     dateTimeCreated: new Date('2021-06-09 00:00:00'),
-        //     path: [],
-        //     hearingRelevant: false,
-        //     flagCode: '',
-        //     status: CaseFlagStatus.ACTIVE
-        //   },
-        //   {
-        //     name: 'Sign language',
-        //     subTypeValue: 'British Sign Language (BSL)',
-        //     subTypeKey: '',
-        //     otherDescription: '',
-        //     flagComment: '',
-        //     dateTimeModified: new Date('2021-11-10 00:00:00'),
-        //     dateTimeCreated: new Date('2021-12-03 00:00:00'),
-        //     path: [],
-        //     hearingRelevant: false,
-        //     flagCode: '',
-        //     status: CaseFlagStatus.INACTIVE
-        //   }
-        // ]
-      },
-      {
-        partyName: 'Ann Peterson',
-        roleOnCase: '',
-        details: [
-          {
-            name: 'Foreign national offender',
-            subTypeValue: '',
-            subTypeKey: '',
-            otherDescription: '',
-            flagComment: 'Flight risk',
-            dateTimeModified: new Date('2021-09-09 00:00:00'),
-            dateTimeCreated: new Date('2021-09-09 00:00:00'),
-            path: [],
-            hearingRelevant: false,
-            flagCode: '',
-            status: CaseFlagStatus.ACTIVE
-          },
-          {
-            name: 'Sign language',
-            subTypeValue: 'British Sign Language (BSL)',
-            subTypeKey: '',
-            otherDescription: '',
-            flagComment: '',
-            dateTimeModified: new Date('2021-09-09 00:00:00'),
-            dateTimeCreated: new Date('2021-09-09 00:00:00'),
-            path: [],
-            hearingRelevant: false,
-            flagCode: '',
-            status: CaseFlagStatus.INACTIVE
-          }
-        ]
-      }
-    ];
-
-    this.caseLevelCaseFlagData = {
-      partyName: 'Smith v Peterson',
-      roleOnCase: '',
-      details: [
-        {
-          name: 'Potentially violent person fraud',
-          subTypeValue: '',
-          subTypeKey: '',
-          otherDescription: '',
-          flagComment: 'Verbally abusive behaviour demonstrated at previous hearing additional security will be required',
-          dateTimeModified: new Date('2021-09-09 00:00:00'),
-          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
-          hearingRelevant: false,
-          flagCode: '',
-          status: CaseFlagStatus.ACTIVE
-        },
-        {
-          name: 'Complex case',
-          subTypeValue: '',
-          subTypeKey: '',
-          otherDescription: '',
-          flagComment: 'Requires senior case worker',
-          dateTimeModified: new Date('2021-09-09 00:00:00'),
-          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-          path: [],
-          hearingRelevant: false,
-          flagCode: '',
-          status: CaseFlagStatus.INACTIVE
-        }
-      ]
-    };
+  private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
+    return {
+      flagsCaseFieldId: caseField.id,
+      partyName: caseField.value['partyName'],
+      roleOnCase: caseField.value['roleOnCase'],
+      details: caseField.value['details'] && caseField.value['details'].length > 0
+        ? ((caseField.value['details']) as any[]).map(detail => {
+          return Object.assign({}, ...Object.keys(detail.value).map(k => {
+            switch (k) {
+              // These two fields are date-time fields
+              case 'dateTimeModified':
+              case 'dateTimeCreated':
+                return {[k]: detail.value[k] ? new Date(detail.value[k]) : null};
+              // This field is a "yes/no" field
+              case 'hearingRelevant':
+                return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
+              default:
+                return {[k]: detail.value[k]};
+            }
+          }))
+        }) as FlagDetail[]
+        : null
+    }
   }
 
-  // public categoriseCaseFlagData(): void {
-  //   this.partyLevelCaseFlagData = this.caseFlagData.filter(x => x.type === CaseFlagType.PARTY_LEVEL);
-  //   this.caseLevelCaseFlagData = this.caseFlagData.filter(x => x.type === CaseFlagType.CASE_LEVEL);
-  // }
+  private mapNewFlagFormGroupToFlagDetailDisplayObject(formGroup: FormGroup): FlagDetailDisplay {
+    if (formGroup && formGroup['caseField']) {
+      return {
+        partyName: formGroup['caseField'].value.partyName,
+        // Look in the details array for the object that does *not* have an id - this indicates it is the new flag
+        flagDetail: formGroup['caseField'].value.details.find(element => !element.hasOwnProperty('id')).value
+      } as FlagDetailDisplay;
+    }
+
+    return null;
+  }
 }

@@ -9,10 +9,11 @@ import { CaseFlagStatus } from '../../enums';
 })
 export class CaseFlagTableComponent {
 
-  @Input()
-  public flagData: Flags;
+  @Input() public tableCaption: string;
+  @Input() public flagData: Flags;
+  @Input() public firstColumnHeader: string;
 
   public get caseFlagStatus(): typeof CaseFlagStatus {
     return CaseFlagStatus
-  };
+  }
 }

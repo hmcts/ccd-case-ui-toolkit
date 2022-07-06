@@ -124,7 +124,9 @@ export class EventStartStateMachineService {
     // Get number of tasks assigned to user
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
-    const tasksAssignedToUser = context.tasks.filter(x => x.assignee === userInfo.id || x.assignee === userInfo.uid);
+    const tasksAssignedToUser = context.tasks.filter(x =>
+        x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+      );
 
     // Check if user initiated the event from task tab
     const isEventInitiatedFromTaskTab = context.taskId !== undefined && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;
@@ -195,9 +197,8 @@ export class EventStartStateMachineService {
   }
 
   public finalAction(state: State): void {
-    // TODO: Perform final actions, the state machine finished running
-    console.log('FINAL action here', state);
-    console.log('State is complete', state.isComplete);
+    // Final actions can be performed here, the state machine finished running
+    console.log('FINAL', state);
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {

@@ -11,7 +11,6 @@ import {
   FormValueService,
   OrderService,
   ProfileNotifier,
-  ProfileService,
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
@@ -20,6 +19,7 @@ import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.componen
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
+import { CaseNotifier } from '../services';
 
 // @dynamic
 @Component({
@@ -44,6 +44,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   task: Task;
   eventCompletionParams: EventCompletionParams;
   eventCompletionChecksRequired = false;
+  isCaseFlagSubmission = false;
+  pageTitle: string;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -76,9 +78,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly orderService: OrderService,
-    private readonly profileService: ProfileService,
     private readonly profileNotifier: ProfileNotifier,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier,
   ) {
   }
 
@@ -91,6 +93,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
     this.contextFields = this.getCaseFields();
+    // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
+    // a FlagLauncher field in the event trigger
+    this.isCaseFlagSubmission = this.eventTrigger.case_fields.some(
+      caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+    this.pageTitle = this.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
   }
 
   public ngOnDestroy(): void {
@@ -108,16 +115,19 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
 
     // We have to run the event completion checks if task in session storage
+    // and if the task is in session storage, then is it associated to the case
+    let taskInSessionStorage: Task;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
-      // Task is in session storage
-      const task = JSON.parse(taskStr);
-      this.task = task;
+      taskInSessionStorage = JSON.parse(taskStr);
+    }
+
+    if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId()) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = {
         caseId: this.getCaseId(),
         eventId: this.getEventId(),
-        task: task
+        task: taskInSessionStorage
       };
       this.eventCompletionChecksRequired = true;
     } else {
@@ -165,11 +175,18 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
     // these will fail validation
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
+    // If this is a Case Flag submission (and thus a FlagLauncher field is present in the event trigger), the flag
+    // details data needs populating for each Flags field, then the FlagLauncher field needs removing
+    if (this.isCaseFlagSubmission) {
+      this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
+      this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
+    }
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     if (this.caseEdit.confirmation) {
       caseEventData.data = {};
     }
+
     return caseEventData;
   }
 
@@ -184,6 +201,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.submit(caseEventData)
       .subscribe(
         response => {
+          this.caseNotifier.cachedCaseView = null;
           const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);
@@ -423,12 +441,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isSolicitor(): boolean {
     return this.profile.isSolicitor();
-  }
-
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: object): Confirmation {

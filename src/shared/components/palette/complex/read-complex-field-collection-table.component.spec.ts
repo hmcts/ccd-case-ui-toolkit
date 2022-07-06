@@ -10,6 +10,7 @@ import { ConditionalShowModule } from '../../../directives/conditional-show/cond
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
+import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
 
 @Component({
   selector: 'ccd-field-read',
@@ -110,6 +111,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
+            CcdCollectionTableCaseFieldsFilterPipe,
 
             // Mock
             MockFieldReadComponent,
@@ -168,7 +170,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.label).toEqual('Post code');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.id).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.type).toEqual('Complex');
-      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.value).toEqual({postcode: 'TE45ED'});
+      expect(component.columnsVerticalLabel['AddressPostcode'].caseField.value).toEqual('tw45ed');
 
       let expandedRowsVerticalHeaders = de
         .query($COMPLEX_PANEL)
@@ -314,6 +316,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
+            CcdCollectionTableCaseFieldsFilterPipe,
 
             // Mock
             MockFieldReadComponent,
@@ -338,7 +341,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       let fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
 
       expect(fieldReads).toBeTruthy();
-      expect(fieldReads.length).toBe(11);
+      expect(fieldReads.length).toBe(13);
 
       expect(fieldReads[0].caseField.id).toEqual(NAME_COLUMN);
       expect(fieldReads[0].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[NAME_COLUMN]);
@@ -348,21 +351,21 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       expect(fieldReads[2].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE5_COLUMN]);
       expect(fieldReads[3].caseField.id).toEqual(ADDRESS_LINE4_COLUMN);
       expect(fieldReads[3].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE4_COLUMN]);
-      expect(fieldReads[4].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
-      expect(fieldReads[4].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
-      expect(fieldReads[5].caseField.id).toEqual(VAT_NUMBER_COLUMN);
-      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[VAT_NUMBER_COLUMN]);
+      expect(fieldReads[5].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[5].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      // expect(fieldReads[6].caseField.id).toEqual(VAT_NUMBER_COLUMN);
+      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[0].value[VAT_NUMBER_COLUMN]);
 
-      expect(fieldReads[6].caseField.id).toEqual(NAME_COLUMN);
-      expect(fieldReads[6].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
-      expect(fieldReads[7].caseField.id).toEqual(ADDRESS_LINE5_COLUMN);
-      expect(fieldReads[7].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE5_COLUMN]);
-      expect(fieldReads[8].caseField.id).toEqual(ADDRESS_LINE4_COLUMN);
-      expect(fieldReads[8].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE4_COLUMN]);
-      expect(fieldReads[9].caseField.id).toEqual(ADDRESS_LINE3_COLUMN);
-      expect(fieldReads[9].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
-      expect(fieldReads[10].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
-      expect(fieldReads[10].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
+      expect(fieldReads[7].caseField.id).toEqual(NAME_COLUMN);
+      expect(fieldReads[7].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value[NAME_COLUMN]);
+      expect(fieldReads[9].caseField.id).toEqual(ADDRESS_LINE5_COLUMN);
+      expect(fieldReads[9].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE5_COLUMN]);
+      expect(fieldReads[10].caseField.id).toEqual(ADDRESS_LINE4_COLUMN);
+      expect(fieldReads[10].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE4_COLUMN]);
+      expect(fieldReads[11].caseField.id).toEqual(ADDRESS_LINE3_COLUMN);
+      expect(fieldReads[11].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
+      expect(fieldReads[12].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
+      expect(fieldReads[12].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
 
     });
 

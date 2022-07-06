@@ -1,10 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReadCaseFlagFieldComponent, WriteCaseFlagFieldComponent } from '.';
 import { FormModule } from '../../../../components/form/form.module';
-import { CaseFlagTableComponent, SelectFlagTypeComponent, SearchLanguageInterpreterComponent } from './components';
+import { CaseFlagRefdataService } from '../../../services';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
+import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
+import {
+  AddCommentsComponent,
+  CaseFlagSummaryListComponent,
+  CaseFlagTableComponent,
+  ManageCaseFlagsComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  SelectFlagTypeComponent,
+  UpdateFlagComponent
+} from './components';
 
 @NgModule({
   imports: [
@@ -13,12 +25,23 @@ import { CaseFlagTableComponent, SelectFlagTypeComponent, SearchLanguageInterpre
     ReactiveFormsModule,
     MatAutocompleteModule
   ],
+  providers: [
+    CaseEditComponent,
+    CaseEditPageComponent,
+    ChangeDetectorRef as Provider,
+    CaseFlagRefdataService
+  ],
   declarations: [
     ReadCaseFlagFieldComponent,
     WriteCaseFlagFieldComponent,
     CaseFlagTableComponent,
     SelectFlagTypeComponent,
-    SearchLanguageInterpreterComponent
+    SearchLanguageInterpreterComponent,
+    SelectFlagLocationComponent,
+    ManageCaseFlagsComponent,
+    AddCommentsComponent,
+    UpdateFlagComponent,
+    CaseFlagSummaryListComponent
   ],
   exports: [
     ReadCaseFlagFieldComponent,

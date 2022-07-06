@@ -1,6 +1,6 @@
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -838,6 +838,12 @@ describe('CaseEditPageComponent', () => {
                               , 'Invalidfield2': new FormControl(null, Validators.required)
                               , 'OrganisationField': new FormControl(null, Validators.required)
                               , 'complexField1': new FormControl(null, Validators.required)
+                              , 'FlagLauncherField': new FormControl(null, {
+                                validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+                                  // Dummy validator that always returns an error
+                                  return {error: true};
+                                }
+                              })
                             })
     });
 
@@ -892,7 +898,6 @@ describe('CaseEditPageComponent', () => {
         params: of({id: 123}),
         snapshot: snapshot
       };
-
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
       dialog = createSpyObj<MatDialog>('dialog', ['open']);
       dialog.open.and.returnValue(matDialogRef);
@@ -937,6 +942,7 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(3);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`)
       });
@@ -955,10 +961,43 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`)
       });
-    })
+    });
+
+    it('should validate FlagLauncher type field and log error message', () => {
+      const flagLauncherField: CaseField = aCaseField(
+        'FlagLauncherField', 'flagLauncher', 'FlagLauncher', 'MANDATORY', 1, null, false, true);
+      // Add dummy functions for isComplex() and isCollection()
+      flagLauncherField.isComplex = () => false;
+      flagLauncherField.isCollection = () => false;
+      // Set DisplayContextParameter to signal "create" mode
+      flagLauncherField.display_context_parameter = '#ARGUMENT(CREATE)';
+      wizardPage.case_fields.push(flagLauncherField);
+
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual('Please select Next to complete the creation of the case flag');
+      });
+
+      // Change DisplayContextParameter to signal "update" mode
+      flagLauncherField.display_context_parameter = '#ARGUMENT(UPDATE)';
+      comp.validationErrors = [];
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual('Please select Next to complete the update of the selected case flag');
+      });
+    });
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
