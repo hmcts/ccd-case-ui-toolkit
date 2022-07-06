@@ -20,6 +20,9 @@ export class FieldReadLabelComponent extends AbstractFieldReadComponent implemen
   @Input()
   withLabel: boolean;
 
+  @Input()
+  markdownUseHrefAsRouterLink?: boolean;
+
   public isLabel(): boolean {
     return this.caseField.field_type && this.caseField.field_type.type === 'Label';
   }

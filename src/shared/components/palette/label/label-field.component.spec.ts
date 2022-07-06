@@ -43,9 +43,11 @@ describe('LabelFieldComponent', () => {
     CASE_FIELD
   ];
 
-  let MarkdownComponent: any = MockComponent({ selector: 'ccd-markdown', inputs: [
-    'content'
-  ]});
+  const MarkdownComponent: any = MockComponent({
+    selector: 'ccd-markdown',
+    inputs: ['content', 'markdownUseHrefAsRouterLink']
+  });
+
   let fixture: ComponentFixture<LabelFieldComponent>;
   let component: LabelFieldComponent;
   let de: DebugElement;
