@@ -8,7 +8,7 @@ import {
   NgxMatDatetimePicker
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
-import { ThemePalette } from '@angular/material';
+import { ThemePalette } from '@angular/material/core';
 
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';

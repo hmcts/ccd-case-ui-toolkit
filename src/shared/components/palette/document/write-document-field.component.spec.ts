@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { FormGroup } from '@angular/forms';
 import { FieldLabelPipe } from '../utils';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;

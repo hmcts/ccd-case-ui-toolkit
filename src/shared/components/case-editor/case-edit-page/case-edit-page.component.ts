@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { HttpError } from '../../../domain/http/http-error.model';

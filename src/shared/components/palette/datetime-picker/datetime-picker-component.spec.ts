@@ -3,7 +3,9 @@ import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
   from '@angular-material-components/datetime-picker';
-import { MatDatepickerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
