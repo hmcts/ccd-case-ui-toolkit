@@ -22,7 +22,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   @Input()
   caseFields: CaseField[] = [];
 
-  @ViewChild('fieldContainer', {read: ViewContainerRef})
+  @ViewChild('fieldContainer', /* TODO: add static flag */ { read: ViewContainerRef })
   fieldContainer: ViewContainerRef;
 
   constructor(private resolver: ComponentFactoryResolver,

@@ -1,35 +1,30 @@
-import { NgModule, Inject, PLATFORM_ID, APP_ID } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule, isPlatformBrowser, APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF, CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { MatDialogModule } from '@angular/material';
+import { APP_ID, Inject, NgModule, PLATFORM_ID } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CaseCreateConsumerComponent } from './case-create-consumer.component';
+import { RouterModule } from '@angular/router';
+import {
+  AbstractAppConfig, AlertService, AuthService, CaseEditWizardGuard, CaseListFiltersModule, CasesService, CaseTimelineModule, CaseUIToolkitModule, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService, PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule,
+  SearchResultModule, SearchService, WorkbasketFiltersModule
+} from '@hmcts/ccd-case-ui-toolkit';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { AppComponent } from './app.component';
 import { AppConfig } from './app.config';
 import { routing } from './app.routing';
-import { AppComponent } from './app.component';
-import { CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService, CasesService,
-WorkbasketFiltersModule, CaseListFiltersModule,
-  HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  PlaceholderService, DocumentManagementService, PageValidationService, SearchService,
-  RequestOptionsBuilder,
-  CreateCaseFiltersModule,
-  CaseTimelineModule,
-  SearchFiltersModule,
-  SearchResultModule} from '@hmcts/ccd-case-ui-toolkit';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
-import { CoreComponent } from './core.component';
-import { CaseViewConsumerComponent } from './case-view-consumer.component';
-import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
-import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
+import { CaseCreateConsumerComponent } from './case-create-consumer.component';
 import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.component';
+import { CaseProgressConsumerComponent } from './case-progress-consumer.component';
+import { CaseTimelineConsumerComponent } from './case-timeline-consumer.component';
+import { CaseViewConsumerComponent } from './case-view-consumer.component';
+import { EventDetails } from './common/eventDetails.component';
+import { CoreComponent } from './core.component';
+import { CreateCaseFiltersConsumerComponent } from './create-case-filters-consumer.component';
 import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-consumer.component';
 import { SearchResultConsumerComponent } from './search-result-consumer.component';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { EventDetails} from './common/eventDetails.component'
 
 @NgModule({
   imports: [

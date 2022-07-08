@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": false,

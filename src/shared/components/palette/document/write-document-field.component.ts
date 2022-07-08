@@ -32,7 +32,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private uploadedDocument: FormGroup;
   public selectedFile: File;
   private dialogConfig: MatDialogConfig;
-  @ViewChild('fileInput') fileInput: ElementRef;
+  @ViewChild('fileInput', /* TODO: add static flag */ {}) fileInput: ElementRef;
 
   valid = true;
   fileUploadMessages: string;

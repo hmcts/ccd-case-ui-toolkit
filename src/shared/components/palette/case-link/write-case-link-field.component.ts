@@ -13,7 +13,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   caseReferenceControl: AbstractControl;
   caseLinkGroup: FormGroup;
 
-  @ViewChild('writeComplexFieldComponent')
+  @ViewChild('writeComplexFieldComponent', /* TODO: add static flag */ {})
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
   public ngOnInit(): void {
