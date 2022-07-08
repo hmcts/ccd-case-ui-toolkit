@@ -100,7 +100,7 @@ export class AlertService {
     this.push(alert);
   }
 
-  success(message: string, preserve: boolean = false): void {
+  success(message: string, preserve = false): void {
     this.preservedSuccess = this.preserveMessages(message);
     this.preserveAlerts = preserve || this.preserveAlerts;
     const alert: Alert = { level: 'success', message };
