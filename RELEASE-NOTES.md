@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.18.6-case-flags-table-styling-changes
+**EUI-6198** Increase table caption font size and width of first column
+
 ### Version 4.13.24-manage-case-flags-display-case-level-case-flags
 **EUI-5872** Manage case flags display case level case flags
 
