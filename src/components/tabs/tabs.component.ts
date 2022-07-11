@@ -1,6 +1,6 @@
-import { Component, QueryList, ContentChildren, ElementRef, ViewChildren, AfterContentInit } from '@angular/core';
-import { TabComponent } from './tab.component';
+import { AfterContentInit, Component, ContentChildren, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TabComponent } from './tab.component';
 
 @Component({
   selector: 'cut-tabs',
@@ -11,8 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TabsComponent implements AfterContentInit {
 
-  @ViewChildren('tab')
-  public tabs: QueryList<ElementRef>;
+  @ViewChildren('tab') public tabs!: QueryList<ElementRef>;
 
   @ContentChildren(TabComponent)
   public panels: QueryList<TabComponent>;

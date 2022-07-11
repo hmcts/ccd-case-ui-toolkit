@@ -1,12 +1,12 @@
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
-import { AddressModel } from '../../../domain/addresses/address.model';
-import { AddressOption } from './address-option.model';
-import { AddressesService } from '../../../services/addresses/addresses.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { FocusElementDirective } from '../../../directives/focus-element';
+import { AddressModel } from '../../../domain/addresses/address.model';
+import { AddressesService } from '../../../services/addresses/addresses.service';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { AddressOption } from './address-option.model';
 
 @Component({
   selector: 'ccd-write-address-field',
@@ -15,7 +15,7 @@ import { FocusElementDirective } from '../../../directives/focus-element';
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
 
-  @ViewChild('writeComplexFieldComponent', /* TODO: add static flag */ {})
+  @ViewChild('writeComplexFieldComponent', { static: false })
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
   @ViewChildren(FocusElementDirective)

@@ -1,19 +1,18 @@
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Moment } from 'moment/moment';
 import {
-  NGX_MAT_DATE_FORMATS,
   NgxMatDateAdapter,
   NgxMatDateFormats,
-  NgxMatDatetimePicker
+  NgxMatDatetimePicker, NGX_MAT_DATE_FORMATS
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { ThemePalette } from '@angular/material/core';
+import { Moment } from 'moment/moment';
 
-import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CaseField } from '../../../domain';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
+import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import moment = require('moment/moment');
 
 @Component({
@@ -51,8 +50,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public maxError = false;
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
-  @ViewChild('picker', /* TODO: add static flag */ {}) datetimePicker: NgxMatDatetimePicker<any>;
-  @ViewChild('input', /* TODO: add static flag */ {}) inputElement: ElementRef<HTMLInputElement>;
+  @ViewChild('picker', { static: false }) datetimePicker: NgxMatDatetimePicker<any>;
+  @ViewChild('input', { static: false }) inputElement: ElementRef<HTMLInputElement>;
   public dateTimeEntryFormat: string;
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 

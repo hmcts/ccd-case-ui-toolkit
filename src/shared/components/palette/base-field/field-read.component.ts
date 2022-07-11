@@ -26,7 +26,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   @Input()
   markdownUseHrefAsRouterLink?: boolean;
 
-  @ViewChild('fieldContainer', /* TODO: add static flag */ { read: ViewContainerRef })
+  @ViewChild('fieldContainer', { static: false, read: ViewContainerRef })
   fieldContainer: ViewContainerRef;
 
   constructor(private resolver: ComponentFactoryResolver, private paletteService: PaletteService) {
