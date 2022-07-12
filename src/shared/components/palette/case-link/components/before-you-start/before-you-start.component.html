@@ -1,11 +1,11 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-xl">Before you start</h1>
-    <div id="link-cases-journey" *ngIf="isLinkCasesJourney">
+    <div id="link-cases-journey" *ngIf="linkedCasesService.isLinkedCasesEventTrigger">
       <p class="govuk-body">If a group of linked cases has a lead case, you must start from the lead case.</p>
       <p class="govuk-body">If the cases to be linked has no lead, you can start the linking journey from any of those cases.</p>
     </div>
-    <div id="manage-link-cases-journey" *ngIf="!isLinkCasesJourney">
+    <div id="manage-link-cases-journey" *ngIf="!linkedCasesService.isLinkedCasesEventTrigger">
       <p class="govuk-body">If there are linked hearings for the case you need to un-link then you must unlink the hearing first.</p>
     </div>
     <div class="govuk-button-group">

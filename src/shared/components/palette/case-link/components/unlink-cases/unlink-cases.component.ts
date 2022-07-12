@@ -56,17 +56,18 @@ export class UnLinkCasesComponent implements OnInit {
     });
   }
 
-  public get getLinkedCasesFormArray(): FormArray {
-    return this.fb.array(this.linkedCases.map(val => this.fb.group({
+  public get getLinkedCasesFormArray(): FormArray   {
+    const formFieldArray = this.linkedCases.map(val => this.fb.group({
       caseReference: val.caseReference,
       reasons: val.reasons,
       createdDateTime: val.createdDateTime,
       caseType: val.caseType,
       caseState: val.caseState,
       caseService: val.caseService,
-      caseName: val.caseName,
+      caseName: val.caseName || 'Case name missing',
       unlink: val.unlink
-    })));
+    }));
+    return this.fb.array(formFieldArray);
   }
 
   public onChange(caseSelected: any): void {

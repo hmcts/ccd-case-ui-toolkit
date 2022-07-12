@@ -36,8 +36,6 @@
         <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="submitCaseInfo()">Propose case link</button>
       </div>
-      <br><br>
-
       <hr>
       <br><br>
       <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!noSelectedCaseError}">
@@ -68,7 +66,7 @@
               <td class="govuk-table__cell">{{case.caseService}}</td>
               <td class="govuk-table__cell">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
-                  *ngFor="let reasonInfo of case.reasons">{{reasonInfo.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
+                  *ngFor="let reason of case.reasons">{{reason.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
               <td class="govuk-table__cell"><a (click)="selectedCases.splice(pos, 1);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>

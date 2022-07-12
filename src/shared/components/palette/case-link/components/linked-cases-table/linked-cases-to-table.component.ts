@@ -4,7 +4,8 @@ import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '../../../../../services/search/search.service';
-import { ESQueryType } from '../../domain/linked-cases.model';
+import { CaseLink, ESQueryType, LinkReason } from '../../domain/linked-cases.model';
+import { LinkedCasesService } from '../../services';
 
 interface LinkedCasesResponse {
   caseReference: string
@@ -38,14 +39,19 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
+    private readonly linkedCasesService: LinkedCasesService,
     private readonly searchService: SearchService) {}
 
     public ngAfterViewInit(): void {
-      const labelField = document.getElementsByClassName('case-viewer-label');
+      let labelField = document.getElementsByClassName('govuk-heading-l');
       if (labelField && labelField.length) {
         labelField[0].replaceWith('')
       }
-  }
+      labelField = document.getElementsByClassName('heading-h2');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
+    }
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot && this.route.snapshot.data && this.route.snapshot.data.case.case_id;
@@ -102,6 +108,21 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
             this.linkedCasesFromResponse.push(this.mapResponse(result)));
         });
         this.isLoaded = true;
+        const caseLinks = this.linkedCasesFromResponse.map(item => {
+          return {
+            caseReference: item.caseReference,
+            caseName: item.caseName,
+            caseService: item.service,
+            caseType: item.caseType,
+            unlink: false,
+            reasons: item.reasons && item.reasons.map(item => {
+              return {
+                reasonCode: item
+              } as LinkReason
+            }),
+          } as CaseLink
+        });
+        this.linkedCasesService.linkedCases = caseLinks;
       },
       err => this.notifyAPIFailure.emit(true)
       );

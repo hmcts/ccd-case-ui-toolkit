@@ -13,10 +13,15 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of casesToUnlink">
           <td class="govuk-table__cell">
-            {{case.caseReference | ccdCaseReference}}
+            {{case.caseName}}  <br> {{case.caseReference | ccdCaseReference}}
           </td>
           <td class="govuk-table__cell">
             <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
+          </td>
+        </tr>
+        <tr class="govuk-table__row" *ngIf="!casesToUnlink.length">
+          <td class="govuk-table__cell" colspan="2">
+            None
           </td>
         </tr>
       </tbody>
@@ -35,7 +40,7 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCases">
           <td class="govuk-table__cell">
-            <span>{{case.caseReference | ccdCaseReference}} <br> {{case.caseName}}</span>
+            <span>{{case.caseName}}  <br> {{case.caseReference | ccdCaseReference}} </span>
           </td>
           <td class="govuk-table__cell">
             <span *ngFor="let reason of case.reasons; last as isLast">
@@ -45,6 +50,11 @@
           <td class="govuk-table__cell"></td>
           <td class="govuk-table__cell" *ngIf="isLinkCasesJourney">
             <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
+          </td>
+        </tr>
+        <tr class="govuk-table__row" *ngIf="!linkedCases.length">
+          <td class="govuk-table__cell" colspan="4">
+            None
           </td>
         </tr>
       </tbody>
