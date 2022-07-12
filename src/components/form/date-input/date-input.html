@@ -56,7 +56,7 @@
            [name]="hourId()"
            type="number"
            [value]="displayHour"
-           (change)="hourChange(hourInput.value)"
+           (input)="hourChange(hourInput.value)"
            (keyup)="hourChange(hourInput.value)"
            (focus)="inputFocus()"
            [ngClass]="{'govuk-input--error': isInvalid}">
@@ -70,7 +70,7 @@
            [name]="minuteId()"
            type="number"
            [value]="displayMinute"
-           (change)="minuteChange(minuteInput.value)"
+           (input)="minuteChange(minuteInput.value)"
            (keyup)="minuteChange(minuteInput.value)"
            (focus)="inputFocus()"
            [ngClass]="{'govuk-input--error': isInvalid}">
@@ -84,7 +84,7 @@
            [name]="secondId()"
            type="number"
            [value]="displaySecond"
-           (change)="secondChange(secondInput.value)"
+           (input)="secondChange(secondInput.value)"
            (keyup)="secondChange(secondInput.value)"
            (focus)="inputFocus()"
            [ngClass]="{'govuk-input--error': isInvalid}">
