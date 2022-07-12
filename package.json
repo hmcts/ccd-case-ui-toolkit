@@ -95,7 +95,6 @@
     "@types/webpack": "^4.41.25",
     "@types/webpack-env": "^1.16.0",
     "angular2-template-loader": "^0.6.2",
-    "awesome-typescript-loader": "^5.2.1",
     "class-transformer": "^0.3.2",
     "codacy-coverage": "^2.1.1",
     "codecov": "^3.0.0",
