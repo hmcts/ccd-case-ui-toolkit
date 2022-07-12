@@ -1,12 +1,12 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as TerserPlugin from 'terser-webpack-plugin';
-import * as webpack from 'webpack';
-import * as angularExternals from 'webpack-angular-externals';
-import * as rxjsExternals from 'webpack-rxjs-externals';
+const fs = require('fs');
+const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+const angularExternals = require('webpack-angular-externals');
+const rxjsExternals = require('webpack-rxjs-externals');
+const webpack = require('webpack');
 const pkg = JSON.parse(fs.readFileSync('./package.json').toString());
 
-export default {
+module.exports = {
   mode: 'production',
   entry: {
     'index.umd': './src/index.ts',
@@ -28,11 +28,13 @@ export default {
   devtool: 'source-map',
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin ( {
+    minimizer: [new TerserPlugin ({
+      terserOptions: {
+        sourceMap: true,
+        compress: true
+      },
       include: /\.min\.js$/,
-      sourceMap: true,
-      terserOptions: { compress: true },
-    } )]
+    })]
   },
   module: {
     rules: [
@@ -41,9 +43,6 @@ export default {
         use: [
           {
             loader: 'ts-loader',
-            options: {
-              configFileName: 'tsconfig.json'
-            }
           },
           {
             loader: 'angular2-template-loader'
@@ -95,4 +94,4 @@ export default {
     })
 
   ]
-} as webpack.Configuration;
+};

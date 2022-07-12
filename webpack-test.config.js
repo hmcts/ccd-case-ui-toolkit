@@ -1,5 +1,5 @@
-import * as path from 'path';
-import * as webpack from 'webpack';
+const path = require('path');
+const webpack = require('webpack');
 
 export default {
   resolve: {
@@ -69,4 +69,4 @@ export default {
       path.join(__dirname, 'src')
     ),
   ]
-} as webpack.Configuration;
+};

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "extends": "./tsconfig.json",
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
@@ -16,16 +15,9 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "rootDir": "./tmp/src-inlined",
-    "lib": ["es2015", "dom"]
+    "lib": ["es2018", "dom"]
   },
   "files": [
     "./tmp/src-inlined/index.ts"
-  ],
-  "angularCompilerOptions": {
-    "genDir": "dist",
-    "debug": false,
-    "skipTemplateCodegen": true,
-    "skipMetadataEmit": false,
-    "strictMetadataEmit": true
-  }
+  ]
 }

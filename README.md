@@ -135,7 +135,7 @@ case-ui-toolkit
 ├─ tsconfig-aot.json            - TypeScript configuration for AOT build
 ├─ tsconfig.json                - TypeScript configuration for UMD and Test builds
 ├─ tslint.json                  - TypeScript linting configuration
-├─ webpack-test.config.ts       - Webpack configuration for building test version of the library
+├─ webpack-test.config.js       - Webpack configuration for building test version of the library
 ├─ webpack-umd.config.ts        - Webpack configuration for building UMD bundle
 └─ yarn.lock                    - yarn lock file that locks dependency versions
 ```

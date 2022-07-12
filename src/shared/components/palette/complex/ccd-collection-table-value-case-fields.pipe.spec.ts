@@ -1,10 +1,9 @@
-import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
-import { KeyValue } from '@angular/common/src/pipes';
 import { CaseField } from '../../../domain';
 import { newCaseField, textFieldType } from '../../../fixture';
+import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
 
 describe('CcdCollectionTableCaseFieldsFilterPipe', () => {
-  const CASE_FIELDS: KeyValue<string, any>[] = [
+  const CASE_FIELDS: Record<string, any>[] = [
     {
       key: 'hearingShowDetails',
       value: {

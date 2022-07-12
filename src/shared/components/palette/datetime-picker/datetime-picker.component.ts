@@ -9,11 +9,11 @@ import { FormControl, Validators } from '@angular/forms';
 import { ThemePalette } from '@angular/material/core';
 import { Moment } from 'moment/moment';
 
+import * as moment from 'moment';
 import { CaseField } from '../../../domain';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
-import moment = require('moment/moment');
 
 @Component({
   selector: 'ccd-datetime-picker',

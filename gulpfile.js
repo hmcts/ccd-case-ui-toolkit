@@ -1,5 +1,5 @@
 const gulp = require('gulp');
-const sass = require('node-sass');
+const sass = require('gulp-sass')(require('sass'));
 const inlineTemplates = require('gulp-inline-ng2-template');
 const exec = require('child_process').exec;
 const merge = require('merge-stream');
@@ -23,51 +23,49 @@ const INLINE_TEMPLATES = {
  * Inline external HTML and SCSS templates into Angular component files.
  * @see: https://github.com/ludohenin/gulp-inline-ng2-template
  */
-gulp.task('inline-templates', () => {
+gulp.task('inline-templates', gulp.series(async () => {
   return gulp.src(INLINE_TEMPLATES.SRC)
     .pipe(inlineTemplates(INLINE_TEMPLATES.CONFIG))
     .pipe(gulp.dest(INLINE_TEMPLATES.DIST));
-});
+}));
+
+/**
+ * Copy Case UI Toolkit styles.
+ */
+ gulp.task('copy-cut-styles', gulp.series(() => {
+  return merge(
+    gulp.src('**/*.scss', {base: 'src', cwd: 'src'})
+  ).pipe(gulp.dest('dist/cut-styles'));
+}));
 
 /**
  * Build ESM by running npm task.
  * This is a temporary solution until ngc is supported --watch mode.
  * @see: https://github.com/angular/angular/issues/12867
  */
-gulp.task('build:esm', ['inline-templates', 'copy-cut-styles'], (callback) => {
+gulp.task('build:esm', gulp.series('inline-templates', 'copy-cut-styles', (callback) => {
   exec('npm run ngcompile', function (error, stdout, stderr) {
     console.log(stdout, stderr);
     callback(error)
   });
-});
+}));
 
 /**
  * Implements ESM build watch mode.
  * This is a temporary solution until ngc is supported --watch mode.
  * @see: https://github.com/angular/angular/issues/12867
  */
-gulp.task('build:esm:watch', ['build:esm'], () => {
+gulp.task('build:esm:watch', gulp.series('build:esm', () => {
   gulp.watch('src/**/*', ['build:esm']);
-});
-
-/**
- * Copy Case UI Toolkit styles.
- */
-gulp.task('copy-cut-styles', () => {
-  return merge(
-    gulp.src('**/*.scss', {base: 'src', cwd: 'src'})
-  ).pipe(gulp.dest('dist/cut-styles'));
-});
+}));
 
 /**
  * Compile SASS to CSS.
  * @see https://github.com/ludohenin/gulp-inline-ng2-template
  * @see https://github.com/sass/node-sass
  */
-function compileSass(path, ext, file, callback) {
-  let compiledCss = sass.renderSync({
-    data: file,
-    outputStyle: 'compressed',
-  });
-  callback(null, compiledCss.css);
+function compileSass() {
+  return gulp.src('./**/*.scss')
+  .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+  .pipe(gulp.dest('./css'));
 }
