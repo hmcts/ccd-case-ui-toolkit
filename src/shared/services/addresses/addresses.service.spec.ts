@@ -1,9 +1,9 @@
-import { AddressesService } from './addresses.service';
-import { getTestBed, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { AbstractAppConfig } from '../../../app.config';
+import { getTestBed, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
+import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
+import { AddressesService } from './addresses.service';
 
 describe('AddressesService', () => {
 
@@ -33,7 +33,7 @@ describe('AddressesService', () => {
     injector = getTestBed();
     addressesService = injector.get(AddressesService);
     httpMock = injector.get(HttpTestingController);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   it('should be created with all the dependencies', () => {

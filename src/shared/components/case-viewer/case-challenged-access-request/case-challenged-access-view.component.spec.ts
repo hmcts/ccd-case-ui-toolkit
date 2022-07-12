@@ -47,7 +47,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     fixture = TestBed.createComponent(CaseChallengedAccessRequestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigate');
   });
 

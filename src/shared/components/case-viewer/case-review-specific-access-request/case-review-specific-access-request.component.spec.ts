@@ -1,15 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Type } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Observable } from 'rxjs';
+import { AbstractAppConfig } from '../../../..';
 import { AccessManagementRequestReviewMockModel } from '../../../../app.config';
 import { AlertModule } from '../../../../components/banners/alert';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request.component';
-import { ReviewSpecificAccessRequestPageText, ReviewSpecificAccessRequestErrors } from './models';
-import { Observable } from 'rxjs';
-import { AbstractAppConfig } from '../../../..';
+import { ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
 import createSpyObj = jasmine.createSpyObj;
 
 const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel = {
@@ -118,7 +118,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     component.setMockData();
     de = fixture.debugElement;
     fixture.detectChanges();
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigate');
   }));
 

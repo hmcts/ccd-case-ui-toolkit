@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ConvertHrefToRouterService } from './convert-href-to-router.service';
 describe('ConvertHrefToRouterService', () => {
@@ -13,7 +13,7 @@ describe('ConvertHrefToRouterService', () => {
         { provide: Router, useValue: router }
       ],
     })
-    store = TestBed.get(ConvertHrefToRouterService);
+    store = TestBed.inject(ConvertHrefToRouterService);
   });
 
   it('get href markdown link', async(() => {

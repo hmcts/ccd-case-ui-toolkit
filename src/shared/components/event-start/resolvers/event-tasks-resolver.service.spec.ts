@@ -3,10 +3,9 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { Task } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { HttpErrorService, HttpService } from '../../../services';
+import { HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
 import { EventTasksResolverService } from './event-tasks-resolver.service';
-import { SessionStorageService } from '../../../services'
 import createSpyObj = jasmine.createSpyObj;
 
 describe('EventTaskResolverService', () => {
@@ -64,12 +63,12 @@ describe('EventTaskResolverService', () => {
   }));
 
   it('should be created', () => {
-    const service: EventTasksResolverService = TestBed.get(EventTasksResolverService);
+    const service: EventTasksResolverService = TestBed.inject(EventTasksResolverService);
     expect(service).toBeTruthy();
   });
 
   it('should resolve to get tasks by case id and event id', (done) => {
-    const service: EventTasksResolverService = TestBed.get(EventTasksResolverService);
+    const service: EventTasksResolverService = TestBed.inject(EventTasksResolverService);
     spyOn(workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of(taskPayload));
     const activatedRoute = new ActivatedRouteSnapshot();
     activatedRoute.params = {
