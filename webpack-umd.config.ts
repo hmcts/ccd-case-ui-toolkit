@@ -1,9 +1,9 @@
-import * as webpack from 'webpack';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as TerserPlugin from 'terser-webpack-plugin';
+import * as webpack from 'webpack';
 import * as angularExternals from 'webpack-angular-externals';
 import * as rxjsExternals from 'webpack-rxjs-externals';
-import * as TerserPlugin from 'terser-webpack-plugin'
 const pkg = JSON.parse(fs.readFileSync('./package.json').toString());
 
 export default {
@@ -40,7 +40,7 @@ export default {
         test: /\.ts$/,
         use: [
           {
-            loader: 'awesome-typescript-loader',
+            loader: 'ts-loader',
             options: {
               configFileName: 'tsconfig.json'
             }

@@ -1,5 +1,5 @@
-import * as webpack from 'webpack';
 import * as path from 'path';
+import * as webpack from 'webpack';
 
 export default {
   resolve: {
@@ -15,7 +15,7 @@ export default {
         test: /\.ts$/,
         use: [
           {
-            loader: 'awesome-typescript-loader',
+            loader: 'ts-loader',
             options: {
               configFileName: 'tsconfig.json'
             }
