@@ -8,6 +8,7 @@ const pkg = JSON.parse(fs.readFileSync('./package.json').toString());
 
 module.exports = {
   mode: 'production',
+  target: "node",
   entry: {
     'index.umd': './src/index.ts',
     'index.umd.min': './src/index.ts',

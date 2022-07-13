@@ -1,7 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 
-export default {
+module.exports = {
+  target: "node",
   resolve: {
     extensions: [ '.ts', '.js', '.json' ]
   },
