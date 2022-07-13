@@ -4,9 +4,8 @@
   "license": "MIT",
   "scripts": {
     "build": "ng build",
-    "prebuild": "yarn && gulp copy-lib",
     "start": "node server.js",
-    "start:watch": "concurrently --raw \"gulp copy-lib:watch\" \"npm run start\"",
+    "start:watch": "concurrently --raw \"npm run start\"",
     "test:functional": "yarn && yarn build && webdriver-manager --ignore_ssl --gecko=false update --versions.chrome 2.40   &&  ng e2e --webdriver-update=false  --protractorConfig=./test/config/protractor.conf.js",
     "testDev:functional": "webdriver-manager --ignore_ssl --gecko=false update --versions.chrome 2.40  &&  protractor ./test/config/protractor.conf.js",
     "test:mock": "nodemon test/nodeMock/app.js --standalone"

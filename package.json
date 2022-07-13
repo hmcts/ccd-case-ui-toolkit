@@ -20,7 +20,7 @@
     "build:esm:watch": "gulp build:esm:watch",
     "build:umd": "webpack --config webpack-umd.config.js",
     "build:umd:watch": "npm run build:umd -- --watch",
-    "build:watch": "concurrently --raw \"npm run build:umd:watch\" \"npm run build:esm:watch\"",
+    "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
     "clean:all": "npm run clean:tmp && rimraf node_modules",
     "clean:tmp": "rimraf coverage dist tmp docs",
@@ -43,9 +43,9 @@
     "install:demo": "yarn --cwd demo install",
     "build:demo": "yarn --cwd demo build",
     "start": "yarn --cwd demo start",
-    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
+    "heroku-postbuild": "yarn --cwd demo install && yarn --cwd demo build",
     "demo": "yarn && yarn build:demo && yarn start",
-    "build:test:functional": "yarn && yarn build:esm && yarn --cwd demo  test:functional",
+    "build:test:functional": "yarn && yarn --cwd demo  test:functional",
     "test:functional": "yarn --cwd demo  test:functional"
   },
   "dependencies": {
