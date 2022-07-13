@@ -2,12 +2,13 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { Component, EventEmitter, InjectionToken, Injector, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
-import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AlertService, SessionStorageService } from '../../../services';
 import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineService, WorkAllocationService } from '../services';
+import { CaseEventCompletionTaskCancelledComponent } from './components/case-event-completion-task-cancelled/case-event-completion-task-cancelled.component';
+import { CaseEventCompletionTaskReassignedComponent } from './components/case-event-completion-task-reassigned/case-event-completion-task-reassigned.component';
 
 export const COMPONENT_PORTAL_INJECTION_TOKEN = new InjectionToken<CaseEventCompletionComponent>('');
 

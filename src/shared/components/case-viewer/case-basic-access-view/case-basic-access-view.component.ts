@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CasesService } from '../..';
 import { CaseView } from '../../../domain';
+import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
   selector: 'ccd-case-basic-access-view',

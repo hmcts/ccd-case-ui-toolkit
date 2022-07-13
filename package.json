@@ -18,7 +18,7 @@
     "build": "npm run build:umd",
     "build:esm": "gulp build:esm",
     "build:esm:watch": "gulp build:esm:watch",
-    "build:umd": "webpack --config webpack-umd.config.js",
+    "build:umd": "ng build ccd-case-ui-toolkit",
     "build:umd:watch": "npm run build:umd -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
@@ -85,6 +85,7 @@
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
     "underscore": "^1.9.1",
+    "util": "^0.12.4",
     "yargs-parser": "18.1.2",
     "zone.js": "~0.10.3"
   },

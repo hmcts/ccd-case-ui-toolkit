@@ -1,6 +1,6 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "extends": "./tsconfig.json",
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
@@ -14,10 +14,10 @@
     "stripInternal": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "./tmp/src-inlined",
     "lib": ["es2018", "dom"]
   },
-  "files": [
-    "./tmp/src-inlined/index.ts"
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
   ]
 }
