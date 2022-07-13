@@ -113,10 +113,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public proceedToNextPage(): void {
     if (this.isAtFinalPage()) {
-
-      const item = { value: {"CaseReference": "1656417663365709"} }
-      this.formGroup.value && this.formGroup.value.caseLinks && this.formGroup.value.caseLinks.push(item);
-
       // Continue button event must be allowed in final page
       this.caseEditPageComponent.caseLinkError = null;
       // Trigger validation to clear the "notAtFinalPage" error if now at the final state

@@ -121,7 +121,11 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public submitLinkedCases(): void {
-    this.caseReferenceControl.setValue(this.linkedCasesService.linkedCases.map((caseInfo) => caseInfo.caseReference)[0]);
+    //this.caseReferenceControl.setValue(this.linkedCasesService.linkedCases.map((caseInfo) => caseInfo.caseReference)[0]);
+    if (this.formGroup.value.caseLinks && this.linkedCasesService.linkedCases) {
+      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
+      //this.formGroup.value.caseLinks.push(this.linkedCasesService.linkedCases);
+    }
   }
 
   private caseReferenceValidator(): ValidatorFn {

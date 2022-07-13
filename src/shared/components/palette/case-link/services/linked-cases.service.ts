@@ -4,6 +4,7 @@ import { CaseLink } from '../domain';
 
 @Injectable()
 export class LinkedCasesService {
+  public caseFieldValue = [];
   public isLinkedCasesEventTrigger = false;
   public caseId: string;
   public linkCaseReasons: LovRefDataModel[] = [];

@@ -163,6 +163,13 @@ export class LinkCasesComponent implements OnInit {
             caseService: caseView.case_type.jurisdiction.name,
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
+          const ccdApiCaseLinkData = {
+            CaseReference: caseView.case_id,
+            CaseType: caseView.case_type.name,
+            CreatedDateTime: new Date().toISOString(),
+            ReasonForLink: this.getSelectedCCDTypeCaseReason()
+          }
+          this.linkedCasesService.caseFieldValue.push({id: '', value: ccdApiCaseLinkData});
           this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);
@@ -280,6 +287,22 @@ export class LinkCasesComponent implements OnInit {
           selectedReasons.push({
             reasonCode: selectedReason.key
           } as LinkReason);
+        }
+      }
+    );
+    return selectedReasons;
+  }
+
+  getSelectedCCDTypeCaseReason(): LinkReason[] {
+    let selectedReasons = [];
+    this.linkCaseForm.controls.reasonType.value.forEach(
+      (selectedReason: LinkCaseReason) => {
+        if (selectedReason.selected) {
+          selectedReasons.push({
+            value: {
+              Reason: selectedReason.key,
+            }
+          });
         }
       }
     );
