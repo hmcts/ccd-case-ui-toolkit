@@ -11,21 +11,21 @@ import { OrderService } from '../../services';
 export class EventTriggerComponent implements OnChanges {
 
   @Input()
-  triggers: CaseViewTrigger[];
+  public triggers: CaseViewTrigger[];
 
   @Input()
-  triggerText: string;
+  public triggerText: string;
 
   @Input()
-  isDisabled: boolean;
+  public isDisabled: boolean;
 
   @Output()
-  onTriggerSubmit: EventEmitter<CaseViewTrigger> = new EventEmitter();
+  public onTriggerSubmit: EventEmitter<CaseViewTrigger> = new EventEmitter();
 
   @Output()
-  onTriggerChange: EventEmitter<any> = new EventEmitter();
+  public onTriggerChange: EventEmitter<any> = new EventEmitter();
 
-  triggerForm: FormGroup;
+  public triggerForm: FormGroup;
 
   constructor(private fb: FormBuilder, private orderService: OrderService) {}
 
@@ -39,20 +39,19 @@ export class EventTriggerComponent implements OnChanges {
     }
   }
 
-  isButtonDisabled(): boolean {
+  public isButtonDisabled(): boolean {
     return !this.triggerForm.valid || this.isDisabled;
+  }
+
+  public triggerSubmit() {
+    this.onTriggerSubmit.emit(this.triggerForm.value['trigger']);
+  }
+
+  public triggerChange() {
+    this.onTriggerChange.emit(null);
   }
 
   private getDefault(): any {
     return this.triggers.length === 1 ? this.triggers[0] : '';
   }
-
-  triggerSubmit() {
-    this.onTriggerSubmit.emit(this.triggerForm.value['trigger']);
-  }
-
-  triggerChange() {
-    this.onTriggerChange.emit(null);
-  }
-
 }

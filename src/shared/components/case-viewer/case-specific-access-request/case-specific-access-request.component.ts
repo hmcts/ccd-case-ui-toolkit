@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
+  FormGroup
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { ErrorMessage, SpecificAccessRequest } from '../../../domain';
 import { CasesService } from '../../case-editor';
 import {
   SpecificAccessRequestErrors,
-  SpecificAccessRequestPageText,
+  SpecificAccessRequestPageText
 } from './models';
 
 @Component({
@@ -26,9 +26,10 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
+  public $roleAssignmentResponseSubscription: Subscription;
+
   private readonly genericError = 'There is a problem';
   private readonly specificReasonControlName = 'specificReason';
-  public $roleAssignmentResponseSubscription: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -59,10 +60,6 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
         updateOn: 'submit',
       })
     );
-  }
-
-  private inputEmpty(input: AbstractControl): boolean {
-    return input.value == null || input.value.trim().length === 0;
   }
 
   public onChange(): void {
@@ -114,5 +111,9 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     if (this.$roleAssignmentResponseSubscription) {
       this.$roleAssignmentResponseSubscription.unsubscribe();
     }
+  }
+
+  private inputEmpty(input: AbstractControl): boolean {
+    return input.value == null || input.value.trim().length === 0;
   }
 }

@@ -10,12 +10,22 @@ function coerceToBoolean(input: string | boolean): boolean {
   styleUrls: ['./pagination.component.scss']
 })
 export class PaginationComponent {
-
   @Input()
   visibilityLabel: string;
-
   @Input() id: string;
   @Input() maxSize = 7;
+  @Input() previousLabel = 'Previous';
+  @Input() nextLabel = 'Next';
+  @Input() screenReaderPaginationLabel = 'Pagination';
+  @Input() screenReaderPageLabel = 'page';
+  @Input() screenReaderCurrentLabel = `You're on page`;
+  @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
+
+  private _directionLinks = true;
+  private _autoHide = false;
+  private _responsive = false;
+
   @Input()
   get directionLinks(): boolean {
     return this._directionLinks;
@@ -42,16 +52,4 @@ export class PaginationComponent {
   set responsive(value: boolean) {
     this._responsive = coerceToBoolean(value);
   }
-
-  @Input() previousLabel = 'Previous';
-  @Input() nextLabel = 'Next';
-  @Input() screenReaderPaginationLabel = 'Pagination';
-  @Input() screenReaderPageLabel = 'page';
-  @Input() screenReaderCurrentLabel = `You're on page`;
-  @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
-  @Output() pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
-
-  private _directionLinks = true;
-  private _autoHide = false;
-  private _responsive = false;
 }

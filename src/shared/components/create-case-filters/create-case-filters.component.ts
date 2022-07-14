@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
-import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
-import { CaseEvent } from '../../domain/definition/case-event.model';
-import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
+import { CaseEvent } from '../../domain/definition/case-event.model';
+import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService, OrderService, SessionStorageService } from '../../services';
+import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -58,7 +58,7 @@ export class CreateCaseFiltersComponent implements OnInit {
     }
   }
 
-  onJurisdictionIdChange(): void {
+  public onJurisdictionIdChange(): void {
     this.resetCaseType();
     this.resetEvent();
     if (this.filterJurisdictionControl.value !== '') {
@@ -69,7 +69,7 @@ export class CreateCaseFiltersComponent implements OnInit {
     }
   }
 
-  onCaseTypeIdChange(): void {
+  public onCaseTypeIdChange(): void {
     this.resetEvent();
     if (this.filterCaseTypeControl.value !== '') {
       this.selected.caseType = this.findCaseType(this.selectedJurisdictionCaseTypes, this.filterCaseTypeControl.value);
@@ -79,7 +79,7 @@ export class CreateCaseFiltersComponent implements OnInit {
     }
   }
 
-  onEventIdChange(): void {
+  public onEventIdChange(): void {
     this.emitChange();
     if (this.filterEventControl.value !== '') {
       this.selected.event = this.findEvent(this.selectedCaseTypeEvents, this.filterEventControl.value);
@@ -88,7 +88,7 @@ export class CreateCaseFiltersComponent implements OnInit {
     }
   }
 
-  isCreatable(): boolean {
+  public isCreatable(): boolean {
     return !this.isEmpty(this.selected) &&
       !this.isEmpty(this.selected.jurisdiction) &&
       !this.isEmpty(this.selected.caseType) &&
@@ -96,12 +96,29 @@ export class CreateCaseFiltersComponent implements OnInit {
       !this.isDisabled;
   }
 
-  apply() {
+  public apply() {
     this.selectionSubmitted.emit({
       jurisdictionId: this.selected.jurisdiction.id,
       caseTypeId: this.selected.caseType.id,
       eventId: this.selected.event.id
     });
+  }
+
+  public initControls(): void {
+    this.filterJurisdictionControl = new FormControl('');
+    this.formGroup.addControl('jurisdiction', this.filterJurisdictionControl);
+    this.filterCaseTypeControl = new FormControl({ value: '', disabled: true });
+    this.formGroup.addControl('caseType', this.filterCaseTypeControl);
+    this.filterEventControl = new FormControl({ value: '', disabled: true });
+    this.formGroup.addControl('event', this.filterEventControl);
+  }
+
+  public emitChange(): void {
+    setTimeout(() => { // workaround to prevent 'ExpressionChangedAfterItHasBeenCheckedError'
+      if (this.selectionChanged) {
+        this.selectionChanged.emit();
+      }
+    }, 0);
   }
 
   private sortEvents(events: CaseEvent[]): CaseEvent[] {
@@ -155,15 +172,6 @@ export class CreateCaseFiltersComponent implements OnInit {
     return events.find(event => event.id === id);
   }
 
-  initControls(): void {
-    this.filterJurisdictionControl = new FormControl('');
-    this.formGroup.addControl('jurisdiction', this.filterJurisdictionControl);
-    this.filterCaseTypeControl = new FormControl({ value: '', disabled: true });
-    this.formGroup.addControl('caseType', this.filterCaseTypeControl);
-    this.filterEventControl = new FormControl({ value: '', disabled: true });
-    this.formGroup.addControl('event', this.filterEventControl);
-  }
-
   private resetCaseType(): void {
     this.emitChange();
     this.filterCaseTypeControl.setValue('');
@@ -178,14 +186,6 @@ export class CreateCaseFiltersComponent implements OnInit {
     this.selected.event = null;
     this.selectedCaseTypeEvents = [];
     this.formGroup.controls['event'].disable();
-  }
-
-  emitChange(): void {
-    setTimeout(() => { // workaround to prevent 'ExpressionChangedAfterItHasBeenCheckedError'
-      if (this.selectionChanged) {
-        this.selectionChanged.emit();
-      }
-    }, 0);
   }
 
   private isEmpty(value: any): boolean {

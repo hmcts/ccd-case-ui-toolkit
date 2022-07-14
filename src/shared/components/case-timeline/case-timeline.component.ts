@@ -1,10 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CaseViewEvent, HttpError } from '../../domain';
-import { CasesService, CaseNotifier } from '../case-editor';
-import { AlertService } from '../../services';
-import { map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CaseViewEvent, HttpError } from '../../domain';
+import { AlertService } from '../../services';
+import { CaseNotifier, CasesService } from '../case-editor';
 
+export enum CaseTimelineDisplayMode {
+  TIMELINE,
+  DETAILS
+}
 @Component({
   selector: 'ccd-case-timeline',
   templateUrl: './case-timeline.component.html'
@@ -53,9 +57,4 @@ export class CaseTimelineComponent implements OnInit {
   public goToCaseTimeline(): void {
     this.displayMode = CaseTimelineDisplayMode.TIMELINE;
   }
-}
-
-export enum CaseTimelineDisplayMode {
-  TIMELINE,
-  DETAILS
 }

@@ -2,11 +2,11 @@ import { CaseField, FieldType } from '../domain/definition';
 import { AccessControlList } from '../domain/definition/access-control-list.model';
 
 export class CaseFieldBuilder {
-  private caseField: CaseField = new CaseField();
-
   public static create(): CaseFieldBuilder {
     return new CaseFieldBuilder();
   }
+
+  private caseField: CaseField = new CaseField();
 
   public withACLs(acls: AccessControlList[]): CaseFieldBuilder {
     this.caseField.acls = acls;

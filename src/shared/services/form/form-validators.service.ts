@@ -7,11 +7,6 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FormValidatorsService {
-
-  private static CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
-    'Date', 'MoneyGBP', 'Label'
-  ];
-
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     if (
       caseField.display_context === Constants.MANDATORY &&
@@ -49,6 +44,10 @@ export class FormValidatorsService {
     return validator;
   }
 
+  private static CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
+    'Date', 'MoneyGBP', 'Label'
+  ];
+
   // TODO: Strip this out as it's only here for the moment because
   // the service is being injected all over the place but it doesn't
   // need to be as FormValidatorsService.addValidators is perfectly
@@ -56,5 +55,4 @@ export class FormValidatorsService {
   public addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     return FormValidatorsService.addValidators(caseField, control);
   }
-
 }

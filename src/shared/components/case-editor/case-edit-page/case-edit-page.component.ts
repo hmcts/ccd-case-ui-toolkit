@@ -35,6 +35,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   static readonly TRIGGER_TEXT_SAVE = 'Save and continue';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
 
+  private static scrollToTop(): void {
+    window.scrollTo(0, 0);
+  }
+
+  private static setFocusToTop() {
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
+  }
+
   eventTrigger: CaseEventTrigger;
   editForm: FormGroup;
   wizard: Wizard;
@@ -54,17 +65,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   showSpinner: boolean;
 
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-  private static scrollToTop(): void {
-    window.scrollTo(0, 0);
-  }
-
-  private static setFocusToTop() {
-    const topContainer = document.getElementById('top');
-    if (topContainer) {
-      topContainer.focus();
-    }
-  }
 
   constructor(
     private readonly caseEdit: CaseEditComponent,

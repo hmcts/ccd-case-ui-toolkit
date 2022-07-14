@@ -1,11 +1,19 @@
-import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
-import { FieldType, FieldTypeEnum } from '../domain';
-import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-page-field-complex-override.model';
 import { WizardPage, WizardPageField } from '../components/case-editor/domain';
+import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-page-field-complex-override.model';
 import { ShowCondition } from '../directives/conditional-show/domain';
+import { FieldType, FieldTypeEnum } from '../domain';
+import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
 import { CaseField, FixedListItem } from '../domain/definition';
 import { AccessControlList } from '../domain/definition/access-control-list.model';
 import { CaseFieldBuilder } from './case-field-builder';
+
+export const textFieldType = (): FieldType => {
+  return {
+    id: 'Text',
+    type: 'Text',
+    complex_fields: []
+  };
+};
 
 export const createCaseEventTrigger = (id: string,
                                        name: string,
@@ -163,14 +171,6 @@ export const createMultiSelectListFieldType = (typeId: string,
     id: 'MultiSelectList-' + typeId,
     type: 'MultiSelectList',
     fixed_list_items: fixedListItems || []
-  };
-};
-
-export const textFieldType = (): FieldType => {
-  return {
-    id: 'Text',
-    type: 'Text',
-    complex_fields: []
   };
 };
 

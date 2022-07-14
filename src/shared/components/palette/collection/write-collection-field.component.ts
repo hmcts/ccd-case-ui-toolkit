@@ -73,7 +73,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  buildCaseField(item, index: number, isNew = false): CaseField {
+  public buildCaseField(item, index: number, isNew = false): CaseField {
     /**
      * What follow is code that makes me want to go jump in the shower!
      * Basically, we land in here repeatedly because of the binding, and
@@ -152,43 +152,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return cf;
   }
 
-  private newCaseField(id: string, item, index, isNew = false) {
-    const isNotAuthorisedToUpdate = !isNew && this.isNotAuthorisedToUpdate(index);
-
-    const fieldType = plainToClassFromExist(new FieldType(), this.caseField.field_type.collection_field_type);
-    if (fieldType.complex_fields) {
-      fieldType.complex_fields
-        .filter((cf: CaseField) => !!cf.show_condition)
-        .map((cf: CaseField) => cf.hidden = true);
-    }
-
-    // Remove the bit setting the hidden flag here as it's an item in the array and
-    // its hidden state isn't independently re-evaluated when the form is changed.
-    return plainToClassFromExist(new CaseField(), {
-      id,
-      field_type: fieldType,
-      display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
-      value: item.value,
-      label: null,
-      acls: this.caseField.acls
-    });
-  }
-
-  buildIdPrefix(index: number): string {
+  public buildIdPrefix(index: number): string {
     const prefix = `${this.idPrefix}${this.caseField.id}_`;
     if (this.caseField.field_type.collection_field_type.type === 'Complex') {
       return `${prefix}${index}_`;
     }
     return prefix;
-  }
-
-  private getContainer(index: number): FormGroup {
-    const value = this.formArray.at(index).get('value');
-    if (value instanceof FormGroup) {
-      return value;
-    } else {
-      return this.formArray.at(index) as FormGroup;
-    }
   }
 
   public isSearchFilter(): boolean {
@@ -222,41 +191,28 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  private focusLastItem() {
-    const item: any = this.items.last.nativeElement.querySelector('.form-control');
-    if (item) {
-      item.focus();
-    }
-  }
-
-  private removeItem(index: number): void {
-    this.collItems.splice(index, 1);
-    this.caseField.value.splice(index, 1);
-    this.formArray.removeAt(index);
-  }
-
-  itemLabel(index: number) {
+  public itemLabel(index: number) {
     if (index) {
       return `${this.caseField.label} ${index + 1}`;
     }
     return this.caseField.label;
   }
 
-  isNotAuthorisedToCreate() {
+  public isNotAuthorisedToCreate() {
     if (this.isExpanded) {
       return false;
     }
     return !this.getCollectionPermission(this.caseField, 'allowInsert');
   }
 
-  getCollectionPermission(field: CaseField, type: string) {
+  public getCollectionPermission(field: CaseField, type: string) {
     return field.display_context_parameter &&
             field.display_context_parameter.split('#')
               .filter(item => item.startsWith('COLLECTION('))[0]
                 .includes(type);
   }
 
-  isNotAuthorisedToUpdate(index) {
+  public isNotAuthorisedToUpdate(index) {
     if (this.isExpanded) {
       return false;
     }
@@ -271,11 +227,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return false;
   }
 
-  hasUpdateAccess(role: any): boolean {
+  public hasUpdateAccess(role: any): boolean {
     return !!this.caseField.acls.find( acl => acl.role === role && acl.update === true);
   }
 
-  isNotAuthorisedToDelete(index: number) {
+  public isNotAuthorisedToDelete(index: number) {
     if (this.isExpanded) {
       return false;
     }
@@ -284,7 +240,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
   }
 
-  openModal(i: number) {
+  public openModal(i: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -305,6 +261,50 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.removeItem(i);
       }
     });
+  }
+
+  private newCaseField(id: string, item, index, isNew = false) {
+    const isNotAuthorisedToUpdate = !isNew && this.isNotAuthorisedToUpdate(index);
+
+    const fieldType = plainToClassFromExist(new FieldType(), this.caseField.field_type.collection_field_type);
+    if (fieldType.complex_fields) {
+      fieldType.complex_fields
+        .filter((cf: CaseField) => !!cf.show_condition)
+        .map((cf: CaseField) => cf.hidden = true);
+    }
+
+    // Remove the bit setting the hidden flag here as it's an item in the array and
+    // its hidden state isn't independently re-evaluated when the form is changed.
+    return plainToClassFromExist(new CaseField(), {
+      id,
+      field_type: fieldType,
+      display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
+      value: item.value,
+      label: null,
+      acls: this.caseField.acls
+    });
+  }
+
+  private getContainer(index: number): FormGroup {
+    const value = this.formArray.at(index).get('value');
+    if (value instanceof FormGroup) {
+      return value;
+    } else {
+      return this.formArray.at(index) as FormGroup;
+    }
+  }
+
+  private focusLastItem() {
+    const item: any = this.items.last.nativeElement.querySelector('.form-control');
+    if (item) {
+      item.focus();
+    }
+  }
+
+  private removeItem(index: number): void {
+    this.collItems.splice(index, 1);
+    this.caseField.value.splice(index, 1);
+    this.formArray.removeAt(index);
   }
 
   /**

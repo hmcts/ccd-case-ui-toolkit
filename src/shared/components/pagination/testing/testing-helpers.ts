@@ -1,6 +1,6 @@
 import { Component, DebugElement, Type } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PaginationControlsDirective, PaginationInstance } from 'ngx-pagination';
 
 /**
@@ -89,10 +89,11 @@ export class ComponentTestComponent {
     itemsPerPage: 10,
     currentPage: 1
   };
-  pageChanged() { }
-  pageChangedBoundsCorrection() { }
 
   constructor() {
     this.collection = Array.from(new Array(100), (x, i) => `item ${i + 1}`);
   }
+
+  public pageChanged() { }
+  public pageChangedBoundsCorrection() { }
 }

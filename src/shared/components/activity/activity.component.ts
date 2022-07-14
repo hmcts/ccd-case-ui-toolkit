@@ -10,10 +10,6 @@ import { Subject } from 'rxjs';
   styleUrls: ['./activity.component.css']
 })
 export class ActivityComponent implements OnInit, OnDestroy {
-  private VIEWERS_PREFIX = '';
-  private VIEWERS_SUFFIX = 'viewing this case';
-  private EDITORS_PREFIX = 'This case is being updated by ';
-  private EDITORS_SUFFIX = '';
   activity: Activity;
   dspMode = DisplayMode;
 
@@ -27,6 +23,10 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
   @Input()
   displayMode: DisplayMode;
+  private VIEWERS_PREFIX = '';
+  private VIEWERS_SUFFIX = 'viewing this case';
+  private EDITORS_PREFIX = 'This case is being updated by ';
+  private EDITORS_SUFFIX = '';
 
   constructor(private activityPollingService: ActivityPollingService) {}
 

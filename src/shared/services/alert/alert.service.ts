@@ -1,34 +1,33 @@
 import { Injectable } from '@angular/core';
-import { Observer } from 'rxjs/Observer';
 import { NavigationStart, Router } from '@angular/router';
+import { Observer } from 'rxjs/Observer';
 import 'rxjs/operator/publish';
 import { ConnectableObservable, Observable } from 'rxjs/Rx';
-import { Alert } from '../../domain/alert/alert.model';
 import { AlertLevel } from '../../domain';
+import { Alert } from '../../domain/alert/alert.model';
 
 @Injectable()
 export class AlertService {
+  // the preserved messages
+  public preservedError = '';
+  public preservedWarning = '';
+  public preservedSuccess = '';
+
+  // TODO: Remove
+  public message: string;
+  public level: AlertLevel;
+
+  public successes: ConnectableObservable<Alert>;
+  public errors: ConnectableObservable<Alert>;
+  public warnings: ConnectableObservable<Alert>;
+  // TODO: Remove
+  public alerts: ConnectableObservable<Alert>;
 
   private successObserver: Observer<Alert>;
   private errorObserver: Observer<Alert>;
   private warningObserver: Observer<Alert>;
   // TODO: Remove
   private alertObserver: Observer<Alert>;
-
-  // the preserved messages
-  preservedError = '';
-  preservedWarning = '';
-  preservedSuccess = '';
-
-  // TODO: Remove
-  message: string;
-  level: AlertLevel;
-
-  successes: ConnectableObservable<Alert>;
-  errors: ConnectableObservable<Alert>;
-  warnings: ConnectableObservable<Alert>;
-  // TODO: Remove
-  alerts: ConnectableObservable<Alert>;
 
   private preserveAlerts = false;
 

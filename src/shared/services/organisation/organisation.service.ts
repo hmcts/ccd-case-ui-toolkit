@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, timer, of } from 'rxjs';
-import { publishReplay, refCount, take, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable, of, timer } from 'rxjs';
+import { map, publishReplay, refCount, take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 
 export interface OrganisationSuperUser {
@@ -48,8 +48,6 @@ export interface OrganisationVm {
 
 @Injectable()
 export class OrganisationService {
-    private organisations$: Observable<OrganisationVm[]>;
-
     public static mapOrganisation(organisations: Organisation[]): OrganisationVm [] {
         const organisationsVm = new Array<OrganisationVm>();
         organisations.forEach(org => {
@@ -70,7 +68,9 @@ export class OrganisationService {
             });
         });
         return organisationsVm;
-      }
+    }
+
+    private organisations$: Observable<OrganisationVm[]>;
 
     constructor(private readonly http: HttpClient,
                 private readonly appconfig: AbstractAppConfig) {}

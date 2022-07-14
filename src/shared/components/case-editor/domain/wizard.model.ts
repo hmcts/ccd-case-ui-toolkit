@@ -1,10 +1,11 @@
+import { Predicate } from '../../../domain/predicate.model';
 import { OrderService } from '../../../services/order/order.service';
 import { WizardPage } from './wizard-page.model';
-import { Predicate } from '../../../domain/predicate.model';
 
 export class Wizard {
+  public pages: WizardPage[];
+
   private orderService = new OrderService();
-  pages: WizardPage[];
 
   constructor(wizardPages: WizardPage[]) {
     this.pages = this.orderService.sort(wizardPages);

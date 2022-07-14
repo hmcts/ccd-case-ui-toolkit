@@ -1,23 +1,38 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
-    "target": "es2015",
-    "module": "ESNext",
-    "moduleResolution": "node",
     "sourceMap": true,
     "declaration": false,
-    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
-    "lib": ["es2018", "dom"],
-    "typeRoots" : [
-      "./node_modules/@types"
+    "experimentalDecorators": true,
+    "target": "es5",
+    "importHelpers": true,
+    "typeRoots": [
+      "node_modules/@types"
     ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "gov-ui": [
+        "dist/gov-ui"
+      ],
+      "gov-ui/*": [
+        "dist/gov-ui/*"
+      ]
+    }
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "javascript.implicitProjectConfig.experimentalDecorators": true
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
 }

@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseHistory } from './domain';
+import { Subscription, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { throwError, Subscription } from 'rxjs';
-import { CaseView, CaseTab, HttpError } from '../../domain';
-import { AlertService, OrderService } from '../../services';
-import { CaseHistoryService } from './services/case-history.service';
-import { CaseNotifier } from '../case-editor';
 import { ShowCondition } from '../../directives';
+import { CaseTab, CaseView, HttpError } from '../../domain';
+import { AlertService, OrderService } from '../../services';
+import { CaseNotifier } from '../case-editor';
+import { CaseHistory } from './domain';
+import { CaseHistoryService } from './services/case-history.service';
 
 @Component({
   selector: 'ccd-case-history',
@@ -15,17 +15,17 @@ import { ShowCondition } from '../../directives';
   styleUrls: ['./case-history.component.scss']
 })
 export class CaseHistoryComponent implements OnInit, OnDestroy {
-
-  private static readonly ERROR_MESSAGE = 'No case history to show';
   public static readonly PARAM_EVENT_ID = 'eid';
 
-  @Input()
-  event: string;
+  private static readonly ERROR_MESSAGE = 'No case history to show';
 
-  caseHistory: CaseHistory;
-  caseDetails: CaseView;
-  tabs: CaseTab[];
-  caseSubscription: Subscription;
+  @Input()
+  public event: string;
+
+  public caseHistory: CaseHistory;
+  public caseDetails: CaseView;
+  public tabs: CaseTab[];
+  public caseSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,7 +69,7 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  isDataLoaded() {
+  public isDataLoaded() {
     return !!(this.caseDetails && this.caseHistory);
   }
 

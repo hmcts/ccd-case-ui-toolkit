@@ -1,25 +1,18 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import {
   CaseEventData,
-  CaseEventTrigger,
-  CaseField,
-  CasePrintDocument,
+  CaseEventTrigger, CasePrintDocument,
   CaseView,
-  ChallengedAccessRequest,
-  SpecificAccessRequest,
-  Draft,
-  FieldType,
-  FieldTypeEnum,
-  RoleAssignmentResponse,
+  ChallengedAccessRequest, Draft, RoleAssignmentResponse,
   RoleCategory,
-  RoleRequestPayload
+  RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
@@ -58,7 +51,7 @@ export class CasesService {
    * @type {(caseId:string)=>"../../Observable".Observable<Case>}
    * @deprecated Use `CasesService::getCaseView` instead
    */
-  get = this.getCaseView;
+  public get = this.getCaseView;
 
   constructor(
     private http: HttpService,
@@ -72,7 +65,7 @@ export class CasesService {
   ) {
   }
 
-  getCaseView(jurisdictionId: string,
+  public getCaseView(jurisdictionId: string,
               caseTypeId: string,
               caseId: string): Observable<CaseView> {
     const url = this.appConfig.getApiUrl()
@@ -93,7 +86,7 @@ export class CasesService {
       );
   }
 
-  getCaseViewV2(caseId: string): Observable<CaseView> {
+  public getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -112,7 +105,7 @@ export class CasesService {
       );
   }
 
-  getEventTrigger(caseTypeId: string,
+  public getEventTrigger(caseTypeId: string,
                   eventTriggerId: string,
                   caseId?: string,
                   ignoreWarning?: string): Observable<CaseEventTrigger> {
@@ -147,7 +140,7 @@ export class CasesService {
       );
   }
 
-  createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<object> {
+  public createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<object> {
     const caseId = caseDetails.case_id;
     const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
 
@@ -167,7 +160,7 @@ export class CasesService {
       );
   }
 
-  validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
+  public validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
     const pageIdString = pageId ? '?pageId=' + pageId : '';
     const url = this.appConfig.getCaseDataUrl()
       + `/case-types/${ctid}/validate${pageIdString}`;
@@ -187,7 +180,7 @@ export class CasesService {
       );
   }
 
-  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
+  public createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
@@ -212,7 +205,7 @@ export class CasesService {
       );
   }
 
-  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
+  public getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = this.appConfig.getCaseDataUrl()
       + `/cases/${caseId}`
       + `/documents`;
@@ -231,75 +224,6 @@ export class CasesService {
           return throwError(error);
         })
       );
-  }
-
-  private buildEventTriggerUrl(caseTypeId: string,
-                               eventTriggerId: string,
-                               caseId?: string,
-                               ignoreWarning?: string): string {
-    let url = this.appConfig.getCaseDataUrl() + `/internal`;
-
-    if (Draft.isDraft(caseId)) {
-      url += `/drafts/${caseId}`
-        + `/event-trigger`
-        + `?ignore-warning=${ignoreWarning}`;
-    } else if (caseTypeId === undefined || caseTypeId === null) {
-      url += `/cases/${caseId}`
-        + `/event-triggers/${eventTriggerId}`
-        + `?ignore-warning=${ignoreWarning}`;
-    } else {
-      url += `/case-types/${caseTypeId}`
-        + `/event-triggers/${eventTriggerId}`
-        + `?ignore-warning=${ignoreWarning}`;
-    }
-
-    return url;
-  }
-
-  private processResponseBody(body: any, eventData: CaseEventData): any {
-    this.processTasksOnSuccess(body, eventData.event);
-    return body;
-  }
-
-  private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
-    if (!eventTrigger.wizard_pages) {
-      eventTrigger.wizard_pages = [];
-    }
-
-    eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
-      wizardPage.parsedShowCondition = ShowCondition.getInstance(wizardPage.show_condition);
-      wizardPage.case_fields = this.orderService.sort(
-        this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
-    });
-  }
-
-  private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // The following code is work allocation 1 related
-    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
-      // This is used a feature toggle to
-      // control the work allocation
-      if (!this.isPuiCaseManager()) {
-        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
-          .subscribe(() => {
-            // Success. Do nothing.
-          }, error => {
-            // Show an appropriate warning about something that went wrong.
-            console.warn('Could not process tasks for this case event', error);
-          });
-      }
-    }
-  }
-
-  /*
-  Checks if the user has role of pui-case-manager and returns true or false
-  */
-  private isPuiCaseManager(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return userInfo && userInfo.roles && (userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1);
-    }
-    return false;
   }
 
   public getCourtOrHearingCentreName(locationId: number): Observable<any> {
@@ -384,4 +308,72 @@ export class CasesService {
     );
   }
 
+  private buildEventTriggerUrl(caseTypeId: string,
+                               eventTriggerId: string,
+                               caseId?: string,
+                               ignoreWarning?: string): string {
+    let url = this.appConfig.getCaseDataUrl() + `/internal`;
+
+    if (Draft.isDraft(caseId)) {
+      url += `/drafts/${caseId}`
+        + `/event-trigger`
+        + `?ignore-warning=${ignoreWarning}`;
+    } else if (caseTypeId === undefined || caseTypeId === null) {
+      url += `/cases/${caseId}`
+        + `/event-triggers/${eventTriggerId}`
+        + `?ignore-warning=${ignoreWarning}`;
+    } else {
+      url += `/case-types/${caseTypeId}`
+        + `/event-triggers/${eventTriggerId}`
+        + `?ignore-warning=${ignoreWarning}`;
+    }
+
+    return url;
+  }
+
+  private processResponseBody(body: any, eventData: CaseEventData): any {
+    this.processTasksOnSuccess(body, eventData.event);
+    return body;
+  }
+
+  private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
+    if (!eventTrigger.wizard_pages) {
+      eventTrigger.wizard_pages = [];
+    }
+
+    eventTrigger.wizard_pages.forEach((wizardPage: WizardPage) => {
+      wizardPage.parsedShowCondition = ShowCondition.getInstance(wizardPage.show_condition);
+      wizardPage.case_fields = this.orderService.sort(
+        this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
+    });
+  }
+
+  private processTasksOnSuccess(caseData: any, eventData: any): void {
+    // The following code is work allocation 1 related
+    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
+      // This is used a feature toggle to
+      // control the work allocation
+      if (!this.isPuiCaseManager()) {
+        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
+          .subscribe(() => {
+            // Success. Do nothing.
+          }, error => {
+            // Show an appropriate warning about something that went wrong.
+            console.warn('Could not process tasks for this case event', error);
+          });
+      }
+    }
+  }
+
+  /*
+  Checks if the user has role of pui-case-manager and returns true or false
+  */
+  private isPuiCaseManager(): boolean {
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo && userInfo.roles && (userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1);
+    }
+    return false;
+  }
 }

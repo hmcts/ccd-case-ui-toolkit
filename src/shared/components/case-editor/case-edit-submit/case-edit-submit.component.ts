@@ -28,23 +28,6 @@ import { CaseNotifier } from '../services';
   styleUrls: ['../case-edit.scss']
 })
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {
-  eventTrigger: CaseEventTrigger;
-  editForm: FormGroup;
-  error: HttpError;
-  callbackErrorsSubject: Subject<any> = new Subject();
-  ignoreWarning = false;
-  triggerText: string;
-  wizard: Wizard;
-  profile: Profile;
-  showSummaryFields: CaseField[];
-  paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
-  isSubmitting: boolean;
-  profileSubscription: Subscription;
-  contextFields: CaseField[];
-  task: Task;
-  eventCompletionParams: EventCompletionParams;
-  eventCompletionChecksRequired = false;
-
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
     const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
@@ -59,13 +42,22 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return a.show_summary_content_option - b.show_summary_content_option;
   }
 
-  public get isDisabled(): boolean {
-    // EUI-3452.
-    // We don't need to check the validity of the editForm as it is readonly.
-    // This was causing issues with hidden fields that aren't wanted but have
-    // not been disabled.
-    return this.isSubmitting || this.hasErrors;
-  }
+  public eventTrigger: CaseEventTrigger;
+  public editForm: FormGroup;
+  public error: HttpError;
+  public callbackErrorsSubject: Subject<any> = new Subject();
+  public ignoreWarning = false;
+  public triggerText: string;
+  public wizard: Wizard;
+  public profile: Profile;
+  public showSummaryFields: CaseField[];
+  public paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
+  public isSubmitting: boolean;
+  public profileSubscription: Subscription;
+  public contextFields: CaseField[];
+  public task: Task;
+  public eventCompletionParams: EventCompletionParams;
+  public eventCompletionChecksRequired = false;
 
   constructor(
     private readonly caseEdit: CaseEditComponent,
@@ -79,7 +71,20 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly profileNotifier: ProfileNotifier,
     private readonly sessionStorageService: SessionStorageService,
     private readonly caseNotifier: CaseNotifier,
-  ) {
+  ) {}
+
+  public get isDisabled(): boolean {
+    // EUI-3452.
+    // We don't need to check the validity of the editForm as it is readonly.
+    // This was causing issues with hidden fields that aren't wanted but have
+    // not been disabled.
+    return this.isSubmitting || this.hasErrors;
+  }
+
+  private get hasErrors(): boolean {
+    return this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length;
   }
 
   public ngOnInit(): void {
@@ -144,6 +149,120 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     } else {
       // Navigate to tasks tab on case details page
       this.router.navigate([`/cases/case-details/${this.getCaseId()}/tasks`], { relativeTo: this.route });
+    }
+  }
+
+  public navigateToPage(pageId: string): void {
+    this.caseEdit.navigateToPage(pageId);
+  }
+
+  public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
+    this.ignoreWarning = errorContext.ignore_warning;
+    this.triggerText = errorContext.trigger_text;
+  }
+
+  public summaryCaseField(field: CaseField): CaseField {
+    if (null == this.editForm.get('data').get(field.id)) {
+      // If not in form, return field itself
+      return field;
+    }
+
+    const cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
+    cloneField.value = this.editForm.get('data').get(field.id).value;
+
+    return cloneField;
+  }
+
+  public cancel(): void {
+    if (this.eventTrigger.can_save_draft) {
+      if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
+        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      } else {
+        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      }
+    } else {
+      this.caseEdit.cancelled.emit();
+    }
+  }
+
+  public isLabel(field: CaseField): boolean {
+    return this.caseFieldService.isLabel(field);
+  }
+
+  public isChangeAllowed(field: CaseField): boolean {
+    return !this.caseFieldService.isReadOnly(field);
+  }
+
+  public checkYourAnswerFieldsToDisplayExists(): boolean {
+    if (!this.eventTrigger.show_summary) {
+      return false;
+    }
+
+    for (const page of this.wizard.pages) {
+      if (this.isShown(page)) {
+        for (const field of page.case_fields) {
+          if (this.canShowFieldInCYA(field)) {
+            // at least one field needs showing
+            return true;
+          }
+        }
+      }
+    }
+
+    // found no fields to show in CYA summary page
+    return false;
+  }
+
+  public readOnlySummaryFieldsToDisplayExists(): boolean {
+    return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0 );
+  }
+
+  public showEventNotes(): boolean {
+    return this.eventTrigger.show_event_notes !== false;
+  }
+
+  public previous(): void {
+    if (this.hasPrevious()) {
+      this.navigateToPage(this.getLastPageShown().id);
+    }
+  }
+
+  public hasPrevious(): boolean {
+    return !!this.getLastPageShown();
+  }
+
+  public isShown(page: WizardPage): boolean {
+    const fields = this.fieldsUtils
+      .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
+    return page.parsedShowCondition.match(fields);
+  }
+
+  public canShowFieldInCYA(field: CaseField): boolean {
+    return field.show_summary_change_option;
+  }
+
+  public isSolicitor(): boolean {
+    return this.profile.isSolicitor();
+  }
+
+  public getCaseId(): string {
+    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  public getEventId(): string {
+    return this.editForm.value.event.id;
+  }
+
+  public getCaseTitle(): string {
+    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
+    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+  }
+
+  public getCancelText(): string {
+    if (this.eventTrigger.can_save_draft) {
+      return 'Return to case list';
+    } else {
+      return 'Cancel';
     }
   }
 
@@ -320,81 +439,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
 
-  private get hasErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
-  public navigateToPage(pageId: string): void {
-    this.caseEdit.navigateToPage(pageId);
-  }
-
-  public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
-    this.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
-  }
-
-  public summaryCaseField(field: CaseField): CaseField {
-    if (null == this.editForm.get('data').get(field.id)) {
-      // If not in form, return field itself
-      return field;
-    }
-
-    const cloneField: CaseField = this.fieldsUtils.cloneCaseField(field);
-    cloneField.value = this.editForm.get('data').get(field.id).value;
-
-    return cloneField;
-  }
-
-  public cancel(): void {
-    if (this.eventTrigger.can_save_draft) {
-      if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
-      } else {
-        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
-      }
-    } else {
-      this.caseEdit.cancelled.emit();
-    }
-  }
-
-  public isLabel(field: CaseField): boolean {
-    return this.caseFieldService.isLabel(field);
-  }
-
-  public isChangeAllowed(field: CaseField): boolean {
-    return !this.caseFieldService.isReadOnly(field);
-  }
-
-  public checkYourAnswerFieldsToDisplayExists(): boolean {
-    if (!this.eventTrigger.show_summary) {
-      return false;
-    }
-
-    for (const page of this.wizard.pages) {
-      if (this.isShown(page)) {
-        for (const field of page.case_fields) {
-          if (this.canShowFieldInCYA(field)) {
-            // at least one field needs showing
-            return true;
-          }
-        }
-      }
-    }
-
-    // found no fields to show in CYA summary page
-    return false;
-  }
-
-  public readOnlySummaryFieldsToDisplayExists(): boolean {
-    return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0 );
-  }
-
-  public showEventNotes(): boolean {
-    return this.eventTrigger.show_event_notes !== false;
-  }
-
   private getLastPageShown(): WizardPage {
     let lastPage: WizardPage;
     this.wizard.reverse().forEach(page => {
@@ -404,30 +448,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     });
     // noinspection JSUnusedAssignment
     return lastPage;
-  }
-
-  public previous(): void {
-    if (this.hasPrevious()) {
-      this.navigateToPage(this.getLastPageShown().id);
-    }
-  }
-
-  public hasPrevious(): boolean {
-    return !!this.getLastPageShown();
-  }
-
-  public isShown(page: WizardPage): boolean {
-    const fields = this.fieldsUtils
-      .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
-    return page.parsedShowCondition.match(fields);
-  }
-
-  public canShowFieldInCYA(field: CaseField): boolean {
-    return field.show_summary_change_option;
-  }
-
-  public isSolicitor(): boolean {
-    return this.profile.isSolicitor();
   }
 
   private buildConfirmation(response: object): Confirmation {
@@ -455,26 +475,5 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
 
     return this.eventTrigger.case_fields;
-  }
-
-  public getCaseId(): string {
-    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
-  }
-
-  public getEventId(): string {
-    return this.editForm.value.event.id;
-  }
-
-  public getCaseTitle(): string {
-    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
-    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
-  }
-
-  public getCancelText(): string {
-    if (this.eventTrigger.can_save_draft) {
-      return 'Return to case list';
-    } else {
-      return 'Cancel';
-    }
   }
 }

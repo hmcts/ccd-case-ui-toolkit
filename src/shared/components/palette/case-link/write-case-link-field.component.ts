@@ -38,6 +38,13 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  public validCaseReference(valueString: string): boolean {
+    if (!valueString )  {
+      return false;
+    }
+    return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());
+  }
+
   private caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       if (control.value) {
@@ -52,12 +59,5 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
       }
       return null;
     };
-  }
-
-  validCaseReference(valueString: string): boolean {
-    if (!valueString )  {
-      return false;
-    }
-    return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());
   }
 }

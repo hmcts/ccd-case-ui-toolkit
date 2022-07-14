@@ -13,14 +13,14 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['../case-edit.scss']
 })
 export class CaseEditConfirmComponent {
-
-  private caseId: string;
   eventTrigger: CaseEventTrigger;
   triggerText = 'Close and Return to case details';
   formGroup = new FormControl();
   confirmation: Confirmation;
   caseFields: CaseField[];
   editForm: FormGroup;
+
+  private caseId: string;
 
   constructor(private caseEdit: CaseEditComponent, private router: Router) {
     this.eventTrigger = this.caseEdit.eventTrigger;

@@ -1,8 +1,8 @@
-import { Orderable } from '../order';
-import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
 import { Expose, Type } from 'class-transformer';
-import { AccessControlList } from './access-control-list.model';
 import * as _ from 'underscore';
+import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
+import { Orderable } from '../order';
+import { AccessControlList } from './access-control-list.model';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
 

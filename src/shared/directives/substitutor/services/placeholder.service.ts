@@ -24,10 +24,12 @@ export namespace PlaceholderService {
         private static readonly NEW_LINE = `
 ___
 `;
-
         private static readonly PLACEHOLDER_START =
             PlaceholderSubstitutor.STARTING_PLACEHOLDER + PlaceholderSubstitutor.OPENING_PLACEHOLDER;
         private static readonly PLACEHOLDER_END = PlaceholderSubstitutor.CLOSING_PLACEHOLDER;
+        private static wrapPlaceholder(str: string): string {
+            return `${this.PLACEHOLDER_START}${str}${this.PLACEHOLDER_END}`;
+        }
 
         private stringToResolve: string;
         private scanIndex: number;
@@ -39,10 +41,6 @@ ___
         private resolvedFormValues = [];
         private readonly pageFormFields: object;
         private readonly originalStringToResolve: string;
-
-        private static wrapPlaceholder(str: string): string {
-            return `${this.PLACEHOLDER_START}${str}${this.PLACEHOLDER_END}`;
-        }
 
         constructor(values: { stringToResolve: string, pageFormFields: object }) {
             this.stringToResolve = values.stringToResolve;

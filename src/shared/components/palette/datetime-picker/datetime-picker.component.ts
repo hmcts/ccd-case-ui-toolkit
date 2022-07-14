@@ -44,20 +44,21 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public yearSelection = false;
   public checkTime = true;
   public stringEdited = false;
-  private minimumDate = new Date('01/01/1800');
-  private maximumDate = null;
   public minError = false;
   public maxError = false;
-  @Input() public dateControl: FormControl = new FormControl(new Date());
+  public dateTimeEntryFormat: string;
 
   @ViewChild('picker', { static: false }) datetimePicker: NgxMatDatetimePicker<any>;
   @ViewChild('input', { static: false }) inputElement: ElementRef<HTMLInputElement>;
-  public dateTimeEntryFormat: string;
+
+  @Input() public dateControl: FormControl = new FormControl(new Date());
+
+  private minimumDate = new Date('01/01/1800');
+  private maximumDate = null;
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
-              @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
-
+    @Inject(NGX_MAT_DATE_FORMATS) private ngxMatDateFormats: NgxMatDateFormats) {
     super();
   }
 
@@ -91,25 +92,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   */
   public valueChanged(): void {
     this.formatValueAndSetErrors();
-  }
-
-  private formatValueAndSetErrors(): void {
-    if (this.inputElement.nativeElement.value) {
-      let formValue = this.inputElement.nativeElement.value;
-      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
-      if (formValue !== 'Invalid date') {
-        // if not invalid set the value as the formatted value
-        this.dateControl.setValue(formValue);
-      } else {
-        // ensure that the datepicker picks up the invalid error
-        const keepErrorText = this.inputElement.nativeElement.value;
-        this.dateControl.setValue(keepErrorText);
-        this.inputElement.nativeElement.value = keepErrorText;
-      }
-    } else {
-      // ensure required errors are picked up if relevant
-      this.dateControl.setValue('');
-    }
   }
 
   public focusIn(): void {
@@ -207,6 +189,25 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       this.dateControl.patchValue(event.toISOString());
       this.datetimePicker.close();
       this.valueChanged();
+    }
+  }
+
+  private formatValueAndSetErrors(): void {
+    if (this.inputElement.nativeElement.value) {
+      let formValue = this.inputElement.nativeElement.value;
+      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
+      if (formValue !== 'Invalid date') {
+        // if not invalid set the value as the formatted value
+        this.dateControl.setValue(formValue);
+      } else {
+        // ensure that the datepicker picks up the invalid error
+        const keepErrorText = this.inputElement.nativeElement.value;
+        this.dateControl.setValue(keepErrorText);
+        this.inputElement.nativeElement.value = keepErrorText;
+      }
+    } else {
+      // ensure required errors are picked up if relevant
+      this.dateControl.setValue('');
     }
   }
 }

@@ -15,12 +15,6 @@ export class ActivityService {
   static get ACTIVITY_VIEW() { return 'view'; }
   static get ACTIVITY_EDIT() { return 'edit'; }
 
-  private userAuthorised: boolean = undefined;
-
-  public get isEnabled(): boolean {
-    return this.activityUrl() && this.userAuthorised;
-  }
-
   private static handleHttpError(response: HttpErrorResponse): HttpError {
     const error: HttpError = HttpErrorService.convertToHttpError(response);
     if (response.status && response.status !== error.status) {
@@ -29,11 +23,17 @@ export class ActivityService {
     return error;
   }
 
+  private userAuthorised: boolean = undefined;
+
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
     private readonly sessionStorageService: SessionStorageService
   ) {}
+
+  public get isEnabled(): boolean {
+    return this.activityUrl() && this.userAuthorised;
+  }
 
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));

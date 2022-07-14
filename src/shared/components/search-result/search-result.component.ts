@@ -2,11 +2,13 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
-import { CaseField, CaseState, CaseType, CaseView, DisplayMode,
+import {
+  CaseField, CaseState, CaseType, DisplayMode,
   DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
+} from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, SearchResultViewItemComparatorFactory, BrowserService } from '../../services';
+import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -19,36 +21,34 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
 
-  private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
-
-  ICON = DisplayMode.ICON;
+  public ICON = DisplayMode.ICON;
 
   @Input()
-  caseLinkUrlTemplate: string;
+  public caseLinkUrlTemplate: string;
 
   @Input()
-  jurisdiction: Jurisdiction;
+  public jurisdiction: Jurisdiction;
 
   @Input()
-  caseType: CaseType;
+  public caseType: CaseType;
 
   @Input()
-  caseState: CaseState;
+  public caseState: CaseState;
 
   @Input()
-  caseFilterFG: FormGroup;
+  public caseFilterFG: FormGroup;
 
   @Input()
-  resultView: SearchResultView;
+  public resultView: SearchResultView;
 
   @Input()
-  page: number;
+  public page: number;
 
   @Input()
-  paginationMetadata: PaginationMetadata;
+  public paginationMetadata: PaginationMetadata;
 
   @Input()
-  metadataFields: string[];
+  public metadataFields: string[];
 
   @Input()
   public selectionEnabled = false;
@@ -66,21 +66,21 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public selection = new EventEmitter<SearchResultViewItem[]>();
 
   @Output()
-  changePage: EventEmitter<any> = new EventEmitter();
+  public changePage: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  clickCase: EventEmitter<any> = new EventEmitter();
+  public clickCase: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  sortHandler: EventEmitter<any> = new EventEmitter();
+  public sortHandler: EventEmitter<any> = new EventEmitter();
 
   public paginationLimitEnforced = false;
 
-  paginationPageSize: number;
+  public paginationPageSize: number;
 
-  hideRows: boolean;
+  public hideRows: boolean;
 
-  selected: {
+  public selected: {
     init?: boolean,
     jurisdiction?: Jurisdiction,
     caseType?: CaseType,
@@ -90,13 +90,15 @@ export class SearchResultComponent implements OnChanges, OnInit {
     page?: number
   } = {};
 
-  sortParameters: SortParameters;
-  searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
-  draftsCount: number;
+  public sortParameters: SortParameters;
+  public searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
+  public draftsCount: number;
 
-  consumerSortParameters: { column: string, order: SortOrder, type: string } = { column: null, order: null, type: null };
+  public consumerSortParameters: { column: string, order: SortOrder, type: string } = { column: null, order: null, type: null };
 
   public selectedCases: SearchResultViewItem[] = [];
+
+  private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
 
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
@@ -109,6 +111,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
     this.hideRows = false;
+  }
+
+  public get resultTotal(): number {
+    const total = this.paginationMetadata.total_results_count;
+    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
+    this.paginationLimitEnforced = maximumResultReached;
+
+    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   ngOnInit(): void {
@@ -145,14 +155,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
-  }
-
-  get resultTotal(): number {
-    const total = this.paginationMetadata.total_results_count;
-    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
-    this.paginationLimitEnforced = maximumResultReached;
-
-    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   public clearSelection(): void {
@@ -238,7 +240,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
    * Hydrates result view with case field definitions.
    */
   // A longer term resolution is to move this piece of logic to the backend
-  hydrateResultView(): void {
+  public hydrateResultView(): void {
     this.resultView.results.forEach(result => {
       const caseFields = [];
 
@@ -265,7 +267,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   }
 
-  goToPage(page): void {
+  public goToPage(page): void {
     this.hideRows = true;
     this.selected.init = false;
     this.selected.jurisdiction = this.jurisdiction;
@@ -293,7 +295,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
   }
 
-  buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
+  public buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {
     return Object.assign(new CaseField(), {
       id: col.case_field_id,
       label: col.label,
@@ -304,25 +306,25 @@ export class SearchResultComponent implements OnChanges, OnInit {
     });
   }
 
-  getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
+  public getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
     col.value = this.draftPrefixOrGet(col, result);
     col.value = this.placeholderService.resolvePlaceholders(result.case_fields, col.value);
     return col;
   }
 
-  hasResults(): any {
+  public hasResults(): any {
     return this.resultView.results.length && this.paginationMetadata.total_pages_count;
   }
 
-  hasDrafts(): boolean {
+  public hasDrafts(): boolean {
     return this.resultView.hasDrafts();
   }
 
-  comparator(column: SearchResultViewColumn): SearchResultViewItemComparator {
+  public comparator(column: SearchResultViewColumn): SearchResultViewItemComparator {
     return this.searchResultViewItemComparatorFactory.createSearchResultViewItemComparator(column);
   }
 
-  sort(column: SearchResultViewColumn) {
+  public sort(column: SearchResultViewColumn) {
     if (this.consumerSortingEnabled) {
       if (column.case_field_id !== this.consumerSortParameters.column) {
         this.consumerSortParameters.order = SortOrder.DESCENDING;
@@ -345,7 +347,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
   }
 
-  sortWidget(column: SearchResultViewColumn) {
+  public sortWidget(column: SearchResultViewColumn) {
     let condition = false;
     if (this.consumerSortingEnabled) {
       const isColumn = column.case_field_id === this.consumerSortParameters.column;
@@ -358,11 +360,11 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return condition ? '&#9660;' : '&#9650;';
   }
 
-  activityEnabled(): boolean {
+  public activityEnabled(): boolean {
     return this.activityService.isEnabled;
   }
 
-  hyphenateIfCaseReferenceOrGet(col, result): any {
+  public hyphenateIfCaseReferenceOrGet(col, result): any {
     if (col.case_field_id === '[CASE_REFERENCE]') {
       return this.caseReferencePipe.transform(result.case_fields[col.case_field_id])
     } else {
@@ -378,8 +380,47 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
   }
 
-  draftPrefixOrGet(col, result): any {
+  public draftPrefixOrGet(col, result): any {
     return result.case_id.startsWith(DRAFT_PREFIX) ? DRAFT_PREFIX : this.hyphenateIfCaseReferenceOrGet(col, result);
+  }
+
+  public getFirstResult(): number {
+    const currentPage = (this.selected.page ? this.selected.page : 1);
+    return ((currentPage - 1) * this.paginationPageSize) + 1 + this.getDraftsCountIfNotPageOne(currentPage);
+  }
+
+  public getLastResult(): number {
+    const currentPage = (this.selected.page ? this.selected.page : 1);
+    return ((currentPage - 1) * this.paginationPageSize) + this.resultView.results.length + this.getDraftsCountIfNotPageOne(currentPage);
+  }
+
+  public getTotalResults(): number {
+    const total = this.paginationMetadata.total_results_count + this.draftsCount;
+
+    return total >= this.PAGINATION_MAX_ITEM_RESULT ? this.PAGINATION_MAX_ITEM_RESULT : total;
+  }
+
+  public prepareCaseLinkUrl(caseId: string): string {
+    let url = this.caseLinkUrlTemplate;
+    url = url.replace('jurisdiction_id', this.jurisdiction.id);
+    url = url.replace('caseType_id', this.caseType.id);
+    url = url.replace('case_id', caseId);
+
+    return url;
+  }
+
+  public goToCase(caseId: string) {
+    this.clickCase.emit({
+      caseId: caseId
+    });
+  }
+
+  public onKeyUp($event: KeyboardEvent, c: SearchResultViewItem): void {
+    if ($event.key === 'Space') {
+      if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
+        this.changeSelection(c);
+      }
+    }
   }
 
   private isSortAscending(column: SearchResultViewColumn): boolean {
@@ -407,50 +448,11 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return isAscending ? SortOrder.ASCENDING : isDescending ? SortOrder.DESCENDING : SortOrder.UNSORTED;
   }
 
-  getFirstResult(): number {
-    const currentPage = (this.selected.page ? this.selected.page : 1);
-    return ((currentPage - 1) * this.paginationPageSize) + 1 + this.getDraftsCountIfNotPageOne(currentPage);
-  }
-
-  getLastResult(): number {
-    const currentPage = (this.selected.page ? this.selected.page : 1);
-    return ((currentPage - 1) * this.paginationPageSize) + this.resultView.results.length + this.getDraftsCountIfNotPageOne(currentPage);
-  }
-
-  getTotalResults(): number {
-    const total = this.paginationMetadata.total_results_count + this.draftsCount;
-
-    return total >= this.PAGINATION_MAX_ITEM_RESULT ? this.PAGINATION_MAX_ITEM_RESULT : total;
-  }
-
-  prepareCaseLinkUrl(caseId: string): string {
-    let url = this.caseLinkUrlTemplate;
-    url = url.replace('jurisdiction_id', this.jurisdiction.id);
-    url = url.replace('caseType_id', this.caseType.id);
-    url = url.replace('case_id', caseId);
-
-    return url;
-  }
-
   private getDraftsCountIfNotPageOne(currentPage): number {
     return currentPage > 1 ? this.draftsCount : 0;
   }
 
   private numberOfDrafts(): number {
     return this.resultView.results.filter(_ => _.case_id.startsWith(DRAFT_PREFIX)).length;
-  }
-
-  goToCase(caseId: string) {
-    this.clickCase.emit({
-      caseId: caseId
-    });
-  }
-
-  onKeyUp($event: KeyboardEvent, c: SearchResultViewItem): void {
-    if ($event.key === 'Space') {
-      if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
-        this.changeSelection(c);
-      }
-    }
   }
 }

@@ -29,23 +29,24 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
   private static readonly PATTERN_REGEXP = new RegExp('^-?\\d*(\\.\\d{0,2})?$');
 
   @Input()
-  id: string;
+  public id: string;
 
   @Input()
-  name: string;
+  public name: string;
 
   @Input()
-  mandatory: boolean;
+  public mandatory: boolean;
 
   @Input()
-  formControl: FormControl;
+  public formControl: FormControl;
 
-  private rawValue: number;
   public displayValue: string = null;
   public disabled: boolean;
 
+  private rawValue: number;
+
   // change events from the textarea
-  onChange(event) {
+  public onChange(event) {
 
     // get value from input
     let newValue = event.target.value;
@@ -71,7 +72,7 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
     this.propagateChange(this.rawValue);
   }
 
-  writeValue(obj: any): void {
+  public writeValue(obj: any): void {
     if (obj) {
       this.rawValue = obj;
 
@@ -86,21 +87,19 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  registerOnChange(fn: any): void {
+  public registerOnChange(fn: any): void {
     this.propagateChange = fn;
   }
 
-  registerOnTouched(_: any): void {
+  public registerOnTouched(_: any): void {
     // Not used.
   }
 
-  setDisabledState(isDisabled: boolean): void {
+  public setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
-  private propagateChange = (_: any) => { };
-
-  validate(control: FormControl): ValidationErrors {
+  public validate(control: FormControl): ValidationErrors {
     if (this.mandatory && !control.value) {
       return {
         pattern: 'This field is required'
@@ -114,7 +113,10 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
     return undefined;
   }
 
-  registerOnValidatorChange(_: () => void): void {
+  public registerOnValidatorChange(_: () => void): void {
     // Not used.
   }
+
+  private propagateChange = (_: any) => { };
+
 }

@@ -235,70 +235,6 @@ export class FormValueService {
     return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
   }
 
-  private sanitiseObject(rawObject: object): object {
-    if (!rawObject) {
-      return rawObject;
-    }
-
-    let sanitisedObject = {};
-    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
-    for (const key in rawObject) {
-      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
-      // properties is null, the entire sanitised object to be returned should be null
-      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
-        sanitisedObject = null;
-        break;
-      } else if ('CaseReference' === key) {
-        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
-      } else {
-        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
-        if (Array.isArray(sanitisedObject[key])) {
-          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
-          // delete the property from the sanatised object
-          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
-            delete sanitisedObject[key];
-          }
-        }
-      }
-    }
-    return sanitisedObject;
-  }
-
-  private sanitiseArray(rawArray: any[]): any[] {
-    if (!rawArray) {
-      return rawArray;
-    }
-
-    rawArray.forEach(item => {
-      if (item && item.hasOwnProperty('value')) {
-        item.value = this.sanitiseValue(item.value);
-      }
-    });
-
-    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
-    // association of a value. In addition, if the array contains items with a "value" object property, return only
-    // those whose value object contains non-empty values, including for any descendant objects
-    return rawArray
-      .filter(item => !!item)
-      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
-  }
-
-  private sanitiseValue(rawValue: any): any {
-    if (Array.isArray(rawValue)) {
-      return this.sanitiseArray(rawValue);
-    }
-
-    switch (typeof rawValue) {
-      case 'object':
-        return this.sanitiseObject(rawValue);
-      case 'string':
-        return rawValue.trim();
-      case 'number':
-        return String(rawValue);
-      default:
-        return rawValue;
-    }
-  }
   public clearNonCaseFields(data: object, caseFields: CaseField[]) {
     for (let dataKey in data) {
       if (!caseFields.find(cf => cf.id === dataKey)) {
@@ -490,6 +426,71 @@ export class FormValueService {
           delete data[field.id];
         }
       }
+    }
+  }
+
+  private sanitiseObject(rawObject: object): object {
+    if (!rawObject) {
+      return rawObject;
+    }
+
+    let sanitisedObject = {};
+    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
+    for (const key in rawObject) {
+      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+      // properties is null, the entire sanitised object to be returned should be null
+      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
+        sanitisedObject = null;
+        break;
+      } else if ('CaseReference' === key) {
+        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+      } else {
+        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+        if (Array.isArray(sanitisedObject[key])) {
+          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
+          // delete the property from the sanatised object
+          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+            delete sanitisedObject[key];
+          }
+        }
+      }
+    }
+    return sanitisedObject;
+  }
+
+  private sanitiseArray(rawArray: any[]): any[] {
+    if (!rawArray) {
+      return rawArray;
+    }
+
+    rawArray.forEach(item => {
+      if (item && item.hasOwnProperty('value')) {
+        item.value = this.sanitiseValue(item.value);
+      }
+    });
+
+    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
+    // association of a value. In addition, if the array contains items with a "value" object property, return only
+    // those whose value object contains non-empty values, including for any descendant objects
+    return rawArray
+      .filter(item => !!item)
+      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
+  }
+
+  private sanitiseValue(rawValue: any): any {
+    if (Array.isArray(rawValue)) {
+      return this.sanitiseArray(rawValue);
+    }
+
+    switch (typeof rawValue) {
+      case 'object':
+        return this.sanitiseObject(rawValue);
+      case 'string':
+        return rawValue.trim();
+      case 'number':
+        return String(rawValue);
+      default:
+        return rawValue;
     }
   }
 }

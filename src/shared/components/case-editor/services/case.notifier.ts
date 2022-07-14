@@ -1,14 +1,14 @@
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CaseView } from '../../../domain';
-import { Injectable } from '@angular/core';
 
 @Injectable()
 export class CaseNotifier {
-    private caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
-    caseView = this.caseViewSource.asObservable();
-    public cachedCaseView: CaseView;
+    readonly caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
 
-    announceCase(c: CaseView) {
+    public caseView = this.caseViewSource.asObservable();
+    public cachedCaseView: CaseView;
+    public announceCase(c: CaseView) {
         this.caseViewSource.next(c);
     }
 }

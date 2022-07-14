@@ -1,6 +1,5 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
-import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
   selector: 'cut-date-input',

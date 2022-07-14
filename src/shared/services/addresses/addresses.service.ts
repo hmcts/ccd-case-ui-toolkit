@@ -1,9 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from '../../domain/addresses';
-import { HttpService } from '../http';
-import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AddressesService {
@@ -68,7 +63,7 @@ export class AddressesService {
  * will be easier for us when we move this parsing logic to into
  * `Shim` java service.
  */
-class AddressParser {
+ class AddressParser {
 
   constructor() {
   }

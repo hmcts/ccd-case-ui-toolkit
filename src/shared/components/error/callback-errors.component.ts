@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
-import { CallbackErrorsContext } from './domain/error-context';
 import { HttpError } from '../../domain/http';
+import { CallbackErrorsContext } from './domain/error-context';
 
 @Component({
   selector: 'ccd-callback-errors',
@@ -42,6 +42,18 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public hasErrors(): boolean {
+    return this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length;
+  }
+
+  public hasWarnings(): boolean {
+    return this.error
+      && this.error.callbackWarnings
+      && this.error.callbackWarnings.length;
+  }
+
   private buildCallbackErrorsContext(): CallbackErrorsContext {
     let errorContext: CallbackErrorsContext = new CallbackErrorsContext();
     if (this.hasWarnings() && !this.hasErrors() && !this.hasInvalidData()) {
@@ -52,18 +64,6 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
       errorContext.trigger_text = this.triggerTextContinue;
     }
     return errorContext;
-  }
-
-  hasErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
-  hasWarnings(): boolean {
-    return this.error
-      && this.error.callbackWarnings
-      && this.error.callbackWarnings.length;
   }
 
   private hasInvalidData(): boolean {

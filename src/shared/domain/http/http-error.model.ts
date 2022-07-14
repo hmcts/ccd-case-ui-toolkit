@@ -1,6 +1,18 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
 export class HttpError {
+  public static from(response: HttpErrorResponse): HttpError {
+    const error = new HttpError();
+
+    // Check that the HttpErrorResponse contains an "error" object before mapping the error properties
+    if (!!(response && response.error)) {
+      Object.keys(error).forEach(key => {
+        error[key] = response.error.hasOwnProperty(key) && response.error[key] ? response.error[key] : error[key];
+      });
+    }
+
+    return error;
+  }
   private static readonly DEFAULT_ERROR = 'Unknown error';
   private static readonly DEFAULT_MESSAGE = 'Something unexpected happened, our technical staff have been automatically notified';
   private static readonly DEFAULT_STATUS = 500;
@@ -14,19 +26,6 @@ export class HttpError {
   public details?: any;
   public callbackErrors?: any;
   public callbackWarnings?: any;
-
-  public static from(response: HttpErrorResponse): HttpError {
-    const error = new HttpError();
-
-    // Check that the HttpErrorResponse contains an "error" object before mapping the error properties
-    if (!!(response && response.error)) {
-      Object.keys(error).forEach(key => {
-        error[key] = response.error.hasOwnProperty(key) && response.error[key] ? response.error[key] : error[key];
-      });
-    }
-
-    return error;
-  }
 
   constructor() {
     this.timestamp = new Date().toISOString();

@@ -29,6 +29,10 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
     }
   }
 
+  public createElementId(elementId: string): string {
+    return `${this.id()}_${elementId}`;
+  }
+
   protected addValidators(caseField: CaseField, control: AbstractControl): void {
     FormValidatorsService.addValidators(caseField, control);
   }
@@ -37,9 +41,5 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
     if (this.caseField && !(this.caseField instanceof CaseField)) {
       this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
     }
-  }
-
-  createElementId(elementId: string): string {
-    return `${this.id()}_${elementId}`;
   }
 }

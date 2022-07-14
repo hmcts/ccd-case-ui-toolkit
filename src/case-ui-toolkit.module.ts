@@ -7,7 +7,6 @@ import { BodyComponent } from './components/body/body.component';
 import { BodyModule } from './components/body/body.module';
 import { FooterComponent } from './components/footer/footer.component';
 import { FootersModule } from './components/footer/footers.module';
-import { DateInputComponent } from './components/form/date-input/date-input.component';
 import { FormModule } from './components/form/form.module';
 import { HeaderBarComponent } from './components/header/header-bar/header-bar.component';
 import { HeadersModule } from './components/header/headers.module';
@@ -97,7 +96,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       NavigationItemComponent,
       FooterComponent,
       BodyComponent,
-      DateInputComponent,
       TabsComponent,
       TabComponent,
       CaseEditComponent,
@@ -113,7 +111,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       CaseReferencePipe,
       MarkdownComponent,
       PaginationComponent,
-
       BaseFieldModule,
       PaletteUtilsModule,
       UnsupportedFieldComponent,

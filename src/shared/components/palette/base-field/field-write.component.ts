@@ -30,10 +30,6 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     super();
   }
 
-  protected addValidators(caseField: CaseField, control: AbstractControl): void {
-    FormValidatorsService.addValidators(caseField, control);
-  }
-
   ngOnInit(): void {
     let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
@@ -63,5 +59,9 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     // EUI-3267.
     // Set up the flag for whether this can have a grey bar.
     this.canHaveGreyBar = this.caseField.show_condition && this.caseField.field_type.type !== 'Collection';
+  }
+
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
+    FormValidatorsService.addValidators(caseField, control);
   }
 }

@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, ErrorMessage, ReviewSpecificAccessRequest } from '../../../domain';
 import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
-import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
   selector: 'ccd-case-review-specific-access-request',
@@ -20,13 +20,14 @@ export class CaseReviewSpecificAccessRequestComponent
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
-  private readonly genericError = 'There is a problem';
-  private readonly radioSelectedControlName = 'radioSelected';
   public readonly accessReasons: DisplayedAccessReason[];
   public requestAccessDetails: RequestAccessDetails;
   public caseSubscription: Subscription;
   public userAccessType: string;
   public caseDetails: CaseView;
+
+  private readonly genericError = 'There is a problem';
+  private readonly radioSelectedControlName = 'radioSelected';
 
   constructor(
     private readonly fb: FormBuilder,

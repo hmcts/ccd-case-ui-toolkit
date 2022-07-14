@@ -1,20 +1,9 @@
-import  * as _score from 'underscore';
+import * as _score from 'underscore';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 export class ShowCondition {
-
-  private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
-  private static readonly OR_CONDITION_REGEXP = new RegExp('\\sOR\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
-  private static readonly CONDITION_NOT_EQUALS = '!=';
-  private static readonly CONDITION_EQUALS = '=';
-  private static readonly CONTAINS = 'CONTAINS';
-  private static instanceCache = new Map<string, ShowCondition>();
-
-  private orConditions: string[] = null;
-  private andConditions: string[] = null;
-
   public static addPathPrefixToCondition(showCondition: string, pathPrefix: string): string {
     if (!pathPrefix || pathPrefix === '') {
       return showCondition;
@@ -30,16 +19,6 @@ export class ShowCondition {
     }
   }
 
-  private static extractConditions(conditionsArray: string[], pathPrefix: string): string[] {
-    const extracted = conditionsArray.map(condition => {
-      if (condition.startsWith(pathPrefix)) {
-        return condition;
-      }
-      return `${pathPrefix}.${condition}`;
-    });
-    return extracted;
-  }
-
   // Cache instances so that we can cache results more effectively
   public static getInstance(condition: string): ShowCondition {
     let instance = this.instanceCache.get(condition);
@@ -48,17 +27,6 @@ export class ShowCondition {
       this.instanceCache.set(condition, instance);
     }
     return instance;
-  }
-
-  private static getField(condition: string): [string, string?] {
-    let separator: string = ShowCondition.CONTAINS;
-    if (condition.indexOf(ShowCondition.CONTAINS) < 0) {
-      separator = ShowCondition.CONDITION_EQUALS;
-      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) > -1) {
-        separator = ShowCondition.CONDITION_NOT_EQUALS;
-      }
-    }
-    return [ condition.split(separator)[0], separator ];
   }
 
   /**
@@ -114,6 +82,37 @@ export class ShowCondition {
     return false;
   }
 
+  private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
+  private static readonly OR_CONDITION_REGEXP = new RegExp('\\sOR\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
+  private static readonly CONDITION_NOT_EQUALS = '!=';
+  private static readonly CONDITION_EQUALS = '=';
+  private static readonly CONTAINS = 'CONTAINS';
+  private static instanceCache = new Map<string, ShowCondition>();
+
+  private static extractConditions(conditionsArray: string[], pathPrefix: string): string[] {
+    const extracted = conditionsArray.map(condition => {
+      if (condition.startsWith(pathPrefix)) {
+        return condition;
+      }
+      return `${pathPrefix}.${condition}`;
+    });
+    return extracted;
+  }
+
+  private static getField(condition: string): [string, string?] {
+    let separator: string = ShowCondition.CONTAINS;
+    if (condition.indexOf(ShowCondition.CONTAINS) < 0) {
+      separator = ShowCondition.CONDITION_EQUALS;
+      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) > -1) {
+        separator = ShowCondition.CONDITION_NOT_EQUALS;
+      }
+    }
+    return [ condition.split(separator)[0], separator ];
+  }
+
+  private orConditions: string[] = null;
+  private andConditions: string[] = null;
+
   // Expects a show condition of the form: <fieldName>="string"
   constructor(public condition: string) {
     if (!!condition) {
@@ -131,6 +130,22 @@ export class ShowCondition {
     }
     return this.matchAndConditions(fields, this.updatePathName(path));
   }
+
+  public matchByContextFields(contextFields: CaseField[]): boolean {
+    return this.match(FieldsUtils.toValuesMap(contextFields));
+  }
+
+  /**
+   * Determine whether this is affected by fields that have a display_context
+   * of HIDDEN or READONLY, which means they aren't able to be changed by the
+   * user's actions.
+   *
+   * @param caseFields Inspected to see appropriate display_contexts.
+   */
+  public hiddenCannotChange(caseFields: CaseField[]): boolean {
+    return ShowCondition.hiddenCannotChange(this, caseFields);
+  }
+
   /**
    * Path Name gets updated for complex sub fields
    * @param path Path name.
@@ -151,21 +166,6 @@ export class ShowCondition {
     } else {
       return path;
     }
-  }
-
-  public matchByContextFields(contextFields: CaseField[]): boolean {
-    return this.match(FieldsUtils.toValuesMap(contextFields));
-  }
-
-  /**
-   * Determine whether this is affected by fields that have a display_context
-   * of HIDDEN or READONLY, which means they aren't able to be changed by the
-   * user's actions.
-   *
-   * @param caseFields Inspected to see appropriate display_contexts.
-   */
-  public hiddenCannotChange(caseFields: CaseField[]): boolean {
-    return ShowCondition.hiddenCannotChange(this, caseFields);
   }
 
   private matchAndConditions(fields: object, path?: string): boolean {

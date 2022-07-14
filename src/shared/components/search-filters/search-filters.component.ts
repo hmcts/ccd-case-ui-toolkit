@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { CaseField, CaseState, CaseTypeLite, Jurisdiction } from '../../domain';
+import { FieldsUtils, JurisdictionService, OrderService, SearchService, WindowService } from '../../services';
 import { SearchInput } from './domain/search-input.model';
-import { SearchService, WindowService, OrderService, JurisdictionService, FieldsUtils } from '../../services';
-import { Jurisdiction, CaseTypeLite, CaseState, CaseField } from '../../domain';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
 const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
@@ -78,22 +78,7 @@ export class SearchFiltersComponent implements OnInit {
 
   }
 
-  private getQueryParams() {
-    // Save filters as query parameters for current route
-    let queryParams = {};
-    if (this.selected.jurisdiction) {
-      queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
-    }
-    if (this.selected.caseType) {
-      queryParams[SearchFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
-    }
-    if (this.selected.caseState) {
-      queryParams[SearchFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
-    }
-    return queryParams;
-  }
-
-  reset(): void {
+  public reset(): void {
     this.windowService.removeLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE);
     this.windowService.removeLocalStorage(CASE_TYPE_LOC_STORAGE);
     this.windowService.removeLocalStorage(JURISDICTION_LOC_STORAGE);
@@ -106,7 +91,7 @@ export class SearchFiltersComponent implements OnInit {
     this.onReset.emit();
   }
 
-  apply(): void {
+  public apply(): void {
     this.selected.formGroup = this.formGroup;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
@@ -118,7 +103,7 @@ export class SearchFiltersComponent implements OnInit {
     this.setFocusToTop();
   }
 
-  populateValuesInLocalStorage(): void {
+  public populateValuesInLocalStorage(): void {
     this.windowService.setLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE,
       JSON.stringify(this.selected.formGroup.value));
     this.windowService.setLocalStorage(META_FIELDS_LOC_STORAGE, JSON.stringify(this.selected.metadataFields));
@@ -128,7 +113,7 @@ export class SearchFiltersComponent implements OnInit {
     }
   }
 
-  getMetadataFields(): string[] {
+  public getMetadataFields(): string[] {
     if (this.searchInputs) {
       return this.searchInputs
         .filter(searchInput => searchInput.field.metadata === true)
@@ -136,18 +121,18 @@ export class SearchFiltersComponent implements OnInit {
     }
   }
 
-  isSearchable(): boolean {
+  public isSearchable(): boolean {
     let result: boolean;
     result = this.selected.jurisdiction !== undefined && this.selected.jurisdiction !== null;
     result = result && this.selected.caseType !== undefined && this.selected.caseType !== null;
     return result;
   }
 
-  isSearchableAndSearchInputsReady(): boolean {
+  public isSearchableAndSearchInputsReady(): boolean {
     return this.isSearchable() && this.searchInputsReady;
   }
 
-  onJurisdictionIdChange(): void {
+  public onJurisdictionIdChange(): void {
     this.selected.caseType = null;
     this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
@@ -155,7 +140,7 @@ export class SearchFiltersComponent implements OnInit {
     this.onJurisdiction.emit(this.selected.jurisdiction);
   }
 
-  onCaseTypeIdChange(): void {
+  public onCaseTypeIdChange(): void {
     this.formGroup = new FormGroup({});
     this.searchInputsReady = false;
     this.searchInputs = [];
@@ -188,9 +173,24 @@ export class SearchFiltersComponent implements OnInit {
       });
   }
 
-  isJurisdictionSelected(): boolean {
+  public isJurisdictionSelected(): boolean {
     return this.selected.jurisdiction === null ||
       this.selected.jurisdiction === undefined;
+  }
+
+  private getQueryParams() {
+    // Save filters as query parameters for current route
+    let queryParams = {};
+    if (this.selected.jurisdiction) {
+      queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
+    }
+    if (this.selected.caseType) {
+      queryParams[SearchFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
+    }
+    if (this.selected.caseState) {
+      queryParams[SearchFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
+    }
+    return queryParams;
   }
 
   private selectCaseType(caseTypes: CaseTypeLite[]) {

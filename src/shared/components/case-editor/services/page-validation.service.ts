@@ -10,7 +10,7 @@ import { WizardPage } from '../domain/wizard-page.model';
 export class PageValidationService {
   constructor(private caseFieldService: CaseFieldService) {}
 
-  isPageValid(page: WizardPage, editForm: FormGroup): boolean {
+  public isPageValid(page: WizardPage, editForm: FormGroup): boolean {
     return page.case_fields
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm))
@@ -20,13 +20,6 @@ export class PageValidationService {
       });
   }
 
-  private checkDocumentField(caseField: CaseField, theControl: AbstractControl): boolean {
-    if (caseField.field_type.id !== 'Document') {
-      return true;
-    }
-    return !(this.checkMandatoryField(caseField, theControl));
-  }
-
   public isHidden(caseField: CaseField, editForm: FormGroup, path?: string): boolean {
     const formFields = editForm.getRawValue();
     const condition = ShowCondition.getInstance(caseField.show_condition);
@@ -34,6 +27,13 @@ export class PageValidationService {
       path = `${path}${caseField.id}`;
     }
     return !condition.match(formFields.data, path);
+  }
+
+  private checkDocumentField(caseField: CaseField, theControl: AbstractControl): boolean {
+    if (caseField.field_type.id !== 'Document') {
+      return true;
+    }
+    return !(this.checkMandatoryField(caseField, theControl));
   }
 
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {

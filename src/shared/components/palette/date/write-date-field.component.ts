@@ -1,6 +1,6 @@
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { Component, OnInit } from '@angular/core';
-import { Form, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-date-field',

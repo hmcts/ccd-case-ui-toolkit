@@ -82,8 +82,7 @@ import { SearchResultConsumerComponent } from './search-result-consumer.componen
     {
       provide: APP_BASE_HREF, useValue : '/'
     }
-  ],
-  bootstrap: [ AppComponent ]
+  ]
 })
 export class AppModule {
   constructor(

@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
+import polling, { IOptions } from 'rx-polling';
+import { empty, Observable, Subject, Subscription } from 'rxjs';
+import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
-import { Observable, Subscription, empty, Subject } from 'rxjs';
-import { NgZone } from '@angular/core';
-import polling, { IOptions } from 'rx-polling';
-import { AbstractAppConfig } from '../../../app.config';
 
 // @dynamic
 @Injectable()
@@ -25,6 +24,10 @@ export class ActivityPollingService {
     };
     this.batchCollectionDelayMs = config.getActivityBatchCollectionDelayMs();
     this.maxRequestsPerBatch = config.getActivityMaxRequestPerBatch();
+  }
+
+  get isEnabled(): boolean {
+    return this.activityService.isEnabled;
   }
 
   subscribeToActivity(caseId: string, done: (activity: Activity) => void): Subject<Activity> {
@@ -83,6 +86,14 @@ export class ActivityPollingService {
     return polling(this.activityService.getActivities(...caseIds), this.pollConfig);
   }
 
+  postViewActivity(caseId: string): Observable<Activity[]> {
+    return this.postActivity(caseId, ActivityService.ACTIVITY_VIEW);
+  }
+
+  postEditActivity(caseId: string): Observable<Activity[]> {
+    return this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);
+  }
+
   protected performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
     // console.log('issuing batch request for cases: ' + caseIds);
@@ -105,14 +116,6 @@ export class ActivityPollingService {
     })
   }
 
-  postViewActivity(caseId: string): Observable<Activity[]> {
-    return this.postActivity(caseId, ActivityService.ACTIVITY_VIEW);
-  }
-
-  postEditActivity(caseId: string): Observable<Activity[]> {
-    return this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);
-  }
-
   private postActivity(caseId: string, activityType: string): Observable<Activity[]> {
     if (!this.isEnabled) {
       return Observable.empty();
@@ -124,9 +127,5 @@ export class ActivityPollingService {
     };
 
     return polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
-  }
-
-  get isEnabled(): boolean {
-    return this.activityService.isEnabled;
   }
 }

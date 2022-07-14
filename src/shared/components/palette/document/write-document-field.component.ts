@@ -28,33 +28,22 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
 
-  private caseDetails: CaseView;
-  private uploadedDocument: FormGroup;
-  public selectedFile: File;
-  private dialogConfig: MatDialogConfig;
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
 
-  valid = true;
-  fileUploadMessages: string;
-  confirmReplaceResult: string;
-  clickInsideTheDocument: boolean;
+  public selectedFile: File;
+  public valid = true;
+  public fileUploadMessages: string;
+  public confirmReplaceResult: string;
+  public clickInsideTheDocument: boolean;
 
-  fileUploadSubscription: Subscription;
-  dialogSubscription: Subscription;
-  caseEventSubscription: Subscription;
+  public fileUploadSubscription: Subscription;
+  public dialogSubscription: Subscription;
+  public caseEventSubscription: Subscription;
 
+  private caseDetails: CaseView;
+  private uploadedDocument: FormGroup;
+  private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
-
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
-
-    if (this.fileInput.nativeElement.contains(event.target)) {
-      this.clickInsideTheDocument = true
-    } else {
-      this.fileValidations()
-    }
-  }
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -64,6 +53,17 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private fileUploadStateService: FileUploadStateService,
   ) {
     super();
+  }
+
+  @HostListener('document:click', ['$event'])
+  public clickout(event) {
+    // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
+
+    if (this.fileInput.nativeElement.contains(event.target)) {
+      this.clickInsideTheDocument = true
+    } else {
+      this.fileValidations()
+    }
   }
 
   public ngOnInit(): void {
@@ -111,24 +111,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.resetUpload();
   }
 
-  private resetUpload(): void {
-    this.selectedFile = null;
-    if (this.isAMandatoryComponent()) {
-      this.updateDocumentForm(null, null, null);
-      this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
-    } else {
-      this.valid = true;
-    }
-  }
-
-  private fileValidations(): void {
-    if (this.isAMandatoryComponent()) {
-      if (this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
-        this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
-      }
-    }
-  }
-
   public fileValidationsOnTab(): void {
     if (this.isAMandatoryComponent()) {
       if (this.validateFormUploadedDocument()) {
@@ -167,14 +149,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  private openDialog(dialogConfig): void {
-    const dialogRef = this.dialog.open(DocumentDialogComponent, dialogConfig);
-    this.dialogSubscription = dialogRef.beforeClosed().subscribe(result => {
-      this.confirmReplaceResult = result;
-      this.triggerReplace();
-    });
-  }
-
   public triggerReplace(): void {
     if (this.confirmReplaceResult === 'Replace') {
       this.openFileDialog();
@@ -187,6 +161,32 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     } else {
       return undefined;
     }
+  }
+
+  private resetUpload(): void {
+    this.selectedFile = null;
+    if (this.isAMandatoryComponent()) {
+      this.updateDocumentForm(null, null, null);
+      this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
+    } else {
+      this.valid = true;
+    }
+  }
+
+  private fileValidations(): void {
+    if (this.isAMandatoryComponent()) {
+      if (this.clickInsideTheDocument && this.validateFormUploadedDocument() && !this.isUpLoadingAFile()) {
+        this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_REQUIRED);
+      }
+    }
+  }
+
+  private openDialog(dialogConfig): void {
+    const dialogRef = this.dialog.open(DocumentDialogComponent, dialogConfig);
+    this.dialogSubscription = dialogRef.beforeClosed().subscribe(result => {
+      this.confirmReplaceResult = result;
+      this.triggerReplace();
+    });
   }
 
   private subscribeToCaseDetails(): void {

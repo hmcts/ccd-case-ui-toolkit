@@ -12,12 +12,8 @@ import { FormatTranslatorService } from '../case-fields/format-translator.servic
 // @dynamic
 @Injectable()
 export class FieldsUtils {
-
-  private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
-  private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
   // EUI-4244. 3 dashes instead of 1 to make this less likely to clash with a real field.
   public static readonly LABEL_SUFFIX = '---LABEL';
-
   // Handling of Dynamic Lists in Complex Types
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
@@ -93,6 +89,59 @@ export class FieldsUtils {
       return metadataFields.findIndex(metadataField => metadataField.id === caseField.id) < 0;
     }));
   }
+
+  public static addCaseFieldAndComponentReferences (c: AbstractControl, cf: CaseField, comp: AbstractFormFieldComponent): void {
+    c['caseField'] = cf;
+    c['component'] = comp;
+  }
+
+  /**
+   * Recursive check of an array or object and its descendants for the presence of any non-empty values.
+   *
+   * @param object The array or object to check
+   * @returns `true` if the array or object (or a descendant) contains at least one non-empty value; `false` otherwise
+   */
+  public static containsNonEmptyValues(object: object): boolean {
+    if (!object) {
+      return false;
+    }
+    const values = Object.keys(object).map(key => object[key]);
+    const objectRefs = [];
+    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays.
+    // Note: Deliberate use of non-equality (!=) operator for null check, to handle both null and undefined values.
+    const hasNonNullPrimitive = values.some(x => (x != null &&
+      ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
+        ? !objectRefs.push(x)
+        : typeof x === 'number' || x.length > 0)
+    ));
+    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
+  }
+
+  /**
+   * handleNestedDynamicLists()
+   * Reassigns list_item and value data to DynamicList children
+   * down the tree. Server response returns data only in
+   * the `value` object of parent complex type
+   *
+   * EUI-2530 Dynamic Lists for Elements in a Complex Type
+   *
+   * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
+   */
+   public static handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
+
+    if (jsonBody.case_fields) {
+      jsonBody.case_fields.forEach(caseField => {
+        if (caseField.field_type) {
+          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
+        }
+      });
+    }
+
+    return jsonBody;
+  }
+
+  private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
+  private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
 
   private static prepareValue(field: CaseField): any {
     if (field.value) {
@@ -218,56 +267,6 @@ export class FieldsUtils {
 
   private static textForInvalidField(type: string, invalidValue: string): string {
     return `{ Invalid ${type}: ${invalidValue} }`;
-  }
-
-  public static addCaseFieldAndComponentReferences (c: AbstractControl, cf: CaseField, comp: AbstractFormFieldComponent): void {
-    c['caseField'] = cf;
-    c['component'] = comp;
-  }
-
-  /**
-   * Recursive check of an array or object and its descendants for the presence of any non-empty values.
-   *
-   * @param object The array or object to check
-   * @returns `true` if the array or object (or a descendant) contains at least one non-empty value; `false` otherwise
-   */
-  public static containsNonEmptyValues(object: object): boolean {
-    if (!object) {
-      return false;
-    }
-    const values = Object.keys(object).map(key => object[key]);
-    const objectRefs = [];
-    // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays.
-    // Note: Deliberate use of non-equality (!=) operator for null check, to handle both null and undefined values.
-    const hasNonNullPrimitive = values.some(x => (x != null &&
-      ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
-        ? !objectRefs.push(x)
-        : typeof x === 'number' || x.length > 0)
-    ));
-    return !hasNonNullPrimitive ? objectRefs.some(y => this.containsNonEmptyValues(y)) : hasNonNullPrimitive;
-  }
-
-  /**
-   * handleNestedDynamicLists()
-   * Reassigns list_item and value data to DynamicList children
-   * down the tree. Server response returns data only in
-   * the `value` object of parent complex type
-   *
-   * EUI-2530 Dynamic Lists for Elements in a Complex Type
-   *
-   * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
-   */
-   public static handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
-
-    if (jsonBody.case_fields) {
-      jsonBody.case_fields.forEach(caseField => {
-        if (caseField.field_type) {
-          this.setDynamicListDefinition(caseField, caseField.field_type, caseField);
-        }
-      });
-    }
-
-    return jsonBody;
   }
 
   private static setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {

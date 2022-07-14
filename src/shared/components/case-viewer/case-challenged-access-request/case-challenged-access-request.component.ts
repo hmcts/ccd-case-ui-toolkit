@@ -19,11 +19,12 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
+  public $roleAssignmentResponseSubscription: Subscription;
+
   private readonly genericError = 'There is a problem';
   private readonly radioSelectedControlName = 'radioSelected';
   private readonly caseReferenceControlName = 'caseReference';
   private readonly otherReasonControlName = 'otherReason';
-  public $roleAssignmentResponseSubscription: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -68,10 +69,6 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
         updateOn: 'submit'
       })
     );
-  }
-
-  private inputEmpty(input: AbstractControl): boolean {
-    return input.value == null || input.value.trim().length === 0;
   }
 
   public onChange(): void {
@@ -145,6 +142,10 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     if (this.$roleAssignmentResponseSubscription) {
       this.$roleAssignmentResponseSubscription.unsubscribe();
     }
+  }
+
+  private inputEmpty(input: AbstractControl): boolean {
+    return input.value == null || input.value.trim().length === 0;
   }
 }
 

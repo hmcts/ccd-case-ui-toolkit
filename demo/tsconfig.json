@@ -2,18 +2,37 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2015",
-    "module": "ESNext",
+    "target": "es5",
+    "importHelpers": true,
     "typeRoots": [
       "node_modules/@types"
     ],
-		"skipLibCheck": true,
-    "lib": ["es2018", "dom"]
-  }
+    "skipLibCheck": true,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "gov-ui": [
+        "dist/gov-ui"
+      ],
+      "gov-ui/*": [
+        "dist/gov-ui/*"
+      ]
+    }
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
 }
