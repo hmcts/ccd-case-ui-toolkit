@@ -309,6 +309,15 @@ export class LinkCasesComponent implements OnInit {
     return selectedReasons;
   }
 
+  onSelectedLinkedCaseRemove(pos, selectedCaseReference) {
+    const caseFieldValue = this.linkedCasesService.caseFieldValue || [];
+    const updatedItems =  caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
+    if (updatedItems) {
+      this.linkedCasesService.caseFieldValue = updatedItems;
+    }
+    this.selectedCases.splice(pos, 1);
+  }
+
   public onNext(): void {
     this.errorMessages = [];
     this.caseReasonError = null;

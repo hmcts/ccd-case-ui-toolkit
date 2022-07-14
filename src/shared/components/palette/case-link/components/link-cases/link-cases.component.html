@@ -67,7 +67,7 @@
               <td class="govuk-table__cell">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
                   *ngFor="let reason of case.reasons">{{reason.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
-              <td class="govuk-table__cell"><a (click)="selectedCases.splice(pos, 1);"
+              <td class="govuk-table__cell"><a (click)="onSelectedLinkedCaseRemove(pos, case.caseReference);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>
             <tr class="govuk-table__row" *ngIf="!selectedCases.length">
