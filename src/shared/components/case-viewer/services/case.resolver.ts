@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
+import { catchError, filter, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
@@ -24,11 +24,11 @@ export class CaseResolver implements Resolve<CaseView> {
               private readonly draftService: DraftService,
               private readonly navigationNotifierService: NavigationNotifierService,
               private readonly router: Router) {
-    router.events
-      .filter(event => event instanceof NavigationEnd)
-      .subscribe((event: NavigationEnd) => {
-        this.previousUrl = event.url;
-      });
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+    ).subscribe((event: NavigationEnd) => {
+      this.previousUrl = event.url;
+    });
   }
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
@@ -96,7 +96,7 @@ export class CaseResolver implements Resolve<CaseView> {
           return this.caseNotifier.cachedCaseView;
         }),
         catchError(error => this.checkAuthorizationError(error))
-      ).toPromise();
+      ).toPromise() as Promise<CaseView>;
     }
   }
 
@@ -105,11 +105,11 @@ export class CaseResolver implements Resolve<CaseView> {
     console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
-      return Observable.of(null);
+      return of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
       this.router.navigate(['/error']);
     }
-    return Observable.throw(error);
+    return throwError(error);
   }
 }

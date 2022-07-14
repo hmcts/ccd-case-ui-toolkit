@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { first } from 'rxjs/operators';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -24,7 +25,9 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
-    this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
+    this.eventTriggerService.eventTriggerSource.asObservable().pipe(
+      first(),
+    ).subscribe(eventTrigger => {
       this.processEventTrigger(route, eventTrigger);
     });
     if (route.parent.data.eventTrigger) {

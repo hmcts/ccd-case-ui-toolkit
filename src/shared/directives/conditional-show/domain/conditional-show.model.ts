@@ -155,13 +155,14 @@ export class ShowCondition {
       const [pathName, ...pathTail] = path.split(/[_]+/g);
       const pathFinalIndex = pathTail.pop();
       const pathTailString = pathTail.toString();
+      let mappedPathTail;
 
-      pathTail = pathTail.map((value) => {
+      mappedPathTail = pathTail.map((value) => {
         return Number(pathFinalIndex) === Number(value) ? pathName : value;
       });
 
-      return pathTailString !== pathTail.toString()
-        ? `${pathName}_${pathTail.join('_')}_${pathFinalIndex}`
+      return pathTailString !== mappedPathTail.toString()
+        ? `${pathName}_${mappedPathTail.join('_')}_${pathFinalIndex}`
         : path;
     } else {
       return path;

@@ -71,7 +71,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       HeadersModule,
       FootersModule,
       BodyModule,
-      FormModule,
       TabsModule,
       CaseEditorModule,
       CaseViewerModule,
@@ -86,7 +85,8 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       FocusElementModule,
       LoadingModule,
       PaginationModule,
-      PortalModule
+      PortalModule,
+      FormModule
     ],
     exports: [
       AlertComponent,

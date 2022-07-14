@@ -2,6 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpErrorService, HttpService } from '../../../services';
 import { CaseHistory } from '../domain';
@@ -24,10 +25,13 @@ export class CaseHistoryService {
 
     return this.httpService
       .get(url, {headers, observe: 'body'})
-      .catch((error: any): any => {
-        this.httpErrorService.setError(error);
-        return Observable.throw(error);
-      })
-      .map((caseHistory: Object) => plainToClass(CaseHistory, caseHistory));
+      .pipe(
+        map((caseHistory: Object) => plainToClass(CaseHistory, caseHistory)),
+        catchError(
+        (error: any): any => {
+          this.httpErrorService.setError(error);
+          return Observable.throw(error);
+        }
+      )) as Observable<CaseHistory>;
   }
 }

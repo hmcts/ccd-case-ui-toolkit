@@ -5,8 +5,9 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { FieldType } from '../../../domain';
 
-import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { Profile } from '../../../domain/profile';
 import { FieldsUtils, ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';

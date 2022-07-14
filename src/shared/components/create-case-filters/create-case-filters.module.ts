@@ -8,10 +8,10 @@ import { CreateCaseFiltersComponent } from './create-case-filters.component';
 @NgModule({
     imports: [
         CommonModule,
-        ErrorsModule,
         FormsModule,
         ReactiveFormsModule,
-        DefinitionsModule
+        DefinitionsModule,
+        ErrorsModule,
     ],
     declarations: [
         CreateCaseFiltersComponent

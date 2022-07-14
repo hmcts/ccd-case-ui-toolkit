@@ -4,7 +4,7 @@ import { DateInputComponent } from './date-input/date-input.component';
 
 @NgModule({
   imports: [
-    CommonModule,
+    CommonModule
   ],
   declarations: [
     DateInputComponent,
